@@ -8,7 +8,6 @@ data class ProductBundleRecomTracker(
     val bundleType: String = "",
     val bundlePosition: Int = 0,
     val priceCut: String = "",
-    val cartId: String = "",
-    val quantity: String = "",
-    val state: String = ""
+    val state: String = "",
+    val atcItems: List<ProductBundleRecomAtcItemTracker> = emptyList()
 )

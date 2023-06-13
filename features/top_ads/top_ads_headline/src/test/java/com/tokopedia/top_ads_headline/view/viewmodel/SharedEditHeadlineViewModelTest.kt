@@ -1,5 +1,6 @@
 package com.tokopedia.top_ads_headline.view.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.top_ads_headline.Constants
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -7,13 +8,21 @@ import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataIt
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
 class SharedEditHeadlineViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val topAdsGetGroupProductUseCase: TopAdsGetGroupProductDataUseCase =
         mockk(relaxed = true)
@@ -35,14 +44,14 @@ class SharedEditHeadlineViewModelTest {
     fun `getHeadlineAdId exception test`() {
         val exc = spyk(Throwable())
         coEvery { topAdsGetGroupProductUseCase.execute(any()) } throws exc
-        viewModel.getHeadlineAdId(1, 2) {}
+        viewModel.getHeadlineAdId("1", "2") {}
 
         verify { exc.printStackTrace() }
     }
 
     @Test
     fun `getHeadlineAd should execute topAdsGetGroupProductUseCase`() {
-        viewModel.getHeadlineAdId(1, 2, {})
+        viewModel.getHeadlineAdId("1", "2", {})
         coVerify { topAdsGetGroupProductUseCase.execute(any()) }
     }
 
@@ -50,7 +59,7 @@ class SharedEditHeadlineViewModelTest {
         every { nonGroupResponse.topadsDashboardGroupProducts.data } returns listOf(
             WithoutGroupDataItem())
         coEvery { topAdsGetGroupProductUseCase.execute(any()) } returns nonGroupResponse
-        viewModel.getHeadlineAdId(1, 2) { onError?.invoke(it) }
+        viewModel.getHeadlineAdId("1", "2") { onError?.invoke(it) }
     }
 
     @Test

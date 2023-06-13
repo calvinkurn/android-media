@@ -10,12 +10,12 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShippingCourierUiModel(
-        var productData: ProductData = ProductData(),
-        var serviceData: ServiceData = ServiceData(),
-        var blackboxInfo: String? = null,
-        var ratesId: String? = null,
-        var additionalFee: Int = 0,
-        var isAllowDropshipper: Boolean = false,
-        var isSelected: Boolean = false,
-        var preOrderModel: PreOrderModel? = null,
+    var productData: ProductData = ProductData(),
+    var serviceData: ServiceData = ServiceData(),
+    var blackboxInfo: String? = null,
+    var ratesId: String? = null,
+    var additionalFee: Int = 0,
+    var isAllowDropshipper: Boolean = false,
+    var isSelected: Boolean = false,
+    var preOrderModel: PreOrderModel? = null
 ) : Parcelable, RatesViewModelType

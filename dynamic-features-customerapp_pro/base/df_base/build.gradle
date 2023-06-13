@@ -56,16 +56,16 @@ dependencies {
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
     implementation projectOrAar(rootProject.ext.features.catalog)
+    implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
-    implementation projectOrAar(rootProject.ext.features.findNative)
     implementation projectOrAar(rootProject.ext.features.affiliateToko)
+    implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)
-    implementation projectOrAar(rootProject.ext.features.interestPick)
     implementation projectOrAar(rootProject.ext.features.feed)
 
     //Digital
@@ -86,14 +86,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.search)
     implementation projectOrAar(rootProject.ext.features.autocomplete)
     implementation projectOrAar(rootProject.ext.features.homeRecom)
-    implementation projectOrAar(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
+    //implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
-    implementation projectOrAar(rootProject.ext.features.ovop2p)
+   // implementation projectOrAar(rootProject.ext.features.ovop2p)
     implementation projectOrAar(rootProject.ext.features.paylater)
+    implementation projectOrAar(rootProject.ext.features.insurance)
 
     //IM
     //implementation projectOrAar(rootProject.ext.features.referral) //Need to fix the structure
@@ -125,11 +125,6 @@ dependencies {
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-
-    //Salam
-
-    //Travel
-    implementation projectOrAar(rootProject.ext.features.travelHomepage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)

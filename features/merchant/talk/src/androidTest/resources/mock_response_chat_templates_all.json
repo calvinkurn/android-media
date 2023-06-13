@@ -1,0 +1,20 @@
+{
+  "chatTemplatesAll": {
+    "sellerTemplate": {
+      "isEnable": false,
+      "IsEnableSmartReply": false,
+      "IsSeller": false,
+      "templates": []
+    },
+    "buyerTemplate": {
+      "isEnable": true,
+      "IsEnableSmartReply": true,
+      "IsSeller": false,
+      "templates": [
+        "Hai, barang ini ready ga?",
+        "Bisa dikirim hari ini ga?",
+        "Terima kasih!"
+      ]
+    }
+  }
+}

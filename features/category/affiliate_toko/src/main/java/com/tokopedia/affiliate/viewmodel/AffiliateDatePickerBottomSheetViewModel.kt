@@ -14,44 +14,57 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import java.util.ArrayList
 import javax.inject.Inject
 
-class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
+class AffiliateDatePickerBottomSheetViewModel @Inject constructor(
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase
 ) : BaseViewModel() {
     var rangeSelected = ""
     var identifier = ""
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var tickerInformation = MutableLiveData<String>()
-    private var affiliateFilterList = MutableLiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>>()
+    private var affiliateFilterList =
+        MutableLiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>>()
     private var error = MutableLiveData<Boolean>()
-
-    fun getAffiliateFilterData() {
+    private var source = AffiliateBottomDatePicker.IDENTIFIER_WITHDRAWAL
+    fun getAffiliateFilterData(source: String = AffiliateBottomDatePicker.IDENTIFIER_WITHDRAWAL) {
+        this.source = source
         launchCatchError(block = {
             shimmerVisibility.value = true
             affiliateUserPerformanceUseCase.getAffiliateFilter().let { response ->
-                response.data?.ticker?.let { ticker->
-                    if(ticker.isNotEmpty()) tickerInformation.value = ticker.first()?.tickerDescription
+                response.data?.ticker?.let { ticker ->
+                    if (ticker.isNotEmpty()) tickerInformation.value =
+                        ticker.first()?.tickerDescription
                 }
 
-                affiliateFilterList.value = convertFilterToVisitable(response.data?.getAffiliateDateFilter)
+                affiliateFilterList.value =
+                    convertFilterToVisitable(response.data?.getAffiliateDateFilter)
             }
             shimmerVisibility.value = false
         }, onError = {
-            error.value = true
-            shimmerVisibility.value = false
-            it.printStackTrace()
-        })
+                error.value = true
+                shimmerVisibility.value = false
+                it.printStackTrace()
+            })
     }
 
-    fun convertFilterToVisitable(affiliateDateFilter: List<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter?>?): ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> {
+    fun convertFilterToVisitable(
+        affiliateDateFilter: List<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter?>?
+    ): ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> {
         val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
         affiliateDateFilter?.forEach { filter ->
-            var title = ""
-            var message = ""
-            var value = ""
-            filter?.filterTitle?.let { title = it }
-            filter?.filterDescription?.let { message = it }
-            filter?.filterValue?.let { value = it }
-            itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(title,rangeSelected == title, value, message,identifier == AffiliateBottomDatePicker.IDENTIFIER_HOME)))
+            val title = filter?.filterTitle.orEmpty()
+            itemList.add(
+                AffiliateDateRangePickerModel(
+                    AffiliateDatePickerData(
+                        title,
+                        rangeSelected == title,
+                        filter?.filterValue.orEmpty(),
+                        filter?.filterDescription.orEmpty(),
+                        identifier == AffiliateBottomDatePicker.IDENTIFIER_HOME,
+                        filter?.updateDescription.orEmpty()
+                    ),
+                    source
+                )
+            )
         }
         return itemList
     }
@@ -61,13 +74,15 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
             (visitable as AffiliateDateRangePickerModel).dateRange.isSelected = index == position
         }
     }
+
     fun getItemList(): ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>? {
         return affiliateFilterList.value
     }
 
-    fun getAffiliateFilterItems(): LiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>> = affiliateFilterList
+    fun getAffiliateFilterItems(): LiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>> =
+        affiliateFilterList
+
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getTickerInfo(): LiveData<String> = tickerInformation
     fun getError(): LiveData<Boolean> = error
-
 }

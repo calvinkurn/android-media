@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/multiple_bundle_products_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_bundle_multiple_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_productbundle_image"
+        android:padding="0.7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bundle_product_multiple"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            app:unify_image_type="rect" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bundle_product_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_bundle_multiple_image"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintTop_toTopOf="@+id/layout_bundle_multiple_image"
+        app:layout_constraintVertical_bias="0.2"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="+1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bundle_product_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_bundle_multiple_image"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bundle_product_count"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="@string/bundlewidget_other_product_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

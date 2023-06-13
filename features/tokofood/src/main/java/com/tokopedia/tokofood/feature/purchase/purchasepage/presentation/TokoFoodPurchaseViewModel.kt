@@ -12,18 +12,18 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.domain.response.CartListData
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
+import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
@@ -35,6 +35,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUpdatedCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCartId
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updatePromoData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateShippingData
@@ -42,7 +43,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickerErrorShopLevelData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTickersData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateTotalAmountData
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.PartialTokoFoodUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
@@ -62,10 +68,11 @@ import javax.inject.Inject
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
-    private val checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
+    private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
-    val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.main) {
+    val dispatcher: CoroutineDispatchers
+) :
+    BaseViewModel(dispatcher.main) {
 
     private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
     val purchaseUiEvent: LiveData<PurchaseUiEvent>
@@ -80,7 +87,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     val visitables: LiveData<MutableList<Visitable<*>>>
         get() = _visitables
 
-    private val checkoutTokoFoodResponse = MutableStateFlow<CheckoutTokoFood?>(null)
+    private val checkoutTokoFoodResponse = MutableStateFlow<CartGeneralCartListData?>(null)
     private val shopId = MutableStateFlow("")
     private val isConsentAgreed = MutableStateFlow(false)
 
@@ -92,16 +99,16 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> =
         MutableSharedFlow()
 
-    private val _updateQuantityStateFlow: MutableStateFlow<UpdateParam?> = MutableStateFlow(null)
+    private val _updateQuantityStateFlow: MutableStateFlow<UpdateQuantityTokofoodParam?> = MutableStateFlow(null)
     val updateQuantityStateFlow = _updateQuantityStateFlow.asStateFlow()
 
     private val _shouldRefreshCartData = MutableSharedFlow<Boolean>()
     val shouldRefreshCartData = _shouldRefreshCartData.asSharedFlow()
 
-    private val _trackerLoadCheckoutData = MutableSharedFlow<CheckoutTokoFoodData>()
+    private val _trackerLoadCheckoutData = MutableSharedFlow<CartListData>()
     val trackerLoadCheckoutData = _trackerLoadCheckoutData.asSharedFlow()
 
-    private val _trackerPaymentCheckoutData = MutableSharedFlow<CheckoutTokoFoodData>()
+    private val _trackerPaymentCheckoutData = MutableSharedFlow<CartListData>()
     val trackerPaymentCheckoutData = _trackerPaymentCheckoutData.asSharedFlow()
 
     init {
@@ -111,7 +118,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 .flatMapConcat { productList ->
                     flow {
                         showPartialLoading()
-                        emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(productList, shopId.value))
+                        emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateQuantityParam(productList))
                     }
                 }
                 .collect {
@@ -152,18 +159,22 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadData() {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                checkoutTokoFoodUseCase.get().execute(SOURCE)
+                cartListTokofoodUseCase.get().execute(SOURCE)
             }.let {
+                val businessData = it.data.getTokofoodBusinessData()
+
                 if (it.isEmptyProducts()) {
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS)
                     return@launchCatchError
                 }
-                _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
+                _fragmentUiModel.value =
+                    TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(businessData.customResponse.shop)
                 val existingCheckoutData = getExistingCheckoutData()
-                val isPreviousPopupPromo = existingCheckoutData?.isPromoPopupType() == true
+                val existingBusinessData = existingCheckoutData?.getTokofoodBusinessData()
+                val isPreviousPopupPromo = existingBusinessData?.isPromoPopupType() == true
                 checkoutTokoFoodResponse.value = it
-                shopId.value = it.data.shop.shopId
-                isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
+                shopId.value = it.data.getTokofoodBusinessData().customResponse.shop.shopId
+                isConsentAgreed.value = it.data.getTokofoodBusinessData().customResponse.bottomSheet.isShowBottomSheet != true
                 val isEnabled = it.isEnabled()
                 _visitables.value =
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
@@ -181,8 +192,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     val cacheAddressId = _isAddressHasPinpoint.value.first
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
-                        val remoteAddressId = it.data.userAddress.addressId
-                        val secondAddress = keroGetAddressUseCase.get().execute(remoteAddressId)?.secondAddress
+                        val remoteAddressId = businessData.customResponse.userAddress.addressId.toString()
+                        val addressResult = keroGetAddressUseCase.get().execute(remoteAddressId)
+                        val secondAddress = addressResult?.secondAddress
                         secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
@@ -218,22 +230,27 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadDataPartial() {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                checkoutTokoFoodUseCase.get().execute(SOURCE)
+                cartListTokofoodUseCase.get().execute(SOURCE)
             }.let {
+                val businessData = it.data.getTokofoodBusinessData()
+
                 if (it.isEmptyProducts()) {
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS)
                     return@launchCatchError
                 }
                 val existingCheckoutData = getExistingCheckoutData()
-                val isPreviousPopupPromo = existingCheckoutData?.isPromoPopupType() == true
+                val existingBusinessData = existingCheckoutData?.getTokofoodBusinessData()
+                val isPreviousPopupPromo = existingBusinessData?.isPromoPopupType() == true
                 _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
                     data = it to isPreviousPopupPromo
                 )
-                _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
+                _fragmentUiModel.value =
+                    TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(businessData.customResponse.shop)
                 checkoutTokoFoodResponse.value = it
-                shopId.value = it.data.shop.shopId
-                isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
+                shopId.value = it.data.getTokofoodBusinessData().customResponse.shop.shopId
+                isConsentAgreed.value =
+                    it.data.getTokofoodBusinessData().customResponse.bottomSheet.isShowBottomSheet != true
                 val isEnabled = it.isEnabled()
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
@@ -246,27 +263,41 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _trackerLoadCheckoutData.emit(it.data)
             }
         }, onError = {
-            if (_isAddressHasPinpoint.value.second) {
-                _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
-                        lastResponse,
-                        lastResponse.isEnabled(),
-                        false
-                    ).toMutableList()
+                if (_isAddressHasPinpoint.value.second) {
+                    _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
+                        TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
+                            lastResponse,
+                            lastResponse.isEnabled(),
+                            false
+                        ).toMutableList()
+                    }
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
+                        throwable = it
+                    )
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                        isLastLoadStateSuccess = false,
+                        shopName = "",
+                        shopLocation = ""
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
                 }
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
-                    throwable = it
-                )
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                    isLastLoadStateSuccess = false,
-                    shopName = "",
-                    shopLocation = ""
-                )
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-            }
-        })
+            })
+    }
+
+    private fun updateCheckoutTokoFoodNotes(productId: String, notes: String) {
+        TokoFoodPurchaseUiModelMapper.getUpdatedNotesProduct(
+            checkoutTokoFoodResponse.value,
+            productId,
+            notes
+        )?.let { updatedResponse ->
+            checkoutTokoFoodResponse.value = updatedResponse
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                data = updatedResponse
+            )
+        }
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
@@ -280,10 +311,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(productId: String, previousCartId: String) {
+    fun deleteProduct(productId: String, cartId: String) {
         refreshPartialCartInformation()
         val dataList = getVisitablesValue()
-        val toBeDeletedProduct = dataList.getProductById(productId, previousCartId)
+        val toBeDeletedProduct = dataList.getProductById(productId, cartId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
             toBeDeleteItems.add(toBeDeletedProduct.second)
@@ -311,8 +342,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
         _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
-                data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
+            state = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
+            data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
         )
     }
 
@@ -362,18 +393,22 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun collapseUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
-                                            dataList: MutableList<Visitable<*>>,
-                                            mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
+    private fun collapseUnavailableProducts(
+        newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
+        dataList: MutableList<Visitable<*>>,
+        mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>
+    ) {
         newAccordionUiModel.isCollapsed = true
         dataList[mAccordionData.first] = newAccordionUiModel
         tmpCollapsedUnavailableItems.setCollapsedUnavailableProducts(dataList, mAccordionData)
         dataList.removeAll(tmpCollapsedUnavailableItems)
     }
 
-    private fun expandUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
-                                          dataList: MutableList<Visitable<*>>,
-                                          mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
+    private fun expandUnavailableProducts(
+        newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
+        dataList: MutableList<Visitable<*>>,
+        mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>
+    ) {
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION
@@ -393,25 +428,26 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
         if (targetIndex > RecyclerView.NO_POSITION) {
             _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
-                    data = targetIndex
+                state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
+                data = targetIndex
             )
         }
     }
 
-    fun updateNotes(product: CartTokoFood) {
+    fun updateNotes(product: CartListCartGroupCart) {
         val productData = getVisitablesValue().getProductById(product.productId, product.cartId)
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()
-            newProductData.notes = product.getMetadata()?.notes.orEmpty()
+            newProductData.notes = product.metadata.notes
             newProductData.cartId = product.cartId
             dataList[it.first] = newProductData
+            updateCheckoutTokoFoodNotes(product.productId, product.metadata.notes)
             _visitables.value = dataList
         }
     }
 
-    fun updateCartId(updateParam: UpdateParam, cartData: CartTokoFoodData) {
+    fun updateCartId(updateParam: UpdateParam, cartData: CartListBusinessData) {
         updateParam.productList.forEach { param ->
             getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
                 productData.second.let { product ->
@@ -440,8 +476,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         )
     }
 
-    fun updateAddressPinpoint(latitude: String,
-                              longitude: String) {
+    fun updateAddressPinpoint(
+        latitude: String,
+        longitude: String
+    ) {
         _isAddressHasPinpoint.value.first.takeIf { it.isNotEmpty() }.let { addressId ->
             if (addressId == null) {
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
@@ -453,14 +491,15 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                         if (isSuccess) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = Pair(latitude, longitude))
                         } else {
                             _isAddressHasPinpoint.value = addressId to false
                             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                         }
-                    }, onError = {
+                    },
+                    onError = {
                         _isAddressHasPinpoint.value = addressId to false
-                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT, data = it)
                     }
                 )
             }
@@ -479,9 +518,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
         } else {
             val checkoutData = getExistingCheckoutData()
-            val consentBottomSheet = checkoutData?.checkoutConsentBottomSheet
+            val businessData = checkoutData?.getTokofoodBusinessData()
+            val customResponse = businessData?.customResponse
+            val consentBottomSheet = customResponse?.bottomSheet
             consentBottomSheet?.let { userConsent ->
-                if (userConsent.isShowBottomsheet) {
+                if (userConsent.isShowBottomSheet) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
                         data = userConsent
@@ -521,12 +562,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
-                data = it.getGlobalErrorType(),
-                throwable = it
-            )
-        })
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
+                    data = it.getGlobalErrorType(),
+                    throwable = it
+                )
+            })
     }
 
     fun setPaymentButtonLoading(isLoading: Boolean) {
@@ -543,8 +584,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun updateProductVariant(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         launch(coroutineContext) {
             val checkoutData = getExistingCheckoutData()
-            val availableSection = checkoutData?.availableSection
-            val availableProducts = availableSection?.products
+            val businessData = checkoutData?.getTokofoodBusinessData()
+            val availableProducts = businessData?.getAvailableSectionProducts()
             availableProducts?.let { products ->
                 val customOrderDetails =
                     CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(products)
@@ -589,12 +630,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         const val TOTO_LATITUDE = "-6.2216771"
         const val TOTO_LONGITUDE = "106.8184023"
 
-        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
+        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 500L
 
         private const val INDEX_BEFORE_FROM_HEADER = 2
         private const val INDEX_BEFORE_FROM_TICKER = 3
         private const val INDEX_BEFORE_FROM_DIVIDER = 3
         private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
     }
-
 }

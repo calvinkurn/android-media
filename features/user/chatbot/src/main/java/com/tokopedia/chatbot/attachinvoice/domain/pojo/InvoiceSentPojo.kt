@@ -52,6 +52,9 @@ data class InvoiceLinkAttributePojo(
     var title: String = "",
 
     @SerializedName("total_amount")
-    var totalAmount: String = ""
+    var totalAmount: String = "",
+
+    @SerializedName("color")
+    var color: String = ""
 )
 

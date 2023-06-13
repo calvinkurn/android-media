@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,10 +15,10 @@ public class RangePriceData implements Parcelable {
 
     @SerializedName("min_price")
     @Expose
-    private int minPrice;
+    private double minPrice;
     @SerializedName("max_price")
     @Expose
-    private int maxPrice;
+    private double maxPrice;
 
     public RangePriceData() {
     }
@@ -29,8 +30,8 @@ public class RangePriceData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(minPrice);
-        dest.writeInt(maxPrice);
+        dest.writeDouble(minPrice);
+        dest.writeDouble(maxPrice);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class RangePriceData implements Parcelable {
         }
     };
 
-    public int getMinPrice() {
+    public double getMinPrice() {
         return minPrice;
     }
 
@@ -58,7 +59,7 @@ public class RangePriceData implements Parcelable {
         this.minPrice = minPrice;
     }
 
-    public int getMaxPrice() {
+    public double getMaxPrice() {
         return maxPrice;
     }
 

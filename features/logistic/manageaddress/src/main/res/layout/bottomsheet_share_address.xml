@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="20dp"
+    android:layout_marginHorizontal="16dp"
+    android:background="@color/Unify_Background">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_title_share_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_address_bottom_sheet_title_share"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/et_input_email_no_hp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_title_share_address"
+        app:unify_text_field_label="@string/share_address_bottom_sheet_email_or_phone_number"
+        app:unify_text_field_append_drawable_icon_2="@drawable/iconunify_notebook"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_content_share_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/share_address_bottom_sheet_description"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintTop_toBottomOf="@id/et_input_email_no_hp"
+        app:layout_constraintBottom_toTopOf="@id/btn_share"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_address_bottom_sheet_btn_send"
+        android:textAlignment="center"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

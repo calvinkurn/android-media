@@ -8,10 +8,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.BaseCopyableKeyValueUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: View?) : BaseToasterViewHolder<T>(itemView) {
+open class CopyableKeyValueViewHolder<T : BaseCopyableKeyValueUiModel>(itemView: View?) : BaseToasterViewHolder<T>(itemView) {
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_copyable_key_value
     }
@@ -29,8 +29,8 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
     override fun bind(element: T?) {
         element?.let {
             this.element = it
-            setupLabel(it.label.getString(itemView.context))
-            setupTriggerCopyArea(it.copyLabel.getString(itemView.context))
+            setupLabel(it.label.getStringValue(itemView.context))
+            setupTriggerCopyArea(it.copyLabel.getStringValue(itemView.context))
             setupTextToShow(it.copyableText)
         }
     }
@@ -70,10 +70,10 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         element?.let {
             Utils.copyText(
                 itemView.context,
-                it.copyLabel.getString(itemView.context),
+                it.copyLabel.getStringValue(itemView.context),
                 MethodChecker.fromHtmlWithoutExtraSpace(it.copyableText)
             )
-            showToaster(it.copyMessage.getString(itemView.context))
+            showToaster(it.copyMessage.getStringValue(itemView.context))
         }
     }
 }

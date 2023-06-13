@@ -6,17 +6,35 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.BarChartConfig
-import com.tokopedia.charts.model.*
+import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.BarChartConfigModel
+import com.tokopedia.charts.model.BarChartData
+import com.tokopedia.charts.model.BarChartMetric
+import com.tokopedia.charts.model.BarChartMetricValue
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcBarChartWidgetBinding
-import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.utils.*
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,7 +57,6 @@ class BarChartViewHolder(
         ShcBarChartWidgetBinding.bind(itemView)
     }
     private val emptyStateBinding by lazy { binding.shcBarChartEmptyState }
-    private val errorStateBinding by lazy { binding.shcBarChartErrorState }
     private val loadingStateBinding by lazy { binding.shcBarChartLoadingState }
 
     private var showAnimation: ValueAnimator? = null
@@ -47,7 +64,6 @@ class BarChartViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: BarChartWidgetUiModel) {
-
         observeState(element)
     }
 
@@ -70,7 +86,7 @@ class BarChartViewHolder(
             data == null || element.showLoadingState -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -79,7 +95,7 @@ class BarChartViewHolder(
     private fun setOnLoading() {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.visible()
-            errorStateBinding.commonWidgetErrorState.gone()
+            shcBarChartErrorState.gone()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
@@ -91,23 +107,21 @@ class BarChartViewHolder(
     private fun setonError(element: BarChartWidgetUiModel) {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.gone()
-            errorStateBinding.commonWidgetErrorState.visible()
+            shcBarChartErrorState.visible()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
             luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
-
-            ImageHandler.loadImageWithId(
-                errorStateBinding.imgWidgetOnError,
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            shcBarChartErrorState.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
         }
     }
 
     private fun setOnSuccess(element: BarChartWidgetUiModel) {
         loadingStateBinding.shimmerWidgetCommon.gone()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcBarChartErrorState.gone()
 
         showEmptyState = showEmpty(element)
 
@@ -123,9 +137,9 @@ class BarChartViewHolder(
                 setupLastUpdatedInfo(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, element)
+                    listener.removeWidget(absoluteAdapterPosition, element)
                 } else {
-                    listener.onRemoveWidget(adapterPosition)
+                    listener.onRemoveWidget(absoluteAdapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
             }
@@ -139,8 +153,8 @@ class BarChartViewHolder(
 
     private fun setBottomGuideLineVisibility() {
         with(binding) {
-            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible
-                    || btnShcBarChartMore.isVisible
+            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible ||
+                btnShcBarChartMore.isVisible
         }
     }
 
@@ -177,7 +191,7 @@ class BarChartViewHolder(
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
         val labelTextColor =
-            itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { ANIMATION_DURATION }
@@ -375,25 +389,25 @@ class BarChartViewHolder(
         if (!emptyStateBinding.shcBarChartEmptyState.isVisible) return
         hideAnimation = emptyStateBinding.shcBarChartEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 emptyStateBinding.shcBarChartEmptyState.gone()
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 hideAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
     /**
      * Set left margin of empty state dynamically to avoid blocking the Y Axis
      *
-     * @param   element bar chart widget ui model
+     * @param element bar chart widget ui model
      */
     private fun setMarginFromLongestYAxisValue(element: BarChartWidgetUiModel) {
         element.data?.chartData?.yAxis?.lastOrNull()?.valueFmt?.length?.let { valueLength ->

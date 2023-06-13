@@ -9,7 +9,6 @@ import timber.log.Timber
 class FollowShopSubscriber(private val view: ICartListView?, private val presenter: ICartListPresenter) : Subscriber<DataFollowShop>() {
 
     override fun onCompleted() {
-
     }
 
     override fun onError(e: Throwable) {

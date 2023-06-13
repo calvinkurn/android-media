@@ -1,23 +1,18 @@
 package com.tokopedia.autocompletecomponent.initialstate.recentview
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutRecentViewAutocompleteBinding
 import com.tokopedia.autocompletecomponent.databinding.LayoutRecentViewItemAutocompleteBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.util.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentViewViewHolder(
@@ -86,19 +81,12 @@ class RecentViewViewHolder(
             fun bind(item: BaseItemInitialStateSearch) {
                 val recentViewItem = binding?.autocompleteRecentViewItem ?: return
 
-                recentViewItem.loadImageCircle(itemView.context, item.imageUrl)
+                recentViewItem.loadImageRounded(item.imageUrl)
                 recentViewItem.setOnClickListener {
                     recentViewListener.onRecentViewClicked(item)
                 }
             }
 
-            private fun ImageView.loadImageCircle(context: Context, url: String){
-                Glide.with(context)
-                        .load(url)
-                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(R.dimen.dp_6)))
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(this)
-            }
         }
     }
 }

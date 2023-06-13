@@ -2,7 +2,11 @@ package com.tokopedia.profilecompletion.addbiousername
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.profilecompletion.changebiousername.data.*
+import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsername
+import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsernameResponse
+import com.tokopedia.profilecompletion.changebiousername.data.SubmitProfileParam
+import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
+import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidationResponse
 import com.tokopedia.profilecompletion.changebiousername.domain.usecase.SubmitBioUsernameUseCase
 import com.tokopedia.profilecompletion.changebiousername.domain.usecase.ValidateUsernameUseCase
 import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
@@ -10,14 +14,14 @@ import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedData
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileFeedResponse
 import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,9 +70,11 @@ class AddBioUsernameViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = ChangeBioUsernameViewModel(profileFeedUsecase,
+        viewModel = ChangeBioUsernameViewModel(
+            profileFeedUsecase,
             validateUsecase, submitProfileUsecase,
-            userSession,  CoroutineTestDispatchersProvider)
+            userSession, CoroutineTestDispatchersProvider
+        )
         viewModel.profileFeed.observeForever(profileFeedObserver)
         viewModel.resultSubmitBio.observeForever(submitBioObserver)
         viewModel.resultSubmitUsername.observeForever(submitUsernameObserver)
@@ -212,7 +218,12 @@ class AddBioUsernameViewModelTest {
         val dummyError = Throwable()
         coEvery { validateUsecase(any()) } returns dummyResponse
         coEvery {
-            submitProfileUsecase(SubmitProfileParam(username = dummyUsername, isUpdateUsername = true))
+            submitProfileUsecase(
+                SubmitProfileParam(
+                    username = dummyUsername,
+                    isUpdateUsername = true
+                )
+            )
         } throws dummyError
 
         //When
@@ -283,7 +294,7 @@ class AddBioUsernameViewModelTest {
     fun `submit username and throw error when validate`() {
         //Given
         val dummyError = Throwable("")
-        coEvery { validateUsecase(any()) } throws  dummyError
+        coEvery { validateUsecase(any()) } throws dummyError
 
         //When
         viewModel.submitUsername(dummyUsername)

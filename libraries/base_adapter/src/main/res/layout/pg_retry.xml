@@ -13,11 +13,11 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/pg_error_info"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/text_btn_retry"
-        android:layout_width="@dimen/dp_180"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"

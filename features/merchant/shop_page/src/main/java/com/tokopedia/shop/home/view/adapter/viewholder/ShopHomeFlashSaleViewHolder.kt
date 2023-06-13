@@ -4,22 +4,22 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
+import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -52,8 +52,10 @@ class ShopHomeFlashSaleViewHolder(
     private val reminderBellView: AppCompatImageView? = itemView.findViewById(R.id.iv_remind_me_bell)
     private val reminderCountView: Typography? = itemView.findViewById(R.id.tgp_remind_me)
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
+    private val rvContainer: ConstraintLayout? = itemView.findViewById(R.id.rv_container)
     private val productCarouselAdapter: ShopCampaignFlashSaleProductCarouselAdapter = ShopCampaignFlashSaleProductCarouselAdapter(listener)
     private val handler = Handler()
+    private val flashSaleContainer: ConstraintLayout? = itemView.findViewById(R.id.flash_sale_container)
 
     companion object {
         @LayoutRes
@@ -67,35 +69,147 @@ class ShopHomeFlashSaleViewHolder(
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
         private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
+        private const val BOTTOM_MARGIN = 8f
+        private const val CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM = 10f
+        private const val CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM = 12f
+        private const val RV_CONTAINER_FESTIVITY_MARGIN_TOP = 9f
+        private const val RV_CONTAINER_DEFAULT_MARGIN_TOP = 12f
     }
 
     init {
         setupClickListener(listener)
         setupProductCardCarouselView(productCarouselView)
-        setupWidgetImpressionListener(uiModel)
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
+        productCarouselAdapter.parentPosition = ShopUtil.getActualPositionFromIndex(adapterPosition)
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
-        val productSize = flashSaleItem?.productList?.size ?: 0
+        val productSize = flashSaleItem?.totalProduct.orZero()
+        setupWidgetImpressionListener(uiModel)
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
-        setupFlashSaleBackgroundView(
-            productList = flashSaleItem?.productList.orEmpty(),
-            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
-            endBackGroundColor = flashSaleItem?.secondBackgroundColor,
-        )
         setupFlashSaleCountDownTimer(element)
         if (!GlobalConfig.isSellerApp())
             setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
+        checkFestivity(element)
+    }
+
+    private fun checkFestivity(element: ShopHomeFlashSaleUiModel) {
+        if (element.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity(element)
+        }
+    }
+
+    private fun configNonFestivity(element: ShopHomeFlashSaleUiModel) {
+        val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
+        timerDescriptionView?.setTextColor(defaultSubTitleColor)
+        ctaSeeAllView?.setTextColor(defaultCtaColor)
+        tncInfoIconView?.setColorFilter(defaultInformationIconColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        val flashSaleItem = element.data?.firstOrNull()
+        setupFlashSaleBackgroundView(
+            productList = flashSaleItem?.productList.orEmpty(),
+            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
+            endBackGroundColor = flashSaleItem?.secondBackgroundColor
+        )
+        configMarginNonFestivity()
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        flashSaleCampaignNameView?.setTextColor(festivityTextColor)
+        timerDescriptionView?.setTextColor(festivityTextColor)
+        ctaSeeAllView?.setTextColor(festivityTextColor)
+        tncInfoIconView?.setColorFilter(festivityTextColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        singleBackGroundView?.hide()
+        doubleBackGroundView?.hide()
+        multipleBackGroundView?.hide()
+        configMarginFestivity()
+    }
+
+    private fun configMarginFestivity(){
+        val rvLayoutParams = productCarouselView?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            Int.ZERO,
+            rvLayoutParams.rightMargin,
+            rvLayoutParams.bottomMargin
+        )
+        productCarouselView?.layoutParams = rvLayoutParams
+        setContainerMarginFestivity()
+        setContainerRvMarginFestivity()
+    }
+
+    private fun setContainerMarginFestivity() {
+        val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        containerLayoutParams?.setMargins(
+            containerLayoutParams.leftMargin,
+            containerLayoutParams.topMargin,
+            containerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        flashSaleContainer?.layoutParams = containerLayoutParams
+    }
+
+    private fun setContainerRvMarginFestivity() {
+        val rvContainerLayoutParams = rvContainer?.layoutParams as? ConstraintLayout.LayoutParams
+        rvContainerLayoutParams?.setMargins(
+            rvContainerLayoutParams.leftMargin,
+            RV_CONTAINER_FESTIVITY_MARGIN_TOP.dpToPx().toInt(),
+            rvContainerLayoutParams.rightMargin,
+            rvContainerLayoutParams.bottomMargin
+        )
+        rvContainer?.layoutParams = rvContainerLayoutParams
+    }
+
+    private fun configMarginNonFestivity(){
+        val rvLayoutParams = productCarouselView?.layoutParams as? ConstraintLayout.LayoutParams
+        rvLayoutParams?.setMargins(
+            rvLayoutParams.leftMargin,
+            12f.dpToPx().toInt(),
+            rvLayoutParams.rightMargin,
+            rvLayoutParams.bottomMargin
+        )
+        productCarouselView?.layoutParams = rvLayoutParams
+        setContainerMarginDefault()
+        setRvContainerMarginDefault()
+    }
+
+    private fun setContainerMarginDefault() {
+        val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        containerLayoutParams?.setMargins(
+            containerLayoutParams.leftMargin,
+            containerLayoutParams.topMargin,
+            containerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_DEFAULT_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        flashSaleContainer?.layoutParams = containerLayoutParams
+    }
+
+    private fun setRvContainerMarginDefault() {
+        val containerLayoutParams = flashSaleContainer?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+        containerLayoutParams?.setMargins(
+            containerLayoutParams.leftMargin,
+            RV_CONTAINER_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
+            containerLayoutParams.rightMargin,
+            CONTENT_CONTAINER_FESTIVITY_MARGIN_BOTTOM.dpToPx().toInt()
+        )
+        flashSaleContainer?.layoutParams = containerLayoutParams
     }
 
     private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel?) {
         uiModel?.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(uiModel.impressHolder) {
-                listener.onFlashSaleWidgetImpressed(uiModel, adapterPosition)
+                listener.onFlashSaleWidgetImpressed(uiModel, ShopUtil.getActualPositionFromIndex(adapterPosition))
             }
         }
     }
@@ -137,15 +251,15 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize == SINGLE || isUpcoming) ctaSeeAllView?.hide()
+        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
         else ctaSeeAllView?.show()
     }
 
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {
         // set flash sale background color
         val colors = intArrayOf(
-            getBackGroundColor(startBackGroundColor, R.color.fs_toko_bg_start_dms_gradient_color),
-            getBackGroundColor(endBackGroundColor, R.color.fs_toko_bg_end_dms_gradient_color)
+            getBackGroundColor(startBackGroundColor, R.color.clr_dms_icon_white),
+            getBackGroundColor(endBackGroundColor, R.color.clr_dms_icon_white)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         singleBackGroundView?.background = gradientDrawable
@@ -156,11 +270,32 @@ class ShopHomeFlashSaleViewHolder(
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
         // show different background based on products size
-        when(productList.size) {
-            SINGLE -> { singleBackGroundView?.show() }
-            DOUBLE -> { doubleBackGroundView?.show() }
-            else -> { multipleBackGroundView?.show() }
+        when (productList.size) {
+            SINGLE -> {
+                setBottomMarginOnMainContainer()
+                singleBackGroundView?.show()
+            }
+            DOUBLE -> { setBackgroundViewHeightAndVisible(doubleBackGroundView) }
+            else -> { setBackgroundViewHeightAndVisible(multipleBackGroundView) }
         }
+    }
+
+    private fun setBackgroundViewHeightAndVisible(view: View?){
+        productCarouselAdapter.setHeightMeasureListener( object : HeightMeasureListener {
+            override fun setHeightListener(height: Int) {
+                view?.show()
+                val layoutRv = productCarouselView?.layoutParams as? ViewGroup.MarginLayoutParams
+                val layout = view?.layoutParams
+                layout?.height = height + layoutRv?.topMargin.orZero()
+                view?.layoutParams = layout
+            }
+        })
+    }
+
+    private fun setBottomMarginOnMainContainer() {
+        val paramsMargin = flashSaleContainer?.layoutParams as? ViewGroup.MarginLayoutParams
+        paramsMargin?.bottomMargin = BOTTOM_MARGIN.dpToPx().toInt()
+        flashSaleContainer?.requestLayout()
     }
 
     private fun setupFlashSaleCountDownTimer(model: ShopHomeFlashSaleUiModel) {
@@ -250,10 +385,7 @@ class ShopHomeFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
-            flashSaleReminderView?.apply {
-                radius = NOTIFY_ME_WRAPPER_BORDER_RADIUS.dpToPx()
-                show()
-            }
+            flashSaleReminderView?.show()
         }
     }
 
@@ -266,11 +398,13 @@ class ShopHomeFlashSaleViewHolder(
         // add product place holder if product list size > 5 and metada is not empty
         val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording)
         if (isUsingPlaceHolder) {
-            productList.add(ShopHomeProductUiModel().apply {
-                this.isProductPlaceHolder = isUsingPlaceHolder
-                this.totalProduct = totalProduct
-                this.totalProductWording = totalProductWording
-            })
+            productList.add(
+                ShopHomeProductUiModel().apply {
+                    this.isProductPlaceHolder = isUsingPlaceHolder
+                    this.totalProduct = totalProduct
+                    this.totalProductWording = totalProductWording
+                }
+            )
         }
         // set flash sale ui model for click handling purpose
         productCarouselAdapter.setFsUiModel(model)

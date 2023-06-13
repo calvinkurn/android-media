@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostTypeViewHolder
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_cdp_revamp_view_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/unify_space_16">
+
+</com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostTypeViewHolder>

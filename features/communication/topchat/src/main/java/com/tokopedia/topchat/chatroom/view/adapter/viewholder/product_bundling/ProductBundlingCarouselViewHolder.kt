@@ -2,14 +2,14 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling
 
 import android.os.Parcelable
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductBundlingViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatMultipleProductBundlingAttachmentBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -40,17 +40,14 @@ class ProductBundlingCarouselViewHolder constructor(
     }
 
     private fun initRecyclerView() {
-        binding?.rvProductBundleCard?.apply {
-            setRecycledViewPool(adapterListener.getCarouselViewPool())
-            adapter = multipleProductBundlingAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        saveProductCarouselState(adapterPosition, productBundlingCarouselListener)
-                    }
-                }
-            })
-        }
+        ProductBundlingViewHolderBinder.initRecyclerView(
+            binding?.rvProductBundleCard,
+            adapterListener,
+            multipleProductBundlingAdapter,
+            productBundlingCarouselListener,
+            this,
+            ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
+        )
     }
 
     override fun bind(carouselBundling: MultipleProductBundlingUiModel, payloads: MutableList<Any>) {
@@ -63,11 +60,18 @@ class ProductBundlingCarouselViewHolder constructor(
         }
     }
 
-    override fun bind(carouselBundling: MultipleProductBundlingUiModel) {
-        super.bind(carouselBundling)
-        syncCarouselProductBundling(carouselBundling)
-        multipleProductBundlingAdapter.carousel = carouselBundling
-        binding?.rvProductBundleCard?.restoreSavedCarouselState(adapterPosition, productBundlingCarouselListener)
+    override fun bind(uiModel: MultipleProductBundlingUiModel) {
+        super.bind(uiModel)
+        syncCarouselProductBundling(uiModel)
+        ProductBundlingViewHolderBinder.bindProductBundling(
+            multipleProductBundlingAdapter, uiModel,
+            ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
+        )
+        ProductBundlingViewHolderBinder.bindScrollState(
+            binding?.rvProductBundleCard,
+            productBundlingCarouselListener,
+            this
+        )
     }
 
     /**
@@ -75,14 +79,7 @@ class ProductBundlingCarouselViewHolder constructor(
      * When this view has not been rendered but the adapter has been updated
      */
     private fun syncCarouselProductBundling(element: MultipleProductBundlingUiModel) {
-        if (!element.isLoading) return
-        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
-        val attachment = chatAttachments[element.attachmentId] ?: return
-        if (attachment is ErrorAttachment) {
-            element.syncError()
-        } else {
-            element.updateData(attachment.parsedAttributes)
-        }
+        ProductBundlingViewHolderBinder.bindDeferredAttachment(element, deferredAttachment)
     }
 
     companion object {

@@ -1,8 +1,9 @@
 package com.tokopedia.chatbot.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
-import com.tokopedia.chatbot.domain.gqlqueries.GQL_INBOX_LIST
 import com.tokopedia.chatbot.domain.gqlqueries.InboxTicketListQuery
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_INBOX_LIST
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,10 +14,11 @@ import javax.inject.Inject
 class TicketListContactUsUsecase @Inject constructor(
     private val userSession: UserSessionInterface,
     graphqlRepository: GraphqlRepository
-)  : GraphqlUseCase<InboxTicketListResponse>(graphqlRepository) {
+) : GraphqlUseCase<InboxTicketListResponse>(graphqlRepository) {
 
-    fun getTicketList(onSuccess : (InboxTicketListResponse) -> Unit,
-                      onError : (Throwable) -> Unit
+    fun getTicketList(
+        onSuccess: (InboxTicketListResponse) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(InboxTicketListResponse::class.java)
@@ -26,16 +28,16 @@ class TicketListContactUsUsecase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
+                },
+                { error ->
                     onError(error)
                 }
             )
-
-        } catch (throwable : Throwable) {
+        } catch (throwable: Throwable) {
             onError(throwable)
+            FirebaseCrashlytics.getInstance().recordException(throwable)
         }
     }
-
 
     private fun getParams(): Map<String, Any?> {
         return mapOf(
@@ -52,5 +54,4 @@ class TicketListContactUsUsecase @Inject constructor(
         private const val pageNumber = 1
         private const val status = 0
     }
-
 }

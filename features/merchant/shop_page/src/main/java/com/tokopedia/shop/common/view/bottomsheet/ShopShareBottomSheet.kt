@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -102,7 +101,7 @@ class ShopShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun getAppIntent(type: MimeType, packageName: String?): Intent {
-        val intentType = if(type == MimeType.IMAGE) {
+        val intentType = if (type == MimeType.IMAGE) {
             MimeType.IMAGE.type
         } else {
             MimeType.TEXT.type
@@ -116,53 +115,52 @@ class ShopShareBottomSheet : BottomSheetUnify() {
 
     private fun generateSocialMediaList(context: Context?): List<ShopShareModel> {
         return mutableListOf(
-                ShopShareModel.CopyLink().apply {
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_copy_link)
-                    socialMediaIcon = context?.getResDrawable(R.drawable.ic_copy_link)
-                },
-                ShopShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_instagram)
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Facebook().apply {
-                    packageName = PACKAGE_NAME_FACEBOOK
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_facebook)
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Whatsapp().apply {
-                    packageName = PACKAGE_NAME_WHATSAPP
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_whatsapp)
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Line().apply {
-                    packageName = PACKAGE_NAME_LINE
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_line)
-                    appIntent = getAppIntent(MimeType.TEXT, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Twitter().apply {
-                    packageName = PACKAGE_NAME_TWITTER
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_twitter)
-                    appIntent = getAppIntent(MimeType.TEXT, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Telegram().apply {
-                    packageName = PACKAGE_NAME_TELEGRAM
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_telegram)
-                    appIntent = getAppIntent(MimeType.TEXT, packageName)
-                    socialMediaIcon = getActivityIcon(context, appIntent)
-                },
-                ShopShareModel.Others().apply {
-                    socialMediaName = context?.resources?.getString(R.string.shop_page_share_action_more)
-                    socialMediaIcon = context?.getResDrawable(R.drawable.ic_share_action_more)
-                }
+            ShopShareModel.CopyLink().apply {
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_copy_link)
+                socialMediaIcon = context?.getResDrawable(R.drawable.ic_copy_link)
+            },
+            ShopShareModel.Instagram().apply {
+                packageName = PACKAGE_NAME_INSTAGRAM
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_instagram)
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Facebook().apply {
+                packageName = PACKAGE_NAME_FACEBOOK
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_facebook)
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Whatsapp().apply {
+                packageName = PACKAGE_NAME_WHATSAPP
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_whatsapp)
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Line().apply {
+                packageName = PACKAGE_NAME_LINE
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_line)
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Twitter().apply {
+                packageName = PACKAGE_NAME_TWITTER
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_twitter)
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Telegram().apply {
+                packageName = PACKAGE_NAME_TELEGRAM
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_telegram)
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                socialMediaIcon = getActivityIcon(context, appIntent)
+            },
+            ShopShareModel.Others().apply {
+                socialMediaName = context?.resources?.getString(R.string.shop_page_share_action_more)
+                socialMediaIcon = context?.getResDrawable(R.drawable.ic_share_action_more)
+            }
         ).filterNot {
             (it.packageName!!.isNotEmpty() && it.appIntent != null && getResolvedActivity(context, it.appIntent) == null)
         }
     }
-
 }

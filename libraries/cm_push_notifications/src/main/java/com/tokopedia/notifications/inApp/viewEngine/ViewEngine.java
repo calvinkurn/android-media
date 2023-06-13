@@ -44,8 +44,7 @@ import java.util.Map;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-
-import timber.log.Timber;
+import androidx.core.content.ContextCompat;
 
 /**
  * @author lalit.singh
@@ -61,6 +60,8 @@ public class ViewEngine {
     private final int resCmTitle = R.id.tv_cmTitle;
     private final int resCmMessage = R.id.tv_cmMessage;
     private final int buttonContainer = R.id.ll_buttonContainer;
+    private final String FORMAT_STRING_COLOR = "#%08x";
+    private final int FORMAT_HEX_COLOR = 0xffffff;
 
     public ViewEngine(Activity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -259,8 +260,16 @@ public class ViewEngine {
 
     private void setMainContainerBackGround(View view, CMInApp cmInApp) {
         if (!cmInApp.getType().equalsIgnoreCase(CmInAppConstant.TYPE_FULL_SCREEN))
-            view.setBackgroundColor(Color
-                    .parseColor("#88000000"));
+            try {
+                view.setBackgroundColor(Color
+                        .parseColor(getStringColor()));
+            } catch(Exception ignored) { }
+
+    }
+
+    private String getStringColor() {
+        return String.format(FORMAT_STRING_COLOR,
+                ContextCompat.getColor(inAppView.getContext(), R.color.dms_cm_inapp_main_bg));
     }
 
     private void setCmInAppImage(View view, CMLayout cmLayout, ConstraintLayout constraintLayout) {

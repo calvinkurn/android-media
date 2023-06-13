@@ -82,14 +82,13 @@ data class MetaData(
         val totalOtherCharges: Int = 0,
         @SerializedName("total_tax_amount")
         @Expose
-        val totalTaxAmount: Int = 0,
+        val totalTaxAmount: Long = 0L,
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
-        val totalTicketPrice: Int = 0,
+        val totalTicketPrice: Double = 0.0,
         @SerializedName("vertical_id")
         @Expose
         val verticalId: String = "0"

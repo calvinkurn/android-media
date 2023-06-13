@@ -5,41 +5,28 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetShopInfoQuery
+import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetShopInfoUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<ShopData>
+        private val graphqlUseCase: GraphqlUseCase<ShopData>,
+        userSession: UserSessionInterface
 ) : UseCase<Result<ShopData>>() {
 
-    init {
-        val query =
-                """query getShopInfo{
-                 userShopInfo{
-                    info{
-                        shop_name
-                        shop_id
-                    }
-                 }
-                 notifications {
-                    sellerOrderStatus {
-                        newOrder
-                        readyToShip
-                        inResolution
-                    }
-                 }
-            }
-            """.trimIndent()
-
-        graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setTypeClass(ShopData::class.java)
-    }
-
     var params: RequestParams = RequestParams.EMPTY
+
+    init {
+        graphqlUseCase.setGraphqlQuery(GetShopInfoQuery())
+        graphqlUseCase.setTypeClass(ShopData::class.java)
+        params.parameters[PARAM_INPUT] = Param(userSession.shopId)
+    }
 
     override suspend fun executeOnBackground(): Result<ShopData> {
         return try{
@@ -54,7 +41,7 @@ class GetShopInfoUseCase @Inject constructor(
     fun setStrategyCache() {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setExpiryTime(EXPIRY_TIMES_MULTIPLIER * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                         .setSessionIncluded(true)
                         .build())
     }
@@ -62,8 +49,13 @@ class GetShopInfoUseCase @Inject constructor(
     fun setStrategyCloudThenCache() {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setExpiryTime(EXPIRY_TIMES_MULTIPLIER * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                         .setSessionIncluded(true)
                         .build())
+    }
+
+    companion object {
+        private const val PARAM_INPUT = "input"
+        private const val EXPIRY_TIMES_MULTIPLIER = 5
     }
 }

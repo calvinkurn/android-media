@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCarouselWidgetBinding
@@ -38,7 +38,6 @@ class CarouselViewHolder(
         ShcPartialCarouselWidgetEmptyBinding.bind(binding.root)
     }
     private val shimmeringBinding by lazy { binding.shcCarouselLoadingState }
-    private val errorStateBinding by lazy { binding.shcCarouselErrorState }
 
     private var hasSetSnapHelper = false
 
@@ -55,7 +54,7 @@ class CarouselViewHolder(
         when {
             null == data -> setOnLoadingState()
             data.error.isNotBlank() -> {
-                setOnErrorState()
+                setOnErrorState(element)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccessState(element)
@@ -68,23 +67,22 @@ class CarouselViewHolder(
         indicatorCarouselBanner.gone()
         notifTagCarousel.gone()
         shimmeringBinding.bannerImagesShimmering.visible()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcCarouselErrorState.gone()
         emptyStateBinding.groupShcCarouselEmpty.gone()
     }
 
-    private fun setOnErrorState() = with(binding) {
+    private fun setOnErrorState(element: CarouselWidgetUiModel) = with(binding) {
         tvCarouselBannerTitle.visible()
-        errorStateBinding.commonWidgetErrorState.visible()
+        binding.shcCarouselErrorState.visible()
         rvCarouselBanner.gone()
         notifTagCarousel.gone()
         shimmeringBinding.bannerImagesShimmering.gone()
         indicatorCarouselBanner.gone()
         btnCarouselSeeAll.gone()
         emptyStateBinding.groupShcCarouselEmpty.gone()
-        ImageHandler.loadImageWithId(
-            errorStateBinding.imgWidgetOnError,
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        binding.shcCarouselErrorState.setOnReloadClicked {
+            listener.onReloadWidget(element)
+        }
     }
 
     private fun setOnSuccessState(element: CarouselWidgetUiModel) {
@@ -174,7 +172,7 @@ class CarouselViewHolder(
     private fun setupCarousel(element: CarouselWidgetUiModel) {
         with(binding) {
             rvCarouselBanner.visible()
-            errorStateBinding.commonWidgetErrorState.gone()
+            binding.shcCarouselErrorState.gone()
             shimmeringBinding.bannerImagesShimmering.gone()
             emptyStateBinding.groupShcCarouselEmpty.gone()
 
@@ -185,7 +183,7 @@ class CarouselViewHolder(
 
     private fun setupEmptyState(element: CarouselWidgetUiModel) {
         with(binding) {
-            errorStateBinding.commonWidgetErrorState.gone()
+            binding.shcCarouselErrorState.gone()
             rvCarouselBanner.gone()
             shimmeringBinding.bannerImagesShimmering.gone()
             indicatorCarouselBanner.gone()
@@ -210,10 +208,9 @@ class CarouselViewHolder(
                     }
                 }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                emptyStateBinding.imgShcCarouselEmpty,
-                element.emptyState.imageUrl.takeIf { it.isNotBlank() }
-                    ?: SellerHomeUrl.IMG_EMPTY_STATE)
+            val imageUrl = element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+                ?: SellerHomeUrl.IMG_EMPTY_STATE
+            emptyStateBinding.imgShcCarouselEmpty.loadImage(imageUrl)
         }
     }
 

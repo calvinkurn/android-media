@@ -6,6 +6,7 @@ import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,6 +22,9 @@ class AdDetailsViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase =
         mockk(relaxed = true)
@@ -61,7 +65,7 @@ class AdDetailsViewModelTest {
 
     @Test
     fun `validateGroup exception test`() {
-        every { topAdsGroupValidateNameUseCase.setParams(any()) } throws Throwable()
+        every { topAdsGroupValidateNameUseCase.setParams(any(), any()) } throws Throwable()
 
         var successCalled = false
 

@@ -8,12 +8,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
+import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.*
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -52,12 +50,6 @@ class MockRegisterInitialuseCaseModule {
     fun provideTickerInfoUseCaseStub(resources: Resources,
                                      graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): TickerInfoUseCaseStub {
         return TickerInfoUseCaseStub(resources, graphqlUseCase)
-    }
-
-    @Provides
-    fun provideCheckHasOvoUseCase(graphqlRepository: GraphqlRepository): CheckHasOvoAccUseCase {
-        val useCase = GraphqlUseCase<CheckOvoResponse>(graphqlRepository)
-        return CheckHasOvoAccUseCase(useCase)
     }
 
     @ActivityScope

@@ -83,17 +83,7 @@ data class EtaModel(
 data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
-    var statusSubtitle: String = "",
-    var tippingLastDriver: TippingLastDriverModel = TippingLastDriverModel()
-) : Parcelable
-
-@Parcelize
-data class TippingLastDriverModel(
-    var photo: String = "",
-    var name: String = "",
-    var phone: String = "",
-    var licenseNumber: String = "",
-    var isChanged: Boolean = false
+    var statusSubtitle: String = ""
 ) : Parcelable
 
 @Parcelize

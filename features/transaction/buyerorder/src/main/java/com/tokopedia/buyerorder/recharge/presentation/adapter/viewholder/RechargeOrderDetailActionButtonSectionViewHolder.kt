@@ -61,6 +61,10 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
         } else if (actionButton.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
             button.buttonVariant = UnifyButton.Variant.GHOST
+        } else if (actionButton.buttonType.equals(DISABLED_BUTTON_TYPE, true)) {
+            button.buttonType = UnifyButton.Type.MAIN
+            button.buttonVariant = UnifyButton.Variant.FILLED
+            button.isEnabled = false
         }
 
         button.setOnClickListener {
@@ -102,6 +106,7 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
         private const val PRIMARY_BUTTON_TYPE = "primary"
         private const val SECONDARY_BUTTON_TYPE = "secondary"
+        private const val DISABLED_BUTTON_TYPE = "disabled"
 
         private const val TOKOPEDIA_PREFIX = "tokopedia"
         private const val IDEM_POTENCY_KEY = "idem_potency_key"

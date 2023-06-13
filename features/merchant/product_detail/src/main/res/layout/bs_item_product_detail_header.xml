@@ -5,15 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_header_img"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@null"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -21,40 +23,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:maxLines="2"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_header_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_header_img"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_header_img"
         app:typographyType="heading_5"
         tools:text="UNIQLO Jacket Women Jaket Parka UV CUT Saku Wanita Blue" />
-
-    <LinearLayout
-        android:id="@+id/pdp_header_list_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_header_img" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_header_product_see_more"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:text="@string/merchant_product_detail_label_selengkapnya"
-        android:textColor="@color/Unify_G500"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_header_list_container"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

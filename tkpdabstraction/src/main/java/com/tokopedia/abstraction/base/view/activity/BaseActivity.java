@@ -16,19 +16,15 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -38,7 +34,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +45,7 @@ import timber.log.Timber;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements
-        ErrorNetworkReceiver.ReceiveListener {
+        ErrorNetworkReceiver.ReceiveListener, TouchListenerActivity {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String FORCE_LOGOUT_V2 = "com.tokopedia.tkpd.FORCE_LOGOUT_v2";
@@ -95,7 +90,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 Log.d("force_logout_v2", intent.getStringExtra("title"));
             }
         };
-        checkAppUpdateAndInApp();
     }
 
     @Override
@@ -342,57 +336,5 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         super.onBackPressed();
-    }
-
-    public void checkAppUpdateAndInApp() {
-        WeakReference<BaseActivity> activityReference = new WeakReference<>(this);
-        AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
-            if (!isOnProgress) {
-                checkAppUpdateRemoteConfig(activityReference);
-            }
-            return null;
-        });
-    }
-
-    private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
-        BaseActivity context = activityReference.get();
-        if (context != null) {
-            ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
-            appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-                @Override
-                public void onNeedUpdate(DetailUpdate detail) {
-                    BaseActivity activity = activityReference.get();
-                    if (!isFinishing() && activity != null) {
-                        AppUpdateDialogBuilder appUpdateDialogBuilder =
-                                new AppUpdateDialogBuilder(
-                                        activity,
-                                        detail,
-                                        new AppUpdateDialogBuilder.Listener() {
-                                            @Override
-                                            public void onPositiveButtonClicked(DetailUpdate detail) {
-                                                /* no op */
-                                            }
-
-                                            @Override
-                                            public void onNegativeButtonClicked(DetailUpdate detail) {
-                                                /* no op */
-                                            }
-                                        }
-                                );
-                        appUpdateDialogBuilder.getAlertDialog().show();
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Timber.d(e);
-                }
-
-                @Override
-                public void onNotNeedUpdate() {
-                    /* no op */
-                }
-            });
-        }
     }
 }

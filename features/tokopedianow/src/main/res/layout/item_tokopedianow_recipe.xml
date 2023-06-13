@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="165dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:unify_image_corner_radius="8"
+        tools:layout_height="165dp"
+        tools:src="@color/Unify_GN500" />
+
+    <View
+        android:id="@+id/gradient_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.46"
+        android:background="@drawable/tokopedianow_gradient_bottom_rounded"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_bookmark_background"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="12dp"
+        android:alpha="0.46"
+        android:src="@color/tokopedianow_recipe_image_bookmark_background_dms_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_bookmark"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/iconunify_bookmark"
+        app:layout_constraintBottom_toBottomOf="@id/image_bookmark_background"
+        app:layout_constraintEnd_toEndOf="@id/image_bookmark_background"
+        app:layout_constraintStart_toStartOf="@id/image_bookmark_background"
+        app:layout_constraintTop_toTopOf="@id/image_bookmark_background" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/text_title"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="7dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/tokopedianow_recipe_white_dms_color"
+        app:layout_constraintBottom_toTopOf="@id/textPersonCount"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Mie Gacoan Bakso Sapi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textPersonCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="14dp"
+        android:lineSpacingExtra="1sp"
+        android:textColor="@color/tokopedianow_recipe_white_dms_color"
+        android:translationY="-0.58sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/textDuration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_3"
+        tools:text="1 orang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:lineSpacingExtra="1sp"
+        android:textColor="@color/tokopedianow_recipe_white_dms_color"
+        android:translationY="-0.58sp"
+        app:layout_constraintStart_toEndOf="@id/textPersonCount"
+        app:layout_constraintTop_toTopOf="@id/textPersonCount"
+        app:typographyType="display_3"
+        tools:text="30 menit" />
+</androidx.constraintlayout.widget.ConstraintLayout>

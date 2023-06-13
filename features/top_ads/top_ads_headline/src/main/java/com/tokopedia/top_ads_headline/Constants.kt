@@ -29,4 +29,6 @@ object Constants {
     const val POSITIVE_SPECIFIC = "positive_exact"
     const val NEGATIVE_PHRASE = "negative_phrase"
     const val NEGATIVE_SPECIFIC = "negative_exact"
+    const val SOURCE_ANDROID_AD_DETAILS = "android.topads_ad_details"
+    const val SOURCE_ANDROID_AD_EDIT = "android.topads_ad_edit"
 }

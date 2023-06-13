@@ -1,11 +1,12 @@
 package com.tokopedia.product_bundle.single.presentation.model
 
 import android.content.Context
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
+import com.tokopedia.product_bundle.common.data.mapper.BundleDataMapper.getValidBundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
-import com.tokopedia.product_bundle.common.data.model.response.Child
 import com.tokopedia.product_bundle.common.data.model.response.Preorder
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -13,12 +14,7 @@ import com.tokopedia.product_service_widget.R
 
 object BundleInfoToSingleProductBundleMapper {
 
-    private const val BUNDLE_INFO_ACTIVE: String = "1"
-    private const val BUNDLE_ITEM_SHOW: String = "1"
-    private const val BUNDLE_ITEM_ACTIVE: String = "ACTIVE"
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
-    private const val PREORDER_TYPE_DAY: Int = 1
-    private const val PREORDER_TYPE_MONTH: Int = 2
 
     fun mapToSingleProductBundle (
         context: Context, bundleInfo: List<BundleInfo>,
@@ -26,15 +22,7 @@ object BundleInfoToSingleProductBundleMapper {
         selectedProductId: Long,
         emptyVariantProductIds: List<String>
     ): SingleProductBundleUiModel {
-        val filteredBundleInfo = bundleInfo.filter {
-            val bundleItem = it.bundleItems.firstOrNull()
-            return@filter bundleItem != null &&
-                    it.status == BUNDLE_INFO_ACTIVE &&
-                    bundleItem.status == BUNDLE_ITEM_SHOW &&
-                    bundleItem.productStatus == BUNDLE_ITEM_ACTIVE &&
-                    it.isStockAvailable() &&
-                    it.isMinOrderValid()
-        }
+        val filteredBundleInfo = bundleInfo.getValidBundleInfo()
         return SingleProductBundleUiModel(
             items = mapToBundleItem(context, filteredBundleInfo),
             selectedItems = mapToSelectedItem(filteredBundleInfo, selectedBundleId,
@@ -52,6 +40,7 @@ object BundleInfoToSingleProductBundleMapper {
     private fun getTimeUnitWording(context: Context, processTypeNum: Int): String {
         return when (processTypeNum) {
             PREORDER_TYPE_DAY -> context.getString(R.string.preorder_time_unit_day)
+            PREORDER_TYPE_WEEK -> context.getString(R.string.preorder_time_unit_week)
             PREORDER_TYPE_MONTH -> context.getString(R.string.preorder_time_unit_month)
             else -> ""
         }
@@ -61,15 +50,14 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         if (productVariant.hasVariant) {
-            val child = productVariant.children.minByOrNull { child ->
-                child.finalPrice
-            }
+            val originalPrice = bundleItem.getPreviewOriginalPrice()
+            val discountedPrice = bundleItem.getPreviewBundlePrice()
             SingleProductBundleItem(
-                quantity = child?.stock?.minimumOrder.toIntOrZero(),
+                quantity = bundleItem.getPreviewMinOrder(),
                 productName = bundleItem.name,
-                originalPrice = child?.finalMainPrice.orZero(),
-                discountedPrice = child?.finalPrice.orZero(),
-                discount = child?.campaign?.discountedPercentage?.toInt().orZero(),
+                originalPrice = originalPrice,
+                discountedPrice = discountedPrice,
+                discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
                 imageUrl = bundleItem.picURL,
                 preorderDurationWording = getPreorderWording(context, it.preorder),
                 productVariant = productVariant
@@ -133,21 +121,5 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         return selectedBundleId == bundleInfo.bundleID.toString()
                 && bundleItem.children.any { it.productID == selectedProductId }
-    }
-
-    private fun BundleInfo.isStockAvailable() = bundleItems.any {
-        it.stock > 0 || it.children.isStockAvailable()
-    }
-
-    private fun List<Child>.isStockAvailable() = any {
-        it.stock > 0
-    }
-
-    private fun BundleInfo.isMinOrderValid() = bundleItems.any {
-        it.minOrder > 0 || it.children.isMinOrderValid()
-    }
-
-    private fun List<Child>.isMinOrderValid() = any {
-        it.minOrder > 0
     }
 }

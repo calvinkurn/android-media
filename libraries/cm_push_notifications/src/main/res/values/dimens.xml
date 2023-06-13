@@ -27,4 +27,5 @@
     <dimen name="cm_dp_40">40dp</dimen>
     <dimen name="cm_dp_72">72dp</dimen>
 
+    <dimen name="cm_custom_notification_height">220dp</dimen>
 </resources>

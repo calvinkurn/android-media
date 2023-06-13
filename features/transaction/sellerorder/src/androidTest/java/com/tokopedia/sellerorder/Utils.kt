@@ -13,7 +13,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSession
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 
 object Utils {
 
@@ -64,6 +64,6 @@ object Utils {
     }
 
     private fun getPasswordView(): ViewInteraction {
-        return Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.wrapper_password))))
+        return Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.wrapper_password))))
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.list.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
@@ -10,16 +11,17 @@ import javax.inject.Inject
  * See GQL documentation for more information about ProductListMeta.
  * Docs: https://tokopedia.atlassian.net/wiki/spaces/MC/pages/669877876/GQL+ProductListMeta
  */
+@GqlQuery("ProductListMetaGqlQuery", GetProductListMetaUseCase.query)
 class GetProductListMetaUseCase @Inject constructor(
-        repository: GraphqlRepository) : GraphqlUseCase<ProductListMetaResponse>(repository) {
+    repository: GraphqlRepository
+) : GraphqlUseCase<ProductListMetaResponse>(repository) {
 
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_EXTRA_INFO = "extraInfo"
         private const val EXTRA_INFO_RBAC = "rbac"
 
-        private val query by lazy {
-            """
+        const val query = """
             query ProductListMeta(${"$"}shopID:String!, ${"$"}extraInfo:[String]){
                 ProductListMeta(shopID:${"$"}shopID, extraInfo:${"$"}extraInfo){
                     header{
@@ -48,12 +50,11 @@ class GetProductListMetaUseCase @Inject constructor(
                   }
                   status
                 }
-        """.trimIndent() //Don't remove `status` field since it's necessary for refresh token flow
-        }
+        """ //Don't remove `status` field since it's necessary for refresh token flow
     }
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(ProductListMetaGqlQuery())
         setTypeClass(ProductListMetaResponse::class.java)
     }
 

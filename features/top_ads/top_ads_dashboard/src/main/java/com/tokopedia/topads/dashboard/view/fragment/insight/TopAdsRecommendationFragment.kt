@@ -74,7 +74,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
     private var productRecommendData: ProductRecommendationData? = null
     private var keywordRecommendData: InsightKeyData? = null
-    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
+    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendationV2? = null
     private var recommendedKeywordData: RecommendedKeywordData? = null
     private var countKey = 0
     private var countProduct = 0

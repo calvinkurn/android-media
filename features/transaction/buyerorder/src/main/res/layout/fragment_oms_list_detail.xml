@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Background">
@@ -146,7 +145,7 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/dp_3"
+                android:elevation="3dp"
                 android:layout_marginTop="@dimen/spacing_lvl4">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -191,7 +190,7 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/dp_3"
+                android:elevation="3dp"
                 android:layout_marginTop="@dimen/spacing_lvl4">
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -291,6 +290,7 @@
                     tools:text="Kirim ulang e-mail and TopChat" />
 
                 <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon_action_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -298,6 +298,16 @@
                     android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:tint="@color/Unify_N700_68"
                     app:icon_name="CHEVRON_RIGHT" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loader_action_button"
+                    android:layout_width="@dimen/layout_lvl4"
+                    android:layout_height="@dimen/layout_lvl4"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

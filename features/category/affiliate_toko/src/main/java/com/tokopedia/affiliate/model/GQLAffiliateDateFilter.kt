@@ -11,6 +11,8 @@ val GQL_Affiliate_Date_FILTER: String = """query getAffiliateDateFilter{
       FilterTitle
       FilterValue
       FilterDescription
+      UpdateDescription
     }
   }
-}""".trimIndent()
+}
+""".trimIndent()

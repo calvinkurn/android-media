@@ -17,7 +17,7 @@ class TopAdsBerandaSummaryRvAdapter :
 
     private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_B100_44
     private val unSelectedBackgroundColor =
-        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        com.tokopedia.unifyprinciples.R.color.Unify_Background
     private val list = mutableListOf<SummaryBeranda>()
     var infoClicked: (() -> Unit)? = null
     var itemClicked: ((Set<SummaryBeranda>) -> Unit)? = null

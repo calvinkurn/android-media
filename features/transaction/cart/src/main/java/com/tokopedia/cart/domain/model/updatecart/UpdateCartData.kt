@@ -7,8 +7,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UpdateCartData(
-        var isSuccess: Boolean = false,
-        var message: String = "",
-        var outOfServiceData: OutOfService = OutOfService(),
-        var toasterActionData: ToasterAction = ToasterAction()
+    var isSuccess: Boolean = false,
+    var message: String = "",
+    var outOfServiceData: OutOfService = OutOfService(),
+    var toasterActionData: ToasterAction = ToasterAction()
 ) : Parcelable

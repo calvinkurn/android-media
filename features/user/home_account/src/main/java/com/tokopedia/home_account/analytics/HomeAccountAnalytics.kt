@@ -94,6 +94,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MY_COUPON
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_NOTIFICATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_RETRY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_REVIEW_THIS_APP
@@ -121,13 +122,14 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 27/10/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountAnalytics(val userSession: UserSessionInterface) {
+class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -136,65 +138,76 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
 
     fun eventClickSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        analytics.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 EVENT_CLICK_HOME_PAGE,
                 String.format("%s %s", USER, SETTING),
                 String.format("%s %s", CLICK, item),
                 LABEL_EMPTY
-        ))
+            )
+        )
     }
 
     fun eventClickAccountSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        analytics.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 EVENT_CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", CLICK, item),
                 LABEL_EMPTY
-        ))
+            )
+        )
     }
 
     fun eventClickPaymentSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        analytics.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 EVENT_CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 LABEL_EMPTY
-        ))
+            )
+        )
     }
 
     fun eventClickToggleOnGeolocation() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(
-                EVENT_CLICK_HOME_PAGE,
-                CATEGORY_HOMEPAGE,
-                ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-                LABEL_EMPTY
+            EVENT_CLICK_HOME_PAGE,
+            CATEGORY_HOMEPAGE,
+            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
+            LABEL_EMPTY
         )
     }
 
     fun eventClickToggleOffGeolocation() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         analytics.sendGeneralEvent(
-                EVENT_CLICK_HOME_PAGE,
-                CATEGORY_HOMEPAGE,
-                ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-                LABEL_EMPTY
+            EVENT_CLICK_HOME_PAGE,
+            CATEGORY_HOMEPAGE,
+            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
+            LABEL_EMPTY
         )
     }
 
     fun eventAccountProductView(trackingQueue: TrackingQueue, recommendationItem: RecommendationItem, position: Int) {
         val map: Map<String, Any> = DataLayer.mapOf(
-                EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
-                EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-                EVENT_LABEL, "",
-                ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR,
-                IMPRESSIONS, DataLayer.listOf(
-                addAccountProductViewImpressions(recommendationItem, position)
+            EVENT, EVENT_PRODUCT_VIEW,
+            EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
+            EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+            EVENT_LABEL, "",
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                DataLayer.listOf(
+                    addAccountProductViewImpressions(recommendationItem, position)
+                )
+            )
         )
-        ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
@@ -203,15 +216,17 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         if (recommendationItem.isTopAds) {
             list += VALUE_PRODUCT_TOPADS
         }
-        return DataLayer.mapOf(DATA_NAME, recommendationItem.name,
-                DATA_ID, recommendationItem.productId,
-                DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
-                DATA_BRAND, NONE_OTHER,
-                DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
-                DATA_VARIAN, NONE_OTHER,
-                LIST, list,
-                DATA_POSITION, position.toString(),
-                DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER)
+        return DataLayer.mapOf(
+            DATA_NAME, recommendationItem.name,
+            DATA_ID, recommendationItem.productId,
+            DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
+            DATA_BRAND, NONE_OTHER,
+            DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
+            DATA_VARIAN, NONE_OTHER,
+            LIST, list,
+            DATA_POSITION, position.toString(),
+            DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER
+        )
     }
 
     fun eventAccountProductClick(recommendationItem: RecommendationItem, position: Int, widgetTitle: String?) {
@@ -221,31 +236,33 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         }
         val tracker: Analytics = TrackApp.getInstance().gtm
         val map = DataLayer.mapOf(
-                EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
-                EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                EVENT_LABEL, LABEL_EMPTY,
-                ECOMMERCE, DataLayer.mapOf(
-                CLICK, DataLayer.mapOf(
-                ACTION_FIELD,
-                DataLayer.mapOf(LIST, list),
-                PRODUCTS,
-                DataLayer.listOf(
+            EVENT, EVENT_PRODUCT_CLICK,
+            EVENT_CATEGORY, CATEGORY_ACCOUNT_PAGE_BUYER,
+            EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION,
+            EVENT_LABEL, LABEL_EMPTY,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CLICK,
+                DataLayer.mapOf(
+                    ACTION_FIELD,
+                    DataLayer.mapOf(LIST, list),
+                    PRODUCTS,
+                    DataLayer.listOf(
                         DataLayer.mapOf(
-                                DATA_NAME, recommendationItem.name,
-                                DATA_ID, recommendationItem.productId,
-                                DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
-                                DATA_BRAND, NONE_OTHER,
-                                DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
-                                DATA_VARIAN, NONE_OTHER,
-                                LIST, widgetTitle,
-                                DATA_POSITION, position.toString(),
-                                DATA_ATTRIBUTION, NONE_OTHER,
-                                DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER
+                            DATA_NAME, recommendationItem.name,
+                            DATA_ID, recommendationItem.productId,
+                            DATA_PRICE, recommendationItem.price.replace("[^0-9]".toRegex(), ""),
+                            DATA_BRAND, NONE_OTHER,
+                            DATA_CATEGORY, recommendationItem.categoryBreadcrumbs,
+                            DATA_VARIAN, NONE_OTHER,
+                            LIST, widgetTitle,
+                            DATA_POSITION, position.toString(),
+                            DATA_ATTRIBUTION, NONE_OTHER,
+                            DATA_DIMENSION_83, if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else NONE_OTHER
                         )
+                    )
                 )
-        )
-        )
+            )
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -258,35 +275,34 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
             "remove"
         }
         analytics.sendGeneralEvent(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_BUYER,
-                String.format(VALUE_WISHLIST_PRODUCT, status),
-                ""
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_PAGE_BUYER,
+            String.format(VALUE_WISHLIST_PRODUCT, status),
+            ""
         )
     }
 
     fun eventClickProfile() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_PROFILE,
-                LABEL_EMPTY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_PROFILE,
+            LABEL_EMPTY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
-
     }
 
     fun eventViewOvoHomepage() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_OVO_HOMEPAGE,
-                ACTION_VIEW_OVO_HOMEPAGE,
-                LABEL_EMPTY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_OVO_HOMEPAGE,
+            ACTION_VIEW_OVO_HOMEPAGE,
+            LABEL_EMPTY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -297,10 +313,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickBalance() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_BALANCE,
-                LABEL_EMPTY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_BALANCE,
+            LABEL_EMPTY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -311,10 +327,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickTokopoints() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_TOKOPOINTS,
-                LABEL_EMPTY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_TOKOPOINTS,
+            LABEL_EMPTY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -325,10 +341,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickOnMoreMemberOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ON_MORE_OPTION,
-                LABEL_MEMBER
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ON_MORE_OPTION,
+            LABEL_MEMBER
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -339,10 +355,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickRewardMemberStore() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_REWARD_SECTION,
-                LABEL_MEMBER_STORE
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_REWARD_SECTION,
+            LABEL_MEMBER_STORE
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -353,10 +369,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickRewardTopQuest() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_REWARD_SECTION,
-                LABEL_TOP_QUEST
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_REWARD_SECTION,
+            LABEL_TOP_QUEST
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -367,10 +383,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickRewardMyCoupon() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_REWARD_SECTION,
-                LABEL_MY_COUPON
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_REWARD_SECTION,
+            LABEL_MY_COUPON
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -381,10 +397,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingListAddress() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_LIST_ADDRESS
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_LIST_ADDRESS
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -395,10 +411,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingBankAccount() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_BANK_ACCOUNT
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_BANK_ACCOUNT
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -409,10 +425,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingInstantPayment() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_INSTANT_PAYMENT
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_INSTANT_PAYMENT
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -423,10 +439,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingInstantBuy() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_INSTANT_BUY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_INSTANT_BUY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -437,10 +453,24 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingAccountSecurity() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_ACCOUNT_SECURITY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_ACCOUNT_SECURITY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickAccountSettingPrivacyAccount() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_PRIVACY_ACCOUNT
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -451,10 +481,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAccountSettingNotification() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ACCOUNT_SETTING_SECTION,
-                LABEL_NOTIFICATION
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ACCOUNT_SETTING_SECTION,
+            LABEL_NOTIFICATION
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -465,10 +495,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickOnMoreAppSettingOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ON_MORE_OPTION,
-                LABEL_APP_SETTING
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ON_MORE_OPTION,
+            LABEL_APP_SETTING
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -479,10 +509,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingShake(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                String.format("%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            String.format(Locale.getDefault(), "%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -493,10 +523,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingGeolocation(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                String.format("%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            String.format(Locale.getDefault(), "%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -507,10 +537,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingSafeMode(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                String.format("%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            String.format(Locale.getDefault(), "%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -518,14 +548,13 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         analytics.sendGeneralEvent(map)
     }
 
-
     fun eventClickAppSettingStickerTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                LABEL_STICKER_TOKOPEDIA
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            LABEL_STICKER_TOKOPEDIA
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -536,10 +565,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingImageQuality() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                LABEL_IMAGE_QUALITY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            LABEL_IMAGE_QUALITY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -550,10 +579,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingCleanCache() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                LABEL_CLEAN_CACHE
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            LABEL_CLEAN_CACHE
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -564,10 +593,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingScreenRecord() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_SETTING,
-                CATEGORY_SETTING_PAGE,
-                ACTION_CLICK_SCREEN_RECORDER,
-                ""
+            EVENT_CLICK_SETTING,
+            CATEGORY_SETTING_PAGE,
+            ACTION_CLICK_SCREEN_RECORDER,
+            ""
         )
         map[EVENT_BUSINESS_UNIT] = HOME_AND_BROWSE
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -578,10 +607,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickAppSettingViewMode() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                LABEL_VIEW_MODE
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_APP_SETTING_SECTION,
+            LABEL_VIEW_MODE
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -592,10 +621,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickOnMoreAboutTokopediaOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ON_MORE_OPTION,
-                LABEL_ABOUT_TOKOPEDIA
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ON_MORE_OPTION,
+            LABEL_ABOUT_TOKOPEDIA
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -606,10 +635,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickGetToKnowAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
-                LABEL_GET_TO_KNOW_TOKOPEDIA
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+            LABEL_GET_TO_KNOW_TOKOPEDIA
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -620,10 +649,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickTermsAndConditionsAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
-                LABEL_TERMS_AND_CONDITIONS
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+            LABEL_TERMS_AND_CONDITIONS
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -634,10 +663,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickPrivacyPolicyAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
-                LABEL_PRIVACY_POLICY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+            LABEL_PRIVACY_POLICY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -648,10 +677,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickIpAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
-                LABEL_IP
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+            LABEL_IP
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -662,10 +691,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickReviewAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
-                LABEL_REVIEW_THIS_APP
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+            LABEL_REVIEW_THIS_APP
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -676,10 +705,10 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickLogout() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_LOGOUT,
-                LABEL_EMPTY
+            EVENT_CLICK_ACCOUNT,
+            CATEGORY_ACCOUNT_BUYER,
+            ACTION_CLICK_LOGOUT,
+            LABEL_EMPTY
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -690,12 +719,14 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
     fun eventClickThemeSetting(isDarkMode: Boolean) {
         val label: String = if (isDarkMode) "dark" else "light"
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        analytics.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 EVENT_CLICK_SETTING,
                 CATEGORY_SETTING_PAGE,
                 ACTION_SIMPAN_THEME_SELECTION,
                 label
-        ))
+            )
+        )
     }
 
     fun trackClickLinkAccount() {
@@ -704,7 +735,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
                 ACTION_CLICK_LINK_ACC_GOJEK,
-                "")
+                ""
+            )
         )
     }
 
@@ -714,7 +746,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_LINK,
                 ACTION_CLICK_SETTING_LINK_ACC,
-                LABEL_CONNECTED_ACC)
+                LABEL_CONNECTED_ACC
+            )
         )
     }
 
@@ -724,7 +757,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
                 ACTION_CLICK_BACK,
-                "")
+                ""
+            )
         )
     }
 
@@ -734,7 +768,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
                 ACTION_CLICK_LINK_ACC,
-                "")
+                ""
+            )
         )
     }
 
@@ -744,7 +779,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
                 ACTION_CLICK_ACC_GOJEK,
-                "")
+                ""
+            )
         )
     }
 
@@ -754,7 +790,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
                 ACTION_CLICK_HELP_LINK_ACC,
-                "")
+                ""
+            )
         )
     }
 
@@ -924,7 +961,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 BiometricTracker.EVENT_CLICK_BIOMETRIC,
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
                 BiometricTracker.ACTION_CLICK_ON_LOGOUT_BIOMETRIC,
-                LABEL_CLICK)
+                LABEL_CLICK
+            )
         )
     }
 
@@ -934,7 +972,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 BiometricTracker.EVENT_CLICK_BIOMETRIC,
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
                 BiometricTracker.ACTION_CLICK_ON_LOGOUT_BIOMETRIC,
-                "${BiometricTracker.EVENT_LABEL_SUCCESS} - biometrics offering")
+                "${BiometricTracker.EVENT_LABEL_SUCCESS} - biometrics offering"
+            )
         )
     }
 
@@ -944,7 +983,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 BiometricTracker.EVENT_CLICK_BIOMETRIC,
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
                 BiometricTracker.ACTION_CLICK_BIOMETRIC_ACTIVATION,
-                "${BiometricTracker.EVENT_LABEL_FAILED} - $reason")
+                "${BiometricTracker.EVENT_LABEL_FAILED} - $reason"
+            )
         )
     }
 
@@ -954,8 +994,8 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
                 BiometricTracker.EVENT_CLICK_BIOMETRIC,
                 BiometricTracker.CATEGORY_ACCOUNT_PAGE_BUYER,
                 BiometricTracker.ACTION_CLICK_ON_LOGOUT_BIOMETRIC,
-                "${BiometricTracker.EVENT_LABEL_SUCCESS} - logout prompt")
+                "${BiometricTracker.EVENT_LABEL_SUCCESS} - logout prompt"
+            )
         )
     }
-
 }

@@ -1,8 +1,6 @@
 package com.tokopedia.homenav.mainnav.di
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
@@ -15,12 +13,13 @@ import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.GetWishlistCollection
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Module
@@ -28,52 +27,6 @@ import dagger.Provides
 
 @Module
 class MainNavUseCaseModule {
-
-    private val walletBalanceQuery : String = "query mainNavOvoWallet {\n" +
-            "  wallet(isGetTopup:true) {\n" +
-            "    linked\n" +
-            "    balance\n" +
-            "    rawBalance\n" +
-            "    text\n" +
-            "    total_balance\n" +
-            "    raw_total_balance\n" +
-            "    hold_balance\n" +
-            "    raw_hold_balance\n" +
-            "    redirect_url\n" +
-            "    applinks\n" +
-            "    ab_tags {\n" +
-            "      tag\n" +
-            "    }\n" +
-            "    action {\n" +
-            "      text\n" +
-            "      redirect_url\n" +
-            "      applinks\n" +
-            "      visibility\n" +
-            "    }\n" +
-            "    point_balance\n" +
-            "    raw_point_balance\n" +
-            "    cash_balance\n" +
-            "    raw_cash_balance\n" +
-            "    wallet_type\n" +
-            "    help_applink\n" +
-            "    tnc_applink\n" +
-            "    show_announcement\n" +
-            "    is_show_topup\n" +
-            "    topup_applink\n" +
-            "    topup_limit\n" +
-            "  }\n" +
-            "}"
-
-
-    @MainNavScope
-    @Provides
-    fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
-        val usecase = GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(walletBalanceQuery)
-        return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
-    }
-
-
     @MainNavScope
     @Provides
     fun provideUserMembershipUseCase(graphqlRepository: GraphqlRepository) : GetUserMembershipUseCase{
@@ -83,9 +36,12 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
+    fun provideShopInfoUseCase(
+        graphqlRepository: GraphqlRepository,
+        userSession: UserSessionInterface
+    ) : GetShopInfoUseCase {
         val useCase = GraphqlUseCase<ShopData>(graphqlRepository)
-        return GetShopInfoUseCase(useCase)
+        return GetShopInfoUseCase(useCase, userSession)
     }
 
     @MainNavScope
@@ -117,9 +73,11 @@ class MainNavUseCaseModule {
     @Provides
     fun provideGetCategoryGroupUseCase(
             buListMapper: BuListMapper,
-            graphqlRepository: GraphqlRepository): GetCategoryGroupUseCase {
+            graphqlRepository: GraphqlRepository,
+            remoteConfig: RemoteConfig): GetCategoryGroupUseCase {
         val useCase = GraphqlUseCase<DynamicHomeIconEntity>(graphqlRepository)
-        return GetCategoryGroupUseCase(buListMapper, useCase)
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return GetCategoryGroupUseCase(buListMapper, useCase, isUsingV2)
     }
 
     @MainNavScope
@@ -163,7 +121,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideGetWishlistUseCase(graphqlRepository: GraphqlRepository): GetWishlistNavUseCase{
-        val useCase = GraphqlUseCase<WishlistData>(graphqlRepository)
+        val useCase = GraphqlUseCase<GetWishlistCollection>(graphqlRepository)
         return GetWishlistNavUseCase(useCase)
     }
 

@@ -9,11 +9,11 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIn
 import com.tokopedia.tokomember_seller_dashboard.view.animation.TmIntroItemAnimator
 import kotlinx.android.synthetic.main.tm_dash_intro_benefit_image_item.view.*
 
-class TmIntroBenefitImageVh(val view: View)
-    : AbstractViewHolder<TokomemberIntroBenefitImageItem>(view) {
+class TmIntroBenefitImageVh(val view: View) :
+    AbstractViewHolder<TokomemberIntroBenefitImageItem>(view) {
 
     private val tmIntroVideoView = itemView.ivSection
-    private var holderElement: TokomemberIntroBenefitImageItem?=null
+    private var holderElement: TokomemberIntroBenefitImageItem? = null
 
     override fun bind(element: TokomemberIntroBenefitImageItem?) {
         holderElement = element
@@ -23,7 +23,7 @@ class TmIntroBenefitImageVh(val view: View)
     }
 
     fun setAnimationLeftToRight(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
-        if (holderElement?.isAnimationFinished==false) {
+        if (holderElement?.isAnimationFinished == false) {
             TmIntroItemAnimator.fromLeftToRight(
                 itemView,
                 adapterPosition,
@@ -34,7 +34,7 @@ class TmIntroBenefitImageVh(val view: View)
     }
 
     fun setAnimationRightToLeft(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
-        if (holderElement?.isAnimationFinished==false) {
+        if (holderElement?.isAnimationFinished == false) {
             TmIntroItemAnimator.fromRightToLeft(
                 itemView,
                 adapterPosition,
@@ -45,19 +45,19 @@ class TmIntroBenefitImageVh(val view: View)
     }
 
     private val animListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             holderElement?.isAnimationFinished = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
     }
 

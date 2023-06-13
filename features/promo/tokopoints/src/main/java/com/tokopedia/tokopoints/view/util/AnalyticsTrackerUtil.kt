@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -12,7 +11,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object AnalyticsTrackerUtil {
-
 
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
@@ -23,14 +21,26 @@ object AnalyticsTrackerUtil {
     }
 
     @JvmStatic
-    fun sendEvent(context: Context?, event: String?, category: String?,
-                  action: String?, label: String?) {
+    fun sendEvent(
+        context: Context?,
+        event: String?,
+        category: String?,
+        action: String?,
+        label: String?
+    ) {
         getTracker().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label))
     }
 
     @JvmStatic
-    fun sendEvent(userId: String, event: String, category: String,
-                  action: String, label: String, businessUnit: String, currentSite: String) {
+    fun sendEvent(
+        userId: String,
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String
+    ) {
         val eventDataLayer = HashMap<String, Any>()
         eventDataLayer[EventKeys.EVENT] = event
         eventDataLayer[EventKeys.EVENT_CATEGORY] = category
@@ -44,8 +54,14 @@ object AnalyticsTrackerUtil {
     }
 
     @JvmStatic
-    fun sendEvent(event: String, category: String,
-                  action: String, label: String, businessUnit: String, currentSite: String) {
+    fun sendEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String
+    ) {
         val eventDataLayer = Bundle()
         eventDataLayer.putString(EventKeys.EVENT, event)
         eventDataLayer.putString(EventKeys.EVENT_CATEGORY, category)
@@ -56,8 +72,14 @@ object AnalyticsTrackerUtil {
         getTracker().sendEnhanceEcommerceEvent(event, eventDataLayer)
     }
 
-    fun sendECommerceEvent(context: Context?, event: String, category: String,
-                           action: String, label: String, ecommerce: HashMap<String, Map<String, List<Map<String, String?>>>>) {
+    fun sendECommerceEvent(
+        context: Context?,
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        ecommerce: HashMap<String, Map<String, List<Map<String, String?>>>>
+    ) {
         val map = HashMap<String, Any>()
         map[EventKeys.EVENT] = event
         map[EventKeys.EVENT_CATEGORY] = category
@@ -68,8 +90,13 @@ object AnalyticsTrackerUtil {
     }
 
     @JvmStatic
-    fun sendECommerceEvent(event: String, category: String,
-                           action: String, label: String, ecommerce: HashMap<String, Any>) {
+    fun sendECommerceEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        ecommerce: HashMap<String, Any>
+    ) {
         val map = HashMap<String, Any>()
         map[EventKeys.EVENT] = event
         map[EventKeys.EVENT_CATEGORY] = category
@@ -80,8 +107,15 @@ object AnalyticsTrackerUtil {
     }
 
     @JvmStatic
-    fun sendECommerceEvent(event: String, category: String,
-                           action: String, label: String, businessUnit: String, currentSite: String, ecommerce: HashMap<String, Any>) {
+    fun sendECommerceEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String,
+        ecommerce: HashMap<String, Any>
+    ) {
         val map = HashMap<String, Any>()
         map[EventKeys.EVENT] = event
         map[EventKeys.EVENT_CATEGORY] = category
@@ -93,10 +127,14 @@ object AnalyticsTrackerUtil {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-
     @JvmStatic
-    fun sendECommerceEventBanner(event: String, category: String,
-                                 action: String, label: String, ecommerce: HashMap<String, Any>) {
+    fun sendECommerceEventBanner(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        ecommerce: HashMap<String, Any>
+    ) {
         val map = HashMap<String, Any>()
         map[EventKeys.EVENT] = event
         map[EventKeys.EVENT_CATEGORY] = category
@@ -107,56 +145,65 @@ object AnalyticsTrackerUtil {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickProductRecomItem(productId: String,
-                              productPositionIndex: Int,
-                              recommendationType: String,
-                              isTopads: Boolean,
-                              isFreeOngkir: Boolean,
-                              productBrand: String,
-                              itemCategory: String,
-                              productName: String,
-                              productVariant: String,
-                              productPrice: String,
+    fun clickProductRecomItem(
+        productId: String,
+        productPositionIndex: Int,
+        recommendationType: String,
+        isTopads: Boolean,
+        isFreeOngkir: Boolean,
+        productBrand: String,
+        itemCategory: String,
+        productName: String,
+        productVariant: String,
+        productPrice: String
     ) {
         val map = mutableMapOf<String, Any>()
-        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_CLICK_RECOM
         map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
         map[EventKeys.EVENT_ACTION] = ActionKeys.CLICK_RECOM_ACTION
         map[EventKeys.EVENT_LABEL] = ""
-        map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
-        map[EventKeys.EVENT_CURRENTSITE]=EcommerceKeys.CURRENTSITE
+        map[EventKeys.EVENT_BUSINESSUNIT] = EcommerceKeys.BUSINESSUNIT
+        map[EventKeys.EVENT_CURRENTSITE] = EcommerceKeys.CURRENTSITE
         map[EcommerceKeys.CURRENCY_CODE] = EcommerceKeys.IDR
-        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType, isTopads)
         map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
-            EcommerceKeys.CLICK, DataLayer.mapOf(EcommerceKeys.ACTION_FIELD,
-                DataLayer.mapOf(EcommerceKeys.LIST,EcommerceKeys.NONE),
-                EcommerceKeys.PRODUCTS, DataLayer.listOf(getItemsMapList(productId,
-                    productPositionIndex,
-                    recommendationType,
-                    isTopads,
-                    isFreeOngkir,
-                    productBrand,
-                    itemCategory,
-                    productName,
-                    productVariant,
-                    price)
+            EcommerceKeys.CLICK,
+            DataLayer.mapOf(
+                EcommerceKeys.ACTION_FIELD,
+                DataLayer.mapOf(EcommerceKeys.LIST, EcommerceKeys.NONE),
+                EcommerceKeys.PRODUCTS,
+                DataLayer.listOf(
+                    getItemsMapList(
+                        productId,
+                        productPositionIndex,
+                        recommendationType,
+                        isTopads,
+                        isFreeOngkir,
+                        productBrand,
+                        itemCategory,
+                        productName,
+                        productVariant,
+                        price
+                    )
                 )
-            ))
+            )
+        )
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getItemsMapList(productId: String,
-                                productPositionIndex: Int,
-                                recommendationType: String,
-                                isTopads: Boolean,
-                                isFreeOngkir: Boolean,
-                                productBrand: String,
-                                itemCategory: String,
-                                productName: String,
-                                productVariant: String,
-                                productPrice: Int): Map<String, Any> {
-
+    private fun getItemsMapList(
+        productId: String,
+        productPositionIndex: Int,
+        recommendationType: String,
+        isTopads: Boolean,
+        isFreeOngkir: Boolean,
+        productBrand: String,
+        itemCategory: String,
+        productName: String,
+        productVariant: String,
+        productPrice: Int
+    ): Map<String, Any> {
         val itemsMap = HashMap<String, Any>()
         itemsMap[EcommerceKeys.INDEX] = productPositionIndex + 1
         itemsMap[EcommerceKeys.ITEM_BRAND] = productBrand
@@ -165,27 +212,29 @@ object AnalyticsTrackerUtil {
         itemsMap[EcommerceKeys.ITEM_NAME] = productName
         itemsMap[EcommerceKeys.ITEM_VARIANT] = productVariant
         itemsMap[EcommerceKeys.PRICE] = productPrice
-        itemsMap[EcommerceKeys.DIMENSION39] = getItemList(recommendationType,isTopads)
+        itemsMap[EcommerceKeys.DIMENSION39] = getItemList(recommendationType, isTopads)
 
         var list = ""
-        if (isFreeOngkir){
+        if (isFreeOngkir) {
             list = EcommerceKeys.FREEONGKIR
         }
         itemsMap[EcommerceKeys.DIMENSION73] = list
         return itemsMap
     }
 
-    fun impressionProductRecomItem(productId: String,
-                                   productPositionIndex: Int,
-                                   recommendationType: String,
-                                   isTopads: Boolean,
-                                   isFreeOngkir: Boolean,
-                                   productBrand: String,
-                                   itemCategory: String,
-                                   productName: String,
-                                   productVariant: String,
-                                   productPrice: String,
-                                   trackingQueue: TrackingQueue) {
+    fun impressionProductRecomItem(
+        productId: String,
+        productPositionIndex: Int,
+        recommendationType: String,
+        isTopads: Boolean,
+        isFreeOngkir: Boolean,
+        productBrand: String,
+        itemCategory: String,
+        productName: String,
+        productVariant: String,
+        productPrice: String,
+        trackingQueue: TrackingQueue
+    ) {
         val map = mutableMapOf<String, Any>()
         val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_VIEW_RECOM
@@ -195,19 +244,22 @@ object AnalyticsTrackerUtil {
         map[EventKeys.EVENT_BUSINESSUNIT] = EcommerceKeys.BUSINESSUNIT
         map[EventKeys.EVENT_CURRENTSITE] = EcommerceKeys.CURRENTSITE
         map[EcommerceKeys.CURRENCY_CODE] = EcommerceKeys.IDR
-        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType, isTopads)
         map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
             EcommerceKeys.ITEMS,
-            DataLayer.listOf(getItemsMapList(productId,
-                productPositionIndex,
-                recommendationType,
-                isTopads,
-                isFreeOngkir,
-                productBrand,
-                itemCategory,
-                productName,
-                productVariant,
-                price)
+            DataLayer.listOf(
+                getItemsMapList(
+                    productId,
+                    productPositionIndex,
+                    recommendationType,
+                    isTopads,
+                    isFreeOngkir,
+                    productBrand,
+                    itemCategory,
+                    productName,
+                    productVariant,
+                    price
+                )
             )
         )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -247,7 +299,6 @@ object AnalyticsTrackerUtil {
             const val EVENT_MVC_SECTION = "mvc section"
             const val EVENT_VIEW_RECOM = "productView"
             const val EVENT_CLICK_RECOM = "productClick"
-
         }
     }
 
@@ -349,12 +400,12 @@ object AnalyticsTrackerUtil {
             const val VALUE_PRODUCT_TOPADS = " - product topads"
             const val DIMENSION39 = "dimension39"
             const val DIMENSION73 = "dimension73"
-            const val INDEX  = "index"
-            const val ITEM_BRAND= "item_brand"
+            const val INDEX = "index"
+            const val ITEM_BRAND = "item_brand"
             const val ITEM_CATEGORY = "item_category"
             const val ITEM_ID = "item_id"
-            const val ITEM_NAME= "item_name"
-            const val ITEM_VARIANT="item_variant"
+            const val ITEM_NAME = "item_name"
+            const val ITEM_VARIANT = "item_variant"
             const val PRICE = "price"
             const val FREEONGKIR = "bebas ongkir"
             const val KUPON_ITEMNAME = "tokopoints/kupon-saya - p%s - promo list"

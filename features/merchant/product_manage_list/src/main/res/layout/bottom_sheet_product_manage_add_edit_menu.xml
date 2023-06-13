@@ -9,15 +9,15 @@
         android:id="@+id/containerAddProductWithNoVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2">
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp">
 
         <ImageView
             android:id="@+id/iv_add_product"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +29,8 @@
             android:contentDescription="@string/content_desc_tv_add_product_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:text="@string/seller_migration_add_product_in_mainapp_title"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@id/iv_add_product"
@@ -41,8 +41,8 @@
             android:id="@+id/tv_add_product_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="4dp"
             android:text="@string/seller_migration_add_product_in_mainapp_desc"
             android:textColor="@color/Unify_N700_68"
@@ -56,6 +56,6 @@
         android:id="@+id/sellerFeatureCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1" />
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

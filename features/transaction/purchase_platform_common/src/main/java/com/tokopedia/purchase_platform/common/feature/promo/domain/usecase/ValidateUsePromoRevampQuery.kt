@@ -31,6 +31,8 @@ const val VALIDATE_USE_QUERY = """
              code
              success
              unique_id
+             shipping_id
+             sp_id
              cart_id
              order_id
              shop_id
@@ -193,3 +195,12 @@ const val VALIDATE_USE_QUERY = """
       }
     }
 """
+
+const val CLEAR_CACHE_AUTO_APPLY_QUERY = """
+            mutation clearCacheAutoApplyStack(${"$"}serviceID: String!, ${"$"}promoCode: [String], ${"$"}isOCC: Boolean, ${"$"}orderData: OrderDataInput) {
+                clearCacheAutoApplyStack(serviceID: ${"$"}serviceID, promoCode: ${"$"}promoCode, isOCC: ${"$"}isOCC, orderData: ${"$"}orderData) {
+                    Success
+                    ticker_message
+                    default_empty_promo_message
+                }
+            }"""

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.drawable.Drawable
@@ -25,21 +27,23 @@ import com.tokopedia.unifyprinciples.Typography
 class PartialButtonShopFollowersView private constructor(val view: View, private val listener: PartialButtonShopFollowersListener) {
 
     companion object {
-        const val SHOP_FOLLOWERS_IMG_ASSET = "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png"
+        const val SHOP_FOLLOWERS_IMG_ASSET = TokopediaImageUrl.SHOP_FOLLOWERS_IMG_ASSET
         const val GONE_ANIMATION_DURATION = 300L
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
 
     val shadowDrawable: Drawable? by lazy {
-        view.generateBackgroundWithShadow(com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_12,
-                R.dimen.dp_12,
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-                R.dimen.dp_2,
-                R.dimen.dp_2,
-                Gravity.TOP)
+        view.generateBackgroundWithShadow(
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_12,
+            R.dimen.dp_12,
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+            R.dimen.dp_2,
+            R.dimen.dp_2,
+            Gravity.TOP
+        )
     }
 
     var setupVisibility: Boolean = false
@@ -66,14 +70,18 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true,
-                   buttonLabel: String? = null,
-                   voucherIconUrl: String? = null,
-                   iconUrl: String = "",
-                   hideButton: Boolean = false,
-                   maxLine: Int = 1,
-                   centerImage: Boolean = false,
-                   customPaddingBottom: Int = 8) = with(view) {
+    fun renderView(
+        title: String,
+        desc: String,
+        alreadyFollowShop: Boolean = true,
+        buttonLabel: String? = null,
+        voucherIconUrl: String? = null,
+        iconUrl: String = "",
+        hideButton: Boolean = false,
+        maxLine: Int = 1,
+        centerImage: Boolean = false,
+        customPaddingBottom: Int = 8
+    ) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -141,7 +149,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     private fun animateSlideDown() = with(view) {
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 visibility = View.GONE
                 stopLoading()
@@ -153,9 +161,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         voucherIconUrl?.run {
             followersBtn?.layoutParams?.width = 110.toPx()
             followersBtn?.loadLeftDrawable(
-                    context = view.context,
-                    url = voucherIconUrl,
-                    convertIntoSize = 20.toPx()
+                context = view.context,
+                url = voucherIconUrl,
+                convertIntoSize = 20.toPx()
             )
         }
         followersBtn?.run {
@@ -186,7 +194,6 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             background = shadowDrawable
         }
     }
-
 }
 
 interface PartialButtonShopFollowersListener {

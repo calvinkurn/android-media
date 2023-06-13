@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.common_sdk_affiliate_toko.di.AffiliateCommonSdkModule
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
@@ -20,6 +21,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.usercomponents.explicit.di.ExplicitViewModule
@@ -30,9 +32,11 @@ import dagger.Component
 @Component(modules = [DiscoveryModule::class,
     DiscoveryViewModelModule::class,
     TopAdsUrlHitterModule::class,
+    AffiliateCommonSdkModule::class,
     ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
+    fun inject(discoveryExtensibleFragment: DiscoveryExtensibleFragment)
     fun inject(discoveryFragment: DiscoveryFragment)
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(tokopointsViewModel: TokopointsViewModel)

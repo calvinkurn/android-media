@@ -22,8 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.FollowWidget
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.FollowCardView
 import com.tokopedia.mvcwidget.views.TYPE_LARGE
@@ -36,23 +36,24 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
-
 class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FollowCardView(context, attrs, defStyleAttr) {
 
     private val layout = R.layout.mvc_tokomember_follow
     private var tvTitle: Typography
     private var icon: AppCompatImageView
     private var btnFirst: UnifyButton
-    private var collapsableContainer : LinearLayout
+    private var collapsableContainer: LinearLayout
     private var iconBackground: AppCompatImageView
     var iconBackgroundContainer: FrameLayout
 
-    var tvList : Typography
-    private var tvSubTitle : Typography
+    var tvList: Typography
+    private var tvSubTitle: Typography
     var btnSecond: UnifyButton
-    var containerContent : ConstraintLayout
+    var containerContent: ConstraintLayout
 
     init {
         View.inflate(context, layout, this)
@@ -69,8 +70,8 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         containerContent = findViewById(R.id.container_content)
         iconBackgroundContainer = findViewById(R.id.fm_image)
 
-        if (context.isDarkMode()){
-            iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))
+        if (context.isDarkMode()) {
+            iconBackground.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         radius = dpToPx(8)
         type = TYPE_LARGE
@@ -84,7 +85,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             tvTitle.text = returnTextFromHtml(t)
         }
 
-        if (!followWidget.contentDetails.isNullOrEmpty()){
+        if (!followWidget.contentDetails.isNullOrEmpty()) {
             val s = returnTextFromHtml(st)
             val minTransLabel = "{{MinimumTransaction}}"
             val indexMinTransLabel = s.indexOf(minTransLabel)
@@ -103,9 +104,8 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 tvSubTitle.text = sb
-            }
-            else{
-                tvSubTitle.text=returnTextFromHtml(st)
+            } else {
+                tvSubTitle.text = returnTextFromHtml(st)
             }
         }
 
@@ -135,14 +135,14 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
         btnFirst.setOnClickListener {
             if (context is AppCompatActivity) {
-                showTokomemberBottomSheet(followWidget, context as AppCompatActivity, shopId, mvcSource,mvcTracker)
+                showTokomemberBottomSheet(followWidget, context as AppCompatActivity, shopId, mvcSource, mvcTracker)
             }
-            when(followWidget.type){
-                FollowWidgetType.MEMBERSHIP_OPEN->{
-                    mvcTracker?.clickCekInfoButton(FollowWidgetType.MEMBERSHIP_OPEN,shopId, UserSession(context).userId, mvcSource, btnFirst.text?.toString())
+            when (followWidget.type) {
+                FollowWidgetType.MEMBERSHIP_OPEN -> {
+                    mvcTracker?.clickCekInfoButton(FollowWidgetType.MEMBERSHIP_OPEN, shopId, UserSession(context).userId, mvcSource, btnFirst.text?.toString())
                 }
-                FollowWidgetType.MEMBERSHIP_CLOSE->{
-                    mvcTracker?.clickCekInfoButtonClose(FollowWidgetType.MEMBERSHIP_CLOSE,shopId, UserSession(context).userId, mvcSource, btnFirst.text?.toString())
+                FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                    mvcTracker?.clickCekInfoButtonClose(FollowWidgetType.MEMBERSHIP_CLOSE, shopId, UserSession(context).userId, mvcSource, btnFirst.text?.toString())
                 }
             }
         }
@@ -218,13 +218,12 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         bottomsheet.setChild(child)
         bottomsheet.clearContentPadding = true
         bottomsheet.setShowListener {
-            mvcTracker?.viewTokomemberBottomSheet(shopId, UserSession(context).userId,mvcSource)
+            mvcTracker?.viewTokomemberBottomSheet(shopId, UserSession(context).userId, mvcSource)
         }
         bottomsheet.show(activity.supportFragmentManager, "btm_mvc_tokomember")
-
     }
 
-    private fun returnTextFromHtml(t: String) : CharSequence{
+    private fun returnTextFromHtml(t: String): CharSequence {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             HtmlUtil.fromHtml(t).trim()
         } else {

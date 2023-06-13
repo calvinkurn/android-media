@@ -1,0 +1,244 @@
+[
+    {
+        "data": {
+            "productRecommendationWidgetSingle": {
+                "data": {
+                    "tID": "P400teMC7OZQVWaHPw19bA24NTc=",
+                    "source": "custom",
+                    "title": "Rekomendasi untuk Anda",
+                    "foreignTitle": "Recommendation for you",
+                    "widgetUrl": "",
+                    "seeMoreAppLink": "",
+                    "seeMoreUrlLink": "",
+                    "pageName": "category_vps_priority",
+                    "pagination": {
+                        "hasNext": true
+                    },
+                    "campaign": {
+                        "appLandingPageLink": "",
+                        "landingPageLink": "",
+                        "assets": {
+                            "banner": {
+                                "apps": ""
+                            }
+                        }
+                    },
+                    "recommendation": [
+                        {
+                            "id": 4704525983,
+                            "name": "KAPAL API SPECIAL MIX 1 RENCENG 10 SACHET @24GRAM KOPI KAPAL API",
+                            "categoryBreadcrumbs": "Makanan & Minuman/Minuman/Kopi Bubuk",
+                            "url": "https://www.tokopedia.com/sy-official/kapal-api-special-mix-1-renceng-10-sachet-24gram-kopi-kapal-api",
+                            "appUrl": "tokopedia://product/4704525983",
+                            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2787&event=click&experimentVersion=v1.4&page=4&page_name=category_vps_priority&pid=4704525983&pos=1&recommendation=trend&rectype=trend&redirect=https://www.tokopedia.com/sy-official/kapal-api-special-mix-1-renceng-10-sachet-24gram-kopi-kapal-api?catid2787=%26ref=category_vps_priority_pa4_po1%26src=r3trend&tid=P400teMC7OZQVWaHPw19bA24NTc=&uid=16939915&unique_id=&utime=1666099726&widget=r3_widget&xdevice=android-3.150",
+                            "wishlistUrl": "",
+                            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/8/ac77b7f5-a9dc-4241-b98e-85d89232deb9.jpg",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/8/ac77b7f5-a9dc-4241-b98e-85d89232deb9.jpg",
+                            "relatedProductAppLink": "tokopedia://rekomendasi/4704525983/d/?ref=category_vps_priority",
+                            "relatedProductUrlLink": "/rekomendasi/4704525983/d/?ref=category_vps_priority",
+                            "price": "Rp 11.900",
+                            "priceInt": 11900,
+                            "discountPercentage": 12,
+                            "slashedPrice": "Rp 13.500",
+                            "slashedPriceInt": 13500,
+                            "shop": {
+                                "id": 12453031,
+                                "name": "SY Official",
+                                "city": "Jakarta Timur"
+                            },
+                            "departmentId": 2787,
+                            "labels": [],
+                            "labelgroup": [
+                                {
+                                    "position": "eta",
+                                    "title": "Tiba 20 - 22 Oct",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "integrity",
+                                    "title": "Terjual 500+",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "badges": [
+                                {
+                                    "title": "Power Merchant Pro",
+                                    "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+                                }
+                            ],
+                            "wholesalePrice": [],
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "rating": 5,
+                            "ratingAverage": "5.0",
+                            "countReview": 57,
+                            "recommendationType": "trend",
+                            "stock": 511,
+                            "isTopads": false,
+                            "specificationLabels": []
+                        },
+                        {
+                            "id": 906394941,
+                            "name": "NESCAFE CLASSIC Kopi Instan Kopi Hitam Sachet Bag 100g x 2pcs",
+                            "categoryBreadcrumbs": "Makanan & Minuman/Minuman/Kopi Bubuk",
+                            "url": "https://www.tokopedia.com/nestle-indonesia/nescafe-classic-kopi-instan-kopi-hitam-sachet-bag-100g-x-2pcs",
+                            "appUrl": "tokopedia://product/906394941",
+                            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2787&event=click&experimentVersion=v1.4&page=4&page_name=category_vps_priority&pid=906394941&pos=2&recommendation=trend&rectype=trend&redirect=https://www.tokopedia.com/nestle-indonesia/nescafe-classic-kopi-instan-kopi-hitam-sachet-bag-100g-x-2pcs?catid2787=%26ref=category_vps_priority_pa4_po2%26src=r3trend&tid=P400teMC7OZQVWaHPw19bA24NTc=&uid=16939915&unique_id=&utime=1666099726&widget=r3_widget&xdevice=android-3.150",
+                            "wishlistUrl": "",
+                            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/18/033c50fe-f6cf-4f22-8e1e-8c06a50f5601.jpg",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/18/033c50fe-f6cf-4f22-8e1e-8c06a50f5601.jpg",
+                            "relatedProductAppLink": "tokopedia://rekomendasi/906394941/d/?ref=category_vps_priority",
+                            "relatedProductUrlLink": "/rekomendasi/906394941/d/?ref=category_vps_priority",
+                            "price": "Rp 65.700",
+                            "priceInt": 65700,
+                            "discountPercentage": 9,
+                            "slashedPrice": "Rp 72.000",
+                            "slashedPriceInt": 72000,
+                            "shop": {
+                                "id": 2923486,
+                                "name": "Nestle Indonesia",
+                                "city": "Kab. Tangerang"
+                            },
+                            "departmentId": 2787,
+                            "labels": [
+                                {
+                                    "title": "Cashback",
+                                    "color": "#42b549"
+                                }
+                            ],
+                            "labelgroup": [
+                                {
+                                    "position": "promo",
+                                    "title": "Cashback",
+                                    "type": "lightGreen",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "campaign",
+                                    "title": "Tokopedia NYAM!",
+                                    "type": "",
+                                    "url": "https://images.tokopedia.net/img/phOWBv/2022/9/26/787dde0c-a27a-4114-a910-bb314cba0f30.png"
+                                },
+                                {
+                                    "position": "eta",
+                                    "title": "Tiba 20 - 22 Oct",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "integrity",
+                                    "title": "Terjual 8 rb+",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ],
+                            "wholesalePrice": [],
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "rating": 5,
+                            "ratingAverage": "5.0",
+                            "countReview": 4334,
+                            "recommendationType": "trend",
+                            "stock": 107,
+                            "isTopads": false,
+                            "specificationLabels": []
+                        },
+                        {
+                            "id": 48470420,
+                            "name": "Kopi Java Robusta 900g - Ground (bubuk)",
+                            "categoryBreadcrumbs": "Makanan & Minuman/Minuman/Kopi Bubuk",
+                            "url": "https://www.tokopedia.com/leitecoffee/kopi-java-robusta-900g-ground-bubuk",
+                            "appUrl": "tokopedia://product/48470420",
+                            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2787&event=click&experimentVersion=v1.4&page=4&page_name=category_vps_priority&pid=48470420&pos=3&recommendation=trend&rectype=trend&redirect=https://www.tokopedia.com/leitecoffee/kopi-java-robusta-900g-ground-bubuk?catid2787=%26ref=category_vps_priority_pa4_po3%26src=r3trend&tid=P400teMC7OZQVWaHPw19bA24NTc=&uid=16939915&unique_id=&utime=1666099726&widget=r3_widget&xdevice=android-3.150",
+                            "wishlistUrl": "",
+                            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/12/2dbec93e-9f87-4daa-80a6-8180ca724b2a.jpg",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/12/2dbec93e-9f87-4daa-80a6-8180ca724b2a.jpg",
+                            "relatedProductAppLink": "tokopedia://rekomendasi/48470420/d/?ref=category_vps_priority",
+                            "relatedProductUrlLink": "/rekomendasi/48470420/d/?ref=category_vps_priority",
+                            "price": "Rp 56.050",
+                            "priceInt": 56050,
+                            "discountPercentage": 5,
+                            "slashedPrice": "Rp 59.000",
+                            "slashedPriceInt": 59000,
+                            "shop": {
+                                "id": 838444,
+                                "name": "Leite Coffee",
+                                "city": "Kota Malang"
+                            },
+                            "departmentId": 2787,
+                            "labels": [
+                                {
+                                    "title": "Cashback",
+                                    "color": "#42b549"
+                                }
+                            ],
+                            "labelgroup": [
+                                {
+                                    "position": "promo",
+                                    "title": "Cashback",
+                                    "type": "lightGreen",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "offers",
+                                    "title": "Dilayani Tokopedia",
+                                    "type": "lightGrey",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "campaign",
+                                    "title": "NYAM! Malang",
+                                    "type": "",
+                                    "url": "https://images.tokopedia.net/img/phOWBv/2022/6/30/56289096-db14-4ecf-94f2-e4ee3ce17edb.png"
+                                },
+                                {
+                                    "position": "fulfillment",
+                                    "title": "Dilayani Tokopedia",
+                                    "type": "textDarkGrey",
+                                    "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                                },
+                                {
+                                    "position": "eta",
+                                    "title": "Tiba besok",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                },
+                                {
+                                    "position": "integrity",
+                                    "title": "Terjual 3 rb+",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "badges": [],
+                            "wholesalePrice": [],
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "rating": 5,
+                            "ratingAverage": "4.9",
+                            "countReview": 955,
+                            "recommendationType": "trend",
+                            "stock": 9966,
+                            "isTopads": false,
+                            "specificationLabels": []
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]

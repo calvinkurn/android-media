@@ -18,8 +18,8 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
@@ -65,7 +65,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
-    private var items = mutableListOf<EtalaseViewModel>()
+    private var items = mutableListOf<EtalaseUiModel>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -375,9 +375,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
         items.clear()
-        items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
+        items.add(0, EtalaseItemUiModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result ->
-            items.add(index + 1, EtalaseItemViewModel(false, result))
+            items.add(index + 1, EtalaseItemUiModel(false, result))
         }
         filterSheetProductList.updateData(items)
     }

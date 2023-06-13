@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -126,7 +126,7 @@ class ProductManageListDiffutilAdapter(
 
     override fun updatePrice(productId: String, price: String) {
         submitList(productId) {
-            val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
+            val formattedPrice = price.toDoubleOrZero().getCurrencyFormatted()
             val editedPrice = PriceUiModel(price, formattedPrice)
             it.copy(minPrice = editedPrice, maxPrice = editedPrice)
         }

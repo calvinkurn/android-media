@@ -12,6 +12,7 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       shortDescription
       url
       mobileUrl
+      productSortingStatus
       catalogImage {
         imageUrl
         isPrimary
@@ -117,6 +118,34 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             }
           }
         }
+        ... on CatalogModularComparisonNew {
+          spec_list {
+            title
+            sub_card {
+              sub_title
+              left_data
+              right_data
+            }
+          }
+          compared_data {
+            id
+            name
+            brand
+            url
+            catalogImage {
+              imageUrl
+              isPrimary
+            }
+            marketPrice {
+              min
+              max
+              minFmt
+              maxFmt
+              date
+              name
+            }
+          }
+        }
         ... on CatalogModularProductReview{
           avgRating
           totalHelpfulReview
@@ -128,6 +157,29 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             reviewText
             reviewImageUrl
             reviewId
+            productUrl
+          }
+        }
+        ... on CatalogLibraryEntrypointResponse {
+          category_name
+          category_identifier
+          catalog_count
+          catalogs {
+            id
+            name
+            brand
+            brand_id
+            categoryID
+            imageUrl
+            url
+            mobileUrl
+            applink
+            marketPrice {
+              min
+              max
+              minFmt
+              maxFmt
+            }
           }
         }
       }

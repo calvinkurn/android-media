@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling
 
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -36,9 +38,29 @@ object ProductBundlingResult {
         assertViewInRecyclerViewAt(0, R.id.rv_product_bundle_card, withTotalItem(expectedCount))
     }
 
-    fun assertCtaOutOfStock() {
+    fun assertCtaOutOfStock(checkText: Boolean = true) {
         assertViewInRecyclerViewAt(0, R.id.button_open_package, isDisplayed())
-        assertViewInRecyclerViewAt(0, R.id.button_open_package, withText("Paket Habis"))
+        if (checkText) {
+            assertViewInRecyclerViewAt(0, R.id.button_open_package, withText("Paket Habis"))
+        }
         assertViewInRecyclerViewAt(0, R.id.button_open_package, not(isEnabled()))
+    }
+
+    fun assertMultiBundlingBroadcastShown() {
+        assertViewInRecyclerViewAt(0, R.id.product_bundle_card_broadcast, not(isDisplayed()))
+        assertViewInRecyclerViewAt(0, R.id.rv_product_bundle_card_broadcast, isDisplayed())
+    }
+
+    fun assertSingleBundlingBroadcastShown() {
+        assertViewInRecyclerViewAt(0, R.id.rv_product_bundle_card_broadcast, not(isDisplayed()))
+        assertViewInRecyclerViewAt(0, R.id.product_bundle_card_broadcast, isDisplayed())
+    }
+
+    fun assertCarouselBundlingBroadcastShown(expectedCount: Int) {
+        assertViewInRecyclerViewAt(
+            0,
+            R.id.rv_product_bundle,
+            withTotalItem(expectedCount)
+        )
     }
 }

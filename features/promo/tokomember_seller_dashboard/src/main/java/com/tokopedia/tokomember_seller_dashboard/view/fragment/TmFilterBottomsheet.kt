@@ -44,6 +44,7 @@ class TmFilterBottomsheet: BottomSheetUnify() {
             childLayoutRes,
             null, false
         )
+        showHeader=false
         showCloseIcon = false
         showKnob = true
         setChild(childView)

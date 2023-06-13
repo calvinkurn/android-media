@@ -20,8 +20,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
-import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
+import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -61,10 +61,11 @@ class MiniCartChatListBottomSheet @Inject constructor(
         analytics.eventClickTickBoxChatBottomSheet(isChecked)
     }
 
-    fun show(context: Context?,
-             fragmentManager: FragmentManager,
-             lifecycleOwner: LifecycleOwner,
-             viewModel: MiniCartViewModel,
+    fun show(
+        context: Context?,
+        fragmentManager: FragmentManager,
+        lifecycleOwner: LifecycleOwner,
+        viewModel: MiniCartViewModel
     ) {
         context?.let {
             mContext = context
@@ -221,8 +222,13 @@ class MiniCartChatListBottomSheet @Inject constructor(
                     analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
-            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height +
-                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics))
+            viewBinding.rvMiniCartChatList.setPadding(
+                0,
+                0,
+                0,
+                viewBinding.cardView.height +
+                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics)
+            )
         }
     }
 

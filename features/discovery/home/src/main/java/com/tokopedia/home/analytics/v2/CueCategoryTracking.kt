@@ -72,7 +72,7 @@ object CueCategoryTracking : BaseTrackerConst() {
         promotion.putString(Promotion.ITEM_NAME, itemName)
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, userId)
-        return Pair(Event.PROMO_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 
     fun getCueCategoryView(

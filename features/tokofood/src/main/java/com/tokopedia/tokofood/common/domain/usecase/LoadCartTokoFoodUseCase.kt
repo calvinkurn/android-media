@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
@@ -87,7 +88,7 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("MiniCartTokofood", QUERY)
+@GqlQuery("MiniCartTokofoodOld", QUERY)
 class LoadCartTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
@@ -95,11 +96,15 @@ class LoadCartTokoFoodUseCase @Inject constructor(
 
     init {
         setTypeClass(MiniCartTokoFoodResponse::class.java)
-        setGraphqlQuery(MiniCartTokofood())
+        setGraphqlQuery(MiniCartTokofoodOld())
     }
 
-    suspend fun execute(source: String): CheckoutTokoFood {
-        val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
+    suspend fun execute(source: String): CheckoutTokoFood? {
+        val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        if (chosenAddress.addressId.isZero() || chosenAddress.geolocation.isBlank()) {
+            return null
+        }
+        val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddress)
         val param = generateParams(additionalAttributes.generateString(), source)
         setRequestParams(param)
         val response = executeOnBackground()

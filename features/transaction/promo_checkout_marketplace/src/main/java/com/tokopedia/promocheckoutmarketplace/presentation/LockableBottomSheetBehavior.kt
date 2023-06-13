@@ -17,7 +17,7 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     init {
-        setBottomSheetCallback(object: BottomSheetCallback() {
+        setBottomSheetCallback(object : BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
 
@@ -44,8 +44,11 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
     }
 
     override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, axes: Int, type: Int): Boolean {
-        return if (!mLocked) super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type)
-        else false
+        return if (!mLocked) {
+            super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type)
+        } else {
+            false
+        }
     }
 
     override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
@@ -57,7 +60,10 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
     }
 
     override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float): Boolean {
-        return if (!mLocked) super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
-        else false
+        return if (!mLocked) {
+            super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
+        } else {
+            false
+        }
     }
 }

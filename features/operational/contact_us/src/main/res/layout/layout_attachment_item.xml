@@ -7,17 +7,19 @@
 
     <ImageView
         android:id="@+id/iv_attachment"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
-        android:scaleType="centerCrop" />
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/contact_us_attachment"/>
 
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_gravity="end"
         android:layout_margin="4dp"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_clear" />
+        app:srcCompat="@drawable/ic_clear"
+        android:contentDescription="@string/contact_us_delete"/>
 
 </FrameLayout>

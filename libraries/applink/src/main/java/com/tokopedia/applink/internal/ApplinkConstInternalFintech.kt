@@ -17,4 +17,7 @@ object ApplinkConstInternalFintech {
     const val SHOW_KTP = "show_ktp"
     const val TYPE = "type"
 
+    const val INSURANCE_INFO = "$INTERNAL_FINTECH/insurance-info"
+    const val PARAM_INSURANCE_INFO_URL = "url"
+
 }

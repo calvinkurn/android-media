@@ -9,17 +9,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.home_account.test.R
 import com.tokopedia.iconunify.IconUnify
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
-
 
 fun explicitProfileRobot(action: ExplicitProfileRobot.() -> Unit): ExplicitProfileRobot {
     return ExplicitProfileRobot().apply(action)
 }
 
 infix fun ExplicitProfileRobot.validateComponent(action: ExplicitProfileResult.() -> Unit): ExplicitProfileResult {
-    Thread.sleep(2500)
+    Thread.sleep(1000)
     return ExplicitProfileResult().apply(action)
 }
 
@@ -84,10 +83,12 @@ class ExplicitProfileResult {
     }
 
     fun shouldViewEmptyPage() {
-        onView(allOf(
-            withId(R.id.titleEmptyPage),
-            withText("Kategori lainnya masih disiapin"),
-            isDisplayed())
+        onView(
+            allOf(
+                withId(R.id.titleEmptyPage),
+                withText("Kategori lainnya masih disiapin"),
+                isDisplayed()
+            )
         )
         onView(
             allOf(
@@ -108,7 +109,7 @@ class ExplicitProfileResult {
 /**
  * perform click on component [IconUnify]
  */
-fun clickOnUnifyIcon() : ViewAction {
+fun clickOnUnifyIcon(): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
             return allOf(withId(R.id.sectionInfoIcon), isDisplayed())
@@ -121,6 +122,5 @@ fun clickOnUnifyIcon() : ViewAction {
         override fun perform(uiController: UiController?, view: View?) {
             (view as IconUnify).performClick()
         }
-
     }
 }

@@ -26,4 +26,14 @@ object ManageAddressConstant {
     const val EXTRA_LONG = "EXTRA_LONG"
     const val EXTRA_LAT = "EXTRA_LAT"
     const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
+
+    const val EXTRA_QUERY = "EXTRA_QUERY"
+    const val QUERY_PARAM_RUID = "ruid"
+    const val QUERY_PARAM_SUID = "suid"
+    const val EXTRA_RECEIVER_USER_NAME = "EXTRA_RECEIVER_USER_NAME"
+    const val EXTRA_SHARE_ADDRESS_FROM_NOTIF = "EXTRA_SHARE_ADDRESS_FROM_NOTIF"
+
+    // User Consent
+    const val DELETE_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625"
+    const val DELETE_ADDRESS_COLLECTION_ID_PRODUCTION = "1dd907e3-3e1f-405d-90c5-3db42e19d59d"
 }

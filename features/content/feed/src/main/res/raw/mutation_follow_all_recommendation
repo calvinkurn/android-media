@@ -1,7 +1,0 @@
-mutation onboardingFollowAll($ids: [Int!]!, $source: String) {
-  feedUserOnboardingFollowAll(ids: $ids, source: $source) {
-    success
-    count
-    source
-  }
-}

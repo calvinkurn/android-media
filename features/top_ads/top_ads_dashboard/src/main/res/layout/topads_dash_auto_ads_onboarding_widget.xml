@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="@string/auto_ads_status_widget_title"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             android:typeface="normal"
             app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
             app:layout_constraintTop_toTopOf="parent"

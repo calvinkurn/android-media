@@ -54,7 +54,6 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
                         }
                     }
                 }
-
             })
 
             btnSendEmail.setOnClickListener {

@@ -4,10 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
-import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
+
 
 class SectionTopQuestViewBinder(
     var questWidgetCallbacks: QuestWidgetCallbacks,

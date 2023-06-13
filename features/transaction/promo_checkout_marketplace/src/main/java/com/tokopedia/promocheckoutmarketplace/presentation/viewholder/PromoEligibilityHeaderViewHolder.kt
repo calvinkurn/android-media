@@ -9,8 +9,8 @@ import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 
-class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding)
-    : AbstractViewHolder<PromoEligibilityHeaderUiModel>(viewBinding.root) {
+class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding) :
+    AbstractViewHolder<PromoEligibilityHeaderUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_eligibility_header
@@ -21,8 +21,10 @@ class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMar
         renderDivider(viewBinding, element)
     }
 
-    private fun renderEligibilityInformation(viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding,
-                                             element: PromoEligibilityHeaderUiModel) {
+    private fun renderEligibilityInformation(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding,
+        element: PromoEligibilityHeaderUiModel
+    ) {
         with(viewBinding) {
             labelPromoEligibilityHeaderTitle.text = element.uiData.title
             if (element.uiData.subTitle.isNotBlank()) {
@@ -34,8 +36,10 @@ class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMar
         }
     }
 
-    private fun renderDivider(viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding,
-                              element: PromoEligibilityHeaderUiModel) {
+    private fun renderDivider(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding,
+        element: PromoEligibilityHeaderUiModel
+    ) {
         with(viewBinding) {
             val labelPromoEligibilityHeaderTitleLayoutParam = labelPromoEligibilityHeaderTitle.layoutParams as ViewGroup.MarginLayoutParams
             if (element.uiState.isEnabled) {
@@ -47,5 +51,4 @@ class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMar
             }
         }
     }
-
 }

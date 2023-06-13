@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:paddingRight="-8dp"
     android:paddingEnd="-8dp"
-    android:paddingLeft="@dimen/layout_lvl0"
-    android:paddingStart="@dimen/layout_lvl0"
-    android:paddingTop="@dimen/spacing_lvl4">
+    android:paddingLeft="0dp"
+    android:paddingStart="0dp"
+    android:paddingTop="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textSelection"

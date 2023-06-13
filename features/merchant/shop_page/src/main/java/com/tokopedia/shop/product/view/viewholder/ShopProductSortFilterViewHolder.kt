@@ -5,13 +5,13 @@ import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopProductSortFilterBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.databinding.ItemShopProductSortFilterBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -19,8 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopProductSortFilterViewHolder(
-        itemView: View,
-        private val shopProductSortFilterViewHolderListener: ShopProductSortFilterViewHolderListener?
+    itemView: View,
+    private val shopProductSortFilterViewHolderListener: ShopProductSortFilterViewHolderListener?
 ) : AbstractViewHolder<ShopProductSortFilterUiModel>(itemView) {
 
     companion object {
@@ -37,13 +37,13 @@ class ShopProductSortFilterViewHolder(
         fun onFilterClicked()
     }
 
-    private val viewBinding : ItemShopProductSortFilterBinding? by viewBinding()
+    private val viewBinding: ItemShopProductSortFilterBinding? by viewBinding()
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private val sortFilterWidget: SortFilter? = viewBinding?.sortFilter
 
     private val scrollListener = ViewTreeObserver.OnScrollChangedListener {
         shopProductSortFilterUiModel?.scrollX = sortFilterWidget?.sortFilterHorizontalScrollView?.scrollX
-                ?: 0
+            ?: 0
     }
 
     override fun bind(data: ShopProductSortFilterUiModel) {
@@ -56,7 +56,7 @@ class ShopProductSortFilterViewHolder(
             }
         })
         sortFilterWidget?.sortFilterItems?.removeAllViews()
-        if(data.isShowSortFilter){
+        if (data.isShowSortFilter) {
             sortFilterWidget?.filterType = SortFilter.TYPE_ADVANCED
             sortFilterWidget?.filterRelationship = SortFilter.RELATIONSHIP_AND
             sortFilterWidget?.parentListener = {
@@ -64,7 +64,7 @@ class ShopProductSortFilterViewHolder(
             }
             sortFilterWidget?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
             sortFilterWidget?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
-        }else{
+        } else {
             sortFilterWidget?.filterType = SortFilter.TYPE_QUICK
             sortFilterWidget?.filterRelationship = SortFilter.RELATIONSHIP_OR
         }
@@ -76,8 +76,10 @@ class ShopProductSortFilterViewHolder(
                     type = ChipsUnify.TYPE_SELECTED
                 }
             } else {
-                SortFilterItem(itemView.resources.getString(
-                        R.string.shop_sort_filter_default_label)
+                SortFilterItem(
+                    itemView.resources.getString(
+                        R.string.shop_sort_filter_default_label
+                    )
                 ).apply {
                     type = ChipsUnify.TYPE_NORMAL
                 }
@@ -94,8 +96,10 @@ class ShopProductSortFilterViewHolder(
                 type = ChipsUnify.TYPE_SELECTED
             }
         } else {
-            SortFilterItem(itemView.resources.getString(
-                    R.string.shop_etalase_filter_default_label)
+            SortFilterItem(
+                itemView.resources.getString(
+                    R.string.shop_etalase_filter_default_label
+                )
             ).apply {
                 type = ChipsUnify.TYPE_NORMAL
             }

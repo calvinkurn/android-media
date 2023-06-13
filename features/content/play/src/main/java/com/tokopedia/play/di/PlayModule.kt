@@ -1,7 +1,9 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -23,6 +25,12 @@ import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
@@ -41,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -50,7 +59,7 @@ import javax.inject.Named
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule(val mContext: Context) {
+class PlayModule {
 
     @PlayScope
     @Provides
@@ -62,7 +71,9 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
+    fun providePlayVideoPlayerLifecycleObserver(activity: AppCompatActivity): PlayVideoPlayerObserver {
+        return PlayVideoPlayerObserver(activity)
+    }
 
     @PlayScope
     @Provides
@@ -85,15 +96,21 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideUpdateCartCounterMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+    fun provideUpdateCartCounterMutation(activity: AppCompatActivity): String {
+        return GraphqlHelper.loadRawString(
+            activity.resources,
+            com.tokopedia.atc_common.R.raw.gql_update_cart_counter
+        )
     }
 
     @Provides
     @PlayScope
     @Named(QUERY_VARIANT)
-    internal fun provideQueryVariant(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
+    internal fun provideQueryVariant(activity: AppCompatActivity): String {
+        return GraphqlHelper.loadRawString(
+            activity.resources,
+            com.tokopedia.variant_common.R.raw.gql_product_variant
+        )
     }
 
     @Provides
@@ -106,8 +123,8 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    fun provideTrackingQueue(): TrackingQueue {
-        return TrackingQueue(mContext)
+    fun provideTrackingQueue(activity: AppCompatActivity): TrackingQueue {
+        return TrackingQueue(activity)
     }
 
     @Provides
@@ -118,8 +135,8 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+    fun provideRemoteConfig(activity: AppCompatActivity): RemoteConfig {
+        return FirebaseRemoteConfigImpl(activity)
     }
 
     @PlayScope
@@ -147,13 +164,18 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
+    fun provideWebSocket(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler
+    ): PlayWebSocket {
         return PlayWebSocketImpl(
-                OkHttpClient.Builder(),
-                userSession,
-                dispatchers,
-                mContext,
-                localCacheHandler,
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers,
+            context,
+            localCacheHandler
         )
     }
 
@@ -175,8 +197,12 @@ class PlayModule(val mContext: Context) {
      */
     @PlayScope
     @Provides
-    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+    fun providePlaySSE(
+        @ApplicationContext appContext: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
+    ): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, appContext)
 
     /**
      * Sharing Experience
@@ -189,4 +215,28 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun providePlayMetrics(): PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
+
+    @PlayScope
+    @Provides
+    fun provideWidgetTools(
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
+    ): PlayWidgetTools {
+        return PlayWidgetTools(
+            playWidgetUseCase,
+            playWidgetReminderUseCase,
+            playWidgetUpdateChannelUseCase,
+            mapper,
+            connectionUtil
+        )
+    }
+
+    @PlayScope
+    @Provides
+    fun provideActivityResultRegistry(activity: AppCompatActivity): ActivityResultRegistry {
+        return activity.activityResultRegistry
+    }
 }

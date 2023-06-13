@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginBottom="@dimen/layout_lvl2"
+    android:layout_marginBottom="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lines="1"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +20,7 @@
     <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         android:background="@null"
         app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
         app:layout_constraintEnd_toEndOf="parent"

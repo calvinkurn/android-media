@@ -24,7 +24,8 @@ interface WebsocketPayloadGenerator {
         previewMsg: SendableUiModel,
         attachments: List<SendablePreview>,
         userLocationInfo: LocalCacheModel? = null,
-        referredMsg: ParentReply? = null
+        referredMsg: ParentReply? = null,
+        sourceReply: String
     ): String
 
     fun generateAttachmentPreviewMsg(
@@ -38,7 +39,8 @@ interface WebsocketPayloadGenerator {
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): String
 
     fun generateWsPayloadStopTyping(msgId: String): String
@@ -55,13 +57,17 @@ interface WebsocketPayloadGenerator {
         roomMetaData: RoomMetaData,
         attachments: ArrayList<SendablePreview>,
         localId: String,
-        referredMsg: ParentReply?
+        referredMsg: ParentReply?,
+        sourceReply: String
     ): String
 
     fun generateImageWsPayload(
         roomMetaData: RoomMetaData,
-        uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        filePath: String,
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean,
+        sourceReply: String
     ): String
 
+    fun generateLocalId(): String
 }

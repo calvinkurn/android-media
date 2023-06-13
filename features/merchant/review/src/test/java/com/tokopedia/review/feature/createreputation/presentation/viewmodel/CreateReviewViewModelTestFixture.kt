@@ -1,10 +1,13 @@
 package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -17,20 +20,28 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplateResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.utils.createSuccessResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
 
 abstract class CreateReviewViewModelTestFixture {
 
@@ -48,12 +59,16 @@ abstract class CreateReviewViewModelTestFixture {
         const val SAMPLE_SHOP_ID = "6996572"
         const val SAMPLE_UPLOAD_ID = "abcd-1234-efgh-5678-ijkl"
         const val SAMPLE_VIDEO_URL = "https://www.tokopedia.com/patrick-belly-dancing.mp4"
+        const val ERROR_CODE = "OO-XE8L"
 
-        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_valid_to_review.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_non_empty_keywords.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_empty_keywords.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_PLACEHOLDER = "json/get_reputation_form_use_case_result_success_valid_to_review_with_empty_placeholder.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_INVALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_invalid_to_review.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_PRODUCT_DELETED = "json/get_reputation_form_use_case_result_success_product_deleted.json"
         const val SAMPLE_GET_REVIEW_TEMPLATE_RESULT_SUCCESS_EMPTY = "json/get_review_template_use_case_result_success_empty.json"
         const val SAMPLE_GET_REVIEW_TEMPLATE_RESULT_SUCCESS_NON_EMPTY = "json/get_review_template_use_case_result_success_non_empty.json"
+        const val SAMPLE_GET_PRODUCT_INCENTIVE_OVO_RESULT_SUCCESS_NO_INCENTIVE = "json/get_product_incentive_ovo_result_success_no_incentive.json"
         const val SAMPLE_GET_PRODUCT_INCENTIVE_OVO_RESULT_SUCCESS_INCENTIVE = "json/get_product_incentive_ovo_result_success_incentive.json"
         const val SAMPLE_GET_PRODUCT_INCENTIVE_OVO_RESULT_SUCCESS_CHALLENGE = "json/get_product_incentive_ovo_result_success_challenge.json"
         const val SAMPLE_GET_BAD_RATING_CATEGORY_RESULT_SUCCESS_NON_EMPTY = "json/get_bad_rating_category_use_case_result_success_non_empty.json"
@@ -92,13 +107,24 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
 
+    @RelaxedMockK
+    lateinit var cacheManager: CacheManager
+
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val rule = CoroutineTestRule()
 
     protected lateinit var viewModel: CreateReviewViewModel
 
-    protected val getReputationFormUseCaseResultSuccessValid = createSuccessResponse<ProductRevGetForm>(
-        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW
+    protected val getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS
+    ).getSuccessData<ProductRevGetForm>()
+
+    protected val getReputationFormUseCaseResultSuccessValidWithEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS
+    ).getSuccessData<ProductRevGetForm>()
+
+    protected val getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_PLACEHOLDER
     ).getSuccessData<ProductRevGetForm>()
 
     protected val getReputationFormUseCaseResultSuccessInvalid = createSuccessResponse<ProductRevGetForm>(
@@ -116,6 +142,11 @@ abstract class CreateReviewViewModelTestFixture {
     protected val getReviewTemplateUseCaseResultSuccessNonEmpty = createSuccessResponse<ProductrevGetReviewTemplateResponseWrapper>(
         SAMPLE_GET_REVIEW_TEMPLATE_RESULT_SUCCESS_NON_EMPTY
     ).getSuccessData<ProductrevGetReviewTemplateResponseWrapper>()
+
+    protected val getProductIncentiveOvoUseCaseResultSuccessNoIncentive = createSuccessResponse<ProductRevIncentiveOvoDomain>(
+        SAMPLE_GET_PRODUCT_INCENTIVE_OVO_RESULT_SUCCESS_NO_INCENTIVE
+    ).getSuccessData<ProductRevIncentiveOvoDomain>()
+
 
     protected val getProductIncentiveOvoUseCaseResultSuccessIncentive = createSuccessResponse<ProductRevIncentiveOvoDomain>(
         SAMPLE_GET_PRODUCT_INCENTIVE_OVO_RESULT_SUCCESS_INCENTIVE
@@ -147,6 +178,8 @@ abstract class CreateReviewViewModelTestFixture {
         mockSuccessGetBadRatingCategory()
         mockIsVideoFormat()
         mockUserSession()
+        mockkStatic(RemoteConfigInstance::class)
+        mockkObject(ErrorHandler)
         viewModel = CreateReviewViewModel(
             CoroutineTestDispatchersProvider,
             getProductReputationForm,
@@ -158,7 +191,8 @@ abstract class CreateReviewViewModelTestFixture {
             userSessionInterface,
             getReviewTemplatesUseCase,
             getBadRatingCategoryUseCase,
-            getPostSubmitBottomSheetUseCase
+            getPostSubmitBottomSheetUseCase,
+            cacheManager
         )
     }
 
@@ -187,7 +221,7 @@ abstract class CreateReviewViewModelTestFixture {
     }
 
     protected fun mockSuccessGetReputationForm(
-        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValid
+        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords
     ) {
         coEvery { getProductReputationForm.getReputationForm(any()) } returns response
     }
@@ -218,11 +252,16 @@ abstract class CreateReviewViewModelTestFixture {
         uploadID: String = SAMPLE_UPLOAD_ID,
         videoUrl: String = SAMPLE_VIDEO_URL
     ) {
-        coEvery { uploaderUseCase(any()) } returns UploadResult.Success(uploadID, videoUrl)
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Success(
+            uploadId = uploadID,
+            videoUrl = videoUrl
+        )
     }
 
     protected fun mockErrorUploadMedia(withException: Boolean = true, delayTime: Long = 0L) {
-        coEvery { uploaderUseCase(any()) } coAnswers  {
+        coEvery { uploaderUseCase(any()) } coAnswers {
             delay(delayTime)
             if (withException) throw Exception() else UploadResult.Error("")
         }
@@ -246,5 +285,56 @@ abstract class CreateReviewViewModelTestFixture {
 
     protected fun mockErrorPostSubmitBottomSheet() {
         coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws Exception()
+    }
+
+    protected fun mockStringAb(key: String, defaultValue: String, value: String) {
+        every { RemoteConfigInstance.getInstance() } returns mockk(relaxed = true) {
+            val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
+                every { getString(key, defaultValue) } returns value
+            }
+            every { abTestPlatform } returns mockAbTestPlatform
+        }
+    }
+
+    protected fun mockErrorHandler() {
+        every {
+            ErrorHandler.getErrorMessagePair(any(), any(), any())
+        } returns Pair("", ERROR_CODE)
+    }
+
+    protected fun setShouldRunReviewTopicsPeekAnimation() {
+        every {
+            cacheManager.get(
+                customId = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun",
+                type = Boolean::class.java,
+                defaultValue = false
+            )
+        } returns false
+    }
+
+    protected fun runCollectingStateFlows(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+        val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
+        val collectorJobs = mutableListOf<Job>()
+        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
+        collectorJobs.add(scope.launch { viewModel.createReviewBottomSheetUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.productCardUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.ratingUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.tickerUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.textAreaTitleUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.badRatingCategoriesUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.topicsUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.textAreaUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.templateUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.mediaPickerUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.anonymousUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.progressBarUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.submitButtonUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.incentiveBottomSheetUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.textAreaBottomSheetUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.postSubmitBottomSheetUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.anonymousInfoBottomSheetUiState.collect {} })
+        collectorJobs.add(scope.launch { viewModel.toasterQueue.toList(toasterQueue) })
+        block(toasterQueue)
+        collectorJobs.onEach { it.cancel() }
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
@@ -16,10 +17,11 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.utils.date.DateUtil
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -58,9 +60,15 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductSection(input: ProductSection): TagItemUiModel {
+    fun mapProductSection(input: ProductSection, channelType: PlayChannelType): TagItemUiModel {
+        val controlTime = DateUtil.getCurrentDate()
         return TagItemUiModel(
-            product = ProductUiModel(input.sectionList.map(productTagMapper::mapSection), input.config.showProductTag),
+            product = ProductUiModel(
+                productSectionList = input.sectionList.map {
+                    productTagMapper.mapSection(it, controlTime, channelType)
+                },
+                canShow = input.config.showProductTag,
+            ),
             maxFeatured = input.config.peekProductCount,
             bottomSheetTitle = input.config.bottomSheetTitle,
             resultState = ResultState.Success,
@@ -68,8 +76,15 @@ class PlaySocketToModelMapper @Inject constructor(
         )
     }
 
-    fun mapMerchantVoucher(input: MerchantVoucher): List<MerchantVoucherUiModel> {
-        return input.listOfVouchers.map(merchantVoucherMapper::mapMerchantVoucher)
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapMerchantVoucher(input: MerchantVoucher, partnerName: String): VoucherUiModel {
+        val vouchers = input.listOfVouchers.map(merchantVoucherMapper::mapMerchantVoucher)
+        val eligibleForShown = vouchers.find { !it.isPrivate }
+        val newVoucher = buildList {
+            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
+            addAll(vouchers)
+        }
+        return VoucherUiModel(newVoucher)
     }
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
@@ -80,12 +95,12 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
+    fun mapInteractive(input: GiveawayResponse): GameUiModel.Giveaway {
         val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
         return interactiveMapper.mapGiveaway(input, waitingDurationInMillis)
     }
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): GameUiModel {
         return interactiveMapper.mapInteractive(input)
     }
 
@@ -103,7 +118,7 @@ class PlaySocketToModelMapper @Inject constructor(
         return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
     }
 
-    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
+    fun mapQuizFromSocket(response: QuizResponse): GameUiModel {
         val waitingDurationInMillis = TimeUnit.SECONDS.toMillis(response.waitingDuration)
         return interactiveMapper.mapQuiz(response, waitingDurationInMillis)
     }
@@ -146,6 +161,5 @@ class PlaySocketToModelMapper @Inject constructor(
         private const val PARAM_SEND_TYPE_MULTIPLE_LIKE = "MULTIPLE_LIKE"
         private const val PARAM_SEND_CHANNEL_ID = "channel_id"
         private const val PARAM_SEND_MESSAGE = "message"
-        private const val PARAM_SEND_WAREHOUSE_ID = "warehouse_id"
     }
 }

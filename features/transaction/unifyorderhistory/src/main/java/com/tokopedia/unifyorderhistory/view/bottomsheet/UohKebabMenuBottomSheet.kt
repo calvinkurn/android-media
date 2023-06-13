@@ -54,6 +54,6 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
     }
 
     interface UohKebabMenuBottomSheetListener {
-        fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
+        fun onKebabItemClick(index: Int, orderData: UohListOrder.UohOrders.Order, orderIndex: Int)
     }
 }

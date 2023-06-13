@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources tools:ignore="UnusedResources" xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!--host-->
+    <string name="host_dilayani_tokopedia" translatable="false">dilayani-tokopedia</string>
+
+    <!--path-->
+    <string name="path_dilayani_tokopedia_home" translatable="false">/home</string>
+
+</resources>

@@ -244,18 +244,19 @@ class ShopShowcaseTracking (context: Context?) {
     }
 
     // No 19
-    fun clickBackButton(shopId: String, shopType: String) {
-        tracker.sendEnhanceEcommerceEvent(
-                getDataLayer(
-                        CLICK_ETALASE,
-                        ETALASE_SETTING_PAGE,
-                        "click back",
-                        "",
-                        shopId,
-                        shopType,
-                        PAGE_TYPE_VALUE
-                )
+    fun clickBackButton(shopId: String, userId: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to CLICK_CLOSE_SHOP_SHOWCASE,
+            EVENT_CATEGORY to CATEGORY_SHOP_PAGE_BUYER,
+            EVENT_LABEL to "",
+            TRACKER_ID to TRACKER_ID_CLICK_CLOSE_SHOP_SHOWCASE_LIST,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
         )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     // No 20

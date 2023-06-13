@@ -47,7 +47,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class TalkWriteFragment : BaseDaggerFragment(),
+open class TalkWriteFragment : BaseDaggerFragment(),
     HasComponent<TalkWriteComponent>, TalkWriteCategoryChipsWidget.ChipClickListener,
     TalkPerformanceMonitoringContract {
 

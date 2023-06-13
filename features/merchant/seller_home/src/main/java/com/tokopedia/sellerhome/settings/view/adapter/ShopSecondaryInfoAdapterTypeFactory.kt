@@ -22,6 +22,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
     override fun type(uiModel: ReputationBadgeWidgetUiModel): Int =
         ReputationBadgeViewHolder.LAYOUT_RES
 
+    override fun type(uiModel: TokoMemberWidgetUiModel): Int = ShopTokoMemberViewHolder.LAYOUT_RES
+
     override fun type(uiModel: ShopFollowersWidgetUiModel): Int = ShopFollowersViewHolder.LAYOUT_RES
 
     override fun type(uiModel: FreeShippingWidgetUiModel): Int = FreeShippingViewHolder.LAYOUT_RES
@@ -50,6 +52,12 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
                 parent,
                 listener::onShopBadgeClicked,
                 listener::onShopBadgeRefresh
+            )
+            ShopTokoMemberViewHolder.LAYOUT_RES -> ShopTokoMemberViewHolder(
+                parent,
+                listener::onTokoMemberCountClicked,
+                listener::onTotalTokoMemberRefresh,
+                listener::onImpressionTokoMember
             )
             ShopFollowersViewHolder.LAYOUT_RES -> ShopFollowersViewHolder(
                 parent,

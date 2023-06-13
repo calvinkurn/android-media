@@ -22,11 +22,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -36,6 +37,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
@@ -57,16 +59,11 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener
+    private var listener: Listener,
 ) : LifecycleObserver {
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
-
-        private const val ANNIVERSARY_PATTERN_URL =
-            "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
-        private const val ANNIVERSARY_ORNAMENT_URL =
-            "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
     private val otherMenuAdapter by lazy {
@@ -88,8 +85,6 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
-    private var anniversaryPatternImage: ImageUnify? = null
-    private var anniversaryOrnamentImage: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -192,6 +187,12 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTotalTokoMemberData(state: SettingResponseState<String>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setTokoMemberData(state)
+        }
+    }
+
     fun setShopFollowersData(state: SettingResponseState<String>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setShopFollowersData(state)
@@ -236,6 +237,10 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTopAdsShop(isUsed: Boolean){
+        otherMenuAdapter?.addIklanTopadsMenu(isUsed)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
@@ -248,8 +253,6 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
-            anniversaryPatternImage = findViewById(R.id.iv_sah_other_pattern_anniv)
-            anniversaryOrnamentImage = findViewById(R.id.iv_sah_other_ornament_anniv)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -272,7 +275,6 @@ class OtherMenuViewHolder(
         setupScrollHeaderAnimator()
         setupShareButtonAnimator()
         setupContentAnimator()
-        setupAnniversaryIllustration()
     }
 
     private fun setupRecyclerView() {
@@ -313,11 +315,6 @@ class OtherMenuViewHolder(
         shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
             it.setInitialButtonState()
         }
-    }
-
-    private fun setupAnniversaryIllustration() {
-        anniversaryPatternImage?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_URL)
-        anniversaryOrnamentImage?.loadImageWithoutPlaceholder(ANNIVERSARY_ORNAMENT_URL)
     }
 
     private fun setupSecondaryInfoAdapter() {
@@ -456,6 +453,7 @@ class OtherMenuViewHolder(
     private fun setShopStatus() {
         val imageResource: Int
         val headerBackgroundResource: Int
+
         when {
             userSession.isShopOfficialStore -> {
                 imageResource = R.drawable.bg_sah_new_other_curved_header_os
@@ -470,11 +468,13 @@ class OtherMenuViewHolder(
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }
+
         shopStatusCurvedImage?.setImageResource(imageResource)
+
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 
-    private fun setInitialValues() {
+    fun setInitialValues() {
         secondaryInfoAdapter.showInitialInfo()
         setHeaderValues()
         setInitialBalanceInfoLoading()
@@ -517,9 +517,10 @@ class OtherMenuViewHolder(
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()
-        fun onRmTransactionClicked()
+        fun onRmTransactionClicked(currentTransactionTotal: Long)
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
+        fun onTokoMemberCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()
         fun onRefreshShopInfo()
@@ -527,6 +528,7 @@ class OtherMenuViewHolder(
         fun onShopOperationalClicked()
         fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean)
         fun onShopBadgeRefresh()
+        fun onTotalTokoMemberRefresh()
         fun onShopTotalFollowersRefresh()
         fun onUserInfoRefresh()
         fun onOperationalHourRefresh()
@@ -540,5 +542,6 @@ class OtherMenuViewHolder(
         fun onFreeShippingImpression()
         fun onTokoPlusClicked()
         fun onTokoPlusImpressed()
+        fun onImpressionTokoMember()
     }
 }

@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/unify_space_16"
-    android:layout_marginEnd="@dimen/unify_space_16">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgMenu"
-        android:layout_width="@dimen/unify_space_24"
-        android:layout_height="@dimen/unify_space_24"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginStart="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/imgMenu"
         app:layout_constraintStart_toEndOf="@id/imgMenu"
         app:layout_constraintTop_toTopOf="@+id/imgMenu"

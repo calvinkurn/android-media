@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliateProduct(${"$"}identifier: String!,${"$"}page: Int,${"$"}limit: Int){
+val GQL_Affiliate_Recommended_Product: String = """query recommendedAffiliateProduct(${"$"}identifier: String!,${"$"}page: Int,${"$"}limit: Int){
   recommendedAffiliateProduct(identifier: ${"$"}identifier,page: ${"$"}page,limit: ${"$"}limit) {
     data {
       status
@@ -29,6 +29,15 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
           commission {
             percentage
             amount
+            threshold
+            amountFormatted
+            percentageFormatted
+            sellerAmount
+            sellerAmountFormatted
+            sellerPercentage
+            sellerPercentageFormatted
+            expiryDate
+            expiryDateFormatted
           }
           footer {
             footerType
@@ -37,7 +46,7 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
           }
           rating
           productID
-          shopID
+          ssaStatus
         }
       }
       pageInfo {
@@ -60,4 +69,5 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
       }
     }
   }
-}""".trimIndent()
+}
+""".trimIndent()

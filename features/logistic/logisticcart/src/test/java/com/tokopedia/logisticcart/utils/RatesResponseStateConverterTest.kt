@@ -14,15 +14,15 @@ class RatesResponseStateConverterTest {
     fun determineRatesResponseCondition() {
         val data = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
-                    ShippingDurationUiModel().apply {
-                        shippingCourierViewModelList = listOf(
-                                ShippingCourierUiModel().apply {
-                                    productData = ProductData().apply {
-                                        shipperProductId = 37
-                                    }
-                                }
-                        )
-                    }
+                ShippingDurationUiModel().apply {
+                    shippingCourierViewModelList = listOf(
+                        ShippingCourierUiModel().apply {
+                            productData = ProductData().apply {
+                                shipperProductId = 37
+                            }
+                        }
+                    )
+                }
             )
         }
 

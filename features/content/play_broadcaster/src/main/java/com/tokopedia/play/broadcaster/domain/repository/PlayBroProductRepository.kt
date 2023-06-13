@@ -18,7 +18,7 @@ interface PlayBroProductRepository {
 
     suspend fun getProductsInEtalase(
         etalaseId: String,
-        page: Int,
+        cursor: String,
         keyword: String,
         sort: SortUiModel,
     ): PagedDataUiModel<ProductUiModel>
@@ -31,4 +31,6 @@ interface PlayBroProductRepository {
     suspend fun setProductTags(channelId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(channelID: String): List<ProductTagSectionUiModel>
+
+    suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
 }

@@ -55,11 +55,14 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
     fun createMenuDetailParams(menuID: Int): Map<String,Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
         params[PARAM_MENU_ID] = menuID
+        params[PARAM_PLATFORM_ID] = PLATFORM_ID
         return params
     }
 
     companion object {
         const val PARAM_MENU_ID = "menuID"
+        const val PARAM_PLATFORM_ID = "platformID"
+        private const val PLATFORM_ID = 5
     }
 
 }

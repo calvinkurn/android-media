@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingVertical="2dp">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_balance_divider"
         app:layout_constraintBottom_toBottomOf="@id/rv_balance_widget_data"

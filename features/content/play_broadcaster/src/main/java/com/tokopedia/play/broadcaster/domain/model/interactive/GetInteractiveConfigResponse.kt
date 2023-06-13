@@ -56,9 +56,6 @@ data class GetInteractiveConfigResponse(
         @SerializedName("minChoicesCount")
         val minChoicesCount: Int = 0,
 
-        @SerializedName("maxRewardLength")
-        val maxRewardLength: Int = 0,
-
         @SerializedName("maxChoiceLength")
         val maxChoiceLength: Int = 0,
 

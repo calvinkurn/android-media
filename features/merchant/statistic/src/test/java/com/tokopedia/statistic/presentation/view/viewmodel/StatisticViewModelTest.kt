@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -12,6 +13,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,7 +84,7 @@ class StatisticViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: StatisticViewModel
-    private lateinit var dynamicParameter: DynamicParameterModel
+    private lateinit var dynamicParameter: ParamCommonWidgetModel
     private lateinit var privateDynamicParameter: Field
 
     @Before
@@ -113,8 +115,8 @@ class StatisticViewModelTest {
         }
     }
 
-    private fun getDynamicParameter(): DynamicParameterModel {
-        return DynamicParameterModel(
+    private fun getDynamicParameter(): ParamCommonWidgetModel {
+        return ParamCommonWidgetModel(
             startDate = "15-07-20202",
             endDate = "21-07-20202",
             pageSource = TestConst.PAGE_SOURCE,
@@ -133,7 +135,7 @@ class StatisticViewModelTest {
 
         viewModel.setDateFilter(mockPageSource, startDate, endDate, TestConst.DATE_TYPE_DAY)
 
-        val dynamicParameterModel = privateDynamicParameter.get(viewModel) as DynamicParameterModel
+        val dynamicParameterModel = privateDynamicParameter.get(viewModel) as ParamCommonWidgetModel
 
         assert(dynamicParameterModel.startDate == startDateFmt)
         assert(dynamicParameterModel.endDate == endDateFmt)
@@ -145,6 +147,7 @@ class StatisticViewModelTest {
     fun `should success when get widget layout`() = runBlocking {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
+        val widgetLayout = WidgetLayoutUiModel(widgetList = layoutList)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, TestConst.PAGE_SOURCE)
 
@@ -154,7 +157,7 @@ class StatisticViewModelTest {
 
         coEvery {
             getLayoutUseCase.executeOnBackground()
-        } returns layoutList
+        } returns widgetLayout
 
         viewModel.getWidgetLayout(TestConst.PAGE_SOURCE)
 
@@ -167,7 +170,7 @@ class StatisticViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        viewModel.widgetLayout.verifySuccessEquals(Success(layoutList))
     }
 
     @Test
@@ -293,8 +296,10 @@ class StatisticViewModelTest {
 
         val lineGraphDataResult =
             listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -318,8 +323,10 @@ class StatisticViewModelTest {
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error message")
 
-        getLineGraphDataUseCase.params =
-            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -341,8 +348,10 @@ class StatisticViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -368,8 +377,10 @@ class StatisticViewModelTest {
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getMultiLineGraphUseCase.params =
-            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -443,7 +454,11 @@ class StatisticViewModelTest {
         )
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -470,7 +485,11 @@ class StatisticViewModelTest {
         )
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -546,8 +565,12 @@ class StatisticViewModelTest {
         )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -573,8 +596,12 @@ class StatisticViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params =
-            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()

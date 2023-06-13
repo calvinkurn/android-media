@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.data.util.showBidStateChangeConfirmationDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -52,12 +51,18 @@ class TopadsAutoBidSwitchPartialLayout(
             it.setOnTouchListener { view, motionEvent ->
                 tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
-                        tracker?.bidChangeConfirmationDialogPositiveClick(it.isChecked)
+                    context.showBidStateChangeConfirmation(isBidAutomatic, {
+                        if(isBidAutomatic)
+                            tracker?.bidChangeToManualLanjuktanClicked()
+                        else
+                            tracker?.bidChangeConfirmationDialogPositiveClick()
                         it.isChecked = !it.isChecked
                         onCheckBoxStateChanged?.invoke(it.isChecked)
                     }, {
-                        tracker?.bidChangeConfirmationDialogNegativeClick(it.isChecked)
+                        if(isBidAutomatic)
+                            tracker?.bidChangeToManualDismissed()
+                        else
+                            tracker?.bidChangeConfirmationDialogNegativeClick()
                     })
                 }
                 false
@@ -74,7 +79,9 @@ class TopadsAutoBidSwitchPartialLayout(
 
     interface TrackerListener {
         fun autoBidSwitchClicked(on: Boolean)
-        fun bidChangeConfirmationDialogPositiveClick(isAutomatic: Boolean)
-        fun bidChangeConfirmationDialogNegativeClick(isAutomatic: Boolean)
+        fun bidChangeConfirmationDialogPositiveClick()
+        fun bidChangeConfirmationDialogNegativeClick()
+        fun bidChangeToManualLanjuktanClicked()
+        fun bidChangeToManualDismissed()
     }
 }

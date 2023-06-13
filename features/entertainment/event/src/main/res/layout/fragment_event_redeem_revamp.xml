@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/container_success_redeem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:card_type="clear"
+        app:card_background_color="@color/Unify_GN50"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_success_redeem"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                app:icon_name="CHECK_CIRCLE"
+                app:icon_color_light_enable="@color/Unify_G500"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_success_redeem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@+id/ic_success_redeem"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/tg_success_redeem_time"
+                android:layout_marginStart="16dp"
+                app:typographyWeight="bold"
+                app:typographyType="display_2"
+                tools:text="Berhasil Redeem ticket"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_success_redeem_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@+id/ic_success_redeem"
+                app:layout_constraintTop_toBottomOf="@+id/tg_success_redeem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp"
+                app:typographyWeight="reguler"
+                app:typographyType="display_3"
+                tools:text="28 Nov 2022, 14.15 WIB"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_booker"
+        app:layout_constraintTop_toBottomOf="@+id/container_success_redeem"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/ent_redeem_revamp_booker_data_title"
+        android:visibility="gone"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_booker_name"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_booker"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/ent_redeem_revamp_name"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_value_booker_name"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_booker"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="4"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        tools:text="Kevin Winarya"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_detail_visitor"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_booker_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/ent_redeem_revamp_visitor_detail_ticket_title"
+        android:visibility="gone"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_detail_visitor"
+        app:layout_constraintTop_toBottomOf="@+id/tg_detail_visitor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_detail_product"
+        app:layout_constraintTop_toBottomOf="@+id/rv_detail_visitor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/ent_redeem_revamp_booker_detail_ticket_title"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_product"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_detail_product"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/ent_redeem_revamp_product"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_value_product"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_detail_product"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="4"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        tools:text="Tiket Soundrenaline 2022"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_type_ticket"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_product"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/ent_redeem_revamp_ticket"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_value_type_ticket"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_product"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="4"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        tools:text="1 Presale - 2 Days Pass"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_date"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_type_ticket"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/ent_redeem_revamp_date"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_value_date"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_type_ticket"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="4"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        tools:text="28 Nov 2022 19.00 - 29 Nov 2022 19.00"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_sum_ticket"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/ent_redeem_revamp_sum_product"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_value_sum_ticket"
+        app:layout_constraintTop_toBottomOf="@+id/tg_value_date"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="4"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950"
+        tools:text="10 tiket"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_scan"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_redeem"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_redeem_revamp_scan_other_qr"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_redeem"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_sum_ticket"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/ent_redeem_revamp_redeem_title"
+        android:visibility="gone"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_redeem"
+        app:layout_constraintLeft_toRightOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_redeem"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_redeem_revamp_redeem_button"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/tf_redeem"
+        app:layout_constraintRight_toLeftOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tg_title_redeem"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_redeem_revamp_redeem_button"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        app:unify_text_field_label="@string/ent_redeem_revamp_sum_product"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error_redeem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        app:globalerrors_type="NO_CONNECTION"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_redeem"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

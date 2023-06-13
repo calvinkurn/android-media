@@ -24,12 +24,12 @@ class InvoicePreviewViewHolder(
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val bg = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
             R.dimen.dp_topchat_16,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_6,
             R.dimen.dp_topchat_6,
             Gravity.CENTER

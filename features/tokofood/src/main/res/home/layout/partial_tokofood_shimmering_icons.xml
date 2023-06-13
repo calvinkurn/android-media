@@ -1,54 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_1"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.25"
+        />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/partial_tokofood_shimmering_icon_1" />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/partial_tokofood_shimmering_icon_2"
+        />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/partial_tokofood_shimmering_icon_3"
+        />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toBottomOf="@id/partial_tokofood_shimmering_icon_1"
+        app:layout_constraintStart_toStartOf="@id/partial_tokofood_shimmering_icon_1"
+        />
 
-    </LinearLayout>
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toBottomOf="@id/partial_tokofood_shimmering_icon_2"
+        app:layout_constraintStart_toStartOf="@id/partial_tokofood_shimmering_icon_2"
+        />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toBottomOf="@id/partial_tokofood_shimmering_icon_3"
+        app:layout_constraintStart_toStartOf="@id/partial_tokofood_shimmering_icon_3"
+        />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
+    <include
+        android:id="@+id/partial_tokofood_shimmering_icon_8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.25"
+        layout="@layout/partial_tokofood_shimmering_icon"
+        app:layout_constraintTop_toBottomOf="@id/partial_tokofood_shimmering_icon_4"
+        app:layout_constraintStart_toStartOf="@id/partial_tokofood_shimmering_icon_4"
+        />
 
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
-
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
-
-        <include
-            layout="@layout/partial_tokofood_shimmering_icon"
-            />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,37 +7,39 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.viewholder.ProductCardCompactCarouselSeeMoreViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSeeMoreViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSpaceViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
-class HomeLeftCarouselAtcCallback (
-    private val context: Context,
+class HomeLeftCarouselAtcCallback(
+    private val context: Context?,
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
-): HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-   HomeLeftCarouselAtcProductCardSeeMoreViewHolder.HomeLeftCarouselAtcProductCardSeeMoreListener,
-   HomeLeftCarouselAtcProductCardSpaceViewHolder.HomeLeftCarouselAtcProductCardSpaceListener,
-   HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener
-{
+) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
+    HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
-    override fun onProductCardAddVariantClicked(product: HomeLeftCarouselAtcProductCardUiModel) {
-        AtcVariantHelper.goToAtcVariant(
-            context = context,
-            productId = product.id.orEmpty(),
-            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-            isTokoNow = true,
-            shopId = product.shopId,
-            startActivitResult =startActivityForResult
-        )
+    override fun onProductCardAddVariantClicked(
+        product: HomeLeftCarouselAtcProductCardUiModel
+    ) {
+        context?.apply {
+            AtcVariantHelper.goToAtcVariant(
+                context = this,
+                productId = product.id.orEmpty(),
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                isTokoNow = true,
+                shopId = product.shopId,
+                startActivitResult = startActivityForResult
+            )
+        }
     }
 
     override fun onProductCardQuantityChanged(
@@ -45,10 +47,13 @@ class HomeLeftCarouselAtcCallback (
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
+                channelId = product.channelId,
                 productId = product.id.orEmpty(),
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
             )
         } else {
@@ -56,33 +61,49 @@ class HomeLeftCarouselAtcCallback (
         }
     }
 
-    override fun onProductCardClicked(position: Int, product: HomeLeftCarouselAtcProductCardUiModel) {
-        openAppLink(product.appLink)
-
-        trackClickProduct(
-            position = position,
-            product = product
-        )
-    }
-
-    override fun onProductCardImpressed(position: Int, product: HomeLeftCarouselAtcProductCardUiModel) {
-        trackProductImpression(
-            position = position,
-            product = product
-        )
-    }
-
-    override fun onSeeMoreClicked(appLink: String, channelId: String, headerName: String) {
+    override fun onProductCardClicked(
+        position: Int,
+        product: HomeLeftCarouselAtcProductCardUiModel
+    ) {
+        val appLink = viewModel.createAffiliateLink(product.appLink)
         openAppLink(appLink)
 
-        trackClickViewAllEvent(
-            channelId = channelId,
-            channelHeaderName = headerName
+        analytics.trackClickProductLeftCarousel(
+            position = position,
+            product = product
         )
     }
 
-    override fun onLeftCarouselImpressed(channelId: String, headerName: String) {
-        trackImpression(
+    override fun onProductCardImpressed(
+        position: Int,
+        product: HomeLeftCarouselAtcProductCardUiModel
+    ) {
+        analytics.trackImpressionProductLeftCarousel(
+            position = position,
+            product = product
+        )
+    }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
+
+    override fun onSeeMoreClicked(
+        appLink: String,
+        channelId: String,
+        headerName: String
+    ) {
+        openAppLink(appLink)
+
+        analytics.trackClickViewAllLeftCarousel(
+            id = channelId,
+            headerName = headerName
+        )
+    }
+
+    override fun onLeftCarouselImpressed(
+        channelId: String,
+        headerName: String
+    ) {
+        analytics.trackImpressionLeftCarousel(
             channelId = channelId,
             channelHeaderName = headerName
         )
@@ -95,7 +116,7 @@ class HomeLeftCarouselAtcCallback (
     ) {
         openAppLink(appLink)
 
-        trackClickBanner(
+        analytics.trackClickBannerLeftCarousel(
             channelId = channelId,
             channelHeaderName = headerName
         )
@@ -105,51 +126,18 @@ class HomeLeftCarouselAtcCallback (
         viewModel.removeLeftCarouselAtc(channelId)
     }
 
-    override fun onProductCardSpaceClicked(
-        appLink: String,
-        channelId: String,
-        headerName: String
-    ) {
-        openAppLink(appLink)
+    override fun onProductCardSeeMoreClickListener(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
+        openAppLink(seeMoreUiModel.appLink)
 
-        trackClickBanner(
-            channelId = channelId,
-            channelHeaderName = headerName
-        )
-    }
-
-    override fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {
-        openAppLink(product.appLink)
-
-        trackClickViewAllEvent(
-            channelId = product.channelId,
-            channelHeaderName = product.channelHeaderName
+        analytics.trackClickViewAllLeftCarousel(
+            id = seeMoreUiModel.id,
+            headerName = seeMoreUiModel.headerName
         )
     }
 
     private fun openAppLink(appLink: String) {
-        if(appLink.isNotEmpty()) {
+        if (appLink.isNotEmpty()) {
             RouteManager.route(context, appLink)
         }
-    }
-
-    private fun trackProductImpression(position: Int, product: HomeLeftCarouselAtcProductCardUiModel) {
-        analytics.trackImpressionProductLeftCarousel(position, product)
-    }
-
-    private fun trackClickProduct(position: Int, product: HomeLeftCarouselAtcProductCardUiModel) {
-        analytics.trackClickProductLeftCarousel(position, product)
-    }
-
-    private fun trackClickViewAllEvent(channelId: String, channelHeaderName: String) {
-        analytics.trackClickViewAllLeftCarousel(channelId, channelHeaderName)
-    }
-
-    private fun trackImpression(channelId: String, channelHeaderName: String) {
-        analytics.trackImpressionLeftCarousel(channelId, channelHeaderName)
-    }
-
-    private fun trackClickBanner(channelId: String, channelHeaderName: String) {
-        analytics.trackClickBannerLeftCarousel(channelId, channelHeaderName)
     }
 }

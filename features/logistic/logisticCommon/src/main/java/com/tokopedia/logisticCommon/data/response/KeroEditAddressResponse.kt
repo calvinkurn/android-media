@@ -3,14 +3,14 @@ package com.tokopedia.logisticCommon.data.response
 import com.google.gson.annotations.SerializedName
 
 data class KeroEditAddressResponse(
-    
+
     @SerializedName("data")
     val data: Data = Data()
 ) {
     data class Data(
-        
+
         @SerializedName("kero_edit_address")
-        val keroEditAddress: KeroEditAddress = KeroEditAddress(),
+        val keroEditAddress: KeroEditAddress = KeroEditAddress()
     ) {
         data class KeroEditAddress(
 

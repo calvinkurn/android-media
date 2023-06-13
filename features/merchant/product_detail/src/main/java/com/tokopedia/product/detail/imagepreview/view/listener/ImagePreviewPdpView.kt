@@ -9,8 +9,6 @@ interface ImagePreviewPdpView {
 
     fun gotoLogin()
 
-    fun addWishlist()
-    fun removeWishlist()
     fun addWishlistV2(context: Context)
     fun removeWishlistV2(context: Context)
 

@@ -1,12 +1,12 @@
 package com.tokopedia.checkout.view.adapter
 
-import com.tokopedia.logisticcart.shipping.model.CartItemModel
-import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder.ShipmentItemListener
-import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder
-import android.view.ViewGroup
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder.ShipmentItemListener
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 
 class ShipmentInnerProductListAdapter(private val mCartItemList: MutableList<CartItemModel>, private val addOnWordingModel: AddOnWordingModel, private val mListener: ShipmentItemListener) : RecyclerView.Adapter<ShipmentCartItemViewHolder>() {

@@ -12,18 +12,18 @@ import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
 
 class ImageGeneratorUseCase constructor(
     private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<String>(graphqlRepository) {
+): GraphqlUseCase<ImageGeneratorModel>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()
 
-    override suspend fun executeOnBackground(): String {
+    override suspend fun executeOnBackground(): ImageGeneratorModel {
         val gqlRequest = GraphqlRequest(QUERY, ImageGeneratorModel.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
             .Builder(CacheType.CACHE_FIRST).build())
 
         val response = gqlResponse.getData<ImageGeneratorModel.Response>(ImageGeneratorModel.Response::class.java)
         if (response?.imageGeneratorModel != null && !TextUtils.isEmpty(response.imageGeneratorModel.imageUrl)) {
-            return response.imageGeneratorModel.imageUrl
+            return response.imageGeneratorModel
         } else {
             throw MessageErrorException("Error in image generation")
         }
@@ -37,6 +37,7 @@ class ImageGeneratorUseCase constructor(
         const val QUERY = """mutation imagenerator_generate_image(${'$'}sourceID:String!, ${'$'}args:[ImageneratorGenerateImageArg]){
               imagenerator_generate_image(sourceID:${'$'}sourceID, args:${'$'}args){
                 image_url
+                source_id
               }
             }
         """

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="status_items">
+        <item>Semua</item>
+        <item>Mendatang</item>
+        <item>Berlangsung</item>
+        <item>Berakhir</item>
+        <item>Dihentikan</item>
+    </string-array>
+
+    <string-array name="type_items">
+        <item>Kupon Toko</item>
+        <item>Kupon Produk</item>
+    </string-array>
+
+    <string-array name="source_items">
+        <item>Dibuat Seller</item>
+        <item>Paket Promosi</item>
+        <item>Dari Tokopedia</item>
+    </string-array>
+
+    <string-array name="promo_type_items">
+        <item>Gratis Ongkir</item>
+        <item>Diskon</item>
+        <item>Cashback</item>
+    </string-array>
+
+    <string-array name="target_items">
+        <item>Publik</item>
+        <item>Khusus</item>
+    </string-array>
+
+    <string-array name="target_buyer_items">
+        <item>Semua Pembeli</item>
+        <item>Follower Baru</item>
+    </string-array>
+
+    <string-array name="voucher_list_promo_type_items">
+        <item>Gratis Ongkir</item>
+        <item>Diskon</item>
+        <item>Cashback</item>
+    </string-array>
+
+</resources>

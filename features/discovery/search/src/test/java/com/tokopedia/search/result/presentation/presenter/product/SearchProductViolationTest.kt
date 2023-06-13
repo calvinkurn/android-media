@@ -7,6 +7,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -52,7 +53,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify violation products view model`(searchProductModel: SearchProductModel) {
-        visitableList.size shouldBe 2
+        visitableList.size shouldBe 1
 
         val violationProductsViewModel = visitableList[0] as ViolationDataView
 
@@ -62,6 +63,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
         violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
         violationProductsViewModel.violationButton.text shouldBe violation.buttonText
+        violationProductsViewModel.verticalSeparator shouldBe VerticalSeparator.Bottom
     }
 
     @Test
@@ -91,6 +93,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         violationProductsViewModel.descriptionText shouldBe violation.descriptionText
         violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
         violationProductsViewModel.violationButton.text shouldBe violation.buttonText
+        violationProductsViewModel.verticalSeparator shouldBe VerticalSeparator.Bottom
     }
 
     @Test

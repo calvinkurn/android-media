@@ -13,4 +13,3 @@ object PodConstant {
     const val RESULT_OK = 1
     const val RESULT_FAIL_LOAD_IMAGE = 2
 }
-

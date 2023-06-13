@@ -13,9 +13,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_CATEGORY_TITLE
@@ -26,7 +25,6 @@ import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchNotFoundMockResponse
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,13 +35,11 @@ import org.junit.Test
 class DealsSearchActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDbSource = GtmLogDBSource(context)
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsSearchActivity> = object : IntentsTestRule<DealsSearchActivity>(DealsSearchActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDbSource.deleteAll().subscribe()
             setupGraphqlMockResponse(DealsSearchMockResponse())
         }
 
@@ -51,6 +47,9 @@ class DealsSearchActivityTest {
             return DealsSearchActivity.getCallingIntent(context)
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun setUp() {
@@ -67,8 +66,7 @@ class DealsSearchActivityTest {
 
         setupGraphqlMockResponse(DealsSearchNotFoundMockResponse())
         Thread.sleep(3000)
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE), hasAllSuccess())
     }
 
     private fun changeLocation() {

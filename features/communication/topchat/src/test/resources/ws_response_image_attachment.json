@@ -21,8 +21,8 @@
     "attachment_id": 1,
     "attachment": {
       "attributes": {
-        "image_url": "https://ecs7.tokopedia.net/img/LUZQDL/2020/10/6/a4551a91-c312-4927-a5fe-fcd75b251ee1.jpg",
-        "image_url_thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/LUZQDL/2020/10/6/a4551a91-c312-4927-a5fe-fcd75b251ee1.jpg"
+        "image_url": "https://images.tokopedia.net/img/LUZQDL/2020/10/6/a4551a91-c312-4927-a5fe-fcd75b251ee1.jpg",
+        "image_url_thumbnail": "https://images.tokopedia.net/img/cache/100-square/LUZQDL/2020/10/6/a4551a91-c312-4927-a5fe-fcd75b251ee1.jpg"
       },
       "fallback_attachment": {
         "html": "<div>Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.</div>",

@@ -77,7 +77,7 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
@@ -97,13 +97,13 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
                 stepperThree?.setBackgroundColor(
@@ -118,19 +118,19 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
                 stepperThree?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Green_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
 

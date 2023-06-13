@@ -21,7 +21,7 @@ class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemProductRecentViewBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        val binding = ItemProductRecentViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CartRecentViewItemViewHolder(binding, actionListener)
     }
 
@@ -34,5 +34,4 @@ class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.
         val data = recentViewItemHoldeDataList[position]
         holderView.bind(data)
     }
-
 }

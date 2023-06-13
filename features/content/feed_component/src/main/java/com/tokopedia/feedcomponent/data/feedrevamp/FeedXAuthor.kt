@@ -19,5 +19,7 @@ data class FeedXAuthor(
         @SerializedName("type")
         var type: Int = 0,
         @SerializedName("webLink")
-        var webLink: String = ""
+        var webLink: String = "",
+        @SerializedName("encryptedUserID")
+        val encryptedUserId: String = "",
 )

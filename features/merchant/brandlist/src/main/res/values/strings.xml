@@ -1,8 +1,6 @@
 <resources>
-    <string name="app_name">brandlist</string>
     <string name="brandlist_search_view_hint">Cari di Official Store</string>
     <string name="brandlist_action_expand_all">Lihat Selebihnya</string>
-    <string name="brandlist_all_brand">Semua Brand</string>
     <string name="brandlist_new_label">NEW</string>
     <string name="brandlist_brand_label">Brand</string>
     <string name="title_brand_not_found">Oops, Brand tidak ditemukan</string>

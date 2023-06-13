@@ -124,5 +124,4 @@ class DeleteCartAnalyticsTest : BaseCartTest() {
         val attribution = products[0][EnhancedECommerceProductCartMapData.KEY_DIMENSION_40]
         Assert.assertTrue(attribution == trackerListNameValue)
     }
-
 }

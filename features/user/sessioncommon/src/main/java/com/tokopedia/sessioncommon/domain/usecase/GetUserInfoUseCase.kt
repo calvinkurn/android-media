@@ -42,6 +42,7 @@ class GetUserInfoUseCase @Inject constructor(@ApplicationContext val repository:
               domain
               level
               logo
+              avatarOriginal
             }
           }
         }

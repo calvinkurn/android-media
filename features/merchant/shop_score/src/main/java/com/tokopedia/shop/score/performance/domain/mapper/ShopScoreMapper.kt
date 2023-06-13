@@ -7,6 +7,8 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.*
@@ -162,7 +164,7 @@ open class ShopScoreMapper @Inject constructor(
                     val mapTimerNewSeller =
                         mapToTimerNewSellerUiModel(
                             shopAge,
-                            isEndTenureNewSeller, shopScore.toInt()
+                            isEndTenureNewSeller, shopScore
                         )
                     if (mapTimerNewSeller.second) {
                         add(mapTimerNewSeller.first)
@@ -329,7 +331,7 @@ open class ShopScoreMapper @Inject constructor(
         }
 
         if (isShowProtectedParameterNewSeller(
-                shopAge.toInt(),
+                shopAge,
                 shopInfoPeriodUiModel.dateShopCreated
             ) ||
             isReactivatedSellerAfterComeback(
@@ -386,7 +388,7 @@ open class ShopScoreMapper @Inject constructor(
         }
 
         if (isShowProtectedParameterNewSeller(
-                shopAge.toInt(),
+                shopAge,
                 shopInfoPeriodUiModel.dateShopCreated
             ) ||
             isReactivatedSellerAfterComeback(
@@ -613,7 +615,7 @@ open class ShopScoreMapper @Inject constructor(
         shopAge: Long
     ): ProtectedParameterTabletUiModel {
         val protectedParameterSection = getProtectedParameterSection(
-            shopScoreLevelList, shopAge.toInt()
+            shopScoreLevelList, shopAge
         )
 
         return ProtectedParameterTabletUiModel(
@@ -630,7 +632,7 @@ open class ShopScoreMapper @Inject constructor(
         shopAge: Long
     ): ProtectedParameterSectionUiModel {
         val protectedParameterSection = getProtectedParameterSection(
-            shopScoreLevelList, shopAge.toInt()
+            shopScoreLevelList, shopAge
         )
 
         return ProtectedParameterSectionUiModel(
@@ -714,7 +716,7 @@ open class ShopScoreMapper @Inject constructor(
                 isReactivatedSellerAfterComeback(shopScore, shopScoreLevelList)
 
             val isShowProtectedParameter =
-                isShowProtectedParameterNewSeller(shopAge.toInt(), dateShopCreated) ||
+                isShowProtectedParameterNewSeller(shopAge, dateShopCreated) ||
                         isReactivatedSellerAfterComeback
 
             val shopScoreLevelFilter =
@@ -956,10 +958,6 @@ open class ShopScoreMapper @Inject constructor(
                 titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
             ),
             SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                iconPotentialPMUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
-                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_2
-            ),
-            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                 iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
                 titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
             )
@@ -1116,11 +1114,11 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Int)
+    fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Long)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
-        val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
+        val nextSellerDays: Long = COUNT_DAYS_NEW_SELLER - shopAge
 
-        val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
+        val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
         return Pair(
             ItemTimerNewSellerUiModel(
                 effectiveDate = effectiveDate,
@@ -1135,7 +1133,7 @@ open class ShopScoreMapper @Inject constructor(
     fun getProtectedParameterSection(
         shopScoreLevelList:
         List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
-        shopAge: Int
+        shopAge: Long
     ): BaseProtectedParameterSectionUiModel {
         val totalBuyer =
             shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
@@ -1168,23 +1166,23 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun getProtectedParameterDaysDate(shopAge: Int): String {
+    private fun getProtectedParameterDaysDate(shopAge: Long): String {
         return try {
             val date = Calendar.getInstance(getLocale())
-            val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
+            val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge).toInt() ?: Int.ZERO
             val firstMondayDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays, true)
-            val totalTargetDays = diffDays + firstMondayDays
+            val totalTargetDays = (diffDays + firstMondayDays)
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + totalTargetDays)
             format(date.timeInMillis, PATTERN_DATE_TEXT)
-        } catch (e: ParseException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             ""
         }
     }
 
-    private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
+    private fun getNNextDaysTimeCalendar(nextDays: Long): Calendar {
         val date = Calendar.getInstance(getLocale())
-        date.add(Calendar.DATE, nextDays)
+        date.add(Calendar.DATE, nextDays.toInt() ?: Int.ZERO)
         date.set(Calendar.HOUR_OF_DAY, 0)
         date.set(Calendar.MINUTE, 0)
         date.set(Calendar.SECOND, 0)
@@ -1193,10 +1191,10 @@ open class ShopScoreMapper @Inject constructor(
 
     private fun getNumberFormatted(valueResponse: Double): String {
         return try {
-            val number = valueResponse.toString().split(".").getOrNull(0) ?: ""
+            val number = valueResponse.toString().split(".").getOrNull(Int.ZERO) ?: ""
             val decimalNumber =
-                valueResponse.toString().split(".").getOrNull(1)
-                    ?.getOrNull(0) ?: ""
+                valueResponse.toString().split(".").getOrNull(Int.ONE)
+                    ?.getOrNull(Int.ZERO) ?: ""
             "$number.$decimalNumber"
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
@@ -1247,7 +1245,7 @@ open class ShopScoreMapper @Inject constructor(
         }
     }
 
-    private fun isShowProtectedParameterNewSeller(shopAge: Int, dateShopCreated: String): Boolean {
+    private fun isShowProtectedParameterNewSeller(shopAge: Long, dateShopCreated: String): Boolean {
         return shopAge in GoldMerchantUtil.getNNStartShowProtectedParameterNewSeller(dateShopCreated)..SHOP_AGE_FIFTY_NINE
     }
 

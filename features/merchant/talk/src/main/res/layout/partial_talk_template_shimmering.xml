@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/layout_lvl2"
+    android:paddingBottom="16dp"
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -10,8 +10,8 @@
         android:id="@+id/talk_template_list_loading_title"
         android:layout_width="@dimen/dp_168"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,8 +21,8 @@
         android:id="@+id/talk_template_list_loading_subtitle"
         android:layout_width="@dimen/dp_234"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_title"
@@ -30,10 +30,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_description"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_subtitle"
@@ -42,10 +42,10 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_description" />
@@ -53,10 +53,10 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template" />
@@ -64,10 +64,10 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template_1" />
@@ -75,10 +75,10 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_template_3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_loading_template_2" />
@@ -86,9 +86,9 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_template_list_loading_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent" />

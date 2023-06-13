@@ -12,6 +12,7 @@ import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.reposito
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 
@@ -39,9 +40,13 @@ class AddEditProductPreviewModule {
     @AddEditProductPreviewScope
     @Provides
     fun provideProductDraftRepository(
-            draftDataSource: AddEditProductDraftDataSource,
-            userSession: UserSessionInterface
+        draftDataSource: AddEditProductDraftDataSource,
+        userSession: UserSessionInterface
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }
+
+    @AddEditProductPreviewScope
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper = PermissionCheckerHelper()
 }

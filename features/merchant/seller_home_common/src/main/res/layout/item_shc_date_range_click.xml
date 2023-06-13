@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/shc_dimen_date_filter_height"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl0">
+    android:paddingStart="16dp"
+    android:paddingEnd="0dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcDateRangeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN900"
         app:layout_constraintBottom_toTopOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="heading_5"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="7 hari terakhir" />
 
@@ -29,24 +29,24 @@
         android:id="@+id/tvStcDefaultDateRange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:textColor="@color/Unify_NN600"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/verLineStcDefault"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStcDateRangeLabel"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="17 - 23 April 2020" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
-        android:layout_width="@dimen/layout_lvl3"
+        android:layout_width="24dp"
         android:layout_height="22dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvStcDateRangeLabel" />
@@ -54,7 +54,7 @@
     <View
         android:id="@+id/verLineStcDefault"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/shc_dimen_1dp"
-        android:background="@color/Unify_N75"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN300"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

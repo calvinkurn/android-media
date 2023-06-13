@@ -1,6 +1,5 @@
 package com.tokopedia.smartbills.presentation.widget
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
+import com.tokopedia.smartbills.databinding.ViewSmartBillsItemDetailBinding
+import com.tokopedia.smartbills.databinding.ViewSmartBillsItemDetailItemBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.view_smart_bills_item_detail.view.*
-import kotlinx.android.synthetic.main.view_smart_bills_item_detail_item.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by resakemal on 17/05/20
@@ -23,9 +23,22 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     private var categoryName = ""
     private var details: List<SmartBillsItemDetail> = listOf()
 
+    private var binding by autoClearedNullable<ViewSmartBillsItemDetailBinding>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initBottomSheet()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+    }
+
+    private fun initBottomSheet() {
+        setCloseClickListener { dismiss() }
+        binding = ViewSmartBillsItemDetailBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -33,14 +46,14 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView(view: View) {
-        with(view) {
-            tv_smart_bills_item_detail_title.text = if (categoryName.isNotEmpty()) {
+        binding?.run {
+            tvSmartBillsItemDetailTitle.text = if (categoryName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_detail_title), categoryName)
             } else {
                 getString(R.string.smart_bills_item_detail_title_default)
             }
 
-            rv_smart_bills_item_detail.apply {
+            rvSmartBillsItemDetail.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = SmartBillsItemDetailAdapter(details)
             }
@@ -48,7 +61,7 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
     }
 
     inner class SmartBillsItemDetailAdapter(
-            var items: List<SmartBillsItemDetail>
+        var items: List<SmartBillsItemDetail>
     ) : RecyclerView.Adapter<SmartBillsItemDetailAdapter.SmartBillsItemDetailViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsItemDetailViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item_detail_item, parent, false)
@@ -65,9 +78,10 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
 
         inner class SmartBillsItemDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bind(element: SmartBillsItemDetail) {
-                with(itemView) {
-                    tv_smart_bills_item_detail_label.text = element.label
-                    tv_smart_bills_item_detail_value.text = element.value
+                val binding = ViewSmartBillsItemDetailItemBinding.bind(itemView)
+                with(binding) {
+                    tvSmartBillsItemDetailLabel.text = element.label
+                    tvSmartBillsItemDetailValue.text = element.value
                 }
             }
         }
@@ -77,16 +91,13 @@ class SmartBillsItemDetailBottomSheet : BottomSheetUnify() {
         private const val TAG = "SmartBillsItemDetailBottomSheet"
 
         @JvmStatic
-        fun newInstance(context: Context,
-                        categoryName: String = "",
-                        details: List<SmartBillsItemDetail>): SmartBillsItemDetailBottomSheet {
+        fun newInstance(
+            categoryName: String = "",
+            details: List<SmartBillsItemDetail>
+        ): SmartBillsItemDetailBottomSheet {
             return SmartBillsItemDetailBottomSheet().apply {
                 this.categoryName = categoryName
                 this.details = details
-
-                val childView = View.inflate(context, R.layout.view_smart_bills_item_detail, null)
-                setChild(childView)
-                setCloseClickListener { this.dismiss() }
             }
         }
     }

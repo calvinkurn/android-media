@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.presentation.data
 
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
 import com.tokopedia.product.manage.common.feature.variant.data.model.Selection

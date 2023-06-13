@@ -64,7 +64,7 @@
     <View
         android:id="@+id/product_bundling_line"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_stub_single"

@@ -2,11 +2,11 @@ package com.tokopedia.media.picker.common.di.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.media.picker.common.ui.fragment.TestCameraFragment
 import com.tokopedia.media.picker.common.ui.fragment.TestGalleryFragment
 import com.tokopedia.media.picker.common.ui.fragment.TestPermissionFragment
-import com.tokopedia.media.picker.di.key.FragmentKey
-import com.tokopedia.media.picker.ui.ModulePickerFragmentFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,7 +15,7 @@ import dagger.multibindings.IntoMap
 abstract class TestFragmentModule {
 
     @Binds
-    internal abstract fun bindFragmentFactory(factory: ModulePickerFragmentFactory): FragmentFactory
+    internal abstract fun bindFragmentFactory(factory: TkpdFragmentFactory): FragmentFactory
 
     @Binds
     @IntoMap

@@ -14,7 +14,6 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-
 const val CHANNEL_ID = "beta"
 const val NOTIFICATION_ID = 123 shr 5
 
@@ -24,7 +23,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
 
     init {
         sharedPreferences = context
-                .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+            .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
     }
 
     companion object {
@@ -36,12 +35,10 @@ class BetaInterceptor(private val context: Context) : Interceptor {
         @JvmStatic
         fun isBeta(context: Context): Boolean {
             val sharedPreferences = context
-                    .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+                .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
             return sharedPreferences.getBoolean(IS_BETA_TOKOPEDIA, false)
         }
-
     }
-
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -54,20 +51,23 @@ class BetaInterceptor(private val context: Context) : Interceptor {
 
         val saveBeta = fun(context: Context, isBeta: Boolean) {
             val sharedPreferences = context
-                    .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+                .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
             val edit = sharedPreferences.edit()
             edit.putBoolean(IS_BETA_TOKOPEDIA, isBeta)
             edit.apply()
         }
 
-        val headers = response.headers()
-        if (headers.size() > 0) {
+        val headers = response.headers
+        if (headers.size > 0) {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager.createNotificationChannel(
-                        NotificationChannel(CHANNEL_ID,
-                                context.getString(R.string.beta_notification_category),
-                                NotificationManager.IMPORTANCE_LOW))
+                    NotificationChannel(
+                        CHANNEL_ID,
+                        context.getString(R.string.beta_notification_category),
+                        NotificationManager.IMPORTANCE_LOW
+                    )
+                )
             }
 
             determineShowNotif(GlobalConfig.APPLICATION_TYPE, context) { appName: String, appType: Int, context: Context ->
@@ -79,10 +79,10 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                             val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
                             remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
                             val mBuilder =
-                                    NotificationCompat.Builder(context, CHANNEL_ID)
-                                            .setSmallIcon(R.drawable.beta_icon)
-                                            .setCustomContentView(remoteView)
-                                            .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                                NotificationCompat.Builder(context, CHANNEL_ID)
+                                    .setSmallIcon(R.drawable.beta_icon)
+                                    .setCustomContentView(remoteView)
+                                    .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
                             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                         }
@@ -111,27 +111,31 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                     }
                     GlobalConfig.CONSUMER_PRO_APPLICATION -> {
                         val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
-                        createNotif(context, if (get.equals(URL_BETA)) {
-                            appName + "-beta"
-                        } else {
-                            appName
-                        }) {
+                        createNotif(
+                            context,
+                            if (get.equals(URL_BETA)) {
+                                appName + "-beta"
+                            } else {
+                                appName
+                            }
+                        ) {
                             saveBeta(it, true)
                         }
                     }
                     else -> {
                     }
                 }
-
             }
         }
 
         return response
     }
 
-    fun determineShowNotif(appType: Int = GlobalConfig.CONSUMER_APPLICATION, context: Context,
-                           function: (appName: String, appType: Int, context: Context) -> Unit) {
-
+    fun determineShowNotif(
+        appType: Int = GlobalConfig.CONSUMER_APPLICATION,
+        context: Context,
+        function: (appName: String, appType: Int, context: Context) -> Unit
+    ) {
         // determine string to present
         var appName = ""
         when (GlobalConfig.APPLICATION_TYPE) {

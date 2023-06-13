@@ -3,6 +3,8 @@
     <string name="title_favorite_page">Favorit</string>
     <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
     <string name="shop_reccomendation">Rekomendasi Toko</string>
+    <string name="recommendations_for_you">Rekomendasi untukmu</string>
+    <string name="my_favorite_shop">Toko Favoritku</string>
     <string name="home_fav_store">Home - Fav Store Page</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>

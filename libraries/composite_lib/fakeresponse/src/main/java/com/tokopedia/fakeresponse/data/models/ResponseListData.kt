@@ -7,6 +7,7 @@ data class ResponseListData(
         val customName: String,
         val responseType: ResponseItemType,
         val updatedAt: Long,
+        val isResponseSuccess: Boolean,
         override var isSelectedForExport: Boolean = false,
         override var isInExportMode: Boolean = false
 ) : SearchType

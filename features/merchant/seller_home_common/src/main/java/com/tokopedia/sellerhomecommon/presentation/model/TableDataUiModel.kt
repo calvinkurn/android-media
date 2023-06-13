@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFactory
 
@@ -48,14 +49,16 @@ data class TableHeaderUiModel(
 
 sealed class TableRowsUiModel(
     open val valueStr: String = "",
-    open val width: Int = 0
+    open val width: Int = 0,
+    open val meta: Meta = Meta()
 ) : Visitable<TableItemFactory> {
 
     data class RowColumnText(
         override val valueStr: String = "",
         override val width: Int = 0,
+        override val meta: Meta = Meta(),
         val isLeftAlign: Boolean = false
-    ) : TableRowsUiModel(valueStr, width) {
+    ) : TableRowsUiModel(valueStr, width, meta) {
 
         override fun type(typeFactory: TableItemFactory): Int {
             return typeFactory.type(this)
@@ -64,8 +67,9 @@ sealed class TableRowsUiModel(
 
     data class RowColumnImage(
         override val valueStr: String = "",
-        override val width: Int = 0
-    ) : TableRowsUiModel(valueStr, width) {
+        override val width: Int = 0,
+        override val meta: Meta = Meta(),
+    ) : TableRowsUiModel(valueStr, width, meta) {
 
         override fun type(typeFactory: TableItemFactory): Int {
             return typeFactory.type(this)
@@ -75,6 +79,21 @@ sealed class TableRowsUiModel(
     data class RowColumnHtml(
         override val valueStr: String = "",
         override val width: Int = 0,
+        override val meta: Meta = Meta(),
+        val isLeftAlign: Boolean = false,
+        var colorInt: Int? = null
+    ) : TableRowsUiModel(valueStr, width, meta) {
+
+        override fun type(typeFactory: TableItemFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    data class RowColumnHtmlWithIcon(
+        override val valueStr: String = "",
+        override val width: Int = 0,
+        val icon: String = "",
+        override val meta: Meta = Meta(),
         val isLeftAlign: Boolean = false,
         var colorInt: Int? = null
     ) : TableRowsUiModel(valueStr, width) {
@@ -83,4 +102,8 @@ sealed class TableRowsUiModel(
             return typeFactory.type(this)
         }
     }
+
+    data class Meta(
+        val flag: String = String.EMPTY
+    )
 }

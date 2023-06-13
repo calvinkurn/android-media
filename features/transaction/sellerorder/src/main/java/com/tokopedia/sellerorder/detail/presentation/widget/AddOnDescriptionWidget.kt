@@ -41,6 +41,7 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
     }
 
     private val binding: WidgetProductAddOnDescriptionBinding = inflateContent()
+
     /*
         this listener is used to synchronize description text, see less text and see more text
         visibility to prevent a glitch where see less text or see more text was visible when it is
@@ -197,7 +198,9 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                     context.getString(R.string.som_detail_add_on_see_less_description)
                 )
             ).spannedString ?: ""
-        } else description
+        } else {
+            description
+        }
     }
 
     private fun animateDescriptionSeeMore(expanded: Boolean): Animator {
@@ -254,7 +257,7 @@ class AddOnDescriptionWidget @JvmOverloads constructor(
                 this@createHeightAnimator.layoutParams = layoutParams
             }
             addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     onAnimationEnd()
                 }
             })

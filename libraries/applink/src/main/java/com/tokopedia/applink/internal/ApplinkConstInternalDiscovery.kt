@@ -20,11 +20,15 @@ object ApplinkConstInternalDiscovery {
 
     const val AUTOCOMPLETE = "$INTERNAL_DISCOVERY/autocomplete"
 
+    const val UNIVERSAL = "$INTERNAL_DISCOVERY/universal"
+
     const val SIMILAR_SEARCH_RESULT_BASE = "$INTERNAL_DISCOVERY/similar-search-result"
 
     const val SIMILAR_SEARCH_RESULT = "$SIMILAR_SEARCH_RESULT_BASE/{product_id}/"
 
     const val PRODUCT_CARD_OPTIONS = "$INTERNAL_DISCOVERY/product-card-options"
 
-    const val DISCOVERY_CATEGORY_DETAIL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}/category/{DEPARTMENT_ID}/"
+    const val DISCOVERY_CATEGORY_DETAIL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE/category/{DEPARTMENT_ID}/"
+
+    const val SOS = "${ApplinkConstInternalGlobal.DISCOVERY}/sos"
 }

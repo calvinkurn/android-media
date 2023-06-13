@@ -21,6 +21,9 @@ import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase;
+import com.tokopedia.pushnotif.receiver.NotifierReceiverActivity;
+import com.tokopedia.pushnotif.services.ClickedBroadcastReceiver;
 import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
@@ -30,6 +33,8 @@ import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
 
+import androidx.core.app.NotificationCompat;
+
 /**
  * @author ricoharisin .
  */
@@ -37,6 +42,8 @@ import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
 public abstract class BaseNotificationFactory {
 
     protected Context context;
+
+    protected NotificationCompat.InboxStyle inboxStyle;
 
     public BaseNotificationFactory(Context context) {
         this.context = context;
@@ -117,48 +124,66 @@ public abstract class BaseNotificationFactory {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
-        PendingIntent resultPendingIntent;
-        Intent intent = new Intent();
+    protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
 
-        // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
-        // because we need tracking UTM for those notification applink
-        if (URLUtil.isNetworkUrl(appLinks)) {
-            intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intent = new Intent(context, NotifierReceiverActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         } else {
-            intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+            intent = new Intent(context, ClickedBroadcastReceiver.class);
+            intent.setAction(Constant.NotificationReceiver.ACTION_ON_NOTIFICATION_CLICK);
         }
 
-        intent.setData(Uri.parse(appLinks));
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
-        bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
-        bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-        intent.putExtras(bundle);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
+        intent.putExtra(Constant.EXTRA_APPLINK_VALUE, appLinks);
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID, applinkNotificationModel.getTransactionId());
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID, applinkNotificationModel.getToUserId());
+
+        return getPendingIntent(intent, notificationId);
+
+    }
+
+    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
+        Intent intent = new Intent(context.getApplicationContext(), DismissBroadcastReceiver.class);
+        intent.setAction(Constant.NotificationReceiver.ACTION_ON_NOTIFICATION_DISMISS);
+
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
+        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_TRANSACTION_ID, applinkNotificationModel.getTransactionId());
+        intent.putExtra(TrackPushNotificationUseCase.PARAM_RECIPIENT_ID, applinkNotificationModel.getToUserId());
+
+        return getPendingIntent(intent, notificationId);
+    }
+
+    protected PendingIntent getPendingIntent(Intent intent, int notificationId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && intent.getComponent().getClassName().contains(
+                Constant.NotificationReceiver.ACTIVITY_NOTIFIER_RECEIVER)
+        ) {
+            return PendingIntent.getActivity(
+                    context.getApplicationContext(),
+                    notificationId,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !intent.getComponent().getClassName().contains(
+                Constant.NotificationReceiver.ACTIVITY_NOTIFIER_RECEIVER)
+        ) {
+            return PendingIntent.getBroadcast(
+                    context.getApplicationContext(),
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
-            resultPendingIntent = PendingIntent.getActivity(
-                    context,
+            return PendingIntent.getBroadcast(
+                    context.getApplicationContext(),
                     notificationId,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         }
-
-        return resultPendingIntent;
-    }
-
-    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId) {
-        Intent intent = new Intent(context, DismissBroadcastReceiver.class);
-        intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
-        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
     }
 
     protected Boolean isAllowBell() {
@@ -223,6 +248,23 @@ public abstract class BaseNotificationFactory {
                     getRingtoneUri(),
                     getVibratePattern()
             );
+        }
+    }
+
+    public void createNotificationInboxStyle() {
+        if (inboxStyle == null) {
+            inboxStyle = new NotificationCompat.InboxStyle();
+        }
+    }
+
+    protected static String generateSummaryText(int notificationType) {
+        switch (notificationType) {
+            case Constant.NotificationId.TALK:
+                return "Tokopedia - Diskusi";
+            case Constant.NotificationId.CHAT:
+                return "Tokopedia - Chat";
+            default:
+                return "Tokopedia - Notifikasi";
         }
     }
 

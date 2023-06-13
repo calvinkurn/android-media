@@ -16,7 +16,7 @@
           "phoneNumber": "",
           "latitude": -8.61932,
           "longitude": 115.30894,
-          "locationImageStatic": "https://ecs7.tokopedia.net/img/hotel/hotel-default-map.png",
+          "locationImageStatic": "https://images.tokopedia.net/img/hotel/hotel-default-map.png",
           "images": [
             {
               "isLogoPhoto": false,
@@ -567,595 +567,595 @@
         "facility": [
           {
             "groupName": "Umum",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-buildings.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-buildings.png",
             "item": [
               {
                 "id": 33,
                 "name": "Parkir Gratis",
                 "icon": "parking",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png"
               },
               {
                 "id": 1,
                 "name": "Parkir",
                 "icon": "parking",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png"
               },
               {
                 "id": 125,
                 "name": "Parkir pribadi",
                 "icon": "parking",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png"
               },
               {
                 "id": 124,
                 "name": "Parkir di gedung",
                 "icon": "parking",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png"
               }
             ]
           },
           {
             "groupName": "Kegiatan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-activities.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-activities.png",
             "item": [
               {
                 "id": 61,
                 "name": "Bersepeda",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 68,
                 "name": "Berkuda",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 226,
                 "name": "Tur jalan kaki ",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 231,
                 "name": "Kelas memasak",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 228,
                 "name": "Makan malam bertema",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 230,
                 "name": "Tur atau kelas mengenai budaya lokal",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 232,
                 "name": "Musik/pertunjukkan live",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 229,
                 "name": "Happy hour",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 227,
                 "name": "Tur Sepeda",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 225,
                 "name": "Maraton Nonton Film",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Layanan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png",
             "item": [
               {
                 "id": 81,
                 "name": "Wi-Fi",
                 "icon": "internet",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png"
               },
               {
                 "id": 74,
                 "name": "Wi-Fi",
                 "icon": "internet",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png"
               },
               {
                 "id": 34,
                 "name": "Layanan Internet",
                 "icon": "internet",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png"
               }
             ]
           },
           {
             "groupName": "Makanan & Minuman",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-food_and_drink.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-food_and_drink.png",
             "item": [
               {
                 "id": 2,
                 "name": "Restoran",
                 "icon": "restaurant",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-restaurant.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-restaurant.png"
               },
               {
                 "id": 6,
                 "name": "Bar",
                 "icon": "activities",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-activities.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-activities.png"
               },
               {
                 "id": 4,
                 "name": "Layanan Kamar",
                 "icon": "room_amenities",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-room_amenities.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-room_amenities.png"
               },
               {
                 "id": 58,
                 "name": "Fasilitas BBQ",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Kolam renang dan pusat kesehatan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png",
             "item": [
               {
                 "id": 10,
                 "name": "Pusat Kebugaran",
                 "icon": "gym",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-gym.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-gym.png"
               },
               {
                 "id": 118,
                 "name": "Tepi pantai",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 41,
                 "name": "Spa & Pusat Kesehatan",
                 "icon": "spa",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-spa.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-spa.png"
               },
               {
                 "id": 42,
                 "name": "Pijat",
                 "icon": "spa",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-spa.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-spa.png"
               },
               {
                 "id": 80,
                 "name": "Kolam Renang Outdoor",
                 "icon": "swimming_pool",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
               },
               {
                 "id": 86,
                 "name": "Area Pantai Pribadi",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 91,
                 "name": "Kolam Renang Outdoor (sepanjang tahun)",
                 "icon": "swimming_pool",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
               },
               {
                 "id": 153,
                 "name": "Kolam infinity",
                 "icon": "swimming_pool",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
               },
               {
                 "id": 159,
                 "name": "Bar kolam",
                 "icon": "bar",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-bar.png"
               },
               {
                 "id": 154,
                 "name": "Kolam renang dengan pemandangan",
                 "icon": "swimming_pool",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-swimming_pool.png"
               },
               {
                 "id": 250,
                 "name": "Swimming Pool",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 158,
                 "name": "Handuk kolam renang/pantai",
                 "icon": "towel",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-towel.png"
               }
             ]
           },
           {
             "groupName": "Transportasi",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-transport.png",
             "item": [
               {
                 "id": 16,
                 "name": "Antar-Jemput Bandara",
                 "icon": "transport",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-transport.png"
               },
               {
                 "id": 60,
                 "name": "Penyewaan Mobil",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 101,
                 "name": "Layanan antar-jemput (biaya tambahan)",
                 "icon": "transport",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-transport.png"
               },
               {
                 "id": 112,
                 "name": "Antar-Jemput Bandara (biaya tambahan)",
                 "icon": "transport",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-transport.png"
               }
             ]
           },
           {
             "groupName": "Layanan resepsionis",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-reception.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-reception.png",
             "item": [
               {
                 "id": 7,
                 "name": "Resepsionis 24 Jam",
                 "icon": "24h",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-24h.png"
               },
               {
                 "id": 40,
                 "name": "Penukaran Valuta Asing",
                 "icon": "money_exchange",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-money_exchange.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-money_exchange.png"
               },
               {
                 "id": 36,
                 "name": "Check-In/Check-Out cepat",
                 "icon": "reception",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-reception.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-reception.png"
               },
               {
                 "id": 39,
                 "name": "Parkir Valet",
                 "icon": "parking",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png"
               },
               {
                 "id": 96,
                 "name": "Layanan Concierge",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Area umum",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-common_areas.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-common_areas.png",
             "item": [
               {
                 "id": 13,
                 "name": "Taman",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 14,
                 "name": "Teras",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 90,
                 "name": "Teras Berjemur",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Layanan kebersihan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cleaning_service.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-cleaning_service.png",
             "item": [
               {
                 "id": 20,
                 "name": "Laundry",
                 "icon": "laundry",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-laundry.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-laundry.png"
               },
               {
                 "id": 21,
                 "name": "Cuci kering",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 31,
                 "name": "Jasa Penyetrikaan",
                 "icon": "iron",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-iron.png"
               },
               {
                 "id": 122,
                 "name": "Layanan kebersihan harian",
                 "icon": "default",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Pertokoan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shop.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-shop.png",
             "item": [
               {
                 "id": 47,
                 "name": "Toko Oleh-Oleh",
                 "icon": "shop",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shop.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-shop.png"
               }
             ]
           },
           {
             "groupName": "Lain-lain",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png",
             "item": [
               {
                 "id": 83,
                 "name": "AC",
                 "icon": "ac",
                 "availability": 2,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png"
               },
               {
                 "id": 15,
                 "name": "Kamar Bebas-Rokok",
                 "icon": "no_smoking",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-no_smoking.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-no_smoking.png"
               },
               {
                 "id": 84,
                 "name": "Ruangan Khusus Merokok",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 121,
                 "name": "Khusus dewasa",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 237,
                 "name": "Keamanan 24 jam",
                 "icon": "24h",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-24h.png"
               }
             ]
           },
           {
             "groupName": "Fitur Keamanan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
             "item": [
               {
                 "id": 268,
                 "name": "Staf mengikuti semua protokol keamanan sesuai petunjuk otoritas setempat",
                 "icon": "safety_features",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
+                "iconUrl": "https://images.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
               },
               {
                 "id": 259,
                 "name": "Proses pengecekan kesehatan tamu",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 313,
                 "name": "access_to_health_care_professional",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 255,
                 "name": "Alat P3K tersedia",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 314,
                 "name": "Tersedia masker untuk tamu",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 263,
                 "name": "Hand sanitizer in guest accommodation and key areas",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Pembatasan Jarak Sosial",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/41796ae5-b275-4956-a15f-3814dd56da1c.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/DAajKV/2020/9/1/41796ae5-b275-4956-a15f-3814dd56da1c.png",
             "item": [
               {
                 "id": 271,
                 "name": "Peraturan pembatasan jarak sosial diterapkan",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 269,
                 "name": "Pembayaran tanpa tunai tersedia",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Kebersihan & Disinfeksi",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/e0c0e51a-8f01-4b46-8713-8365c17c5eb0.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/DAajKV/2020/9/1/e0c0e51a-8f01-4b46-8713-8365c17c5eb0.png",
             "item": [
               {
                 "id": 266,
                 "name": "Akomodasi harus disemprot disinfektan setelah tamu check-out dan sebelum tamu baru check-in",
                 "icon": "safety_features",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
+                "iconUrl": "https://images.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
               },
               {
                 "id": 260,
                 "name": "Penggunaan pembersih berbahan kimia yang efektif melawan Coronavirus",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 261,
                 "name": "Seprai, handuk, dan pakaian dicuci sesuai pedoman otoritas setempat",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 256,
                 "name": "Tamu dapat membatalkan layanan kebersihan untuk akomodasinya selama mereka menginap",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           },
           {
             "groupName": "Keamanan Makanan",
-            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/2b5164e4-3caa-4f74-9e75-1095348fc400.png",
+            "groupIconUrl": "https://images.tokopedia.net/img/DAajKV/2020/9/1/2b5164e4-3caa-4f74-9e75-1095348fc400.png",
             "item": [
               {
                 "id": 257,
                 "name": "Makanan dapat diantarkan ke akomodasi tamu",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 272,
                 "name": "Semua piring, gelas, dan alat makan lainnya sudah dibersihkan",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 317,
                 "name": "Wadah bungkus sarapan",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 252,
                 "name": "Pembatasan jarak sosial di area makan",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               },
               {
                 "id": 316,
                 "name": "Makanan yang diantar dikemas dengan aman",
                 "icon": "default",
                 "availability": 1,
-                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-miscellaneous.png"
               }
             ]
           }
@@ -1165,42 +1165,42 @@
             "id": 268,
             "name": "Hygiene Verified",
             "icon": "safety_features",
-            "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
+            "iconUrl": "https://images.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
             "availability": 1
           },
           {
             "id": 83,
             "name": "AC",
             "icon": "ac",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-ac.png",
             "availability": 2
           },
           {
             "id": 81,
             "name": "Wi-Fi",
             "icon": "internet",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png",
             "availability": 1
           },
           {
             "id": 2,
             "name": "Restoran",
             "icon": "restaurant",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-restaurant.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-restaurant.png",
             "availability": 1
           },
           {
             "id": 15,
             "name": "Kamar Bebas-Rokok",
             "icon": "no_smoking",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-no_smoking.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-no_smoking.png",
             "availability": 1
           },
           {
             "id": 7,
             "name": "Resepsionis 24 Jam",
             "icon": "24h",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-24h.png",
             "availability": 1
           }
         ],
@@ -1209,28 +1209,28 @@
             "name": "Kebijakan Anak-anak dan Tempat Tidur Tambahan",
             "content": "Anak-anak di atas umur 12 tahun diperbolehkan menginap.\nTidak ada kapasitas untuk tempat tidur tambahan di kamar.\nKapasitas maksimal dari jumlah total tamu di kamar adalah 8.\nTidak ada kapasitas untuk tempat tidur bayi di kamar.\n",
             "icon": "children_care",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-children_care.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-children_care.png",
             "propertyPolicyId": "POLICY_CHILDREN"
           },
           {
             "name": "Internet",
             "content": "Wi-Fi tersedia di area umum hotel dan tidak dikenai biaya.\n",
             "icon": "internet",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-internet.png",
             "propertyPolicyId": "POLICY_HOTEL_INTERNET"
           },
           {
             "name": "Tempat parkir",
             "content": "Parkir pribadi gratis tersedia di lokasi properti (reservasi tidak diperlukan).\n",
             "icon": "parking",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-parking.png",
             "propertyPolicyId": "POLICY_HOTEL_PARKING"
           },
           {
             "name": "Binatang peliharaan",
             "content": "Binatang peliharaan tidak diperbolehkan.\n",
             "icon": "pet",
-            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-pet.png",
+            "iconUrl": "https://images.tokopedia.net/img/hotel/hotel-pet.png",
             "propertyPolicyId": "POLICY_HOTEL_PETS"
           }
         ]

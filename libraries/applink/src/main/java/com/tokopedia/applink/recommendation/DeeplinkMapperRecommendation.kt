@@ -3,7 +3,7 @@ package com.tokopedia.applink.recommendation
 import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import java.net.URLDecoder
 
@@ -34,8 +34,9 @@ fun getRegisteredNavigationRecommendationFromHttp(uri: Uri): String {
 fun redirectToDiscoveryRecom(uri: Uri): String {
     return if (uri.pathSegments.size > 0) {
         val applink = Uri.Builder()
-            .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
-            .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
+            .scheme(DeeplinkConstant.SCHEME_INTERNAL)
+            .authority(ApplinkConstInternalGlobal.HOST_GLOBAL)
+            .appendPath(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
             .appendPath(ApplinkConsInternalHome.PATH_REKOMENDASI)
             .appendQueryParameter(RECOM_PRODUCT_ID, uri.pathSegments[1])
             .build()
@@ -47,8 +48,9 @@ fun redirectToDiscoveryRecom(uri: Uri): String {
         }
     } else {
         Uri.Builder()
-            .scheme(DeeplinkConstant.SCHEME_TOKOPEDIA)
-            .authority(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
+            .scheme(DeeplinkConstant.SCHEME_INTERNAL)
+            .authority(ApplinkConstInternalGlobal.HOST_GLOBAL)
+            .appendPath(ApplinkConsInternalHome.AUTHORITY_DISCOVERY)
             .appendPath(ApplinkConsInternalHome.PATH_REKOMENDASI).toString()
     }
 }

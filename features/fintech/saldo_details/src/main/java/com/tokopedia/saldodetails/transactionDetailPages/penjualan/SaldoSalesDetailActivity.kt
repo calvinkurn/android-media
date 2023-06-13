@@ -3,7 +3,6 @@ package com.tokopedia.saldodetails.transactionDetailPages.penjualan
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.saldodetails.R
@@ -11,7 +10,7 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailS
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.activity_transaction_detail.*
+import kotlinx.android.synthetic.main.activity_saldodetails_transaction_detail.*
 import javax.inject.Inject
 
 class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent> {
@@ -24,7 +23,7 @@ class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetails
         )
     }
 
-    override fun getLayoutRes() = R.layout.activity_transaction_detail
+    override fun getLayoutRes() = R.layout.activity_saldodetails_transaction_detail
     override fun getParentViewResourceID(): Int = R.id.saldo_transaction_parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleSingleWidgetBinding
+import com.tokopedia.shop.common.databinding.ItemProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleSingleAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.SingleBundleVariantSelectedListener
@@ -36,10 +36,10 @@ class ShopHomeProductBundleSingleViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_bundle_single_widget
+        val LAYOUT = R.layout.item_product_bundle_single_widget
     }
 
-    private var viewBinding: ItemShopHomeProductBundleSingleWidgetBinding? by viewBinding()
+    private var viewBinding: ItemProductBundleSingleWidgetBinding? by viewBinding()
     private var typographyBundleName: Typography? = null
     private var typographyBundlePreOrder: Typography? = null
     private var typographyBundleProductName: Typography? = null
@@ -57,8 +57,8 @@ class ShopHomeProductBundleSingleViewHolder(
 
     init {
         viewBinding?.apply {
-            typographyBundleName = tvBundleName
-            typographyBundlePreOrder = tvBundlePreorder
+            typographyBundleName = bundleWidgetHeaderContainer.tvBundleNameLarge
+            typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice

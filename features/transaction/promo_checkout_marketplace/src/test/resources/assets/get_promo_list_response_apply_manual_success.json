@@ -1,0 +1,438 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "error_page": {
+        "is_show_error_page": false,
+        "image": "",
+        "title": "",
+        "description": "",
+        "button": {
+          "text": "",
+          "destination": ""
+        }
+      },
+      "result_status": {
+        "code": "200",
+        "message": [
+          "OK"
+        ],
+        "reason": ""
+      },
+      "empty_state": {
+        "title": "",
+        "description": "",
+        "image_url": ""
+      },
+      "title": "",
+      "sub_title": "",
+      "promo_recommendation": {
+        "codes": [
+          "PROMO_CODE"
+        ],
+        "message": "Kamu bisa hemat Rp2.396"
+      },
+      "coupon_sections": [
+        {
+          "title": "Pilih promo",
+          "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
+          "is_enabled": true,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "is_enabled": true,
+              "id": "my_coupons",
+              "coupon_groups": [
+                {
+                  "id": 10056852,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 10770915,
+                  "code": "PROMO_CODE",
+                  "title": "Cashback Rp2.396",
+                  "message": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 2396,
+                  "is_recommended": true,
+                  "is_selected": true,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "(2.396 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10056852,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 14 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": [
+                    {
+                      "amount_idr": 2396,
+                      "benefit_type": "cashback",
+                      "data_type": "total_product_price"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Promo yang belum bisa dipakai",
+          "sub_title": "",
+          "is_enabled": false,
+          "id": "",
+          "sub_sections": [
+            {
+              "title": "Kupon saya",
+              "sub_title": "Promo dipilih",
+              "icon_unify": "COUPON",
+              "is_enabled": false,
+              "id": "ineligible_coupons",
+              "coupon_groups": [
+                {
+                  "id": 10103459,
+                  "count": 1
+                },
+                {
+                  "id": 9649090,
+                  "count": 1
+                },
+                {
+                  "id": 9923350,
+                  "count": 1
+                },
+                {
+                  "id": 10135115,
+                  "count": 1
+                },
+                {
+                  "id": 9314662,
+                  "count": 2
+                },
+                {
+                  "id": 9958182,
+                  "count": 1
+                },
+                {
+                  "id": 9964942,
+                  "count": 1
+                }
+              ],
+              "coupons": [
+                {
+                  "promo_id": 10848705,
+                  "code": "GP1A1AEFNBDCX78FK6W1",
+                  "title": "Cashback 3.5% hingga Rp700.000",
+                  "message": "Tambah Rp40.100 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10135115,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran \u003cb\u003eGoPay, GoPayLater, \u0026 GoPay Coins\u003c/b\u003e",
+                      "icon": "FINANCE",
+                      "validation_type": "payment",
+                      "methods": [
+                        "GoPay",
+                        "GoPayLater",
+                        "GoPay Coins"
+                      ]
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10006275,
+                  "code": "POML1B3001AEFNB4LUR6",
+                  "title": "Cashback s.d. Rp1.200.000",
+                  "message": "Tambah Rp240.100 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": true,
+                  "group_id": 9314662,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "top_banner",
+                      "title": "Jangan Lewatkan!",
+                      "icon": "",
+                      "validation_type": "",
+                      "methods": []
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10006275,
+                  "code": "POML1B3001AEFNB44EBE",
+                  "title": "Cashback s.d. Rp1.200.000",
+                  "message": "Tambah Rp240.100 untuk pakai promo",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9314662,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 jam lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10672151,
+                  "code": "SMCAUG21AEFNBQB57CHJ",
+                  "title": "Cashback  4% hingga Rp250.000",
+                  "message": "Promo ini hanya berlaku untuk Fashion.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9958182,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 10 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10679008,
+                  "code": "SMCAUG51AEFNB9XB5LXV",
+                  "title": "Cashback  4% hingga Rp200.000",
+                  "message": "Promo ini hanya berlaku untuk Fashion.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9964942,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 10 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10773667,
+                  "code": "ELAT1001AEFNBFLQLVUM",
+                  "title": "Cashback 4% hingga Rp100.000",
+                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 10103459,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 1 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10360668,
+                  "code": "SMCDORJUL1AEFNBXWQFH",
+                  "title": "Cashback Rp15.000",
+                  "message": "Promo ini hanya berlaku untuk NOW! 2hours.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9649090,
+                  "is_group_header": true,
+                  "promo_infos": [],
+                  "benefit_details": []
+                },
+                {
+                  "promo_id": 10636886,
+                  "code": "AUGAU11AEFNBAG1EEMB7",
+                  "title": "Cashback 5% hingga Rp15.000",
+                  "message": "Promo ini hanya berlaku untuk Kategori Otomotif.",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9923350,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 2 hari lagi!",
+                      "icon": "CLOCK",
+                      "validation_type": "",
+                      "methods": []
+                    }
+                  ],
+                  "benefit_details": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "attempted_promo_code_error": {
+        "code": "",
+        "message": ""
+      },
+      "section_tabs": [
+        {
+          "id": "my_coupons",
+          "title": "Kupon Saya"
+        },
+        {
+          "id": "ineligible_coupons",
+          "title": "Belum Bisa Dipakai"
+        }
+      ]
+    }
+  }
+}

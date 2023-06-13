@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class GroupAddress(
-        var isError: Boolean = false,
-        var errorMessage: String = "",
-        var userAddress: UserAddress = UserAddress(),
-        var groupShop: List<GroupShop> = emptyList(),
+    var isError: Boolean = false,
+    var errorMessage: String = "",
+    var userAddress: UserAddress = UserAddress(),
+    var groupShop: List<GroupShop> = emptyList()
 ) : Parcelable

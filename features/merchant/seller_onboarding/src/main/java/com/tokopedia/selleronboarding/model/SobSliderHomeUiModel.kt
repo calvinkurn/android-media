@@ -9,7 +9,7 @@ import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
  */
 
 data class SobSliderHomeUiModel(
-        @DrawableRes override val headerResBg: Int?,
+        @DrawableRes override val headerResBg: Int,
         val impressionHolder: ImpressHolder = ImpressHolder()
 ) : BaseSliderUiModel {
 

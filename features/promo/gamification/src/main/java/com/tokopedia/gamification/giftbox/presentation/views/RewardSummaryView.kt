@@ -49,7 +49,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var rvAdapter: RewardSummaryAdapter
     lateinit var decoration: RewardItemDecoration
     val dataList = arrayListOf<RewardSummaryItem>()
-    val buttonsMap = HashMap<@RewardButtonType String, Typography>()
+    val buttonsMap = HashMap<String, Typography>()
 
     val CONTAINER_REWARD = 0
     val CONTAINER_EMPTY = 1
@@ -61,9 +61,9 @@ class RewardSummaryView : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         init(attrs)
     }
@@ -126,15 +126,15 @@ class RewardSummaryView : FrameLayout {
                                 GtmGiftTapTap.clickCheckRewards(userSession.userId)
                             }
                             RouteManager.route(it.context, rb.applink)
-
                         }
 
                         if (index == 0) {
                             (button.layoutParams as LinearLayout.LayoutParams).rightMargin = context.resources.getDimensionPixelSize(R.dimen.gami_dp_12)
                         }
 
-                        if (rb.type != null)
+                        if (rb.type != null) {
                             buttonsMap[rb.type] = button
+                        }
                     }
                 }
             }
@@ -183,7 +183,6 @@ class RewardSummaryView : FrameLayout {
             decoration.indexTillBigPrize = filteredItems.size - 1
         }
 
-
         rvAdapter.dataList.clear()
         rvAdapter.dataList.addAll(list)
         rvAdapter.notifyDataSetChanged()
@@ -202,7 +201,7 @@ class RewardSummaryView : FrameLayout {
 
                 typography.layoutParams = lp
                 typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_orange_3d)
-                typography.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
             GREEN -> {
                 val lp = LinearLayout.LayoutParams(0, heightLarge)
@@ -211,7 +210,7 @@ class RewardSummaryView : FrameLayout {
 
                 typography.layoutParams = lp
                 typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_green_3d)
-                typography.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
             OUTLINE -> {
                 val lp = LinearLayout.LayoutParams(0, heightSmall)
@@ -231,7 +230,6 @@ class RewardSummaryView : FrameLayout {
         typography.setWeight(Typography.BOLD)
         return typography
     }
-
 }
 
 @Retention(AnnotationRetention.SOURCE)

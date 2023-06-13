@@ -2,35 +2,37 @@ package com.tokopedia.orderhistory.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.orderhistory.FileUtil
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
+import com.tokopedia.orderhistory.data.Product
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
 
 class OrderHistoryViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val testRule = UnconfinedTestRule()
+
     private val productHistoryUseCase: GetProductOrderHistoryUseCase = mockk(relaxed = true)
-    private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
 
@@ -38,10 +40,9 @@ class OrderHistoryViewModelTest {
 
     object Dummy {
         const val shopId = "123123"
-        const val productId = "123432"
-        const val userId = "45675"
         val successGetProductResponse: ChatHistoryProductResponse = FileUtil.parse(
-                "/success_get_chat_history_product_response.json", ChatHistoryProductResponse::class.java
+            "/success_get_chat_history_product_response.json",
+            ChatHistoryProductResponse::class.java
         )
         val errorGetProduct = Throwable()
     }
@@ -49,11 +50,10 @@ class OrderHistoryViewModelTest {
     @Before
     fun setup() {
         viewModel = OrderHistoryViewModel(
-                CoroutineTestDispatchersProvider,
-                productHistoryUseCase,
-                addWishListUseCase,
-                addToWishlistV2UseCase,
-                addToCartUseCase
+            CoroutineTestDispatchersProvider,
+            productHistoryUseCase,
+            addToWishlistV2UseCase,
+            addToCartUseCase
         )
     }
 
@@ -92,16 +92,6 @@ class OrderHistoryViewModelTest {
     }
 
     @Test
-    fun addToWishList() {
-        val mockListener: WishListActionListener = mockk(relaxed = true)
-        every { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, any()) } just Runs
-
-        viewModel.addToWishList(Dummy.productId, Dummy.userId, mockListener)
-
-        verify { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, mockListener) }
-    }
-
-    @Test
     fun `addToWishListV2 returns Success`() {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
         val productId = "1"
@@ -119,7 +109,7 @@ class OrderHistoryViewModelTest {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns fail` () {
+    fun `verify add to wishlistv2 returns fail`() {
         val productId = "123"
         val mockThrowable = mockk<Throwable>("fail")
 
@@ -137,67 +127,121 @@ class OrderHistoryViewModelTest {
     @Test
     fun `when error addProductToCart`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
-        val errorAtc = getErrorAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(errorAtc)
+        val errorMsg = "Gagal menambahkan produk"
+        val expectedThrowable = Throwable(errorMsg)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws expectedThrowable
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
 
         // Then
-        verify(exactly = 1) {
-            onError.invoke("Gagal menambahkan produk")
-        }
+        assertEquals(
+            errorMsg,
+            (viewModel.addToCartResult.value as Fail).throwable.message
+        )
+    }
+
+    @Test
+    fun `when error addProductToCart but no error message`() {
+        // Given
+        val expectedThrowable = Throwable()
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws expectedThrowable
+
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
+
+        // Then
+        assertEquals(
+            null,
+            viewModel.addToCartResult.value
+        )
     }
 
     @Test
     fun `when error throwable addProductToCart`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
         val errorMsg = "Gagal menambahkan produk"
-        every {
-            addToCartUseCase.createObservable(any())
-        } throws IllegalStateException(errorMsg)
+        val expectedThrowable = Throwable(errorMsg)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws expectedThrowable
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
 
         // Then
-        verify(exactly = 1) {
-            onError.invoke(errorMsg)
-        }
+        assertEquals(
+            errorMsg,
+            (viewModel.addToCartResult.value as Fail).throwable.message
+        )
     }
 
     @Test
     fun `when success addProductToCart`() {
         // Given
-        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
         val successAtc = getSuccessAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), onSuccess, {})
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
 
         // Then
-        verify(exactly = 1) {
-            onSuccess.invoke(successAtc.data)
-        }
+        assertEquals(
+            successAtc.data,
+            (viewModel.addToCartResult.value as Success).data.first
+        )
     }
 
-    private fun getErrorAtcModel(): AddToCartDataModel {
-        return AddToCartDataModel().apply {
-            data.success = 0
-            data.message.add("Gagal menambahkan produk")
-        }
+    @Test
+    fun `when success addProductToCart but success value not 1`() {
+        // Given
+        val errorMsg = "Error message"
+        val successAtc = getSuccessAtcModel(successValue = 0, message = arrayListOf(errorMsg))
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
+
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
+
+        // Then
+        assertEquals(
+            errorMsg,
+            (viewModel.addToCartResult.value as Fail).throwable.message
+        )
     }
 
-    private fun getSuccessAtcModel(): AddToCartDataModel {
+    @Test
+    fun `when success addProductToCart but success value not 1 and no error message`() {
+        // Given
+        val successAtc = getSuccessAtcModel(successValue = 0)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
+
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), Product())
+
+        // Then
+        assertEquals(
+            "",
+            (viewModel.addToCartResult.value as Fail).throwable.message
+        )
+    }
+
+    private fun getSuccessAtcModel(
+        successValue: Int = 1,
+        message: ArrayList<String> = arrayListOf()
+    ): AddToCartDataModel {
         return AddToCartDataModel().apply {
-            data.success = 1
+            data.success = successValue
+            data.message = message
         }
     }
 }

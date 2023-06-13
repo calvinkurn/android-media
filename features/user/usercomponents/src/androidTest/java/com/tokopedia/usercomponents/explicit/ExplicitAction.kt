@@ -41,7 +41,7 @@ fun isSuccessDisplayed() {
     )
 }
 
-fun isHideQuestion() {
+fun isHideWidget() {
     isNotDisplayed(
         R.id.img_background,
         R.id.img_icon,

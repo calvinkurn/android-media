@@ -14,15 +14,10 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
-import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
-import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
-import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
-import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -133,6 +128,15 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val labelReposition: Typography by lazy(NONE) {
         findViewById(R.id.labelReposition)
     }
+    private val labelOverlayBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelOverlayBackground)
+    }
+    private val labelOverlay: Typography? by lazy(NONE) {
+        findViewById(R.id.labelOverlay)
+    }
+    private val labelOverlayStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelOverlayStatus)
+    }
     private var isUsingViewStub = false
 
     constructor(context: Context) : super(context) {
@@ -179,38 +183,46 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
+        productCardModel.layoutStrategy.renderProductCardShadow(cardViewProductCard)
+
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        productCardModel.fashionStrategy.setupImageRatio(
+        productCardModel.layoutStrategy.setupImageRatio(
             constraintLayoutProductCard,
             imageProduct,
             mediaAnchorProduct,
             videoProduct,
+            productCardModel,
         )
 
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
+        productCardModel.layoutStrategy.renderOverlayLabel(
+            labelOverlayBackground,
+            labelOverlay,
+            labelOverlayStatus,
+            productCardModel,
+        )
+
+        productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
             productCardModel,
         )
 
-        productCardModel.fashionStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
+        productCardModel.layoutStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
 
-        productCardModel.fashionStrategy.renderLabelBestSellerCategorySide(
+        productCardModel.layoutStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
             productCardModel,
         )
 
-        productCardModel.fashionStrategy.renderLabelBestSellerCategoryBottom(
+        productCardModel.layoutStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
             productCardModel,
         )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
-        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        productCardModel.layoutStrategy.renderProductStatusLabel(labelProductStatus, productCardModel)
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
@@ -222,16 +234,11 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
-            constraintLayoutProductCard?.post {
-                imageThreeDots?.expandTouchArea(
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-                )
-            }
-        }
+        productCardModel.layoutStrategy.renderThreeDots(
+            imageThreeDots,
+            constraintLayoutProductCard,
+            productCardModel,
+        )
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
@@ -241,7 +248,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
             CardUnify2.ANIMATE_OVERLAY_BOUNCE
         } else CardUnify2.ANIMATE_OVERLAY
 
-        productCardModel.fashionStrategy.renderLabelReposition(
+        productCardModel.layoutStrategy.renderLabelReposition(
             labelRepositionBackground,
             labelReposition,
             productCardModel,
@@ -306,6 +313,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        labelOverlayBackground?.glideClear()
         cartExtension.clear()
         video.clear()
     }

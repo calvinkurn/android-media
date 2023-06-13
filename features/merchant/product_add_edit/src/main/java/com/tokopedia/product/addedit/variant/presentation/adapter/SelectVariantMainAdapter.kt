@@ -9,8 +9,9 @@ import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantIn
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.SelectVariantMainViewHolder
 
-class SelectVariantMainAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder>(),
-        SelectVariantMainViewHolder.OnFieldClickListener {
+class SelectVariantMainAdapter :
+    RecyclerView.Adapter<SelectVariantMainViewHolder>(),
+    SelectVariantMainViewHolder.OnFieldClickListener {
 
     private var variantInputModel: VariantInputModel = VariantInputModel()
     private var selectionIndices: MutableList<MutableList<Boolean>> = mutableListOf()
@@ -38,10 +39,14 @@ class SelectVariantMainAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder
     private fun setSelectedIndex(level1Position: Int, level2Position: Int, value: Boolean) {
         selectionIndices.forEachIndexed { level1Index, level2Indices ->
             level2Indices.forEachIndexed { level2Index, _ ->
-                selectionIndices[level1Index][level2Index] = false
+                selectionIndices.getOrNull(level1Index)?.getOrNull(level2Index)?.run {
+                    selectionIndices[level1Index][level2Index] = false
+                }
             }
         }
-        selectionIndices[level1Position][level2Position] = value
+        selectionIndices.getOrNull(level1Position)?.getOrNull(level2Position)?.run {
+            selectionIndices[level1Position][level2Position] = value
+        }
     }
 
     fun setData(variantInputModel: VariantInputModel) {
@@ -55,9 +60,9 @@ class SelectVariantMainAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder
     }
 
     private fun initializeSelectedIndex(
-            productVariants: List<ProductVariantInputModel>
+        productVariants: List<ProductVariantInputModel>
     ): MutableList<MutableList<Boolean>> {
-        val groups = productVariants.groupBy{ it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) }
+        val groups = productVariants.groupBy { it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) }
         return groups.map {
             it.value.map { productVariant ->
                 productVariant.isPrimary
@@ -75,5 +80,4 @@ class SelectVariantMainAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder
 
         selectedCombination = result
     }
-
 }

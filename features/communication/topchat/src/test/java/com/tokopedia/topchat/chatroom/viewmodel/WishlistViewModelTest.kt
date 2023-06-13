@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.viewmodel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -15,80 +14,6 @@ import org.junit.Test
  *  This class is used for placeholder & add coverage temporary
  * */
 class WishlistViewModelTest: BaseTopChatViewModelTest() {
-
-    private val testProductId = "productId123"
-
-    @Test
-    fun should_get_response_when_success_add_wishlist() {
-        //Given
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } returns Unit
-
-        //When
-        viewModel.addToWishList(testProductId, testUserId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        })
-
-        //Then
-    }
-
-    @Test
-    fun should_get_error_when_success_add_wishlist() {
-        //Given
-        every {
-            addWishListUseCase.createObservable(any(), any(), any())
-        } returns Unit
-
-        //When
-        viewModel.addToWishList(testProductId, testUserId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        })
-
-        //Then
-    }
-
-    @Test
-    fun should_get_response_when_success_remove_wishlist() {
-        //Given
-        every {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        } returns Unit
-
-        //When
-        viewModel.removeFromWishList(testProductId, testUserId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        })
-
-        //Then
-    }
-
-    @Test
-    fun should_get_error_when_success_remove_wishlist() {
-        //Given
-        every {
-            removeWishListUseCase.createObservable(any(), any(), any())
-        } returns Unit
-
-        //When
-        viewModel.removeFromWishList(testProductId, testUserId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        })
-
-        //Then
-    }
 
     @Test
     fun verify_add_to_wishlistv2_returns_success() {

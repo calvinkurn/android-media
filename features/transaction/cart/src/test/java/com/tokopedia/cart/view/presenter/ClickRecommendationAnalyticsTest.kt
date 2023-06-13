@@ -1,6 +1,11 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -72,8 +77,8 @@ class ClickRecommendationAnalyticsTest : BaseCartTest() {
         // GIVEN
         val result: Map<String, Any>?
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = true,
-                labelGroupList = listOf(RecommendationLabel())
+            isFreeOngkirActive = true,
+            labelGroupList = listOf(RecommendationLabel())
         )
 
         // WHEN
@@ -91,8 +96,8 @@ class ClickRecommendationAnalyticsTest : BaseCartTest() {
         // GIVEN
         val result: Map<String, Any>?
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = true,
-                labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
+            isFreeOngkirActive = true,
+            labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
         )
 
         // WHEN
@@ -110,7 +115,7 @@ class ClickRecommendationAnalyticsTest : BaseCartTest() {
         // GIVEN
         val result: Map<String, Any>?
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = false
+            isFreeOngkirActive = false
         )
 
         // WHEN
@@ -121,6 +126,5 @@ class ClickRecommendationAnalyticsTest : BaseCartTest() {
         val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
         val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
         Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-
     }
 }

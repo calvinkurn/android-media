@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class BannerDataModel(
-    @SerializedName("slides")
+    @SerializedName("slides", alternate = ["banners"])
     @Expose
     val slides: List<BannerSlidesModel>? = null,
     @SerializedName("timestamp")

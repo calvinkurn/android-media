@@ -1,0 +1,80 @@
+{
+  "discussionDataByProductID": {
+    "shopID": "9257551",
+    "shopURL": "https://www.tokopedia.com/bestsouvenir88",
+    "hasNext": false,
+    "totalQuestion": 2,
+    "question": [
+      {
+        "questionID": "326559827",
+        "content": "dibawahnya ada karet untuk grip gak?",
+        "maskedContent": "",
+        "userName": "Rahmad",
+        "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/3307893/user_thumbnail/desktop",
+        "userID": "3307893",
+        "createTime": "2022-08-30T07:59:57Z",
+        "createTimeFormatted": "30 Agt",
+        "state": {
+          "isMasked": false,
+          "allowReply": true,
+          "isYours": false
+        },
+        "totalAnswer": 3,
+        "answer": {
+          "answerID": "638683311",
+          "content": "Bawahnya gak ada karet Kak",
+          "maskedContent": "",
+          "userName": "Best_Souvenir88",
+          "userThumbnail": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/9/7/9257551/9257551_8a3fa6ed-5a7b-40f3-a8de-b7440ffe7bdd.jpg",
+          "userID": "109481173",
+          "isSeller": true,
+          "createTime": "2022-08-30T09:12:47Z",
+          "createTimeFormatted": "30 Agt",
+          "likeCount": 0,
+          "state": {
+            "isMasked": false,
+            "isLiked": false,
+            "allowLike": true,
+            "isYours": false
+          },
+          "attachedProductCount": 0
+        }
+      },
+      {
+        "questionID": "322688196",
+        "content": "ada yang 600ml gk y berapa klo ada",
+        "maskedContent": "",
+        "userName": "Tono",
+        "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/28680656/user_thumbnail/desktop",
+        "userID": "28680656",
+        "createTime": "2022-04-25T07:45:58Z",
+        "createTimeFormatted": "Apr 2022",
+        "state": {
+          "isMasked": false,
+          "allowReply": true,
+          "isYours": false
+        },
+        "totalAnswer": 3,
+        "answer": {
+          "answerID": "631695028",
+          "content": "600ml gak ada kak",
+          "maskedContent": "",
+          "userName": "Best_Souvenir88",
+          "userThumbnail": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/9/7/9257551/9257551_8a3fa6ed-5a7b-40f3-a8de-b7440ffe7bdd.jpg",
+          "userID": "109481173",
+          "isSeller": true,
+          "createTime": "2022-04-25T10:03:31Z",
+          "createTimeFormatted": "Apr 2022",
+          "likeCount": 0,
+          "state": {
+            "isMasked": false,
+            "isLiked": false,
+            "allowLike": true,
+            "isYours": false
+          },
+          "attachedProductCount": 0
+        }
+      }
+    ]
+  }
+}

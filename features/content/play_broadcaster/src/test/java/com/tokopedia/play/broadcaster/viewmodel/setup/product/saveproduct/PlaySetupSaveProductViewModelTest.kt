@@ -48,7 +48,7 @@ class PlaySetupSaveProductViewModelTest {
 
         robot.use {
             val (state, event) = robot.recordStateAsListAndEvent {
-                submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
                 submitAction(ProductSetupAction.SaveProducts)
             }
 
@@ -71,7 +71,7 @@ class PlaySetupSaveProductViewModelTest {
 
         robot.use {
             runBlockingTest {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
             }
 
             val state = robot.recordSummaryState {
@@ -94,16 +94,13 @@ class PlaySetupSaveProductViewModelTest {
         )
 
         robot.use {
-            runBlockingTest {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
-            }
-
             val (state, event) = robot.recordStateAsListAndEvent {
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
                 robot.submitAction(ProductSetupAction.SaveProducts)
             }
 
-            state[1].saveState.isLoading.assertEqualTo(true)
-            state[2].saveState.isLoading.assertEqualTo(false)
+            state[state.lastIndex-1].saveState.isLoading.assertEqualTo(true)
+            state.last().saveState.isLoading.assertEqualTo(false)
             event.last().assertEqualTo(PlayBroProductChooserEvent.ShowError(mockException))
         }
     }

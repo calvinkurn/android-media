@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.explore.view.uimodel.ExploreViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,13 +28,13 @@ public interface ContentExploreContract {
 
         void updateCursor(String cursor);
 
-        void updateCategoryId(int categoryId);
+        void updateCategoryId(long categoryId);
 
         void updateSearch(String search);
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId, String categoryName, android.view.View view);
+        void onCategoryClicked(int position, long categoryId, String categoryName, android.view.View view);
 
         void onCategoryReset();
 
@@ -46,7 +46,7 @@ public interface ContentExploreContract {
 
         void showEmpty();
 
-        void goToKolPostDetail(@NotNull int postId, @NotNull String name, int recomId);
+        void goToKolPostDetail(@NotNull String postId, @NotNull String name, long recomId);
 
         void addExploreItemCoachmark(android.view.View view);
 
@@ -58,9 +58,9 @@ public interface ContentExploreContract {
 
         void stopTrace();
 
-        void onAffiliateTrack(List<TrackingViewModel> trackingList, boolean isClick);
+        void onAffiliateTrack(List<TrackingModel> trackingList, boolean isClick);
 
-        int getExploreCategory();
+        long getExploreCategory();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -68,7 +68,7 @@ public interface ContentExploreContract {
 
         void updateCursor(String cursor);
 
-        void updateCategoryId(int categoryId);
+        void updateCategoryId(long categoryId);
 
         void updateSearch(String search);
 

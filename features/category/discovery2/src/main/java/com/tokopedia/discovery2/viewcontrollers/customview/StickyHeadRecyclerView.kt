@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -13,11 +14,11 @@ import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 
 class StickyHeadRecyclerView : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context?, attrSet: AttributeSet) : super(context, attrSet)
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
 
-    constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
+    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
     private val headerRecyclerView: FrameLayout
     private val recyclerView: RecyclerView
@@ -63,6 +64,10 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.addOnScrollListener(listener)
     }
 
+    fun removeOnScrollListener(listener: RecyclerView.OnScrollListener) {
+        recyclerView.removeOnScrollListener(listener)
+    }
+
     fun setOnTouchListenerRecyclerView(listener: View.OnTouchListener){
         recyclerView.setOnTouchListener(listener)
     }
@@ -88,8 +93,17 @@ class StickyHeadRecyclerView : ConstraintLayout {
         if (position == 0) {
             recyclerView.smoothScrollToPosition(position)
         } else {
-            (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
-
+            (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(
+                position,
+                0
+            )
         }
+    }
+    fun dpToPx(dp: Int): Float {
+        return (dp * Resources.getSystem().displayMetrics.density)
+    }
+
+    fun setPaddingToInnerRV(left: Int, top: Int, right: Int, bottom: Int) {
+        recyclerView.setPadding(left, top, right, bottom)
     }
 }

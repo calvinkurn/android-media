@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -33,14 +33,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:text="@string/desc_rm_not_eligible_all"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitleNonEligiblePowerMerchant"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_pm_potential"
@@ -54,7 +54,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvDescNonEligiblePowerMerchant"
-            app:typographyType="heading_5" />
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_shop_pm_potential_benefit"
@@ -81,7 +82,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_shop_pm_potential_benefit"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold" />
 
         <com.tokopedia.iconunify.IconUnify

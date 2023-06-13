@@ -1,11 +1,11 @@
 package com.tokopedia.dropoff.domain.mapper
 
-import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import javax.inject.Inject
 
 class AutoCompleteMapper @Inject constructor() {
@@ -14,9 +14,9 @@ class AutoCompleteMapper @Inject constructor() {
         val dataResponse = response.keroMapsAutocomplete.AData.predictions
         return dataResponse.map {
             SuggestedPlace(
-                    it.structuredFormatting.mainText,
-                    it.structuredFormatting.secondaryText,
-                    it.placeId
+                it.structuredFormatting.mainText,
+                it.structuredFormatting.secondaryText,
+                it.placeId
             )
         }
     }
@@ -25,11 +25,11 @@ class AutoCompleteMapper @Inject constructor() {
         val data = response.keroAddressCorner.data
         return data.map {
             SavedAddress(
-                    it.addrId,
-                    it.addrName,
-                    it.address1,
-                    it.latitude,
-                    it.longitude
+                it.addrId,
+                it.addrName,
+                it.address1,
+                it.latitude,
+                it.longitude
             )
         }
     }
@@ -37,11 +37,9 @@ class AutoCompleteMapper @Inject constructor() {
     fun mapValidate(response: GetDistrictResponse): ValidatedDistrict {
         val data = response.keroPlacesGetDistrict.data
         return ValidatedDistrict(
-                data.title,
-                data.latitude,
-                data.longitude
+            data.title,
+            data.latitude,
+            data.longitude
         )
-
     }
-
 }

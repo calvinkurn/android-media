@@ -10,7 +10,7 @@
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_marginTop="4dp"
+    android:layout_marginTop="8dp"
     android:layout_marginBottom="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp">

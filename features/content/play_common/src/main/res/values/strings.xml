@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Play Common</string>
     <string name="play_common_video_error_message">Oops, terjadi gangguan saat memutar video.</string>
     <string name="play_common_live">Live</string>
     <string name="lihat_semua">Lihat semua</string>
@@ -32,4 +33,13 @@
     <string name="play_interactive_game_result">Hasil Game</string>
     <string name="play_interactive_retry">Coba Lagi</string>
     <string name="play_game_reward_type">Hadiah:</string>
+    <string name="play_leaderboard_reward_name">Hadiah: %s</string>
+
+    <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
+    <string name="play_widget_watch_desc">
+        Download aplikasi Tokopedia buat
+        tonton video di Tokopedia Play!
+    </string>
+    <string name="play_widget_download_tokopedia">Download Tokopedia</string>
+    <string name="play_widget_watch_later">Nanti Dulu</string>
 </resources>

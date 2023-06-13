@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerInfoSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/dsar_summary_ticker_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/dsar_choose_data_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickerInfoSummary"
+        app:typographyWeight="bold" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:paddingTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/dsar_summary_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="paragraph_3"
+            android:id="@+id/txtSummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

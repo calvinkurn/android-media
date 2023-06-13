@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.setDescriptionClick
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
@@ -119,7 +120,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         }
 
         tickerSpecification?.setHtmlDescription(htmlDescription)
-        tickerSpecification?.setOnClickListener {
+        tickerSpecification?.setDescriptionClick {
             newUserSpecificationBottomSheet.show(childFragmentManager)
         }
 

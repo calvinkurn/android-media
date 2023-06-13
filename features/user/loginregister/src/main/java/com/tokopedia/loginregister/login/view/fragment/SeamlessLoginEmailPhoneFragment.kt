@@ -21,7 +21,6 @@ import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 /**
  * Created by Yoris Prayogo on 29/04/20.
@@ -105,13 +104,13 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     }
 
     private fun showFullProgressBar(){
-        view?.container?.hide()
-        view?.progressBarLoginWithPhone?.show()
+        viewBinding?.container?.hide()
+        viewBinding?.progressBarLoginWithPhone?.show()
     }
 
     private fun hideFullProgressBar(){
-        view?.container?.show()
-        view?.progressBarLoginWithPhone?.hide()
+        viewBinding?.container?.show()
+        viewBinding?.progressBarLoginWithPhone?.hide()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

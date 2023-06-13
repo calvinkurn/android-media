@@ -16,10 +16,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
@@ -41,7 +40,6 @@ import org.junit.Test
 
 class NavigationEventActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -54,7 +52,6 @@ class NavigationEventActivityTest {
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(
                 KEY_EVENT_CHILD,

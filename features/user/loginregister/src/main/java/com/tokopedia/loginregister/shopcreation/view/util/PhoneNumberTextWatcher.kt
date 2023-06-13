@@ -12,8 +12,10 @@ import android.widget.EditText
 
 open class PhoneNumberTextWatcher(private val editText: EditText) : TextWatcher {
 
-    override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int,
-                               count: Int) {
+    override fun onTextChanged(
+        s: CharSequence, cursorPosition: Int, before: Int,
+        count: Int,
+    ) {
         var cursor = cursorPosition
 
         if (before == 0 && count == 1) {  //Entering values

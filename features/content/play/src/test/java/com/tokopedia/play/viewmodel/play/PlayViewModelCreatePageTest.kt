@@ -1,22 +1,21 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.helper.NoValueException
 import com.tokopedia.play.helper.getOrAwaitValue
-import com.tokopedia.play.model.*
-import com.tokopedia.play.robot.andThen
-import com.tokopedia.play.robot.andWhen
+import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayChannelInfoModelBuilder
+import com.tokopedia.play.model.PlayVideoModelBuilder
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.throwsException
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
@@ -38,22 +37,24 @@ class PlayViewModelCreatePageTest {
 
     private val uiModelBuilder = UiModelBuilder.get()
 
+    private val channelInfoBuilder = PlayChannelInfoModelBuilder()
+
     @Test
     fun `given channel data is set, when page is created, then video stream value should be the same as in channel data`() {
         val id = "1"
         val videoOrientation = VideoOrientation.Horizontal(1, 2)
 
         val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                        videoStream = videoModelBuilder.buildVideoStream(
-                                id = id,
-                                orientation = videoOrientation
-                        )
+            videoMetaInfo = videoModelBuilder.buildVideoMeta(
+                videoStream = videoModelBuilder.buildVideoStream(
+                    id = id,
+                    orientation = videoOrientation
                 )
+            )
         )
         val expectedModel = videoModelBuilder.buildVideoStream(
-                id = id,
-                orientation = videoOrientation
+            id = id,
+            orientation = videoOrientation
         )
 
         val robot = createPlayViewModelRobot()
@@ -74,7 +75,7 @@ class PlayViewModelCreatePageTest {
         val quickReplyList = listOf("Wah keren", "Bagus Sekali", "<3")
 
         val channelData = channelDataBuilder.buildChannelData(
-                quickReplyInfo = uiModelBuilder.buildQuickReply(quickReplyList)
+            quickReplyInfo = uiModelBuilder.buildQuickReply(quickReplyList)
         )
 
         val expectedModel = uiModelBuilder.buildQuickReply(quickReplyList)
@@ -96,107 +97,112 @@ class PlayViewModelCreatePageTest {
     }
 
     @Test
-    fun `given channel data is set, when page is created and has not shown onboarding before, should show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns false
+    fun `get count comment in focus page - live means no call` (){
+        val channelData = channelDataBuilder.buildChannelData(
+            channelDetail = channelInfoBuilder.buildChannelDetail()
+        )
 
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildCompleteGeneralVideoPlayer()
-                )
-            )
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
 
-            val expectedResult = Unit
+        val robot = createPlayViewModelRobot(
+            repo = repo
+        )
 
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                viewModel.observableOnboarding.getOrAwaitValue().peekContent()
-                    .isEqualTo(expectedResult)
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+                focusPage(channelData)
             }
+            state.channel.commentConfig.shouldShow.assertFalse() //default
         }
+        coVerify { repo.getCountComment(any()) wasNot called }
     }
 
     @Test
-    fun `given channel data is set, when page is created and has shown onboarding before, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns true
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildCompleteGeneralVideoPlayer()
-                )
+    fun `get count comment in focus page - VOD return to not show` (){
+        val channelData = channelDataBuilder.buildChannelData(
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.VOD),
+                commentUiModel = channelInfoBuilder.buildCommentConfig()
             )
+        )
 
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+        coEvery { repo.getCountComment(any()) } returns channelData.channelDetail.commentConfig
+
+        val robot = createPlayViewModelRobot(
+            repo = repo
+        )
+
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+                focusPage(channelData)
             }
+            state.channel.commentConfig.shouldShow.assertEqualTo(channelData.channelDetail.commentConfig.shouldShow) //default
+            state.channel.commentConfig.total.assertEqualTo(channelData.channelDetail.commentConfig.total) //default
         }
+
+        coVerify { repo.getCountComment(any()) }
     }
 
     @Test
-    fun `given channel data is set, when page is created and has not shown onboarding but video player type is youtube, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns false
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildYouTubeVideoPlayer()
-                )
+    fun `get count comment in focus page - VOD return to show with number` (){
+        val channelData = channelDataBuilder.buildChannelData(
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.VOD),
+                commentUiModel = channelInfoBuilder.buildCommentConfig(shouldShow = true, count = "125,5 rb")
             )
+        )
 
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+        coEvery { repo.getCountComment(any()) } returns channelData.channelDetail.commentConfig
+
+        val robot = createPlayViewModelRobot(
+            repo = repo
+        )
+
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+                focusPage(channelData)
             }
+            state.channel.commentConfig.shouldShow.assertEqualTo(channelData.channelDetail.commentConfig.shouldShow)
+            state.channel.commentConfig.total.assertEqualTo(channelData.channelDetail.commentConfig.total)
         }
+
+        coVerify { repo.getCountComment(any()) }
     }
 
     @Test
-    fun `given channel data is set, when page is created and has shown onboarding but video player type is youtube, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns true
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildYouTubeVideoPlayer()
-                )
+    fun `get count comment in focus page - failed - vod - return default` () {
+        val channelData = channelDataBuilder.buildChannelData(
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.VOD),
+                commentUiModel = channelInfoBuilder.buildCommentConfig()
             )
+        )
 
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        every { repo.getChannelData(any()) } returns channelData
+        coEvery { repo.getCountComment(any()) } throws MessageErrorException()
+
+        val robot = createPlayViewModelRobot(
+            repo = repo
+        )
+
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+                focusPage(channelData)
             }
+            state.channel.commentConfig.shouldShow.assertFalse() //default
+            state.channel.commentConfig.total.assertEqualTo("") //default
         }
+
+        coVerify { repo.getCountComment(any()) }
     }
 }

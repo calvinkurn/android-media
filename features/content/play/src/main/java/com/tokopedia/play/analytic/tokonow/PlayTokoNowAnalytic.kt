@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic.tokonow
 
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -28,8 +29,7 @@ interface PlayTokoNowAnalytic {
     fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int)
 
     fun impressProductBottomSheetNow(
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
-        sectionInfo: ProductSectionUiModel.Section,
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     )
 
     fun impressFeaturedProductNow(

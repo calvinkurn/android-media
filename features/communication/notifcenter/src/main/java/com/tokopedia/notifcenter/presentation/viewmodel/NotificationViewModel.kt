@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -23,7 +24,15 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
-import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
+import com.tokopedia.notifcenter.domain.AffiliateEducationArticleUseCase
+import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
+import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
+import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
+import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -39,16 +48,12 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 interface INotificationViewModel {
-    fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
-    fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
     fun addWishlistV2(model: RecommendationItem, listener: WishlistV2ActionListener)
     fun removeWishlistV2(model: RecommendationItem, listener: WishlistV2ActionListener)
 }
@@ -62,14 +67,13 @@ class NotificationViewModel @Inject constructor(
     private val markAsReadUseCase: MarkNotificationAsReadUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
-    private val removeWishListUseCase: RemoveWishListUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
     private val userSessionInterface: UserSessionInterface,
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
+    private var affiliateEducationArticleUseCase: AffiliateEducationArticleUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), INotificationViewModel {
 
@@ -112,6 +116,11 @@ class NotificationViewModel @Inject constructor(
     val orderList: LiveData<Resource<NotifOrderListResponse>>
         get() = _orderList
 
+    private val _affiliateEducationArticle =
+        MutableLiveData<NotificationAffiliateEducationUiModel>()
+    val affiliateEducationArticle: LiveData<NotificationAffiliateEducationUiModel>
+        get() = _affiliateEducationArticle
+
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
     }
@@ -126,7 +135,8 @@ class NotificationViewModel @Inject constructor(
         role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 notifOrderListUseCase.getOrderList(role).collect {
                     _orderList.postValue(it)
@@ -146,11 +156,16 @@ class NotificationViewModel @Inject constructor(
         role: Int?
     ) {
         if (role == null) return
-        notifcenterDetailUseCase.getFirstPageNotification(filter, role,
+        notifcenterDetailUseCase.getFirstPageNotification(
+            filter,
+            role,
             {
                 _mutateNotificationItems.value = Success(it)
                 if (!hasFilter() && role == RoleType.BUYER) {
                     loadTopAdsBannerData()
+                }
+                if (role!! == RoleType.AFFILIATE) {
+                    loadAffiliateEducationArticles()
                 }
             },
             {
@@ -164,7 +179,8 @@ class NotificationViewModel @Inject constructor(
         role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 notifcenterFilterUseCase.getFilter(role).collect {
                     _filterList.postValue(it)
@@ -176,14 +192,14 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-
     fun markNotificationAsRead(
         @RoleType
         role: Int?,
         element: NotificationUiModel
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 markAsReadUseCase.markAsRead(role, element.notifId).collect { }
             },
@@ -197,7 +213,8 @@ class NotificationViewModel @Inject constructor(
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
-            filter, role,
+            filter,
+            role,
             {
                 _mutateNotificationItems.value = Success(it)
             },
@@ -215,7 +232,10 @@ class NotificationViewModel @Inject constructor(
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreNewNotifications(
-            filter, role, onSuccess, onError
+            filter,
+            role,
+            onSuccess,
+            onError
         )
     }
 
@@ -227,12 +247,16 @@ class NotificationViewModel @Inject constructor(
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
-            filter, role, onSuccess, onError
+            filter,
+            role,
+            onSuccess,
+            onError
         )
     }
 
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 bumpReminderUseCase.bumpReminder(
                     product.productId,
@@ -252,7 +276,8 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 deleteReminderUseCase.deleteReminder(
                     product.productId,
@@ -272,7 +297,8 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun loadRecommendations(page: Int) {
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 val params = getRecommendationUseCase.getRecomParams(
                     page,
@@ -287,7 +313,8 @@ class NotificationViewModel @Inject constructor(
                     .getOrNull(0) ?: RecommendationWidget()
                 withContext(dispatcher.main) {
                     _recommendations.value = getRecommendationVisitables(
-                        page, recommendationWidget
+                        page,
+                        recommendationWidget
                     )
                 }
             },
@@ -301,50 +328,10 @@ class NotificationViewModel @Inject constructor(
         filter = NotifcenterDetailUseCase.FILTER_NONE
     }
 
-    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit) {
-        if (model.isTopAds) {
-            addWishListTopAds(model, callback)
-        } else {
-            addWishListNormal(model.productId.toString(), object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String) {}
-            })
-        }
-    }
-
-    override fun removeWishList(
-        model: RecommendationItem,
-        callback: (Boolean, Throwable?) -> Unit
-    ) {
-        removeWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-                override fun onSuccessAddWishlist(productId: String?) {}
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-            }
-        )
-    }
-
     override fun addWishlistV2(
         model: RecommendationItem,
-        actionListener: WishlistV2ActionListener) {
+        actionListener: WishlistV2ActionListener
+    ) {
         doAddToWishlistV2(model.productId.toString(), actionListener)
     }
 
@@ -362,10 +349,15 @@ class NotificationViewModel @Inject constructor(
 
     override fun removeWishlistV2(
         model: RecommendationItem,
-        actionListener: WishlistV2ActionListener) {
+        actionListener: WishlistV2ActionListener
+    ) {
         launch(dispatcher.main) {
-            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            deleteWishlistV2UseCase.setParams(
+                model.productId.toString(),
+                userSessionInterface.userId
+            )
+            val result =
+                withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
             } else if (result is Fail) {
@@ -379,23 +371,27 @@ class NotificationViewModel @Inject constructor(
         role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 var type = role
-                if (userSessionInterface.shopId == DEFAULT_SHOP_ID) {
+                if (userSessionInterface.shopId == DEFAULT_SHOP_ID && role != RoleType.AFFILIATE) {
                     type = CLEAR_ALL_NOTIF_TYPE
                 }
                 clearNotifUseCase.clearNotifCounter(type).collect {
                     _clearNotif.postValue(it)
                 }
-            }, { }
+            },
+            { }
         )
     }
 
     fun addWishListTopAds(
-        model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
+        model: RecommendationItem,
+        callback: ((Boolean, Throwable?) -> Unit)
     ) {
-        launchCatchError(dispatcher.io,
+        launchCatchError(
+            dispatcher.io,
             {
                 val params = RequestParams.create()?.apply {
                     putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
@@ -410,13 +406,6 @@ class NotificationViewModel @Inject constructor(
                 callback.invoke(false, it)
             }
         )
-    }
-
-    fun addWishListNormal(
-        productId: String,
-        wishListActionListener: WishListActionListener
-    ) {
-        addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
     }
 
     fun loadTopAdsBannerData() {
@@ -434,7 +423,7 @@ class NotificationViewModel @Inject constructor(
                     )
                 )
                 if (results.isNotEmpty()) {
-                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))
+                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results))
                 }
                 loadRecommendations(1)
             },
@@ -443,7 +432,6 @@ class NotificationViewModel @Inject constructor(
                 loadRecommendations(1)
             }
         )
-
     }
 
     fun addProductToCart(
@@ -474,9 +462,27 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
+    private fun loadAffiliateEducationArticles() {
+        viewModelScope.launch {
+            try {
+                affiliateEducationArticleUseCase.getEducationArticles().collect { response ->
+                    if (response.data != null && !response.data.cardsArticle?.data?.cards.isNullOrEmpty()) {
+                        response.data.cardsArticle?.data?.cards?.get(0)?.let {
+                            _affiliateEducationArticle.postValue(
+                                NotificationAffiliateEducationUiModel(it)
+                            )
+                        }
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.e(throwable)
+            }
+        }
+    }
+
     companion object {
         const val TOP_ADS_SOURCE = "19"
-        const val TOP_ADS_COUNT = 1
+        const val TOP_ADS_COUNT = 3
         const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"

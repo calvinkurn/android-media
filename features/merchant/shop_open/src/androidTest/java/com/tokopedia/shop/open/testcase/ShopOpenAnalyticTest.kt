@@ -7,31 +7,37 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.mock.ShopOpenMockResponseConfig
+import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisionerFragment
 import com.tokopedia.shop.open.util.clickClickableSpan
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.instanceOf
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -46,12 +52,11 @@ class ShopOpenAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopOpenRevampActivity> = IntentsTestRule(ShopOpenRevampActivity::class.java, false, false)
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ShopOpenMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
         activityRule.launchActivity(Intent())
@@ -60,7 +65,6 @@ class ShopOpenAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.idlingResource)
     }
@@ -162,7 +166,7 @@ class ShopOpenAnalyticTest {
 
     private fun doAnalyticDebuggerTest() {
         assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH),
+                cassavaRule.validate(SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH),
                 hasAllSuccess()
         )
     }

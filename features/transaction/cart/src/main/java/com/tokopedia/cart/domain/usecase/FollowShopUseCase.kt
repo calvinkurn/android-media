@@ -11,9 +11,11 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class FollowShopUseCase @Inject constructor(@Named(MUTATION_NAME) private val mutationString: String,
-                                            private val graphqlUseCase: GraphqlUseCase,
-                                            private val schedulers: ExecutorSchedulers) : UseCase<DataFollowShop>() {
+class FollowShopUseCase @Inject constructor(
+    @Named(MUTATION_NAME) private val mutationString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<DataFollowShop>() {
 
     companion object {
         const val MUTATION_NAME = "followShop"
@@ -32,22 +34,25 @@ class FollowShopUseCase @Inject constructor(@Named(MUTATION_NAME) private val mu
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<DataFollowShop> {
-        val graphqlRequest = GraphqlRequest(mutationString, DataFollowShop::class.java, requestParams?.parameters
-                ?: emptyMap())
+        val graphqlRequest = GraphqlRequest(
+            mutationString,
+            DataFollowShop::class.java,
+            requestParams?.parameters
+                ?: emptyMap()
+        )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val followShopResponse = it.getData<DataFollowShop>(DataFollowShop::class.java)
-                            ?: throw ResponseErrorException()
-                    if (followShopResponse.followShop?.isSuccess != true) {
-                        throw ResponseErrorException(followShopResponse.followShop?.message)
-                    }
-                    followShopResponse
+            .map {
+                val followShopResponse = it.getData<DataFollowShop>(DataFollowShop::class.java)
+                    ?: throw ResponseErrorException()
+                if (followShopResponse.followShop?.isSuccess != true) {
+                    throw ResponseErrorException(followShopResponse.followShop?.message)
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+                followShopResponse
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

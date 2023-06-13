@@ -16,8 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
         android:orientation="horizontal" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,8 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpager_banner_category"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="false"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="tokochatShowCheckMark" format="boolean" />
+    <declare-styleable name="TokoChatMessageBubbleLayout">
+        <attr name="tokochatShowCheckMark"/>
+        <attr name="tokochatMessageOrientation" format="enum">
+            <enum name="LEFT" value="0"/>
+            <enum name="RIGHT" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="TokoChatMessageChatLayout">
+        <attr name="tokochatShowCheckMark"/>
+        <attr name="tokochatUseMaxWidth" format="boolean" />
+    </declare-styleable>
+</resources>

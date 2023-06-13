@@ -1,0 +1,17 @@
+{
+  "tokochatOrderProgress": {
+    "enable": true,
+    "state": "ORDER_PLACED",
+    "orderId": "ccd55d4b-5818-419c-9305-3be3269dcec6",
+    "invoiceId": "IVG/20230117/GFD/831910799158346644",
+    "imageUrl": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/b20d7a76-80a8-45bc-8abf-ebb84c54c9a1_GENERIC_CHICKEN_1_GENERIC_RESTAURANT_TESTING_7.jpg",
+    "name": "TokoFood Outlet Test 1",
+    "status": "Makanan lagi disiapkan",
+    "statusId": 0,
+    "label": {
+      "title": "Estimasi tiba pukul:",
+      "value": "17:35 - 17:38"
+    },
+    "uri": "tokopedia://food/postpurchase/ccd55d4b-5818-419c-9305-3be3269dcec6"
+  }
+}

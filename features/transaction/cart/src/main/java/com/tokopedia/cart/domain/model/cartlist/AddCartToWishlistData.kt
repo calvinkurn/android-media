@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddCartToWishlistData(
-        var status: String = "",
-        var success: Int = 0,
-        var message: String = ""
+    var status: String = "",
+    var success: Int = 0,
+    var message: String = ""
 ) : Parcelable

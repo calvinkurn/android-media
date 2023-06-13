@@ -3,12 +3,9 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
@@ -18,7 +15,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
+class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
@@ -27,8 +24,8 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun getNewFragment(): PinpointNewPageFragment? {
@@ -50,11 +47,10 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
         }
     }
 
-    companion object{
+    companion object {
 
         fun createIntent(content: Context, bundle: Bundle): Intent {
             return Intent(content, PinpointNewPageActivity::class.java).putExtra(EXTRA_BUNDLE, bundle)
         }
     }
-
 }

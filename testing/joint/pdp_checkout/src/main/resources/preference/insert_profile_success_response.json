@@ -34,7 +34,7 @@
               "active": 1,
               "gateway_code": "PAYMENT1",
               "gateway_name": "Payment 1",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+              "image": "https://images.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
               "description": "Payment Desc 1",
               "url": "",
               "fee": 1000,

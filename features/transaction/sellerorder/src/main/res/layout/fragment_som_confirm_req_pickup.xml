@@ -228,13 +228,47 @@
                                     app:typographyType="body_3"
                                     tools:text="Jumlah: 1 Pesanaan" />
 
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_invoice_number"
+                                    android:layout_width="0dp"
+                                    app:typographyWeight="bold"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:paddingEnd="4dp"
+                                    android:paddingStart="0dp"
+                                    app:layout_constraintStart_toStartOf="@id/tv_courier_count"
+                                    app:layout_constraintTop_toBottomOf="@id/tv_courier_count"
+                                    app:typographyType="body_3"
+                                    tools:text="INV/20161025/XVI/X/55069657" />
+
+                                <com.tokopedia.iconunify.IconUnify
+                                    android:id="@+id/btn_copy_invoice_number"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:contentDescription="@string/click_to_copy_icon_content_description"
+                                    app:icon_name="COPY"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tv_invoice_number"
+                                    app:layout_constraintStart_toEndOf="@+id/tv_invoice_number"
+                                    app:layout_constraintTop_toTopOf="@+id/tv_invoice_number" />
+
+                                <View
+                                    android:id="@+id/mask_trigger_invoice_number"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:selectableItemBackground"
+                                    android:hapticFeedbackEnabled="true"
+                                    app:layout_constraintBottom_toBottomOf="@id/tv_invoice_number"
+                                    app:layout_constraintEnd_toEndOf="@id/btn_copy_invoice_number"
+                                    app:layout_constraintStart_toStartOf="@id/tv_invoice_number"
+                                    app:layout_constraintTop_toTopOf="@id/btn_copy_invoice_number" />
+
                                 <com.tokopedia.unifycomponents.DividerUnify
                                     android:id="@+id/divider_2"
                                     android:layout_width="match_parent"
                                     android:layout_height="2dp"
                                     android:layout_marginTop="24dp"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@id/tv_courier_count" />
+                                    app:layout_constraintTop_toBottomOf="@id/tv_invoice_number" />
 
                                 <RelativeLayout
                                     android:id="@+id/rl_schedule_pickup"

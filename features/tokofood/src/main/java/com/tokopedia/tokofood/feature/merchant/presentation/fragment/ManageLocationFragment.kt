@@ -10,18 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,6 +38,8 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
@@ -43,6 +47,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.ManageLoca
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.util.*
@@ -67,9 +72,9 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         const val SOURCE = "tokofood"
 
         // image resource url
-        const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
-        const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
-        const val IMG_STATIC_URI_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/ic_tokofood_home_out_of_coverage.png"
+        const val IMG_STATIC_URI_NO_PIN_POIN = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
+        const val IMG_STATIC_URI_NO_ADDRESS = TokopediaImageUrl.IMG_STATIC_URI_NO_ADDRESS
+        const val IMG_STATIC_URI_OUT_OF_COVERAGE = TokopediaImageUrl.IMG_STATIC_URI_OUT_OF_COVERAGE
 
         // negative case ids
         const val EMPTY_STATE_OUT_OF_COVERAGE = "2"
@@ -87,6 +92,9 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -108,12 +116,16 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         return ""
     }
 
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TOP
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
     }
 
-    private fun initInjector() {
+    override fun initInjector() {
         activity?.let {
             DaggerMerchantPageComponent
                     .builder()
@@ -123,7 +135,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val viewBinding = FragmentManageLocationLayoutBinding.inflate(inflater)
         binding = viewBinding
         return viewBinding.root
@@ -136,6 +148,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
         viewModel.merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID).orEmpty()
         context?.run {
@@ -147,6 +160,14 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             }
         }
         observeLiveData()
+    }
+
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
     }
 
     private fun observeLiveData() {
@@ -173,6 +194,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_FOR_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_FOR_ADDRESS
+                    )
                 }
             }
         }
@@ -188,6 +214,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION
+                    )
                 }
             }
         }
@@ -200,9 +231,28 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHECK_DELIVERY_COVERAGE,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHECK_DELIVERY_COVERAGE
+                    )
                 }
             }
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.MERCHANT,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     private fun showToaster(message: String?) {
@@ -255,7 +305,13 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
-        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        val applink =
+            if (activity is BaseTokofoodActivity) {
+                ApplinkConstInternalTokoFood.MERCHANT
+            } else {
+                ApplinkConstInternalTokoFood.MERCHANT_OLD
+            }
+        val merchantPageUri = Uri.parse(applink)
                 .buildUpon()
                 .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
                 .build()
@@ -263,17 +319,18 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToSetPinpoint() {
-        val locationPass = LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
-        }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+                val locationPass = LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+
     }
 
     private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
@@ -354,11 +411,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun isChooseAddressWidgetDataUpdated(): Boolean {
-        localCacheModel?.let {
-            context?.apply {
+        localCacheModel?.let { cacheModel ->
+            context?.let {
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                        this,
-                        it
+                    it,
+                    cacheModel
                 )
             }
         }

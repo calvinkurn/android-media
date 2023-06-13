@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.onboarding.regular
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -59,11 +61,18 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.request(it, arrayOf(
+            val listPermission = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                     PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-                ), granted = {
+                )
+            } else {
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_CAMERA)
+            }
+
+            activity?.let {
+                permissionCheckerHelper.request(it, listPermission,
+                granted = {
                 }, denied = {
                     it.finish()
                 })
@@ -137,6 +146,6 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
         private const val DP_4 = 4
         private const val DP_8 = 8
         private const val DP_12 = 12
-        private const val IMAGE_ID_CARD_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_ktp.png"
+        private const val IMAGE_ID_CARD_SAMPLE = TokopediaImageUrl.IMAGE_ID_CARD_SAMPLE
     }
 }

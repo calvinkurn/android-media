@@ -1,56 +1,57 @@
 [
   {
     "data": {
-      "mini_cart": {
+      "mini_cart_v3": {
         "data": {
           "available_section": {
             "available_group": [
               {
                 "cart_details": [
                   {
-                    "cart_id": "2909682704",
-                    "product": {
-                      "campaign_id": 0,
-                      "category": "",
-                      "category_id": 5071,
-                      "parent_id": 1920777124,
-                      "product_id": 1920777124,
-                      "product_name": "PDP D4G1NG 1G4 N0NV4R H",
-                      "product_notes": "",
-                      "product_price": 1000,
-                      "product_quantity": 5,
-                      "product_tracker_data": {
-                        "attribution": ""
+                    "products": [
+                      {
+                        "cart_id": "2909682704",
+                        "campaign_id": 0,
+                        "category": "",
+                        "category_id": 5071,
+                        "parent_id": 1920777124,
+                        "product_id": 1920777124,
+                        "product_name": "PDP D4G1NG 1G4 N0NV4R H",
+                        "product_notes": "",
+                        "product_price": 1000,
+                        "product_quantity": 5,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "warehouse_id": 11528233
                       },
-                      "product_weight": 100,
-                      "slash_price_label": "",
-                      "variant_description_detail": {
-                        "variant_name": []
-                      },
-                      "warehouse_id": 11528233
-                    }
-                  },{
-                    "cart_id": "2909682701",
-                    "product": {
-                      "campaign_id": 0,
-                      "category": "",
-                      "category_id": 5071,
-                      "parent_id": 1920777196,
-                      "product_id": 1920781722,
-                      "product_name": "PDP D4G1NG G1L1NG V4R THUMBN41L - Hitam",
-                      "product_notes": "",
-                      "product_price": 1000,
-                      "product_quantity": 10,
-                      "product_tracker_data": {
-                        "attribution": ""
-                      },
-                      "product_weight": 100,
-                      "slash_price_label": "",
-                      "variant_description_detail": {
-                        "variant_name": []
-                      },
-                      "warehouse_id": 11528233
-                    }
+                      {
+                        "cart_id": "2909682701",
+                        "campaign_id": 0,
+                        "category": "",
+                        "category_id": 5071,
+                        "parent_id": 1920777196,
+                        "product_id": 1920781722,
+                        "product_name": "PDP D4G1NG G1L1NG V4R THUMBN41L - Hitam",
+                        "product_notes": "",
+                        "product_price": 1000,
+                        "product_quantity": 10,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "warehouse_id": 11528233
+                      }
+                    ]
                   }
                 ],
                 "shipment_information": {

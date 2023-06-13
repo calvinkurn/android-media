@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_18"
         android:text="@string/topads_edit_add_keword"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/cta_border_revamp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_dynamic_channel_header_cta"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/cta_button_revamp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="@dimen/home_dynamic_header_cta_icon"
+        android:layout_height="@dimen/home_dynamic_header_cta_icon"/>
+</LinearLayout>

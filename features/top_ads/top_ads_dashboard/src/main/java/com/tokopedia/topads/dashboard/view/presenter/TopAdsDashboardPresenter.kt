@@ -224,7 +224,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     }
 
     fun getGroupProductData(
-        page: Int, groupId: Int?, search: String, sort: String,
+        page: Int, groupId: String?, search: String, sort: String,
         status: Int?, startDate: String, endDate: String, goalId: Int,
         onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
     ) {
@@ -260,7 +260,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero())
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId, ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE)
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
         shopAdInfoUseCase.setRequestParams(params)
         shopAdInfoUseCase.setGraphqlQuery(ShopInfo.GQL_QUERY)
@@ -301,7 +301,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAdsStatus(resources: Resources) {
         adsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info))
-        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId, "source" to "android.topads_product_iklan"))
         adsStatusUseCase.setTypeClass(AdStatusResponse::class.java)
         adsStatusUseCase.execute({
             view?.onSuccessAdStatus(it.topAdsGetShopInfo.data)
@@ -312,7 +312,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAutoAdsStatus(resources: Resources, onSuccess: ((data: AutoAdsResponse.TopAdsGetAutoAds.Data) -> Unit)) {
         autoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
-        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId, "source" to "android.topads_product_iklan"))
         autoAdsStatusUseCase.setTypeClass(AutoAdsResponse::class.java)
         autoAdsStatusUseCase.execute({
             onSuccess(it.topAdsGetAutoAds.data)
@@ -338,7 +338,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("BudgetRecommend", BUDGET_RECOMMENDATION)
     fun getDailyBudgetRecommendation(onSuccess: ((DailyBudgetRecommendationModel)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_Id to userSession.shopId.toIntOrZero())
+        val params = mapOf(ParamObject.SHOP_Id to userSession.shopId)
         budgetRecomUseCase.setTypeClass(DailyBudgetRecommendationModel::class.java)
         budgetRecomUseCase.setRequestParams(params)
         budgetRecomUseCase.setGraphqlQuery(BudgetRecommend.GQL_QUERY)
@@ -369,8 +369,8 @@ class TopAdsDashboardPresenter @Inject constructor(
         })
     }
 
-    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
-        validGroupUseCase.setParams(groupName)
+    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
+        validGroupUseCase.setParams(groupName, "android.topads_validate_group")
         validGroupUseCase.execute(
                 {
                     onSuccess(it.topAdsGroupValidateName)

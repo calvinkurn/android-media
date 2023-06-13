@@ -7,6 +7,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 
 /**
  * Created by kenny.hadisaputra on 11/05/22
@@ -27,15 +28,23 @@ interface ChannelStatusBuilder {
     fun buildStatusConfig(
         bannedModel: BannedUiModel = buildBannedModel(),
         freezeModel: FreezeUiModel = buildFreezeModel(),
-    ): PlayStatusConfig
+        archiveModel: ArchivedUiModel = buildArchiveModel(),
+        ): PlayStatusConfig
 
     fun buildBannedModel(
-        title: String = "",
+        title: String = "Ini banned",
         message: String = "",
         btnTitle: String = "",
     ): BannedUiModel
 
     fun buildFreezeModel(
-        title: String = "",
+        title: String = "Ini freeze",
     ): FreezeUiModel
+
+    fun buildArchiveModel(
+        title: String = "Archive",
+        description: String = "Channel ini gak ada",
+        appLink: String = "tokopedia://play",
+        btnTitle: String = "Kembali",
+    ): ArchivedUiModel
 }

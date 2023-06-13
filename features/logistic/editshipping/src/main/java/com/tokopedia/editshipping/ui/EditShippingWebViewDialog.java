@@ -20,17 +20,15 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
-import com.tokopedia.editshipping.R;
-import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.editshipping.databinding.EditShippingWebViewBinding;
 
 /**
  * Created by Kris on 5/12/2016.
- TOKOPEDIA
+ * TOKOPEDIA
  */
 public class EditShippingWebViewDialog extends DialogFragment {
 
-    private class AdditionalOptionsWebViewClient extends WebViewClient{
+    private class AdditionalOptionsWebViewClient extends WebViewClient {
         @Override
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
@@ -39,12 +37,12 @@ public class EditShippingWebViewDialog extends DialogFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if(editButtonClicked){
+            if (editButtonClicked) {
                 Intent intent = new Intent();
                 String resultShippingResultKey;
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     resultShippingResultKey = replaceTagHtml(url);
-                }else{
+                } else {
                     resultShippingResultKey = url.replaceAll(".*</html>", "");
                 }
                 intent.putExtra(EditShippingViewListener.EDIT_SHIPPING_RESULT_KEY, resultShippingResultKey);
@@ -55,7 +53,7 @@ public class EditShippingWebViewDialog extends DialogFragment {
             }
         }
 
-        private String replaceTagHtml(String url){
+        private String replaceTagHtml(String url) {
             String htmlTag = "</html>";
             int indexTagHtml = url.indexOf(htmlTag);
             return url.substring(indexTagHtml + htmlTag.length());
@@ -70,7 +68,6 @@ public class EditShippingWebViewDialog extends DialogFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return false;
         }
-
 
 
         @Override
@@ -91,8 +88,6 @@ public class EditShippingWebViewDialog extends DialogFragment {
 
 
     }
-
-    private TkpdWebView webView;
     private boolean editButtonClicked = false;
     private int courierIndex;
     private static final String WEB_RESOURCE_KEY = "web_resource_key";
@@ -110,30 +105,27 @@ public class EditShippingWebViewDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
-        webView = (TkpdWebView) view.findViewById(R.id.additional_option_dialog);
-        Typography editButton = (Typography) view.findViewById(R.id.edit_option_button);
-        Typography closeButton = (Typography) view.findViewById(R.id.close_option_button);
+        EditShippingWebViewBinding viewBinding = EditShippingWebViewBinding.inflate(inflater, container, false);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
-        webView.setWebViewClient(new AdditionalOptionsWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
-        webView.getSettings().setJavaScriptEnabled(true);
-        editButton.setOnClickListener(new View.OnClickListener() {
+        viewBinding.additionalOptionDialog.setWebViewClient(new AdditionalOptionsWebViewClient());
+        viewBinding.additionalOptionDialog.setWebChromeClient(new WebChromeClient());
+        viewBinding.additionalOptionDialog.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
+        viewBinding.additionalOptionDialog.getSettings().setJavaScriptEnabled(true);
+        viewBinding.editOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editButtonClicked = true;
-                webView.loadUrl("javascript:SubmitNewWebview();");
+                viewBinding.additionalOptionDialog.loadUrl("javascript:SubmitNewWebview();");
             }
         });
         //webView.loadUrl("http://new.ph-peter.ndvl/web-service/v4/web-view/get_shipping_detail_info.pl?shipping_id=1&user_id=2828&os_type=2&service_id=1");
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        viewBinding.closeOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-        return view;
+        return viewBinding.getRoot();
     }
 
     @Override

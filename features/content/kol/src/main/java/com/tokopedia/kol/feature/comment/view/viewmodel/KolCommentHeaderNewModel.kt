@@ -11,7 +11,8 @@ class KolCommentHeaderNewModel : KolCommentNewModel, Visitable<KolCommentTypeFac
     var tagsLink: String?
 
     constructor(avatarUrl: String?, name: String?, review: String?, time: String?,
-                userId: String?, userUrl: String?, tagsLink: String?, userBadges: String?, isShop: Boolean) : super("0", userId, userUrl, avatarUrl, name, review, time, true, false, userBadges, isShop) {
+                userId: String?, userUrl: String?, tagsLink: String?, userBadges: String?, isShop: Boolean)
+        : super("0", userId, userUrl, avatarUrl, name, review, time, true, false, userBadges, isShop, false) {
         isCanLoadMore = false
         isLoading = false
         this.tagsLink = tagsLink

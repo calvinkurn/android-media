@@ -11,7 +11,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -23,13 +23,13 @@ import kotlinx.android.synthetic.main.item_post_multimedia.view.*
  */
 class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                                private val feedType: String)
-    : BasePostViewHolder<MultimediaGridViewModel>() {
+    : BasePostViewHolder<MultimediaGridModel>() {
 
     var isPlaying = false
     var TYPE_VIDEO = "video"
     override var layoutRes: Int = R.layout.item_post_multimedia
 
-    override fun bind(element: MultimediaGridViewModel) {
+    override fun bind(element: MultimediaGridModel) {
         element.mediaItemList.forEach{
             it.positionInFeed = element.positionInFeed
         }
@@ -74,7 +74,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         }
     }
 
-    private fun isSingleItemVideo(element: MultimediaGridViewModel): Boolean {
+    private fun isSingleItemVideo(element: MultimediaGridModel): Boolean {
         return element.mediaItemList.size == 1 && element.mediaItemList[0].type == TYPE_VIDEO
     }
 

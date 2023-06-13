@@ -2,4 +2,18 @@
     package="com.tokopedia.play_common">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        >
+
+        <activity android:name=".shortsuploader.activity.PlayShortsPostUploadActivity"/>
+
+        <receiver
+            android:name=".shortsuploader.receiver.PlayShortsUploadReceiver"
+            android:enabled="true"/>
+
+    </application>
+
 </manifest>

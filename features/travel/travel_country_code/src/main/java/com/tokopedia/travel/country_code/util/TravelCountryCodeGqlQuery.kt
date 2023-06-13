@@ -7,7 +7,7 @@ import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery.ALL_COUN
 object TravelCountryCodeGqlQuery {
     const val ALL_COUNTRY = """
         query {
-          TravelGetAllCountries() {
+          TravelGetAllCountries {
             countries {
               id
               attributes {

@@ -37,6 +37,7 @@ import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeDynamicIco
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeTickerUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -56,8 +57,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +68,8 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -81,6 +82,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -89,6 +91,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
     private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
+    private val _flowShouldShowSearchCoachMark = MutableSharedFlow<Boolean>(Int.ONE)
 
     init {
         _inputState.tryEmit(TokoFoodUiState())
@@ -124,6 +127,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
+    val flowShouldShowSearchCoachMark: SharedFlow<Boolean> = _flowShouldShowSearchCoachMark
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -249,56 +253,52 @@ class TokoFoodHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getLoadingState(): Result<TokoFoodListUiModel> {
+    private fun getLoadingState(): Result<TokoFoodListUiModel> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
-        val data = Success(
+        return Success(
             TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.LOADING
             )
         )
-        return data
     }
 
-    fun getNoPinPointState(): Result<TokoFoodListUiModel> {
+    private fun getNoPinPointState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
-        val data = Success(
+        return Success(
             TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.HIDE
             )
         )
-        return data
     }
 
-    fun getNoAddressState(): Result<TokoFoodListUiModel> {
+    private fun getNoAddressState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoAddressState()
-        val data = Success(
+        return Success(
             TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.HIDE
             )
         )
-        return data
     }
 
-    fun getErrorState(throwable: Throwable): Result<TokoFoodListUiModel> {
+    private fun getErrorState(throwable: Throwable): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addErrorState(throwable)
-        val data = Success(
+        return Success(
             TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.HIDE
             )
         )
-        return data
     }
 
-    fun getProgressBar(): Result<TokoFoodListUiModel> {
+    private fun getProgressBar(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             getHomeVisitableList(),
@@ -307,21 +307,19 @@ class TokoFoodHomeViewModel @Inject constructor(
         return Success(data)
     }
 
-    fun getRemovalTickerWidget(id: String): Result<TokoFoodListUiModel> {
+    private fun getRemovalTickerWidget(id: String): Result<TokoFoodListUiModel> {
         hasTickerBeenRemoved = true
         homeLayoutItemList.removeItem(id)
 
-        val data = Success(
+        return Success(
             TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.UPDATE
             )
         )
-
-        return data
     }
 
-    suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Boolean> {
+    private suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Boolean> {
         val isSuccess = withContext(dispatchers.io) {
             keroEditAddressUseCase.execute(addressId, latitude, longitude)
         }
@@ -419,6 +417,15 @@ class TokoFoodHomeViewModel @Inject constructor(
         pageKey = pageNew
     }
 
+    fun checkForSearchCoachMark() {
+        val hasSearchCoachMarkShown = searchCoachmarkSharedPref.getHasSearchCoachmarkShown()
+        _flowShouldShowSearchCoachMark.tryEmit(!hasSearchCoachMarkShown)
+    }
+
+    fun setSearchCoachMarkHasShown() {
+        searchCoachmarkSharedPref.setHasSearchCoachmarkShown(true)
+    }
+
     private suspend fun getTokoFoodHomeComponent(
         item: TokoFoodHomeLayoutUiModel,
         localCacheModel: LocalCacheModel?
@@ -470,7 +477,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     private fun isInitialPageKey(): Boolean {
-        return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
+        return pageKey == INITIAL_PAGE_KEY_MERCHANT
     }
 
     private fun removeMerchantMainTitle() {
@@ -527,8 +534,8 @@ class TokoFoodHomeViewModel @Inject constructor(
         return isLoggedIn &&
                 (localCacheModel.lat.isEmpty() ||
                         localCacheModel.long.isEmpty() ||
-                localCacheModel.lat.equals(EMPTY_LOCATION) ||
-                        localCacheModel.long.equals(EMPTY_LOCATION))
+                    localCacheModel.lat == EMPTY_LOCATION ||
+                    localCacheModel.long == EMPTY_LOCATION)
     }
 
     private fun isAddressManuallyUpdate(): Boolean = isAddressManuallyUpdated

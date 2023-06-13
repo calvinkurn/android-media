@@ -12,9 +12,9 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoWid
 
 class OrderTrackingStatusInfoWidget : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -31,17 +31,17 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
         )
 
         lottieStatusInfoAnimationListener = object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 binding?.lottieOrderTrackingStatus?.progress = LOTTIE_START_PROGRESS
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 binding?.lottieOrderTrackingStatus?.progress = LOTTIE_START_PROGRESS
             }
 
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.domain.model.editshipping;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class ProvinceCitiesDistrict implements Parcelable {
     @SerializedName("province_id")
     @Expose
-    public Integer provinceId;
+    public long provinceId;
     @SerializedName("cities")
     @Expose
     public List<City> cities;
@@ -41,7 +42,7 @@ public class ProvinceCitiesDistrict implements Parcelable {
     }
 
     protected ProvinceCitiesDistrict(Parcel in) {
-        this.provinceId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.provinceId = (Long) in.readValue(Long.class.getClassLoader());
         this.cities = in.createTypedArrayList(City.CREATOR);
         this.provinceName = in.readString();
     }

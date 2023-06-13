@@ -11,7 +11,7 @@ data class LinkUiModel(
         val Empty: LinkUiModel
             get() = LinkUiModel(
                 webLink = "",
-                appLink = ""
+                appLink = "",
             )
     }
 }

@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmPotentialItem"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:padding="@dimen/gmc_dimen_6dp"
         app:icon_color_light_enable="@color/Unify_G500"
         tools:background="@drawable/bg_pm_oval_green" />
@@ -21,7 +21,7 @@
         android:id="@+id/tvPmPotentialItemDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Unify_N700"
         app:typographyType="body_2"
         tools:text="Lebih sering dikunjungi pembeli hingga 4,3 kali lipat" />

@@ -1,10 +1,12 @@
 package com.tokopedia.search.result.product.banner
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.pagination.Pagination
 import timber.log.Timber
 import javax.inject.Inject
 
+@SearchScope
 class BannerPresenterDelegate @Inject constructor(
     private val pagination: Pagination,
 ) {

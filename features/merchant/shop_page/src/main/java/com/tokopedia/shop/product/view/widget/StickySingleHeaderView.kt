@@ -1,10 +1,6 @@
 package com.tokopedia.shop.product.view.widget
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -36,15 +32,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-    val containerHeight: Int
-        get() {
-            if (null != mHeaderContainer) {
-                mHeaderContainer?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-                return mHeaderContainer?.measuredHeight.orZero()
-            }
-            return 0
-        }
-
     interface OnStickySingleHeaderAdapter {
         val stickyHeaderPosition: Int
         fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder?
@@ -61,7 +48,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         clipToPadding = false
         clipChildren = false
         val view = getChildAt(0) as? RecyclerView
-                ?: throw RuntimeException("RecyclerView should be the first child view.")
+            ?: throw RuntimeException("RecyclerView should be the first child view.")
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)

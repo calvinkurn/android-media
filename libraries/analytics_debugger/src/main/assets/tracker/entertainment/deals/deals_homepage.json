@@ -95,6 +95,7 @@
       "businessUnit": "travel & entertainment",
       "category": "deals",
       "item_list": "/deals",
+      "item_list_name": "/deals",
       "items": [ {
         "item_id": ".+",
         "price": ".+",
@@ -156,6 +157,7 @@
       "businessUnit": "travel & entertainment",
       "category": "deals",
       "item_list": "/deals",
+      "item_list_name": "/deals",
       "items": [ {
         "item_id": ".+",
         "price": ".+",

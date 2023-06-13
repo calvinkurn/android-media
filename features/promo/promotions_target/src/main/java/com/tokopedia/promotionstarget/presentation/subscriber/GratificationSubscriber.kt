@@ -49,14 +49,10 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
 
     companion object {
-        private val EXCLUDED_ACTIVITY_CLASS_NAMES = mutableSetOf<String>()
-
-        @JvmStatic
-        fun addActivityNameToExclude(@NonNull activityName: String) {
-            if (!TextUtils.isEmpty(activityName)) {
-                EXCLUDED_ACTIVITY_CLASS_NAMES.add(activityName)
-            }
-        }
+        private val EXCLUDED_ACTIVITY_CLASS_NAMES = mutableSetOf(
+            "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity",
+            "com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
+        )
     }
 
 

@@ -9,7 +9,7 @@ interface ShopWidgetFactory {
     fun type(productItemModel: ProductItemModel): Int
     fun type(showMoreItemModel: ShowMoreItemModel): Int
     fun type(emptyShopCardModel: EmptyShopCardModel): Int
-    fun type(shopWidgetShimmerViewModel: ShopWidgetShimmerViewModel): Int
+    fun type(shopWidgetShimmerUiModel: ShopWidgetShimmerUiModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 

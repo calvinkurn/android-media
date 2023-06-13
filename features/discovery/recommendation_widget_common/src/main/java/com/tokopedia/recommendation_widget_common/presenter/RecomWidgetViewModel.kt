@@ -291,8 +291,8 @@ open class RecomWidgetViewModel @Inject constructor(
     private fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
         launchCatchError(block = {
             val atcParam = AddToCartRequestParams(
-                productId = recomItem.productId,
-                shopId = recomItem.shopId,
+                productId = recomItem.productId.toString(),
+                shopId = recomItem.shopId.toString(),
                 quantity = quantity
             )
             addToCartUseCase.get().setParams(atcParam)
@@ -386,6 +386,6 @@ open class RecomWidgetViewModel @Inject constructor(
         _atcRecomTokonowResetCard.postValue(recomItem)
     }
 
-    private fun isJobAvailable(job: Job?): Boolean = job == null || !job?.isActive
+    private fun isJobAvailable(job: Job?): Boolean = job == null || !job.isActive
 
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,6 +17,16 @@
             android:layout_gravity="center"
             android:visibility="gone"
             app:loader_type="circular" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_installment_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="16dp"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_installment_message"

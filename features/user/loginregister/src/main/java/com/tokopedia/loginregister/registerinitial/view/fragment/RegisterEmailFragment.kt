@@ -18,19 +18,19 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
@@ -38,13 +38,11 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestDa
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.PasswordUtils
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -54,7 +52,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by nisie on 10/25/18.
@@ -88,12 +85,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     lateinit var viewModelProvider: ViewModelProvider
     lateinit var registerInitialViewModel: RegisterInitialViewModel
 
-    //** see fragment_register_email
-    private val REGISTER_BUTTON_IME = 123321
     override fun onStart() {
         super.onStart()
         activity?.let {
-            analytics?.trackScreen(it, screenName)
+            analytics.trackScreen(it, screenName)
         }
     }
 
@@ -107,8 +102,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        registerInitialViewModel = viewModelProvider?.get(RegisterInitialViewModel::class.java)
+        viewModelProvider = ViewModelProvider(this, viewModelFactory)
+        registerInitialViewModel = viewModelProvider.get(RegisterInitialViewModel::class.java)
         fetchRemoteConfig()
     }
 
@@ -141,11 +136,13 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        registerInitialViewModel?.registerRequestResponse?.observe(viewLifecycleOwner, Observer { registerRequestDataResult: Result<RegisterRequestData>? ->
+        registerInitialViewModel.registerRequestResponse.observe(viewLifecycleOwner) { registerRequestDataResult: Result<RegisterRequestData>? ->
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
-                userSession?.clearToken()
-                userSession?.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+                userSession.clearToken()
+                userSession.setToken(data.accessToken,
+                    data.tokenType,
+                    EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()
@@ -157,12 +154,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
-                val errorMessage = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
-                    className = RegisterEmailFragment::class.java.name
-                }.build())
-                if(throwable is MessageErrorException){
+                val errorMessage = throwable.getMessage(requireActivity())
+                if (throwable is MessageErrorException) {
                     throwable.message?.run {
-                        if(this.contains(ALREADY_REGISTERED)){
+                        if (this.contains(ALREADY_REGISTERED)) {
                             showInfo()
                         } else {
                             onErrorRegister(errorMessage)
@@ -171,7 +166,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
-                                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
                         if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
@@ -180,7 +175,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun fetchRemoteConfig() {
@@ -193,10 +188,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun initTermPrivacyView() {
         context?.run {
             val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
-            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
-            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
             registerNextTAndC?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
             registerNextTAndC?.isSelected = false
@@ -206,7 +201,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun clickableSpan(page: String): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
-                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                startActivity(RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -243,7 +238,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
         wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
         wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
-        if(userSession?.isLoggedIn == true) {
+        if(userSession.isLoggedIn) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -262,7 +257,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 showNameHint()
                 when {
                     s.isEmpty() -> { setWrapperErrorNew(wrapper, getString(R.string.error_field_required)) }
-                    s.length < 3 -> { setWrapperErrorNew(wrapper, getString(R.string.error_minimal_name)) }
+                    s.length < CHAR_LENGTH_3 -> { setWrapperErrorNew(wrapper, getString(R.string.error_minimal_name)) }
                     RegisterUtil.checkRegexNameLocal(wrapperName?.textFieldInput?.text.toString()) -> {
                         setWrapperErrorNew(wrapper, getString(R.string.error_illegal_character))
                     }
@@ -347,20 +342,20 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun registerEmail() {
         showLoadingProgress()
         if(validatePasswordInput()) {
-            registerAnalytics?.trackClickSignUpButtonEmail()
+            registerAnalytics.trackClickSignUpButtonEmail()
             if (isUseEncryption()) {
-                registerInitialViewModel?.registerRequestV2(
-                        wrapperEmail?.textFieldInput?.text.toString(),
-                        wrapperPassword?.textFieldInput?.text.toString(),
-                        wrapperName?.textFieldInput?.text.toString(),
-                        token
+                registerInitialViewModel.registerRequestV2(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
                 )
             } else {
-                registerInitialViewModel?.registerRequest(
-                        wrapperEmail?.textFieldInput?.text.toString(),
-                        wrapperPassword?.textFieldInput?.text.toString(),
-                        wrapperName?.textFieldInput?.text.toString(),
-                        token
+                registerInitialViewModel.registerRequest(
+                    wrapperEmail?.textFieldInput?.text.toString(),
+                    wrapperPassword?.textFieldInput?.text.toString(),
+                    wrapperName?.textFieldInput?.text.toString(),
+                    token
                 )
             }
         } else {
@@ -413,6 +408,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     fun showPasswordHint() {
         wrapperPassword?.setError(false)
         context?.resources?.let { wrapperPassword?.setMessage(it.getString(R.string.minimal_8_character)) }
+        wrapperPassword?.setMessage(activity?.resources?.getString(R.string.minimal_8_character).orEmpty())
     }
 
     fun showNameHint() {
@@ -448,7 +444,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             dismissLoadingProgress()
             setActionsEnabled(true)
             lostViewFocus()
-            registerAnalytics?.trackSuccessClickSignUpButtonEmail()
+            registerAnalytics.trackSuccessClickSignUpButtonEmail()
         }
     }
 
@@ -470,7 +466,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         view?.setText(spannable, TextView.BufferType.SPANNABLE)
         view?.setOnClickListener {
             if (activity != null) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailString)
                 startActivity(intent)
             }
@@ -512,17 +508,29 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {
-        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
-        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
 
     fun onBackPressed() {
-        registerAnalytics?.trackClickOnBackButtonRegisterEmail()
+        registerAnalytics.trackClickOnBackButtonRegisterEmail()
     }
 
     companion object {
+        //** see fragment_register_email
+        private const val REGISTER_BUTTON_IME = 123321
         private const val REQUEST_AUTO_LOGIN = 101
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
+
+        private const val SPAN_TERM_AND_CONDITION_START = 34
+        private const val SPAN_TERM_AND_CONDITION_END = 54
+        private const val SPAN_TERM_AND_CONDITION_FLAGS = 0
+
+        private const val SPAN_PRIVACY_POLICY_START = 61
+        private const val SPAN_PRIVACY_POLICY_END = 78
+        private const val SPAN_PRIVACY_POLICY_FLAGS = 0
+
+        private const val CHAR_LENGTH_3 = 3
 
         private const val ALREADY_REGISTERED = "sudah terdaftar"
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {

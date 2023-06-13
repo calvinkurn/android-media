@@ -44,6 +44,17 @@
         app:unifyButtonSize="large"
         android:text="@string/tm_bs_initial_btn_text" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/btn_secondary"
+        android:layout_marginTop="@dimen/tm_dash_dp_8"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:unifyButtonSize="large"
+        app:unifyButtonVariant="ghost"
+        android:text="@string/tm_no_internet_dashboard" />
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

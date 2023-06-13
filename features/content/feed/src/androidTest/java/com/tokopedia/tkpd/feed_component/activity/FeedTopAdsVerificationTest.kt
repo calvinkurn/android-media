@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -75,7 +74,7 @@ class FeedTopAdsVerificationTest {
                 //for products in headline ads so that the test can pass
                 waitForData()
                 onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineV2ViewHolder>(
-                        i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.shop_badge)))
+                        i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.iv_shop_badge)))
             }
         }
     }

@@ -11,18 +11,19 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -34,6 +35,9 @@ open class CategoryTestFixtures {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected val defaultCategoryL1 = "123"
     protected val defaultCategoryL2 = ""
@@ -52,7 +56,7 @@ open class CategoryTestFixtures {
     protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
     protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
-    protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
+    protected val affiliateService = mockk<NowAffiliateService>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
@@ -85,24 +89,23 @@ open class CategoryTestFixtures {
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
         tokoNowCategoryViewModel = TokoNowCategoryViewModel(
-                CoroutineTestDispatchersProvider,
-                categoryL1,
-                categoryL2,
-                externalServiceType,
-                queryParamMap,
-                getCategoryFirstPageUseCase,
-                getCategoryLoadMorePageUseCase,
-                getFilterUseCase,
-                getProductCountUseCase,
-                getMiniCartListSimplifiedUseCase,
-                cartService,
-                getWarehouseUseCase,
-                getRecommendationUseCase,
-                getCategoryListUseCase,
-                setUserPreferenceUseCase,
-                chooseAddressWrapper,
-                abTestPlatformWrapper,
-                userSession,
+            CoroutineTestDispatchersProvider,
+            categoryL1,
+            categoryL2,
+            externalServiceType,
+            queryParamMap,
+            getCategoryFirstPageUseCase,
+            getCategoryLoadMorePageUseCase,
+            getFilterUseCase,
+            getProductCountUseCase,
+            getMiniCartListSimplifiedUseCase,
+            cartService,
+            getWarehouseUseCase,
+            getCategoryListUseCase,
+            setUserPreferenceUseCase,
+            chooseAddressWrapper,
+            affiliateService,
+            userSession,
         )
     }
 

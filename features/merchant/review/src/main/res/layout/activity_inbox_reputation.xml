@@ -5,7 +5,6 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:viewBindingIgnore="true">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        app:elevation="@dimen/layout_lvl0">
+        app:elevation="0dp">
 
         <com.tokopedia.header.HeaderUnify
             android:id="@+id/headerInboxReputation"

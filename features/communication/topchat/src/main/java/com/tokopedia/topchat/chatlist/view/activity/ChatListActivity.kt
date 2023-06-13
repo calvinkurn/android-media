@@ -4,17 +4,24 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
+import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment
 
-
-open class ChatListActivity : BaseSimpleActivity(), ChatTabListFragment.Listener {
+open class ChatListActivity :
+    BaseSimpleActivity(),
+    HasComponent<ChatListComponent>,
+    ChatTabListFragment.Listener {
 
     override fun getLayoutRes(): Int = R.layout.activity_chat_tab_list
     override fun getParentViewResourceID(): Int = R.id.fragmentContainer
     override fun getToolbarResourceID(): Int = R.id.toolbar
     override fun getNewFragment(): Fragment? = ChatTabListFragment.create()
+
+    private var chatListComponent: ChatListComponent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
@@ -32,6 +39,17 @@ open class ChatListActivity : BaseSimpleActivity(), ChatTabListFragment.Listener
 
     private fun initTopchatToolbar() {
         supportActionBar?.setBackgroundDrawable(null)
+    }
+
+    override fun getComponent(): ChatListComponent {
+        return chatListComponent ?: initializeChatListComponent()
+    }
+
+    protected open fun initializeChatListComponent(): ChatListComponent {
+        return ActivityComponentFactory.instance.createChatListComponent(application, this)
+            .also {
+                chatListComponent = it
+            }
     }
 
     companion object {

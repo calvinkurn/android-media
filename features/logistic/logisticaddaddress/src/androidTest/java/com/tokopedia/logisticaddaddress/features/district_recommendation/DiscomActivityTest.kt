@@ -17,8 +17,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.containsMapOf
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.containsMapOf
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/cl_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16">
+
+        <com.tokopedia.buyerorder.detail.view.customview.CustomTicketView
+            android:id="@+id/customView1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_alignBottom="@+id/divider1"
+            android:layout_alignParentTop="true"
+            app:borderColor="@color/Unify_N50"
+            app:borderWidth="@dimen/deals_voucher_border_width"
+            app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
+            app:cornerType="roundedscallop"
+            app:scallopRadius="@dimen/layout_lvl1"
+            app:showBorder="true"
+            app:showTopShadow="true"
+            app:ticketElevation="@dimen/deals_voucher_elevation_ticket_view" />
+
+        <View
+            android:layout_width="@dimen/deals_voucher_green_side_line_width"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_alignBottom="@+id/divider1"
+            android:layout_alignParentTop="true"
+            android:layout_marginHorizontal="@dimen/deals_voucher_green_side_margin_horizontal"
+            android:layout_marginTop="@dimen/deals_voucher_green_side_margin_horizontal"
+            android:layout_marginBottom="@dimen/deals_voucher_green_side_margin_horizontal"
+            android:background="@drawable/rd_line_green" />
+
+        <com.tokopedia.buyerorder.detail.view.customview.CustomTicketView
+            android:id="@+id/customView2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_alignTop="@+id/divider1"
+            android:layout_alignBottom="@+id/progress_bar_layout"
+            app:borderColor="@color/Unify_N50"
+            app:borderWidth="@dimen/deals_voucher_border_width"
+            app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
+            app:cornerType="scalloprounded"
+            app:scallopRadius="@dimen/layout_lvl1"
+            app:showBorder="false"
+            app:showBottomShadow="true"
+            app:ticketElevation="@dimen/deals_voucher_elevation_ticket_view" />
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/deals_voucher_divider_size"
+            android:layout_below="@+id/ll_valid"
+            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:background="@drawable/dash_line_grey" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_deal"
+            android:layout_width="@dimen/deals_voucher_image_brand"
+            android:layout_height="@dimen/deals_voucher_image_brand"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_brand_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_toEndOf="@+id/iv_deal"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="display_3"
+            tools:text="1x kode booking"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_deal_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_brand_name"
+            android:layout_alignTop="@+id/iv_deal"
+            android:layout_marginHorizontal="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_toEndOf="@+id/iv_deal"
+            android:fontFamily="sans-serif-medium"
+            android:lines="2"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Sentra Vaksinasi HIPPINDO - Kementerian Koperasi dan UKM" />
+
+        <LinearLayout
+            android:id="@+id/ll_valid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_deal"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:paddingHorizontal="@dimen/unify_space_12"
+            android:paddingVertical="@dimen/unify_space_8"
+            android:background="@drawable/rect_grey"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_valid_till"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:text="@string/tiket_kategori"
+                android:textColor="@color/Unify_N700_68"
+               app:typographyType="display_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_valid_till_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/Unify_N700_68"
+                android:layout_marginStart="@dimen/unify_space_2"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="xxxxxxxxxx"/>
+        </LinearLayout>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_redeem_locations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_deal_intro"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            android:layout_toEndOf="@+id/iv_deal"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_44"
+            android:visibility="gone"
+            app:typographyType="display_3"
+            tools:text="Jl. Ahmad yani nomor 10" />
+
+        <LinearLayout
+            android:id="@+id/progress_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider1"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prog_bar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/tapAction_events"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/Unify_Background"
+                android:orientation="vertical"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/voucerCodeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/unify_space_8"
+                android:background="@color/Unify_Background"
+                android:orientation="vertical"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                tools:ignore="UselessLeaf" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tanggal_events_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:text="@string/tanggal_events"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="display_3"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tanggal_events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="13 Jul 2019, 15:00" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/events_location_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:text="@string/location_events"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="display_3"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/city_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="IFI Thamrin - Venue level" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/address_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="display_3"
+        tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />
+
+
+</LinearLayout>

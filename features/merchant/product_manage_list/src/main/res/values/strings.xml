@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">product_manage_list</string>
 
     <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
@@ -10,8 +10,6 @@
     <string name="product_manage_success_remove_featured_product">Berhasil hapus Produk Unggulan</string>
     <string name="product_manage_failed_set_featured_product">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_failed_no_internet">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
-    <string name="product_manage_refresh">Refresh</string>
-    <string name="product_manage_dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="product_manage_campaign_bottom_sheet_title">Promosi yang berlangsung</string>
     <string name="product_manage_campaign_bottom_sheet_ticker">Promosi berikut ini memakai stok utama. Agar tidak terjadi pembatalan, pastikan stokmu cukup.</string>
 
@@ -36,7 +34,6 @@
     <string name="product_manage_variant">Varian</string>
     <string name="product_manage_banned">Pelanggaran</string>
     <string name="product_manage_draft">Draf</string>
-    <string name="product_manage_campaign">Campaign</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
     <string name="product_manage_filter">Filter</string>
@@ -60,8 +57,6 @@
     <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
     <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>
     <string name="product_stock_reminder_header_title">Pasang Pengingat Stok</string>
-    <string name="product_stock_reminder_typography_title">Pengingat Stok</string>
-    <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
     <string name="product_stock_reminder_ticker">Kamu akan menerima notifikasi jika jumlah stok utama kurang dari Batas Min. Stok di bawah ini.</string>
     <string name="product_stock_reminder_ticker_multi_location_1">Pengingat Stok akan diterapkan ke semua lokasi tokomu.</string>
@@ -126,13 +121,8 @@
     <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
     <string name="product_manage_edit_products_inactive_description">Produk yang dinonaktifkan tidak dapat dilihat calon pembeli.</string>
 
-    <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
     <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
     <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
-    <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
-    <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
-    <string name="product_manage_add_etalase">Tambah Etalase</string>
-    <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
     <string name="product_manage_stock_information">Informasi Stok</string>
     <string name="product_manage_stock_reminder_info">Info Pengingat Stok</string>
 
@@ -152,7 +142,7 @@
     <string name="product_manage_campaign_stock_stock_amount">Jumlah Stok</string>
     <string name="product_manage_campaign_stock_main_stock">Stok Utama (%s)</string>
     <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
-    <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
+    <string name="product_manage_campaign_stock_event_action" tools:keep="@string/product_manage_campaign_stock_event_action">Lihat varian produk</string>
     <string name="product_manage_campaign_stock_redirection_title">Pantau pergerakan stok campaign \ndi manapun, kapanpun</string>
     <string name="product_manage_campaign_stock_redirection_desc">Gunakan aplikasi Tokopedia Seller untuk lihat alokasi stok produk untuk campaign di tokomu.</string>
     <string name="product_manage_campaign_stock_on_variant">Campaign pada varian</string>
@@ -190,11 +180,8 @@
     <string name="content_desc_btnMoreOptions">button three dots more options</string>
     <string name="content_desc_textMenu">text menu atur</string>
     <string name="content_desc_textTitle">text judul produk</string>
-    <string name="content_desc_textPrice">text harga</string>
-    <string name="content_desc_textStockCount">text stok</string>
     <string name="content_desc_labelActive">text status active</string>
     <string name="content_desc_labelInactive">text status inactive</string>
-    <string name="content_desc_labelVariant">text varian</string>
     <string name="content_desc_add_product_menu">text tambah produk</string>
     <string name="content_desc_tv_add_product_title">text tambah produk tanpa varian</string>
     <string name="content_desc_textMultipleSelect">text pilih sekaligus</string>
@@ -225,4 +212,13 @@
     <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
     <string name="product_stock_reminder_label_variant">Varian</string>
 
+    <string name="product_manage_notify_me_buyer_manage_stock_now">Atur Stok Sekarang</string>
+    <string name="product_manage_notify_me_title">Produkmu ditunggu pembeli!</string>
+
+    <string name="text_read_article">Baca Artikel</string>
+    <string name="content_coach_mark_label_guarantee_title">Kini, ada tanda “Stok Tersedia” di produkmu, lho!</string>
+    <string name="content_coach_mark_label_guarantee_desc">Tanda ini akan dilihat pembeli di halaman detail produkmu. Klik di sini untuk pelajari lebih lanjut, ya.</string>
+
+    <string name="product_tobacco_message">Produk tidak dapat dilihat di aplikasi ini. Kamu bisa cek lewat desktop atau web, ya.</string>
+    <string name="product_tobacco_message_not_allow_bulk_edit_all">Produk yang tidak dapat dipilih karena larangan dari Google Policy</string>
 </resources>

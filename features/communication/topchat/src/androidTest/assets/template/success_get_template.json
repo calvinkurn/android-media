@@ -1,0 +1,22 @@
+{
+  "chatTemplatesAll": {
+    "buyerTemplate": {
+      "isEnable": true,
+      "IsEnableSmartReply": true,
+      "IsSeller": false,
+      "templates": [
+        "Hi Barang ini ready ga?",
+        "HI 123",
+        "HALOOOOOO APA INI READYYYY",
+        "Hi template",
+        "Hi terakhir"
+      ]
+    },
+    "sellerTemplate": {
+      "isEnable": false,
+      "IsEnableSmartReply": false,
+      "IsSeller": false,
+      "templates": []
+    }
+  }
+}

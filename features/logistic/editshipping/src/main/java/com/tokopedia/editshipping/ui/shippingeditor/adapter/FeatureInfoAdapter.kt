@@ -1,19 +1,24 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
-import android.view.View
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.ItemFeatureDetailBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.unifyprinciples.Typography
 
-class FeatureInfoAdapter: RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoViewHolder>() {
+class FeatureInfoAdapter : RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoViewHolder>() {
 
     private val featureData = mutableListOf<FeatureInfoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureInfoViewHolder {
-        return FeatureInfoViewHolder(parent.inflateLayout(R.layout.item_feature_detail))
+        return FeatureInfoViewHolder(
+            ItemFeatureDetailBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -24,20 +29,18 @@ class FeatureInfoAdapter: RecyclerView.Adapter<FeatureInfoAdapter.FeatureInfoVie
         holder.binData(featureData[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<FeatureInfoModel>) {
         featureData.clear()
         featureData.addAll(data)
         notifyDataSetChanged()
     }
 
-    inner class FeatureInfoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val tvFeatureName = itemView.findViewById<Typography>(R.id.tv_feature_name)
-        private val tvFeatureDesc = itemView.findViewById<Typography>(R.id.tv_feature_desc)
-
+    inner class FeatureInfoViewHolder(private val binding: ItemFeatureDetailBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun binData(data: FeatureInfoModel) {
-            tvFeatureName.text = data.header
-            tvFeatureDesc.text = data.body
+            binding.tvFeatureName.text = data.header
+            binding.tvFeatureDesc.text = data.body
         }
     }
-
 }

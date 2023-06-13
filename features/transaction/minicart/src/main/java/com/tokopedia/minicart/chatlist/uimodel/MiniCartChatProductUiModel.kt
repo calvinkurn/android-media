@@ -8,12 +8,12 @@ data class MiniCartChatProductUiModel(
     var productImageUrl: String = "",
     var productName: String = "",
     var productSlashPriceLabel: String = "",
-    var productOriginalPrice: Long = 0L,
-    var productPrice: Long = 0L,
+    var productOriginalPrice: Double = 0.0,
+    var productPrice: Double = 0.0,
     var isChecked: Boolean = false,
     var isProductDisabled: Boolean = false,
     var size: Int = 0,
-    var productInformation: List<String> = emptyList(),
+    var productInformation: List<String> = emptyList()
 ) : Visitable<MiniCartChatListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartChatListAdapterTypeFactory): Int {

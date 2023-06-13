@@ -9,10 +9,12 @@ import androidx.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.databinding.WidgetCreateReviewRatingBinding
-import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRating
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating.WidgetReviewAnimatedRatingConfig
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewRating @JvmOverloads constructor(
     context: Context,
@@ -20,20 +22,9 @@ class CreateReviewRating @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
-
-    private val ratingListener = RatingListener()
     private val transitionHandler = TransitionHandler()
-    private val trackingHandler = TrackingHandler()
 
     override val binding = WidgetCreateReviewRatingBinding.inflate(LayoutInflater.from(context), this, true)
-
-    init {
-        binding.layoutRating.reviewFormRating.setListener(ratingListener)
-        binding.layoutRating.reviewFormRating.resetStars()
-    }
 
     private fun showLoading() {
         transitionHandler.transitionToShowLoading()
@@ -43,54 +34,30 @@ class CreateReviewRating @JvmOverloads constructor(
         uiState: CreateReviewRatingUiState.Showing
     ) {
         transitionHandler.transitionToShowData()
-        setupRating(uiState.rating)
+        setupRating(uiState.widgetConfig)
     }
 
-    private fun WidgetCreateReviewRatingBinding.setupRating(rating: Int) {
-        layoutRating.reviewFormRating.setRating(rating)
+    private fun WidgetCreateReviewRatingBinding.setupRating(
+        widgetConfig: WidgetReviewAnimatedRatingConfig
+    ) {
+        layoutRating.reviewFormRating.setContent {
+            WidgetReviewAnimatedRating(config = widgetConfig)
+        }
     }
 
-    fun updateUi(uiState: CreateReviewRatingUiState) {
+    fun updateUi(uiState: CreateReviewRatingUiState, continuation: Continuation<Unit>) {
         when (uiState) {
             is CreateReviewRatingUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewRatingUiState.Showing -> {
-                trackingHandler.trackerData = uiState.trackerData
                 binding.showData(uiState)
-                animateShow()
-            }
-        }
-    }
-
-    fun setListener(newCreateReviewRatingListener: Listener) {
-        ratingListener.listener = newCreateReviewRatingListener
-    }
-
-    private inner class RatingListener :
-        AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-        var listener: Listener? = null
-
-        override fun onClick(position: Int) {
-            listener?.onRatingChanged(position)
-            trackingHandler.trackRatingChanged(position)
-        }
-    }
-
-    private inner class TrackingHandler {
-        var trackerData: CreateReviewRatingUiState.Showing.TrackerData? = null
-
-        fun trackRatingChanged(position: Int) {
-            trackerData?.let {
-                CreateReviewTracking.reviewOnRatingChangedTracker(
-                    orderId = it.orderId,
-                    productId = it.productId,
-                    ratingValue = position.toString(),
-                    isSuccessful = true,
-                    isEditReview = it.editMode,
-                    feedbackId = it.feedbackId
-                )
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -98,7 +65,7 @@ class CreateReviewRating @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutRating.root)
                 addTarget(binding.layoutRatingLoading.root)
                 interpolator = AccelerateInterpolator()
@@ -140,9 +107,5 @@ class CreateReviewRating @JvmOverloads constructor(
                 showLoadingLayout()
             }
         }
-    }
-
-    interface Listener {
-        fun onRatingChanged(rating: Int)
     }
 }

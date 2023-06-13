@@ -115,8 +115,8 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
         val requestParams = addToCartRequestParamsSlot.captured
         val addToCartRequestParams = requestParams.parameters[REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST] as AddToCartRequestParams
 
-        addToCartRequestParams.productId.toString() shouldBe productCardOptionsModelATC.productId
-        addToCartRequestParams.shopId.toString() shouldBe productCardOptionsModelATC.shopId
+        addToCartRequestParams.productId shouldBe productCardOptionsModelATC.productId
+        addToCartRequestParams.shopId shouldBe productCardOptionsModelATC.shopId
         addToCartRequestParams.quantity shouldBe productCardOptionsModelATC.addToCartParams!!.quantity
         addToCartRequestParams.productName shouldBe productCardOptionsModelATC.productName
         addToCartRequestParams.category shouldBe productCardOptionsModelATC.categoryName

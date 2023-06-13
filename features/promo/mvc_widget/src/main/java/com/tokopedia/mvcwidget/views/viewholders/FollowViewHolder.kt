@@ -4,12 +4,15 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.FollowWidget
+import com.tokopedia.mvcwidget.FollowWidgetType
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.collapse
+import com.tokopedia.mvcwidget.expand
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.MvcDetailViewContract
-import com.tokopedia.mvcwidget.views.followViews.MvcFollowViewContainer
 import com.tokopedia.mvcwidget.views.WidgetImpression
+import com.tokopedia.mvcwidget.views.followViews.MvcFollowViewContainer
 import com.tokopedia.user.session.UserSession
 
 class FollowViewHolder (itemView: View,

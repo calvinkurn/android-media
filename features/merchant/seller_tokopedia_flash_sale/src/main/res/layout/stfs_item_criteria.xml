@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        tool:text = "1."
+        app:typographyType="paragraph_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginStart="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tfNumber"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        tool:text="Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa. Tampilan foto produk harus terlihat jelas, tidak terpotong, dengan pencahayaan terang, dan tidak berlatar putih polos. Foto produk yang terhalang logo kurir tertentu, watermark" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

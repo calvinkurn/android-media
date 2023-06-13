@@ -5,7 +5,7 @@
 
     <application>
         <activity
-            android:name=".detail.view.activity.SeeInvoiceActivity"
+            android:name=".detail.revamp.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -23,12 +23,17 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".detail.revamp.activity.RevampOrderListWebViewActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
             android:name=".detail.view.activity.OrderListwebViewActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".detail.view.activity.OrderListDetailActivity"
+            android:name=".detail.revamp.activity.RevampOrderListDetailActivity"
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

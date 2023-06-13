@@ -66,5 +66,4 @@ class AddToCartWishlistAnalyticsTest : BaseCartTest() {
         val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
         Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
     }
-
 }

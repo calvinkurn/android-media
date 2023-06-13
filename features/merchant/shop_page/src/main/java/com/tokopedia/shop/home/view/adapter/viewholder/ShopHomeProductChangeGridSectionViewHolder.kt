@@ -20,8 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeProductChangeGridSectionViewHolder(
-        itemView: View,
-        private val listener: ShopProductChangeGridSectionListener
+    itemView: View,
+    private val listener: ShopProductChangeGridSectionListener
 ) : AbstractViewHolder<ShopHomeProductChangeGridSectionUiModel>(itemView) {
 
     companion object {
@@ -33,21 +33,21 @@ class ShopHomeProductChangeGridSectionViewHolder(
     private val ivGridIcon: IconUnify? = viewBinding?.ivGridIcon
     private val labelTampilan: Typography? = viewBinding?.labelTampilan
 
-    private val drawableProductGridList : Int
+    private val drawableProductGridList: Int
         get() = R.drawable.ic_shop_page_product_grid_list
 
-    private val drawableProductGridSmall : Int
+    private val drawableProductGridSmall: Int
         get() = R.drawable.ic_shop_page_product_grid_small
 
-    private val drawableProductGridBig : Int
+    private val drawableProductGridBig: Int
         get() = R.drawable.ic_shop_page_product_grid_big
 
     override fun bind(model: ShopHomeProductChangeGridSectionUiModel) {
         val productListDataFormatted = model.totalProduct.thousandFormatted()
         labelTotalProduct?.apply {
             text = String.format(
-                    context.getString(R.string.shop_change_grid_section_total_product),
-                    productListDataFormatted
+                context.getString(R.string.shop_change_grid_section_total_product),
+                productListDataFormatted
             )
         }
         setGridIcon(model.gridType)
@@ -71,10 +71,11 @@ class ShopHomeProductChangeGridSectionViewHolder(
             ShopProductViewGridType.SMALL_GRID -> drawableProductGridSmall
             ShopProductViewGridType.BIG_GRID -> drawableProductGridBig
         }
-        ivGridIcon?.setImageDrawable(MethodChecker.getDrawable(
+        ivGridIcon?.setImageDrawable(
+            MethodChecker.getDrawable(
                 itemView.context,
                 gridIcon
-        ))
+            )
+        )
     }
-
 }

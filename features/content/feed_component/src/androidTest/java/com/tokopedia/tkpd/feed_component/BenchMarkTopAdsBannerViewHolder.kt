@@ -5,7 +5,7 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import com.tokopedia.tkpd.feed_component.mock.MockTitleModel
@@ -42,7 +42,7 @@ class BenchMarkTopAdsBannerViewHolder {
         val viewHolder = TopAdsBannerViewHolder(
                 itemView, null, null
         )
-        val data = TopAdsBannerViewModel(title = MockTitleModel.get(), topAdsBannerList = listOf((MockTopAdsImageViewModel.get())) as ArrayList<TopAdsImageViewModel>)
+        val data = TopAdsBannerModel(title = MockTitleModel.get(), topAdsBannerList = listOf((MockTopAdsImageViewModel.get())) as ArrayList<TopAdsImageViewModel>)
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)

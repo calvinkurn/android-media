@@ -1,0 +1,172 @@
+{
+  "ticket": {
+    "status": "OK",
+    "data": {
+      "is_success": 1,
+      "next_page": "https://staging.tokopedia.com/contact-us/local/inbox?page=2&status=0&user_id=9127432",
+      "previous_page": "",
+      "tickets": [
+        {
+          "id": "5005D000008p4RjQAI",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-28T09:26:27.000+0000",
+          "read_status_id": 2,
+          "status_id": 1,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D000008p4RjQAI",
+          "message": "Bagaimana cara mengganti nomor hp saya?",
+          "read_status": "read",
+          "status": "new",
+          "last_message": "Apakah baik baik saja?",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02142068"
+        },
+        {
+          "id": "5005D000009383CQAQ",
+          "subject": "Chat from Customer",
+          "last_update": "2023-02-14T10:12:15.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D000009383CQAQ",
+          "message": "<span>Halo, Kak Gaow :) \nTerima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 14 Feb 2023 yang lalu ya.</span><br><br><span style='color:#6C727C'>[17:02] <b>Gaow</b></span><br><span id='1676368945923909000'>Pilih Invoice: Pengajuan #111256 ORDER ID: (111256) TYPE (Fintech Insurance)</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368947861177000'>Kendala apa yang kamu hadapi untuk transaksi tersebut?</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>System</b></span><br><span>Info dan kendala seputar transaksi Emas</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368960464569000'>Tokopedia menyediakan fitur investasi Emas dimulai dengan nominal Rp5000. Kamu bisa mulai investasi atau mempelajari cara menabung Emas dengan klik <a href=\"https://www.tokopedia.com/emas\" rel=\"nofollow\" target=\"_blank\">di sini</a>, ya.\n</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368961420953000'>Klik pilihan di bawah ini untuk informasi lain seputar investasi Emas:\n</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>System</b></span><br><span>Tidak bisa akses tabungan emas Pegadaian</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368967353635000'>TANYA infokan saat ini Pegadaian Tabungan Emas belum dapat diakses karena pihak Pegadaian masih melakukan pembaruan sistem hingga Kamis 6 Oktober 2022. Hal tersebut terkait dengan adanya implementasi peraturan registrasi offline (KYC offline) dan biaya titipan dari sisi Pegadaian.\n</span><br><br><span style='color:#6C727C'>[17:02] <b style='color:#12883D;'>TANYA (Virtual Assistant)</b></span><br><span id='1676368967653640000'>Mohon kesediaannya untuk menunggu dulu ya, kamu bisa cek dashboard Pegadaian Tabungan Emas secara berkala. Terima kasih atas kepercayaannya terhadap Pegadaian Tabungan Emas. Untuk informasi lebih lanjut kamu bisa klik  <a href=\"https://www.tokopedia.com/discovery/finansial-emas-pegadaian\" rel=\"nofollow\" target=\"_blank\">di sini </a> ya.\n</span><br><br><span style='color:#6C727C'>[17:04] <b>Gaow</b></span><br><span id='1676369062244742000'>Haiii jadi saya ingin bertanya tentang bagaimana cara kerja emas</span><br><br><span style='color:#6C727C'>[17:05] <b>Gaow</b></span><br><span id='1676369109509414000'>Dan ya itu saja</span>",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<p>Hai. Trimakasih telah bertanya kepada kami. Jadi infonya bisa anda tutup dahulu saja ya. Trimakasih</p>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141677"
+        },
+        {
+          "id": "5005D00000934YdQAI",
+          "subject": "Chat from Customer",
+          "last_update": "2023-02-14T09:49:46.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D00000934YdQAI",
+          "message": "<span>Halo, Kak Gaow :) \nTerima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 13 Feb 2023 yang lalu ya.</span><br><br><span style='color:#6C727C'>[09:14] <b>Gaow</b></span><br><span id='1676254497709121000'>Tidak terkait transaksi manapun</span><br><br><span style='color:#6C727C'>[09:15] <b>Gaow</b></span><br><span id='1676254508863714000'>dsadasdsa</span><br><br><span style='color:#6C727C'>[09:15] <b>Gaow</b></span><br><span id='1676254510137092000'>dadasd</span>",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<span id=\"1676261144915106000\" title=\"{&quot;uuid&quot;:&quot;4b259d97-9491-4f83-aed3-ebc8c15cc006&quot;,&quot;created_date&quot;:&quot;\\&quot;2023-02-13T04:05:45.236Z\\&quot;&quot;}\">UPLOAD_SECURE_IMAGE https://chat-staging.tokopedia.com/tc/sf/v1/download_secure/4088588/2023-02-13/e9ac7d64-ab52-11ed-a38a-42010a151093</span>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141554"
+        },
+        {
+          "id": "5005D00000931AfQAI",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-10T02:24:23.000+0000",
+          "read_status_id": 2,
+          "status_id": 1,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D00000931AfQAI",
+          "message": "Haiii bagaimana kabarmu? klo disini baik baik saja",
+          "read_status": "read",
+          "status": "new",
+          "last_message": "Haiii bagaimana kabarmu? klo disini baik baik saja",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141475"
+        },
+        {
+          "id": "5005D00000931AQQAY",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-10T02:13:30.000+0000",
+          "read_status_id": 2,
+          "status_id": 1,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D00000931AQQAY",
+          "message": "Haiii this is just a testing please close it",
+          "read_status": "read",
+          "status": "solved",
+          "last_message": "<p>Please close this</p>",
+          "need_rating": 1,
+          "is_official_store": false,
+          "case_number": "02141472"
+        },
+        {
+          "id": "5005D0000092ztvQAA",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-10T02:04:10.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D0000092ztvQAA",
+          "message": "dasdas dasdas dasdas dasdas dasdas dasdas",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<p>Haaaiiiii</p>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141447"
+        },
+        {
+          "id": "5005D0000092zt2QAA",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-09T07:31:36.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D0000092zt2QAA",
+          "message": "need_rating need_rating need_rating need_rating need_rating",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<p>Direct close</p>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141445"
+        },
+        {
+          "id": "5005D0000092zrkQAA",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-09T07:07:26.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D0000092zrkQAA",
+          "message": "5005D0000092zrBQAQ 5005D0000092zrBQAQ 5005D0000092zrBQAQ 5005D0000092zrBQAQ",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<p>Direct Close</p>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141444"
+        },
+        {
+          "id": "5005D0000092zqcQAA",
+          "subject": "Chat from Customer",
+          "last_update": "2023-02-09T06:55:55.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D0000092zqcQAA",
+          "message": "<span>Halo, Kak Gaow :) \nTerima kasih telah menghubungi Tim Tokopedia Care! Berikut kami lampirkan transkrip dari percakapanmu dengan tim kami pada tanggal 9 Feb 2023 yang lalu ya.</span><br><br><span style='color:#6C727C'>[13:36] <b>Gaow</b></span><br><span id='1675924599651909000'>dadasdsa dasdasdsadsa</span><br><br><span style='color:#6C727C'>[13:36] <b>Gaow</b></span><br><span id='1675924613320992000'>Saya ingin chat dengan anda, bagaimana caranya ya?</span>",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<span id=\"1675925753322832000\" title=\"{&quot;uuid&quot;:&quot;d78c82cc-c57f-42da-a48c-b25d4f8a2878&quot;,&quot;created_date&quot;:&quot;\\&quot;2023-02-09T06:55:53.855Z\\&quot;&quot;}\">tutup</span>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141442"
+        },
+        {
+          "id": "5005D0000092zrBQAQ",
+          "subject": "Ubah nomor handphone",
+          "last_update": "2023-02-09T06:50:47.000+0000",
+          "read_status_id": 2,
+          "status_id": 2,
+          "url_detail": "https://staging.tokopedia.com/help/inbox?id=5005D0000092zrBQAQ",
+          "message": "dasdsadsa dasdsadsa dasdsadsa dasdsadsa dasdsadsa",
+          "read_status": "read",
+          "status": "closed",
+          "last_message": "<p>Close now</p>",
+          "need_rating": 0,
+          "is_official_store": false,
+          "case_number": "02141443"
+        }
+      ],
+      "notice": {
+        "is_active": true,
+        "title": "Pesan Bantuan akan dialihkan ke Tokopedia Care",
+        "subtitle": "Mulai dialihkan <b>31 Juli 2022</b>",
+        "content": "Ini cara ajukan komplain lewat Tokopedia Care:",
+        "content_list": [
+          "Buka halaman Menu Utama, klik Bantuan Tokopedia Care",
+          "Klik Mulai Chat di bagian bawah halaman Tokopedia Care"
+        ]
+      }
+    }
+  }
+}

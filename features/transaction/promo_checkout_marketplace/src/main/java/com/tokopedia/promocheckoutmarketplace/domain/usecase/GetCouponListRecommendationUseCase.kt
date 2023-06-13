@@ -14,17 +14,21 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 @GqlQuery(GetCouponListRecommendationUseCase.QUERY_NAME, GetCouponListRecommendationUseCase.QUERY)
-class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CouponListRecommendationResponse>() {
+class GetCouponListRecommendationUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<CouponListRecommendationResponse>() {
 
     private var params: Map<String, Any?>? = null
 
     fun setParams(promoRequest: PromoRequest, chosenAddress: ChosenAddress?) {
         params = mapOf(
-                KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
-                // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
-                        ?: chosenAddressRequestHelper.getChosenAddress())
+            KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
+            // Add current selected address from local cache
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (
+                chosenAddress
+                    ?: chosenAddressRequestHelper.getChosenAddress()
+                )
         )
     }
 
@@ -83,6 +87,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 title
                                 sub_title
                                 icon_unify
+                                icon_url
                                 is_enabled
                                 id
                                 coupon_groups {
@@ -101,10 +106,29 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     is_recommended
                                     is_selected
                                     is_attempted
+                                    is_bebas_ongkir
                                     clashing_infos {
                                         code
                                         message
                                         icon
+                                    }
+                                    bo_clashing_infos {
+                                        code
+                                        message
+                                        icon
+                                    }
+                                    additional_bo_datas {
+                                        code
+                                        unique_id
+                                        shipping_id
+                                        sp_id
+                                        benefit_amount
+                                        promo_id
+                                        shipping_subsidy
+                                        shipping_price
+                                        benefit_class
+                                        bo_campaign_id
+                                        eta_txt
                                     }
                                     currency_details_str
                                     coachmark {
@@ -138,10 +162,16 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                             id
                             title
                         }
+                        bottom_sheet {
+                            title
+                            content_title
+                            content_description
+                            image_url
+                            button_txt
+                        }
                     }
                 }
             }
         """
     }
-
 }

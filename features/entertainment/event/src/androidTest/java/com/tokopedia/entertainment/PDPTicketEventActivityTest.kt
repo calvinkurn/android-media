@@ -1,41 +1,26 @@
 package com.tokopedia.entertainment
 
 import android.content.Intent
-import android.view.View
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.accordion.AccordionItemUnify
-import com.tokopedia.accordion.AccordionUnify
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
-import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.ResourcePathUtil
-import org.hamcrest.CoreMatchers.anything
-import org.hamcrest.CoreMatchers.containsString
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -45,17 +30,18 @@ import org.junit.Test
 class PDPTicketEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var activityRule = ActivityTestRule(EventPDPTicketActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_PDP_V3,
@@ -103,7 +89,7 @@ class PDPTicketEventActivityTest {
         edit_quantity()
         click_beli()
 
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY), hasAllSuccess())
+        assertThat(cassavaRule.validate(ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY), hasAllSuccess())
     }
 
     fun click_package() {

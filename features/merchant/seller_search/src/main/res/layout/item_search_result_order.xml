@@ -1,46 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingBottom="@dimen/spacing_lvl3"
     android:background="?selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivSearchResultOrder"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="4"/>
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyWeight="reguler"
-        app:typographyType="body_2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Bedak Marks"/>
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        tools:text="Bedak Marks" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSearchResultOrderDesc"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyWeight="reguler"
-        app:typographyType="body_3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivSearchResultOrder"
+        app:layout_constraintStart_toStartOf="@+id/tvSearchResultOrderTitle"
         app:layout_constraintTop_toBottomOf="@id/tvSearchResultOrderTitle"
-        tools:text="Cari produk di pesanan"/>
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Cari produk di pesanan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

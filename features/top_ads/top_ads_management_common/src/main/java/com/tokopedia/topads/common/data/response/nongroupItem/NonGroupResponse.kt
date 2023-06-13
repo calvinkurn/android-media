@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class NonGroupResponse(
 
-        @field:SerializedName("topadsDashboardGroupProductsV3")
+        @field:SerializedName("topadsDashboardGroupProductsV4")
         val topadsDashboardGroupProducts: TopadsDashboardGroupProducts = TopadsDashboardGroupProducts()
 ) {
     data class TopadsDashboardGroupProducts(

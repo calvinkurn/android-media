@@ -61,7 +61,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_product_status"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             app:typographyType="small"
             app:typographyWeight="bold"
             android:textStyle="bold"

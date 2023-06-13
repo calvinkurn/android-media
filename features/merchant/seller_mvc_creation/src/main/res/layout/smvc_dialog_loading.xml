@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/smvc_summary_page_loading_dialog_desc" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

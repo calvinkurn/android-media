@@ -39,7 +39,7 @@ class RecommendationInfoBottomSheet : BottomSheetUnify() {
                 layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 text = resources.getString(R.string.topads_dashboard_recommendation_info_sheet_desc)
                 setType(Typography.BODY_2)
-                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
             layout.addView(title)
             layout.addView(description)

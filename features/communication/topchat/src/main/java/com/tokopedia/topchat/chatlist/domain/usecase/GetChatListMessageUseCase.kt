@@ -1,111 +1,78 @@
 package com.tokopedia.topchat.chatlist.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.*
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListResponse
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 open class GetChatListMessageUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
-        private val mapper: GetChatListMessageMapper,
-        private var dispatchers: CoroutineDispatchers
-) : CoroutineScope {
+    private val repo: GraphqlRepository,
+    private val mapper: GetChatListMessageMapper,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<ChatListParam, ChatListResponse>(dispatchers.io) {
 
     var hasNext = false
-    var job: Job? = null
-
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    open fun getChatList(
-            page: Int,
-            filter: String,
-            tab: String,
-            onSuccess: (ChatListPojo, List<String>, List<String>) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        job = launchCatchError(dispatchers.io,
-                {
-                    val params = generateParams(page, filter, tab)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(ChatListPojo::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    hasNext = response.data.hasNext
-                    mapper.convertStrTimestampToLong(response)
-                    val pinnedChatMsgId = mapper.mapPinChat(response, page)
-                    val unPinnedChatMsgId = mapper.mapUnpinChat(response)
-                    withContext(dispatchers.main) {
-                        onSuccess(response, pinnedChatMsgId, unPinnedChatMsgId)
-                    }
-                },
-                {
-                    withContext(dispatchers.main) {
-                        onError(it)
-                    }
-                }
-        )
+    override suspend fun execute(params: ChatListParam): ChatListResponse {
+        val p = generateParams(params)
+        val response: ChatListPojo = repo.request(graphqlQuery(), p)
+        hasNext = response.data.hasNext
+        mapper.convertStrTimestampToLong(response)
+        val pinnedChatMsgId = mapper.mapPinChat(response, params.page)
+        val unPinnedChatMsgId = mapper.mapUnpinChat(response)
+        return ChatListResponse(response, pinnedChatMsgId, unPinnedChatMsgId)
     }
 
-    private fun generateParams(
-            page: Int,
-            filter: String,
-            tab: String
-    ): Map<String, Any> {
+    override fun graphqlQuery(): String = """
+        query get_existing_message_id($$paramPage: Int!, $$paramFilter: String!, $$paramTab: String!) {
+          status
+          chatListMessage(page: $$paramPage, filter: $$paramFilter, tab: $$paramTab) {
+            list{
+              msgID
+              messageKey
+              attributes {
+                contact {
+                  id
+                  role
+                  domain
+                  name
+                  shopStatus
+                  tag
+                  thumbnail
+                }
+                lastReplyMessage
+                lastReplyTimeStr
+                readStatus
+                unreads
+                unreadsreply
+                fraudStatus
+                pinStatus
+                isReplyByTopbot
+                label
+              }
+            }
+            hasNext
+            pagingNext
+            showTimeMachine
+          }
+        }
+    """.trimIndent()
+
+    private fun generateParams(input: ChatListParam): Map<String, Any> {
         return mapOf(
-                paramPage to page,
-                paramFilter to filter,
-                paramTab to tab
+            paramPage to input.page,
+            paramFilter to input.filter,
+            paramTab to input.tab
         )
     }
 
     fun reset() {
         hasNext = false
     }
-
-    fun cancelRunningOperation() {
-        job?.cancel()
-    }
-
-    val query = """
-        query get_existing_message_id($$paramPage: Int!, $$paramFilter: String!, $$paramTab: String!) {
-          status
-          chatListMessage(page: $$paramPage, filter: $$paramFilter, tab: $$paramTab) {
-            list{
-                  msgID
-                  messageKey
-                  attributes {
-                    contact {
-                      id
-                      role
-                      domain
-                      name
-                      shopStatus
-                      tag
-                      thumbnail
-                    }
-                    lastReplyMessage
-                    lastReplyTimeStr
-                    readStatus
-                    unreads
-                    unreadsreply
-                    fraudStatus
-                    pinStatus
-                    isReplyByTopbot
-                    label
-                  }
-                }
-            hasNext
-            pagingNext
-            showTimeMachine
-          }
-        }
-
-    """.trimIndent()
 
     companion object {
         const val paramPage = "page"

@@ -7,23 +7,21 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 
 object DeeplinkMapperHome {
 
-    const val EXTRA_TAB_POSITION = "TAB_POSITION"
     const val EXTRA_ACCOUNT_TAB = "ACCOUNT_TAB"
     const val EXTRA_ACCOUNT_TAB_VALUE_SELLER = "ACCOUNT_TAB_SELLER"
     const val EXTRA_RECOMMEND_LIST = "recommend_list"
 
     const val TAB_POSITION_FEED = 1
+    const val EXTRA_TAB_POSITION = "TAB_POSITION"
     const val TAB_POSITION_ACCOUNT = 4
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
 
-    fun isLoginAndHasShop(context: Context): Boolean{
+    fun isLoginAndHasShop(context: Context): Boolean {
         val userSession = UserSession(context)
         return userSession.isLoggedIn && userSession.hasShop()
     }
@@ -39,21 +37,24 @@ object DeeplinkMapperHome {
         val uri = Uri.parse(deeplink)
 
         // tokopedia://home
-        if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty())
+        if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty()) {
             return ApplinkConsInternalHome.HOME_NAVIGATION
-        else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1)
+        } else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1) {
             return ApplinkConsInternalHome.HOME_NAVIGATION
-        else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV))
+        } else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV)) {
             return ApplinkConsInternalNavigation.MAIN_NAVIGATION
-        else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1)
+        } else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1) {
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
-        else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2)
+        } else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2) {
             return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-        else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT) && uri.pathSegments.size == 1)
+        } else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT) && uri.pathSegments.size == 1) {
             return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-        else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1)
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION,
-                    mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true))
+        } else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1) {
+            return UriUtil.buildUriAppendParams(
+                ApplinkConsInternalHome.HOME_NAVIGATION,
+                mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true)
+            )
+        }
         return deeplink
     }
 
@@ -61,28 +62,14 @@ object DeeplinkMapperHome {
         val uri = Uri.parse(deeplink)
 
         // tokopedia://official-store
-        if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty())
-            return if(isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
-            } else {
-                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
-            }
-        else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty())
-            return if(isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
-            } else {
-                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
-            }
-        else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
+        if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty()) {
+            return ApplinkConstInternalDiscovery.SOS
+        } else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty()) {
+            return ApplinkConstInternalDiscovery.SOS
+        } else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
             return getBrandlistInternal(deeplink)
         } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
-            return if(isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
-            } else {
-                val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
-                params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
-                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
-            }
+            return ApplinkConstInternalDiscovery.SOS
         }
         return deeplink
     }
@@ -117,8 +104,4 @@ object DeeplinkMapperHome {
     fun getRegisteredInboxNavigation(deeplink: String): String {
         return ApplinkConsInternalHome.HOME_INBOX
     }
-
-    fun isOsExperiment(): Boolean = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, ""
-        ) == RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 }

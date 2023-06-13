@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -24,28 +23,30 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.SpecialReleaseItemViewHolder
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.calculator.calculateHeight
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.ChannelStyleUtil
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class SpecialReleaseViewHolder(
-        itemView: View,
-        val homeComponentListener: HomeComponentListener?,
-        val specialReleaseComponentListener: SpecialReleaseComponentListener?,
-        private val cardInteraction: Boolean = false
-) : AbstractViewHolder<SpecialReleaseDataModel>(itemView), CommonProductCardCarouselListener,
+    itemView: View,
+    val homeComponentListener: HomeComponentListener?,
+    val specialReleaseComponentListener: SpecialReleaseComponentListener?,
+    private val cardInteraction: Boolean = false
+) : AbstractViewHolder<SpecialReleaseDataModel>(itemView),
+    CommonProductCardCarouselListener,
     CoroutineScope {
     private var binding: HomeComponentSpecialReleaseBinding? by viewBinding()
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
@@ -53,13 +54,16 @@ class SpecialReleaseViewHolder(
     private var isCacheData = false
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
-    companion object{
+    private var isUsingPadding = false
+
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_special_release
     }
 
     override fun bind(element: SpecialReleaseDataModel) {
         isCacheData = element.isCache
+        isUsingPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
         mappingView(channel = element.channelModel)
         setHeaderComponent(element = element)
         setChannelDivider(element = element)
@@ -72,8 +76,8 @@ class SpecialReleaseViewHolder(
     }
 
     override fun bind(element: SpecialReleaseDataModel, payloads: MutableList<Any>) {
-        if (payloads.size > 0) {
-            val payload = payloads[0]
+        if (payloads.size > Int.ZERO) {
+            val payload = payloads[Int.ZERO]
             if (payload is Bundle) {
                 val bundle = payload as Bundle
                 if (bundle.getBoolean(SpecialReleaseDataModel.SPECIAL_RELEASE_TIMER_BIND, false)) {
@@ -86,41 +90,48 @@ class SpecialReleaseViewHolder(
     }
 
     private fun setBackground(element: SpecialReleaseDataModel) {
-        val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(R.dimen.special_release_rv_padding)
         val bannerItem = element.channelModel.channelBanner
         if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
                 bannerItem.gradientColor,
                 itemView.context
-            )
+            ) || isUsingPadding
         ) {
+            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding_style_bottom)
+            binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.special_release_padding_card_compat_padding).toFloat()
             binding?.homeComponentSpecialReleaseRv?.setPadding(
-                0,
-                0,
-                0,
-                specialReleaseRvPadding
+                Int.ZERO,
+                Int.ZERO,
+                Int.ZERO,
+                specialReleaseRvPaddingStyleBottom
             )
             binding?.background?.gone()
         } else {
+            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding)
+            binding?.homeComponentSpecialReleaseRv?.translationY = Float.ZERO
             binding?.homeComponentSpecialReleaseRv?.setPadding(
-                0,
+                Int.ZERO,
                 specialReleaseRvPadding,
-                0,
-                specialReleaseRvPadding)
+                Int.ZERO,
+                specialReleaseRvPadding
+            )
             binding?.background?.visible()
             binding?.background?.setGradientBackground(bannerItem.gradientColor)
         }
     }
 
     private fun adjustGridTimer() {
-        for (i in 0..(binding?.homeComponentSpecialReleaseRv?.childCount?:0)) {
+        for (i in Int.ZERO..(binding?.homeComponentSpecialReleaseRv?.childCount ?: Int.ZERO)) {
             val childView = binding?.homeComponentSpecialReleaseRv?.getChildAt(i)
             childView?.let {
                 val holder = binding?.homeComponentSpecialReleaseRv?.getChildViewHolder(childView)
                 holder?.let {
                     if (it is SpecialReleaseItemViewHolder) {
-                        adapter?.notifyItemChanged(it.adapterPosition, Bundle().apply {
-                            putBoolean(CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND, true)
-                        })
+                        adapter?.notifyItemChanged(
+                            it.adapterPosition,
+                            Bundle().apply {
+                                putBoolean(CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND, true)
+                            }
+                        )
                     }
                 }
             }
@@ -131,7 +142,8 @@ class SpecialReleaseViewHolder(
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerBottom = binding?.homeComponentDividerFooter,
+            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
@@ -142,33 +154,23 @@ class SpecialReleaseViewHolder(
         }.toMutableList()
 
         val visitableList: MutableList<Visitable<*>> = carouselDataModelList.map { it }.toMutableList()
-        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
-            if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+        if (channel.channelGrids.size > Int.ONE && channel.channelHeader.applink.isNotEmpty()) {
+            if (channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 visitableList.add(
                     CarouselViewAllCardDataModel(
                         channel.channelHeader.applink,
                         channel.channelViewAllCard,
                         this,
                         channel.channelBanner.imageUrl,
-                        channel.channelBanner.gradientColor,
+                        if(isUsingPadding) arrayListOf() else channel.channelBanner.gradientColor,
                         channel.layout
                     )
                 )
-            }
-            else {
+            } else {
                 visitableList.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
             }
         }
         mappingItem(channel, visitableList)
-    }
-
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-        cardModelList: List<CarouselSpecialReleaseDataModel>) {
-        val cardHeight = cardModelList.calculateHeight(context, Dispatchers.Default)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = cardHeight
-        this.layoutParams = carouselLayoutParams
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
@@ -179,11 +181,11 @@ class SpecialReleaseViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
-        if (binding?.homeComponentSpecialReleaseRv?.itemDecorationCount == 0) binding?.homeComponentSpecialReleaseRv?.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
+        if (binding?.homeComponentSpecialReleaseRv?.itemDecorationCount == Int.ZERO) binding?.homeComponentSpecialReleaseRv?.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         binding?.homeComponentSpecialReleaseRv?.layoutManager = LinearLayoutManager(
-                itemView.context,
-                LinearLayoutManager.HORIZONTAL,
-                false
+            itemView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
         )
         /**
          * Attach startSnapHelper to recyclerView
@@ -192,15 +194,18 @@ class SpecialReleaseViewHolder(
     }
 
     private fun setHeaderComponent(element: SpecialReleaseDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                specialReleaseComponentListener?.onSpecialReleaseItemSeeAllClicked(element.channelModel, link)
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    specialReleaseComponentListener?.onSpecialReleaseItemSeeAllClicked(element.channelModel, link)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                }
             }
-        })
+        )
     }
 
     override fun onProductCardImpressed(

@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.feature.list.analytics
 
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.CURRENT_SITE
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.TRACKER_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.USER_ID
 
 class EventTracking(event: String, category: String, action: String, label: String) {
@@ -28,5 +29,11 @@ fun Map<String, Any>.customDimension(userId: String, businessUnit: String, curre
         plus(BUSINESS_UNIT to businessUnit)
         plus(CURRENT_SITE to currentSite)
         plus(USER_ID to userId)
+    }
+}
+
+fun Map<String, Any>.customDimension(trackId: String): Map<String, Any> {
+    return with(this) {
+        plus(TRACKER_ID to trackId)
     }
 }

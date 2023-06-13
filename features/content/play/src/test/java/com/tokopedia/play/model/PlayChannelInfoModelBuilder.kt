@@ -2,9 +2,7 @@ package com.tokopedia.play.model
 
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 
 /**
@@ -15,11 +13,17 @@ class PlayChannelInfoModelBuilder {
     fun buildChannelDetail(
         shareInfo: PlayShareInfoUiModel = buildShareInfo(),
         channelInfo: PlayChannelInfoUiModel = buildChannelInfo(),
-        rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo()
+        rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo(),
+        popUpConfig: PlayPopUpConfigUiModel = buildPopUpConfig(),
+        widgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+        commentUiModel: PlayCommentUiModel = buildCommentConfig(),
     ) = PlayChannelDetailUiModel(
             shareInfo = shareInfo,
             channelInfo = channelInfo,
             rtnConfigInfo = rtnConfigInfo,
+            popupConfig = popUpConfig,
+            exploreWidgetConfig = widgetConfig,
+            commentConfig = commentUiModel,
     )
 
     fun buildShareInfo(
@@ -49,4 +53,17 @@ class PlayChannelInfoModelBuilder {
             welcomeNotification = welcomeNotification,
             lifespan = lifespan,
     )
+
+    fun buildPopUpConfig(
+        isEnabled: Boolean = true,
+        duration: Long = 6000L,
+        text: String = "Follow yukz",
+    ) = PlayPopUpConfigUiModel(
+        isEnabled, duration, text
+    )
+
+    fun buildCommentConfig(
+        shouldShow: Boolean = false,
+        count: String = ""
+    ) = PlayCommentUiModel(shouldShow = shouldShow, total = count)
 }

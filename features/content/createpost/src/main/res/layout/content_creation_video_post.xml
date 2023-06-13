@@ -126,7 +126,7 @@
                 android:id="@+id/content_video_tag_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_3"
+                android:paddingTop="3dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="5dp"
                 android:text="@string/feed_content_post_tag_text"

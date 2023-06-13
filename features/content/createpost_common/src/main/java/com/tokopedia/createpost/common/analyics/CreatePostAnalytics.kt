@@ -129,24 +129,6 @@ constructor(private val userSession: UserSessionInterface) {
         analyticTracker.sendGeneralEvent(map)
     }
 
-     fun eventClickProductTagBubble(mediaType: String, productId: String) {
-        val map = mapOf(
-            PARAM_EVENT_NAME to CLICK_FEED,
-            PARAM_EVENT_CATEGORY to CONTENT_FEED_CREATION,
-            PARAM_EVENT_ACTION to Action.CLICK_PRODUCT_TAG_BUBBLE,
-            PARAM_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
-                userSession.shopId,
-                mediaType,
-                productId
-            ),
-            KEY_BUSINESS_UNIT_EVENT to CONTENT,
-            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-
-            )
-        analyticTracker.sendGeneralEvent(map)
-    }
-
      fun eventOpenProductTagBottomSheet(mediaType: String) {
         val map = mapOf(
             PARAM_EVENT_NAME to CLICK_FEED,
@@ -406,7 +388,7 @@ constructor(private val userSession: UserSessionInterface) {
             Product.NAME, item.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (item.campaign?.dPrice?.toInt() != 0) formatStringPrice(item.campaign?.dPrice
+            if (item.campaign?.dPrice?.toLong() != 0L) formatStringPrice(item.campaign?.dPrice
                 ?: "") else formatStringPrice(
                 item.price?.priceIdr ?: ""),
         )

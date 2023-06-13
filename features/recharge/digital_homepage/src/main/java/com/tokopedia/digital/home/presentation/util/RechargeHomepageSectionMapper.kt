@@ -12,6 +12,9 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsTripleEntryPointsModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
@@ -30,8 +33,8 @@ import com.tokopedia.digital.home.model.RechargeProductCardUnifyModel
 import com.tokopedia.digital.home.model.RechargeTicker
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.model.TickerRechargeEnum
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.old.model.DigitalHomepageSearchEnumLayoutType
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.model.DigitalHomepageSearchEnumLayoutType
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -127,7 +130,8 @@ object RechargeHomepageSectionMapper {
     fun mapHomepageSections(
         sections: List<RechargeHomepageSections.Section>,
         tickerList: RechargeTickerHomepageModel,
-        platformId: Int
+        platformId: Int,
+        isTripleEntryPointLoaded: Boolean
     ): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id
@@ -203,6 +207,9 @@ object RechargeHomepageSectionMapper {
                         it
                     )
                     SECTION_OFFERING_WIDGET -> RechargeHomepageOfferingWidgetModel(it)
+                    SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
+                    SECTION_MY_BILLS_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsEntryPointModel(it)
+                    SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it, isTripleEntryPointLoaded)
                     else -> null
                 }
             }
@@ -254,7 +261,11 @@ object RechargeHomepageSectionMapper {
                 section.id,
                 section.id,
                 channelConfig = ChannelConfig(layoutConfig),
-                channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle, applink = section.applink),
+                channelHeader = ChannelHeader(
+                    name = section.title,
+                    subtitle = section.subtitle,
+                    applink = section.applink
+                ),
                 channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
                 })

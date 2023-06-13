@@ -20,32 +20,36 @@ object EditShippingAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    private fun sendEventCategoryAction(event: String, eventCategory: String,
-                                        eventAction: String) {
-        sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
-    }
-
-    private fun sendEventCategoryActionLabel(event: String, eventCategory: String,
-                                             eventAction: String, eventLabel: String) {
-        getTracker().sendGeneralEvent(TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel))
+    private fun sendEventCategoryActionLabel(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
+        getTracker().sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                event,
+                eventCategory,
+                eventAction,
+                eventLabel
+            )
+        )
     }
 
     @JvmStatic
-    fun eventCreateShopFillLogisticError(){
-        sendEventCategoryActionLabel(CLICK_CREATE_SHOP, CREATE_SHOP, CLICK, SAVE_LOGISTIC_ERROR )
+    fun eventCreateShopFillLogisticError() {
+        sendEventCategoryActionLabel(CLICK_CREATE_SHOP, CREATE_SHOP, CLICK, SAVE_LOGISTIC_ERROR)
     }
 
     @JvmStatic
     fun eventClickonTickerShippingEditor(userId: String) {
         val map = TrackAppUtils.gtmData(
-                CLICK_TEXT_DISINI,
-                BO_SHIPPING_EDITOR,
-                CLICK_DISINI,
-                "")
+            CLICK_TEXT_DISINI,
+            BO_SHIPPING_EDITOR,
+            CLICK_DISINI,
+            ""
+        )
         map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
-
-
 }

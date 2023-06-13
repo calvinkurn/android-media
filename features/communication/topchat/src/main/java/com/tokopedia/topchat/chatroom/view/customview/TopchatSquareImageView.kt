@@ -5,13 +5,13 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 
 class TopchatSquareImageView : AppCompatImageView {
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
     constructor(
-            context: Context?, attrs: AttributeSet?
+            context: Context, attrs: AttributeSet?
     ) : super(context, attrs)
 
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+            context: Context, attrs: AttributeSet?, defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

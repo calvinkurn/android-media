@@ -7,11 +7,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TokopediaCornerData(
-        @SerializedName("is_tokopedia_corner")
-        var isTokopediaCorner: Boolean = false,
-        @SerializedName("user_corner_id")
-        var userCornerId: String? = null,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("corner_id")
-        var cornerId: Long = 0
+    @SerializedName("is_tokopedia_corner")
+    var isTokopediaCorner: Boolean = false,
+    @SerializedName("user_corner_id")
+    var userCornerId: String? = null,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("corner_id")
+    var cornerId: Long = 0
 ) : Parcelable

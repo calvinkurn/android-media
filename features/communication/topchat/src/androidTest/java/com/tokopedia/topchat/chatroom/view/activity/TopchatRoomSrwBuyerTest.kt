@@ -3,13 +3,12 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -31,7 +30,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
@@ -47,8 +46,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -65,8 +64,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponseMultipleQuestion
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -83,8 +82,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
         intendingAttachProduct(1)
 
@@ -104,8 +103,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -118,17 +117,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_shown_if_srw_preview_load_finish_first_with_no_question() {
         // Given
-        val templateChats = listOf(
-            "Hi barang ini ready gk?", "Lorem Ipsum"
-        )
-        val templateResponse = generateTemplateResponse(templates = templateChats)
         val templateDelay = 500L
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
-        getTemplateChatRoomUseCase.setResponse(templateResponse, templateDelay)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.successGetTemplateResponseBuyer
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -148,8 +143,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -167,8 +162,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
         intendingAttachProduct(1)
 
@@ -187,7 +182,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.setResponseWithDelay(
-            chatSrwResponse, 1500
+            chatSrwResponse,
+            1500
         )
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
@@ -204,8 +200,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.isError = true
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -220,8 +216,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -251,8 +247,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -271,8 +267,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -291,8 +287,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -312,8 +308,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -334,8 +330,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -360,15 +356,16 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
+                    Activity.RESULT_OK,
+                    getAttachProductData(1)
                 )
             )
 
@@ -390,8 +387,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -410,8 +407,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -434,8 +431,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -458,8 +455,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -485,8 +482,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -508,8 +505,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -530,8 +527,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -555,8 +552,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -581,8 +578,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -607,8 +604,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -628,8 +625,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -648,8 +645,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -669,8 +666,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -689,8 +686,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -710,8 +707,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -731,8 +728,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -752,8 +749,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -774,8 +771,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -797,8 +794,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -821,8 +818,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -846,8 +843,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -870,8 +867,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -894,8 +891,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -904,8 +901,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
-        clickSrwBubbleExpandCollapse(0) //Collapse
-        clickSrwBubbleExpandCollapse(0) //Expand
+        clickSrwBubbleExpandCollapse(0) // Collapse
+        clickSrwBubbleExpandCollapse(0) // Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -919,8 +916,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -929,8 +926,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
-        clickSrwBubbleExpandCollapse(0) //Collapse
-        clickSrwBubbleExpandCollapse(0) //Expand
+        clickSrwBubbleExpandCollapse(0) // Collapse
+        clickSrwBubbleExpandCollapse(0) // Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -944,8 +941,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -966,8 +963,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -989,8 +986,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1012,8 +1009,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1035,8 +1032,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1059,8 +1056,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1084,8 +1081,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1109,8 +1106,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1135,8 +1132,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1159,8 +1156,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1180,8 +1177,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1225,8 +1222,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1251,8 +1248,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1282,8 +1279,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1309,8 +1306,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1334,8 +1331,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
 
         // When
@@ -1343,8 +1340,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickPlusIconMenu()
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload()
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
         intendingAttachProduct(3)
         clickPlusIconMenu()
         clickAttachProductMenu()
@@ -1360,14 +1357,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
 
         // When
         intendingAttachProduct(3)
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generate3PreAttachPayload()
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
         clickPlusIconMenu()
         clickAttachProductMenu()
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
@@ -1387,8 +1384,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
             putProductAttachmentIntent(it)
@@ -1405,8 +1402,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
 
         // When
@@ -1428,8 +1425,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1447,8 +1444,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwProductBundlingResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -1467,8 +1464,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwProductBundlingResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
@@ -1484,8 +1481,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwProductBundlingResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, true)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
@@ -1501,14 +1498,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwProductBundlingResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
 
-        //When
+        // When
         clickSrwQuestion(0)
 
         // Then
@@ -1523,18 +1520,19 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         val products = ArrayList<ResultProduct>(totalProduct)
         for (i in 0 until totalProduct) {
             products.add(
-                    ResultProduct(
-                            DEFAULT_PRODUCT_ID,
-                            "tokopedia://product/1111",
-                            ProductPreviewAttribute.productThumbnail,
-                            "Rp ${i + 1}5.000.000",
-                            "${i + 1} ${ProductPreviewAttribute.productName}"
-                    )
+                ResultProduct(
+                    DEFAULT_PRODUCT_ID,
+                    "tokopedia://product/1111",
+                    ProductPreviewAttribute.productThumbnail,
+                    "Rp ${i + 1}5.000.000",
+                    "${i + 1} ${ProductPreviewAttribute.productName}"
+                )
             )
         }
         return Intent().apply {
             putParcelableArrayListExtra(
-                    ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY,
+                products
             )
         }
     }
@@ -1547,7 +1545,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putExtra(ApplinkConst.Chat.INVOICE_DATE, " 6 May 2021")
             putExtra(
                 ApplinkConst.Chat.INVOICE_IMAGE_URL,
-                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
+                "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
             )
             putExtra(
                 ApplinkConst.Chat.INVOICE_URL,
@@ -1558,20 +1556,23 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, "Rp 10.000")
         }
         return Instrumentation.ActivityResult(
-            Activity.RESULT_OK, intent
+            Activity.RESULT_OK,
+            intent
         )
     }
 
     private fun getAttachProductResult(totalProduct: Int): Instrumentation.ActivityResult {
         return Instrumentation.ActivityResult(
-            Activity.RESULT_OK, getAttachProductData(totalProduct)
+            Activity.RESULT_OK,
+            getAttachProductData(totalProduct)
         )
     }
 
     private fun today(): Long {
         val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(
-            stringDate, arrayOf(FakeTopchatWebSocket.START_TIME_FORMAT)
+            stringDate,
+            arrayOf(FakeTopchatWebSocket.START_TIME_FORMAT)
         ).time
     }
 

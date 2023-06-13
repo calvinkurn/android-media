@@ -5,7 +5,11 @@ import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tkpd.macrobenchmark.util.MacroArgs
+import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.measureTokopediaApps
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +28,20 @@ abstract class BaseFrameTimingBenchmark {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
+    @Before
+    fun setupBefore() {
+        if (MacroArgs.useMock(InstrumentationRegistry.getArguments())){
+            setupMock()
+        }
+        setupEnvironment()
+    }
+
+    abstract fun setupMock()
+
+    abstract fun setupEnvironment()
+
+    open fun packageName(): String = MacroIntent.TKPD_PACKAGE_NAME
+
     @Test
     fun macroBenchmarkFps() {
         /**
@@ -32,7 +50,8 @@ abstract class BaseFrameTimingBenchmark {
          */
         var currentIteration = 0
         benchmarkRule.measureTokopediaApps(
-            metrics = listOf(FrameTimingMetric())
+            metrics = listOf(FrameTimingMetric()),
+            packageName = packageName()
         ) {
             val intent = getIntent()
             it.startActivityAndWait(intent)

@@ -13,6 +13,7 @@ import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.EditProductMapper
+import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.WarehouseUiModelMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.EditProductInputModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.WarehouseUiModel
@@ -20,6 +21,9 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 
 class EditProductInfoViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -56,6 +60,10 @@ class EditProductInfoViewModel @Inject constructor(
         warehouseUiModelMapper.isShopMultiloc(it)
     }
 
+    private val _removeProductsStatus = MutableLiveData<Result<Boolean>>()
+    val removeProductsStatus: LiveData<Result<Boolean>>
+        get() = _removeProductsStatus
+
     private var _productInputData = EditProductInputModel()
     val productInputData get() = _productInputData
 
@@ -65,6 +73,7 @@ class EditProductInfoViewModel @Inject constructor(
     private var _campaignPricePercent = MutableStateFlow("")
     private var _campaignStock = MutableStateFlow("")
     private var _campaignMaxOrder = MutableStateFlow("")
+    private var _deleteActionExecuted = MutableStateFlow(false)
 
     val campaignPrice = _campaignPricePercent.map {
         DiscountUtil.getDiscountPrice(it.toLongOrZero(), product.value?.price)
@@ -79,8 +88,9 @@ class EditProductInfoViewModel @Inject constructor(
         campaignPrice,
         _campaignPrice,
         _campaignStock,
-        _campaignMaxOrder
-    ) { priceFromDiscount, price, stock, maxOrder ->
+        _campaignMaxOrder,
+        _deleteActionExecuted
+    ) { priceFromDiscount, price, stock, maxOrder, _ ->
         _productInputData.price = if (isUsingPricePercentage) priceFromDiscount else price.toLongOrNull()
         _productInputData.stock = stock.toLongOrNull()
         _productInputData.maxOrder = maxOrder.toIntOrNull()
@@ -94,6 +104,26 @@ class EditProductInfoViewModel @Inject constructor(
         _product.postValue(product)
         _warehouseList.postValue(warehouseList)
         _productInputData = inputData
+    }
+
+    fun removeProducts(
+        campaignId: Long,
+        productList: List<SellerCampaignProductList.Product>
+    ) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaigns = doSellerCampaignProductSubmissionUseCase.execute(
+                    campaignId = campaignId.toString(),
+                    productData = ManageProductMapper.mapToProductDataList(productList),
+                    action = ProductionSubmissionAction.DELETE
+                )
+                _removeProductsStatus.postValue(Success(campaigns.isSuccess))
+            },
+            onError = { error ->
+                _removeProductsStatus.postValue(Fail(error))
+            }
+        )
     }
 
     fun editProduct() {
@@ -146,5 +176,9 @@ class EditProductInfoViewModel @Inject constructor(
 
     fun setInputOriginalStock(stock: Long) {
         _productInputData.originalStock = stock
+    }
+
+    fun setDeleteStatus(isDeleteActionExecuted: Boolean) {
+        _deleteActionExecuted.value = isDeleteActionExecuted
     }
 }

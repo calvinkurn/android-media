@@ -14,8 +14,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<ValidateUsePromoRevampUiModel>() {
+class ValidateUsePromoRevampUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<ValidateUsePromoRevampUiModel>() {
 
     private var paramValidateUse: ValidateUsePromoRequest? = null
 
@@ -33,10 +35,10 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
 
     private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
         return mapOf(
-                PARAM_PARAMS to mapOf(
-                        PARAM_PROMO to validateUsePromoRequest
-                ),
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            PARAM_PARAMS to mapOf(
+                PARAM_PROMO to validateUsePromoRequest
+            ),
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
 

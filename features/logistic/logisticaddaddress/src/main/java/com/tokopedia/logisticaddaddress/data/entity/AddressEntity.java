@@ -13,19 +13,19 @@ public class AddressEntity {
 
     @SerializedName("district_id")
     @Expose
-    private int districtId;
+    private long districtId;
     @SerializedName("district_name")
     @Expose
     private String districtName;
     @SerializedName("city_id")
     @Expose
-    private int cityId;
+    private long cityId;
     @SerializedName("city_name")
     @Expose
     private String cityName;
     @SerializedName("province_id")
     @Expose
-    private int provinceId;
+    private long provinceId;
     @SerializedName("province_name")
     @Expose
     private String provinceName;
@@ -33,7 +33,7 @@ public class AddressEntity {
     @Expose
     private ArrayList<String> zipCodes;
 
-    public int getDistrictId() {
+    public long getDistrictId() {
         return districtId;
     }
 
@@ -49,7 +49,7 @@ public class AddressEntity {
         this.districtName = districtName;
     }
 
-    public int getCityId() {
+    public long getCityId() {
         return cityId;
     }
 
@@ -65,7 +65,7 @@ public class AddressEntity {
         this.cityName = cityName;
     }
 
-    public int getProvinceId() {
+    public long getProvinceId() {
         return provinceId;
     }
 

@@ -15,9 +15,15 @@ class TokomemberDashHomeViewmodel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
+    private val _tokomemberHomeRefreshLiveData = MutableLiveData<Int>()
+    val tokomemberHomeRefreshLiveData: LiveData<Int> = _tokomemberHomeRefreshLiveData
+
     private val _tokomemberHomeResultLiveData = MutableLiveData<TokoLiveDataResult<TmDashHomeResponse>>()
     val tokomemberHomeResultLiveData: LiveData<TokoLiveDataResult<TmDashHomeResponse>> = _tokomemberHomeResultLiveData
 
+    fun refreshHomeData(state: Int){
+        _tokomemberHomeRefreshLiveData.postValue(state)
+    }
     fun getHomePageData(shopId: Int) {
         tokomemberDashHomeUsecase.cancelJobs()
         _tokomemberHomeResultLiveData.postValue(TokoLiveDataResult.loading())

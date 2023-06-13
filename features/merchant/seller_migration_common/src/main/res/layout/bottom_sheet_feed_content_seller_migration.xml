@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostFavorite"
@@ -15,15 +15,15 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:paddingTop="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="@string/seller_migration_bottom_sheet_feed_post_your_favorite_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerPost"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +35,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="?selectableItemBackground"
-        android:paddingTop="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
             android:id="@+id/tvInSeller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:text="@string/seller_migration_bottom_sheet_feed_in_tokopedia_seller"
             app:labelType="general_light_green" />
 

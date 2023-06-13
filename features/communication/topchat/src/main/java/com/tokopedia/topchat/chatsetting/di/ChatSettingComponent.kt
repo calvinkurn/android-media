@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatsetting.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.topchat.chatsetting.view.activity.BubbleChatActivationActivity
 import com.tokopedia.topchat.chatsetting.view.fragment.ChatSettingFragment
 import dagger.Component
 
@@ -12,4 +13,5 @@ import dagger.Component
 
 interface ChatSettingComponent {
     fun inject(chatSettingFragment: ChatSettingFragment)
+    fun inject(bubbleChatActivationActivity: BubbleChatActivationActivity)
 }

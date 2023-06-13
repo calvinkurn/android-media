@@ -116,6 +116,7 @@ class CampaignRuleViewModel @Inject constructor(
     private var initialUniqueBuyer: Boolean? = null
     private var initialCampaignRelation: Boolean? = null
     private var initialCampaignRelations: List<RelatedCampaign> = emptyList()
+    private var selectedVpsPackageId: Long = 0
 
     private val isInputChanged: Boolean
         get() {
@@ -152,6 +153,8 @@ class CampaignRuleViewModel @Inject constructor(
                 val campaign = getSellerCampaignDetailUseCase.execute(
                     campaignId = campaignId
                 )
+                selectedVpsPackageId = campaign.packageInfo.packageId
+
                 if (campaign.isCampaignRuleSubmit) {
                     _selectedPaymentType.postValue(campaign.paymentType)
                     initialPaymentType = campaign.paymentType
@@ -425,7 +428,8 @@ class CampaignRuleViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 if (campaignData.status.isDraft()) {
-                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
+                    val selectedVpsPackageId = campaignData.campaignId
+                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute(selectedVpsPackageId)
                     if (!eligibilityResult.isEligible) {
                         _createCampaignActionState.postValue(
                             CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
@@ -449,7 +453,6 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     fun onCreateCampaignButtonClicked() {
-        tracker.sendClickButtonCreateCampaign()
         validateCampaignCreation { campaignData ->
             if (campaignData.status.isDraft()) {
                 _createCampaignActionState.postValue(CampaignRuleActionResult.ShowConfirmation)
@@ -472,6 +475,7 @@ class CampaignRuleViewModel @Inject constructor(
         val param = getCampaignCreationParam(campaignData, action)
         val result = doSellerCampaignCreationUseCase.execute(param)
         if (result.isSuccess) {
+            tracker.sendClickButtonCreateCampaign(campaignId, selectedVpsPackageId)
             _createCampaignActionState.postValue(CampaignRuleActionResult.Success)
             resetIsInSaveOrCreateAction()
         } else {
@@ -503,6 +507,7 @@ class CampaignRuleViewModel @Inject constructor(
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
             showTeaser = campaignData.useUpcomingWidget,
+            packageId = campaignData.packageInfo.packageId
         )
     }
 

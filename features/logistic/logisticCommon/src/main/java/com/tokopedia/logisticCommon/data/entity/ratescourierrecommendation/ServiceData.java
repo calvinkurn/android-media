@@ -28,6 +28,7 @@ public class ServiceData implements Parcelable {
     @SerializedName("is_promo")
     @Expose
     private int isPromo;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("range_price")
     @Expose
     private RangePriceData rangePrice;

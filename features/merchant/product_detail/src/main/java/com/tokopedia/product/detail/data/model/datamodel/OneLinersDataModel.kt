@@ -8,7 +8,8 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class OneLinersDataModel(
         var name: String = "",
         var type: String = "",
-        var oneLinersContent: OneLinersContent? = null
+        var oneLinersContent: OneLinersContent? = null,
+        val impressIconRight: ImpressHolder = ImpressHolder()
 ) : DynamicPdpDataModel {
 
     companion object {
@@ -42,4 +43,8 @@ data class OneLinersDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
     }
+
+    val shouldRenderContent
+        get() = oneLinersContent?.isVisible == true
+
 }

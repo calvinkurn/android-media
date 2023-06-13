@@ -53,7 +53,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_68"
         android:visibility="visible"
@@ -67,7 +67,7 @@
         android:id="@+id/rv_merchant_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_merchant"
         tools:visibility="visible" />

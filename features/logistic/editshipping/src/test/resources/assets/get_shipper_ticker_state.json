@@ -1,0 +1,332 @@
+{
+  "ongkirShippingEditorGetShipperTicker": {
+    "status": 200,
+    "message": "success",
+    "data": {
+      "header_ticker": {
+        "header": "",
+        "body": "",
+        "text_link": "",
+        "url_link": "",
+        "is_active": false,
+        "warehouse_ids": []
+      },
+      "courier_ticker": [
+        {
+          "shipper_id": 1,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 22,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 1,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 6,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 2,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 2,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 16,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 3,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 4,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 10,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 6,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 8,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 10,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 20,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 11,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 18,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 51,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 33,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 43,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 12,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 25,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 13,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 24,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 14,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 27,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 16,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 32,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 23,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 46,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 45,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 49,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 55,
+              "is_available": true
+            },
+            {
+              "shipper_product_id": 56,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 24,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 47,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 26,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 50,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 28,
+          "warehouse_ids": [
+            343338
+          ],
+          "ticker_state": 2,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 54,
+              "is_available": true
+            }
+          ]
+        },
+        {
+          "shipper_id": 29,
+          "warehouse_ids": [],
+          "ticker_state": 1,
+          "is_available": false,
+          "shipper_product": [
+            {
+              "shipper_product_id": 57,
+              "is_available": false
+            },
+            {
+              "shipper_product_id": 58,
+              "is_available": false
+            },
+            {
+              "shipper_product_id": 60,
+              "is_available": false
+            },
+            {
+              "shipper_product_id": 61,
+              "is_available": false
+            },
+            {
+              "shipper_product_id": 63,
+              "is_available": false
+            }
+          ]
+        },
+        {
+          "shipper_id": 1000,
+          "warehouse_ids": [],
+          "ticker_state": 0,
+          "is_available": true,
+          "shipper_product": [
+            {
+              "shipper_product_id": 1000,
+              "is_available": true
+            }
+          ]
+        }
+      ],
+      "warehouses": [
+        {
+          "warehouse_id": 343338,
+          "warehouse_name": "bekasi",
+          "district_id": 2199,
+          "district_name": "Bekasi Barat",
+          "city_id": 167,
+          "city_name": "Kota Bekasi",
+          "province_id": 12,
+          "province_name": "Jawa Barat",
+          "status": 1,
+          "postal_code": "17133",
+          "is_default": 1,
+          "latlon": "-6.2131615,106.96299",
+          "latitude": "-6.2131615",
+          "longitude": "106.96299",
+          "address_detail": "haraan baru 1, kota baru ,bekasi barat,kota bekasi , jawa barat",
+          "country": "Indonesia",
+          "is_fulfillment": false,
+          "warehouse_type": 1,
+          "email": "",
+          "shop_id": {
+            "int64": 6553185,
+            "valid": true
+          },
+          "partner_id": {
+            "int64": 0,
+            "valid": false
+          }
+        },
+        {
+          "warehouse_id": 346506,
+          "warehouse_name": "setiabudi wh2",
+          "district_id": 2270,
+          "district_name": "Setiabudi",
+          "city_id": 175,
+          "city_name": "Jakarta Selatan",
+          "province_id": 13,
+          "province_name": "DKI Jakarta",
+          "status": 1,
+          "postal_code": "12910",
+          "is_default": 0,
+          "latlon": "-6.21523950000001,106.83005500000002",
+          "latitude": "-6.21523950000001",
+          "longitude": "106.83005500000002",
+          "address_detail": "Karet Kuningan, Kecamatan Setiabudi, 12940",
+          "country": "Indonesia",
+          "is_fulfillment": false,
+          "warehouse_type": 2,
+          "email": "",
+          "shop_id": {
+            "int64": 6553185,
+            "valid": true
+          },
+          "partner_id": {
+            "int64": 0,
+            "valid": false
+          }
+        }
+      ]
+    }
+  }
+}

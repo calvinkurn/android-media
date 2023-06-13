@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -17,9 +16,14 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.AdditionalData
+import com.tokopedia.tokofood.common.domain.response.Merchant
+import com.tokopedia.tokofood.common.domain.response.PriceLevel
+import com.tokopedia.tokofood.common.presentation.customview.TokofoodPromoRibbonView
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
-import com.tokopedia.tokofood.feature.home.domain.data.PriceLevel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -30,7 +34,8 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class TokoFoodMerchantListViewHolder (
     itemView: View,
-    private val listener: TokoFoodMerchantListListener? = null
+    private val listener: TokoFoodMerchantListListener? = null,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener?
 ): AbstractViewHolder<TokoFoodMerchantListUiModel>(itemView) {
 
     companion object {
@@ -46,11 +51,13 @@ class TokoFoodMerchantListViewHolder (
     private var tgTokoFoodMerchantPriceScale: Typography? = null
     private var viewDividerTokoFoodMerchant: View? = null
     private var tgTokoFoodMerchantCategory: Typography? = null
-    private var labelMerchantDiskon: Label? = null
+    private var ivMerchantDiskon: ImageUnify? = null
+    private var tvMerchantDiskon: Typography? = null
     private var tgTokoFoodMerchantDistance: Typography? = null
     private var tgTokoFoodMerchantRating: Typography? = null
     private var imgTokoFoodMerchantRating: ImageView? = null
     private var labelMerchantClosed: Label? = null
+    private var promoRibbon: TokofoodPromoRibbonView? = null
 
     override fun bind(element: TokoFoodMerchantListUiModel) {
         setupLayout()
@@ -63,29 +70,29 @@ class TokoFoodMerchantListViewHolder (
         tgTokoFoodMerchantPriceScale = binding?.tgTokofoodMerchantPriceScale
         viewDividerTokoFoodMerchant = binding?.viewDividerTokofoodMerchant
         tgTokoFoodMerchantCategory = binding?.tgTokofoodMerchantCategory
-        labelMerchantDiskon = binding?.labelMerchantDiskon
+        ivMerchantDiskon = binding?.ivTokofoodMerchantDiscount
+        tvMerchantDiskon = binding?.tvTokofoodMerchantPromoDetail
         tgTokoFoodMerchantDistance = binding?.tgTokofoodMerchantDistance
         tgTokoFoodMerchantRating = binding?.tgTokofoodMerchantRating
         imgTokoFoodMerchantRating = binding?.imgTokofoodMerchantRating
         labelMerchantClosed = binding?.labelMerchantClosed
+        promoRibbon = binding?.ribbonTokofoodPromo
     }
 
     private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
-        setLabelDiscount(merchant.promo, merchant.priceLevel)
+        setPromoInfo(merchant.promo, merchant.additionalData)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
         setMerchantRating(merchant.ratingFmt, merchant.rating)
         setMerchantCategory(merchant.merchantCategories, merchant.priceLevel)
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, adapterPosition)
         }
-        itemView.addOnImpressionListener(merchant){
-            listener?.onImpressMerchant(merchant, adapterPosition)
-        }
+        setImpressionListener(merchant)
     }
 
     private fun setImageMerchant(imageUrl: String) {
@@ -93,7 +100,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setTitleMerchant(title: String) {
-        if (title.isNullOrEmpty()){
+        if (title.isEmpty()){
             tgTokoFoodMerchantTitle?.hide()
         } else {
             tgTokoFoodMerchantTitle?.show()
@@ -101,38 +108,46 @@ class TokoFoodMerchantListViewHolder (
         }
     }
 
-    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
-        if (label.isNullOrEmpty()){
-            labelMerchantDiskon?.hide()
+    private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        setPromoRibbonLabel(additionalData.topTextBanner)
+        if (promo.isBlank()){
+            ivMerchantDiskon?.hide()
+            tvMerchantDiskon?.hide()
         } else {
-            labelMerchantDiskon?.show()
-            labelMerchantDiskon?.text = label
-        }
-
-        labelMerchantDiskon?.run {
-            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-            if (priceLevel.fareCount <= 0) {
-                labelParams.topToBottom = tgTokoFoodMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
-            } else {
-                labelParams.topToBottom = tgTokoFoodMerchantPriceScale?.id ?: ConstraintLayout.LayoutParams.UNSET
+            ivMerchantDiskon?.run {
+                show()
+                setImageUrl(additionalData.discountIcon)
             }
-            layoutParams = labelParams
+            tvMerchantDiskon?.run {
+                show()
+                text = promo
+            }
         }
+    }
 
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        if (topTextBanner.isBlank()) {
+            promoRibbon?.hide()
+        } else {
+            promoRibbon?.run {
+                show()
+                setRibbonText(topTextBanner)
+            }
+        }
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {
         val etaDistance = StringBuilder()
-        if (!distance.isNullOrEmpty()) {
+        if (distance.isNotEmpty()) {
             etaDistance.append(distance)
         }
 
-        if (!eta.isNullOrEmpty()) {
+        if (eta.isNotEmpty()) {
             etaDistance.append(" - ")
             etaDistance.append(eta)
         }
 
-        if (etaDistance.toString().isNullOrEmpty()){
+        if (etaDistance.toString().isEmpty()){
             tgTokoFoodMerchantDistance?.hide()
         } else {
             tgTokoFoodMerchantDistance?.show()
@@ -141,7 +156,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setMerchantRating(rating: String, ratingDouble: Double) {
-        if (rating.isNullOrEmpty() || ratingDouble <= 0f){
+        if (rating.isEmpty() || ratingDouble <= 0f){
             tgTokoFoodMerchantRating?.hide()
             imgTokoFoodMerchantRating?.hide()
         } else {
@@ -154,7 +169,7 @@ class TokoFoodMerchantListViewHolder (
     private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: PriceLevel){
         val price = getPriceLevelString(priceLevel)
         val category = getCategoryString(categories)
-        if (category.isNullOrEmpty() || price.isNullOrEmpty() || priceLevel.fareCount <= 0){
+        if (category.isEmpty() || price.isEmpty() || priceLevel.fareCount <= 0){
             viewDividerTokoFoodMerchant?.hide()
         } else {
             viewDividerTokoFoodMerchant?.show()
@@ -163,7 +178,7 @@ class TokoFoodMerchantListViewHolder (
 
     private fun setMerchantCategory(categories: List<String>, priceLevel: PriceLevel){
         val category = getCategoryString(categories)
-        if (category.isNullOrEmpty()){
+        if (category.isEmpty()){
             tgTokoFoodMerchantCategory?.hide()
         } else {
             tgTokoFoodMerchantCategory?.show()
@@ -207,7 +222,7 @@ class TokoFoodMerchantListViewHolder (
 
     private fun setPriceLevel(priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
-        if (price.isNullOrEmpty() || priceLevel.fareCount <= 0){
+        if (price.isEmpty() || priceLevel.fareCount <= 0){
             tgTokoFoodMerchantPriceScale?.hide()
         } else {
             tgTokoFoodMerchantPriceScale?.show()
@@ -220,6 +235,14 @@ class TokoFoodMerchantListViewHolder (
             labelMerchantClosed?.show()
         } else {
             labelMerchantClosed?.hide()
+        }
+    }
+
+    private fun setImpressionListener(merchant: Merchant) {
+        tokofoodScrollChangedListener?.let { scrollChangedListener ->
+            itemView.addAndReturnImpressionListener(merchant, scrollChangedListener){
+                listener?.onImpressMerchant(merchant, adapterPosition)
+            }
         }
     }
 

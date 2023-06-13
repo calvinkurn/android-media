@@ -8,17 +8,16 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductTitleEmptyUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopProductTitleEmptyViewHolder(val view: View): AbstractViewHolder<ShopProductTitleEmptyUiModel>(view) {
+class ShopProductTitleEmptyViewHolder(val view: View) : AbstractViewHolder<ShopProductTitleEmptyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_shop_product_title_empty
     }
 
-    private val viewBinding : ItemShopProductTitleEmptyBinding? by viewBinding()
+    private val viewBinding: ItemShopProductTitleEmptyBinding? by viewBinding()
     private val tvTitle: Typography? = viewBinding?.tvTitle
 
     override fun bind(element: ShopProductTitleEmptyUiModel?) {
         tvTitle?.text = getString(R.string.shop_product_search_title_empty_state)
     }
-
 }

@@ -40,4 +40,5 @@ public class SendKolCommentDomain {
     public boolean canDeleteComment() {
         return canDeleteComment;
     }
+
 }

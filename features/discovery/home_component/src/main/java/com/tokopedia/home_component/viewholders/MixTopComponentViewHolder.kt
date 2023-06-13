@@ -96,9 +96,10 @@ class MixTopComponentViewHolder(
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
         setChannelDivider(element = element)
+
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
-                mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, element.channelModel.verticalPosition)
             }
         }
     }
@@ -109,11 +110,11 @@ class MixTopComponentViewHolder(
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, channel.verticalPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, adapterPosition, position, applink)
+        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, channel.verticalPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -334,11 +335,11 @@ class MixTopComponentViewHolder(
     private fun setHeaderComponent(element: MixTopDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixTopComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixTopComponentListener?.onSeeAllHeaderClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, channelModel.verticalPosition, element)
             }
         })
     }

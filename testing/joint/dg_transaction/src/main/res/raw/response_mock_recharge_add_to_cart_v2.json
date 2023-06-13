@@ -1,0 +1,57 @@
+[
+  {
+    "data": {
+      "rechargeAddToCartV2": {
+        "data": {
+          "type": "cart",
+          "id": "17211378-34-8068dfc9a2b2623b669dc91515edc915",
+          "attributes": {
+            "user_id": 17211378,
+            "client_number": "6032984011276619",
+            "title": "Detail Isi Ulang",
+            "category_name": "Uang Elektronik",
+            "operator_name": "Mandiri E-Money",
+            "icon": "https://images.tokopedia.net/img/SnKlQx/2022/1/6/9912f9f9-aafc-462b-aeec-54bcc16a77d9.png",
+            "price": "Rp22.500",
+            "price_plain": 22500,
+            "instant_checkout": false,
+            "need_otp": false,
+            "sms_state": "",
+            "voucher_autocode": "",
+            "user_input_price": 0,
+            "user_open_payment": {
+              "min_payment_text": "",
+              "max_payment_text": "",
+              "min_payment": 0,
+              "max_payment": 0,
+              "max_payment_error_text": "",
+              "min_payment_error_text": ""
+            },
+            "enable_voucher": true,
+            "is_coupon_active": 1,
+            "default_promo_dialog_tab": "voucher",
+            "main_info": [
+              {
+                "label": "Nomor Kartu",
+                "value": "6032984011276619"
+              },
+              {
+                "label": "Jenis Pembayaran",
+                "value": "TOPUP PREPAID"
+              },
+              {
+                "label": "Nominal Top-up",
+                "value": "Rp20.000"
+              },
+              {
+                "label": "Biaya Admin",
+                "value": "Rp2.500"
+              }
+            ]
+          }
+        },
+        "errors": []
+      }
+    }
+  }
+]

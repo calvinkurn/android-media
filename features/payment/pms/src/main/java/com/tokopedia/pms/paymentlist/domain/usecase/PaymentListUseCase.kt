@@ -72,6 +72,7 @@ class PaymentListUseCase @Inject constructor(
           ticker_message
           show_ticker_message
           app_link
+          continue_purchase_url
         }
     }
 }

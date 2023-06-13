@@ -1,5 +1,7 @@
 package com.tokopedia.tokomember_common_widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -10,8 +12,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.tm_coupon_preview.view.*
 import kotlin.math.floor
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-const val TM_COUPON_PREVIEW = "https://images.tokopedia.net/img/android/res/singleDpi/tm_coupon_skeleton.png"
+const val TM_COUPON_PREVIEW = TokopediaImageUrl.TM_COUPON_PREVIEW
 
 class TmCouponViewPreview @JvmOverloads constructor(
     context: Context,
@@ -61,7 +64,7 @@ class TmCouponViewPreview @JvmOverloads constructor(
         // 1000000 to 999999999 - Jt
         var result = ""
         if(!couponValue.contains(".")){
-            return floor((couponValue.toInt()/1000.0)).toString()
+            return (couponValue.toIntOrZero()/1000).toString()
         }
         else {
             result = floor((couponValue.toDouble().toInt() / 1000.0)).toString()

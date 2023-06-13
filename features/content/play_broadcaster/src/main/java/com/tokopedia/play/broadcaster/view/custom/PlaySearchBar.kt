@@ -7,17 +7,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.*
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.transition.ScaleTransition
 
@@ -95,13 +93,13 @@ class PlaySearchBar : ConstraintLayout {
         ivClear.visibility = savedState.clearBtnVisibility
     }
 
+    @Suppress("ClickableViewAccessibility")
     private fun setupView(view: View) {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 onChangeFocusTransition()
                 etSearch.addTextChangedListener(getTextWatcher())
-            }
-            else {
+            } else {
                 hideKeyboard()
                 etSearch.removeTextChangedListener(getTextWatcher())
             }
@@ -112,7 +110,16 @@ class PlaySearchBar : ConstraintLayout {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch()
                 true
-            } else false
+            } else {
+                false
+            }
+        }
+
+        etSearch.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                mListener?.onSearchBarClicked(this@PlaySearchBar)
+            }
+            false
         }
 
         ivClear.setOnClickListener {
@@ -138,30 +145,30 @@ class PlaySearchBar : ConstraintLayout {
 
     private fun onChangeFocusTransition() {
         TransitionManager.beginDelayedTransition(
-                view as ViewGroup,
-                TransitionSet()
-                        .addTransition(getSearchBoxTransition())
-                        .addTransition(getCancelButtonTransition())
-                        .addTransition(getClearButtonTransition())
-                        .setStartDelay(200)
+            view as ViewGroup,
+            TransitionSet()
+                .addTransition(getSearchBoxTransition())
+                .addTransition(getCancelButtonTransition())
+                .addTransition(getClearButtonTransition())
+                .setStartDelay(200)
         )
     }
 
     private fun getCancelButtonTransition(): Transition {
         return Slide(Gravity.END)
-                .setDuration(300)
+            .setDuration(300)
     }
 
     private fun getSearchBoxTransition(): Transition {
         return ChangeBounds()
-                .addTarget(clSearch)
-                .setDuration(300)
+            .addTarget(clSearch)
+            .setDuration(300)
     }
 
     private fun getClearButtonTransition(): Transition {
         return ScaleTransition()
-                .addTarget(ivClear)
-                .setDuration(300)
+            .addTarget(ivClear)
+            .setDuration(300)
     }
 
     private fun showKeyboard() {
@@ -203,7 +210,7 @@ class PlaySearchBar : ConstraintLayout {
             clearBtnVisibility = source?.readInt() ?: View.GONE
         }
 
-        override fun writeToParcel(out: Parcel?, flags: Int) {
+        override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out?.writeInt(cancelBtnVisibility)
             out?.writeInt(clearBtnVisibility)
@@ -223,6 +230,7 @@ class PlaySearchBar : ConstraintLayout {
 
     interface Listener {
 
+        fun onSearchBarClicked(view: PlaySearchBar) {}
         fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {}
         fun onCanceled(view: PlaySearchBar) {}
         fun onCleared(view: PlaySearchBar) {}

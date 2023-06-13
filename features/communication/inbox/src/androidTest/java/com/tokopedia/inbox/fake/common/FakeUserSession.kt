@@ -1,11 +1,13 @@
 package com.tokopedia.inbox.fake.common
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
+@ActivityScope
 class FakeUserSession @Inject constructor(
-        context: Context?
+    context: Context?
 ) : UserSession(context) {
 
     var fakeHasShop = true
@@ -23,5 +25,4 @@ class FakeUserSession @Inject constructor(
     override fun getName(): String {
         return fakeName
     }
-
 }

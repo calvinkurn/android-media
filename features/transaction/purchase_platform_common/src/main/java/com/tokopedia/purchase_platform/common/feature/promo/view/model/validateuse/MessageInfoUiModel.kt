@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MessageInfoUiModel(
-        var detail: String = "",
-        var message: String = ""
+    var detail: String = "",
+    var message: String = ""
 ) : Parcelable

@@ -1,11 +1,9 @@
 package com.tokopedia.play.widget.ui
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +37,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         defStyleAttr
     )
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context?,
         attrs: AttributeSet?,
@@ -72,6 +69,22 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mWidgetInternalListener?.onWidgetDetached(this)
     }
 
+    fun setCustomHeader(header: View) {
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setCustomHeader(header)
+            is PlayWidgetMediumView -> child.setCustomHeader(header)
+            else -> {}
+        }
+    }
+
+    fun getHeader(): View? {
+        return when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.getHeader()
+            is PlayWidgetMediumView -> child.getHeader()
+            else -> null
+        }
+    }
+
     fun setState(state: PlayWidgetState) {
         if (state.isLoading) {
             addPlaceholderView()
@@ -92,6 +105,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setAnalyticListener(listener)
             is PlayWidgetMediumView -> child.setAnalyticListener(listener)
+            is PlayWidgetLargeView -> child.setAnalyticListener(listener)
+            is PlayWidgetJumboView -> child.setAnalyticListener(listener)
         }
     }
 
@@ -106,21 +121,21 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addSmallView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetSmallView(context) }
+        val widgetView = addWidgetView { PlayWidgetSmallView(context) } ?: return
 
-        if (model.items.isNullOrEmpty()) {
+        if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
             widgetView.show()
             widgetView.setData(model)
-            widgetView.setAnalyticListener(mAnalyticListener)
             widgetView.setWidgetListener(mWidgetListener)
             widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 
     private fun addMediumView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetMediumView(context) }
+        val widgetView = addWidgetView { PlayWidgetMediumView(context) } ?: return
 
         val isWidgetEmpty = model.items.isEmpty()
         if (isWidgetEmpty) {
@@ -135,7 +150,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addLargeView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetLargeView(context) }
+        val widgetView = addWidgetView { PlayWidgetLargeView(context) } ?: return
         if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
@@ -147,7 +162,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addJumboView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetJumboView(context) }
+        val widgetView = addWidgetView { PlayWidgetJumboView(context) } ?: return
         if (model.items.isEmpty()) {
             widgetView.hide()
         } else {
@@ -159,22 +174,26 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     }
 
     private fun addPlaceholderView() {
-        val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) }
+        val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) } ?: return
 
         widgetView.setData()
     }
 
-    private inline fun <reified T : View> addWidgetView(creator: () -> T): T {
+    private inline fun <reified T : View> addWidgetView(creator: () -> T): T? {
         val firstChild = getFirstChild()
-        return if (firstChild !is T) {
-            removeCurrentView()
-            val widget = creator().apply {
-                layoutParams = getChildLayoutParams()
-            }
-            addView(widget)
+        return try {
+            if (firstChild !is T) {
+                removeCurrentView()
+                val widget = creator().apply {
+                    layoutParams = getChildLayoutParams()
+                }
+                addView(widget)
 
-            widget
-        } else firstChild
+                widget
+            } else firstChild
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun getFirstChild(): View? = getChildAt(0)

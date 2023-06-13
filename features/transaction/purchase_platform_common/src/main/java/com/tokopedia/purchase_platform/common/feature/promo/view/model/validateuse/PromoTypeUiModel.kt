@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PromoTypeUiModel(
-	var isExclusiveShipping: Boolean = false,
-	var isBebasOngkir: Boolean = false
+    var isExclusiveShipping: Boolean = false,
+    var isBebasOngkir: Boolean = false
 ) : Parcelable

@@ -28,9 +28,11 @@ class ShoppingSummaryBottomSheet @Inject constructor() {
                 showCloseIcon = true
                 showHeader = true
                 clearContentPadding = true
-                setTitle(data.title.ifBlank {
-                    context.getString(R.string.mini_cart_widget_label_purchase_summary)
-                })
+                setTitle(
+                    data.title.ifBlank {
+                        context.getString(R.string.mini_cart_widget_label_purchase_summary)
+                    }
+                )
             }
 
             val viewBinding =

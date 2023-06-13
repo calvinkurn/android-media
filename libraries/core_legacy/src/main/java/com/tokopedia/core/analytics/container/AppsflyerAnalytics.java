@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -152,7 +152,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         }
 
         try {
-            GtmLogger.getInstance(getContext()).save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
+            Cassava.save(eventValue, eventName, AnalyticsSource.APPS_FLYER);
         } catch (Exception e) {
             Timber.e(e);
         }

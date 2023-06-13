@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.seller_shop_flash_sale.R.color.*
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.Constant.SIXTY_MINUTE
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.enums.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.isActive
+import com.tokopedia.shop.flashsale.domain.entity.enums.isAvailable
+import com.tokopedia.shop.flashsale.domain.entity.enums.isCancelled
+import com.tokopedia.shop.flashsale.domain.entity.enums.isFinished
+import com.tokopedia.shop.flashsale.domain.entity.enums.isOngoing
+import com.tokopedia.shop.flashsale.domain.entity.enums.isUpcoming
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 
@@ -102,36 +106,45 @@ class CampaignAdapter(
             binding.loader.isVisible = isLoading
             binding.imgMore.isVisible = campaign.status.isActive()
             binding.timer.isVisible = campaign.status.isUpcoming()
+            binding.tpgPackageInfo.handlePackageInfo(
+                R.string.sfs_placeholder_quota_resource,
+                campaign
+            )
+            binding.tpgEventRegistered.handleEventRegistered(
+                R.string.sfs_placeholder_event_registered,
+                campaign
+            )
             handleCampaignStatusIndicator(campaign)
         }
 
         private fun handleCampaignStatusIndicator(campaign: CampaignUiModel) {
             when {
                 campaign.status.isUpcoming() -> {
-                    val statusTextResourceId = if (campaign.thematicParticipation) R.string.sfs_selection else R.string.sfs_upcoming
+                    val statusTextResourceId =
+                        if (campaign.thematicParticipation) R.string.sfs_selection else R.string.sfs_upcoming
                     binding.tpgCampaignStatus.setStatus(statusTextResourceId)
-                    binding.tpgCampaignStatus.textColor(Unify_YN400)
+                    binding.tpgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
                     startTimer(campaign)
                 }
                 campaign.status.isAvailable() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_available)
-                    binding.tpgCampaignStatus.textColor(Unify_NN600)
+                    binding.tpgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
                 }
                 campaign.status.isOngoing() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_ongoing)
-                    binding.tpgCampaignStatus.textColor(Unify_GN500)
+                    binding.tpgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_ongoing)
                 }
                 campaign.status.isFinished() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_finished)
-                    binding.tpgCampaignStatus.textColor(Unify_NN400)
+                    binding.tpgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
                 }
                 campaign.status.isCancelled() -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_cancelled)
-                    binding.tpgCampaignStatus.textColor(Unify_RN500)
+                    binding.tpgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
                 }
             }
@@ -142,7 +155,7 @@ class CampaignAdapter(
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
                 binding.timer.targetDate = campaign.startDate.removeTimeZone().toCalendar()
             } else {
-                binding.timer.timerFormat =  TimerUnifySingle.FORMAT_MINUTE
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
                 binding.timer.targetDate = campaign.startDate.toCalendar()
             }
         }
@@ -155,6 +168,24 @@ class CampaignAdapter(
         private fun Typography.textColor(@ColorRes resourceId: Int) {
             val color = ContextCompat.getColor(this.context, resourceId)
             this.setTextColor(color)
+        }
+
+        private fun Typography.handlePackageInfo(
+            @StringRes resourceId: Int,
+            campaign: CampaignUiModel
+        ) {
+            val packageInfo = campaign.packageInfo.packageName
+            this.isVisible = packageInfo.isNotEmpty()
+            this.text = this.context.getString(resourceId, packageInfo)
+        }
+
+        private fun Typography.handleEventRegistered(
+            @StringRes resourceId: Int,
+            campaign: CampaignUiModel
+        ) {
+            val eventName = campaign.thematicInfo.name
+            this.isVisible = campaign.thematicParticipation
+            this.text = this.context.getString(resourceId, eventName)
         }
     }
 }

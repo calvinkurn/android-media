@@ -53,7 +53,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         bundle.putString(UserId.KEY, element.userId)
         bundle.putString(CampaignCode.KEY, element.campaignCode)
-        return Pair(Ecommerce.PROMO_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 
     fun getClickProduct(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Pair<String, Bundle> {
@@ -102,7 +102,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(UserId.KEY, element.userId)
         bundle.putString(CampaignCode.KEY, element.campaignCode)
 
-        return Pair(Ecommerce.PRODUCT_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 
     fun getClickViewAllCard(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {

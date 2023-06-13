@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created by - Harshit Jain on Aug 2022-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/coupon_detail_main_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/coupon_detail_top_section"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                layout="@layout/tm_coupon_detail_top_section" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/coupon_detail_progress_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tm_quota_progress_text"
+                app:typographyType="display_3"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_detail_top_section"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="17dp"
+                android:layout_marginTop="16dp"
+                />
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/coupon_detail_progress_bar"
+                android:layout_width="263dp"
+                android:layout_height="6dp"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_detail_progress_header"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="11dp"
+                android:layout_marginStart="16dp"
+                app:unify_progress_bar_color_type="color_green"
+                app:unify_progress_bar_track_color="color_gray"
+                app:unify_progress_bar_from_color="@color/unify_G500"
+                app:unify_progress_bar_value="30"
+                />
+
+
+
+            <LinearLayout
+                android:id="@+id/quota_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_detail_progress_header"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                >
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/coupon_detail_used_quota"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="heading_3"
+                    app:typographyWeight="bold"
+                    />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/coupon_detail_total_quota"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="display_3"
+                    />
+            </LinearLayout>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/coupon_detail_divider"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_detail_progress_bar"
+                android:layout_marginTop="25dp"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/coupon_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="display_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_detail_divider"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/tm_coupon_informasi_text"
+                app:typographyWeight="bold"
+                />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_type_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Tipe Kupon"
+                app:layout_constraintTop_toBottomOf="@id/coupon_info_title"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_cashback_type_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Jenis Cashback"
+                app:layout_constraintTop_toBottomOf="@id/coupon_type_tv"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_cashback_percent_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Percentase Diskon"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_cashback_type_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                />
+
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_maks_cashback_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Maks. Cashback"
+                app:layout_constraintTop_toBottomOf="@id/coupon_cashback_percent_tv"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_min_transaksi_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Min. Transaksi"
+                app:layout_constraintTop_toBottomOf="@id/coupon_maks_cashback_tv"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+                android:id="@+id/coupon_kuota_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tmDescriptionText="Kuota"
+                app:layout_constraintTop_toBottomOf="@id/coupon_min_transaksi_tv"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@+id/coupon_kuota_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/tm_bg_create_card_button_info"
+                >
+                <LinearLayout
+                    android:id="@+id/current_release_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:orientation="horizontal"
+                    >
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tm_current_release_text_1"
+                        app:typographyType="display_3"
+                        app:typographyWeight="bold"
+                        />
+                    <com.tokopedia.iconunify.IconUnify
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        app:icon_name="INFORMATION"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp"
+                        />
+                </LinearLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tm_current_release_text_2"
+                    app:layout_constraintTop_toBottomOf="@+id/current_release_container"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:typographyType="paragraph_3"
+                    android:textColor="@color/Unify_NN600"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/curr_expense_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:typographyType="paragraph_2"
+                    app:typographyWeight="bold"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp"
+        android:elevation="4dp"
+        >
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/coupon_detail_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyButtonSize="large"
+            app:unifyButtonVariant="filled" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

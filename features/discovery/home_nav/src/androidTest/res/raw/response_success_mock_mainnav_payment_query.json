@@ -8,8 +8,8 @@
             "transactionID": "1712902481",
             "paymentAmount": 331800,
             "tickerMessage": "Bayar sebelum 20 May 2022, 11:30 WIB",
-            "gatewayImg": "https://ecs7.tokopedia.net/img/toppay/sprites/bca.png",
-            "applink": "tokopedia://howtopay?deadline\u003dJumat%2C+20+May+2022%2C+11%3A30+WIB\u0026gateway_code\u003dBCAVA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fsprites%2Fbca.png\u0026gateway_name\u003dBCA+Virtual+Account\u0026merchant_code\u003dtokopedia\u0026payment_code\u003d80777083876156530\u0026payment_type\u003dVA\u0026total_amount\u003d331.800\u0026transaction_id\u003d1712902481",
+            "gatewayImg": "https://images.tokopedia.net/img/toppay/sprites/bca.png",
+            "applink": "tokopedia://howtopay?deadline\u003dJumat%2C+20+May+2022%2C+11%3A30+WIB\u0026gateway_code\u003dBCAVA\u0026gateway_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ftoppay%2Fsprites%2Fbca.png\u0026gateway_name\u003dBCA+Virtual+Account\u0026merchant_code\u003dtokopedia\u0026payment_code\u003d80777083876156530\u0026payment_type\u003dVA\u0026total_amount\u003d331.800\u0026transaction_id\u003d1712902481",
             "bankImg": ""
           }
         ]

@@ -1,5 +1,7 @@
 package com.tokopedia.referral.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.referral.R
 import com.tokopedia.referral.analytics.ReferralPhoneVerificationAnalytics
 import com.tokopedia.user.session.UserSession
@@ -65,7 +68,7 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
             analytics?.eventReferralAndShare(
                     ReferralPhoneVerificationAnalytics.Action.CLICK_VERIFY_NUMBER,
                     tvPhoneNumber?.text.toString().replace("-", ""))
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ADD_PHONE_WITH, rawPhone)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ADD_PHONE_WITH, rawPhone)
             intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
             startActivity(intent)
             activity?.finish()
@@ -77,6 +80,6 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
             return ReferralPhoneNumberVerificationFragment()
         }
         const val EXTRA_PHONE = "phone"
-        const val URL_TOKOCASH_SHARE = "https://ecs7.tokopedia.net/img/android/others/ic_referral_tokocash.png"
+        const val URL_TOKOCASH_SHARE = TokopediaImageUrl.URL_TOKOCASH_SHARE
     }
 }

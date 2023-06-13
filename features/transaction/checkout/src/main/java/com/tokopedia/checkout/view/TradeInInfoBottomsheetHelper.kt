@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -13,11 +15,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifyprinciples.Typography
 
-const val TRADE_IN_NORMAL_IMAGE_URL = "https://ecs7.tokopedia.net/timi/desc-timi.png"
-const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://ecs7.tokopedia.net/timi/Ditukar%20Di%20Indomaret@3x.png"
+const val TRADE_IN_NORMAL_IMAGE_URL = TokopediaImageUrl.TRADE_IN_NORMAL_IMAGE_URL
+const val TRADE_IN_DROP_OFF_IMAGE_URL = TokopediaImageUrl.TRADE_IN_DROP_OFF_IMAGE_URL
 
 fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Context) {
-
     BottomSheetUnify().apply {
         val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
         setupContent(view, context)

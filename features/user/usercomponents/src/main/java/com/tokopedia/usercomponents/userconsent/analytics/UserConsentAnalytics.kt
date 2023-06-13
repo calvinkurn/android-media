@@ -2,6 +2,7 @@ package com.tokopedia.usercomponents.userconsent.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class UserConsentAnalytics @Inject constructor() {
         tracker.sendGeneralEvent(trackerParam)
     }
 
-    private fun generatePurposeId(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
+    private fun generatePurposeId(purposes: MutableList<PurposeDataModel>): String {
         var purposeIds = ""
         if (purposes.size == 1) {
             return purposes.first().id
@@ -36,7 +37,7 @@ class UserConsentAnalytics @Inject constructor() {
         return purposeIds
     }
 
-    fun trackOnPurposeCheck(isChecked: Boolean, purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnPurposeCheck(isChecked: Boolean, purposes: MutableList<PurposeDataModel>) {
         sendTracker(
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
@@ -48,7 +49,7 @@ class UserConsentAnalytics @Inject constructor() {
         )
     }
 
-    fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel) {
+    fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: PurposeDataModel) {
         sendTracker(
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
@@ -60,28 +61,28 @@ class UserConsentAnalytics @Inject constructor() {
         )
     }
 
-    fun trackOnTnCHyperLinkClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnTnCHyperLinkClicked(purposes: MutableList<PurposeDataModel>) {
         sendTracker(
             action = ACTION.CLICK_TNC_HYPER_LINK,
             label = generatePurposeId(purposes)
         )
     }
 
-    fun trackOnPolicyHyperLinkClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnPolicyHyperLinkClicked(purposes: MutableList<PurposeDataModel>) {
         sendTracker(
             action = ACTION.CLICK_PRIVACY_HYPER_LINK,
             label = generatePurposeId(purposes)
         )
     }
 
-    fun trackOnActionButtonClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnActionButtonClicked(purposes: MutableList<PurposeDataModel>) {
         sendTracker(
             action = ACTION.CLICK_ACTION_BUTTON,
             label = generatePurposeId(purposes)
         )
     }
 
-    fun trackOnConsentView(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnConsentView(purposes: MutableList<PurposeDataModel>) {
         sendTracker(
             action = ACTION.VIEW_USER_CONSENT,
             label = generatePurposeId(purposes)

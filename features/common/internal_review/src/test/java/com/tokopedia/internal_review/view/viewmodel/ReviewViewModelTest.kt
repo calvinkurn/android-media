@@ -42,7 +42,7 @@ class ReviewViewModelTest {
     }
 
     @Test
-    fun `should success when submit review then notify the UI to update success state`() = coroutineTestRule.runBlockingTest {
+    fun `should success when submit review then notify the UI to update success state`() = coroutineTestRule.runTest {
         val param = SendReviewParam("12345", 4)
         sendReviewUseCase.params = SendReviewUseCase.createParams(param)
 
@@ -60,7 +60,7 @@ class ReviewViewModelTest {
     }
 
     @Test
-    fun `should failed when submit review then notify the UI to update error state`() = coroutineTestRule.runBlockingTest {
+    fun `should failed when submit review then notify the UI to update error state`() = coroutineTestRule.runTest {
 
         val throwable = MessageErrorException("error")
         val param = SendReviewParam("12345", 4)

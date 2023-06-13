@@ -22,10 +22,10 @@
           "duration": "",
           "url": "https://booking.tokopedia.com/v1/api/p/bali-zoo-30995?cities\u003d",
           "seo_url": "bali-zoo-30995",
-          "image_web": "https://ecs7.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
-          "thumbnail_web": "https://ecs7.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
-          "image_app": "https://ecs7.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
-          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
+          "image_web": "https://images.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
+          "thumbnail_web": "https://images.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
+          "image_app": "https://images.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
+          "thumbnail_app": "https://images.tokopedia.net/img/banner/2020/6/18/22166894/22166894_46595eac-e1da-4823-932b-12361e9f903c.jpg",
           "seatmap_image": "",
           "location": "",
           "app_url": "tokopedia://events/bali-zoo-30995",
@@ -845,7 +845,7 @@
             {
               "id": "3",
               "title": "Taman Bermain Lokal",
-              "media_url": "https://ecs7.tokopedia.net/img/banner/2020/5/12/22166894/22166894_6bbffb8e-dc31-4913-9ac9-b195dad89f08.jpeg",
+              "media_url": "https://images.tokopedia.net/img/banner/2020/5/12/22166894/22166894_6bbffb8e-dc31-4913-9ac9-b195dad89f08.jpeg",
               "url": "hiburan"
             }
           ],

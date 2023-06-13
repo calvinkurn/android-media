@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -78,17 +76,11 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         viewModel?.flashSaleTnc?.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val data = it.data
                     bottomSheetTitle.text = data.title
                     flashSaleTncAdapter?.setTncDescriptions(data.listMessage)
-                    flashSaleTncView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    val measuredHeight = flashSaleTncView?.measuredHeight.orZero()
-                    val bottomSheetHeaderHeight = bottomSheetHeader.height
-                    if ((measuredHeight + bottomSheetHeaderHeight) > getHalfDeviceScreen()) {
-                        flashSaleTncView?.layoutParams?.height = getHalfDeviceScreen() - bottomSheetHeaderHeight
-                    }
                 }
                 is Fail -> {
                     val error = it.throwable
@@ -105,8 +97,6 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         flashSaleTncAdapter = ShopHomeFlashSaleTncAdapter()
         flashSaleTncView?.adapter = flashSaleTncAdapter
     }
-
-    private fun getHalfDeviceScreen(): Int = getScreenHeight() / 2
 
     private fun showToasterError(message: String) {
         view?.let {

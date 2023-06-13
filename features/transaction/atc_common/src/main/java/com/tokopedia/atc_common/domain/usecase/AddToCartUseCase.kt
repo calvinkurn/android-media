@@ -50,8 +50,8 @@ class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUs
                         putObject(
                                 REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                                 AddToCartRequestParams(
-                                        productId = productId.toLong(),
-                                        shopId = shopId.toInt(),
+                                        productId = productId,
+                                        shopId = shopId,
                                         quantity = quantity,
                                         notes = notes,
                                         atcFromExternalSource = atcExternalSource,

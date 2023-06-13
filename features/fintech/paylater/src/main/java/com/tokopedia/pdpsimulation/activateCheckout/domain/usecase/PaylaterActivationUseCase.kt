@@ -18,11 +18,12 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
         onError: (Throwable) -> Unit,
         amount: Double,
         productId: String,
-        gatewayCode: String
+        gatewayCode: String,
+        shopId: String,
     ) {
         try {
             this.setTypeClass(BasePayLaterOptimizedModel::class.java)
-            this.setRequestParams(getRequestParams(amount, productId, gatewayCode))
+            this.setRequestParams(getRequestParams(amount, productId, gatewayCode, shopId))
             this.setGraphqlQuery(PayLaterActivationDataQuery.GQL_QUERY)
             this.execute(
                 { result ->
@@ -40,15 +41,15 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
         amount: Double,
         productId: String,
         gatewayCode: String,
+        shopId: String,
     ): Map<String, Any?> {
         return mutableMapOf(
             "request" to mutableMapOf(
                 PARAM_PRODUCT_PRICE to amount,
                 PARAM_PRODUCT_ID to productId,
                 PARAM_REQUEST_GATEWAY_ID to 0,
-                PARAM_PRODUCT_CODE to gatewayCode
-
-
+                PARAM_PRODUCT_CODE to gatewayCode,
+                PARAM_SHOP_ID_V2 to shopId,
             )
         )
     }
@@ -58,7 +59,7 @@ class PaylaterActivationUseCase @Inject constructor(graphqlRepository: GraphqlRe
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_REQUEST_GATEWAY_ID = "gateway_id"
         const val PARAM_PRODUCT_CODE = "product_code"
-
+        const val PARAM_SHOP_ID_V2 = "shop_id_v2"
     }
 
 }

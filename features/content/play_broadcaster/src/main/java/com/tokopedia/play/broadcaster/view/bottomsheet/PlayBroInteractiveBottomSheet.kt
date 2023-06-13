@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.updateScrollingChild
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
@@ -22,10 +22,9 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.partial.game.QuizOptionDetailViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
+import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
@@ -35,7 +34,8 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroInteractiveBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
-) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
+    private val router: Router,
+) : BottomSheetUnify(), PlayGameLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
@@ -44,7 +44,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.tag
 
     private val leaderboardSheetView by viewComponent {
-        PlayInteractiveLeaderboardViewComponent(
+        PlayGameLeaderboardViewComponent(
             it,
             this
         )
@@ -61,7 +61,11 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroQuizDetailBinding
         get() = _binding!!
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(
+            requireActivity()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +74,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         setChild(binding.root)
         showHeader = false
         clearContentPadding = true
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity())
-        )[PlayBroadcastViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,12 +101,18 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     height = (getScreenHeight() * 1f).toInt()
                 }
             }
+            else -> {
+                //no-op
+            }
         }
         if (Type.mapFromString(sheetType) != Type.UNKNOWN) {
             when (Type.mapFromString(sheetType)) {
                 Type.QUIZ_DETAIL -> setupQuizDetail()
                 Type.LEADERBOARD -> setupLeaderBoard()
                 Type.REPORT -> setupReport()
+                else -> {
+                    //no-op
+                }
             }
             observeQuizDetail()
         }
@@ -154,7 +160,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     private fun setUIModel(
-        listOfLeaderboardUiModel: List<PlayLeaderboardUiModel>,
+        listOfLeaderboardUiModel: List<LeaderboardGameUiModel>,
         quizChoiceDetailState: QuizChoiceDetailStateUiModel
     ) {
         leaderboardSheetView.setData(listOfLeaderboardUiModel)
@@ -199,6 +205,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     dataUiModel.choice.interactiveTitle,
                 )
             }
+            else -> {
+                //no-op
+            }
         }
 
     }
@@ -213,7 +222,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         if (!isAdded) showNow(fragmentManager, TAG)
     }
 
-    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayGameLeaderboardViewComponent) {
         when (Type.mapFromString(sheetType)) {
             Type.QUIZ_DETAIL -> {
                 analytic.onClickCloseOngoingQuizBottomSheet(
@@ -235,20 +244,23 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelTitle,
                 )
             }
+            else -> {
+                //no-op
+            }
         }
         dismiss()
     }
 
     override fun onChatWinnerButtonClicked(
-        view: PlayInteractiveLeaderboardViewComponent,
-        winner: PlayWinnerUiModel,
+        view: PlayGameLeaderboardViewComponent,
+        winner: LeaderboardGameUiModel.Winner,
         position: Int
     ) {
         analytic.onClickChatWinnerIcon(
             parentViewModel.channelId,
             parentViewModel.channelTitle,
         )
-        RouteManager.route(
+        router.route(
             requireContext(),
             "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
             winner.id,
@@ -256,7 +268,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         )
     }
 
-    override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent) {
         if (!isQuizDetail()) {
             analytic.onClickRefreshGameResult(
                 parentViewModel.channelId,
@@ -284,17 +296,20 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     item.interactiveTitle,
                 )
             }
+            else -> {
+                //no-op
+            }
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
-    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent) {
         analytic.onImpressFailedLeaderboard(parentViewModel.channelId, parentViewModel.channelTitle)
     }
 
     override fun onLeaderBoardImpressed(
-        view: PlayInteractiveLeaderboardViewComponent,
-        leaderboard: PlayLeaderboardUiModel
+        view: PlayGameLeaderboardViewComponent,
+        leaderboard: LeaderboardGameUiModel.Header
     ) {
         when (Type.mapFromString(sheetType)) {
             Type.LEADERBOARD ->
@@ -313,6 +328,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     leaderboard.title,
                     leaderboard.leaderBoardType.toString().lowercase(),
                 )
+            else -> {
+                //no-op
+            }
         }
     }
 

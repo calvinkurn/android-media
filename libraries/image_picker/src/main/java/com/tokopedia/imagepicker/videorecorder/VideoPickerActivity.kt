@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -107,7 +108,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_VIDEOS
+            }else{
+                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+            },
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                 PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
     }

@@ -19,6 +19,7 @@ import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import java.util.*
@@ -43,6 +44,8 @@ class PackageParentViewHolder(
                         val adapter = rvTicketItem.adapter
                         adapter?.notifyItemChanged(i)
                     }
+                } else {
+                    onBindItemTicketListener.onCollapseAccordion()
                 }
                 onBindItemTicketListener.resetPackage()
             }
@@ -108,9 +111,9 @@ class PackageParentViewHolder(
 
     private fun getSubtitle(list: List<PackageItem>): Spanned{
         val sortedList = list.filter {
-            it.salesPrice.toInt() != ZERO_PRICE
+            it.salesPrice.toIntSafely() != ZERO_PRICE
         }.sortedBy {
-            it.salesPrice.toInt()
+            it.salesPrice.toIntSafely()
         }
 
         return if (sortedList.isNullOrEmpty())

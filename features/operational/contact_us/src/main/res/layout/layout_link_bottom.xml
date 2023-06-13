@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/link_bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/Theme.White.Background"
+    android:background="@color/Unify_NN50"
     android:gravity="center_horizontal"
     android:orientation="horizontal">
 
@@ -13,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="87dp"
-        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/masih_butuh_bantuan"
-        android:textColor="@color/black3_text"
+        android:textColor="@color/contact_us_dms_detail_header_text"
         android:textSize="14sp" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,10 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="@dimen/margin_padding_small"
-        android:layout_marginStart="@dimen/margin_padding_small"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
         android:text="@string/hubungi_kami"
-        android:textColor="@color/contact_us_green_nob"
-        android:textSize="14sp" />
+        android:textColor="@color/contact_us_dms_complain_bg"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"/>
 </LinearLayout>

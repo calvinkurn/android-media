@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.OFFICIAL_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.SELLER_TAG
@@ -48,7 +47,7 @@ data class ItemChatListPojo(
 
     fun hasUnreadItem(): Boolean {
         attributes?.let {
-            return it.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+            return it.readStatus == STATE_CHAT_UNREAD
         }
         return false
     }
@@ -105,5 +104,4 @@ data class ItemChatListPojo(
     fun markAsInactive() {
         this.isActive = false
     }
-
 }

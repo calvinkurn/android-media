@@ -5,8 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent
 import com.tokopedia.shop.sort.di.module.ShopProductSortModule
@@ -14,27 +19,31 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory
 import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop.sort.view.presenter.ShopProductSortPresenter
+import com.tokopedia.shop.sort.view.viewmodel.ShopProductSortViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
  * Created by normansyahputa on 2/23/18.
  */
 class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory>() {
-    @kotlin.jvm.JvmField
+//    @kotlin.jvm.JvmField
     @Inject
-    var shopProductFilterPresenter: ShopProductSortPresenter? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private var sortName: String? = null
     private var shopFilterFragmentListener: ShopProductSortFragmentListener? = null
+    private var viewModel: ShopProductSortViewModel? = null
+
     override fun loadData(i: Int) {
-        shopProductFilterPresenter?.getShopFilterList()
+        viewModel?.getShopSortListData()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (shopProductFilterPresenter != null) {
-            shopProductFilterPresenter?.detachView()
-        }
+        viewModel?.flush()
     }
 
     override fun onAttach(context: Context) {
@@ -46,7 +55,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopProductFilterPresenter?.attachView(this)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductSortViewModel::class.java)
         activity?.window?.decorView?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
@@ -70,13 +79,16 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view)?.setPadding(
-                0,
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                0,
-                0
-        )
-        getRecyclerView(view)?.clipToPadding = false
+        context?.let {
+            getRecyclerView(view)?.setPadding(
+                Int.ZERO,
+                it.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                Int.ZERO,
+                Int.ZERO
+            )
+            getRecyclerView(view)?.clipToPadding = false
+        }
+        observeLiveData()
     }
 
     override fun getAdapterTypeFactory(): ShopProductSortAdapterTypeFactory {
@@ -85,11 +97,11 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun initInjector() {
         DaggerShopProductSortComponent
-                .builder()
-                .shopProductSortModule(ShopProductSortModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+            .builder()
+            .shopProductSortModule(ShopProductSortModule())
+            .shopComponent(getComponent(ShopComponent::class.java))
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName(): String {
@@ -98,6 +110,29 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
 
     override fun onItemClicked(filterModel: ShopProductSortModel?) {
         shopFilterFragmentListener?.select(filterModel?.key, filterModel?.value, filterModel?.name)
+    }
+
+    private fun observeLiveData() {
+        viewModel?.shopSortListData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        val sortListData = it.data.sortList
+                        renderList(list = sortListData, hasNextPage = false)
+                    }
+                    is Fail -> {
+                        showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                    }
+                }
+            }
+        )
+    }
+
+    private fun showToasterError(message: String) {
+        activity?.let {
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     companion object {

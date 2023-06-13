@@ -12,9 +12,10 @@ import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.broadcaster.R
 import kotlin.math.ceil
 
-
 class PlayTimerCountDown @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val progressCircular: LottieAnimationView
@@ -56,16 +57,16 @@ class PlayTimerCountDown @JvmOverloads constructor(
         animatorInfoOut.setTarget(info)
 
         progressCircular.addAnimatorListener(object : Animator.AnimatorListener{
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 progressCircular.removeAllAnimatorListeners()
                 rotateAnimator.start()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator) {}
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
             }
         })
     }
@@ -86,7 +87,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
         }
     }
 
-    fun startCountDown(property: AnimationProperty, listener: Listener? = null){
+    fun startCountDown(property: AnimationProperty, listener: Listener? = null) {
         val textInterval = property.textCountDownInterval
 
         setupTextCountAnimator(textInterval)

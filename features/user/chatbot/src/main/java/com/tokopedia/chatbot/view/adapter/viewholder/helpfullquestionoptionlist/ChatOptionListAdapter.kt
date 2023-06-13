@@ -3,19 +3,16 @@ package com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
-import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
+import com.tokopedia.chatbot.databinding.ItemChatbotHelpfulBinding
 import java.util.*
 
-
-class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListViewModel) -> Unit) : RecyclerView.Adapter<ChatOptionListViewHolder>() {
-    private val data = ArrayList<ChatOptionListViewModel>()
+class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListUiModel) -> Unit) : RecyclerView.Adapter<ChatOptionListViewHolder>() {
+    private val data = ArrayList<ChatOptionListUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatOptionListViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_chat_helpfull, parent, false)
+        val itemView = ItemChatbotHelpfulBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChatOptionListViewHolder(itemView, onOptionListSelected)
     }
 
@@ -33,13 +30,13 @@ class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListVie
         notifyItemRangeRemoved(0, size)
     }
 
-    fun setDataList(elements: List<ChatOptionListViewModel>) {
+    fun setDataList(elements: List<ChatOptionListUiModel>) {
         data.clear()
         data.addAll(elements)
         notifyDataSetChanged()
     }
 
     interface OnChatActionSelectedListener {
-        fun onChatActionSelected(selected: ChatActionBubbleViewModel)
+        fun onChatActionSelected(selected: ChatActionBubbleUiModel)
     }
 }

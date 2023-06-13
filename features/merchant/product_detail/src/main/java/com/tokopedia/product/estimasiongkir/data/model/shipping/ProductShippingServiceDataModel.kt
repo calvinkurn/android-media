@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data.model.shipping
 
+import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceBasedShipment
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
@@ -7,9 +8,10 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitabl
  * Created by Yehezkiel on 26/01/21
  */
 data class ProductShippingServiceDataModel(
-        val id: Long = 0L,
-        val serviceName: String = "", // Regular, Same Day
-        val productService: List<ProductServiceDetailDataModel> = listOf()
+    val id: Long = 0L,
+    val serviceName: String = "", // Regular, Same Day
+    val productService: List<ProductServiceDetailDataModel> = listOf(),
+    val whiteLabelData: WhiteLabelDataModel? = null
 ) : ProductShippingVisitable {
     override fun uniqueId(): Long = id
 
@@ -23,10 +25,15 @@ data class ProductShippingServiceDataModel(
 }
 
 data class ProductServiceDetailDataModel(
-        val serviceProductName: String = "", // JNE,JNT
-        val serviceProductEstimation: String = "",
-        val serviceProductPrice: String = "",
-        val isCod: Boolean = false,
-        val codText: String = "",
-        val dynamicPricingText: String = ""
+    val serviceProductName: String = "", // JNE,JNT
+    val serviceProductEstimation: String = "",
+    val serviceProductPrice: String = "",
+    val isCod: Boolean = false,
+    val codText: String = "",
+    val dynamicPricingText: String = ""
+)
+
+data class WhiteLabelDataModel(
+    val eta: String,
+    val price: String
 )

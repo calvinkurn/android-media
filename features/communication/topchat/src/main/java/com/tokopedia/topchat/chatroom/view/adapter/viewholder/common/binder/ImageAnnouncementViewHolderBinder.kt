@@ -14,7 +14,6 @@ object ImageAnnouncementViewHolderBinder {
     ) {
         banner?.loadImage(uiModel.imageUrl) {
             adaptiveImageSizeRequest(true)
-            fitCenter()
         }
     }
 
@@ -25,6 +24,16 @@ object ImageAnnouncementViewHolderBinder {
     ) {
         view?.setOnClickListener {
             listener.onImageAnnouncementClicked(uiModel)
+        }
+    }
+
+    fun bindCtaClick(
+        uiModel: ImageAnnouncementUiModel,
+        view: View?,
+        listener: ImageAnnouncementListener
+    ) {
+        view?.setOnClickListener {
+            listener.onCtaBroadcastClicked(uiModel)
         }
     }
 

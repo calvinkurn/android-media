@@ -19,12 +19,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * author by Rafli Syam on 05/01/2022
  */
-class ShopCampaignProductBundleParentWidgetViewHolder (
-        itemView: View,
-        private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleListener: SingleProductBundleListener,
-        private val widgetConfigListener: WidgetConfigListener,
-        private val parentBundlingWidgetListener: Listener
+class ShopCampaignProductBundleParentWidgetViewHolder(
+    itemView: View,
+    private val multipleProductBundleListener: MultipleProductBundleListener,
+    private val singleProductBundleListener: SingleProductBundleListener,
+    private val widgetConfigListener: WidgetConfigListener,
+    private val parentBundlingWidgetListener: Listener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -35,14 +35,14 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
         private const val BUNDLE_SINGLE_ITEM_SIZE = 1
     }
 
-    interface Listener{
+    interface Listener {
         fun onImpressionBundlingWidget(model: ShopHomeProductBundleListUiModel, position: Int)
     }
 
     private val viewBinding: ItemShopCampaignProductBundleParentWidgetBinding? by viewBinding()
-    private var tvWidgetTitle : TextView? = null
-    private var rvBundleList : RecyclerView? = null
-    private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null
+    private var tvWidgetTitle: TextView? = null
+    private var rvBundleList: RecyclerView? = null
+    private var rvBundleAdapter: ShopHomeProductBundleWidgetAdapter? = null
     private var bundleListSize = 0
 
     init {
@@ -81,13 +81,13 @@ class ShopCampaignProductBundleParentWidgetViewHolder (
 
     private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
-                multipleProductBundleListener,
-                singleProductBundleListener,
-                bundleListSize,
-                bundleLayout.widgetId,
-                bundleLayout.widgetMasterId,
-                bundleLayout.type,
-                bundleLayout.name
+            multipleProductBundleListener,
+            singleProductBundleListener,
+            bundleListSize,
+            bundleLayout.widgetId,
+            bundleLayout.widgetMasterId,
+            bundleLayout.type,
+            bundleLayout.name
         )
         rvBundleList?.apply {
             setHasFixedSize(true)

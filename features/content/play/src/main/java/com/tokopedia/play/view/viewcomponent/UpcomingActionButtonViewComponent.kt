@@ -3,6 +3,7 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -37,28 +38,31 @@ class UpcomingActionButtonViewComponent(
         listener.onClickActionButton()
     }
 
-    fun setButtonStatus(status: Status) {
-        when(status) {
-            Status.REMIND_ME -> {
-                setButtonMode(true)
-                button.text = getString(R.string.play_remind_me)
+    fun setButtonStatus(status: PlayUpcomingState) {
+        when (status) {
+            is PlayUpcomingState.ReminderStatus -> {
                 show()
+                setButtonMode(isMain = !status.isReminded)
+                button.text =
+                    if (status.isReminded) getString(R.string.play_remind_me_cancel) else getString(
+                        R.string.play_remind_me
+                    )
             }
-            Status.WATCH_NOW -> {
+            PlayUpcomingState.WatchNow -> {
                 setButtonMode(true)
                 button.text = getString(R.string.play_watch_now)
                 show()
             }
-            Status.REFRESH -> {
+            PlayUpcomingState.Refresh -> {
                 setButtonMode(false)
                 button.text = getString(R.string.play_upcoming_refresh)
                 show()
             }
-            Status.LOADING -> {
+            PlayUpcomingState.Loading -> {
                 show()
                 button.isLoading = true
             }
-            Status.HIDDEN -> {
+            else -> {
                 invisible()
             }
         }
@@ -67,20 +71,15 @@ class UpcomingActionButtonViewComponent(
     private fun setButtonMode(isMain: Boolean) {
         button.isLoading = false
 
-        if(isMain) {
+        if (isMain) {
             button.buttonVariant = UnifyButton.Variant.FILLED
             button.buttonType = UnifyButton.Type.MAIN
             button.isInverse = false
-        }
-        else {
+        } else {
             button.buttonVariant = UnifyButton.Variant.GHOST
             button.buttonType = UnifyButton.Type.ALTERNATE
             button.isInverse = true
         }
-    }
-
-    enum class Status {
-        REMIND_ME, WATCH_NOW, HIDDEN, REFRESH, LOADING
     }
 
     interface Listener {

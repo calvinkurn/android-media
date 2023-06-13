@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
@@ -10,11 +11,13 @@ import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUpload
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -93,6 +96,15 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
+    @RelaxedMockK
+    lateinit var getStatusShopUseCase: GetStatusShopUseCase
+
+    @RelaxedMockK
+    lateinit var getTickerUseCase: GetTickerUseCase
+
+    @RelaxedMockK
+    lateinit var remoteConfigImpl: FirebaseRemoteConfigImpl
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -100,27 +112,29 @@ open class ProductManageViewModelTestFixture {
         MockKAnnotations.init(this)
 
         viewModel = ProductManageViewModel(
-                editPriceUseCase,
-                gqlGetShopInfoUseCase,
-                getShopInfoTopAdsUseCase,
-                userSessionInterface,
-                getShopManagerPopupsUseCase,
-                getProductListUseCase,
-                setFeaturedProductUseCase,
-                editStatusUseCase,
-                editStockUseCase,
-                deleteProductUseCase,
-                multiEditProductUseCase,
-                getProductListMetaUseCase,
-                getProductManageAccessUseCase,
-                editProductVariantUseCase,
-                getProductVariantUseCase,
-                getAdminInfoShopLocationUseCase,
-                getUploadStatusUseCase,
-                clearUploadStatusUseCase,
-                getMaxStockThresholdUseCase,
-                tickerStaticDataProvider,
-                CoroutineTestDispatchersProvider
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            getMaxStockThresholdUseCase,
+            getStatusShopUseCase,
+            getTickerUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
         )
     }
 

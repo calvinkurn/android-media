@@ -30,10 +30,12 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_seller.json"
     private val chatWithBuyerPath =
         "success_get_chat_first_page_as_buyer.json"
+    private val chatBroadcastWithBuyerPath =
+        "success_get_chat_broadcast.json"
     private val bannedProductChatWithBuyerPath =
         "success_get_chat_first_page_with_banned_products.json"
-    private val sellerSrwPromptPath =
-        "seller/success_get_chat_replies_with_srw_reply_prompt.json"
+    private val chatTickerReminder =
+        "ticker_reminder/success_get_chat_replies_with_ticker_reminder.json"
     private val shippingLocationPath =
         "seller/chat_replies_shipping_location.json"
     private val upcomingCampaignPath =
@@ -52,6 +54,12 @@ class GetChatUseCaseStub @Inject constructor(
         "product_bundling/success_get_chat_product_bundling_single.json"
     private val productBundlingOOS =
         "product_bundling/success_get_chat_product_bundling_oos.json"
+    private val productBundlingBroadcastMultiple =
+        "product_bundling/success_get_chat_broadcast_product_bundling_multiple.json"
+    private val productBundlingBroadcastSingle =
+        "product_bundling/success_get_chat_broadcast_product_bundling.json"
+    private val broadcastWithFlexibleCta =
+        "broadcast/success_get_chat_broadcast_with_flexible_cta.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -67,6 +75,10 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    /**
+     * <!--- Start Default Chat Response  --->
+     */
+
     val defaultChatWithSellerResponse: GetExistingChatPojo
         get() = alterResponseOf(chatWithSellerPath) { response ->
             alterDateToToday(response)
@@ -76,6 +88,76 @@ class GetChatUseCaseStub @Inject constructor(
         get() = alterResponseOf(chatWithBuyerPath) { response ->
             alterDateToToday(response)
         }
+
+    /**
+     * <!--- End Default Chat Response  --->
+     */
+
+    /**
+     * <!--- Start Chat Response with BroadCast --->
+     */
+
+    val defaultBroadCastChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithProductBundlingResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastMultiple) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithSingleProductBundlingSingleItemResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithSingleProductBundlingMultipleItemResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(attachmentIds, "1507930100")
+                    replies[1].asJsonObject[attachment].asJsonObject.addProperty(
+                        id,
+                        "1507930100"
+                    )
+                }
+            )
+        }
+
+    val broadCastChatWithSingleProductBundlingOutOfStockResponse: GetExistingChatPojo
+        get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies[1].asJsonObject.addProperty(attachmentIds, "1507930101")
+                    replies[1].asJsonObject[attachment].asJsonObject.addProperty(
+                        id,
+                        "1507930101"
+                    )
+                }
+            )
+        }
+
+    val broadCastChatWithFlexibleCta: GetExistingChatPojo
+        get() = alterResponseOf(broadcastWithFlexibleCta) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadCastChatWithFlexibleCtaSeller: GetExistingChatPojo
+        get() = alterResponseOf(broadcastWithFlexibleCta) { response ->
+            swapInterlocutor(response)
+            alterDateToToday(response)
+        }
+
+    /**
+     * <!--- End Chat Response with BroadCast --->
+     */
 
     val bannedProductChatWithBuyerResponse: GetExistingChatPojo
         get() = alterResponseOf(bannedProductChatWithBuyerPath) { response ->
@@ -173,15 +255,11 @@ class GetChatUseCaseStub @Inject constructor(
      */
 
     /**
-     * <!--- Start SRW Prompt --->
+     * <!--- Start Ticker Reminder --->
      */
 
-    val defaultSrwPrompt: GetExistingChatPojo get() {
-        return alterResponseOf(sellerSrwPromptPath) { response -> }
-    }
-
-    val noTriggerTextSrwPrompt: GetExistingChatPojo
-        get() = alterResponseOf(sellerSrwPromptPath) { response ->
+    val noMatchTickerReminderReplyId: GetExistingChatPojo
+        get() = alterResponseOf(chatTickerReminder) { response ->
             val chatReplies = response.getAsJsonObject(chatReplies)
             chatReplies.addProperty("hasNext", true)
             alterRepliesAttribute(0, 0, response) {
@@ -191,66 +269,16 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
-    fun getInTheMiddleOfThePageSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
+    fun getTickerReminderWithReplyId(targetReplyId: String): GetExistingChatPojo {
+        return alterResponseOf(chatTickerReminder) { response ->
             alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-            val chatReplies = response.getAsJsonObject(chatReplies)
-            chatReplies.addProperty("hasNext", true)
-            chatReplies.addProperty("hasNextAfter", true)
-        }
-    }
-
-    fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-        }
-    }
-
-    fun carouselSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterRepliesAttribute(0, 0, response) {
-                val product = it.get(0)
-                val chats = it.deepCopy()
-                it.removeAll { true }
-                it.apply {
-                    add(product)
-                    addAll(chats)
-                }
-            }
-            alterChatAttribute(0, 0, 2, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-        }
-    }
-
-    fun multipleSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterRepliesAttribute(0, 0, response) {
-                val product = it.get(0)
-                val msg = it.get(1)
-                val chats = it.deepCopy()
-                it.removeAll { true }
-                it.apply {
-                    add(product)
-                    add(msg)
-                    addAll(chats)
-                }
-            }
-            alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-            alterChatAttribute(0, 0, 3, response) { chat ->
-                chat.addProperty(msg, triggerText)
+                chat.addProperty(replyId, targetReplyId)
             }
         }
     }
 
     /**
-     * <!--- End SRW Prompt --->
+     * <!--- End Ticker Reminder --->
      */
 
     /**
@@ -413,6 +441,9 @@ class GetChatUseCaseStub @Inject constructor(
     private val date = "date"
     private val isExpired = "isExpired"
     private val parentReply = "parentReply"
+    private val id = "id"
+    private val attachmentIds = "attachmentID"
+    private val replyId = "replyId"
 
     private fun alterDateToToday(response: JsonObject) {
         val list = response.getAsJsonObject(chatReplies)
@@ -494,11 +525,13 @@ class GetChatUseCaseStub @Inject constructor(
         altercation: (JsonObject) -> Unit
     ): GetExistingChatPojo {
         val responseObj: JsonObject = AndroidFileUtil.parse(
-            responsePath, JsonObject::class.java
+            responsePath,
+            JsonObject::class.java
         )
         altercation(responseObj)
         return CommonUtil.fromJson(
-            responseObj.toString(), GetExistingChatPojo::class.java
+            responseObj.toString(),
+            GetExistingChatPojo::class.java
         )
     }
 

@@ -4,7 +4,7 @@ import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleA
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.data.EventDetailResponse
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object DetailMapper {
 
@@ -22,7 +22,7 @@ object DetailMapper {
                 harga_now = event.price,
                 app_url = event.appUrl,
                 category_id = event.childCategoryIds,
-                isFree = (event.isFree == 1 && event.salesPrice.toIntOrZero().isZero())
+                isFree = (event.isFree == 1 && event.salesPrice.toIntSafely().isZero())
         )
     }
 }

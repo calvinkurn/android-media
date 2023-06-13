@@ -15,6 +15,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -35,6 +36,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

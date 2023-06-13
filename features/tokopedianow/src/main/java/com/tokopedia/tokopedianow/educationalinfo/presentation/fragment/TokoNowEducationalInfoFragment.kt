@@ -10,12 +10,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.educationalinfo.analytics.EducationalInfoAnalytics
 import com.tokopedia.tokopedianow.educationalinfo.di.component.DaggerEducationalInfoComponent
 import com.tokopedia.tokopedianow.educationalinfo.presentation.bottomsheet.TokoNowEducationalInfoBottomSheet
 import com.tokopedia.tokopedianow.educationalinfo.presentation.listener.EducationalInfoBottomSheetCallback
-import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import javax.inject.Inject
 
 class TokoNowEducationalInfoFragment: Fragment() {
@@ -83,7 +81,7 @@ class TokoNowEducationalInfoFragment: Fragment() {
         EducationalInfoBottomSheetCallback(
             analytics = analytics,
             channelId = channelId,
-            state = state
+            state = state?.lowercase()
         )
     }
 

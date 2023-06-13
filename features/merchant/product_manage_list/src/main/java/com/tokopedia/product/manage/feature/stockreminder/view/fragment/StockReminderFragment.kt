@@ -21,7 +21,15 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -64,11 +72,10 @@ class StockReminderFragment : BaseDaggerFragment(),
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
 
-        fun createInstance(productId: Long, productName: String, isVariant: Boolean): Fragment {
+        fun createInstance(productId: Long, isVariant: Boolean): Fragment {
             val fragment = StockReminderFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId.toString())
-                putString(ARG_PRODUCT_NAME, productName)
                 putBoolean(ARG_IS_VARIANT, isVariant)
             }
             return fragment
@@ -76,7 +83,6 @@ class StockReminderFragment : BaseDaggerFragment(),
     }
 
     private var productId: String? = null
-    private var productName: String? = null
     private var warehouseId: String? = null
 
     private var maxStock: Int? = null
@@ -118,7 +124,6 @@ class StockReminderFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(ARG_PRODUCT_ID)?.let { productId = it }
-        arguments?.getString(ARG_PRODUCT_NAME)?.let { productName = it }
         arguments?.getBoolean(ARG_IS_VARIANT)?.let { isVariant = it }
     }
 
@@ -138,6 +143,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         initView()
         observeMaxStock()
         observeState()
+        showNotificationReminderPrompt()
     }
 
     override fun onChangeStockReminder(
@@ -168,16 +174,17 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         } else {
             if (oldData?.stockAlertStatus.orZero() != REMINDER_INACTIVE
-                && oldData?.stockAlertStatus.orZero() != Int.ZERO) {
+                && oldData?.stockAlertStatus.orZero() != Int.ZERO
+            ) {
                 haveChanges[productId] = true
             } else {
                 haveChanges.remove(productId)
             }
         }
 
-        val dataIsValid = getProductWareHouseList().firstOrNull{
+        val dataIsValid = getProductWareHouseList().firstOrNull {
             it.thresholdStatus == REMINDER_ACTIVE.toString() &&
-                    (it.threshold.toInt() < MINIMUM_STOCK_REMINDER || it.threshold.toInt() > maxStock ?: MAXIMUM_STOCK_REMINDER)
+                (it.threshold.toIntOrZero() < MINIMUM_STOCK_REMINDER || it.threshold.toIntOrZero() > maxStock ?: MAXIMUM_STOCK_REMINDER)
         } == null
 
         val haveValidChanges = haveChanges.size.orZero() > 0
@@ -319,7 +326,11 @@ class StockReminderFragment : BaseDaggerFragment(),
                         stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(
                             0
                         )?.wareHouseId
-                    viewModel.getProduct(productId.orEmpty(), warehouseId.orEmpty(), userSession.shopId)
+                    viewModel.getProduct(
+                        productId.orEmpty(),
+                        warehouseId.orEmpty(),
+                        userSession.shopId
+                    )
                 }
                 is Fail -> {
                     binding?.cardSaveBtn?.visibility = View.GONE
@@ -356,7 +367,11 @@ class StockReminderFragment : BaseDaggerFragment(),
                 binding?.geStockReminder?.setActionClickListener {
                     binding?.globalErrorStockReminder?.visibility = View.GONE
                     binding?.cardSaveBtn?.visibility = View.VISIBLE
-                    viewModel.getProduct(productId.toString(), warehouseId.toString(), userSession.shopId)
+                    viewModel.getProduct(
+                        productId.toString(),
+                        warehouseId.toString(),
+                        userSession.shopId
+                    )
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(productData.throwable)
                 ProductManageListErrorHandler.logExceptionToServer(
@@ -376,7 +391,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         dataFirstProducts = ArrayList(products)
         adapter?.setItems(products)
         if (isVariant) {
-            binding?.tvProductName?.text = productName
+            binding?.tvProductName?.text = products.firstOrNull()?.productParentName.orEmpty()
             binding?.clGroupProductVariant?.show()
         } else {
             binding?.clGroupProductVariant?.gone()
@@ -463,7 +478,10 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun showSetOnceStockReminderBottomSheet(selection: List<ProductStockReminderUiModel>) {
         val setStockForVariantSelectionReminderBottomSheet =
-            SetStockForVariantSelectionReminderBottomSheet.createInstance(maxStock, childFragmentManager)
+            SetStockForVariantSelectionReminderBottomSheet.createInstance(
+                maxStock,
+                childFragmentManager
+            )
         setStockForVariantSelectionReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
             updateFromBulkSetting(stockReminder, reminderStatus, selection)
         }
@@ -544,6 +562,15 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         } else {
             activity?.finish()
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "stockReminder"
+        activity?.let {
+            val view = NotificationGeneralPromptLifecycleCallbacks()
+                .notificationGeneralPromptView(it, pageName)
+            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
         }
     }
 

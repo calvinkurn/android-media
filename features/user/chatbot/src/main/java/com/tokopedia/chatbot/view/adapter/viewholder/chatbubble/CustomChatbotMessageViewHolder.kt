@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 import android.text.TextUtils
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -13,6 +12,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,10 +20,10 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
         protected val listener: ChatLinkHandlerListener,
+        val replyBubbleListener : ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
-    protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
 
     open fun getDateContainerId(): Int = R.id.dateContainer
@@ -35,6 +35,7 @@ abstract class CustomChatbotMessageViewHolder(
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
+
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {
@@ -68,7 +69,7 @@ abstract class CustomChatbotMessageViewHolder(
         get() = R.id.date
 
     companion object {
-        val TYPE_LEFT = 0
-        val TYPE_RIGHT = 1
+        const val TYPE_LEFT = 0
+        const val TYPE_RIGHT = 1
     }
 }

@@ -67,10 +67,12 @@ class DeprecatedMethodDetector: Detector(), SourceCodeScanner {
     ) {
         if(context.phase == 1) {
             method?.run {
-                val packageName = getPackageName(containingFile)
-                val className = containingClass?.name.orEmpty()
-                val deprecatedMethod = "$packageName.$className.$name"
-                deprecatedMethods.add(deprecatedMethod)
+                if(isDeprecated) {
+                    val packageName = getPackageName(containingFile)
+                    val className = containingClass?.name.orEmpty()
+                    val deprecatedMethod = "$packageName.$className.$name"
+                    deprecatedMethods.add(deprecatedMethod)
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
@@ -17,6 +18,19 @@ object SomDetailMapper {
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToHeaderUiModel(somGetOrderDetailResponse)?.let {
             add(it)
+        }
+    }
+
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeReso(
+        getResolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+    ) {
+        if (getResolutionTicketStatusResponse?.shouldShow() == true) {
+            SomResolutionResponseMapper.mapResponseToResolutionUIModel(
+                getResolutionTicketStatusResponse
+            )?.let {
+                add(it)
+                includeDivider()
+            }
         }
     }
 
@@ -58,6 +72,16 @@ object SomDetailMapper {
         }
     }
 
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includePofData(
+        pofData: SomDynamicPriceResponse.GetSomDynamicPrice.PofData?
+    ) {
+        SomDynamicPaymentResponseMapper.mapResponseToPofDataUiModel(
+            pofData
+        )?.let {
+            add(it)
+        }
+    }
+
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeDivider() {
         add(
             DividerUiModel(
@@ -70,16 +94,19 @@ object SomDetailMapper {
 
     fun mapSomGetOrderDetailResponseToVisitableList(
         somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?,
-        somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?
+        somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?,
+        resolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
     ): List<Visitable<SomDetailAdapterFactory>> {
         return arrayListOf<Visitable<SomDetailAdapterFactory>>().apply {
             includeHeader(somGetOrderDetailResponse)
             includeDivider()
+            includeReso(resolutionTicketStatusResponse)
             includeProducts(somGetOrderDetailResponse)
             includeDivider()
             includeShipment(somGetOrderDetailResponse)
             includeDivider()
             includePayment(somGetSomDynamicPrice)
+            includePofData(somGetSomDynamicPrice?.pofData)
             includeMvc(somGetSomDynamicPrice)
         }
     }

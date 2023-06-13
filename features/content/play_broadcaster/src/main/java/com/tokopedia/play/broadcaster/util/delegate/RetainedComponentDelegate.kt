@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 class RetainedComponentDelegate<T>(
     private val clazz: Class<out ViewModel>,
     private val owner: () -> ViewModelStoreOwner,
-    private val componentCreator: () -> T,
+    private val componentCreator: () -> T
 ) : ReadOnlyProperty<ViewModelStoreOwner, T> {
 
     private var value: T? = null
@@ -19,7 +19,7 @@ class RetainedComponentDelegate<T>(
         if (value != null) return value
 
         val factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return componentCreator() as T
             }
         }

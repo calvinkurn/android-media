@@ -1,7 +1,11 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
+import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.sellerhomecommon.domain.model.CardDataModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import javax.inject.Inject
@@ -12,7 +16,8 @@ import javax.inject.Inject
 
 class CardMapper @Inject constructor(
     lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
-    lastUpdatedEnabled: Boolean
+    lastUpdatedEnabled: Boolean,
+    private val darkModeHelper: DarkModeHelper
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetCardDataResponse, List<CardDataUiModel>> {
 
@@ -31,26 +36,37 @@ class CardMapper @Inject constructor(
         isFromCache: Boolean
     ): List<CardDataUiModel> {
         return response.getCardData?.cardData.orEmpty().map {
-            CardDataUiModel(
-                dataKey = it.dataKey.orEmpty(),
-                description = it.description.orEmpty(),
-                secondaryDescription = it.secondaryDescription.orEmpty(),
-                error = it.errorMsg.orEmpty(),
-                state = when (it.state) {
-                    STATE_GOOD -> CardDataUiModel.State.GOOD
-                    STATE_WARNING -> CardDataUiModel.State.WARNING
-                    STATE_DANGER -> CardDataUiModel.State.DANGER
-                    STATE_GOOD_PLUS -> CardDataUiModel.State.GOOD_PLUS
-                    STATE_WARNING_PLUS -> CardDataUiModel.State.WARNING_PLUS
-                    STATE_DANGER_PLUS -> CardDataUiModel.State.DANGER_PLUS
-                    else -> CardDataUiModel.State.NORMAL
-                },
-                value = if (it.value.isNullOrBlank()) ZERO else it.value,
-                isFromCache = isFromCache,
-                showWidget = it.showWidget.orFalse(),
-                lastUpdated = getLastUpdatedMillis(it.dataKey.orEmpty(), isFromCache),
-                badgeImageUrl = it.badgeImageUrl.orEmpty()
-            )
+            mapToCardUiModel(it, isFromCache)
         }
+    }
+
+    fun mapToCardUiModel(model: CardDataModel, isFromCache: Boolean): CardDataUiModel {
+        val cardValue = if (model.value.isNullOrBlank()) {
+            ZERO
+        } else {
+            model.value
+        }
+        return CardDataUiModel(
+            dataKey = model.dataKey.orEmpty(),
+            description = darkModeHelper.makeHtmlDarkModeSupport(model.description.orEmpty()),
+            secondaryDescription = darkModeHelper.makeHtmlDarkModeSupport(model.secondaryDescription.orEmpty()),
+            error = model.errorMsg.orEmpty(),
+            state = when (model.state) {
+                STATE_GOOD -> CardDataUiModel.State.GOOD
+                STATE_WARNING -> CardDataUiModel.State.WARNING
+                STATE_DANGER -> CardDataUiModel.State.DANGER
+                STATE_GOOD_PLUS -> CardDataUiModel.State.GOOD_PLUS
+                STATE_WARNING_PLUS -> CardDataUiModel.State.WARNING_PLUS
+                STATE_DANGER_PLUS -> CardDataUiModel.State.DANGER_PLUS
+                else -> CardDataUiModel.State.NORMAL
+            },
+            value = darkModeHelper.makeHtmlDarkModeSupport(cardValue),
+            isFromCache = isFromCache,
+            showWidget = model.showWidget.orFalse(),
+            lastUpdated = getLastUpdatedMillis(model.dataKey.orEmpty(), isFromCache),
+            badgeImageUrl = model.badgeImageUrl.orEmpty(),
+            appLink = SellerHomeCommonUtils.extractUrls(model.value.orEmpty()).getOrNull(Int.ZERO)
+                .orEmpty()
+        )
     }
 }

@@ -95,7 +95,7 @@ class PersistentNotification internal constructor(
     }
 
     private fun getPersistentClosePendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT
         return getPendingIntent(context, intent, requestCode)
     }

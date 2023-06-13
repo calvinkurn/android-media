@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
@@ -22,11 +21,11 @@ import kotlin.math.roundToInt
 /**
  * author by Rafli Syam on 05/08/2021
  */
-class ShopHomeShowcaseListBaseWidgetViewHolder (
-        itemView: View,
-        private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
-        private var layoutManagerType: Int,
-        private var gridColumnSize: Int
+class ShopHomeShowcaseListBaseWidgetViewHolder(
+    itemView: View,
+    private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
+    private var layoutManagerType: Int,
+    private var gridColumnSize: Int
 ) : AbstractViewHolder<ShopHomeShowcaseListSliderUiModel>(itemView) {
 
     companion object {
@@ -44,7 +43,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         const val LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE = 3
 
         fun getReorderShowcasePositionForTwoRowsSlider(
-                showcaseListItemData: List<ShopHomeShowcaseListItemUiModel>
+            showcaseListItemData: List<ShopHomeShowcaseListItemUiModel>
         ): List<ShopHomeShowcaseListItemUiModel> {
             val listSize = showcaseListItemData.size
             val medianListSizeRounded = ((listSize.toDouble() / 2)).roundToInt()
@@ -61,8 +60,8 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         }
     }
     private val viewBinding: ItemShopHomeBaseEtalaseListWidgetBinding? by viewBinding()
-    private var tvCarouselTitle : TextView? = null
-    private var recyclerView : RecyclerView? = null
+    private var tvCarouselTitle: TextView? = null
+    private var recyclerView: RecyclerView? = null
 
     init {
         initView()

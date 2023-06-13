@@ -18,7 +18,7 @@ class MoneyInCourierRatesUseCase@Inject constructor(
         input["destination"] = destination
         input["from"] = "client"
         input["type"] = "android"
-        input["lang"] = "en"
+        input["lang"] = "in"
         request["input"] = input
         return request
     }

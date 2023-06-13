@@ -141,7 +141,6 @@ internal open class ProductWidget(
 
         // tracker
         ProductAnalytics.impression(userSession.userId, model, product)
-        ProductAnalytics.impressionExpanded(userSession.userId, model, product)
 
         // override carousel visibility button
         if (model.productInfoList.onlyOne()) {
@@ -197,7 +196,10 @@ internal open class ProductWidget(
 
     private fun discountPriceTag(view: RemoteViews) {
         with(product) {
-            if (productActualPrice == null || productPriceDroppedPercentage == null) {
+            val isActualPriceAndPercentOn = productActualPrice.isNullOrEmpty() ||
+                    productPriceDroppedPercentage.isNullOrEmpty() ||
+                    productActualPrice == productCurrentPrice
+            if (isActualPriceAndPercentOn) {
                 view.setViewVisibility(R.id.ll_oldPriceAndDiscount, View.GONE)
             } else {
                 val strikePrice = "<strike>${productActualPrice}</strike>"

@@ -5,4 +5,5 @@ import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFe
 
 data class OrderEnableAddressFeature(
     val eligibleForAddressFeatureData: KeroAddrIsEligibleForAddressFeatureData = KeroAddrIsEligibleForAddressFeatureData(),
-    val token: Token? = null)
+    val token: Token? = null
+)

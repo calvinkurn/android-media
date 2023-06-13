@@ -31,6 +31,11 @@ class UserConsentRepositoryStub @Inject constructor() : GraphqlRepository {
                     FakeGetCollectionResponse.collectionTnCSingleMandatory()
                 )
             }
+            TNC_SINGLE_MANDATORY_HIDE_CONSENT -> {
+                GqlMockUtil.createSuccessResponse(
+                    FakeGetCollectionResponse.collectionTnCSingleMandatoryNotNeedConsent()
+                )
+            }
             TNC_POLICY_SINGLE_OPTIONAL -> {
                 GqlMockUtil.createSuccessResponse(
                     FakeGetCollectionResponse.collectionTnCPolicySingleOptional()

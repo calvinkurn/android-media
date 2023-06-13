@@ -173,7 +173,7 @@ class PdpGamificationView : LinearLayout {
                             }, delay)
                         } else {
                             val oldSize = dataList.size
-                            if (oldSize == 0 && it.data?.isNullOrEmpty()) {
+                            if (oldSize == 0 && it.data.isNullOrEmpty()) {
                                 viewModel.useEmptyShopId = true
                                 viewModel.shopId = ""
                                 viewModel.getProducts(0)
@@ -183,6 +183,9 @@ class PdpGamificationView : LinearLayout {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hidePdp()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })
@@ -266,20 +269,6 @@ class PdpGamificationView : LinearLayout {
             }
 
             override fun onProductImpression(item: RecommendationItem) {
-
-            }
-
-            override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-                if (viewModel.userSession.isLoggedIn) {
-
-                    if (isAddWishlist) {
-                        viewModel.addToWishlist(item, callback)
-                    } else {
-                        viewModel.removeFromWishlist(item, callback)
-                    }
-                } else {
-                    RouteManager.route(context, ApplinkConst.LOGIN)
-                }
 
             }
 

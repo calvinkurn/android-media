@@ -6,10 +6,12 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companio
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_ECOMMERCE
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.TrackerId.Companion.CLICK_CATALOG_ENTRY_POINT
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -22,7 +24,7 @@ object CatalogDetailAnalytics {
     }
 
     fun sendEvent(event: String, category: String,
-                  action: String, label: String, userId : String, catalogId: String) {
+                  action: String, label: String, userId : String, catalogId: String, trackerId: String?="") {
         HashMap<String,Any>().apply {
             put(EventKeys.KEY_EVENT,event)
             put(EventKeys.KEY_EVENT_CATEGORY,category)
@@ -32,6 +34,9 @@ object CatalogDetailAnalytics {
             put(EventKeys.KEY_CATALOG_ID,catalogId)
             put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            if(!trackerId.isNullOrEmpty()){
+                put(EventKeys.KEY_TRACKER_ID, trackerId)
+            }
         }.also {
             getTracker().sendGeneralEvent(it)
         }
@@ -220,6 +225,7 @@ object CatalogDetailAnalytics {
 
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
+            const val KEY_TRACKER_ID = "trackerId"
 
             const val KEY_PROMOTIONS = "promotions"
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
@@ -290,6 +296,9 @@ object CatalogDetailAnalytics {
             const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
             const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
             const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
+            const val CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK = "click next catalog page - perbandingan produk"
+            const val CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK = "click drop up button - perbandingan produk"
+            const val CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK = "click drop down button - perbandingan produk"
 
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
             const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
@@ -311,6 +320,8 @@ object CatalogDetailAnalytics {
             const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
             const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
 
+            const val IMPRESS_CATALOG_ENTRY_POINT = "impress catalog library entry point"
+            const val CLICK_CATALOG_ENTRY_POINT = "click catalog library entry point"
         }
     }
 
@@ -339,6 +350,20 @@ object CatalogDetailAnalytics {
         }
     }
 
+    interface TrackerId{
+        companion object {
+            const val OPEN_BOTTOMSHEET = "27182"
+            const val CLICK_SEARCH_BAR = "27183"
+            const val CLICK_BANDINGAN = "27184"
+            const val CLICK_NEXT_CATALOG_PAGE = "28893"
+            const val CLICK_DROP_UP_BUTTON = "35721"
+            const val CLICK_DROP_DOWN_BUTTON = "35722"
+            const val IMPRESS_CATALOG_ENTRY_POINT = "42951"
+            const val CLICK_CATALOG_ENTRY_POINT = "42952"
+
+        }
+    }
+
     private fun getCatalogTrackingUrl(catalogUrl : String?) : String {
         if (!catalogUrl.isNullOrEmpty()){
             catalogUrl.split(CATALOG_URL_KEY).last().let {
@@ -346,5 +371,37 @@ object CatalogDetailAnalytics {
             }
         }
         return ""
+    }
+
+    fun sendWidgetTracking(userId: String, catalogId: String, catalogName: String,actionName: String, trackerId: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.EVENT_VIEW_PG_IRIS)
+            .setEventAction(actionName)
+            .setEventCategory(CategoryKeys.PAGE_EVENT_CATEGORY)
+            .setEventLabel("$catalogName - $catalogId")
+            .setCustomProperty(EventKeys.KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCustomProperty(EventKeys.KEY_CATALOG_ID, catalogId)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty("pagePath", "tokopedia://catalog/$catalogId")
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickCatalogLibraryEntryPointEvent (catalogId: String, catalogName: String, userId: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.EVENT_NAME_CLICK_PG)
+            .setEventAction(ActionKeys.CLICK_CATALOG_ENTRY_POINT)
+            .setEventCategory(CategoryKeys.PAGE_EVENT_CATEGORY)
+            .setEventLabel("$catalogName - $catalogId")
+            .setCustomProperty(EventKeys.KEY_TRACKER_ID, CLICK_CATALOG_ENTRY_POINT)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCustomProperty(EventKeys.KEY_CATALOG_ID, catalogId)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty("pagePath", "tokopedia://catalog/$catalogId")
+            .setUserId(userId)
+            .build()
+            .send()
     }
 }

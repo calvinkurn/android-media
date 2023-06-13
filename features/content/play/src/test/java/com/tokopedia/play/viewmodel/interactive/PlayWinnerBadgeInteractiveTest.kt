@@ -14,9 +14,9 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -75,15 +75,14 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given has leaderboard, when interactive is finished, there should be winner badge shown`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
-            status = InteractiveUiModel.Giveaway.Status.Finished,
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns GameUiModel.Giveaway(
+            status = GameUiModel.Giveaway.Status.Finished,
             title = title,
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+            listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -95,8 +94,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.interactive.assertEqualTo(
-                    InteractiveUiModel.Unknown
+                interactive.game.assertEqualTo(
+                    GameUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertTrue()
             }
@@ -106,8 +105,8 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given leaderboard error, when interactive is finished, there should be no badge`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
-            status = InteractiveUiModel.Giveaway.Status.Finished,
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns GameUiModel.Giveaway(
+            status = GameUiModel.Giveaway.Status.Finished,
             title = title,
             id = "1",
             waitingDuration = 200L,
@@ -123,8 +122,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.interactive.assertEqualTo(
-                    InteractiveUiModel.Unknown
+                interactive.game.assertEqualTo(
+                    GameUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
             }
@@ -142,15 +141,13 @@ class PlayWinnerBadgeInteractiveTest {
 
         val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
-            status = InteractiveUiModel.Giveaway.Status.Finished,
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns GameUiModel.Giveaway(
+            status = GameUiModel.Giveaway.Status.Finished,
             title = title,
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = emptyList()
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data = emptyList())
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -161,8 +158,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.interactive.assertEqualTo(
-                    InteractiveUiModel.Unknown
+                interactive.game.assertEqualTo(
+                    GameUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
             }
@@ -172,15 +169,14 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given winner badge is shown, when click winner badge action, then leaderboard bottom sheet should be shown`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
-            status = InteractiveUiModel.Giveaway.Status.Finished,
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns GameUiModel.Giveaway(
+            status = GameUiModel.Giveaway.Status.Finished,
             title = title,
             id = "1",
             waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+        listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
@@ -206,9 +202,8 @@ class PlayWinnerBadgeInteractiveTest {
 
     @Test
     fun `given refresh leaderboard, if should query true, then viewmodel will first emit loading state`() {
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
-            leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
-        )
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderBoardContent(data =
+        listOf(modelBuilder.buildHeader(title = "Kucing apa hayo?", leaderBoardType = LeadeboardType.Giveaway)))
 
         givenPlayViewModelRobot(
             playChannelWebSocket = socket,

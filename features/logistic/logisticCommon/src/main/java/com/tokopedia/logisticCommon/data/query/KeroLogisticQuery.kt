@@ -3,8 +3,8 @@ package com.tokopedia.logisticCommon.data.query
 object KeroLogisticQuery {
 
     val autoComplete = """
-        query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String) {
-          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng) {
+        query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String, ${'$'}is_manage_address_flow: Boolean) {
+          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng, is_manage_address_flow: ${'$'}is_manage_address_flow) {
             error_code
             data {
               predictions {
@@ -31,7 +31,7 @@ object KeroLogisticQuery {
             }
           }
         }
-        """.trimIndent()
+    """.trimIndent()
 
     val addressCorner = """
         query keroAddressCorner(${'$'}input: KeroGetAddressInput){
@@ -66,6 +66,7 @@ object KeroLogisticQuery {
               is_corner
               is_state_chosen_address
               radio_button_checked
+              is_shared_address
             }
             token {
               district_recommendation
@@ -80,8 +81,8 @@ object KeroLogisticQuery {
     """.trimIndent()
 
     val placesGetDistrict = """
-        query KeroPlacesGetDistrict(${'$'}param: String!, ${'$'}err: Boolean) {
-          kero_places_get_district(placeid: ${'$'}param, error_data: ${'$'}err) {
+        query KeroPlacesGetDistrict(${'$'}param: String!, ${'$'}err: Boolean, ${'$'}is_manage_address_flow: Boolean) {
+          kero_places_get_district(placeid: ${'$'}param, error_data: ${'$'}err, is_manage_address_flow: ${'$'}is_manage_address_flow) {
             error_code
             data {
               title
@@ -125,8 +126,8 @@ object KeroLogisticQuery {
     """.trimIndent()
 
     val keroMapsAutofill = """
-        query kero_maps_autofill(${'$'}latlng: String!, ${'$'}err: Boolean){
-          kero_maps_autofill(latlng: ${'$'}latlng, error_data: ${'$'}err) {
+        query kero_maps_autofill(${'$'}latlng: String!, ${'$'}err: Boolean, ${'$'}is_manage_address_flow: Boolean){
+          kero_maps_autofill(latlng: ${'$'}latlng, error_data: ${'$'}err, is_manage_address_flow: ${'$'}is_manage_address_flow) {
             data {
               title
               formatted_address
@@ -187,11 +188,11 @@ object KeroLogisticQuery {
             server_process_time
           }
         }
-        """.trimIndent()
+    """.trimIndent()
 
     val kero_addr_get_default = """
-        query KeroAddrGetDefaultAddress(${'$'}source: String!) {
-          KeroAddrGetDefaultAddress(source: ${'$'}source) {
+        query KeroAddrGetDefaultAddress(${'$'}source: String!, ${'$'}track_activity: Boolean) {
+          KeroAddrGetDefaultAddress(source: ${'$'}source, track_activity: ${'$'}track_activity) {
             data {
               addr_id
               receiver_name
@@ -293,7 +294,6 @@ object KeroLogisticQuery {
             }
         }
     """.trimIndent()
-
 
     val kero_get_address_detail = """
         query getAddressDetail(${'$'}input: KeroGetAddressInput!){

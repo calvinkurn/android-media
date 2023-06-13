@@ -43,7 +43,8 @@ sealed class PlayWidgetItemUiModel
 data class PlayWidgetBannerUiModel(
     val appLink: String,
     val imageUrl: String,
-) : PlayWidgetItemUiModel(), ImpressionableModel {
+    val gridType: PlayGridType = PlayGridType.Unknown,
+    ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 }
@@ -65,13 +66,18 @@ data class PlayWidgetChannelUiModel(
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
+    val shouldShowPerformanceDashboard: Boolean,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
+    val gridType: PlayGridType = PlayGridType.Unknown,
 ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     val hasPromo: Boolean
         get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
+
+    val isUpcoming: Boolean
+        get() = channelType == PlayWidgetChannelType.Upcoming
 }
 
 data class PlayWidgetTotalView(

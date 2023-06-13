@@ -39,7 +39,7 @@ object PlayServiceUtils {
         val result = googleAPI.isGooglePlayServicesAvailable(activity)
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(activity, result, 9000).show()
+                googleAPI.getErrorDialog(activity, result, 9000)?.show()
             }
         }
     }

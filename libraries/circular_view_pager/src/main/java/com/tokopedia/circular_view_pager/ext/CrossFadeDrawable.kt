@@ -11,7 +11,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.request.transition.Transition.ViewAdapter
 import com.bumptech.glide.request.transition.TransitionFactory
 
-
 class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) : Drawable(), Drawable.Callback {
     private var previousDrawable: Drawable?
     private val currentDrawable: Drawable
@@ -48,7 +47,9 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
     private val normalizedTime: Float
         private get() = if (startTimeMillis == 0L) {
             0f
-        } else Math.min(1f, (SystemClock.uptimeMillis() - startTimeMillis) / fadeDuration)
+        } else {
+            Math.min(1f, (SystemClock.uptimeMillis() - startTimeMillis) / fadeDuration)
+        }
 
     override fun draw(canvas: Canvas) {
         if (!animating) {
@@ -96,14 +97,12 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
     }
 
     override fun setColorFilter(@Nullable colorFilter: ColorFilter?) {}
-    override fun onBoundsChange(bounds: Rect?) {
+    override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        if (previousDrawable != null && bounds!= null) {
+        if (previousDrawable != null) {
             previousDrawable?.bounds = bounds
         }
-        if (bounds!= null) {
-            currentDrawable.bounds = bounds
-        }
+        currentDrawable.bounds = bounds
     }
 
     override fun getIntrinsicWidth(): Int {
@@ -150,7 +149,9 @@ class CrossFadeFactory : TransitionFactory<Drawable> {
     override fun build(dataSource: DataSource, isFirstResource: Boolean): Transition<Drawable> {
         return if (dataSource === DataSource.MEMORY_CACHE) {
             NoTransition.get()
-        } else CrossFadeTransition()
+        } else {
+            CrossFadeTransition()
+        }
     }
 }
 

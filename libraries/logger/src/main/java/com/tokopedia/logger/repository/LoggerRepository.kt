@@ -1,35 +1,39 @@
 package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
-import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
+import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
-import com.tokopedia.logger.model.newrelic.NewRelicBody
-import com.tokopedia.logger.model.newrelic.NewRelicConfig
+import com.tokopedia.logger.model.embrace.EmbraceBody
+import com.tokopedia.logger.model.newrelic.NewRelicBodyApi
+import com.tokopedia.logger.model.newrelic.NewRelicBodySdk
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
 import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
+import com.tokopedia.logger.utils.addValue
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
 
-
 class LoggerRepository(
+    private val gson: Gson,
     private val logDao: LoggerDao,
     private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
-    private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
+    private val loggerCloudNewRelicSdkImpl: LoggerCloudNewRelicSdkImpl,
+    private val loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl,
     private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
     private val scalyrConfigs: List<ScalyrConfig>,
-    private val newRelicConfig: NewRelicConfig,
     private val encrypt: ((String) -> (String))? = null,
-    val decrypt: ((String) -> (String))? = null
+    val decrypt: ((String) -> (String))? = null,
+    private val decryptNrKey: ((String) -> (String))? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
@@ -52,18 +56,17 @@ class LoggerRepository(
         logDao.deleteEntries(loggers)
     }
 
+    override suspend fun deleteLog(logger: Logger) {
+        logDao.deleteLog(logger)
+    }
+
     override suspend fun deleteExpiredData() {
         val currentTimestamp = System.currentTimeMillis()
-        logDao.deleteExpiredSFPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
-        sendLogToServer(
-            Constants.SEVERITY_SF,
-            logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
-        )
         sendLogToServer(
             Constants.SEVERITY_HIGH,
             logDao.getServerChannel(LoggerReporting.P1, queryLimits[0])
@@ -74,22 +77,26 @@ class LoggerRepository(
         )
     }
 
-    //start region for view server logger in developer options
+    // start region for view server logger in developer options
     override suspend fun getLoggerList(
         serverChannel: String,
         limit: Int,
         offset: Int
     ): List<Logger> {
-        return if (serverChannel.isBlank()) logDao.getLoggerList(
-            limit,
-            offset
-        ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
+        return if (serverChannel.isBlank()) {
+            logDao.getLoggerList(
+                limit,
+                offset
+            )
+        } else {
+            logDao.getLoggerListFilter(serverChannel, limit, offset)
+        }
     }
 
     override suspend fun deleteAll() {
         logDao.deleteAll()
     }
-    //end region for view server logger in developer options
+    // end region for view server logger in developer options
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
         val priorityScalyrIndex = priorityScalyr - 1
@@ -100,7 +107,8 @@ class LoggerRepository(
 
                 val mappedList = mapLogs(logs)
                 val scalyrMessageList = mappedList.scalyrMessageList
-                val newRelicMessageList = mappedList.newRelicMessageList
+                val newRelicMessageSdkList = mappedList.newRelicMessageSdkList
+                val newRelicMessageApiList = mappedList.newRelicMessageApiMap
                 val embraceMessageList = mappedList.embraceMessageList
 
                 if (scalyrMessageList.isNotEmpty()) {
@@ -114,10 +122,17 @@ class LoggerRepository(
                     jobList.add(jobScalyr)
                 }
 
-                if (newRelicMessageList.isNotEmpty()) {
-                    val jobNewRelic =
-                        async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicMessageList) }
-                    jobList.add(jobNewRelic)
+                if (newRelicMessageSdkList.isNotEmpty()) {
+                    val jobNewRelicSdk =
+                        async { sendNewRelicSdkLogToServer(logs, newRelicMessageSdkList) }
+                    jobList.add(jobNewRelicSdk)
+                }
+
+                if (newRelicMessageApiList.isNotEmpty()) {
+                    val jobNewRelicApi = async {
+                        sendNewRelicApiLogToServer(newRelicMessageApiList, logs)
+                    }
+                    jobList.add(jobNewRelicApi)
                 }
 
                 if (embraceMessageList.isNotEmpty()) {
@@ -125,7 +140,7 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
-                val isSuccess = jobList.awaitAll().any { it }
+                val isSuccess = jobList.toList().awaitAll().any { it }
                 if (isSuccess) {
                     deleteEntries(logs)
                 }
@@ -147,14 +162,16 @@ class LoggerRepository(
 
     private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
-        val messageNewRelicList = mutableListOf<NewRelicBody>()
+        val messageNewRelicSdkList = mutableListOf<NewRelicBodySdk>()
+        val messageNewRelicApiMap = mutableMapOf<String, NewRelicBodyApi>()
         val messageEmbraceList = mutableListOf<EmbraceBody>()
-        //make the timestamp equals to timestamp when hit the api
-        //convert the milli to nano, based on scalyr requirement.
+
+        // make the timestamp equals to timestamp when hit the api
+        // convert the milli to nano, based on scalyr requirement.
         var counter = 0
         var ts: Long
         for (log in logs) {
-            //to make sure each timestamp in each row is unique
+            // to make sure each timestamp in each row is unique
             ts = log.timeStamp * 1000000
             ts += counter
             counter++
@@ -169,7 +186,6 @@ class LoggerRepository(
             val priorityName = when (priorityValue) {
                 Constants.SEVERITY_HIGH -> LoggerReporting.P1
                 Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
-                Constants.SEVERITY_SF -> LoggerReporting.SF
                 else -> ""
             }
             val tagMapsValue =
@@ -178,30 +194,82 @@ class LoggerRepository(
             LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
-            LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
-                } else {
-                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
-                }
-            }
+
+            setMessageNewRelicList(tagMapsValue, message, messageNewRelicSdkList, messageNewRelicApiMap, log)
+
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
             }
         }
-        return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
+        return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicSdkList, messageNewRelicApiMap, messageEmbraceList)
     }
 
-    private suspend fun sendNewRelicLogToServer(
-        config: NewRelicConfig,
+    // P1#GP = key_new_relic_android, table_sf,
+    private fun setMessageNewRelicList(
+        tagMapsValue: String,
+        message: String,
+        messageNewRelicSdkList: MutableList<NewRelicBodySdk>,
+        messageNewRelicApiMaps: MutableMap<String, NewRelicBodyApi>,
+        log: Logger
+    ) {
+        LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
+            val eventType = LoggerReporting.getInstance().tagMapsNrTable[it.newRelicTable] ?: Constants.EVENT_ANDROID_NEW_RELIC
+            val nrConfig = LoggerReporting.getInstance().tagMapsNrKey[it.newRelicKey]
+
+            if (nrConfig == null) {
+                messageNewRelicSdkList.add(NewRelicBodySdk(eventType, jsonToMap(message)))
+            } else {
+                decryptNrKey?.let { decrypt ->
+                    val msgEventNr = addEventNewRelic(message, eventType)
+                    messageNewRelicApiMaps.addValue(
+                        nrConfig.userId,
+                        msgEventNr,
+                        nrConfig.token,
+                        decrypt
+                    ) {
+                        launch {
+                            deleteLog(log)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun sendNewRelicSdkLogToServer(
         logs: List<Logger>,
-        messageList: List<NewRelicBody>
+        messageList: List<NewRelicBodySdk>
     ): Boolean {
         if (logs.isEmpty()) {
             return false
         }
 
-        return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
+        return loggerCloudNewRelicSdkImpl.sendToLogServer(messageList)
+    }
+
+    private suspend fun sendNewRelicApiLogToServer(
+        messageMap: Map<String, NewRelicBodyApi>,
+        logs: List<Logger>
+    ): Boolean {
+        if (logs.isEmpty()) {
+            return false
+        }
+
+        val msgJobList = mutableListOf<Deferred<Boolean>>()
+
+        messageMap.forEach { (_, value) ->
+            val job = coroutineScope {
+                async {
+                    loggerCloudNewRelicApiImpl.sendToLogServer(
+                        gson,
+                        value.newRelicConfig,
+                        value.messageList
+                    )
+                }
+            }
+            msgJobList.add(job)
+        }
+        return msgJobList.toList().awaitAll().any { it }
     }
 
     private suspend fun sendEmbraceLogToServer(
@@ -222,8 +290,17 @@ class LoggerRepository(
         }
     }
 
+    private fun addEventNewRelic(message: String, eventType: String): String {
+        val gson = gson.fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, eventType)
+        if (eventType == Constants.EVENT_ANDROID_SF_NEW_RELIC) {
+            gson.remove(Constants.PRIORITY_LOG)
+        }
+        return gson.toString()
+    }
+
     private fun jsonToMap(message: String): HashMap<String, Any> {
-        return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
+        return gson.fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
     override val coroutineContext: CoroutineContext

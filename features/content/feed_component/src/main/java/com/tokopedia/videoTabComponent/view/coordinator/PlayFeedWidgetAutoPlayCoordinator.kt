@@ -14,6 +14,7 @@ import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import kotlinx.coroutines.*
 
 /**
@@ -58,7 +59,7 @@ class PlayFeedWidgetAutoPlayCoordinator(
         startAutoPlay(widgetCardsContainer)
     }
 
-    fun configureAutoPlay(context : Context, config: PlayWidgetConfigUiModel) = synchronized(this@PlayFeedWidgetAutoPlayCoordinator) {
+    fun configureAutoPlay(context : Context, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayFeedWidgetAutoPlayCoordinator) {
         mConfig = config
 
         if (!config.autoPlay) {
@@ -72,7 +73,7 @@ class PlayFeedWidgetAutoPlayCoordinator(
         if (videoPlayerMap.size <= maxAutoPlay) {
             videoPlayerMap.putAll(
                 List(maxAutoPlay - videoPlayerMap.size) {
-                    PlayVideoPlayer(context) to null
+                    PlayVideoPlayer(context, type) to null
                 }
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {

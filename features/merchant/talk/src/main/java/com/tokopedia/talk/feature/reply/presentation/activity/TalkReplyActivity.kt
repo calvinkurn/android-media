@@ -22,14 +22,14 @@ import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
 
-class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
+open class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
-    private var questionId = ""
-    private var shopId = ""
-    private var source = ""
-    private var inboxType = ""
+    protected var questionId = ""
+    protected var shopId = ""
+    protected var source = ""
+    protected var inboxType = ""
+    protected var talkReplyFragment: TalkReplyFragment? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var talkReplyFragment: TalkReplyFragment? = null
 
     companion object {
         @JvmStatic

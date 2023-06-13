@@ -7,7 +7,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetSearchShopProductUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
+    private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<UniverseSearchResponse>() {
 
     companion object {
@@ -38,8 +38,8 @@ class GetSearchShopProductUseCase @Inject constructor(
             }
         """
         fun createRequestParam(
-                shopID: Int,
-                searchQuery: String
+            shopID: Int,
+            searchQuery: String
         ) = HashMap<String, Any>().apply {
             put(KEY_NAV_SOURCE, VALUE_NAV_SOURCE)
             put(KEY_SHOP_ID, shopID)

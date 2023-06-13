@@ -17,17 +17,17 @@ data class UploadProfileImageModel(
 ) {
 
     data class Data(
-	@SerializedName("file_path")
-	@Expose
-	var filePath: String = "",
-	@SerializedName("file_th")
-	@Expose
-	var fileThumb: String = "",
-	@SerializedName("pic_obj")
-	@Expose
-	var picObj: String = "",
-	@SerializedName("success")
-	@Expose
-	var success: String = "0"
+        @SerializedName("file_path")
+        @Expose
+        var filePath: String = "",
+        @SerializedName("file_th")
+        @Expose
+        var fileThumb: String = "",
+        @SerializedName("pic_obj")
+        @Expose
+        var picObj: String = "",
+        @SerializedName("success")
+        @Expose
+        var success: String = "0"
     )
 }

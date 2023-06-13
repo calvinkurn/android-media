@@ -21,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class WaitingPaymentOrdersViewHolder(
-        itemView: View
+    itemView: View
 ) : AbstractViewHolder<WaitingPaymentOrderUiModel>(itemView) {
 
     companion object {
@@ -42,19 +42,19 @@ class WaitingPaymentOrdersViewHolder(
     private var animatorSet: AnimatorSet = AnimatorSet()
 
     private val animationListener = object: Animator.AnimatorListener {
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             binding?.root?.setHasTransientState(false)
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             binding?.root?.setHasTransientState(false)
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             binding?.root?.setHasTransientState(true)
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
             binding?.root?.setHasTransientState(true)
         }
     }
@@ -79,8 +79,11 @@ class WaitingPaymentOrdersViewHolder(
                 }
                 icLoadMoreDropDown.apply {
                     iconDropdownAnimator?.end()
-                    rotation = if (element.isExpanded) EXPANDED_DROPDOWN_ICON_ROTATION
-                    else COLLAPSED_DROPDOWN_ICON_ROTATION
+                    rotation = if (element.isExpanded) {
+                        EXPANDED_DROPDOWN_ICON_ROTATION
+                    } else {
+                        COLLAPSED_DROPDOWN_ICON_ROTATION
+                    }
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 }
                 rvWaitingPaymentOrderProducts.apply {
@@ -123,8 +126,11 @@ class WaitingPaymentOrdersViewHolder(
                 if (initialHeight == targetHeight) {
                     scheduleAnimation(element)
                 } else {
-                    if (element.isExpanded) element.expandedHeight = targetHeight
-                    else element.collapsedHeight = targetHeight
+                    if (element.isExpanded) {
+                        element.expandedHeight = targetHeight
+                    } else {
+                        element.collapsedHeight = targetHeight
+                    }
                     setupRecyclerViewSizeAnimator(initialHeight, targetHeight)
                     setupDropdownIconAnimator(element.isExpanded)
                     updateToggleCollapseText(element.isExpanded)
@@ -141,8 +147,13 @@ class WaitingPaymentOrdersViewHolder(
             !element.isExpanded && element.collapsedHeight != Int.ZERO -> element.collapsedHeight
             else -> {
                 binding?.run {
-                    rvWaitingPaymentOrderProducts.measure(View.MeasureSpec.makeMeasureSpec(
-                        root.measuredWidth, View.MeasureSpec.EXACTLY), View.MeasureSpec.UNSPECIFIED)
+                    rvWaitingPaymentOrderProducts.measure(
+                        View.MeasureSpec.makeMeasureSpec(
+                            root.measuredWidth,
+                            View.MeasureSpec.EXACTLY
+                        ),
+                        View.MeasureSpec.UNSPECIFIED
+                    )
                     rvWaitingPaymentOrderProducts.measuredHeight
                 }.orZero()
             }

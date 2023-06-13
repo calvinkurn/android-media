@@ -10,11 +10,10 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -133,8 +132,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
             productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != 0) {
-            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage.toString())
+        labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != Float.ZERO) {
+            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage)
         }
     }
 }

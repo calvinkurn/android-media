@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 @SuppressLint("ResponseFieldAnnotation")
 data class GetCampaignProductResponse(
-    @SerializedName("getCampaignProduct")
+    @SerializedName("getFlashSaleProductList")
     val getCampaignProduct: GetCampaignProduct = GetCampaignProduct()
 ) {
 

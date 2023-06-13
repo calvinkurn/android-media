@@ -11,7 +11,7 @@ object SearchCategoryDummyUtils {
 
     val miniCartWidgetData get() = MiniCartWidgetData(
             totalProductCount = 7,
-            totalProductPrice = 1000000,
+            totalProductPrice = 1000000.0,
     )
 
     val miniCartItems get() = mapOf(

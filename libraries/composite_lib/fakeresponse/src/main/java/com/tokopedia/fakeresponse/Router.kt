@@ -15,6 +15,17 @@ class Router {
         const val BUNDLE_ARGS_ID = "id"
         const val BUNDLE_ARGS_FROM_CHUCK = "fromChuck"
 
+        fun routeToAddGqlFromNotification(
+            context: Context?,
+            id: Int? = null,
+            fromChuck: Boolean = false
+        ): Intent {
+            val intent = Intent(context, AddGqlActivity::class.java)
+            intent.putExtra(BUNDLE_ARGS_ID, id)
+            intent.putExtra(BUNDLE_ARGS_FROM_CHUCK, fromChuck)
+            return intent
+        }
+
         fun routeToAddGql(context: Context?, id: Int? = null, fromChuck: Boolean = false) {
             val intent = Intent(context, AddGqlActivity::class.java)
             intent.putExtra(BUNDLE_ARGS_ID, id)

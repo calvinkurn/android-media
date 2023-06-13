@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_USER_PERFORMANCE: String = """query getAffiliatePerformance(${'$'}dayRange: String!) {
+val GQL_Affiliate_USER_PERFORMANCE: String =
+    """query getAffiliatePerformance(${'$'}dayRange: String!) {
   getAffiliatePerformance(dayRange: ${"$"}dayRange) {
     Data {
       Status
@@ -40,7 +41,16 @@ val GQL_Affiliate_USER_PERFORMANCE: String = """query getAffiliatePerformance(${
               MetricDifferenceValueFmt
               Order
               Tooltip{
-                Description
+              Description
+                 Metrics{
+                  MetricType
+                  MetricTitle
+                  MetricValue
+                  MetricValueFmt
+                  MetricDifferenceValue
+                  MetricDifferenceValueFmt
+                  Order
+                 }
               }
             }
           }

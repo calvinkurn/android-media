@@ -9,7 +9,10 @@ data class DriverSectionUiModel(
     val name: String,
     val photoUrl: String,
     val licensePlateNumber: String,
-    val isCallable: Boolean
+    val isCallable: Boolean,
+    val isEnableChat: Boolean,
+    val goFoodOrderNumber: String,
+    val badgeCounter: Int? = null,
 ): BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactoryImpl): Int {
         return typeFactory.type(this)

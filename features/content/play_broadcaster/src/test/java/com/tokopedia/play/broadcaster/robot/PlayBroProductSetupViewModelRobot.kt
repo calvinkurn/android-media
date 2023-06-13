@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
@@ -10,35 +9,37 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
  * Created By : Jonathan Darwin on February 17, 2022
  */
 internal class PlayBroProductSetupViewModelRobot(
+    creationId: String = "",
+    maxProduct: Int = 30,
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
+    isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
-    hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
+    source: PlayBroPageSource = PlayBroPageSource.Live,
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     private val viewModel = PlayBroProductSetupViewModel(
+        creationId,
+        maxProduct,
         productSectionList,
         handle,
+        isEligibleForPin,
+        source,
         channelRepo,
-        hydraConfigStore,
         userSession,
         dispatchers,
     )

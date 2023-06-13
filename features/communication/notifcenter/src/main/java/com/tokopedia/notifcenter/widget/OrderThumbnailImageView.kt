@@ -12,18 +12,24 @@ class OrderThumbnailImageView : AppCompatImageView {
     private val path: Path = Path()
     private var rect: RectF = RectF()
     private val space8Dp = context.resources.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
     )
     private val topLeftRadius = space8Dp
     private val bottomLeftRadius = space8Dp
     private val outerRadius = floatArrayOf(
-            topLeftRadius, topLeftRadius, 0f, 0f,
-            0f, 0f, bottomLeftRadius, bottomLeftRadius
+        topLeftRadius,
+        topLeftRadius,
+        0f,
+        0f,
+        0f,
+        0f,
+        bottomLeftRadius,
+        bottomLeftRadius
     )
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
             context, attrs, defStyleAttr
     )
 

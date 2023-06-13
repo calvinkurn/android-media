@@ -2,7 +2,7 @@ package com.tokopedia.checkout.data.model.response.egold
 
 import com.google.gson.annotations.SerializedName
 
-data class EgoldTieringData (
+data class EgoldTieringData(
     @SerializedName("minimum_total_amount")
     var minTotalAmount: Long = 0,
     @SerializedName("minimum_amount")

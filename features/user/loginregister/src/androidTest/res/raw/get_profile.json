@@ -11,7 +11,7 @@
         "phone": "6285156364695",
         "phone_masked": "XXXX-XXXX-4695",
         "phone_verified": true,
-        "profile_picture": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg",
+        "profile_picture": "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg",
         "created_password": true,
         "isLoggedIn": true
       },
@@ -21,7 +21,7 @@
           "name": "kelvin tokop",
           "domain": "kelvintokop",
           "level": 1,
-          "logo": "https://ecs7-p.tokopedia.net/img/seller_no_logo_1.png"
+          "logo": "https://images.tokopedia.net/img/seller_no_logo_1.png"
         }
       }
     }

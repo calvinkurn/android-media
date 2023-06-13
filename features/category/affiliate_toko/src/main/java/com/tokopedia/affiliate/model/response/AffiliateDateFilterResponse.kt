@@ -1,6 +1,4 @@
 package com.tokopedia.affiliate.model.response
-
-
 import com.google.gson.annotations.SerializedName
 
 data class AffiliateDateFilterResponse(
@@ -14,6 +12,8 @@ data class AffiliateDateFilterResponse(
         var ticker: List<Ticker?>?
     ) {
         data class GetAffiliateDateFilter(
+            @SerializedName("UpdateDescription")
+            var updateDescription: String?,
             @SerializedName("FilterDescription")
             var filterDescription: String?,
             @SerializedName("FilterTitle")

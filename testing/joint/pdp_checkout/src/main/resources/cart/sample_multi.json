@@ -96,7 +96,7 @@
               "user_id": 5511917,
               "admin_ids": [],
               "shop_name": "Aqua",
-              "shop_image": "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2018/1/11/479979/479979_d08f6bd9-94c3-46f8-a41c-46b35048c15c.jpg",
+              "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/1/11/479979/479979_d08f6bd9-94c3-46f8-a41c-46b35048c15c.jpg",
               "shop_url": "https://staging.tokopedia.com/aqua",
               "shop_status": 1,
               "is_gold": 1,
@@ -117,7 +117,7 @@
               },
               "official_store": {
                 "is_official": 1,
-                "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+                "os_logo_url": "https://images.tokopedia.net/img/official_store/badge_os128.png"
               },
               "address_id": 2270,
               "postal_code": "12910",
@@ -140,7 +140,7 @@
                   "ship_id": 1,
                   "ship_name": "JNE",
                   "ship_code": "jne",
-                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                  "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
                   "ship_prods": [
                     {
                       "ship_prod_id": 6,
@@ -173,7 +173,7 @@
                   "ship_id": 4,
                   "ship_name": "Pos Indonesia",
                   "ship_code": "pos",
-                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                  "ship_logo": "https://images.tokopedia.net/img/kurir-pos.png",
                   "ship_prods": [
                     {
                       "ship_prod_id": 10,

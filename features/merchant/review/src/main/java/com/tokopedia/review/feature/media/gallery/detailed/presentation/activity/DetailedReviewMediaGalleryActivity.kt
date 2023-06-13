@@ -27,6 +27,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -163,7 +164,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
-    override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
             e != null && !e.isAboveCloseButton() && !e.isAboveReviewerBasicInfo() &&
@@ -171,7 +172,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             !e.isAboveCounter() && gestureDetector?.onTouchEvent(e) == true
         ) {
             true
-        } else super.dispatchTouchEvent(e)
+        } else {
+            super.dispatchTouchEvent(e)
+        }
     }
 
     override fun onBackPressed() {
@@ -287,6 +290,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         icReviewMediaGalleryKebab.setOnClickListener {
             sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
+        ivBgHeaderReviewMediaGallery.setImageResource(R.drawable.bg_header)
     }
 
     private fun ActivityDetailedReviewMediaGalleryBinding.setupCounter() {
@@ -325,21 +329,15 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
-                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+                sharedReviewMediaGalleryViewModel.currentReviewDetail
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }
         ) { (orientationUiState, showOverlay, currentReviewDetail) ->
             val isInPortrait = orientationUiState.isPortrait()
             val isReportable = currentReviewDetail?.isReportable.orFalse()
-            val headerBackground = if (isInPortrait && currentReviewDetail != null) {
-                R.drawable.bg_header
-            } else {
-                Int.ZERO
-            }
             binding?.headerReviewMediaGallery?.apply {
                 showWithCondition(showOverlay)
-                setBackgroundResource(headerBackground)
                 val layoutParamsCopy = layoutParams
                 layoutParamsCopy.height = if (isInPortrait) {
                     HEADER_HEIGHT_IN_PORTRAIT.toPx()
@@ -348,16 +346,23 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
                 layoutParams = layoutParamsCopy
             }
+            if (isInPortrait && currentReviewDetail != null) {
+                binding?.ivBgHeaderReviewMediaGallery?.show()
+            } else {
+                binding?.ivBgHeaderReviewMediaGallery?.gone()
+            }
             binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-            binding?.icReviewMediaGalleryKebab?.showWithCondition(
-                showOverlay && isInPortrait && isReportable
-            )
+            if (showOverlay && isInPortrait && isReportable) {
+                binding?.icReviewMediaGalleryKebab?.show()
+            } else {
+                binding?.icReviewMediaGalleryKebab?.invisible()
+            }
         }
     }
 
     private fun collectOrientationUiStateUpdate() {
         collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
-            requestedOrientation = when(it.orientation) {
+            requestedOrientation = when (it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -508,7 +513,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class DetailedReviewMediaGalleryGestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
         }
@@ -536,7 +541,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
         private fun getActionMenuBottomSheet(): ActionMenuBottomSheet {
             return actionMenuBottomSheet ?: getAddedActionMenuBottomSheet()
-            ?: createActionMenuBottomSheet()
+                ?: createActionMenuBottomSheet()
         }
 
         fun showActionMenuBottomSheet() {
@@ -555,16 +560,16 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         private val callback = Callback()
 
         fun attachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, callback)
         }
 
         fun detachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
-        private inner class Callback: ConnectivityManager.NetworkCallback() {
+        private inner class Callback : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = true)
             }
@@ -577,7 +582,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private inner class AutoHideOverlayHandler {
         private val timer by lazy(LazyThreadSafetyMode.NONE) {
-            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+            object : CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
                 override fun onTick(millisUntilFinished: Long) {
                     // noop
                 }

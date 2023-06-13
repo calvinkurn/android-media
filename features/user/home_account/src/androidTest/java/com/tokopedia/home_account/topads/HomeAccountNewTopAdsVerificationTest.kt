@@ -19,9 +19,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.home_account.AccountConstants
-import com.tokopedia.home_account.di.HomeAccountUserQueryModules
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.stub.di.DaggerHomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.stub.di.topads.FakeHomeAccountTopAdsModules
@@ -46,7 +45,10 @@ import org.junit.Test
 class HomeAccountNewTopAdsVerificationTest {
     @get:Rule
     var activityRule = object : IntentsTestRule<InstrumentationNewHomeAccountTestActivity>(
-        InstrumentationNewHomeAccountTestActivity::class.java, false, false) {
+        InstrumentationNewHomeAccountTestActivity::class.java,
+        false,
+        false
+    ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             login()
@@ -56,9 +58,9 @@ class HomeAccountNewTopAdsVerificationTest {
 
     @get:Rule
     var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
-            Manifest.permission.INTERNET,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.INTERNET,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -68,9 +70,12 @@ class HomeAccountNewTopAdsVerificationTest {
             .getInstrumentation().context.applicationContext
 
     private var topAdsCount = 0
-    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface {
-        topAdsCount
-    })
+    private val topAdsAssertion = TopAdsAssertion(
+        context,
+        TopAdsVerificatorInterface {
+            topAdsCount
+        }
+    )
     private var recyclerView: SwipeRecyclerView? = null
 
     @Before
@@ -79,7 +84,6 @@ class HomeAccountNewTopAdsVerificationTest {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .fakeHomeAccountTopAdsModules(FakeHomeAccountTopAdsModules(context))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
             .sessionModule(SessionModule())
             .build()
         setCoachMarkToFalse()
@@ -92,7 +96,7 @@ class HomeAccountNewTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        //tempoary changed to 1 minute to test is long load time is the problem
+        // tempoary changed to 1 minute to test is long load time is the problem
         Thread.sleep(10000)
     }
 
@@ -130,7 +134,7 @@ class HomeAccountNewTopAdsVerificationTest {
             val item = recyclerView.getItemAdapter().getItem(index) as RecommendationItem
             if (item.isTopAds) {
                 Espresso.onView(ViewMatchers.withId(recyclerView.id))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<ProductItemViewHolder>(index, ViewActions.click()))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<ProductItemViewHolder>(index, ViewActions.click()))
                 topAdsCount++
             }
         }

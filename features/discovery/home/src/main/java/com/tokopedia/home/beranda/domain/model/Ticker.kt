@@ -24,7 +24,7 @@ data class Tickers(
         @SerializedName("layout")
         @Expose
         val layout: String = "",
-        @SerializedName("ticker_type")
+        @SerializedName("ticker_type", alternate = ["tickerType"])
         @Expose
         var tickerType: Int = 0,
         @SerializedName("title")

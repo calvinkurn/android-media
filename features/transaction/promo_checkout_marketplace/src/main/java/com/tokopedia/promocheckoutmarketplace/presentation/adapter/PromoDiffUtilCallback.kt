@@ -3,8 +3,10 @@ package com.tokopedia.promocheckoutmarketplace.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 
-class PromoDiffUtilCallback(private val oldList: List<Any>,
-                            private val newList: List<Any>) : DiffUtil.Callback() {
+class PromoDiffUtilCallback(
+    private val oldList: List<Any>,
+    private val newList: List<Any>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -21,11 +23,11 @@ class PromoDiffUtilCallback(private val oldList: List<Any>,
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is PromoListItemUiModel && newItem is PromoListItemUiModel)
+        return if (oldItem is PromoListItemUiModel && newItem is PromoListItemUiModel) {
             oldItem == newItem
-        else
+        } else {
             oldItem::class == newItem::class
-
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -37,5 +39,4 @@ class PromoDiffUtilCallback(private val oldList: List<Any>,
 
         return oldItem == newItem
     }
-
 }

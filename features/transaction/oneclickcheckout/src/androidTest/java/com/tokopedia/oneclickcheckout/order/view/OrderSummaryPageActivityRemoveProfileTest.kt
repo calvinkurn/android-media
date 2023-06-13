@@ -69,38 +69,38 @@ class OrderSummaryPageActivityRemoveProfileTest {
             clickAddNewAddress()
 
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "",
+                alertMessage = ""
             )
             assertProductCard(
-                    productName = "Product1",
-                    productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
-                    productQty = 1,
-                    productNotes = null
+                productName = "Product1",
+                productPrice = "Rp100.000",
+                productSlashPrice = null,
+                productSlashPriceLabel = null,
+                productVariant = null,
+                productWarningMessage = null,
+                productAlertMessage = null,
+                productInfo = null,
+                productQty = 1,
+                productNotes = null
             )
 
             assertAddressRevamp(
-                    addressName = "Address 1 - User 1 (1)",
-                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
-                    isMainAddress = true
+                addressName = "Address 1 - User 1 (1)",
+                addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                isMainAddress = true
             )
 
             assertShipmentRevamp(
-                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
-                    shippingCourier = "Kurir Rekomendasi",
-                    shippingPrice = "Rp15.000",
-                    shippingEta = null
+                shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                shippingCourier = "Kurir Rekomendasi",
+                shippingPrice = "Rp15.000",
+                shippingEta = null
             )
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)

@@ -14,11 +14,13 @@ class ShopCarouselProductPlaceholderAdapter : RecyclerView.Adapter<RecyclerView.
     class PlaceholderItem(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return PlaceholderItem(LayoutInflater.from(parent.context).inflate(
+        return PlaceholderItem(
+            LayoutInflater.from(parent.context).inflate(
                 R.layout.shop_home_product_carousel_placeholder_item,
                 parent,
                 false
-        ))
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {}
@@ -26,5 +28,4 @@ class ShopCarouselProductPlaceholderAdapter : RecyclerView.Adapter<RecyclerView.
     override fun getItemCount(): Int {
         return TOTAL_PLACEHOLDER_ITEM
     }
-
 }

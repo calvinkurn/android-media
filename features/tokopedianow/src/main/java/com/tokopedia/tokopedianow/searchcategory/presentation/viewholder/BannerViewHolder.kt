@@ -32,9 +32,9 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 class BannerViewHolder(
-        itemView: View,
-        private val bannerListener: BannerComponentListener
-): AbstractViewHolder<BannerDataView>(itemView), CoroutineScope, BannerItemListener {
+    itemView: View,
+    private val bannerListener: BannerComponentListener
+) : AbstractViewHolder<BannerDataView>(itemView), CoroutineScope, BannerItemListener {
 
     private var binding: ItemTokopedianowSearchCategoryBannerBinding? by viewBinding()
 
@@ -46,7 +46,7 @@ class BannerViewHolder(
 
     private var channelModel: ChannelModel? = null
 
-    //set to true if you want to activate auto-scroll
+    // set to true if you want to activate auto-scroll
     private var isAutoScroll = true
     private var currentPagePosition = 0
 
@@ -63,11 +63,11 @@ class BannerViewHolder(
 
     init {
         itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(p0: View?) {
+            override fun onViewDetachedFromWindow(p0: View) {
                 pauseAutoScroll()
             }
 
-            override fun onViewAttachedToWindow(p0: View?) {
+            override fun onViewAttachedToWindow(p0: View) {
                 resumeAutoScroll()
             }
         })
@@ -107,13 +107,13 @@ class BannerViewHolder(
         binding?.tokonowSearchCategoryRecyclerViewBanner?.smoothScrollToPosition(position)
     }
 
-    private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
+    private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main) {
         if (isAutoScroll) {
             scrollTo(currentPagePosition)
 
             channelModel?.let {
-                val size = channelModel?.channelGrids?.size?:0
-                if (currentPagePosition == (size-1) ) {
+                val size = channelModel?.channelGrids?.size ?: 0
+                if (currentPagePosition == (size - 1)) {
                     currentPagePosition = 0
                 } else {
                     currentPagePosition++
@@ -139,11 +139,13 @@ class BannerViewHolder(
     private fun getLayoutManager(list: List<BannerItemModel>): LinearLayoutManager {
         layoutManager = if (list.size == 1) {
             LinearLayoutManager(itemView.context)
-        } else PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        }
         return layoutManager
     }
 
-    private fun initBanner(list: List<BannerItemModel>){
+    private fun initBanner(list: List<BannerItemModel>) {
         binding?.tokonowSearchCategoryRecyclerViewBanner?.let { rvBanner ->
             rvBanner.clearOnScrollListeners()
 
@@ -155,7 +157,9 @@ class BannerViewHolder(
             if (rvBanner.itemDecorationCount == 0) {
                 if (list.size == 1) {
                     rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
-                } else rvBanner.addItemDecoration(BannerChannelDecoration())
+                } else {
+                    rvBanner.addItemDecoration(BannerChannelDecoration())
+                }
             }
             val adapter = BannerChannelAdapter(list, this)
             rvBanner.adapter = adapter
@@ -181,7 +185,7 @@ class BannerViewHolder(
     }
 
     override fun onImpressed(position: Int) {
-        channelModel?.let {channel ->
+        channelModel?.let { channel ->
             channel.selectGridInPosition(position) {
                 onPromoScrolled(position)
             }
@@ -189,7 +193,7 @@ class BannerViewHolder(
     }
 
     override fun onClick(position: Int) {
-        channelModel?.let {channel ->
+        channelModel?.let { channel ->
             channel.selectGridInPosition(position) {
                 bannerListener.onBannerClick(channel, it.applink, it.param)
             }
@@ -197,16 +201,14 @@ class BannerViewHolder(
     }
 
     private fun onPromoScrolled(position: Int) {
-
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
-
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
+            this.channelGrids.map { BannerItemModel(it.id.toInt(), it.imageUrl) }
         } catch (e: NumberFormatException) {
             listOf()
         }
@@ -216,7 +218,9 @@ class BannerViewHolder(
         return if (position != -1 && this.channelGrids.size > position) {
             action.invoke(this.channelGrids[position])
             this.channelGrids[position]
-        } else null
+        } else {
+            null
+        }
     }
 
     companion object {

@@ -13,8 +13,7 @@ class ExampleActivity : AppCompatActivity() {
 
         val newFragment: Fragment = MinicartTestFragment()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view_example, newFragment, "")
-                .commit()
+            .replace(R.id.parent_view_example, newFragment, "")
+            .commit()
     }
-
 }

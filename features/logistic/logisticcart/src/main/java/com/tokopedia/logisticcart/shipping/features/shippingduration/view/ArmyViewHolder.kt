@@ -5,15 +5,16 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-
 
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -32,31 +33,44 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
-        
-        tvTitle.text = formattedTitle
-        tvTitle.visibility = View.VISIBLE
-        tvTitleExtra.visibility = View.GONE
-        tvEta.visibility = View.GONE
+
+        if (formattedTitle?.isNotEmpty() == true) {
+            tvTitle.text = formattedTitle
+            tvTitle.visible()
+        } else {
+            tvTitle.gone()
+        }
+
+        tvTitleExtra.gone()
+        tvEta.gone()
 
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
-                visibility = View.VISIBLE
+                visible()
                 text = data.codData.codText
             }
         } else {
-            lblCodAvailableEta.visibility = View.GONE
+            lblCodAvailableEta.gone()
         }
 
-        tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
-        if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
+        if (data.bottomSheetDescription.isNotEmpty()) {
+            tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
+            tvInfo.visible()
+        } else if (data.promoMessage.isNotBlank()) {
+            tvInfo.text = MethodChecker.fromHtml(data.promoMessage)
+            tvInfo.visible()
+        } else {
+            tvInfo.gone()
+        }
 
         if (data.imageUrl.isNotEmpty()) {
             imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
-            ImageHandler.LoadImage(imgLogo, data.imageUrl)
+            imgLogo.loadImage(data.imageUrl)
+            imgLogo.visible()
         } else {
-            imgLogo.visibility = View.GONE
+            imgLogo.gone()
         }
 
         val fontColor = if (data.disabled) {
@@ -85,10 +99,9 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         if (data.isApplied) {
-            imgCheck.visibility = View.VISIBLE
+            imgCheck.visible()
         } else {
-            imgCheck.visibility = View.GONE
+            imgCheck.gone()
         }
     }
-
 }

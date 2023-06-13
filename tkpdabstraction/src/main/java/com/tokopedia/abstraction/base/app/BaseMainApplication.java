@@ -2,7 +2,6 @@ package com.tokopedia.abstraction.base.app;
 
 import android.content.Context;
 
-import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -25,11 +24,6 @@ public class BaseMainApplication extends MultiDexApplication {
             baseAppComponent = daggerBuilder.build();
         }
         return baseAppComponent;
-    }
-
-    public BaseAppComponent reinitBaseAppComponent(AppModule appModule){
-        return baseAppComponent = DaggerBaseAppComponent.builder()
-                .appModule(appModule).build();
     }
 
     public void setComponent(BaseAppComponent appComponent) {

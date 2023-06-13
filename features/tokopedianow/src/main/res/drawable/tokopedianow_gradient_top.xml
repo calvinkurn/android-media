@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient android:type="linear" android:angle="90" android:startColor="@color/tokopedianow_white_gradient_dms_color" android:endColor="@color/tokopedianow_black_gradient_dms_color"/>
+</shape>

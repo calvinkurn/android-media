@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_main_address">Utama</string>
@@ -19,6 +19,7 @@
     <string name="change_courier">Ubah Kurir</string>
     <string name="money_in_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="money_in_alert_payment_canceled">Pembayaran dibatalkan</string>
+    <string name="money_in_alert_error_fetching_location">Kesalahan mengambli lokasi</string>
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
     <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
     <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku, kami membutuhkan ijin untuk mengakses beberapa fungsi di telpon anda</string>
@@ -44,6 +45,7 @@
     <string name="text_final_price">Harga Jual:  </string>
     <string name="tukar_tambah">Tukar Tambah</string>
     <string name="money_in">Langsung Laku</string>
+    <string name="money_in_courier_service_error">Tidak ada kurir yang mendukung pengiriman ini ke lokasi anda.</string>
     <string name="harga_final">Harga Final</string>
     <string name="total_price">Total Harga Barang</string>
     <string name="buy_now">Beli Sekarang</string>

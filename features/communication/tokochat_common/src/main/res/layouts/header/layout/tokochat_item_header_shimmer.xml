@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokoChatMainHeader"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/tokochat_layout_photo_container_shimmer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            app:loader_type="circle" />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="60dp"
+        android:layout_toEndOf="@+id/tokochat_layout_photo_container_shimmer"
+        android:gravity="center_vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tokochat_header_title_shimmer"
+            android:layout_width="200dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tokochat_header_subtitle_shimmer"
+            android:layout_width="100dp"
+            android:layout_height="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_header_title_shimmer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            app:loader_type="rect" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

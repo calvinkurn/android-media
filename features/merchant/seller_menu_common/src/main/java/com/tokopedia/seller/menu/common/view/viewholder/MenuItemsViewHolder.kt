@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.view.doOnAttach
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -13,8 +14,8 @@ import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListBinding
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListNoIconBinding
+import com.tokopedia.seller.menu.common.view.typefactory.CoachMarkListener
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.PrintingMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -25,7 +26,8 @@ class MenuItemsViewHolder(
     itemView: View,
     private val userSession: UserSessionInterface?,
     private val trackingListener: SettingTrackingListener,
-    private val sellerMenuTracker: SellerMenuTracker?
+    private val sellerMenuTracker: SellerMenuTracker?,
+    private val coachMarkListener: CoachMarkListener? = null
 ) : AbstractViewHolder<MenuItemUiModel>(itemView) {
 
     companion object {
@@ -68,6 +70,9 @@ class MenuItemsViewHolder(
                 }
             }
             setupTag(element.tag)
+            doOnAttach {
+                coachMarkListener?.onViewReadyForCoachMark(element.title, settingMenuIcon)
+            }
         }
     }
 
@@ -106,7 +111,6 @@ class MenuItemsViewHolder(
         when(menuItem) {
             is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
             is StatisticMenuItemUiModel -> sendEventClickStatisticMenuItem(userSession?.userId.orEmpty())
-            is PrintingMenuItemUiModel -> sendEventClickPrintingMenuItem(userSession?.userId.orEmpty())
             else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }

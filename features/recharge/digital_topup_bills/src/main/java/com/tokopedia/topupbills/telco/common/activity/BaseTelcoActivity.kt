@@ -49,9 +49,6 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         super.onCreate(savedInstanceState)
 
         initInjector()
-
-        //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,7 +78,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+        RouteManager.route(this, APPLINK_CONST_DEALS)
     }
 
     override fun onHelpClicked() {
@@ -140,5 +137,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         const val PARAM_CATEGORY_ID = "category_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val TAG_TELCO_MENU = "menu_telco"
+
+        const val APPLINK_CONST_DEALS = "tokopedia://discovery/deals?activeTab=7&componentID=588"
     }
 }

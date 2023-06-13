@@ -7,7 +7,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,12 +20,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 
-
-class CustomChatbotChatLayout : FrameLayout {
+class CustomChatbotChatLayout : ViewGroup {
 
     var checkMark: ImageView? = null
         private set
-    private var message: TextView? = null
+    var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
@@ -43,19 +42,19 @@ class CustomChatbotChatLayout : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         initConfig(context, attrs)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
-            context: Context,
-            attrs: AttributeSet?,
-            defStyleAttr: Int,
-            defStyleRes: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initConfig(context, attrs)
     }
@@ -76,10 +75,10 @@ class CustomChatbotChatLayout : FrameLayout {
 
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         context?.theme?.obtainStyledAttributes(
-                attrs,
-                R.styleable.CustomChatbotChatLayout,
-                0,
-                0
+            attrs,
+            R.styleable.CustomChatbotChatLayout,
+            0,
+            0
         )?.apply {
             try {
                 showCheckMark = getBoolean(R.styleable.CustomChatbotChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
@@ -91,7 +90,7 @@ class CustomChatbotChatLayout : FrameLayout {
     }
 
     private fun initView(context: Context?, attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.custom_chatbot_chat_message, this, true).also {
+        LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
             message = it.findViewById(R.id.tvMessage)
             status = it.findViewById(R.id.llStatus)
             checkMark = it.findViewById(R.id.ivCheckMark)
@@ -130,17 +129,17 @@ class CustomChatbotChatLayout : FrameLayout {
         measureChildWithMargins(readMoreView, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
         val messageWidth =
-                message!!.measuredWidth + messageLayout.leftMargin + messageLayout.rightMargin
+            message!!.measuredWidth + messageLayout.leftMargin + messageLayout.rightMargin
         val messageHeight =
-                message!!.measuredHeight + messageLayout.topMargin + messageLayout.bottomMargin
+            message!!.measuredHeight + messageLayout.topMargin + messageLayout.bottomMargin
         val statusWidth =
-                status!!.measuredWidth + statusLayout.leftMargin + statusLayout.rightMargin
+            status!!.measuredWidth + statusLayout.leftMargin + statusLayout.rightMargin
         val statusHeight =
-                status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
+            status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
         val infoWidth =
-                readMoreView!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
+            readMoreView!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
         val infoHeight =
-                readMoreView!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
+            readMoreView!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
 
         val messageLineCount = message!!.lineCount
         val lastLineWidth: Float = if (messageLineCount > 0) {
@@ -172,10 +171,99 @@ class CustomChatbotChatLayout : FrameLayout {
             totalWidth = maxWidth
         }
 
-        setMeasuredDimension(totalWidth, totalHeight)
-        val widthSpec = MeasureSpec.makeMeasureSpec(totalWidth, MeasureSpec.EXACTLY)
-        val heightSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY)
-        super.onMeasure(widthSpec, heightSpec)
+        setMeasuredDimension(
+            resolveSize(totalWidth, widthMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
+        )
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        var topOffset = paddingTop
+
+        /**
+         * Layout msg
+         */
+        val leftMsg = paddingStart
+        val topMsg = topOffset
+        val rightMsg = leftMsg + getVisibleMeasuredWidth(message)
+        val bottomMsg = topMsg + getVisibleMeasuredHeight(message)
+        message?.layout(
+            leftMsg,
+            topMsg,
+            rightMsg,
+            bottomMsg
+        )
+        topOffset = bottomMsg
+
+        /**
+         * Layout info
+         */
+        if (readMoreView!!.isVisible) {
+            val infoLp = readMoreView!!.layoutParams as MarginLayoutParams
+            val leftInfo = paddingStart
+            val topInfo = topOffset + infoLp.topMargin
+            val rightInfo = paddingStart + readMoreView!!.measuredWidth
+            val bottomInfo = topInfo + readMoreView!!.measuredHeight
+            readMoreView?.layout(
+                leftInfo,
+                topInfo,
+                rightInfo,
+                bottomInfo
+            )
+        }
+
+        /**
+         * Layout status
+         */
+        val leftStatus = measuredWidth - paddingEnd - status!!.measuredWidth
+        val topStatus = measuredHeight - paddingBottom - status!!.measuredHeight
+        val rightStatus = measuredWidth - paddingEnd
+        val bottomStatus = measuredHeight - paddingBottom
+        status!!.layout(
+            leftStatus,
+            topStatus,
+            rightStatus,
+            bottomStatus
+        )
+    }
+
+    private fun getVisibleMeasuredWidth(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredWidth ?: 0
+    }
+
+    private fun getVisibleMeasuredHeight(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredHeight ?: 0
+    }
+
+    override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
+        return p is LayoutParams
+    }
+
+    override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
+        return LayoutParams(context, attrs)
+    }
+
+    override fun generateLayoutParams(p: ViewGroup.LayoutParams?): ViewGroup.LayoutParams {
+        return LayoutParams(p)
+    }
+
+    override fun generateDefaultLayoutParams(): LayoutParams {
+        return LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    /**
+     * Per-child layout information associated with [FlexBoxChatLayout].
+     */
+    class LayoutParams : MarginLayoutParams {
+        constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
+        constructor(width: Int, height: Int) : super(width, height)
+        constructor(source: MarginLayoutParams?) : super(source)
+        constructor(source: ViewGroup.LayoutParams?) : super(source)
     }
 
     fun setMessage(msg: String, isSender: Boolean) {
@@ -190,7 +278,6 @@ class CustomChatbotChatLayout : FrameLayout {
                         readMoreView?.setOnClickListener {
                             showFullMessage(msg)
                         }
-
                     } else {
                         readMoreView?.visibility = View.GONE
                     }
@@ -238,5 +325,6 @@ class CustomChatbotChatLayout : FrameLayout {
     companion object {
         private const val DEFAULT_USE_MAX_WIDTH = false
         private const val DEFAULT_SHOW_CHECK_MARK = true
+        private val LAYOUT = R.layout.customview_chatbot_message_layout
     }
 }

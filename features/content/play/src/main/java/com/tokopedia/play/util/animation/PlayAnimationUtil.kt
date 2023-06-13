@@ -15,25 +15,25 @@ object PlayAnimationUtil {
     private const val FULL_INVISIBILITY_ALPHA = 0.0f
 
     fun fadeInAnimation(
-            view: View,
-            durationInMs: Long,
-            fromAlpha: Float = FULL_INVISIBILITY_ALPHA
+        view: View,
+        durationInMs: Long,
+        fromAlpha: Float = FULL_INVISIBILITY_ALPHA
     ) = fadeAnimation(view, durationInMs, fromAlpha, FULL_VISIBILITY_ALPHA)
 
     fun fadeOutAnimation(
-            view: View,
-            durationInMs: Long,
-            fromAlpha: Float = FULL_VISIBILITY_ALPHA
+        view: View,
+        durationInMs: Long,
+        fromAlpha: Float = FULL_VISIBILITY_ALPHA
     ) = fadeAnimation(view, durationInMs, fromAlpha, FULL_INVISIBILITY_ALPHA)
 
     fun fadeInThenFadeOutAnimatino(
-            view: View,
-            durationInMs: Long,
-            delayInMs: Long,
-            fromAlpha: Float = FULL_INVISIBILITY_ALPHA,
-            fadeInListener: Animator.AnimatorListener = createAnimatorListener(),
-            delayListener: Animator.AnimatorListener = createAnimatorListener(),
-            fadeOutListener: Animator.AnimatorListener = createAnimatorListener()
+        view: View,
+        durationInMs: Long,
+        delayInMs: Long,
+        fromAlpha: Float = FULL_INVISIBILITY_ALPHA,
+        fadeInListener: Animator.AnimatorListener = createAnimatorListener(),
+        delayListener: Animator.AnimatorListener = createAnimatorListener(),
+        fadeOutListener: Animator.AnimatorListener = createAnimatorListener()
     ): Animator {
         val animatorSet = AnimatorSet()
         val fadeIn = fadeInAnimation(view, durationInMs, fromAlpha).apply {
@@ -49,10 +49,10 @@ object PlayAnimationUtil {
     }
 
     private fun fadeAnimation(
-            view: View,
-            durationInMs: Long,
-            fromAlpha: Float,
-            toAlpha: Float
+        view: View,
+        durationInMs: Long,
+        fromAlpha: Float,
+        toAlpha: Float
     ): Animator {
         return ObjectAnimator.ofFloat(view, View.ALPHA, fromAlpha, toAlpha).apply {
             duration = durationInMs
@@ -66,11 +66,11 @@ object PlayAnimationUtil {
     }
 
     fun createAnimatorListener(
-            onStart: (Animator) -> Unit = {},
-            onCancel: (Animator) -> Unit = {},
-            onEnd: (Animator) -> Unit = {}
+        onStart: (Animator) -> Unit = {},
+        onCancel: (Animator) -> Unit = {},
+        onEnd: (Animator) -> Unit = {}
     ) = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationRepeat(animation: Animator) {}
         override fun onAnimationEnd(animation: Animator) { onEnd(animation) }
         override fun onAnimationCancel(animation: Animator) { onCancel(animation) }
         override fun onAnimationStart(animation: Animator) { onStart(animation) }

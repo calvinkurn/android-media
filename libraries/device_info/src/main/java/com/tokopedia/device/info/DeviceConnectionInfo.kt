@@ -44,6 +44,8 @@ object DeviceConnectionInfo {
     const val CONN_IWLAN = "IWLAN"
     const val CONN_UNKNOWN = "unknown"
 
+    private const val NETWORK_TYPE_LTE_CA = 19 // @UnsupportedAppUsage: TelephonyManager.NETWORK_TYPE_LTE_CA
+
     /**
      * Return SSID device
      * The function will return empty string when device can not get the ssid
@@ -55,7 +57,7 @@ object DeviceConnectionInfo {
         var ssid = ""
         try {
             val connManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
             if (networkInfo != null && networkInfo.isConnected &&
                 networkInfo.type == ConnectivityManager.TYPE_WIFI
@@ -89,6 +91,7 @@ object DeviceConnectionInfo {
         return isInternetAvailable(context, checkEthernet = true)
     }
 
+    @Deprecated("Use isConnectWifi(context), isConnectCellular(context), or isConnectEthernet(context) instead.")
     @JvmStatic
     fun isInternetAvailable(
         context: Context,
@@ -98,7 +101,7 @@ object DeviceConnectionInfo {
     ): Boolean {
         var result = false
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val networkCapabilities = connectivityManager.activeNetwork ?: return false
             val actNw =
@@ -219,7 +222,7 @@ object DeviceConnectionInfo {
     }
 
     private fun getConnectionTransportType(context: Context): Int {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
@@ -249,7 +252,7 @@ object DeviceConnectionInfo {
                 WIFI -> CONN_WIFI
                 MOBILE -> {
                     val cm =
-                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                        context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                     if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
                     return when (cm.activeNetworkInfo?.subtype) {
                         // 2G:
@@ -276,10 +279,10 @@ object DeviceConnectionInfo {
                         TelephonyManager.NETWORK_TYPE_LTE -> CONN_LTE // ~ 10+ Mbps
                         TelephonyManager.NETWORK_TYPE_IWLAN -> CONN_IWLAN
                         // LTE CA
-                        19 -> CONN_LTE_CA
+                        NETWORK_TYPE_LTE_CA -> CONN_LTE_CA
 
                         //5G
-                        20 -> CONN_NR
+                        TelephonyManager.NETWORK_TYPE_NR -> CONN_NR
 
                         TelephonyManager.NETWORK_TYPE_UNKNOWN -> CONN_UNKNOWN
                         else -> CONN_UNKNOWN

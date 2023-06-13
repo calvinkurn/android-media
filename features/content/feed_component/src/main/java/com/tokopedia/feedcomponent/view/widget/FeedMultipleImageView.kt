@@ -1,17 +1,19 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -34,7 +36,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private val itemDecoration: RecyclerView.ItemDecoration
 
     init {
-        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4))
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(contentCommonR.dimen.content_common_dp_4))
         init()
     }
 
@@ -88,6 +90,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
             setHasStableIds(true)
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         fun updateItem(itemList: List<MediaItem>, feedType: String) {
             this.itemList.clear()
             this.itemList.addAll(itemList)
@@ -152,9 +155,9 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
 
 
-            private fun mapTrackingData(trackList: List<Tracking>): List<TrackingViewModel> {
+            private fun mapTrackingData(trackList: List<Tracking>): List<TrackingModel> {
                 return trackList.map {
-                    TrackingViewModel(
+                    TrackingModel(
                             it.clickURL,
                             it.viewURL,
                             it.type,
@@ -168,6 +171,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         private fun removeItem(media: MediaItem, position: Int) {
             itemList.removeAt(position)
             notifyDataSetChanged()
@@ -190,7 +194,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
         fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                              redirectLink: String, isSingleItem: Boolean)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 
     private fun RecyclerView.setItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {

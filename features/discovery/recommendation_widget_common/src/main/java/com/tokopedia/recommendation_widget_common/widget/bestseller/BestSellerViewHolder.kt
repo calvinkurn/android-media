@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,9 +27,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 /**
  * Created by Lukas on 05/11/20.
@@ -82,17 +79,12 @@ class BestSellerViewHolder (private val view: View,
     }
 
     private fun initHeader(element: BestSellerDataModel){
-        binding?.bestSellerTitle?.shouldShowWithAction(element.title.isNotBlank()){
-            binding?.bestSellerTitle?.text = element.title
-        }
-        binding?.bestSellerSubtitle?.shouldShowWithAction(element.subtitle.isNotBlank()){
-            binding?.bestSellerSubtitle?.text = element.subtitle
-            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
-        }
-        binding?.bestSellerSeeMore?.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
-            binding?.bestSellerSeeMore?.setOnClickListener {
-                listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
-            }
+        binding?.homeComponentHeaderView?.setHeader(
+            title = element.title,
+            subtitle = element.subtitle,
+            seeAllApplink = element.seeMoreAppLink
+        ) {
+            listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, absoluteAdapterPosition)
         }
         binding?.containerBestSellerWidget?.show()
         itemView.show()
@@ -138,14 +130,6 @@ class BestSellerViewHolder (private val view: View,
         }
     }
 
-    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding?.containerBestSellerWidget)
-        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
-        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
-        constraintSet.applyTo(binding?.containerBestSellerWidget)
-    }
-
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
             annotationChipAdapter.submitList(
@@ -187,7 +171,6 @@ class BestSellerViewHolder (private val view: View,
         bestSellerDataModel?.let { listener.onBestSellerThreeDotsClick(it, item, adapterPosition) }
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
 
     companion object{
@@ -198,6 +181,7 @@ class BestSellerViewHolder (private val view: View,
     private fun setChannelDivider(element: BestSellerDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             dividerType = element.dividerType,
+            dividerSize = element.dividerSize,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter
         )

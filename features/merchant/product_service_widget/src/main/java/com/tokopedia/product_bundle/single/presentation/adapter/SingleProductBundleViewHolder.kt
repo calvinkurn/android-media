@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.single.presentation.adapter
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
@@ -15,7 +16,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -36,9 +36,9 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
         ivItemImage.urlSrc = item.imageUrl
         bundleName.text = itemView.context.getString(R.string.bundle_item_title_prefix, item.quantity)
         bundleName.showWithCondition(item.quantity >= MIN_DISPLAYED_QTY)
-        discountViewItem.price = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.discountedPrice, false)
+        discountViewItem.price = item.discountedPrice.getCurrencyFormatted()
         discountViewItem.discountAmount = "${item.discount}%"
-        discountViewItem.slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.originalPrice, false)
+        discountViewItem.slashPrice = item.originalPrice.getCurrencyFormatted()
         spinnerItemVariant.isVisible = item.hasVariant
         spinnerItemVariant.text = item.selectedVariantText
 

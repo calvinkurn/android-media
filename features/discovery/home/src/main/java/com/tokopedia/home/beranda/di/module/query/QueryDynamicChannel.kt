@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.home.beranda.di.module.query.QueryDynamicChannel.DYNAMIC_CHANNEL_QUERY
 import com.tokopedia.home.beranda.di.module.query.QueryDynamicChannel.DYNAMIC_CHANNEL_QUERY_NAME
 
+@Deprecated("Has been migrated to dynamic channel v2")
 @GqlQuery(DYNAMIC_CHANNEL_QUERY_NAME, DYNAMIC_CHANNEL_QUERY)
 internal object QueryDynamicChannel {
     const val DYNAMIC_CHANNEL_QUERY_NAME = "DynamicChannelQuery"

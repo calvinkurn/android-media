@@ -11,33 +11,26 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.view.activity.base.OrderHistoryTest
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class OrderHistoryCassavaTest : OrderHistoryTest() {
 
-    private val gtmLogDbSource = GtmLogDBSource(context)
     private val cassavaDir = "tracker/user/orderhistory"
 
     private val cassavaImpressionProduct = "$cassavaDir/product_card_impression.json"
     private val cassavaClickProduct = "$cassavaDir/product_card_click.json"
 
-    @ExperimentalCoroutinesApi
-    @Before
-    override fun before() {
-        super.before()
-        gtmLogDbSource.deleteAll().subscribe()
-    }
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Test
     fun assess_product_card_impression() {
@@ -52,8 +45,8 @@ class OrderHistoryCassavaTest : OrderHistoryTest() {
         // Then
         verifyRecyclerViewDisplayed(R.id.recycler_view)
         assertThat(
-                getAnalyticsWithQuery(gtmLogDbSource, context, cassavaImpressionProduct),
-                hasAllSuccess()
+            cassavaTestRule.validate(cassavaImpressionProduct),
+            hasAllSuccess()
         )
     }
 
@@ -73,7 +66,7 @@ class OrderHistoryCassavaTest : OrderHistoryTest() {
         // Then
         verifyRecyclerViewDisplayed(R.id.recycler_view)
         assertThat(
-                getAnalyticsWithQuery(gtmLogDbSource, context, cassavaClickProduct),
+                cassavaTestRule.validate(cassavaClickProduct),
                 hasAllSuccess()
         )
     }

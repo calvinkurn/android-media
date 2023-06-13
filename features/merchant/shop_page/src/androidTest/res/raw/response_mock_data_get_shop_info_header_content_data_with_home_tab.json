@@ -12,7 +12,7 @@
         },
         "freeOngkir": {
           "isActive": true,
-          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imgURL": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "closedInfo": {
           "closedNote": "",
@@ -23,8 +23,8 @@
           "openSince": "May 2018"
         },
         "shopAssets": {
-          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
-          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/attachment/2020/4/20/29402544/29402544_d7d80f86-21e6-40d1-9cc5-0624fbb75f50.png"
+          "avatar": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
+          "cover": "https://images.tokopedia.net/img/cache/1190/attachment/2020/4/20/29402544/29402544_d7d80f86-21e6-40d1-9cc5-0624fbb75f50.png"
         },
         "shopLastActive": "1596096845",
         "location": "Kota Tangerang Selatan",

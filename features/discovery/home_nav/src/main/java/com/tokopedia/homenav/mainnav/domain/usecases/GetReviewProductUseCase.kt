@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
-import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.homenav.mainnav.domain.usecases.query.ProductRevWaitForFeedbackQuery
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 class GetReviewProductUseCase (
         private val graphqlUseCase: GraphqlUseCase<ReviewProduct>
-): UseCase<List<NavReviewOrder>>(){
+): UseCase<List<NavReviewModel>>(){
 
     init {
         graphqlUseCase.setGraphqlQuery(ProductRevWaitForFeedbackQuery())
@@ -23,14 +23,14 @@ class GetReviewProductUseCase (
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): List<NavReviewOrder> {
+    override suspend fun executeOnBackground(): List<NavReviewModel> {
         val responseData = Success(graphqlUseCase.executeOnBackground().productRevWaitForFeedback)
-        val navReviewList = mutableListOf<NavReviewOrder>()
+        val navReviewList = mutableListOf<NavReviewModel>()
 
         if (responseData.data.list.isNotEmpty()) {
             responseData.data.list.map {
                 navReviewList.add(
-                    NavReviewOrder(
+                    NavReviewModel(
                         productId = it.product.productIDStr,
                         productName = it.product.productName,
                         imageUrl = it.product.productImageURL,
@@ -44,7 +44,7 @@ class GetReviewProductUseCase (
                 to generate 5 data and 1 empty data then show 5 data with view all card
             */
             if (responseData.data.hasNext) {
-                navReviewList.add(NavReviewOrder())
+                navReviewList.add(NavReviewModel())
             }
         }
         return navReviewList

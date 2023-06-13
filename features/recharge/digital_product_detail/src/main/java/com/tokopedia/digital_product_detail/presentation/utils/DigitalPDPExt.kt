@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.Menu
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -16,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import java.lang.ref.WeakReference
-import kotlin.math.abs
 
 private const val TOOLBAR_ICON_SIZE = 64
 
@@ -26,11 +24,11 @@ fun NestedScrollView.setupDynamicScrollListener(
     onCollapseAppBar: () -> Unit,
     onExpandAppBar: () -> Unit
 ) {
-    setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
+    setOnScrollChangeListener(object : NestedScrollView.OnScrollChangeListener {
         var lastIsCollapsed = false
 
         override fun onScrollChange(
-            v: NestedScrollView?,
+            v: NestedScrollView,
             scrollX: Int,
             scrollY: Int,
             oldScrollX: Int,
@@ -67,7 +65,8 @@ fun Menu.setupOrderListIcon(activityRef: WeakReference<Activity>, listener: Digi
             }
             this.getItem(0).icon = BitmapDrawable(
                 activity.resources,
-                Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
+                Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+            )
         }
     }
 }

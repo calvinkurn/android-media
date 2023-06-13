@@ -35,21 +35,21 @@
                 android:id="@+id/tvPmDeactivationInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_NN600"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="body_3"
                 tools:text="Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada 9 Januari 2021, 9:54 WIB" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="16dp"
                 android:background="@color/Unify_N75" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmQuestionnaireList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="true"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_pm_questionnaire_multiple_option" />
@@ -83,19 +83,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:enabled="false"
             android:text="@string/label_send_answer"
             app:unifyButtonSize="medium" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnPmDeactivationCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/pm_later"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify

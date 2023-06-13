@@ -11,11 +11,20 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.util.util.*
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.util.util.doOnLayout
+import com.tokopedia.feedcomponent.util.util.goneWithAnimation
+import com.tokopedia.feedcomponent.util.util.hideBubbleViewWithAnimation
+import com.tokopedia.feedcomponent.util.util.showBubbleViewWithAnimation
+import com.tokopedia.feedcomponent.util.util.visibleWithAnimation
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -48,7 +57,7 @@ class PostTagView @JvmOverloads constructor(
     private var productViewPrice: Typography
     private var productViewSlashedPrice: Typography
     private var constraintLayout: ConstraintLayout
-    private var listener: DynamicPostViewHolder.DynamicPostListener? = null
+    private var listener: TagBubbleListener? = null
     private var bubbleMarginStart: Int = 0
     private var dotMarginStart: Int = 0
     private var dotMarginTop: Int = 0
@@ -76,6 +85,10 @@ class PostTagView @JvmOverloads constructor(
             constraintLayout = findViewById(R.id.parent_id)
             finalPointerView = productTagPointerTop
         }
+
+        productTagDot.setImageResource(R.drawable.ic_product_tag_circle)
+        productTagPointerTop.setImageResource(R.drawable.ic_feed_up)
+        productTagPointerBottom.setImageResource(R.drawable.ic_feed_down)
     }
 
     fun convertPxToDp( px: Float): Float {
@@ -86,14 +99,15 @@ class PostTagView @JvmOverloads constructor(
     }
 
     fun bindData(
-        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
+        tagBubbleListener: TagBubbleListener?,
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
         positionInFeed: Int,
-        bitmap: Bitmap?
+        bitmap: Bitmap?,
+        campaign: FeedXCampaign?
     ) {
-        this.listener = dynamicPostListener
+        this.listener = tagBubbleListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
         this.dotMarginTop = (height * (feedXTag.posY)).toInt()
         this.postImageHeight = height
@@ -101,7 +115,10 @@ class PostTagView @JvmOverloads constructor(
         val product = products[feedXTag.tagIndex]
         productViewName.text = product.name
 
-        if (product.isDiscount) {
+        if (campaign?.isUpcoming == true) {
+            productViewPrice.text = product.priceMaskedFmt
+            setSlashedPriceText(product.priceFmt)
+        } else if (product.isDiscount) {
             productViewPrice.text = product.priceDiscountFmt
             setSlashedPriceText(product.priceOriginalFmt)
         } else {
@@ -285,6 +302,14 @@ class PostTagView @JvmOverloads constructor(
                 0
         }
         return 0
+    }
+    interface TagBubbleListener{
+        fun onPostTagBubbleClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String
+        )
     }
 }
 

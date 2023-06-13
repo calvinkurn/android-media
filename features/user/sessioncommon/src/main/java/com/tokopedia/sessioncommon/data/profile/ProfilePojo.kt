@@ -76,5 +76,8 @@ data class ShopData(
         var shopAvatar: String = "",
         @SerializedName("level")
         @Expose
-        var shopLevel: Int = 0
+        var shopLevel: Int = 0,
+        @SerializedName("avatarOriginal")
+        @Expose
+        var shopAvatarOriginal: String = ""
         ) {}

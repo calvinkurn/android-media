@@ -1,0 +1,13 @@
+{
+  "userProfileRole": {
+    "isAllowedChangeDob": true,
+    "isAllowedChangeName": true,
+    "isAllowedChangeGender": true,
+    "chancesChangeName": 1,
+    "chancesChangeGender": 1,
+    "changeNameMessageInfoTitle": "Tunggu sebentar, ya.",
+    "changeNameMessageInfo": "Kamu habis ubah nama. Biar akunmu aman, nama baru bisa diubah lagi pada 30 Juni 2022 10:46 WIB.",
+    "changeDobMessageInfo": "Kamu habis ubah tanggal lahir. Biar akunmu aman, tanggal lahir baru bisa diubah lagi pada 30 Juni 2022 10:46 WIB.",
+    "changeDobMessageInfoTitle": "Tunggu sebentar, ya."
+  }
+}

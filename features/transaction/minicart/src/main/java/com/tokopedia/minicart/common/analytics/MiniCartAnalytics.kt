@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -68,7 +69,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_CLICKED = "34075"
         const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_ATC = "34076"
 
-
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
         const val EVENT_NAME_VIEW_MINICART_IRIS = "viewMinicartIris"
@@ -127,7 +127,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_LABEL_SUCCESS = "success"
         const val EVENT_LABEL_TICK = "tick"
         const val EVENT_LABEL_UNTICK = "untick"
-        const val EVENT_LABEL_MINICART  = "minicart"
+        const val EVENT_LABEL_MINICART = "minicart"
 
         // EE CUSTOM DIMENSION
         const val DIMENSION_104 = "dimension104" // Campaign id
@@ -171,9 +171,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
     }
 
-    private fun getGtmData(eventName: String,
-                           eventAction: String,
-                           eventLabel: String = ""
+    private fun getGtmData(
+        eventName: String,
+        eventAction: String,
+        eventLabel: String = ""
     ): Map<String, Any> {
         val trackingData = TrackAppUtils.gtmData(eventName, EVENT_CATEGORY_MINICART, eventAction, eventLabel)
         trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -241,9 +242,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 1 - DONE
     fun eventClickProductName(productId: String) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_PRODUCT_NAME,
-                eventLabel = productId
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_PRODUCT_NAME,
+            eventLabel = productId
         )
 
         sendGeneralEvent(data)
@@ -252,8 +253,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 2 - DONE
     fun eventClickQuantityPlus() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_BUTTON_PLUS
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_BUTTON_PLUS
         )
 
         sendGeneralEvent(data)
@@ -262,8 +263,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 3 - DONE
     fun eventClickQuantityMinus() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_BUTTON_MINUS
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_BUTTON_MINUS
         )
 
         sendGeneralEvent(data)
@@ -272,9 +273,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 4 - DONE
     fun eventClickInputQuantity(quantity: Int) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_INPUT_QUANTITY,
-                eventLabel = quantity.toString()
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_INPUT_QUANTITY,
+            eventLabel = quantity.toString()
         )
 
         sendGeneralEvent(data)
@@ -283,8 +284,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 5 - DONE
     fun eventClickDeleteFromTrashBin() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_DELETE_FROM_TRASH_BIN
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_DELETE_FROM_TRASH_BIN
         )
 
         sendGeneralEvent(data)
@@ -293,8 +294,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 6 - DONE
     fun eventClickUndoDelete() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_UNDO_AFTER_DELETE_PRODUCT
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_UNDO_AFTER_DELETE_PRODUCT
         )
 
         sendGeneralEvent(data)
@@ -303,8 +304,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 7 - DONE
     fun eventClickWriteNotes() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_WRITE_NOTES
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_WRITE_NOTES
         )
 
         sendGeneralEvent(data)
@@ -313,8 +314,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 8 - DONE
     fun eventClickChangeNotes() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_CHANGE_NOTES
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_CHANGE_NOTES
         )
 
         sendGeneralEvent(data)
@@ -323,8 +324,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 9 - DONE
     fun eventClickChatOnMiniCart() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_CHAT_ON_MINICART
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_CHAT_ON_MINICART
         )
 
         sendGeneralEvent(data)
@@ -356,6 +357,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
             }
+            else -> {
+                // no op
+            }
         }
 
         val dataLayer = Bundle().apply {
@@ -377,8 +381,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         sendEnhanceEcommerceEvent(
-                eventName = EVENT_NAME_BEGIN_CHECKOUT,
-                bundle = dataLayer
+            eventName = EVENT_NAME_BEGIN_CHECKOUT,
+            bundle = dataLayer
         )
     }
 
@@ -408,6 +412,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
             }
+            else -> {
+                // no op
+            }
         }
 
         val dataLayer = Bundle().apply {
@@ -431,30 +438,30 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         sendEnhanceEcommerceEvent(
-                eventName = EVENT_NAME_BEGIN_CHECKOUT,
-                bundle = dataLayer
+            eventName = EVENT_NAME_BEGIN_CHECKOUT,
+            bundle = dataLayer
         )
     }
 
-    fun getLabelForBuyEvent(page:Page):String{
-        return when(page){
-            Page.DISCOVERY_PAGE-> EVENT_LABEL_MINICART
-            else->EVENT_LABEL_SUCCESS
+    fun getLabelForBuyEvent(page: Page): String {
+        return when (page) {
+            Page.DISCOVERY_PAGE -> EVENT_LABEL_MINICART
+            else -> EVENT_LABEL_SUCCESS
         }
     }
 
-    fun getBusinessUnitForBuyEvent(page:Page):String{
-        return when(page){
-            Page.DISCOVERY_PAGE-> VALUE_BUSINESS_UNIT_HOME_AND_BROWSE
-            else->VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+    fun getBusinessUnitForBuyEvent(page: Page): String {
+        return when (page) {
+            Page.DISCOVERY_PAGE -> VALUE_BUSINESS_UNIT_HOME_AND_BROWSE
+            else -> VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
         }
     }
 
     // 13 - DONE
     fun eventClickChevronToShowMiniCartBottomSheet() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_BOTTOMSHEET
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_BOTTOMSHEET
         )
 
         sendGeneralEvent(data)
@@ -463,8 +470,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 14 - DONE
     fun eventClickChevronToShowSummaryTransaction() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_SUMMARY_TRANSACTION
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_SUMMARY_TRANSACTION
         )
 
         sendGeneralEvent(data)
@@ -473,9 +480,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 15 - DONE
     fun eventViewErrorTickerOverweightInMiniCart(errorMessage: String) {
         val data = getGtmData(
-                eventName = EVENT_NAME_VIEW_MINICART_IRIS,
-                eventAction = EVENT_VIEW_ERROR_TICKER_IN_MINICART,
-                eventLabel = errorMessage
+            eventName = EVENT_NAME_VIEW_MINICART_IRIS,
+            eventAction = EVENT_VIEW_ERROR_TICKER_IN_MINICART,
+            eventLabel = errorMessage
         )
 
         sendGeneralEvent(data)
@@ -484,8 +491,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 16 - DONE
     fun eventClickDeleteAllUnavailableProduct() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT
         )
 
         sendGeneralEvent(data)
@@ -494,9 +501,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 17 - DONE
     fun eventClickSeeSimilarProductOnUnavailableSection(productId: String, errorType: String) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_CLICK_SEE_SIMILAR_PRODUCT_ON_UNAVAILABLE_SECTION,
-                eventLabel = "$productId - $errorType"
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_CLICK_SEE_SIMILAR_PRODUCT_ON_UNAVAILABLE_SECTION,
+            eventLabel = "$productId - $errorType"
         )
 
         sendGeneralEvent(data)
@@ -505,9 +512,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 18 - DONE
     fun eventClickBuyThenGetToasterError(errorMessage: String, isOCCFlow: Boolean) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
-                eventLabel = errorMessage
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
+            eventLabel = errorMessage
         )
 
         sendGeneralEvent(data)
@@ -516,21 +523,20 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 19 - DONE
     fun eventClickAtcToasterErrorCta(errorMessage: String, ctaWording: String) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_CLICK_BUTTON_ON_ERROR_TOASTER,
-                eventLabel = "$errorMessage - $ctaWording"
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_CLICK_BUTTON_ON_ERROR_TOASTER,
+            eventLabel = "$errorMessage - $ctaWording"
         )
 
         sendGeneralEvent(data)
     }
 
-
     // 20 - DONE
     fun eventClickBuyThenGetBottomSheetError(errorMessage: String, isOCCFlow: Boolean) {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
-                eventLabel = errorMessage
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
+            eventLabel = errorMessage
         )
 
         sendGeneralEvent(data)
@@ -539,9 +545,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 21 - DONE
     fun eventViewTickerErrorUnavailableProduct(shopId: String, errorMessage: String) {
         val data = getGtmData(
-                eventName = EVENT_NAME_VIEW_MINICART_IRIS,
-                eventAction = EVENT_VIEW_MINI_CART_WITH_UNAVAILABLE_PRODUCT,
-                eventLabel = "$shopId - $errorMessage"
+            eventName = EVENT_NAME_VIEW_MINICART_IRIS,
+            eventAction = EVENT_VIEW_MINI_CART_WITH_UNAVAILABLE_PRODUCT,
+            eventLabel = "$shopId - $errorMessage"
         )
 
         sendGeneralEvent(data)
@@ -568,16 +574,16 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         sendEnhanceEcommerceEvent(
-                eventName = EVENT_NAME_CHECKOUT_PROGRESS,
-                bundle = dataLayer
+            eventName = EVENT_NAME_CHECKOUT_PROGRESS,
+            bundle = dataLayer
         )
     }
 
     // 24 - DONE
     fun eventClickKnobToExpandMiniCartBottomSheet() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET
         )
 
         sendGeneralEvent(data)
@@ -586,8 +592,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 30871
     fun eventClickChangeProductBundle() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_PP,
-                eventAction = EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE
+            eventName = EVENT_NAME_CLICK_PP,
+            eventAction = EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE
         )
 
         sendGeneralEvent(data)
@@ -597,8 +603,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     // 1 - DONE
     fun eventClickBtnDirectChatBottomSheet() {
         val data = getGtmData(
-                eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET
         )
         sendGeneralEvent(data)
     }
@@ -624,9 +630,15 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     /* MINI CART SIMPLIFIED MVC Page : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2549 */
     // 6
-    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean?, shopId: String,
-                            pageSource: Page?, businessUnit: String, currentSite: String,
-                            trackerId: String?) {
+    fun eventClickCheckCart(
+        basketSize: String,
+        isFulfilled: Boolean?,
+        shopId: String,
+        pageSource: Page?,
+        businessUnit: String,
+        currentSite: String,
+        trackerId: String?
+    ) {
         val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER, EVENT_ACTION_CLICK_CHECK_CART, basketSize)
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
@@ -647,10 +659,19 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 8
-    fun eventMvcProgressBarImpression(basketSize: String, promoPercentage: String, shopId: String,
-                                      businessUnit: String, currentSite: String) {
-        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_VIEW_PG_IRIS, EVENT_CATEGORY_SHOP_PAGE_BUYER,
-                EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION, "$basketSize - $promoPercentage")
+    fun eventMvcProgressBarImpression(
+        basketSize: String,
+        promoPercentage: String,
+        shopId: String,
+        businessUnit: String,
+        currentSite: String
+    ) {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_PG_IRIS,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER,
+            EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION,
+            "$basketSize - $promoPercentage"
+        )
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
         trackingData[KEY_SHOP_ID] = shopId
@@ -711,7 +732,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     * Tracker: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3235
     * No: 1 - 3
     */
-    fun eventProductBundleRecomImpression (
+    fun eventProductBundleRecomImpression(
         shopId: String,
         warehouseId: String,
         bundleId: String,
@@ -751,7 +772,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         )
     }
 
-    fun eventClickProductBundleRecom (
+    fun eventClickProductBundleRecom(
         shopId: String,
         warehouseId: String,
         bundleId: String,
@@ -793,7 +814,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         )
     }
 
-    fun eventClickProductBundleRecomAtc (
+    fun eventClickProductBundleRecomAtc(
         shopId: String,
         warehouseId: String,
         bundleId: String,
@@ -801,29 +822,31 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         bundleType: String,
         bundlePosition: Int,
         priceCut: String,
-        cartId: String,
-        quantity: String
+        atcItems: List<ProductBundleRecomAtcItemTracker>
     ) {
-        val items = arrayListOf(
-            Bundle().apply {
-                putString(KEY_CATEGORY_ID, "")
-                putString(DIMENSION_117, bundleType)
-                putString(DIMENSION_118, bundleId)
-                putString(DIMENSION_40, VALUE_DIMENSION_40)
-                putString(DIMENSION_45, cartId)
-                putString(DIMENSION_87, VALUE_DIMENSION_87)
-                putString(ITEM_BRAND, "")
-                putString(ITEM_CATEGORY,"")
-                putString(ITEM_ID, bundleId)
-                putString(ITEM_NAME, bundleName)
-                putString(ITEM_VARIANT, "")
-                putString(PRICE, priceCut.getDigits().toZeroIfNull().toString())
-                putString(QUANTITY, quantity)
-                putString(SHOP_ID, shopId)
-                putString(SHOP_NAME, VALUE_SHOP_NAME_TOKOPEDIA_NOW)
-                putString(SHOP_TYPE, VALUE_SHOP_TYPE_TOKOPEDIA_NOW)
-            }
-        )
+        val items = arrayListOf<Bundle>()
+        atcItems.forEach {
+            items.add(
+                Bundle().apply {
+                    putString(KEY_CATEGORY_ID, "")
+                    putString(DIMENSION_117, bundleType)
+                    putString(DIMENSION_118, bundleId)
+                    putString(DIMENSION_40, VALUE_DIMENSION_40)
+                    putString(DIMENSION_45, it.cartId)
+                    putString(DIMENSION_87, VALUE_DIMENSION_87)
+                    putString(ITEM_BRAND, "")
+                    putString(ITEM_CATEGORY, "")
+                    putString(ITEM_ID, it.id)
+                    putString(ITEM_NAME, it.name)
+                    putString(ITEM_VARIANT, "")
+                    putString(PRICE, priceCut.getDigits().toZeroIfNull().toString())
+                    putString(QUANTITY, it.quantity.toString())
+                    putString(SHOP_ID, shopId)
+                    putString(SHOP_NAME, VALUE_SHOP_NAME_TOKOPEDIA_NOW)
+                    putString(SHOP_TYPE, VALUE_SHOP_TYPE_TOKOPEDIA_NOW)
+                }
+            )
+        }
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, EVENT_NAME_ADD_TO_CART)
@@ -843,6 +866,5 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             eventName = EVENT_NAME_ADD_TO_CART,
             bundle = dataLayer
         )
-
     }
 }

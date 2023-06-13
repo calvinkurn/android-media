@@ -3,11 +3,13 @@ package com.tokopedia.chat_common.view.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ChatbotImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
 class AttachmentMenuAdapter(
-        var viewHolderListener: AttachmentItemViewHolder.AttachmentViewHolderListener? = null
+    var viewHolderListener: AttachmentItemViewHolder.AttachmentViewHolderListener? = null
 ) : RecyclerView.Adapter<AttachmentItemViewHolder>() {
 
     private val menus = arrayListOf<AttachmentMenu>()
@@ -43,9 +45,55 @@ class AttachmentMenuAdapter(
         return false
     }
 
+    fun alreadyHasVideoMenu(): Boolean {
+        for (menu in menus) {
+            if (menu is VideoMenu) return true
+        }
+        return false
+    }
+
+    fun alreadyHasChatbotImageMenu(): Boolean {
+        for (menu in menus) {
+            if (menu is ChatbotImageMenu) return true
+        }
+        return false
+    }
+
+
     fun addVoucherAttachmentMenu() {
         menus.add(VoucherMenu())
         notifyItemInserted(menus.size - 1)
+    }
+
+    fun addVideoAttachmentMenu() {
+        menus.add(VideoMenu())
+        notifyItemInserted(menus.size - 1)
+    }
+
+    fun addChatbotImageAttachmentMenu() {
+        menus.add(ChatbotImageMenu())
+        notifyItemInserted(menus.size - 1)
+    }
+
+    fun removeChatbotImageAttachmentMenu() {
+        menus.forEachIndexed { index, menu ->
+            if (menu is ChatbotImageMenu) {
+                menus.remove(menu)
+                notifyItemRemoved(index)
+                return
+            }
+        }
+
+    }
+
+    fun removeVideoAttachmentMenu() {
+        menus.forEachIndexed { index, menu ->
+            if (menu is VideoMenu) {
+                menus.remove(menu)
+                notifyItemRemoved(index)
+                return
+            }
+        }
     }
 
 }

@@ -1,0 +1,110 @@
+[
+  {
+    "data": {
+      "uohFilterCategory": {
+        "filtersV2": [
+          {
+            "label": "Semua Status Transaksi",
+            "value": "",
+            "isPrimary": true
+          },
+          {
+            "label": "Transaksi Berlangsung",
+            "value": "Dalam Proses",
+            "isPrimary": true
+          },
+          {
+            "label": "Menunggu Konfirmasi",
+            "value": "menunggu_konfirmasi",
+            "isPrimary": false
+          },
+          {
+            "label": "Diproses",
+            "value": "diproses",
+            "isPrimary": false
+          },
+          {
+            "label": "Dikirim",
+            "value": "dikirim",
+            "isPrimary": false
+          },
+          {
+            "label": "Tiba di Tujuan",
+            "value": "tiba_di_tujuan",
+            "isPrimary": false
+          },
+          {
+            "label": "Dikomplain",
+            "value": "dikomplain",
+            "isPrimary": false
+          },
+          {
+            "label": "Berhasil",
+            "value": "Berhasil",
+            "isPrimary": true
+          },
+          {
+            "label": "Tidak Berhasil",
+            "value": "Tidak Berhasil",
+            "isPrimary": true
+          },
+          {
+            "label": "E-tiket \u0026 E-voucher Aktif",
+            "value": "E-tiket \u0026 E-voucher Aktif",
+            "isPrimary": true
+          }
+        ],
+        "categories": [
+          {
+            "value": "marketplace,mp_pym",
+            "label": "Belanja",
+            "description": "Fashion, Elektronik, Ibu \u0026 Bayi, dan lainnya",
+            "category_group": "belanja"
+          },
+          {
+            "value": "cobrand,premi_asuransi,penerimaan_negara,properti,pulsa,pajak_daerah,zakat_mal,samsat,belajar,pajak,zakat_fitrah,tagihan_cc,gopay,qurban,air_pdam,donasi,angsuran_kredit,bpjs,ovo,wakaf,retribusi,kartu_prakerja,internet_tv_kabel,uang_elektronik,iuran_properti,test_abay,gas_pgn,invoicing,ovo_instant,special_promo,gopay_instant,roaming,signal,listrik_pln,bridestory_pay,biaya_pendidikan,voucher_game,streaming,pasca_bayar,upgrade_internet_tv,gopaylater_cicil,paket_data,m_tix",
+            "label": "Top-up \u0026 Tagihan",
+            "description": "Pulsa, Tagihan Listrik, Donasi, dan lainnya",
+            "category_group": "recharge"
+          },
+          {
+            "value": "train,event,foodvchr,foodvchr,flight,hotel,deals",
+            "label": "Travel \u0026 Entertainment",
+            "description": "Tiket Pesawat, Hotel, dan lainnya",
+            "category_group": "travel"
+          },
+          {
+            "value": "inv_gold,invst_mf,roundup_egold,rdm_gold,mutual_fund,gift_card,mcl,ehet,modal_toko,ehe,insr_tec,insurance,giftcard,gold",
+            "label": "Investasi \u0026 Asuransi",
+            "description": "Emas, Asuransi, Reksa Dana, dan lainnya",
+            "category_group": "investment"
+          },
+          {
+            "value": "tokonow,mp_pym_tokonow,boonganaja",
+            "label": "Tokopedia NOW!",
+            "description": "",
+            "category_group": "tokonow"
+          },
+          {
+            "value": "goto_plus",
+            "label": "PLUS",
+            "description": "",
+            "category_group": "goto_plus"
+          },
+          {
+            "value": "tokofood",
+            "label": "GoFood",
+            "description": "",
+            "category_group": "tokofood"
+          },
+          {
+            "value": "umrah,money_in,ls_print",
+            "label": "Lainnya",
+            "description": "Tokopedia Print, Langsung Laku, dan Umroh",
+            "category_group": "other"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,7 +38,13 @@ import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.EventPDPTicket
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
+import com.tokopedia.entertainment.pdp.data.PackageItem
+import com.tokopedia.entertainment.pdp.data.PackageV3
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
@@ -54,19 +61,32 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
-import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.loaderUbah
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtDate
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtUbah
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtPlaceHolderTglKunjungan
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.txtTotalHarga
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.rvEventTicketList
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_layout
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.containerEventBottom
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.pilihTicketBtn
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.scroll_ticket_pdp
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.viewBottom
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.accordionEventPDPTicket
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.tgEventTicketRecommendationTitle
+import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.bottom_sheet_calendar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.TimeZone
+import java.util.Date
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {
@@ -155,8 +175,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             idPackageActive = idPackages
         }
 
-        if (qty.toInt() > EMPTY_QTY) {
-            hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate, idPackageActive, packageName))
+        if (qty.toIntSafely() > EMPTY_QTY) {
+            hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toIntSafely(), totalPrice, selectedDate, idPackageActive, packageName))
         } else {
             hashItemMap.remove(idPackagesItem)
         }
@@ -369,7 +389,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun showViewBottom(state: Boolean) {
         viewBottom?.visibility = if (state) View.VISIBLE else View.GONE
         containerEventBottom?.visibility = if (state) View.VISIBLE else View.GONE
-        if (!state) txtTotalHarga.text = String.format(resources.getString(R.string.ent_default_totalPrice))
+        if (!state) txtTotalHarga.text = String.format(context?.resources?.getString(R.string.ent_default_totalPrice) ?: "")
     }
 
     private fun setupUbahButton() {
@@ -410,7 +430,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                                 if(currentIndex == 1){
                                     val position = tgEventTicketRecommendationTitle.y
-                                    scroll_ticket_pdp.smoothScrollTo(0, position.toInt())
+                                    scroll_ticket_pdp.smoothScrollTo(0, position.toIntSafely())
                                 }
                             }
                         })
@@ -462,6 +482,10 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         showUpBottomSheet()
     }
 
+    override fun onCollapseAccordion() {
+        KeyboardHandler.hideSoftKeyboard(activity)
+    }
+
     private fun showUpBottomSheet() {
         fragmentManager?.let {
             bottomSheets.show(it, "")
@@ -469,15 +493,17 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     }
 
     private fun changeLabel() {
-        val bitwiseIsHiburan = pdpData.customText1.toInt() and IS_HIBURAN
-        if (pdpData.dates.size > 1) {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
-        } else if (bitwiseIsHiburan > 0) {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_berlaku_hingga)
-            activity?.txtDate?.text = getDateTicketFormatted(pdpData.maxEndDate)
-        } else {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
-            activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
+        context?.let { context ->
+            val bitwiseIsHiburan = pdpData.customText1.toIntSafely() and IS_HIBURAN
+            if (pdpData.dates.size > 1) {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+            } else if (bitwiseIsHiburan > 0) {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_berlaku_hingga)
+                activity?.txtDate?.text = getDateTicketFormatted(pdpData.maxEndDate)
+            } else {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+                activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
+            }
         }
     }
 
@@ -511,7 +537,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
 
         const val EMPTY_QTY = 0
-        const val ZERO_PRICE = 0
+        const val ZERO_PRICE = 0L
         const val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000L
         const val DELAY_TIME = 200L

@@ -153,14 +153,22 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         context.let {
             ContextCompat.checkSelfPermission(
                 it,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }else{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
             )
         } == PackageManager.PERMISSION_GRANTED
 
     fun requestPermission(fragment: Fragment) {
         if (!haveStoragePermission()) {
             val permissions = arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }else{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
             )
             fragment.requestPermissions(permissions, READ_EXTERNAL_STORAGE_REQUEST)
         }
@@ -232,7 +240,13 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                     permissionListener?.permissionAction(actionPermissionDialog, labelAllow)
                 }else{
                     permissionListener?.permissionAction(actionPermissionDialog, labelDeny)
-                    if(!fragment.shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    if(!fragment.shouldShowRequestPermissionRationale(
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                                Manifest.permission.READ_MEDIA_IMAGES
+                            }else{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            }
+                        )){
                         goToDeviceSetting(fragment)
                     }
                 }

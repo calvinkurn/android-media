@@ -12,7 +12,6 @@ import com.tokopedia.search.R
 import com.tokopedia.search.utils.BASE_RADIUS_AREA
 import com.tokopedia.search.utils.CORNER_RADIUS_DEGREE
 import com.tokopedia.search.utils.VERTICAL_SHADOW_MULTIPLIER
-import java.util.*
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -21,14 +20,15 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
     private var verticalCardViewOffset = 0
     private var horizontalCardViewOffset = 0
     private val allowedViewTypes = listOf(
-            R.layout.search_result_product_card_small_grid,
-            R.layout.search_result_product_card_small_grid_with_viewstub,
-            R.layout.search_result_product_card_big_grid,
-            R.layout.search_result_product_card_list,
-            R.layout.search_result_product_card_list_with_viewstub,
-            R.layout.search_result_recommendation_card_small_grid,
-            R.layout.search_result_product_big_grid_inspiration_card_layout,
-            R.layout.search_result_product_small_grid_inspiration_card_layout
+        R.layout.search_result_product_card_small_grid,
+        R.layout.search_result_product_card_small_grid_with_viewstub,
+        R.layout.search_result_product_card_big_grid,
+        R.layout.search_result_product_card_list,
+        R.layout.search_result_product_card_list_with_viewstub,
+        R.layout.search_result_recommendation_card_small_grid,
+        R.layout.search_result_product_big_grid_inspiration_card_layout,
+        R.layout.search_result_product_small_grid_inspiration_card_layout,
+        R.layout.search_result_same_session_recommendation_product_layout,
     )
 
     override fun getItemOffsets(outRect: Rect,

@@ -13,23 +13,9 @@ fun ShopShipmentData.transformToVisitable(): ShopInfoLogisticUiModel {
         it.shipmentImage = this.image
         it.shipmentName = this.name
         it.shipmentPackage = this.product
-                .map { shipmentPackage -> shipmentPackage.name }
-                .joinToString(separator = ", ")
+            .map { shipmentPackage -> shipmentPackage.name }
+            .joinToString(separator = ", ")
     }
-}
-
-fun Double.formatToSimpleNumber():String {
-    return when {
-        containsIn(this, THOUSAND, MILLION) -> {
-            "${df.format(this/THOUSAND)}rb"
-        }
-        containsIn(this, MILLION, Int.MAX_VALUE) -> {
-            "${df.format(this/ MILLION)}jt"
-        }
-        else -> {
-            df.format(this)
-        }
-    }.replace(".",",")
 }
 
 private fun containsIn(value: Double, start: Int, end: Int): Boolean {

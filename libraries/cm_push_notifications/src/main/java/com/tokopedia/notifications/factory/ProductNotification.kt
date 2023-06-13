@@ -69,7 +69,7 @@ internal class ProductNotification(
     }
 
     private fun dismissPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS
         return getPendingIntent(context, intent, requestCode)
     }

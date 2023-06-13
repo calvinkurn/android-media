@@ -17,9 +17,9 @@ data class StickyLoginTickerDataModel(
     data class TickerDetailDataModel(
         @SerializedName("message")
         @Expose
-        val message: String = "",
+        var message: String = "",
         @SerializedName("layout")
         @Expose
-        val layout: String = ""
+        var layout: String = ""
     )
 }

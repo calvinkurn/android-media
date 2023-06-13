@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
 
@@ -22,6 +23,10 @@ internal inline fun <reified T : AppWidgetProvider> RemoteViews.registerAppLinkI
             putExtra(Const.Extra.BUNDLE, it)
         }
     }
-    val appLinkPendingIntent = PendingIntent.getBroadcast(context, 0, appLinkIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val appLinkPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        PendingIntent.getBroadcast(context, 0, appLinkIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+    } else {
+        PendingIntent.getBroadcast(context, 0, appLinkIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
     setOnClickPendingIntent(viewId, appLinkPendingIntent)
 }

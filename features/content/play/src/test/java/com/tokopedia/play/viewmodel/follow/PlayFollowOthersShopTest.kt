@@ -15,12 +15,14 @@ import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -34,6 +36,9 @@ class PlayFollowOthersShopTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -51,16 +56,6 @@ class PlayFollowOthersShopTest {
 
     init {
         every { mockUserSession.shopId } returns "1"
-    }
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -118,27 +113,114 @@ class PlayFollowOthersShopTest {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
 
-        givenPlayViewModelRobot(
+        runBlockingTest {
+            givenPlayViewModelRobot(
                 repo = mockPartnerRepo,
                 dispatchers = testDispatcher,
                 userSession = mockUserSession,
-        ) {
-            setLoggedIn(false)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhenExpectEvent {
-            submitAction(PlayViewerNewAction.Follow)
-        } thenVerify { event ->
-            withState {
-                partner.status.assertEqualTo(
+            ) {
+                setLoggedIn(false)
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            } andWhenExpectEvent {
+                submitAction(PlayViewerNewAction.Follow)
+            } thenVerify { event ->
+                withState {
+                    partner.status.assertEqualTo(
                         PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
-                )
-            }
+                    )
+                }
 
-            event.isEqualToIgnoringFields(
+                event.isEqualToIgnoringFields(
                     OpenPageEvent(applink = ApplinkConst.LOGIN),
                     OpenPageEvent::requestCode
-            )
+                )
+            }
+        }
+    }
+
+    /**
+     * Interactive
+     */
+
+    @Test
+    fun `interactive - given user is logged in and has not followed shop, when click follow, the shop should be followed`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns true
+
+        givenPlayViewModelRobot(
+            repo = mockPartnerRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            submitAction(PlayViewerNewAction.FollowInteractive)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `interactive - given user is logged in and has followed shop, when click follow, the shop should be unfollowed`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns true
+        coEvery { mockPartnerRepo.postFollowStatus(any(), any()) } returns false
+
+        givenPlayViewModelRobot(
+            repo = mockPartnerRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhen {
+            submitAction(PlayViewerNewAction.FollowInteractive)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `interactive - given user is not logged in, when click follow, the shop should stay unfollowed and open login page`() {
+        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+
+        runBlockingTest {
+            givenPlayViewModelRobot(
+                repo = mockPartnerRepo,
+                dispatchers = testDispatcher,
+                userSession = mockUserSession,
+            ) {
+                setLoggedIn(false)
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            } andWhenExpectEvent {
+                submitAction(PlayViewerNewAction.FollowInteractive)
+            } thenVerify { event ->
+                withState {
+                    partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
+                    )
+                }
+
+                event.isEqualToIgnoringFields(
+                    OpenPageEvent(applink = ApplinkConst.LOGIN),
+                    OpenPageEvent::requestCode
+                )
+            }
         }
     }
 }

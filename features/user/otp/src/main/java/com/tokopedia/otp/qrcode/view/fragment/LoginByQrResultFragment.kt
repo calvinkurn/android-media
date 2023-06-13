@@ -28,7 +28,7 @@ class LoginByQrResultFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = LoginByQrResultViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = if (status == SUCCESS_STATUS) SCREEN_LOGIN_BY_QR_SUCCESS_PAGE else SCREEN_LOGIN_BY_QR_EXPIRED_PAGE
 

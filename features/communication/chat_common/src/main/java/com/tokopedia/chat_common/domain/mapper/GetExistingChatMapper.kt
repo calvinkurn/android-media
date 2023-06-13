@@ -16,6 +16,7 @@ import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -128,24 +129,26 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson(item.attachment.attributes,
                 ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementUiModel(
-                messageId = item.msgId.toString(),
-                fromUid = item.senderId.toString(),
+        return ImageAnnouncementUiModel(
+                messageId = item.msgId,
+                fromUid = item.senderId,
                 from = item.senderName,
                 fromRole = item.role,
-                attachmentId = item.attachment?.id ?: "",
-                attachmentType = item.attachment?.type.toString(),
+                attachmentId = item.attachment.id,
+                attachmentType = item.attachment.type.toString(),
                 replyTime = item.replyTime,
                 imageUrl = pojoAttribute.imageUrl,
                 redirectUrl = pojoAttribute.url,
                 isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
                 broadcastBlastId = item.blastId,
-                source = item.source
+                source = item.source,
+                broadcastCtaUrl = pojoAttribute.broadcastCtaUrl,
+                broadcastCtaText = pojoAttribute.broadcastCtaText,
+                broadcastCtaLabel = pojoAttribute.broadcastCtaLabel
         )
-        return imageAnnouncement
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -221,8 +224,8 @@ open class GetExistingChatMapper @Inject constructor() {
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
         val ROLE_USER = "User"
 
-        return (!isOpposite && role.toLowerCase() == ROLE_USER.toLowerCase())
-                || (isOpposite && role.toLowerCase() != ROLE_USER.toLowerCase())
+        return (!isOpposite && role.lowercase(Locale.getDefault()) == ROLE_USER.lowercase(Locale.getDefault()))
+                || (isOpposite && role.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault()))
     }
 
     open fun hasAttachment(pojo: Reply): Boolean {

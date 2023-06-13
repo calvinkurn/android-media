@@ -24,12 +24,12 @@ fun isAccountLinkingDisplayed() {
         R.id.txt_header_link_account,
         R.id.txt_desc_link_account,
         R.id.layout_item_link_account,
-        R.id.img_link_account,
-        R.id.tv_header_link_account,
-        R.id.tv_desc_link_account,
-        R.id.ic_link_account
+        R.id.privacyItemImage,
+        R.id.privacyItemTitle,
+        R.id.privacyItemDescription,
+        R.id.privacyItemImageButton
     )
-    isGoneView(R.id.tv_linking_account)
+    isGoneView(R.id.privacyItemTextButton)
 }
 
 fun isAccountNotLinkingDisplayed() {
@@ -37,11 +37,11 @@ fun isAccountNotLinkingDisplayed() {
         R.id.txt_header_link_account,
         R.id.txt_desc_link_account,
         R.id.layout_item_link_account,
-        R.id.img_link_account,
-        R.id.tv_header_link_account,
-        R.id.tv_desc_link_account
+        R.id.privacyItemImage,
+        R.id.privacyItemTitle,
+        R.id.privacyItemDescription
     )
-    isGoneView(R.id.ic_link_account)
+    isGoneView(R.id.privacyItemImageButton)
     isTextDisplayed("Sambungin Akun")
 }
 
@@ -83,7 +83,6 @@ fun submitEnabledDataUsageFailedAction() {
     isConsentSocialNetworkDisplayed(false)
     isTextDisplayed("Gagal mengaktifkan penggunaan data")
 }
-
 
 fun verificationDisabledDataUsageAction() {
     clickOnView(R.id.switch_permission_data_usage)

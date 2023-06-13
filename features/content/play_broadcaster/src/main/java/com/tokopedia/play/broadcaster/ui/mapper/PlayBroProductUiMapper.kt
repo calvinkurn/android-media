@@ -5,7 +5,6 @@ import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
-import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
@@ -15,6 +14,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -68,47 +68,24 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-    fun mapProductsInEtalase(response: GetShopProductsResponse): PagedDataUiModel<ProductUiModel> {
-        return PagedDataUiModel(
-            dataList = response.response.data.map { data ->
-                ProductUiModel(
-                    id = data.productId,
-                    name = data.name,
-                    imageUrl = data.primaryImage.thumbnail,
-                    stock = data.stock,
-                    price = if (data.campaign.discountedPercentage == "0") {
-                        OriginalPrice(data.price.textIdr, 0.0)
-                    } else DiscountedPrice(
-                        originalPrice = data.campaign.originalPriceFmt,
-                        originalPriceNumber = 0.0,
-                        discountPercent = data.campaign.discountedPercentage.toInt(),
-                        discountedPrice = data.campaign.discountedPriceFmt,
-                        discountedPriceNumber = 0.0,
-                    )
-                )
-            },
-            hasNextPage = response.response.links.next.isNotBlank(),
-        )
-    }
-
     fun mapProductsInEtalase(
-        response: GetProductsByEtalaseResponse.GetProductListData,
-        perPage: Int,
+        response: GetProductsByEtalaseResponse,
     ): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
-            dataList = response.data.map { data ->
+            dataList = response.wrapper.products.map { data ->
                 ProductUiModel(
                     id = data.id,
                     name = data.name,
                     imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-                    stock = data.stock,
+                    stock = data.stock.toLong(),
                     price = OriginalPrice(
                         priceFormat.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
                     ), //No discounted price because it is not supported in the current gql
                 )
             },
-            hasNextPage = response.data.size >= perPage,
+            hasNextPage = response.wrapper.pagerCursor.hasNext,
+            cursor = response.wrapper.pagerCursor.cursor,
         )
     }
 
@@ -119,19 +96,19 @@ class PlayBroProductUiMapper @Inject constructor() {
                     id = if (data.isVariant) data.parentId else data.id.toString(),
                     name = data.name,
                     imageUrl = data.imageUrl,
-                    stock = data.campaign.customStock,
+                    stock = data.campaign.customStock.toLong(),
                     price = if (data.campaign.discountPercentage > 0) {
                         DiscountedPrice(
                             originalPrice = data.campaign.originalPrice,
                             originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                            discountPercent = data.campaign.discountPercentage.toInt(),
+                            discountPercent = data.campaign.discountPercentage.toLong(),
                             discountedPrice = data.campaign.discountedPrice,
                             discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
                         )
                     } else OriginalPrice(
                         price = data.campaign.originalPrice,
                         priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                    )
+                    ),
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
@@ -150,18 +127,20 @@ class PlayBroProductUiMapper @Inject constructor() {
                         id = product.id,
                         name = product.name,
                         imageUrl = product.imageUrl,
-                        stock = product.quantity.toInt(),
+                        stock = product.quantity,
                         price = if (product.discount <= 0) {
                             OriginalPrice(product.originalPriceFmt, product.originalPrice)
                         } else {
                             DiscountedPrice(
                                 originalPrice = product.originalPriceFmt,
                                 originalPriceNumber = product.originalPrice,
-                                discountPercent = product.discount.toInt(),
+                                discountPercent = product.discount.toLong(),
                                 discountedPrice = product.priceFmt,
                                 discountedPriceNumber = product.price,
                             )
-                        }
+                        },
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
+                        number = product.productNumber.toString(),
                     )
                 }
             )
@@ -180,17 +159,19 @@ class PlayBroProductUiMapper @Inject constructor() {
                         id = product.productID,
                         name = product.productName,
                         imageUrl = product.imageURL,
-                        stock = product.quantity,
+                        stock = product.quantity.toLong(),
                         price = if(product.discount == "0") {
                             OriginalPrice(product.originalPriceFmt, product.originalPrice.toDouble())
                         }
                         else DiscountedPrice(
                             originalPrice = product.originalPriceFmt,
                             originalPriceNumber = product.originalPrice.toDouble(),
-                            discountPercent = product.discount.toInt(),
+                            discountPercent = product.discount.toLong(),
                             discountedPrice = product.priceFmt,
                             discountedPriceNumber = product.price.toDouble(),
-                        )
+                        ),
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
+                        number = product.productNumber.toString(),
                     )
                 }
             )
@@ -211,4 +192,12 @@ class PlayBroProductUiMapper @Inject constructor() {
         calendar.add(Calendar.MILLISECOND, TimeZone.getDefault().rawOffset * -1)
         return calendar.time
     }
+
+    /**
+     * Pinned Product
+     * isPinnable -> not eligible to pin product-> hide pin container [case: out of stock]
+     * isPinned -> show [status: Lepas / Pin]
+     */
+    private fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
+        PinProductUiModel(isPinned = isPinned, canPin = if (isPinned) true else canPin)
 }

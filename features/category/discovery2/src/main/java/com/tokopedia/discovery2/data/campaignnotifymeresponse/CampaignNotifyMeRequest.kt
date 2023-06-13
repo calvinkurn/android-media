@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CampaignNotifyMeRequest(
         @SerializedName("campaign_id")
-        var campaignID: Int? = 0,
+        var campaignID: Long? = 0,
         @SerializedName("product_id")
         var productID: Long? = 0,
         @SerializedName("source")

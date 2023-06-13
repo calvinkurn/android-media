@@ -76,6 +76,7 @@ class SomOrderExtensionViewModelTest {
     lateinit var resourceProvider: ResourceProvider
 
     private val orderId = "1234567890"
+    private val extensionTime = 24
     private val sampleInvalidComment = "@$%`~"
     private val sampleValidComment = "Ini adalah contoh valid comment"
     private val sampleErrorMessage = "Error!"
@@ -133,7 +134,7 @@ class SomOrderExtensionViewModelTest {
             resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer()
         } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_FOOTER }
         every {
-            resourceProvider.getOrderExtensionDescriptionComposer(any(), any())
+            resourceProvider.getOrderExtensionDescriptionComposer(any())
         } answers {
             StringComposer { "${firstArg<String?>().orEmpty()} ${secondArg<String?>().orEmpty()}." }
         }
@@ -146,7 +147,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun getSomOrderExtensionRequestInfoLoadingState_shouldReturnLoadingState() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             viewModel.getSomOrderExtensionRequestInfoLoadingState()
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -160,7 +161,7 @@ class SomOrderExtensionViewModelTest {
         }
 
     @Test
-    fun getSomOrderExtensionRequestInfo_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun getSomOrderExtensionRequestInfo_shouldSuccess() = coroutineTestRule.runTest {
         getSomOrderExtensionRequestInfoLoadingState_shouldReturnLoadingState()
         onGetOrderExtensionRequestInfoSuccess_thenReturn()
 
@@ -181,7 +182,7 @@ class SomOrderExtensionViewModelTest {
     }
 
     @Test
-    fun getSomOrderExtensionRequestInfo_shouldFail() = coroutineTestRule.runBlockingTest {
+    fun getSomOrderExtensionRequestInfo_shouldFail() = coroutineTestRule.runTest {
         getSomOrderExtensionRequestInfoLoadingState_shouldReturnLoadingState()
         onGetOrderExtensionRequestInfoFail()
 
@@ -201,7 +202,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun updateOrderExtensionRequestInfoOnSelectedOptionChanged_shouldUpdateOrderExtensionRequestInfo() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             getSomOrderExtensionRequestInfo_shouldSuccess()
             val previousOrderExtensionRequestInfo = viewModel.orderExtensionRequestInfo.value!!
             val previousSelectedOption = previousOrderExtensionRequestInfo.items
@@ -242,7 +243,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun updateOrderExtensionRequestInfoOnSelectedOptionChanged_ifSelectedOptionIsNull_shouldNotUpdateOrderExtensionRequestInfo() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             getSomOrderExtensionRequestInfo_shouldSuccess()
             viewModel.orderExtensionRequestInfo.value!!.items
                 .filterIsInstance<OrderExtensionRequestInfoUiModel.OptionUiModel>().first {
@@ -268,7 +269,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             updateOrderExtensionRequestInfoOnSelectedOptionChanged_shouldUpdateOrderExtensionRequestInfo() // select an option that need a comment
             val previousOrderExtensionRequestInfo = viewModel.orderExtensionRequestInfo.value!!
             val previousSelectedOption = previousOrderExtensionRequestInfo.items
@@ -298,7 +299,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun updateOrderExtensionRequestInfoOnCommentChanged_ifChangedCommentIsNull_shouldNotUpdateOrderExtensionRequestInfo() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
             val previousOrderExtensionRequestInfo = viewModel.orderExtensionRequestInfo.value!!
             val previousSelectedOption = previousOrderExtensionRequestInfo.items
@@ -334,17 +335,17 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun sendOrderExtensionRequest_ifOrderExtensionRequestInfoValid_shouldUpdateOrderExtensionRequestInfoToCompleteSuccess() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } returns successOrderExtensionRequestResult
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -359,17 +360,17 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun sendOrderExtensionRequest_ifSuccessWithFailMessageCode_shouldUpdateOrderExtensionRequestInfoProcessingStatusToFalse() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } returns failedOrderExtensionRequestResult
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -384,13 +385,13 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun sendOrderExtensionRequest_ifOrderExtensionRequestInfoInvalid_shouldNotSendRequest() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             updateOrderExtensionRequestInfoOnCommentChanged_ifChangedCommentIsNull_shouldNotUpdateOrderExtensionRequestInfo()
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify(inverse = true) {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -405,17 +406,17 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun sendOrderExtensionRequest_ifSomSendOrderExtensionRequestUseCaseThrows_shouldFailed() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             givenValidComment_updateOrderExtensionRequestInfoOnCommentChanged_shouldUpdateOrderExtensionRequestInfoToValid()
 
             coEvery {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             } throws Throwable()
 
-            viewModel.sendOrderExtensionRequest(orderId)
+            viewModel.sendOrderExtensionRequest(orderId, extensionTime)
 
             coVerify {
-                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any())
+                somSendOrderExtensionRequestUseCase.execute(any(), any(), any(), any(), any())
             }
 
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.items.isNotEmpty())
@@ -430,7 +431,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun onNeedToUpdateOrderExtensionRequestInfo_ifOrderExtensionRequestInfoIsNull_shouldNotUpdateOrderExtensionRequestInfo() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val initialOrderExtensionRequestInfo = viewModel.orderExtensionRequestInfo.value
 
             viewModel.updateOrderExtensionRequestInfoOnCommentChanged(mockk())
@@ -440,7 +441,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun onNeedToUpdateOrderExtensionRequestInfo_ifOrderExtensionRequestInfoIsFail_shouldNotUpdateOrderExtensionRequestInfo() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             onGetOrderExtensionRequestInfoFail()
             val initialOrderExtensionRequestInfo = viewModel.orderExtensionRequestInfo.value
 
@@ -451,7 +452,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun requestDismissOrderExtensionRequestInfoBottomSheet_shouldUpdateOrderExtensionRequestToCompleted() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             getSomOrderExtensionRequestInfo_shouldSuccess()
 
             viewModel.requestDismissOrderExtensionRequestInfoBottomSheet()

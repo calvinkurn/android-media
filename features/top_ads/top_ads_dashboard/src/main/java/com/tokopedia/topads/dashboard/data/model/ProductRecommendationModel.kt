@@ -46,7 +46,7 @@ data class ProductRecommendation(
         val recomBid: String = "0",
         @SerializedName("min_bid")
         val minBid: String = "0",
-        var setCurrentBid: Int = 0,
+        var setCurrentBid: String = "0",
         var isChecked: Boolean = true,
         val impressHolder: ImpressHolder = ImpressHolder()
 ):Parcelable

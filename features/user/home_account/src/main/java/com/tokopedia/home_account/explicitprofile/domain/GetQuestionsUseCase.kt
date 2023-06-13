@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.explicitprofile.domain
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
@@ -10,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class GetQuestionsUseCase @Inject constructor(
-    private val repository: GraphqlRepository
+    @ApplicationContext private val repository: GraphqlRepository
 ) : CoroutineUseCase<GetQuestionsUseCase.QuestionParams, ExplicitprofileGetQuestion>(Dispatchers.IO) {
 
     override suspend fun execute(params: QuestionParams): ExplicitprofileGetQuestion {
@@ -38,6 +39,7 @@ class GetQuestionsUseCase @Inject constructor(
                   }
                   sections {
                     sectionID
+                    maxAnswer
                     layout
                     property {
                       title
@@ -72,6 +74,6 @@ class GetQuestionsUseCase @Inject constructor(
         @SerializedName("checkActive")
         var checkActive: Boolean = false,
         @SerializedName("templateName")
-        var templateName: String = "",
+        var templateName: String = ""
     ) : GqlParam
 }

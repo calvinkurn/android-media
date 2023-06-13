@@ -647,9 +647,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 setMinimizeBehaviourHyperParameters(true, true, 0, newAngleOfMinimizeBtn);
             }
         }
-        minimizeButtonLeft.setVisibility(View.VISIBLE);
-        minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
-
+        if(!isPermanent){
+            ivClose.setVisibility(View.VISIBLE);
+            minimizeButtonLeft.setVisibility(View.GONE);
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
+        }
+        else{
+            minimizeButtonLeft.setVisibility(View.VISIBLE);
+            minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
+            ivClose.setVisibility(View.GONE);
+        }
         if (sumTokenString == null || TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {

@@ -26,8 +26,6 @@ class CampaignListContainerViewModel @Inject constructor(
         private const val HISTORY_CAMPAIGN_ID = 2
     }
 
-    private var storedTabsMetadata : List<TabMeta> = emptyList()
-
     private val _isEligible = MutableLiveData<Result<Boolean>>()
     val isEligible: LiveData<Result<Boolean>>
         get() = _isEligible
@@ -82,10 +80,6 @@ class CampaignListContainerViewModel @Inject constructor(
             }
         )
 
-    }
-
-    fun storeTabsMetadata(tabsMetadata : List<TabMeta>) {
-        this.storedTabsMetadata = tabsMetadata
     }
 
     private fun isIneligibleAccess(prerequisiteData: PrerequisiteData) : Boolean {

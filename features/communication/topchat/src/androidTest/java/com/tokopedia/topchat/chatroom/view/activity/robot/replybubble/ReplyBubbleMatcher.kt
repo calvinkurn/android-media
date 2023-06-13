@@ -4,8 +4,8 @@ import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 
 object ReplyBubbleMatcher {
 

@@ -178,9 +178,12 @@ object GlobalSearchSellerMapper {
             sellerSearch.map { orderItem ->
                 add(
                     OrderSellerSearchUiModel(
-                        id = orderItem.id, title = orderItem.title,
-                        desc = orderItem.description, imageUrl = orderItem.image_url,
-                        url = orderItem.url, appUrl = orderItem.app_url, keyword = keyword,
+                        id = orderItem.id,
+                        title = orderItem.title,
+                        desc = orderItem.description,
+                        url = orderItem.url,
+                        appUrl = orderItem.app_url,
+                        keyword = keyword,
                         section = title
                     )
                 )

@@ -11,14 +11,18 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
  */
 class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHandler, private val tracking: OfficialStoreTracking?): FeaturedBrandListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int, applink: String) {
-        tracking?.eventClickAllFeaturedBrandOS(dcEventHandler.getOSCategory()?.title ?: "")
+        tracking?.eventClickAllFeaturedBrandOS(
+            dcEventHandler.getOSCategory()?.title ?: "",
+            channelModel.id,
+            channelModel.channelHeader.name,
+            channelModel.trackingAttributionModel.brandId
+        )
         dcEventHandler.goToApplink(applink)
     }
 
     override fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        val defaultId = "0"
-        val bannerId = if(channelModel.channelBanner.id.isBlank()) defaultId else channelModel.channelBanner.id
-        val shopId = if(channelGrid.shopId.isBlank()) defaultId else channelGrid.shopId
+        val bannerId = channelModel.channelBanner.id
+        val shopId = channelGrid.shop.id
         tracking?.eventImpressionFeatureBrandOS(
             categoryName = dcEventHandler.getOSCategory()?.title ?: "",
             shopPosition = (position + 1),
@@ -26,14 +30,15 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             creativeName = channelGrid.attribution,
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
-            bannerId =  bannerId
+            bannerId =  bannerId,
+            channelId = channelModel.id,
+            brandId = channelModel.trackingAttributionModel.brandId
         )
     }
 
     override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int, applink: String) {
-        val defaultId = "0"
-        val bannerId = if(channelModel.channelBanner.id.isBlank()) defaultId else channelModel.channelBanner.id
-        val shopId = if(channelGrid.shopId.isBlank()) defaultId else channelGrid.shopId
+        val bannerId = channelModel.channelBanner.id
+        val shopId = channelGrid.shop.id
         tracking?.eventClickFeaturedBrandOS(
             categoryName = dcEventHandler.getOSCategory()?.title ?: "",
             shopPosition = (position + 1),
@@ -41,7 +46,9 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
             creativeName = channelGrid.attribution,
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
-            bannerId =  bannerId
+            bannerId =  bannerId,
+            channelId = channelModel.id,
+            brandId = channelModel.trackingAttributionModel.brandId
         )
 
         dcEventHandler.goToApplink(applink)

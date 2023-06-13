@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -37,4 +38,6 @@ class TokomemberDashModule {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
+    @Provides
+    fun provideTmTracker()  = TmTracker()
 }

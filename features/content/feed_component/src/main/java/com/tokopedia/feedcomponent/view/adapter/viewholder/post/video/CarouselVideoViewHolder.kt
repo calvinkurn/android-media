@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
@@ -30,22 +28,21 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by kenny.hadisaputra on 29/06/22
  */
-internal class CarouselVideoViewHolder(
+class CarouselVideoViewHolder(
     itemView: View,
-    private val listener: Listener,
+    private val listener: Listener
 ) : BaseViewHolder(itemView) {
 
     private var videoPlayer: FeedExoPlayer? = null
 
-    private val playButtonVideo = itemView.findViewById<ImageView>(R.id.ic_play)
-    private val frameVideo = itemView.findViewById<ConstraintLayout>(R.id.frame_video)
+    private val playButtonVideo = itemView.findViewById<ImageUnify>(R.id.ic_play)
     private val layoutVideo = itemView.findViewById<PlayerView>(R.id.layout_video)
     private val videoPreviewImage = itemView.findViewById<ImageUnify>(R.id.videoPreviewImage)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
     private val volumeIcon = itemView.findViewById<ImageView>(R.id.volume_icon)
     private val loader = itemView.findViewById<LoaderUnify>(R.id.loader)
-    private val icPlay = itemView.findViewById<ImageView>(R.id.ic_play)
+    private val icPlay = itemView.findViewById<ImageUnify>(R.id.ic_play)
     private val timerView = itemView.findViewById<Typography>(R.id.timer_view)
 
     private var mMedia = FeedXMedia()
@@ -58,7 +55,7 @@ internal class CarouselVideoViewHolder(
 
     private val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
         override fun onTick(millisUntilFinished: Long) {
-
+            return
         }
 
         override fun onFinish() {
@@ -67,12 +64,13 @@ internal class CarouselVideoViewHolder(
     }
 
     init {
+        icPlay.setImageResource(R.drawable.bg_circle_play_button)
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
-
+            override fun onViewAttachedToWindow(v: View) {
+                return
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 clearVideo()
             }
         })
@@ -106,16 +104,11 @@ internal class CarouselVideoViewHolder(
         llLihatProduct?.setOnClickListener {
             listener.onLihatProductClicked(
                 this,
-                item,
+                item
             )
         }
         volumeIcon.setOnClickListener {
             toggleMute(item)
-        }
-
-        frameVideo.setOnClickListener {
-            toggleMute(item)
-            runAutoHideMute()
         }
     }
 
@@ -130,8 +123,11 @@ internal class CarouselVideoViewHolder(
 
     private fun changeVolumeIcon() {
         volumeIcon.setImageResource(
-            if (isMuted) R.drawable.ic_feed_volume_mute_large
-            else R.drawable.ic_feed_volume_up_large
+            if (isMuted) {
+                R.drawable.ic_feed_volume_mute_large
+            } else {
+                R.drawable.ic_feed_volume_up_large
+            }
         )
     }
 
@@ -154,8 +150,6 @@ internal class CarouselVideoViewHolder(
         videoPlayer = null
         layoutVideo.player = null
 
-        isMuted = true
-
         videoPreviewImage.visible()
         icPlay.visible()
     }
@@ -166,7 +160,7 @@ internal class CarouselVideoViewHolder(
                 showVideoLoading()
             }
 
-            override fun onVideoReadyToPlay() {
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideVideoLoading()
                 timerView.visible()
                 var time = videoPlayer?.getExoPlayer()?.duration.orZero() / TIME_SECOND
@@ -202,6 +196,12 @@ internal class CarouselVideoViewHolder(
         if (videoPlayer == null) {
             videoPlayer = FeedExoPlayer(itemView.context)
             layoutVideo.player = videoPlayer?.getExoPlayer()
+            layoutVideo.videoSurfaceView?.setOnClickListener {
+                toggleMute(media)
+                runAutoHideMute()
+                listener.onVideoSurfaceTapped(this, media, isMuted)
+            }
+            videoPlayer?.toggleVideoVolume(isMuted)
             videoPlayer?.setVideoStateListener(createVideoStateListener(media))
         }
         media.canPlay = true
@@ -237,15 +237,15 @@ internal class CarouselVideoViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ) = CarouselVideoViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
                     R.layout.item_post_video_new,
                     parent,
-                    false,
+                    false
                 ),
-            listener,
+            listener
         )
     }
 
@@ -253,5 +253,6 @@ internal class CarouselVideoViewHolder(
         fun onLihatProductClicked(viewHolder: CarouselVideoViewHolder, media: FeedXMedia)
         fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long)
         fun onMuteChanged(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
+        fun onVideoSurfaceTapped(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
     }
 }

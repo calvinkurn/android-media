@@ -69,7 +69,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
                     android:id="@+id/benefit_complete_shopping_feature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
                     android:id="@+id/benefit_exclusive_sales_feature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-                <com.tokopedia.kyc_centralized.view.customview.KycBenefitItemView
+                <com.tokopedia.kyc_centralized.ui.customview.KycBenefitItemView
                     android:id="@+id/benefit_account_more_safer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,24 +131,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-            android:id="@+id/kyc_benefit_checkbox"
-            android:textColor="@color/Unify_N700_96"
-            android:layout_width="wrap_content"
+        <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
+            android:id="@+id/userConsentKyc"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:text="@string/kyc_consent_text" />
+            app:defaultTemplate="TNC_PRIVACY_MANDATORY"
+            app:layout_constraintTop_toBottomOf="@id/divider1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/kyc_benefit_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/kyc_intro_button" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

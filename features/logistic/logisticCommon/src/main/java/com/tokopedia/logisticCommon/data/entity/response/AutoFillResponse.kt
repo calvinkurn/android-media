@@ -2,7 +2,6 @@ package com.tokopedia.logisticCommon.data.entity.response
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-
 data class AutoFillResponse(
     @SerializedName("kero_maps_autofill")
     var keroMapsAutofill: KeroMapsAutofill = KeroMapsAutofill()

@@ -59,7 +59,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.miscDependencies.chips
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     
     implementation projectOrAar(rootProject.ext.features.basemvvm)

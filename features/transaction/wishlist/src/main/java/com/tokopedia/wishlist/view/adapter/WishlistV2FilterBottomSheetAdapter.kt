@@ -3,13 +3,13 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterCheckboxItemBinding
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterRadioButtonItemBinding
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2FilterCheckboxViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2FilterRadioButtonViewHolder
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 
 /**
  * Created by fwidjaja on 19/10/21.
@@ -42,17 +42,22 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WishlistV2FilterRadioButtonViewHolder -> {
-                holder.bind(filterItem.name,
-                        filterItem.options[holder.adapterPosition].text,
-                        filterItem.options[holder.adapterPosition].optionId,
-                        filterItem.options[holder.adapterPosition].isSelected)
+                holder.bind(
+                    filterItem.name,
+                    filterItem.options[holder.adapterPosition].text,
+                    filterItem.options[holder.adapterPosition].optionId,
+                    filterItem.options[holder.adapterPosition].isSelected
+                )
             }
             is WishlistV2FilterCheckboxViewHolder -> {
-                holder.bind(filterItem.name,
-                        filterItem.options[holder.adapterPosition].text,
-                        filterItem.options[holder.adapterPosition].description,
-                        filterItem.options[holder.adapterPosition].optionId,
-                        filterItem.options[holder.adapterPosition].isSelected, isResetCheckbox)
+                holder.bind(
+                    filterItem.name,
+                    filterItem.options[holder.adapterPosition].text,
+                    filterItem.options[holder.adapterPosition].description,
+                    filterItem.options[holder.adapterPosition].optionId,
+                    filterItem.options[holder.adapterPosition].isSelected,
+                    isResetCheckbox
+                )
             }
         }
     }

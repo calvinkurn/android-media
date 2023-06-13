@@ -5,6 +5,7 @@
     <dimen name="shop_card_width">228dp</dimen>
     <dimen name="shop_card_height">68dp</dimen>
     <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_60">60dp</dimen>
     <dimen name="dp_70">70dp</dimen>
     <dimen name="dp_55">55dp</dimen>
@@ -39,8 +40,10 @@
     <dimen name="dp_44">44dp</dimen>
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_96">96dp</dimen>
+    <dimen name="dp_144">144dp</dimen>
     <dimen name="dp_250">250dp</dimen>
     <dimen name="dp_280">280dp</dimen>
+    <dimen name="dp_300">300dp</dimen>
 
     <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_64">64dp</dimen>
@@ -50,5 +53,8 @@
     <dimen name="disco_dp_112">112dp</dimen>
     <dimen name="dp_88">88dp</dimen>
     <dimen name="dp_104">104dp</dimen>
+
+    <dimen name="calendar_banner_widget_height">243.5dp</dimen>
+    <dimen name="calendar_banner_widget_width">141dp</dimen>
 
 </resources>

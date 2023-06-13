@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
-import com.tokopedia.entertainment.pdp.fragment.EventRedeemFragment
+import com.tokopedia.entertainment.pdp.fragment.EventRedeemRevampFragment
 
 class EventRedeemActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
 
@@ -17,7 +17,6 @@ class EventRedeemActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val uri = intent.data
         if (intent.extras != null) {
             urlRedeem = intent.getStringExtra(EXTRA_URL_REDEEM) ?: ""
         } else if (savedInstanceState != null) {
@@ -27,7 +26,7 @@ class EventRedeemActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment(): Fragment? = EventRedeemFragment.newInstance(urlRedeem)
+    override fun getNewFragment(): Fragment = EventRedeemRevampFragment.newInstance(urlRedeem)
 
     companion object {
         const val EXTRA_URL_REDEEM = "EXTRA_URL_REDEEM"

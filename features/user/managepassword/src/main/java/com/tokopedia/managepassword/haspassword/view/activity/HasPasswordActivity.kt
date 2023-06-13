@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
@@ -29,7 +30,7 @@ import javax.inject.Inject
  *
  * For navigate :
  * External : [com.tokopedia.applink.ApplinkConst.HAS_PASSWORD]
- * Internal : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.HAS_PASSWORD]
+ * Internal : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.HAS_PASSWORD]
  *
  */
 
@@ -101,9 +102,9 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
     private fun isPasswordAvailable(hasPassword: Boolean) {
         userSession.setHasPassword(hasPassword)
         val intent: Intent = if (hasPassword) {
-            RouteManager.getIntent(this, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+            RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         } else {
-            RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PASSWORD)
+            RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PASSWORD)
         }
         startActivity(intent)
         finish()

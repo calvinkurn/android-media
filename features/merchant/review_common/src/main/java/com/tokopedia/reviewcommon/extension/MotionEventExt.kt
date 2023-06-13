@@ -14,6 +14,6 @@ fun MotionEvent.intersectWith(view: View, extraSizePx: Long): Boolean {
         val viewEndX = viewCoordinate.first() + view.width + extraSizePx
         val viewStartY = (viewCoordinate.last() - extraSizePx).coerceAtLeast(0L)
         val viewEndY = viewCoordinate.last() + view.height + extraSizePx
-        x >= viewStartX && x <= viewEndX && y >= viewStartY && y <= viewEndY
+        rawX >= viewStartX && rawX <= viewEndX && rawY >= viewStartY && rawY <= viewEndY
     } else false
 }

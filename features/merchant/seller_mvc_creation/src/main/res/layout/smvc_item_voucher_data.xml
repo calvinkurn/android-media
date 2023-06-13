@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/viewVoucherType"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_voucher_shop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tfVoucherName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVoucherName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tool:text="Nama Kupon Maks. 30 character" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVoucherDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
+        app:layout_constraintStart_toStartOf="@+id/tfVoucherName"
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherName"
+        app:typographyType="small"
+        tool:text="Nama Kupon Maks. 30 character" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCodeBackground"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:enabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/viewVoucherType"
+        app:layout_constraintStart_toStartOf="@+id/tfVoucherDesc"
+        app:layout_constraintTop_toBottomOf="@+id/tfVoucherDesc"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="alternate" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layoutCodeBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCodeBackground"
+        app:layout_constraintEnd_toEndOf="@+id/btnCodeBackground"
+        app:layout_constraintStart_toStartOf="@+id/btnCodeBackground"
+        app:layout_constraintTop_toTopOf="@+id/btnCodeBackground">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfCodeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kode Promo:"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfCodeContent"
+            android:layout_marginStart="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tool:text="CCCCXXXXX" />
+
+        <com.tokopedia.iconunify.IconUnify
+            app:icon_name="COPY"
+            android:layout_marginStart="4dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

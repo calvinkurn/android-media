@@ -10,46 +10,47 @@ import kotlinx.parcelize.Parcelize
  */
 
 @Parcelize
-data class ECommerceClick (
-        @SerializedName("actionField")
-        var actionField: ActionField = ActionField(),
+data class ECommerceClick(
+    @SerializedName("actionField")
+    var actionField: ActionField = ActionField(),
 
-        @SerializedName("products")
-        var products: ArrayList<Products> = arrayListOf()) : Parcelable {
+    @SerializedName("products")
+    var products: ArrayList<Products> = arrayListOf()
+) : Parcelable {
 
-        @Parcelize
-        data class ActionField(
-                @SerializedName("list")
-                var list: String = "/order list - ${UohConsts.BUSINESS_UNIT_REPLACEE}"
-        ) : Parcelable
+    @Parcelize
+    data class ActionField(
+        @SerializedName("list")
+        var list: String = "/order list - ${UohConsts.BUSINESS_UNIT_REPLACEE}"
+    ) : Parcelable
 
-        @Parcelize
-        data class Products (
-                @SerializedName("name")
-                var name: String = "",
+    @Parcelize
+    data class Products(
+        @SerializedName("name")
+        var name: String = "",
 
-                @SerializedName("id")
-                var id: String = "",
+        @SerializedName("id")
+        var id: String = "",
 
-                @SerializedName("price")
-                var price: String = "",
+        @SerializedName("price")
+        var price: String = "",
 
-                @SerializedName("brand")
-                var brand: String = "",
+        @SerializedName("brand")
+        var brand: String = "",
 
-                @SerializedName("category")
-                var category: String = "",
+        @SerializedName("category")
+        var category: String = "",
 
-                @SerializedName("variant")
-                var variant: String = "",
+        @SerializedName("variant")
+        var variant: String = "",
 
-                @SerializedName("list")
-                var list: String = "",
+        @SerializedName("list")
+        var list: String = "",
 
-                @SerializedName("position")
-                var position: String = "",
+        @SerializedName("position")
+        var position: String = "",
 
-                @SerializedName("attribution")
-                var attribution: String = ""
-        ) : Parcelable
+        @SerializedName("attribution")
+        var attribution: String = ""
+    ) : Parcelable
 }

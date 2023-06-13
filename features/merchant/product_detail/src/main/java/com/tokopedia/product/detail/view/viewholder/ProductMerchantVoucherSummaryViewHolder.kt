@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,7 +28,7 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
             view.layoutParams.height = 0
             return
         }
-        view.layoutParams.height = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
+        view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         initMerchantVoucher()
         element.let {
             setMerchantVoucher(it.animatedInfos, it.shopId, element.productIdMVC)

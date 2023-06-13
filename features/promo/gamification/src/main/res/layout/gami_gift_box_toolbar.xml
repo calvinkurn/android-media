@@ -27,7 +27,7 @@
             android:id="@+id/tvToolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gf_loader_title_color"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_1"
             app:typographyWeight="bold"
             tools:text="@string/gami_gift_box_toolbar_title" />

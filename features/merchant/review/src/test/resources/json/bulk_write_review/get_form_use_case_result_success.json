@@ -1,0 +1,189 @@
+{
+  "data": {
+    "productrevGetBulkForm": {
+      "themeCopy": "Hampir 3 bulan sama kamu, barang ini akan segera hilang dari daftar Menunggu Diulas.",
+      "list": [
+        {
+          "inboxID": "1111111100",
+          "reputationID": "2222222200",
+          "orderID": "5555555500",
+          "shopID": "6666666600",
+          "product": {
+            "productID": "3333333300",
+            "productName": "Nike Air Force 1 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444400",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "1 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111101",
+          "reputationID": "2222222201",
+          "orderID": "5555555501",
+          "shopID": "6666666601",
+          "product": {
+            "productID": "3333333301",
+            "productName": "Nike Air Force 2 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444401",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "2 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111102",
+          "reputationID": "2222222202",
+          "orderID": "5555555502",
+          "shopID": "6666666602",
+          "product": {
+            "productID": "3333333302",
+            "productName": "Nike Air Force 3 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444402",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "3 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111103",
+          "reputationID": "2222222203",
+          "orderID": "5555555503",
+          "shopID": "6666666603",
+          "product": {
+            "productID": "3333333303",
+            "productName": "Nike Air Force 4 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444403",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "4 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111104",
+          "reputationID": "2222222204",
+          "orderID": "5555555504",
+          "shopID": "6666666604",
+          "product": {
+            "productID": "3333333304",
+            "productName": "Nike Air Force 5 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444404",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "5 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111105",
+          "reputationID": "2222222205",
+          "orderID": "5555555505",
+          "shopID": "6666666605",
+          "product": {
+            "productID": "3333333305",
+            "productName": "Nike Air Force 6 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444405",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "6 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111106",
+          "reputationID": "2222222206",
+          "orderID": "5555555506",
+          "shopID": "6666666606",
+          "product": {
+            "productID": "3333333306",
+            "productName": "Nike Air Force 7 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444406",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "7 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111107",
+          "reputationID": "2222222207",
+          "orderID": "5555555507",
+          "shopID": "6666666607",
+          "product": {
+            "productID": "3333333307",
+            "productName": "Nike Air Force 8 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444407",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "8 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111108",
+          "reputationID": "2222222208",
+          "orderID": "5555555508",
+          "shopID": "6666666608",
+          "product": {
+            "productID": "3333333308",
+            "productName": "Nike Air Force 9 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444408",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "9 Jan"
+          }
+        },
+        {
+          "inboxID": "1111111109",
+          "reputationID": "2222222209",
+          "orderID": "5555555509",
+          "shopID": "6666666609",
+          "product": {
+            "productID": "3333333309",
+            "productName": "Nike Air Force 10 Low White",
+            "productImageURL": "https://sneakernews.com/wp-content/uploads/2022/09/nike-air-force-1-low-white-grey-dv0788-100-8.jpg",
+            "productVariant": {
+              "variantID": "4444444409",
+              "variantName": "White"
+            }
+          },
+          "timestamp": {
+            "createTimeFormatted": "10 Jan"
+          }
+        }
+      ]
+    }
+  }
+}

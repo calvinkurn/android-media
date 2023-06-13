@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.installations.FirebaseInstallationsException
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import com.tokopedia.kotlin.extensions.backgroundCommit
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -25,6 +26,7 @@ object DeviceInfo {
     const val ADVERTISINGID = "ADVERTISINGID"
     const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
     const val X_86 = "x86"
+    var cacheAdsId = ""
 
     @JvmStatic
     fun isRooted(): Boolean {
@@ -132,30 +134,11 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    fun logIdentifier(context: Context, source: String) {
-        GlobalScope.launch {
-            try {
-                val hasFID = !getFirebaseId().isNullOrBlank()
-                ServerLogger.log(
-                    Priority.P2,
-                    "DEVICE_UNIQUE_ID",
-                    mapOf(
-                        "type" to "ads_id_empty",
-                        "source" to source,
-                        "hasUUID" to hasUuid(context).toString(),
-                        "hasFID" to hasFID.toString()
-                    )
-                )
-            } catch (ignored: Exception) {}
-        }
-    }
-
-    @JvmStatic
     fun hasUuid(context: Context): Boolean {
         return try {
             val uuid = getUUID(context)
             uuid.isNotEmpty()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             false
         }
     }
@@ -188,14 +171,9 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                val result = runBlocking { getlatestAdId(context, 3000L) }
-                if(result.isEmpty()) {
-                    logIdentifier(context, "DeviceInfo")
-                }
-                result
-            } catch (e: Exception) {
-                ""
-            }
+                getAdsIdSuspend(context)
+            } catch (ignored: Exception) { }
+            ""
         }
     }
 
@@ -277,7 +255,8 @@ object DeviceInfo {
                     val adId = getlatestAdId(context, timeOutInMillis)
                     onSuccessGetAdsId?.invoke(adId)
                 }
-            } catch (ignored:Exception) { }
+            } catch (ignored: Exception) {
+            }
         }
     }
 
@@ -286,14 +265,26 @@ object DeviceInfo {
         return DeviceInfoCache(context).getUUID()
     }
 
-    private fun getCacheAdsId(context: Context): String {
-        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        return sp.getString(KEY_ADVERTISINGID, "") ?: ""
+    fun getCacheAdsId(context: Context): String {
+        if (cacheAdsId.isEmpty()) {
+            val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+            cacheAdsId = sp.getString(KEY_ADVERTISINGID, "") ?: ""
+        }
+        return cacheAdsId
     }
 
     private fun setCacheAdsId(context: Context, adsId: String) {
         val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        if (enabledBackgroundCommit()) {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).backgroundCommit()
+        } else {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        }
+        cacheAdsId = adsId
+    }
+
+    private fun enabledBackgroundCommit(): Boolean {
+        return true
     }
 
     @JvmStatic

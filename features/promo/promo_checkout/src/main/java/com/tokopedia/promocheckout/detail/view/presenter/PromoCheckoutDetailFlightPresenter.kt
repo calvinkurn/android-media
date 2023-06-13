@@ -9,6 +9,7 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCas
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
+import com.tokopedia.promocheckout.common.domain.model.flight.FlightCheckVoucherError
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import rx.Subscriber
@@ -106,9 +107,5 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
         super.detachView()
-    }
-
-    companion object {
-        data class FlightCheckVoucherError(val id: String, val status: String, val title: String)
     }
 }

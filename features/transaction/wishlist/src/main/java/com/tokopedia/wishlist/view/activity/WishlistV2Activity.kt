@@ -9,7 +9,7 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 /**
  * Created by fwidjaja on 14/10/21.
  */
-class WishlistV2Activity: BaseSimpleActivity() {
+class WishlistV2Activity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_wishlist_v2
 
     override fun getParentViewResourceID() = R.id.parent_view

@@ -5,24 +5,23 @@ import android.app.Instrumentation
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.common.ViewActionUtils
 import com.tokopedia.home_account.view.adapter.viewholder.*
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.allOf
-
 
 object ViewUtils {
     fun atPosition(position: Int, @NonNull itemMatcher: Matcher<View?>): Matcher<View?>? {
@@ -35,9 +34,9 @@ object ViewUtils {
 
             override fun matchesSafely(view: RecyclerView): Boolean {
                 val viewHolder: RecyclerView.ViewHolder =
-                        view.findViewHolderForAdapterPosition(position)
-                                ?: // has no item on such position
-                                return false
+                    view.findViewHolderForAdapterPosition(position)
+                        ?: // has no item on such position
+                        return false
                 return itemMatcher.matches(viewHolder.itemView)
             }
         }
@@ -92,7 +91,6 @@ object ViewUtils {
             override fun matchesSafely(item: ProfileViewHolder): Boolean {
                 return item.getMemberTitle().equals(title, ignoreCase = true)
             }
-
         }
     }
 
@@ -105,74 +103,93 @@ object ViewUtils {
             override fun matchesSafely(item: MemberItemViewHolder): Boolean {
                 return item.getSubTitle().equals(title, ignoreCase = true)
             }
-
         }
     }
 
     fun clickWalletViewHolder(title: String) {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
         val matcher: Matcher<RecyclerView.ViewHolder> = withTitleBalanceViewHolder(title) { item, title ->
             item.getSubTitle().equals(title, ignoreCase = true)
         }
-        Espresso.onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
+        onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
     }
 
     fun withSettingItemViewHolder(title: String): Matcher<RecyclerView.ViewHolder> {
         return object : BoundedMatcher<RecyclerView.ViewHolder, CommonViewHolder>(CommonViewHolder::class.java) {
             override fun describeTo(description: Description) {
                 description.appendText("view holder with title: $title")
-
             }
 
             override fun matchesSafely(item: CommonViewHolder): Boolean {
                 return item.getTitle().equals(title, ignoreCase = true)
             }
-
         }
     }
 
     fun clickSettingView(settingType: String, title: String) {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         val matcher: Matcher<RecyclerView.ViewHolder> = withSettingItemViewHolder(title)
 
-        Espresso.onView(allOf(
-                isDescendantOfA(allOf(
+        ViewActionUtils.waitOnView(
+            allOf(
+                isDescendantOfA(
+                    allOf(
                         withId(R.id.home_account_expandable_layout_container),
-                        hasDescendant(allOf(
-                                withText(settingType),
-                        )),
-                )),
+                        hasDescendant(
+                            allOf(
+                                withText(settingType)
+                            )
+                        )
+                    )
+                ),
                 withId(R.id.home_account_expandable_layout_rv)
-
-        )).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
+            )
+        ).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
     }
 
     fun clickSettingMoreView(settingType: String) {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        Espresso.onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
+        ViewActionUtils.waitOnView(withId(R.id.home_account_user_fragment_rv))
+            .perform(ViewActions.swipeUp())
 
-        Espresso.onView(allOf(
-                isDescendantOfA(allOf(
+        ViewActionUtils.waitOnView(
+            allOf(
+                isDescendantOfA(
+                    allOf(
                         withId(R.id.home_account_expandable_layout_container),
-                        hasDescendant(allOf(
-                                withText(settingType),
-                        )),
-                )),
+                        hasDescendant(
+                            allOf(
+                                withText(settingType)
+                            )
+                        )
+                    )
+                ),
                 withId(R.id.home_account_expandable_arrow)
-
-        )).perform(click())
+            )
+        ).perform(click())
     }
 
     fun clickSwitchOnApplicationSetting(menu: String) {
-        Espresso.onView(allOf(
-                isDescendantOfA(allOf(
+        onView(
+            allOf(
+                isDescendantOfA(
+                    allOf(
                         withId(R.id.home_account_item_common_layout),
-                        hasDescendant(allOf(
-                                withText(menu),
-                        )),
-                )),
-                withId(R.id.account_user_item_common_switch),
-        )).perform(click(), click())
+                        hasDescendant(
+                            allOf(
+                                withText(menu)
+                            )
+                        )
+                    )
+                ),
+                withId(R.id.account_user_item_common_switch)
+            )
+        ).perform(click(), click())
     }
 }

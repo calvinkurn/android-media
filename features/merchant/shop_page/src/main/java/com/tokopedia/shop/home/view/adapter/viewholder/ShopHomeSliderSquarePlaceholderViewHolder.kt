@@ -7,7 +7,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 class ShopHomeSliderSquarePlaceholderViewHolder(
-        itemView: View
+    itemView: View
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {

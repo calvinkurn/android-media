@@ -8,9 +8,9 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/bannerTooltip"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl8"
+        android:layout_height="96dp"
         android:visibility="gone"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"/>
+        android:layout_marginHorizontal="16dp"/>
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarData"
@@ -18,8 +18,8 @@
         app:search_bar_clearable="true"
         app:search_bar_show_icon="false"
         android:visibility="gone"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -27,6 +27,6 @@
         android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl3" />
+        android:paddingBottom="24dp" />
 
 </LinearLayout>

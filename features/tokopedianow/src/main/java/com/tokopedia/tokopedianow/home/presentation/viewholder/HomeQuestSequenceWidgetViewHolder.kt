@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -168,7 +167,7 @@ class HomeQuestSequenceWidgetViewHolder(
                 text = seeAll
                 setOnClickListener {
                     listener?.onClickSeeDetails()
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, linkUrl)
+                    RouteManager.route(context, linkUrl)
                 }
             } else {
                 gone()

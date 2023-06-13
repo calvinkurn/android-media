@@ -316,7 +316,7 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
     }
 
     private fun shouldUpdateMiniCartWidget(): Boolean {
-        return isUserLogin && MvcLockedToProductUtil.isMvcPhase2() && !isSellerView && isPromoValid != false
+        return isUserLogin && !isSellerView && isPromoValid != false
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {

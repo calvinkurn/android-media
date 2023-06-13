@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:background="@color/Unify_Background">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/img_com_toolbar_nav_icon"
+            android:layout_width="@dimen/content_common_space_24"
+            android:layout_height="@dimen/content_common_space_24"
+            android:layout_marginStart="@dimen/content_common_space_16"
+            app:icon_name="ARROW_BACK"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_com_toolbar_icon"
+            android:layout_width="@dimen/content_common_space_24"
+            android:layout_height="@dimen/content_common_space_24"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/dp_11"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_com_toolbar_nav_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_com_toolbar_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/text_com_toolbar_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_com_toolbar_icon"
+            app:layout_constraintTop_toTopOf="@id/img_com_toolbar_icon"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Post Sebagai"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_com_toolbar_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            android:visibility="gone"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/img_com_toolbar_icon"
+            app:layout_constraintEnd_toStartOf="@id/img_content_creator_expand"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/img_com_toolbar_icon"
+            app:layout_constraintTop_toBottomOf="@id/text_com_toolbar_title"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Jonathan Darwin"
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/img_content_creator_expand"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_N400"
+            app:icon_enable_state="true"
+            app:icon_name="CHEVRON_DOWN"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/text_com_toolbar_subtitle"
+            app:layout_constraintTop_toTopOf="@id/text_com_toolbar_subtitle"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

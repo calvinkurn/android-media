@@ -43,7 +43,9 @@ class ViolationReasonItemViewHolder(itemView: View,
                         color = textColorInt
                         applyTypographyFont(context)
                     },
-                    onUrlClicked = listener::onLinkClicked
+                    onUrlClicked = { link, _ ->
+                        listener.onLinkClicked(link)
+                    }
                 )
             }
         }

@@ -9,6 +9,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -81,7 +82,10 @@ class PlayBroadcaster(
         isStartedBefore = true
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+    ) {
         broadcaster.create(holder, surfaceSize)
         updateAspectFrameSize()
     }

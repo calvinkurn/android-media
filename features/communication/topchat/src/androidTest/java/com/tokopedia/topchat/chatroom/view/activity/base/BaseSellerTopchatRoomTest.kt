@@ -20,6 +20,9 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplate
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
+import com.tokopedia.topchat.chattemplate.domain.pojo.TopchatChatTemplates
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
 
@@ -39,7 +42,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
 
-    private val templateChats = listOf(
+    private val templateChats = arrayListOf(
             "I am seller", "Yes, this product is ready"
     )
 
@@ -50,8 +53,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     private fun setupDefaultResponse() {
         chatSrwUseCase.response = chatSrwResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(
+        getTemplateChatRoomUseCase.response = GetChatTemplateResponse(
+            GetChatTemplate(sellerTemplate = TopchatChatTemplates(
                 templates = templateChats
+            ))
         )
     }
 

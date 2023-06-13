@@ -16,10 +16,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         }
     }
 
-    fun getRatingTitle(): String? {
-        return getString(R.string.text_rating_title)
-    }
-
     fun getDistanceTitle(): String? {
         return getString(R.string.text_distance_title)
     }
@@ -32,7 +28,7 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.text_ops_hour_title)
     }
 
-    fun getOutOfStockWording(): String? {
-        return getString(R.string.text_out_of_stock)
+    fun getOutOfStockWording(): String {
+        return getString(R.string.text_out_of_stock).orEmpty()
     }
 }

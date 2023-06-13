@@ -1,10 +1,8 @@
 package com.tokopedia.logisticorder.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.TippingValueItemBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -29,6 +27,11 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
             lastIndex = position
             actionListener.onTippingValueClicked(tippingValueList[position])
         }
+    }
+
+    fun replaceSelectedChip() {
+        notifyItemChanged(lastIndex)
+        lastIndex = -1
     }
 
     override fun getItemCount(): Int {

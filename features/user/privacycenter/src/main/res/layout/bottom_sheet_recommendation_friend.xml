@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/carousel_clarification"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="328:234"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_clarification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_center_recommendation_friend_desc"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        app:typographyType="paragraph_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/carousel_clarification" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_checkbox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_center_recommendation_friend_checkbox_desc"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:typographyType="paragraph_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cb_verification"
+        app:layout_constraintTop_toBottomOf="@+id/txt_desc_clarification" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_verification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_desc_checkbox"
+        app:layout_constraintBottom_toBottomOf="@id/txt_desc_checkbox"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_verification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_center_recommendation_friend_button"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginHorizontal="16dp"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_desc_checkbox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

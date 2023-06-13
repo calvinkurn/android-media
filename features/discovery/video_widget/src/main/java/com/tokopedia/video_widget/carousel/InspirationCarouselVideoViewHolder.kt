@@ -73,6 +73,8 @@ class InspirationCarouselVideoViewHolder(
     override val videoPlayer: VideoPlayer?
         get() = binding?.videoCarousel
 
+    override val isAutoplayEnabled: Boolean = true
+
     override fun onVideoCarouselItemImpressed(videoItem: VideoCarouselDataView.VideoItem) {
         inspirationVideoCarouselListener.onInspirationVideoCarouselProductImpressed(videoItem)
     }

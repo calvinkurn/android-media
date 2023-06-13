@@ -71,12 +71,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 meta {
                     productListType
                     isPostProcessing
+                    showButtonAtc
                 }
             }
             data {
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                backendFiltersToggle
+                keywordIntention
                 redirection {
                     redirectApplink
                 }
@@ -208,6 +211,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     wishlist
                     applink
                     customVideoURL
+                    parentId
+                    isPortrait
                 }
                 violation {
                     headerText
@@ -259,6 +264,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     uri
                     relative_uri
                     price_format
+                    price_range
                     wholesale_price {
                         price_format
                         quantity_max_format
@@ -294,6 +300,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         url
                     }
                     customvideo_url
+                    parent_id
                 }
                 shop{
                     id
@@ -349,6 +356,11 @@ private const val HEADLINE_ADS_QUERY = """
                         full_url
                         full_ecs
                     }
+                    flash_sale_campaign_detail{
+                        start_time
+                        end_time
+                        campaign_type
+                     }
                     shop {
                         id
                         name
@@ -391,6 +403,11 @@ private const val HEADLINE_ADS_QUERY = """
                             campaign {
                                 original_price
                                 discount_percentage
+                            }
+                            stock_info {
+                                sold_stock_percentage
+                                stock_wording
+                                stock_colour
                             }
                         }
                         image_shop {

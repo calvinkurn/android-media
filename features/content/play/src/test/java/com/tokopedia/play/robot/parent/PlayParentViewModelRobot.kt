@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
@@ -20,13 +21,12 @@ import io.mockk.mockk
  * Created by jegul on 10/02/21
  */
 class PlayParentViewModelRobot(
-        private val savedStateHandle: SavedStateHandle,
-        channelStateStorage: PlayChannelStateStorage,
-        private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-        playChannelMapper: PlayChannelDetailsWithRecomMapper,
-        dispatchers: CoroutineDispatchers,
-        userSession: UserSessionInterface,
-        pageMonitoring: PlayPltPerformanceCallback,
+    private val savedStateHandle: SavedStateHandle,
+    channelStateStorage: PlayChannelStateStorage,
+    dispatchers: CoroutineDispatchers,
+    userSession: UserSessionInterface,
+    repo: PlayViewerRepository,
+    pageMonitoring: PlayPltPerformanceCallback,
 ) {
 
     val viewModel: PlayParentViewModel
@@ -36,41 +36,34 @@ class PlayParentViewModelRobot(
         every { savedStateHandle.get<Any>("start_vod_millis") } returns 123L
 
         viewModel = PlayParentViewModel(
-                handle = savedStateHandle,
-                playChannelStateStorage = channelStateStorage,
-                getChannelDetailsWithRecomUseCase = getChannelDetailsWithRecomUseCase,
-                playChannelMapper = playChannelMapper,
-                dispatchers = dispatchers,
-                userSession = userSession,
-                pageMonitoring = pageMonitoring,
+            handle = savedStateHandle,
+            playChannelStateStorage = channelStateStorage,
+            dispatchers = dispatchers,
+            userSession = userSession,
+            repo = repo,
+            pageMonitoring = pageMonitoring,
         )
-    }
-
-    fun mockChannelDetailsResponse(response: ChannelDetailsWithRecomResponse) {
-        coEvery { getChannelDetailsWithRecomUseCase.executeOnBackground() } returns response
     }
 
     fun setChannelData(channelId: String, channelData: PlayChannelData) = viewModel.setLatestChannelStorageData(channelId, channelData)
 }
 
 fun givenParentViewModelRobot(
-        savedStateHandle: SavedStateHandle = mockk(relaxed = true),
-        channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
-        getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true),
-        playChannelMapper: PlayChannelDetailsWithRecomMapper = ClassBuilder().getPlayChannelDetailsRecomMapper(),
-        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        userSession: UserSessionInterface = mockk(relaxed = true),
-        pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
-        fn: PlayParentViewModelRobot.() -> Unit = {}
+    savedStateHandle: SavedStateHandle = mockk(relaxed = true),
+    channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
+    dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
+    userSession: UserSessionInterface = mockk(relaxed = true),
+    repo: PlayViewerRepository = mockk(relaxed = true),
+    pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
+    fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
-            savedStateHandle = savedStateHandle,
-            channelStateStorage = channelStateStorage,
-            getChannelDetailsWithRecomUseCase = getChannelDetailsWithRecomUseCase,
-            playChannelMapper = playChannelMapper,
-            dispatchers = dispatchers,
-            userSession = userSession,
-            pageMonitoring = pageMonitoring
+        savedStateHandle = savedStateHandle,
+        channelStateStorage = channelStateStorage,
+        dispatchers = dispatchers,
+        userSession = userSession,
+        repo = repo,
+        pageMonitoring = pageMonitoring
     ).apply(fn)
 }
 

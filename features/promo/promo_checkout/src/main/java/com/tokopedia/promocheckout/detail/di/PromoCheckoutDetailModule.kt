@@ -9,7 +9,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -31,6 +30,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.view.presenter.*
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -177,9 +177,9 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   userSession: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context.applicationContext as NetworkRouter, userSession)
+    fun provideTkpdOldAuthInterceptor(@ApplicationContext context: Context,
+                                   userSession: UserSessionInterface): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, context.applicationContext as NetworkRouter, userSession)
     }
 
     @Provides
@@ -188,7 +188,7 @@ class PromoCheckoutDetailModule {
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      chuckerInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy,
-                                     tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
+                                     tkpdOldAuthInterceptor: TkpdOldAuthInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         if(GlobalConfig.isAllowDebuggingTools()){
             builder.addInterceptor(chuckerInterceptor)
@@ -196,7 +196,7 @@ class PromoCheckoutDetailModule {
         }
         return builder
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(tkpdOldAuthInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

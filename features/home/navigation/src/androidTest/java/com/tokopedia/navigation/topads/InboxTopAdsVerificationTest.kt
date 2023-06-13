@@ -23,6 +23,7 @@ import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter
 import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -32,6 +33,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@TopAdsTest
 class InboxTopAdsVerificationTest {
 
     @get:Rule

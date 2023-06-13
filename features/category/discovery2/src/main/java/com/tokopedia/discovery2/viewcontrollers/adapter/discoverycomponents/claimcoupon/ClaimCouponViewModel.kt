@@ -3,9 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cla
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.claim_coupon.ClaimCouponRequest
 import com.tokopedia.discovery2.usecase.ClaimCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -40,11 +40,18 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
 
     private fun getClickCouponData() {
         launchCatchError(block = {
-            claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint)
+            claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint,getClaimCoupleBundle(components.properties))
             componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    private fun getClaimCoupleBundle(properties: Properties?): ClaimCouponRequest {
+        return ClaimCouponRequest(
+            catalogSlugs = properties?.catalogSlug?.split(",") ?: listOf(),
+            categorySlug = properties?.categorySlug ?: ""
+        )
     }
 
 }

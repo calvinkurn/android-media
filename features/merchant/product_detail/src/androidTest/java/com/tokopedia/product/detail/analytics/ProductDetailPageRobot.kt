@@ -8,10 +8,11 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
+import com.tokopedia.user.session.UserSession
+import org.junit.Assert
 
 class ProductDetailPageRobot {
 
@@ -27,13 +28,19 @@ class ProductDetailPageRobot {
         activityTestRule.finishActivity()
     }
 
+    fun waitFor(time: Long = 500) {
+        Thread.sleep(time)
+    }
+
     infix fun assertTest(action: ProductDetailPageRobot.() -> Unit) = ProductDetailPageRobot().apply(action)
 
-    fun validate(gtmLogDbSource: GtmLogDBSource,
-                 targetContext: Context,
-                 fileName: String) {
-        assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-                hasAllSuccess())
+    fun validate(cassavaTestRule: CassavaTestRule, fileName: String) {
+        assertThat(cassavaTestRule.validate(fileName), hasAllSuccess())
+    }
+
+    fun assertIsLoggedIn(context: Context, actualIsLoggedIn: Boolean) {
+        val userSession = UserSession(context)
+        Assert.assertEquals(userSession.isLoggedIn, actualIsLoggedIn)
     }
 }
 

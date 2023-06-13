@@ -6,10 +6,10 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkConstructor
+import com.tokopedia.discovery2.datamapper.getComponent
+import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -53,4 +53,12 @@ class DiscoveryDataMapperTest {
             assert(dataItem?.positionForParentItem == 9)
         }
     }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkConstructor(URLParser::class)
+    }
+
 }

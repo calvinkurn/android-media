@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbShcFeedbackOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcFeedbackOption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@+id/cbShcFeedbackOption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbShcFeedbackOption"
+        app:layout_constraintTop_toTopOf="@+id/cbShcFeedbackOption"
+        app:typographyType="display_2"
+        tools:text="Contoh text from template" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/edtShcFeedbackOption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcFeedbackOption"
+        app:text_field_counter="250"
+        app:text_field_input_type="text"
+        app:text_field_label=""
+        app:text_field_label_static="true"
+        app:text_field_placeholder="@string/shc_feedback_other_input_placeholder"
+        tools:layout_height="40dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

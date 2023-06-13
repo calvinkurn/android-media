@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -24,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokopedianow.categorylist.di.component.DaggerCategoryListComponent
-import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView
@@ -34,6 +35,7 @@ import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCat
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_FULL
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_SERVER
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
@@ -46,7 +48,7 @@ import javax.inject.Inject
 class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
+        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = TokopediaImageUrl.ERROR_STATE_NOT_FOUND_IMAGE_URL
         private val TAG = TokoNowCategoryListBottomSheet::class.simpleName
 
         fun newInstance(warehouseId: String): TokoNowCategoryListBottomSheet {

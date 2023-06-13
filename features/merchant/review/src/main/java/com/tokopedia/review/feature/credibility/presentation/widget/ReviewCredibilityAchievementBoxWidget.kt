@@ -17,6 +17,7 @@ import com.tokopedia.review.databinding.WidgetReviewCredibilityAchievementBoxBin
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityAchievementBoxUiState
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0
@@ -72,23 +73,14 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
     }
 
     private fun showUIData(data: ReviewCredibilityAchievementBoxUiModel) {
-        val showCTA = data.cta.text.isNotBlank() && data.cta.appLink.isNotBlank()
-        binding.tvReviewCredibilityAchievementTitle.show()
-        binding.tvReviewCredibilityAchievementLabel.show()
+        with(binding) {
+            setupTitle(data.title)
+            setupLabel(data.label)
+            setupCta(data.cta)
+        }
         partialWidgetAchievement1.showData(data.achievements.getOrNull(FIRST_ACHIEVEMENT_INDEX))
         partialWidgetAchievement2.showData(data.achievements.getOrNull(SECOND_ACHIEVEMENT_INDEX))
         partialWidgetAchievement3.showData(data.achievements.getOrNull(THIRD_ACHIEVEMENT_INDEX))
-        if (showCTA) {
-            binding.btnReviewCredibilityAchievementSeeMore.show()
-        } else {
-            binding.btnReviewCredibilityAchievementSeeMore.invisible()
-        }
-        binding.tvReviewCredibilityAchievementTitle.text = data.title
-        binding.tvReviewCredibilityAchievementLabel.text = data.label
-        binding.btnReviewCredibilityAchievementSeeMore.text = data.cta.text
-        binding.btnReviewCredibilityAchievementSeeMore.setOnClickListener {
-            listener?.onClickSeeMoreAchievement(data.cta.appLink, data.cta.text)
-        }
         listener?.onImpressAchievementStickers(data.achievements)
     }
 
@@ -125,7 +117,7 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
             ConstraintSet.BOTTOM
         )
         constraintSet.connect(
-            binding.btnReviewCredibilityAchievementSeeMore.id,
+            binding.tvReviewCredibilityAchievementSeeMore.id,
             ConstraintSet.TOP,
             reviewCredibilitySeeMoreAchievementTopView,
             ConstraintSet.BOTTOM
@@ -235,6 +227,36 @@ class ReviewCredibilityAchievementBoxWidget @JvmOverloads constructor(
 
     private fun runTransitions(transition: Transition) {
         TransitionManager.beginDelayedTransition(binding.root, transition)
+    }
+
+    private fun WidgetReviewCredibilityAchievementBoxBinding.setupTitle(title: String) {
+        tvReviewCredibilityAchievementTitle.show()
+        tvReviewCredibilityAchievementTitle.text = HtmlLinkHelper(
+            root.context, title
+        ).spannedString ?: ""
+    }
+
+    private fun WidgetReviewCredibilityAchievementBoxBinding.setupLabel(label: String) {
+        tvReviewCredibilityAchievementLabel.show()
+        tvReviewCredibilityAchievementLabel.text = HtmlLinkHelper(
+            root.context, label
+        ).spannedString ?: ""
+    }
+
+    private fun WidgetReviewCredibilityAchievementBoxBinding.setupCta(
+        cta: ReviewCredibilityAchievementBoxUiModel.Button
+    ) {
+        val showCTA = cta.text.isNotBlank() && cta.appLink.isNotBlank()
+        val text = HtmlLinkHelper(root.context, cta.text).spannedString ?: ""
+        if (showCTA) {
+            tvReviewCredibilityAchievementSeeMore.show()
+        } else {
+            tvReviewCredibilityAchievementSeeMore.invisible()
+        }
+        tvReviewCredibilityAchievementSeeMore.text = text
+        tvReviewCredibilityAchievementSeeMore.setOnClickListener {
+            listener?.onClickSeeMoreAchievement(cta.appLink, text.toString())
+        }
     }
 
     fun updateUiState(uiState: ReviewCredibilityAchievementBoxUiState) {

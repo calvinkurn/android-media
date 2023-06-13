@@ -3,10 +3,6 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.unifyorderhistory.util.UohUtils
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
-import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -14,18 +10,33 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
+import com.tokopedia.unifyorderhistory.util.UohConsts.BELI_LAGI_LABEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_LABEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
+import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
+import com.tokopedia.unifyorderhistory.util.UohUtils
+import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
 /**
  * Created by fwidjaja on 25/07/20.
  */
-class UohOrderListViewHolder(private val binding: UohListItemBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class UohOrderListViewHolder(
+    private val binding: UohListItemBinding,
+    private val actionListener: UohItemAdapter.ActionListener?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UohTypeData, position: Int) {
-        if (item.dataObject is UohListOrder.Data.UohOrders.Order) {
+        if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
-            ImageHandler.loadImage(itemView.context, binding.icUohVertical, item.dataObject.metadata.verticalLogo, null)
+            ImageHandler.loadImage(
+                itemView.context,
+                binding.icUohVertical,
+                item.dataObject.metadata.verticalLogo,
+                null
+            )
             binding.tvUohCategories.text = item.dataObject.metadata.verticalLabel
             binding.tvUohDate.text = item.dataObject.metadata.paymentDateStr
 
@@ -42,15 +53,15 @@ class UohOrderListViewHolder(private val binding: UohListItemBinding, private va
             }
 
             if (item.dataObject.metadata.tickers.isNotEmpty()) {
-               binding.tickerInfoInsideCard.visible()
+                binding.tickerInfoInsideCard.visible()
                 if (item.dataObject.metadata.tickers.size > 1) {
                     val listTickerData = arrayListOf<TickerData>()
                     item.dataObject.metadata.tickers.forEach {
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
                             desc += " ${itemView.context.getString(R.string.uoh_ticker_info_selengkapnya)
-                                    .replace(TICKER_URL, it.action.appUrl)
-                                    .replace(TICKER_LABEL, it.action.label)}"
+                                .replace(TICKER_URL, it.action.appUrl)
+                                .replace(TICKER_LABEL, it.action.label)}"
                         }
                         listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
                     }
@@ -62,7 +73,7 @@ class UohOrderListViewHolder(private val binding: UohListItemBinding, private va
                             }
                         })
                         binding.tickerInfoInsideCard.run {
-                            setDescriptionClickEvent(object: TickerCallback {
+                            setDescriptionClickEvent(object : TickerCallback {
                                 override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                                 override fun onDismiss() {
@@ -77,15 +88,16 @@ class UohOrderListViewHolder(private val binding: UohListItemBinding, private va
                         var desc = ticker.text
                         if (ticker.action.appUrl.isNotEmpty() && ticker.action.label.isNotEmpty()) {
                             desc += " ${itemView.context.getString(R.string.uoh_ticker_info_selengkapnya)
-                                    .replace(TICKER_URL, ticker.action.appUrl)
-                                    .replace(TICKER_LABEL, ticker.action.label)}"
+                                .replace(TICKER_URL, ticker.action.appUrl)
+                                .replace(TICKER_LABEL, ticker.action.label)}"
                         }
                         binding.tickerInfoInsideCard.run {
                             setHtmlDescription(desc)
                             tickerType = UohUtils.getTickerType(ticker.type)
                             setDescriptionClickEvent(object : TickerCallback {
                                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                    actionListener?.onTickerDetailInfoClicked(linkUrl.toString()) }
+                                    actionListener?.onTickerDetailInfoClicked(linkUrl.toString())
+                                }
 
                                 override fun onDismiss() {}
                             })
@@ -125,27 +137,67 @@ class UohOrderListViewHolder(private val binding: UohListItemBinding, private va
             binding.tvUohTotalBelanja.text = item.dataObject.metadata.totalPrice.label
             binding.tvUohTotalBelanjaValue.text = item.dataObject.metadata.totalPrice.value
             if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                binding.uohBtnAction.run {
+                binding.uohBtnAction1.run {
                     visible()
                     text = item.dataObject.metadata.buttons[0].label
-                    buttonType = UohUtils.getButtonType(item.dataObject.metadata.buttons[0].variantColor)
-                    buttonVariant = UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
+                    buttonType =
+                        UohUtils.getButtonType(item.dataObject.metadata.buttons[0].variantColor)
+                    buttonVariant =
+                        UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
+                }
+                if (item.dataObject.metadata.buttons[0].label == BELI_LAGI_LABEL) {
+                    UohAnalytics.sendViewBeliLagiButtonEvent()
                 }
             } else {
-                binding.uohBtnAction.gone()
+                binding.uohBtnAction1.gone()
+            }
+
+            if (item.dataObject.metadata.buttons.size > 1) {
+                binding.uohBtnAction2.run {
+                    visible()
+                    text = item.dataObject.metadata.buttons[1].label
+                    buttonType =
+                        UohUtils.getButtonType(item.dataObject.metadata.buttons[1].variantColor)
+                    buttonVariant =
+                        UohUtils.getButtonVariant(item.dataObject.metadata.buttons[1].type)
+                }
+                if (item.dataObject.metadata.buttons[1].label == ULAS_LABEL) {
+                    UohAnalytics.sendViewBeriUlasanButtonEvent()
+                }
+            } else {
+                binding.uohBtnAction2.gone()
             }
 
             binding.clDataProduct.setOnClickListener {
                 actionListener?.onListItemClicked(item.dataObject, position)
             }
 
-            binding.uohBtnAction.setOnClickListener {
+            binding.uohBtnAction1.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                    actionListener?.onActionButtonClicked(item.dataObject, position)
+                    actionListener?.onActionButtonClicked(
+                        item.dataObject,
+                        position,
+                        FIRST_BUTTON_INDEX
+                    )
+                }
+            }
+
+            binding.uohBtnAction2.setOnClickListener {
+                if (item.dataObject.metadata.buttons.size > 1) {
+                    actionListener?.onActionButtonClicked(
+                        item.dataObject,
+                        position,
+                        SECOND_BUTTON_INDEX
+                    )
                 }
             }
 
             actionListener?.trackViewOrderCard(item.dataObject, position)
         }
+    }
+
+    companion object {
+        const val FIRST_BUTTON_INDEX = 0
+        const val SECOND_BUTTON_INDEX = 1
     }
 }

@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.R
@@ -125,7 +126,7 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
     override val hasVideo: Boolean
         get() = adapter.itemCount > 0
 
-    override fun playVideo(): Flow<VideoPlayerState> {
+    override fun playVideo(exoPlayer: ExoPlayer): Flow<VideoPlayerState> {
         if(!hasVideo) return flowOf(VideoPlayerState.NoVideo)
         videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
         internalListener?.playVideo(recyclerView)

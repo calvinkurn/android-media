@@ -18,5 +18,4 @@ class PurchasePlatformBaseModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
 }

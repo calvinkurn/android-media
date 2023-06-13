@@ -2,14 +2,8 @@ package com.tokopedia.sellerorder.detail
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
-import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
-import com.tokopedia.sellerorder.detail.data.model.SetDelivered
-import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
-import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
+import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.domain.usecase.*
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,7 +29,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
-    lateinit var somGetOrderDetailUseCase: SomGetOrderDetailUseCase
+    lateinit var somGetOrderDetailUseCase: SomGetOrderDetailWithResolutionUseCase
 
     @RelaxedMockK
     lateinit var somReasonRejectUseCase: SomReasonRejectUseCase
@@ -76,7 +70,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
     // order_detail
     @Test
-    fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runBlockingTest {
+    fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
@@ -92,7 +86,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
@@ -107,7 +101,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
@@ -121,7 +115,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runBlockingTest {
+    fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
@@ -135,7 +129,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
@@ -158,7 +152,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
     // reason_reject
     @Test
-    fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somReasonRejectUseCase.execute(any())
@@ -173,7 +167,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getReasonReject_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getReasonReject_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somReasonRejectUseCase.execute(any())
@@ -187,7 +181,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somReasonRejectUseCase.execute(any())
@@ -201,7 +195,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somReasonRejectUseCase.execute(any())
@@ -217,7 +211,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
     // set_delivered
     @Test
-    fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
@@ -232,7 +226,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun setDelivered_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun setDelivered_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
@@ -246,7 +240,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
@@ -260,7 +254,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
@@ -275,7 +269,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() = coroutineTestRule.runTest {
         coEvery {
             userSessionInterface.isShopOwner
         } returns true
@@ -286,7 +280,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun checkAdminAccess_ifShopAdmin_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopAdmin_shouldSuccess() = coroutineTestRule.runTest {
         val isSomDetailRole = true
         val isReplyChatRole = true
         onAuthorizeSomDetailAccessSuccess_thenReturn(isSomDetailRole)
@@ -304,7 +298,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun checkAdminAccess_ifShopAdmin_shouldFail() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopAdmin_shouldFail() = coroutineTestRule.runTest {
         onAuthorizeReplyChatAccessFail_thenThrow(ResponseErrorException())
         coEvery {
             userSessionInterface.isShopOwner
@@ -319,35 +313,35 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     private fun onAuthorizeSomDetailAccessSuccess_thenReturn(isEligible: Boolean) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeSomDetailAccessUseCase.execute(any())
             } returns isEligible
         }
 
     private fun onAuthorizeReplyChatAccessSuccess_thenReturn(isEligible: Boolean) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeChatReplyAccessUseCase.execute(any())
             } returns isEligible
         }
 
     private fun onAuthorizeSomDetailAccessFail_thenThrow(throwable: Throwable) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeSomDetailAccessUseCase.execute(any())
             } throws throwable
         }
 
     private fun onAuthorizeReplyChatAccessFail_thenThrow(throwable: Throwable) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeChatReplyAccessUseCase.execute(any())
             } throws throwable
         }
 
     private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
         }
 }

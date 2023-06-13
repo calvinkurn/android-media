@@ -1,21 +1,22 @@
 package com.tokopedia.createpost.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
-import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
 
 /**
  * @author by milhamj on 21/02/19.
  */
-class RelatedProductAdapter(val listener: RelatedProductListener? = null, val type: String = "")
-    : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
+class RelatedProductAdapter(val listener: RelatedProductListener? = null, val type: String = "") :
+    RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
     private var list: MutableList<RelatedProductItem> = arrayListOf()
@@ -35,7 +36,8 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_af_related_product, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_af_related_product, parent, false)
         return ViewHolder(view)
     }
 
@@ -65,10 +67,12 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         }
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
-        holder.itemView.price.setTextColor(MethodChecker.getColor(
+        holder.itemView.price.setTextColor(
+            MethodChecker.getColor(
                 holder.itemView.context,
                 if (element.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_B500
-                else com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+                else com.tokopedia.unifyprinciples.R.color.Unify_Y500
+            )
         )
         holder.itemView.delete.setOnClickListener {
             listener?.onItemDeleted(holder.adapterPosition)
@@ -80,6 +84,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: ArrayList<RelatedProductItem>) {
         if (list.isEmpty() && shouldAddEmpty()) {
             list.add(emptyItem)

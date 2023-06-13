@@ -35,7 +35,23 @@ object PlayProductTagSocketResponse {
                     price_formatted: "",
                     quantity: 0,
                     shop_id: "$shopId",
-                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
+                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447",
+                    "available_buttons": [
+                      {
+                        "text": "+ Keranjang",
+                        "color": "SECONDARY",
+                        "button_type": "ATC"
+                      },
+                      {
+                        "text": "Beli",
+                        "color": "PRIMARY",
+                        "button_type": "GCR"
+                      }
+                    ],
+                    "is_pinned" : false,
+                    "product_number" : 0,
+                    "rating" : "",
+                    "sold_quantity" : ""
               }
             """.trimIndent()
             if (i != size) productList += ","

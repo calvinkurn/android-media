@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk
 
 object TopAdsConstants {
     const val SEEN_ADS = "seen_ads"
+    const val LAYOUT_1 = 1
     const val LAYOUT_2 = 2
     const val LAYOUT_5 = 5
     const val LAYOUT_6 = 6
@@ -9,6 +10,8 @@ object TopAdsConstants {
     const val LAYOUT_9 = 9
     const val LAYOUT_13 = 13
     const val CONST_5 = 5
+    const val FULFILLMENT = "fulfillment"
+    const val DILYANI_TOKOPEDIA = "Dilayani Tokopedia"
 
     object TopAdsClickUrlTrackerConstant {
         const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
@@ -18,6 +21,7 @@ object TopAdsConstants {
     object TdnBannerConstants {
         const val TYPE_CAROUSEL = "carousel"
         const val TYPE_SINGLE = "single"
+        const val TYPE_VERTICAL_CAROUSEL = "vertical_carousel"
 
     }
 

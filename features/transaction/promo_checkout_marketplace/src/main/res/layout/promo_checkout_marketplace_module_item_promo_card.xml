@@ -118,7 +118,6 @@
                 android:id="@+id/container_promo_info_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toStartOf="@+id/imaginary_view"
                 app:layout_constraintStart_toStartOf="parent"
@@ -209,7 +208,7 @@
                 android:id="@+id/container_error_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_NN0"
+                android:background="@color/Unify_Background"
                 android:gravity="top"
                 android:orientation="horizontal"
                 app:flexWrap="wrap"
@@ -303,7 +302,7 @@
         android:id="@+id/last_promo_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_promo_item" />
 
@@ -311,7 +310,7 @@
         android:id="@+id/last_promo_divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_promo_divider" />

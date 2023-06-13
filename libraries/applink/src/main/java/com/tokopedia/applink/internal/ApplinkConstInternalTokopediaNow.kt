@@ -18,6 +18,9 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
+    @JvmField
+    val SEE_ALL_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/see-all-category"
+
     //TokoNowSortFilterActivity
     val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
 
@@ -40,4 +43,32 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowCategoryFilterActivity
     @JvmField
     val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
+
+    //TokoNowRecipeDetailActivity
+    @JvmField
+    val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe/detail"
+
+    //TokoNowRecipeBookmarkActivity
+    @JvmField
+    val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe/bookmark"
+
+    //TokoNowRecipeHomeActivity
+    @JvmField
+    val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe/home"
+
+    //TokoNowRecipeSearchActivity
+    @JvmField
+    val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe/search"
+
+    //TokoNowRecipeAutoCompleteActivity
+    @JvmField
+    val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe/auto-complete"
+
+    //TokoNowRecipeSimilarProductActivity
+    @JvmField
+    val RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/similar-product-bottomsheet"
+
+    //TokoNowRecipeSearchIngredientActivity
+    @JvmField
+    val RECIPE_INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
 }

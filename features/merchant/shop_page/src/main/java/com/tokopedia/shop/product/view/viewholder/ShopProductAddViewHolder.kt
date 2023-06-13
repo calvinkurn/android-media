@@ -2,7 +2,6 @@ package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopProductAddUiModel
@@ -12,11 +11,11 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductAddUiModel
  */
 
 class ShopProductAddViewHolder(
-        itemView: View,
-        shopProductAddViewHolderListener: ShopProductAddViewHolderListener?
+    itemView: View,
+    shopProductAddViewHolderListener: ShopProductAddViewHolderListener?
 ) : AbstractViewHolder<ShopProductAddUiModel>(itemView) {
 
-    interface ShopProductAddViewHolderListener{
+    interface ShopProductAddViewHolderListener {
         fun onAddProductClicked()
     }
 

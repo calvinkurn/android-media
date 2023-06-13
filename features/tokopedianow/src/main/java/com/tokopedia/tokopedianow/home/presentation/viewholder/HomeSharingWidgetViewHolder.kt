@@ -1,15 +1,16 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import android.text.method.LinkMovementMethod
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
@@ -20,8 +21,6 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeSharingWidgetViewHolder(
@@ -30,9 +29,11 @@ class HomeSharingWidgetViewHolder(
 ) : AbstractViewHolder<HomeSharingWidgetUiModel>(itemView) {
 
     companion object {
-        private const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
-        private const val IMG_SHARING_REFERRAL_RECEIVER = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_referral_receiver.png"
-        private const val IMG_SHARING_REFERRAL_SENDER = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_referral_sender.png"
+        private const val IMG_SHARING_EDUCATION = TokopediaImageUrl.IMG_SHARING_EDUCATION
+        private const val LOTTIE_REFERRAL = TokopediaImageUrl.LOTTIE_REFERRAL
+        private const val IMG_SHARING_REFERRAL_BG_BTM = TokopediaImageUrl.IMG_SHARING_REFERRAL_BG_BTM
+        private const val IMG_SHARING_REFERRAL_BG_TOP = TokopediaImageUrl.IMG_SHARING_REFERRAL_BG_TOP
+        private const val ANIMATION_REPEAT_COUNT = 1
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_sharing_widget
@@ -46,10 +47,17 @@ class HomeSharingWidgetViewHolder(
         }
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding?.apply {
+            lottieReferral.clearAnimation()
+        }
+    }
+
     private fun checkUiModel(element: HomeSharingWidgetUiModel) {
         binding?.apply {
             cvSharingEducation.show()
-            when(element) {
+            when (element) {
                 is HomeSharingReferralWidgetUiModel -> {
                     setReferralData(element)
                     setReferralListener(element)
@@ -66,7 +74,6 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             iuCloseSharing.hide()
         }
-
         if (element.isSender) {
             setSenderData(element)
         } else {
@@ -77,26 +84,40 @@ class HomeSharingWidgetViewHolder(
 
     private fun setSenderData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
-            convertStringToLink(
-                typography = tpSharing,
-                stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
-                referral = element
-            )
-            btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
-            iuSharing.loadImage(IMG_SHARING_REFERRAL_SENDER)
-            ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_left))
-            ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_right))
+            val context = itemView.context
+            val greenColor = ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            ).toString()
+            tpSharing.text = MethodChecker.fromHtml(context.getString(R.string.tokopedianow_home_referral_widget_desc_sender, greenColor))
+            btnSharing.text = getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
+            if (element.titleSection.isNotEmpty()) {
+                tpTitle.visible()
+                tpTitle.text = element.titleSection
+            }
+
+            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            iuSharing.hide()
+            playAnimation()
+            ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
+            ivBgImageTopRight.loadImage(IMG_SHARING_REFERRAL_BG_TOP)
         }
     }
 
     private fun setReceiverData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
             tpSharing.text = MethodChecker.fromHtml(itemView.resources.getString(
-                R.string.tokopedianow_home_referral_widget_desc_receiver, element.maxReward))
-            btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
-            iuSharing.loadImage(IMG_SHARING_REFERRAL_RECEIVER)
-            ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_left))
-            ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_right))
+                R.string.tokopedianow_home_referral_widget_desc_receiver, element.ogDescription))
+            btnSharing.hide()
+            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            if (element.titleSection.isNotEmpty()) {
+                tpTitle.visible()
+                tpTitle.text = element.titleSection
+            }
+            iuSharing.hide()
+            playAnimation()
+            ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
+            ivBgImageTopRight.loadImage(IMG_SHARING_REFERRAL_BG_TOP)
         }
     }
 
@@ -111,8 +132,12 @@ class HomeSharingWidgetViewHolder(
         element.display()
     }
 
-    private fun createVectorDrawableCompat(resId: Int): VectorDrawableCompat? {
-        return VectorDrawableCompat.create(itemView.resources, resId, itemView.context.theme)
+    private fun playAnimation() {
+        binding?.apply {
+            lottieReferral.setAnimationFromUrl(LOTTIE_REFERRAL)
+            lottieReferral.playAnimation()
+            lottieReferral.repeatCount = ANIMATION_REPEAT_COUNT
+        }
     }
 
     private fun setReferralListener(element: HomeSharingReferralWidgetUiModel) {
@@ -124,6 +149,13 @@ class HomeSharingWidgetViewHolder(
                     listener?.onShareBtnReferralReceiverClicked(element)
                 }
             }
+
+            if (element.isSender) {
+                containerWidgetSharing.setOnClickListener {
+                    val url = REFERRAL_PAGE_URL + element.slug
+                    listener?.onMoreReferralClicked(element, url)
+                }
+            }
         }
     }
 
@@ -131,8 +163,8 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             iuCloseSharing.show()
             ivBgImageTop.show()
-            ivBgImageLeft.hide()
-            ivBgImageRight.hide()
+            ivBgImageBtm.hide()
+            ivBgImageTopRight.hide()
             iuCloseSharing.setImage(IconUnify.CLOSE)
             iuCloseSharing.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
             tpSharing.text = MethodChecker.fromHtml(
@@ -155,25 +187,6 @@ class HomeSharingWidgetViewHolder(
 
             iuCloseSharing.setOnClickListener {
                 listener?.onCloseBtnSharingEducationalInfoClicked(element.id)
-            }
-        }
-    }
-
-    private fun convertStringToLink(
-        typography: Typography,
-        stringRes: Int,
-        referral: HomeSharingReferralWidgetUiModel
-    ) {
-        val context = itemView.context
-        val urlParam = REFERRAL_PAGE_URL + referral.slug
-        val greenColor = ContextCompat.getColor(
-            context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
-        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, urlParam, referral.maxReward))
-        typography.text = linkHelper.spannedString
-        typography.movementMethod = LinkMovementMethod.getInstance()
-        linkHelper.urlList[0].let { link ->
-            link.onClick = {
-                listener?.onMoreReferralClicked(referral, link.linkUrl)
             }
         }
     }

@@ -30,17 +30,24 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.common.util.resize
+import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity.Companion.getCallingIntent
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
@@ -128,7 +135,7 @@ class VideoDetailFragment :
         mediaPlayer?.let { player ->
             activity?.let { it ->
                 //video player resize
-                val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
+                val videoSize = resize(it, player.videoWidth, player.videoHeight)
                 videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
                 videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
 
@@ -157,16 +164,18 @@ class VideoDetailFragment :
                         if (::dynamicPostViewModel.isInitialized)
                             calculateTotalComment(
                                 it.getIntExtra(
-                                    KolCommentFragment.ARGS_TOTAL_COMMENT,
+                                    COMMENT_ARGS_TOTAL_COMMENT,
                                     0
                                 )
                             )
                     }
                 }
             }
+
             LOGIN_CODE -> {
                 initData()
             }
+
             LOGIN_FOLLOW_CODE -> {
 
             }
@@ -215,15 +224,15 @@ class VideoDetailFragment :
 
     override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
         if (visitables[0] is DynamicPostUiModel)
-        dynamicPostViewModel = visitables[0] as DynamicPostUiModel
+            dynamicPostViewModel = visitables[0] as DynamicPostUiModel
         val feedXCard = dynamicPostViewModel.feedXCard
         bindHeader(dynamicPostViewModel.feedXCard)
         bindCaption(dynamicPostViewModel.feedXCard)
         bindFooter(dynamicPostViewModel.feedXCard)
 
-            if (feedXCard.media.isNotEmpty()) {
-                feedXCard.media.firstOrNull()?.let { initPlayer(it.mediaUrl) }
-            }
+        if (feedXCard.media.isNotEmpty()) {
+            feedXCard.media.firstOrNull()?.let { initPlayer(it.mediaUrl) }
+        }
 
 
     }
@@ -251,7 +260,7 @@ class VideoDetailFragment :
 
     private fun initPlayer(url: String) {
         if (URLUtil.isValidUrl(url))
-        videoView.setVideoURI(Uri.parse(url))
+            videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener { _, p1, p2 ->
             try {
                 FirebaseCrashlytics.getInstance().recordException(
@@ -270,12 +279,13 @@ class VideoDetailFragment :
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.videoplayer.R.string.error_unknown),
+                        getString(R.string.kol_error_unknown),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
                     true
                 }
+
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
                     Toast.makeText(
                         requireContext(),
@@ -285,6 +295,7 @@ class VideoDetailFragment :
                     activity?.finish()
                     true
                 }
+
                 else -> {
                     Toast.makeText(
                         requireContext(),
@@ -321,7 +332,7 @@ class VideoDetailFragment :
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                presenter.likeKol(id.toInt(), 0, this)
+                presenter.likeKol(id.toLongOrZero(), 0, this)
             } else {
                 goToLogin()
             }
@@ -339,7 +350,7 @@ class VideoDetailFragment :
                 if (callSource == PARAM_FEED) {
                     val intent = getCallingIntent(
                         requireContext(),
-                        id.toInt(),
+                        id.toIntOrZero(),
                         0,
                         authorId,
                         isFollowed,
@@ -349,10 +360,13 @@ class VideoDetailFragment :
 
                 } else {
                     startActivityForResult(
-                        KolCommentActivity.getCallingIntent(
+                        getCallingIntent(
                             requireActivity(),
-                            id.toInt(),
-                            0
+                            id.toIntOrZero(),
+                            0,
+                            authorId,
+                            isFollowed,
+                            postType
                         ), INTENT_COMMENT
                     )
                 }
@@ -370,28 +384,28 @@ class VideoDetailFragment :
                 authorImage.loadImageCircle(it.logoURL)
             } else {
                 authorImage.setImageDrawable(
-                        MethodChecker.getDrawable(
-                                requireActivity(),
-                                com.tokopedia.design.R.drawable.error_drawable
-                        )
+                    MethodChecker.getDrawable(
+                        requireActivity(),
+                        com.tokopedia.design.R.drawable.error_drawable
+                    )
                 )
             }
             if (it.badgeURL.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.badgeURL)
                 authorTitle.setMargin(
-                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
-                        0,
-                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                        0
+                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                    0,
+                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    0
                 )
             } else {
                 authorBadge.hide()
                 authorTitle.setMargin(
-                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                        0,
-                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                        0
+                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    0,
+                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    0
                 )
             }
 
@@ -435,36 +449,28 @@ class VideoDetailFragment :
             }
 
 
-                shareIcon.show()
-                shareText.show()
-                var desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+            shareIcon.show()
+            shareText.show()
+            val desc = requireContext().getString(
+                com.tokopedia.feedcomponent.R.string.feed_share_default_text,
+                feedXCard.author.name
+            )
 
             shareIcon.setOnClickListener {
-                    doShare(
-                        String.format(
-                            "%s",
-                            desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
-                    )
-                }
-            shareText.setOnClickListener {
-                doShare(
-                        String.format(
-                                "%s",
-                                desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
-                )
+                doShare(desc, "${feedXCard.author.name} post")
             }
-
+            shareText.setOnClickListener {
+                doShare(desc, "${feedXCard.author.name} post")
+            }
 
         }
 
     }
 
     private fun doShare(body: String, title: String) {
-        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body)
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, body)
         startActivity(
             Intent.createChooser(sharingIntent, title)
         )
@@ -482,6 +488,7 @@ class VideoDetailFragment :
                     )
                 )
             }
+
             like.count > 0 -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.countFmt
@@ -492,6 +499,7 @@ class VideoDetailFragment :
                     )
                 )
             }
+
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
@@ -539,6 +547,4 @@ class VideoDetailFragment :
             ).show()
         }
     }
-
-
 }

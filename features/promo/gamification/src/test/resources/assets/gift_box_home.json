@@ -19,33 +19,33 @@
         },
         "actionButton": [],
         "tokenAsset": {
-          "backgroundImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/09/PNG-PLAY-SCREEN-MOBILE.jpg.png",
+          "backgroundImgURL": "https://images.tokopedia.net/img/blog/promo/2020/09/PNG-PLAY-SCREEN-MOBILE.jpg.png",
           "seamlessImgURL": "",
           "imageURL": "",
           "imageV2URLs": [
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/Box-Bawah.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/GIF_WIBBOX_TOPONLY_BINTANG.gif",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_0_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_1_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_2_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_3_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_4_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_5_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_6_delay-0.01s.png",
-            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/frame_7_delay-0.01s.png"
+            "https://images.tokopedia.net/assets/images/gamification/taptap/Box-Bawah.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/GIF_WIBBOX_TOPONLY_BINTANG.gif",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_0_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_1_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_2_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_3_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_4_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_5_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_6_delay-0.01s.png",
+            "https://images.tokopedia.net/assets/images/gamification/taptap/frame_7_delay-0.01s.png"
           ]
         },
         "prizeList": [
           {
             "isSpecial": false,
-            "imageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/coupon3x.png",
+            "imageURL": "https://images.tokopedia.net/img/blog/promo/2020/03/coupon3x.png",
             "text": [
               "Kupon"
             ]
           },
           {
             "isSpecial": true,
-            "imageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/09/JPEG-Disclaimer-500x500.jpg",
+            "imageURL": "https://images.tokopedia.net/img/blog/promo/2020/09/JPEG-Disclaimer-500x500.jpg",
             "text": [
               "Hadiah langsung",
               "Untuk pengguna baru, aktif dan dikangen yang telah disesuaikan dengan persona kamu",
@@ -62,12 +62,12 @@
           },
           {
             "isSpecial": false,
-            "imageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/ovo%403x.png",
+            "imageURL": "https://images.tokopedia.net/img/blog/promo/2020/03/ovo%403x.png",
             "text": "OVO Points"
           },
           {
             "isSpecial": false,
-            "imageURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/coupon3x.png",
+            "imageURL": "https://images.tokopedia.net/img/blog/promo/2020/03/coupon3x.png",
             "text": "Kupon"
           }
         ],

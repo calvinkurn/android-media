@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -36,7 +37,9 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartGeneralWidget @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     @Inject
@@ -56,11 +59,16 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
+    private var chevronClickListener: OnClickListener? = null
+
     private var viewModel: MiniCartGeneralViewModel? = null
     private val binding: WidgetMiniCartBinding
 
     init {
         binding = WidgetMiniCartBinding.inflate(LayoutInflater.from(context))
+        binding.miniCartContainer.setOnClickListener {
+            // prevent click event from passing through
+        }
         addView(binding.root)
 
         val application = (context as? Activity)?.application
@@ -82,10 +90,13 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             val labelText = context.getString(R.string.mini_cart_widget_label_purchase_summary)
             setLabelTitle(labelText)
             enableAmountChevron(true)
-            amountChevronView.setOnClickListener {
+            chevronClickListener = OnClickListener {
                 sendEventClickSimplifiedSummary()
                 showSimplifiedSummaryBottomSheet(fragment)
             }
+            labelTitleView.setOnClickListener(chevronClickListener)
+            amountView.setOnClickListener(chevronClickListener)
+            amountChevronView.setOnClickListener(chevronClickListener)
             amountCtaView.setOnClickListener {
                 sendEventClickCheckCart()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
@@ -95,7 +106,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         }
         // Init Chat Button
         val chatIcon = getIconUnifyDrawable(
-            context, IconUnify.CHAT,
+            context,
+            IconUnify.CHAT,
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
         binding.miniCartTotalAmount.setAdditionalButton(chatIcon)
@@ -103,10 +115,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             sendEventClickChat()
             showMiniCartChatListBottomSheet(fragment)
         }
-        binding.imageChevronUnavailable.setOnClickListener {
-            sendEventClickSimplifiedSummary()
-            showSimplifiedSummaryBottomSheet(fragment)
-        }
+        binding.imageChevronUnavailable.setOnClickListener(chevronClickListener)
         binding.chatIcon.setImageDrawable(chatIcon)
     }
 
@@ -152,7 +161,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                             override fun onRefreshErrorPage() {
                                 showMiniCartChatListBottomSheet(fragment)
                             }
-                        })
+                        }
+                    )
                 }
             } else {
                 showGlobalErrorNoConnection(fragment)
@@ -177,7 +187,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                     override fun onRefreshErrorPage() {
                         showMiniCartChatListBottomSheet(fragment)
                     }
-                })
+                }
+            )
         }
     }
 
@@ -306,8 +317,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to initialize the widget
      */
     fun initialize(
-        shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
-        isShopDirectPurchase: Boolean = true, source: MiniCartSource, page: MiniCartAnalytics.Page
+        shopIds: List<String>,
+        fragment: Fragment,
+        listener: MiniCartWidgetListener,
+        isShopDirectPurchase: Boolean = true,
+        source: MiniCartSource,
+        page: MiniCartAnalytics.Page
     ) {
         if (viewModel == null) {
             initializeView(fragment)
@@ -345,8 +360,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      */
     fun showMiniCartChatListBottomSheet(fragment: Fragment) {
         viewModel?.let {
-            miniCartChatListBottomSheet.show(fragment.context, fragment.parentFragmentManager,
-                fragment.viewLifecycleOwner, it)
+            miniCartChatListBottomSheet.show(
+                fragment.context,
+                fragment.parentFragmentManager,
+                fragment.viewLifecycleOwner,
+                it
+            )
         }
     }
 

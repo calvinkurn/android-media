@@ -1,24 +1,25 @@
 package com.tokopedia.topads.credit.history.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.ExpiryDateResponse
+import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
+import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +30,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import java.util.*
 
 class TopAdsCreditHistoryViewModelTest {
     lateinit var viewModel: TopAdsCreditHistoryViewModel
@@ -43,8 +43,8 @@ class TopAdsCreditHistoryViewModelTest {
     private val pendingRewardUseCase: TopadsGetFreeDepositUseCase = mockk(relaxed = true)
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
-    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse> =
-        mockk(relaxed = true)
+    private val topAdsCreditHistoryUseCase: TopadsCreditHistoryUseCase = mockk(relaxed = true)
+    private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
@@ -52,7 +52,8 @@ class TopAdsCreditHistoryViewModelTest {
         MockitoAnnotations.initMocks(this)
         viewModel = TopAdsCreditHistoryViewModel(
             userSessionInterface, autoTopUpUSeCase, topAdsGetShopDepositUseCase,
-            topAdsCreditHistoryUseCase, Dispatchers.Main, pendingRewardUseCase
+            topAdsCreditHistoryUseCase, Dispatchers.Main, pendingRewardUseCase,
+            topAdsGetSelectedTopUpTypeUseCase
         )
         Mockito.`when`(userSessionInterface.userId).thenReturn("12345")
         Mockito.`when`(userSessionInterface.shopId).thenReturn("123456")
@@ -68,78 +69,6 @@ class TopAdsCreditHistoryViewModelTest {
         viewModel.loadPendingReward()
 
         Assert.assertEquals(viewModel.expiryDateHiddenTrial.value, actual.pendingRebateCredit)
-    }
-
-    @Test
-    fun `getCreditHistory success check, livedata should be success`() {
-        val expectedValue = TopAdsCreditHistory()
-        val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
-
-        every { mockObject.response.errors } returns emptyList()
-        every { mockObject.response.dataHistory } returns expectedValue
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertEquals((viewModel.creditsHistory.value as Success).data, expectedValue)
-    }
-
-    @Test
-    fun `getCreditHistory non empty error check, livedata should be fail`() {
-        val expectedValue = TopAdsCreditHistory()
-        val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
-
-        every { mockObject.response.errors } returns listOf(Error())
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertTrue(viewModel.creditsHistory.value is Fail)
-    }
-
-    @Test
-    fun `getCreditHistory on error exception check, livedata should be fail`() {
-        val actual = Exception("it")
-
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(actual)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertEquals((viewModel.creditsHistory.value as Fail).throwable, actual)
-    }
-
-    @Test
-    fun `credit history execute`() {
-        viewModel.getCreditHistory("", Date(), Date())
-        verify {
-            topAdsCreditHistoryUseCase.execute(any(), any())
-        }
-    }
-
-    @Test
-    fun `credit history`() {
-        val expected = 5.0f
-        var actual = 0.0f
-        val data =
-            TopAdsCreditHistory.CreditsResponse(response = TopAdsCreditHistory.Response(dataHistory = TopAdsCreditHistory(
-                totalAddition = expected)))
-        every { topAdsCreditHistoryUseCase.execute(captureLambda(), any()) } answers {
-            actual = data.response.dataHistory.totalAddition
-        }
-        viewModel.getCreditHistory("", Date(), Date())
-        Assert.assertEquals(expected, actual)
     }
 
     @Test
@@ -231,4 +160,58 @@ class TopAdsCreditHistoryViewModelTest {
             topAdsGetShopDepositUseCase.execute(any(), any())
         }
     }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is not INSUFFICIENT_CREDIT and not TOP_UP_FREQUENTLY`(){
+        val actual = GetPersonalisedCopyResponse(GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData()
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        Assert.assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, false)
+    }
+
+    @Test
+    fun `getSelectedTopUpType on exception ,livedata value should be Fail`() {
+        val actual = Throwable("my exception")
+
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+        Assert.assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Fail).throwable.message,
+            actual.message
+        )
+    }
+
 }

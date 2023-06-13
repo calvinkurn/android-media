@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sahProgressOnErrorLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/shc_medium_widget_height"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="@dimen/layout_lvl2"
+    android:padding="16dp"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -14,7 +15,7 @@
         android:id="@+id/tvProgressTitleOnError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/spacing_lvl2"
+        android:lineSpacingExtra="4dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,15 +23,36 @@
         app:typographyWeight="bold"
         tools:text="Power Merchant (Aktif)" />
 
-    <include
-        android:id="@+id/shcProgressCommonErrorState"
-        layout="@layout/shc_partial_common_widget_state_error"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcProgressWidgetOnError"
+        android:layout_width="104dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/shc_content_desc_image_error"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/unify_globalerrors_404" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:maxLines="3"
+        android:text="@string/shc_failed_to_load_information"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgressTitleOnError" />
+        app:layout_constraintTop_toBottomOf="@+id/imgWidgetOnError"
+        app:layout_constraintVertical_bias="0"
+        app:typographyWeight="bold" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

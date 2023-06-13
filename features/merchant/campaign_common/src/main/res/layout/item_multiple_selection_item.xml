@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkboxUnify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgName"
+        android:layout_width="0dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Kategori"
+        app:typographyType="paragraph_2"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/checkboxUnify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/checkboxUnify"
+        app:layout_constraintTop_toTopOf="@+id/checkboxUnify" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

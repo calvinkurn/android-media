@@ -2,7 +2,7 @@ package com.tokopedia.checkout.journey.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
@@ -40,6 +40,7 @@ class CheckoutAnalyticsTest {
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.get_payment_fee_checkout_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -54,7 +55,7 @@ class CheckoutAnalyticsTest {
             selectFirstShippingDurationOption()
             waitForData()
             clickChoosePaymentButton(activityRule)
-        } validateAnalytics  {
+        } validateAnalytics {
             waitForData()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -71,8 +72,8 @@ class CheckoutAnalyticsTest {
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
         private const val CHECKOUT_KEY = "checkout"
+        private const val GET_PAYMENT_FEE_CHECKOUT = "getPaymentFeeCheckout"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
-
 }

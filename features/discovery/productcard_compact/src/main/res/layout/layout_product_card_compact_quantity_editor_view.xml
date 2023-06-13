@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layoutDescription="@xml/layout_product_card_compact_quantity_editor_custom_view_scene">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/background"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:translationZ="1dp"
+        app:altSrc="@drawable/product_card_compact_bg_quantity_editor_view_expanded"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/product_card_compact_bg_quantity_editor_view" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/add_button"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:contentDescription="@string/product_card_compact_content_description_quantity_editor_view_add"
+        android:padding="12dp"
+        android:tint="@color/product_card_compact_dms_button_stroke_plus_minus_cursor_color"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/iconunify_add" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/sub_button"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:contentDescription="@string/product_card_compact_content_description_quantity_editor_view_sub"
+        android:padding="12dp"
+        android:tint="@color/product_card_compact_dms_button_stroke_plus_minus_cursor_color"
+        android:translationZ="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/iconunify_remove" />
+
+    <com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactEditTextView
+        android:id="@+id/edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="number"
+        android:maxLength="3"
+        android:minWidth="30dp"
+        android:textCursorDrawable="@drawable/product_card_compact_bg_quantity_editor_view_cursor"
+        android:textSize="14sp"
+        android:translationZ="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/quantity_editor_add_button"
+        app:layout_constraintStart_toEndOf="@+id/quantity_editor_sub_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/add_to_cart_btn_shimmer"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:translationZ="4dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_check_mark"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_margin="8dp"
+        android:translationZ="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/product_card_compact_ic_check_circle" />
+</androidx.constraintlayout.motion.widget.MotionLayout>

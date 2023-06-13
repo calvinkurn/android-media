@@ -43,7 +43,7 @@
             "user_id": 12299749,
             "admin_ids": [],
             "shop_name": "Tumbler Starbucks 123",
-            "shop_image": "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2018/10/19/1479278/1479278_fa306e59-f15f-4048-b2f7-8ddc5d798926.jpeg",
+            "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/10/19/1479278/1479278_fa306e59-f15f-4048-b2f7-8ddc5d798926.jpeg",
             "shop_url": "https://www.tokopedia.com/tumblersbux",
             "shop_status": 1,
             "is_gold": 1,
@@ -53,7 +53,7 @@
             "gold_merchant": {
               "is_gold": 1,
               "is_gold_badge": true,
-              "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+              "gold_merchant_logo_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
             },
             "official_store": {
               "is_official": 0,
@@ -92,7 +92,7 @@
               "ship_id": 1,
               "ship_name": "JNE",
               "ship_code": "jne",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 1,
@@ -125,7 +125,7 @@
               "ship_id": 4,
               "ship_name": "Pos Indonesia",
               "ship_code": "pos",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-pos.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 10,
@@ -142,7 +142,7 @@
               "ship_id": 10,
               "ship_name": "GO-JEK",
               "ship_code": "gojek",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 28,
@@ -167,7 +167,7 @@
               "ship_id": 12,
               "ship_name": "Ninja Xpress",
               "ship_code": "ninja",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-ninja.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 25,
@@ -184,7 +184,7 @@
               "ship_id": 13,
               "ship_name": "Grab",
               "ship_code": "grab",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 37,
@@ -209,7 +209,7 @@
               "ship_id": 23,
               "ship_name": "AnterAja",
               "ship_code": "anteraja",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 45,
@@ -234,7 +234,7 @@
               "ship_id": 24,
               "ship_name": "Lion Parcel",
               "ship_code": "lion",
-              "ship_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+              "ship_logo": "https://images.tokopedia.net/img/kurir-lionparcel.png",
               "ship_prods": [
                 {
                   "ship_prod_id": 47,
@@ -300,7 +300,7 @@
               "product_switch_invenage": 1,
               "currency_rate": 1,
               "product_price_currency": 1,
-              "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/23/12299749/12299749_a9ba0f7b-b9d0-415f-80e6-9eaa9d73e5d1_700_700",
+              "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/23/12299749/12299749_a9ba0f7b-b9d0-415f-80e6-9eaa9d73e5d1_700_700",
               "product_all_images": "[{\"file_name\":\"12299749_a9ba0f7b-b9d0-415f-80e6-9eaa9d73e5d1_700_700\",\"file_path\":\"product-1/2019/7/23/12299749\",\"status\":2}]",
               "product_notes": "",
               "product_quantity": 2,
@@ -345,7 +345,7 @@
               "is_blacklisted": false,
               "free_shipping": {
                 "eligible": false,
-                "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "badge_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               }
             }
           ],

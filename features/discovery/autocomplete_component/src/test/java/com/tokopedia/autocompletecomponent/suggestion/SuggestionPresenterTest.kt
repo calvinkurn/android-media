@@ -33,6 +33,7 @@ import io.mockk.verify
 import org.junit.Test
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
+private const val suggestionEmptyHeaderTitleResponse = "autocomplete/suggestion/suggestion-empty-header-title-response.json"
 private const val suggestionTopShopResponse = "autocomplete/suggestion/suggestion-top-shop-response.json"
 private const val suggestionCampaignResponse = "autocomplete/suggestion/local-global-response.json"
 private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/local-global-at-top-response.json"
@@ -485,4 +486,22 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `Then verify shop ads shown is sub ads`(suggestionUniverse)
         `Then verify shops visitable list size`(expectedSize)
     }
+
+    @Test
+    fun `get suggestion data with empty header title will hide header`() {
+        val suggestionUniverse = suggestionEmptyHeaderTitleResponse.jsonToObject<SuggestionUniverse>()
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion API is called`()
+        `then verify suggestion view will call showSuggestionResult`()
+        `then verify no suggestion title header`()
+    }
+
+    private fun `then verify no suggestion title header`() {
+        val visitableList = slotVisitableList.captured
+        visitableList.none { it is SuggestionTitleDataView } shouldBe true
+    }
+
 }

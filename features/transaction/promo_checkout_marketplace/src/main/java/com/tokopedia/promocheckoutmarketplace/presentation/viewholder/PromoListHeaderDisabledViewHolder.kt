@@ -10,8 +10,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.purchase_platform.common.utils.Utils
 
-class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderDisabledBinding,
-                                        private val listener: PromoCheckoutActionListener
+class PromoListHeaderDisabledViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderDisabledBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListHeaderUiModel>(viewBinding.root) {
 
     companion object {
@@ -21,10 +22,21 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
     override fun bind(element: PromoListHeaderUiModel) {
         with(viewBinding) {
             if (element.uiData.iconUnify.isNotBlank()) {
-                iconPromoListHeader.setImage(IconHelper.getIcon(element.uiData.iconUnify))
-                iconPromoListHeader.show()
+                if (IconHelper.isIconFromUrl(element.uiData.iconUnify)) {
+                    iconPromoListHeader.gone()
+                    if (element.uiData.iconUrl.isNotEmpty()) {
+                        imagePromoListHeader.setImageUrl(element.uiData.iconUrl)
+                    } else {
+                        imagePromoListHeader.gone()
+                    }
+                } else {
+                    imagePromoListHeader.gone()
+                    iconPromoListHeader.setImage(IconHelper.getIcon(element.uiData.iconUnify))
+                    iconPromoListHeader.show()
+                }
             } else {
                 iconPromoListHeader.gone()
+                imagePromoListHeader.gone()
             }
 
             labelPromoListHeaderTitle.text = Utils.getHtmlFormat(element.uiData.title)
@@ -32,5 +44,4 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
             itemView.setOnClickListener {}
         }
     }
-
 }

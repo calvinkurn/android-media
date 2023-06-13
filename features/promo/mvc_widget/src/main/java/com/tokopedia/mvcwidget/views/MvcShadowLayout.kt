@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.promoui.common.R
 import com.tokopedia.promoui.common.dpToPx
 
 class MvcShadowLayout @JvmOverloads constructor(

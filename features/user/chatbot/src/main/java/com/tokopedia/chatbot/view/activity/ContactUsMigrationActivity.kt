@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.activity
 import android.content.Context
 import android.os.Bundle
 import android.text.SpannableString
+import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chatbot.ChatbotConstant.CONTACT_US_APPLINK
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
+import com.tokopedia.chatbot.databinding.ActivityChatbotInboxMigrationBinding
+import com.tokopedia.chatbot.databinding.BottomSheetGoToHelpBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
@@ -30,18 +33,20 @@ import javax.inject.Inject
 class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     @Inject
-    lateinit var viewModelFactory : ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel : ChatbotViewModel by lazy(LazyThreadSafetyMode.NONE){
-        ViewModelProvider(this,viewModelFactory).get(ChatbotViewModel::class.java)
+    private val viewModel: ChatbotViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, viewModelFactory).get(ChatbotViewModel::class.java)
     }
 
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
 
-    private lateinit var textSubtitle : Typography
-    private lateinit var buttonTokopediaCare : UnifyButton
-    private lateinit var contentListRV : RecyclerView
-    private var isDismissedCalledDirectly : Boolean = false
+    private var textSubtitle: Typography? = null
+    private var buttonTokopediaCare: UnifyButton? = null
+    private var contentListRV: RecyclerView? = null
+    private var isDismissedCalledDirectly: Boolean = false
+    private var _viewBinding: ActivityChatbotInboxMigrationBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -50,7 +55,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chatbot_inbox_migration)
+        _viewBinding = ActivityChatbotInboxMigrationBinding.inflate(layoutInflater)
+        setContentView(getBindingView().root)
 
         initInjector()
         startObservingViewModels()
@@ -88,23 +94,23 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun initBottomSheet(subtitle: String): View? {
-        val view = View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
+        val view = BottomSheetGoToHelpBinding.inflate(LayoutInflater.from(this)).apply {
             initViews(this)
             setSubtitle(subtitle)
-            initRecyclerViewFromContentList(context,contentListRV)
+            initRecyclerViewFromContentList(this@ContactUsMigrationActivity, contentListRV?:return@apply)
             setOnClickListener()
         }
-        return view
+        return view.root
     }
 
-    private fun initViews(view : View) {
-        textSubtitle = view.findViewById(R.id.text_subtitle)
-        buttonTokopediaCare = view.findViewById(R.id.btn_tokopedia_care)
-        contentListRV= view.findViewById(R.id.content_list)
+    private fun initViews(view: BottomSheetGoToHelpBinding) {
+        textSubtitle = view.textSubtitle
+        buttonTokopediaCare = view.btnTokopediaCare
+        contentListRV = view.contentList
     }
 
     private fun setOnClickListener() {
-        buttonTokopediaCare.setOnClickListener {
+        buttonTokopediaCare?.setOnClickListener {
             chatbotAnalytics.get().eventOnClickTokopediaCare()
             goToHelpPage()
         }
@@ -121,17 +127,18 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun setSubtitle(subtitle: String) {
-        textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
+        textSubtitle?.text = SpannableString(MethodChecker.fromHtml(subtitle))
     }
 
     private fun initRecyclerViewFromContentList(
         context: Context,
         contentListRV: RecyclerView
     ) {
-        contentListRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
+        contentListRV.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val adapter = ContactUsMigrationAdapter()
         val contentList = getList()
-        setList(contentList,adapter)
+        setList(contentList, adapter)
         contentListRV.adapter = adapter
     }
 
@@ -155,10 +162,10 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun setList(contentList: List<String>, adapter: ContactUsMigrationAdapter) {
-        var newList = mutableListOf<Pair<Int,String>>()
+        var newList = mutableListOf<Pair<Int, String>>()
 
-        contentList.forEachIndexed{ index, content ->
-            newList.add(Pair(index+1,content))
+        contentList.forEachIndexed { index, content ->
+            newList.add(Pair(index + 1, content))
         }
 
         adapter.setList(newList)
@@ -167,7 +174,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     private fun initInjector() {
         val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent)
+            (application as BaseMainApplication).baseAppComponent
+        )
             .chatbotModule(ChatbotModule(this))
             .build()
 
@@ -175,4 +183,9 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? = null
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
+    }
 }

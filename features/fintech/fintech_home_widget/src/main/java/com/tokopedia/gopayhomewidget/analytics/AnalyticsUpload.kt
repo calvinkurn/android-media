@@ -7,7 +7,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AnalyticsUpload @Inject constructor(
-    private val userSession: dagger.Lazy<UserSessionInterface>,
+    private val userSession: dagger.Lazy<UserSessionInterface>
 ) {
 
     private val analyticTracker: ContextAnalytics
@@ -17,30 +17,32 @@ class AnalyticsUpload @Inject constructor(
         when (analyticsEventGenerator) {
             is AnalyticsEventGenerator.WidgetCtaClickedButton -> sendClickEvent(
                 analyticsEventGenerator.redirectionPage,
-                analyticsEventGenerator.widgetType
+                analyticsEventGenerator.caseType,
+                analyticsEventGenerator.partnerName
             )
             is AnalyticsEventGenerator.WidgetImpressionAnalytics -> sendImpressionEvent(
-                analyticsEventGenerator.widgetType
+                analyticsEventGenerator.caseType,
+                analyticsEventGenerator.partnerName
             )
         }
     }
 
-    private fun sendImpressionEvent(widgetType: String) {
+    private fun sendImpressionEvent(caseType: String, partnerName: String) {
         val map = TrackAppUtils.gtmData(
             WIDGET_IMPRESSION_EVENT,
             WIDGET_IMPRESSION_CATEGORY,
             WIDGET_IMPRESSION_ACTION,
-            "${userSession.get().name} - $widgetType - $PARTNER_NAME"
+            "${userSession.get().name} - $caseType - $partnerName"
         )
         sendGeneralEvent(map)
     }
 
-    private fun sendClickEvent(redirectionPage: String, widgetType: String) {
+    private fun sendClickEvent(redirectionPage: String, caseType: String, partnerName: String) {
         val map = TrackAppUtils.gtmData(
             WIDGET_CLICK_EVENT,
             WIDGET_IMPRESSION_CATEGORY,
             WIDGET_CLICK_ACTION,
-            "${userSession.get().name} - $widgetType - $PARTNER_NAME - $redirectionPage"
+            "${userSession.get().name} - $caseType - $partnerName - $redirectionPage"
         )
         sendGeneralEvent(map)
     }
@@ -53,7 +55,6 @@ class AnalyticsUpload @Inject constructor(
     }
 
     companion object {
-        const val PARTNER_NAME = "Go-Cicil"
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"

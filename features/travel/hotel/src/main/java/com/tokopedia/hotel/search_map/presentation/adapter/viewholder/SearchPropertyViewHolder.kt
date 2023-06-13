@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageToLoad
 import com.tokopedia.hotel.databinding.ItemPropertySearchResultBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
@@ -14,7 +15,7 @@ class SearchPropertyViewHolder(val binding: ItemPropertySearchResultBinding) : A
 
     override fun bind(element: Property) {
         with(binding) {
-            image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
+            image.loadImage(element.getImageToLoad(binding.root.context))
             if (element.star < 1) {
                 ratingStar.hide()
             } else {

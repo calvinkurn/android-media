@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -15,7 +14,6 @@ import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
-import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionVerticalCategoryViewBinder()
@@ -51,7 +49,7 @@ class SectionVerticalCategoryVH(val viewCategory: View) : RecyclerView.ViewHolde
         dynamicLinksContainer = viewCategory.findViewById(R.id.container_dynamic_links)
         categorySeeAll = viewCategory.findViewById(R.id.tv_seeall_category)
         mRvDynamicLinks = viewCategory.findViewById(R.id.rv_dynamic_link)
-        if (content.layoutCategoryAttr == null || content.layoutCategoryAttr.categoryTokopointsList == null || content.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
+        if (content.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
             return
         }
         if (content.sectionTitle.isNotEmpty()) {
@@ -64,7 +62,7 @@ class SectionVerticalCategoryVH(val viewCategory: View) : RecyclerView.ViewHolde
         }
         dynamicLinksContainer.visibility = View.VISIBLE
 
-        content.cta?.let {
+        content.cta.let {
             if (it.text.isNotEmpty()) {
                 categorySeeAll.text = it.text
                 categorySeeAll.show()

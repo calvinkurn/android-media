@@ -19,4 +19,4 @@ class PlayBroadcastRepositoryImpl @Inject constructor(
     PlayBroadcastChannelRepository by channelRepo,
     PlayBroadcastPinnedMessageRepository by pinnedMessageRepo,
     PlayBroadcastInteractiveRepository by interactiveRepo,
-        PlayBroProductRepository by productRepository
+    PlayBroProductRepository by productRepository

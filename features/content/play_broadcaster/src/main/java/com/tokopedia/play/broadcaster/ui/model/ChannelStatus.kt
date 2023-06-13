@@ -53,4 +53,10 @@ enum class ChannelStatus(val value: String) {
             return Pair(channelId.toString(), playChannelStatus)
         }
     }
+
+    val isPause: Boolean
+        get() = this == Pause
+
+    val isLive: Boolean
+        get() = this == Live
 }

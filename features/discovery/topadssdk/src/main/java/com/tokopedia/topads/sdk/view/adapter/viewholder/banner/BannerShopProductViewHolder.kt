@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -11,7 +10,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -19,13 +18,13 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
 
 class BannerShopProductViewHolder(container: View, private val topAdsBannerClickListener: TopAdsBannerClickListener?,
                                   private val impressionListener: TopAdsItemImpressionListener?,
-                                  private val addToCartClickListener: TopAdsAddToCartClickListener?) : AbstractViewHolder<BannerShopProductViewModel?>(container) {
+                                  private val addToCartClickListener: TopAdsAddToCartClickListener?) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridView: ProductCardGridView = itemView.findViewById(R.id.product_item)
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(itemView.context)
     }
 
-    override fun bind(element: BannerShopProductViewModel?) {
+    override fun bind(element: BannerShopProductUiModel?) {
         element?.let { model ->
             val productCardViewModel = model.product
             productCardGridView.run {
@@ -33,7 +32,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                 setProductModel(productCardViewModel)
                 setImageProductViewHintListener(model, object : ViewHintListener {
                     override fun onViewHint() {
-                        impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products[adapterPosition-1], model.cpmData)
+                        impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
                         impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
                     }
                 })

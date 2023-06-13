@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_shop_title"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_title_width"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/shimmer_sah_new_other_shop_desc"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,7 +18,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_shop_desc"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_desc_width"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/sah_new_other_item_shop_info_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

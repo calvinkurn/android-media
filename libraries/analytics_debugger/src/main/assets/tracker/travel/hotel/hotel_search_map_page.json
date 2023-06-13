@@ -41,6 +41,7 @@
       "userId": ".*",
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
+      "item_list_name": "/hotel/",
       "category": "hotel",
       "items": [ {
         "item_id": ".+",
@@ -125,6 +126,7 @@
       "userId": ".*",
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
+      "item_list_name": "/hotel/",
       "category": "hotel",
       "items": [ {
         "item_id": ".+",

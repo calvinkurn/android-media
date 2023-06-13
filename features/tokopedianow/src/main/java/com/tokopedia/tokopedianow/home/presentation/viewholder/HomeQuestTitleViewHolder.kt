@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -7,7 +9,6 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,7 +28,7 @@ class HomeQuestTitleViewHolder(
 ): AbstractViewHolder<HomeQuestTitleUiModel>(itemView) {
 
     companion object {
-        private const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
+        private const val BG_QUEST_TITLE = TokopediaImageUrl.BG_QUEST_TITLE
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_title_widget
     }
@@ -91,6 +92,6 @@ class HomeQuestTitleViewHolder(
         } else {
             QUEST_DETAIL_PRODUCTION_URL
         }
-        RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW, url)
+        RouteManager.route(itemView.context, url)
     }
 }

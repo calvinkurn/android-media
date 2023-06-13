@@ -2,16 +2,14 @@ package com.tokopedia.shop.settings.notes.view.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
 import com.tokopedia.usecase.RequestParams
-import java.util.ArrayList
 import javax.inject.Inject
 
 class GetShopNoteUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<ShopNoteQuery>(graphqlRepository) {
+) : GraphqlUseCase<ShopNoteQuery>(graphqlRepository) {
 
     companion object {
         const val query = """

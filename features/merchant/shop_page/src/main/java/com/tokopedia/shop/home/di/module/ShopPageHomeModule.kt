@@ -28,8 +28,6 @@ import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
@@ -44,24 +42,30 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideAddToCartOccMultiUseCase(graphqlRepository: GraphqlRepository,
-                                        addToCartDataMapper: AddToCartDataMapper,
-                                        chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartOccMultiUseCase {
+    fun provideAddToCartOccMultiUseCase(
+        graphqlRepository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartOccMultiUseCase {
         return AddToCartOccMultiUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideAddToCart(graphqlRepository: GraphqlRepository,
-                                        addToCartDataMapper: AddToCartDataMapper,
-                                        chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+    fun provideAddToCart(
+        graphqlRepository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartUseCase {
         return AddToCartUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideUpdateCart(graphqlRepository: GraphqlRepository,
-                         chosenAddressRequestHelper: ChosenAddressRequestHelper): UpdateCartUseCase {
+    fun provideUpdateCart(
+        graphqlRepository: GraphqlRepository,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): UpdateCartUseCase {
         return UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper)
     }
 
@@ -74,14 +78,14 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     fun provideAddToCartBundleUseCase(
-            graphqlRepository: GraphqlRepository,
-            addToCartBundleDataMapper: AddToCartBundleDataMapper,
-            chosenAddressRequestHelper: ChosenAddressRequestHelper
+        graphqlRepository: GraphqlRepository,
+        addToCartBundleDataMapper: AddToCartBundleDataMapper,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
     ): AddToCartBundleUseCase {
         return AddToCartBundleUseCase(
-                graphqlRepository,
-                addToCartBundleDataMapper,
-                chosenAddressRequestHelper
+            graphqlRepository,
+            addToCartBundleDataMapper,
+            chosenAddressRequestHelper
         )
     }
 
@@ -93,30 +97,22 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideInterceptors(loggingInterceptor: HttpLoggingInterceptor,
-                            commonErrorResponseInterceptor: CommonErrorResponseInterceptor): MutableList<Interceptor> {
+    fun provideInterceptors(
+        loggingInterceptor: HttpLoggingInterceptor,
+        commonErrorResponseInterceptor: CommonErrorResponseInterceptor
+    ): MutableList<Interceptor> {
         return mutableListOf(loggingInterceptor, commonErrorResponseInterceptor)
     }
 
     @ShopPageHomeScope
     @Provides
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ShopPageContext context: Context): RestRepository {
+    fun provideRestRepository(
+        interceptors: MutableList<Interceptor>,
+        @ShopPageContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
-    }
-
-    @ShopPageHomeScope
-    @Provides
-    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ShopPageHomeScope
-    @Provides
-    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @ShopPageHomeScope
@@ -147,7 +143,6 @@ class ShopPageHomeModule {
     @Provides
     fun provideTrackingQueue(@ShopPageContext context: Context) = TrackingQueue(context)
 
-
     @ShopPageHomeScope
     @Provides
     fun provideShopPageHomeTracking(trackingQueue: TrackingQueue): ShopPageHomeTracking {
@@ -165,11 +160,12 @@ class ShopPageHomeModule {
      */
     @ShopPageHomeScope
     @Provides
-    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapper: PlayWidgetUiMapper,
-                          connectionUtil: PlayWidgetConnectionUtil,
+    fun providePlayWidget(
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
@@ -179,7 +175,6 @@ class ShopPageHomeModule {
             connectionUtil
         )
     }
-
 
     @ShopPageHomeScope
     @Provides

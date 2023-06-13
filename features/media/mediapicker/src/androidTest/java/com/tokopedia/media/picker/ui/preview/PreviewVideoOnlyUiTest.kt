@@ -32,7 +32,7 @@ class PreviewVideoOnlyUiTest : PreviewTest() {
         startPreviewPage()
 
         // When
-        Espresso.onView(ViewMatchers.withId(R.id.btn_done)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.action_text_done)).perform(ViewActions.click())
         val uploadResult =
             activityTestRule.activityResult.resultData.extras?.get(EXTRA_RESULT_PICKER) as PickerResult
 

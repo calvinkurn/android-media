@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage.interactive
 
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 
 /**
@@ -8,7 +8,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
  */
 interface PlayInteractiveStorage {
 
-    fun save(model: InteractiveUiModel)
+    fun save(model: GameUiModel)
 
     fun setJoined(id: String)
 

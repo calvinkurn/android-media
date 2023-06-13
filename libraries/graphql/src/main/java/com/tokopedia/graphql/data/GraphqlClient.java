@@ -2,8 +2,11 @@ package com.tokopedia.graphql.data;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.RESPONSE_HEADER_KEY;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
@@ -16,10 +19,12 @@ import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.MacroInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
@@ -158,6 +163,13 @@ public class GraphqlClient {
     @NotNull
     public static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+        if (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
+            try {
+                tkpdOkHttpBuilder.addInterceptor(new MockInterceptor(context));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 
@@ -193,6 +205,11 @@ public class GraphqlClient {
                     },
                     () -> UtilsKt.getAkamaiValue(context.get())
             );
+        }
+
+        public String getTopAdsHeader(){
+            SharedPreferences sp =  context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+            return sp.getString(RESPONSE_HEADER_KEY, "");
         }
     }
 

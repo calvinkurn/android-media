@@ -7,7 +7,7 @@ data class DriverTipModel(
 data class LogisticDriverModel(
     var messageError: String = "",
     var status: Int = 0,
-    var tippingLastDriver: TippingLastDriverModel = TippingLastDriverModel(),
+    var lastDriver: LastDriverModel = LastDriverModel(),
     var prepayment: PrepaymentModel = PrepaymentModel(),
     var payment: PaymentModel = PaymentModel()
 )
@@ -15,8 +15,8 @@ data class LogisticDriverModel(
 data class PrepaymentModel(
     var info: List<String> = listOf(),
     var presetAmount: List<Int> = listOf(),
-    var maxAmount: Int =  0,
-    var minAmount: Int =  0,
+    var maxAmount: Int = 0,
+    var minAmount: Int = 0,
     var paymentLink: String = ""
 )
 

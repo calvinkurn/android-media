@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/check_product_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/image_product_item"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStarter"
+        app:layout_constraintTop_toTopOf="@+id/image_product_item" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_product_item"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/check_product_item"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_product_item"
+        app:layout_constraintTop_toTopOf="@+id/image_product_item"
+        app:typographyType="paragraph_2"
+        tools:text="product name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_discounted_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="@+id/tpg_product_name"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_name"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
+        tools:text="Rp 13.500.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:labelTitle="20%"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toStartOf="@+id/tpg_discounted_price"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_discounted_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_original_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintBottom_toBottomOf="@+id/label_discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_discount"
+        app:layout_constraintTop_toTopOf="@+id/label_discount"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp 15.000.000" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_original_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_variant_stock_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:typographyType="display_3"
+        tools:text="@string/stfs_variant_stock_non_variant_non_location_placeholder" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_info"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintStart_toEndOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintTop_toTopOf="@+id/tpg_variant_stock_location" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_warning"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="4dp"
+        app:icon_color_light_enable="@color/Red_R500"
+        app:icon_color_night_enable="@color/Red_R500"
+        app:icon_name="WARNING"
+        app:icon_enable_state="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintStart_toEndOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintTop_toTopOf="@+id/tpg_variant_stock_location" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_sold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/stfs_product_sold_rejected_value_placeholder"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/tpg_variant_stock_location"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_variant_stock_location"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_rejection_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/tpg_product_sold"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_sold"
+        app:typographyType="display_3"
+        tools:text="@string/stfs_rejection_reason_placeholder" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_rejection_reason" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStarter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="0dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

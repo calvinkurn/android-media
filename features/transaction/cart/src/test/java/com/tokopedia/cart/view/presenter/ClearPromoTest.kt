@@ -1,6 +1,8 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import io.mockk.Runs
 import io.mockk.every
@@ -16,11 +18,11 @@ class ClearPromoTest : BaseCartTest() {
         // GIVEN
         val clearPromoModel = ClearPromoUiModel()
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
 
         // WHEN
-        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ClearPromoRequest())
 
         // THEN
         verify {
@@ -34,11 +36,11 @@ class ClearPromoTest : BaseCartTest() {
         // GIVEN
         val exception = CartResponseErrorException("error message")
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // WHEN
-        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ClearPromoRequest())
 
         // THEN
         verify {
@@ -52,13 +54,13 @@ class ClearPromoTest : BaseCartTest() {
         // GIVEN
         val clearPromoModel = ClearPromoUiModel()
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
 
         cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ClearPromoRequest())
 
         // THEN
         verify(inverse = true) {
@@ -66,4 +68,75 @@ class ClearPromoTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `WHEN clear red promo before go to promo success THEN should go to promo page`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+
+        // WHEN
+        cartListPresenter.doClearRedPromosBeforeGoToPromo(ClearPromoRequest())
+
+        // THEN
+        verify {
+            view.hideProgressLoading()
+            view.onSuccessClearRedPromosThenGoToPromo()
+        }
+    }
+
+    @Test
+    fun `WHEN clear red promo before go to promo failed THEN should go to promo page`() {
+        // GIVEN
+        val exception = CartResponseErrorException("error message")
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
+
+        // WHEN
+        cartListPresenter.doClearRedPromosBeforeGoToPromo(ClearPromoRequest())
+
+        // THEN
+        verify {
+            view.hideProgressLoading()
+            view.onSuccessClearRedPromosThenGoToPromo()
+        }
+    }
+
+    @Test
+    fun `WHEN clear red promo before go to promo with view is detached THEN should not render view`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+
+        cartListPresenter.detachView()
+
+        // WHEN
+        cartListPresenter.doClearRedPromosBeforeGoToPromo(ClearPromoRequest())
+
+        // THEN
+        verify(inverse = true) {
+            view.showItemLoading()
+        }
+    }
+
+    @Test
+    fun `WHEN clear all bo THEN should hit clear`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+
+        // WHEN
+        cartListPresenter.clearAllBo(ClearPromoOrderData())
+
+        // THEN
+        verify {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+        }
+    }
 }

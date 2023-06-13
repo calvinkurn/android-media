@@ -596,7 +596,7 @@
               {
                 "applink": "https://www.tokopedia.com/simulasi-cicilan/paylater?category=Kaos+Pria&price=64900.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fmerchandise%2Ftokopedia-11th-kaos-ulang-tahun-nih-ye-l",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                 "isApplink": true,
                 "title": "Paylater & Cicilan"
               }
@@ -664,7 +664,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                 "isApplink": true,
                 "title": "Paylater & Cicilan"
               }
@@ -690,7 +690,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/Tradein@3x.png",
                 "isApplink": true,
                 "title": "Beli dengan Tukar Tambah"
               }
@@ -703,7 +703,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-tokocabang@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-tokocabang@3x.png",
                 "isApplink": false,
                 "title": "Dilayani oleh Tokopedia"
               }
@@ -716,7 +716,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
                 "isApplink": false,
                 "title": "Proteksi Gadget"
               }
@@ -729,7 +729,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
                 "isApplink": false,
                 "title": "Order Prioritas"
               }
@@ -742,7 +742,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icBymeColor_3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/icBymeColor_3x.png",
                 "isApplink": true,
                 "title": "Rekomendasi dapat komisi"
               }

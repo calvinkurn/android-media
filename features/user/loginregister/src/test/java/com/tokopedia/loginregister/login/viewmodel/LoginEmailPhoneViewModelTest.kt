@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.viewmodel
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
@@ -22,6 +23,7 @@ import com.tokopedia.loginregister.goto_seamless.model.TempKeyResponse
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -86,8 +88,11 @@ class LoginEmailPhoneViewModelTest {
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
     private var getTemporaryKeyObserver = mockk<Observer<Boolean>>(relaxed = true)
+    private var getLoginOptionObserver = mockk<Observer<LoginOption>>(relaxed = true)
 
     private var showLocationAdminPopUp = mockk<Observer<Result<Boolean>>>(relaxed = true)
+
+    private var adminRedirection = mockk<Observer<Result<Boolean>>>(relaxed = true)
 
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
     private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
@@ -99,6 +104,7 @@ class LoginEmailPhoneViewModelTest {
     private var gotoSeamlessPreference = mockk<GotoSeamlessPreference>(relaxed = true)
 
     private val messageException = MessageErrorException("error bro")
+    private val timeOut: Long = 5000
 
     @Before
     fun setUp() {
@@ -146,6 +152,8 @@ class LoginEmailPhoneViewModelTest {
         viewModel.showLocationAdminPopUp.observeForever(showLocationAdminPopUp)
         viewModel.getTemporaryKeyResponse.observeForever(getTemporaryKeyObserver)
         viewModel.navigateToGojekSeamless.observeForever(navigateGojekSeamlessObserver)
+        viewModel.adminRedirection.observeForever(adminRedirection)
+        viewModel.getLoginOption.observeForever(getLoginOptionObserver)
     }
 
     private val throwable = Throwable("Error")
@@ -270,7 +278,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email Success`() {
-
         /* When */
         val responseToken = mockk<LoginTokenPojo>(relaxed = true)
 
@@ -286,7 +293,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email V2 Success`() {
-
         /* When */
         val loginToken = LoginToken(accessToken = "abc123")
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
@@ -312,6 +318,113 @@ class LoginEmailPhoneViewModelTest {
             loginTokenV2UseCase.setParams(any(), any(), any())
             loginTokenV2.onChanged(Success(responseToken.loginToken))
         }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - has errors`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            loginTokenV2.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - popup error`() {
+        /* When */
+        val popupError = PopupError("header", body = "body", action = "action")
+        val loginToken = LoginToken(accessToken = "", popupError = popupError)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            showPopupErrorObserver.onChanged(popupError)
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - activation error`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            goToActivationPage.onChanged(email)
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - go to security question`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "abc123", sqCheck = true)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify { goToSecurityQuestionObserver.onChanged(email) }
     }
 
     @Test
@@ -341,7 +454,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email Failed`() {
-
         /* When */
         every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
             (secondArg() as LoginTokenSubscriber).onErrorLoginToken(throwable)
@@ -372,7 +484,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on go To Activation Page after Login Email`() {
-
         /* When */
         every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
             (secondArg() as LoginTokenSubscriber).onGoToActivationPage(messageException)
@@ -676,7 +787,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Register Check Fingerprint`() {
-
         every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -757,7 +867,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Login Fingerprint`() {
-
         every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
             arg<(Throwable) -> Unit>(3).invoke(throwable)
         }
@@ -820,7 +929,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
@@ -834,8 +942,21 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
-    fun `on Show Location Admin Popup Error`() {
+    fun `on Admin Redirection`() {
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
+        }
 
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            adminRedirection.onChanged(Success(true))
+        }
+    }
+
+    @Test
+    fun `on Show Location Admin Popup Error`() {
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
         }
@@ -907,6 +1028,122 @@ class LoginEmailPhoneViewModelTest {
             tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and biometrics`() {
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = true,
+                    isEnableBiometrics = true,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and enable biometrics`() {
+        // Given
+        val exception = Exception("error")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = false,
+                    isEnableBiometrics = true,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and disable biometrics`() {
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult()
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = true,
+                    isEnableBiometrics = false,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and disable biometrics`() {
+        // Given
+        val exception = Exception("error")
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+        val responseData = RegisterCheckFingerprintResult()
+
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = false,
+                    isEnableBiometrics = false,
+                    biometricsData = responseData
+                )
+            )
         }
     }
 }

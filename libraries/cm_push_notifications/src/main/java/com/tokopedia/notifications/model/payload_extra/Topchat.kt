@@ -17,5 +17,9 @@ data class Topchat(
 
     @SerializedName("fromShopName")
     @Expose
-    var fromShopName: String? = ""
+    var fromShopName: String? = "",
+
+    @SerializedName("senderId")
+    @Expose
+    var senderId: String? = ""
 ) : Parcelable

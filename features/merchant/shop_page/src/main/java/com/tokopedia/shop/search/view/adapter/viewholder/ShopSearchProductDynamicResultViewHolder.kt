@@ -12,14 +12,14 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopSearchProductDynamicResultViewHolder(
-        private val view: View
+    private val view: View
 ) : AbstractViewHolder<ShopSearchProductDynamicResultDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.shop_search_product_dynamic_result_layout
     }
 
-    private val viewBinding : ShopSearchProductDynamicResultLayoutBinding? by viewBinding()
+    private val viewBinding: ShopSearchProductDynamicResultLayoutBinding? by viewBinding()
     private val ivProduct: ImageView? = viewBinding?.ivProduct
     private val tvLabelProductName: Typography? = viewBinding?.tvLabelProductName
     private val tvLabelPrice: Typography? = viewBinding?.tvLabelPrice

@@ -39,10 +39,15 @@ class PlayBottomSheetViewModelTest {
     private val modelBuilder = ModelBuilder()
     private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: GetProductVariantResponse = modelBuilder.buildProductVariant()
-    private val sectionMockData: ProductSectionUiModel.Section = UiModelBuilder.get().buildProductSection(
-                                productList = listOf(productModelBuilder.buildProductLine()),
-                                config = UiModelBuilder.get().buildSectionConfig(type = ProductSectionType.Active, reminderStatus = PlayUpcomingBellStatus.Off(0L)),
-                                id = "")
+    private val sectionMockData: ProductSectionUiModel.Section =
+        UiModelBuilder.get().buildProductSection(
+            productList = listOf(productModelBuilder.buildProductLine()),
+            config = UiModelBuilder.get().buildSectionConfig(
+                type = ProductSectionType.Active,
+                reminderStatus = PlayUpcomingBellStatus.Off,
+            ),
+            id = ""
+        )
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
 

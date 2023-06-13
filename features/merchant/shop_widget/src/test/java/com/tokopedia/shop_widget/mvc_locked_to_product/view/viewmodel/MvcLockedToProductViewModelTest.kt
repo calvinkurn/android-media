@@ -9,7 +9,6 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -95,7 +94,7 @@ class MvcLockedToProductViewModelTest {
     }
 
     @Test
-    fun `check whether mvcLockToProductLiveData value is success for rollence phase 1`() {
+    fun `check whether mvcLockToProductLiveData value is success`() {
         val mockRequestUiModel = getMockMvcLockedToProductRequestUiModel()
         val mockResponse = getMockMvcLockedToProductResponse()
         val mockIsSellerView = false
@@ -103,31 +102,6 @@ class MvcLockedToProductViewModelTest {
         coEvery {
             mvcLockedToProductUseCase.executeOnBackground()
         } returns mockResponse
-        every { MvcLockedToProductUtil.isMvcPhase2() } returns false
-        viewModel.getMvcLockedToProductData(mockRequestUiModel, mockIsSellerView)
-        assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
-        val mvcLockToProductValue = viewModel.mvcLockToProductLiveData.value
-        assert(mvcLockToProductValue is Success)
-        val data = (mvcLockToProductValue as Success).data
-        val voucherUiModelTitle = data.mvcLockedToProductVoucherUiModel.title
-        val voucherResponseTitle = mockResponse.shopPageMVCProductLock.voucher.title
-        assert(voucherUiModelTitle == voucherResponseTitle)
-        val productModel = data.mvcLockedToProductListGridProductUiModel
-            .firstOrNull()?.productCardModel
-        assert(productModel?.nonVariant == null)
-        assert(productModel?.hasAddToCartButton == false)
-    }
-
-    @Test
-    fun `check whether mvcLockToProductLiveData value is success for rollence phase 2`() {
-        val mockRequestUiModel = getMockMvcLockedToProductRequestUiModel()
-        val mockResponse = getMockMvcLockedToProductResponse()
-        val mockIsSellerView = false
-        mockkObject(MvcLockedToProductUtil)
-        coEvery {
-            mvcLockedToProductUseCase.executeOnBackground()
-        } returns mockResponse
-        every { MvcLockedToProductUtil.isMvcPhase2() } returns true
         viewModel.getMvcLockedToProductData(mockRequestUiModel, mockIsSellerView)
         assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
         val mvcLockToProductValue = viewModel.mvcLockToProductLiveData.value
@@ -156,7 +130,7 @@ class MvcLockedToProductViewModelTest {
     }
 
     @Test
-    fun `check whether productListData value is success for rollence phase 1`() {
+    fun `check whether productListData value is success`() {
         val mockRequestUiModel = getMockMvcLockedToProductRequestUiModel()
         val mockResponse = getMockMvcLockedToProductResponse()
         val mockIsSellerView = false
@@ -164,29 +138,6 @@ class MvcLockedToProductViewModelTest {
         coEvery {
             mvcLockedToProductUseCase.executeOnBackground()
         } returns mockResponse
-        every { MvcLockedToProductUtil.isMvcPhase2() } returns false
-        viewModel.getProductListData(mockRequestUiModel, mockIsSellerView)
-        assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
-        val productListData = viewModel.productListDataProduct.value
-        assert(productListData is Success)
-        val totalProduct = (productListData as Success).data.size
-        val mockResponseTotalProduct = mockResponse.shopPageMVCProductLock.productList.data.size
-        assert(totalProduct == mockResponseTotalProduct)
-        val productModel = productListData.data.firstOrNull()?.productCardModel
-        assert(productModel?.nonVariant == null)
-        assert(productModel?.hasAddToCartButton == false)
-    }
-
-    @Test
-    fun `check whether productListData value is success for rollence phase 2`() {
-        val mockRequestUiModel = getMockMvcLockedToProductRequestUiModel()
-        val mockResponse = getMockMvcLockedToProductResponse()
-        val mockIsSellerView = false
-        mockkObject(MvcLockedToProductUtil)
-        coEvery {
-            mvcLockedToProductUseCase.executeOnBackground()
-        } returns mockResponse
-        every { MvcLockedToProductUtil.isMvcPhase2() } returns true
         viewModel.getProductListData(mockRequestUiModel, mockIsSellerView)
         assert(viewModel.nextPageLiveData.value == mockResponse.shopPageMVCProductLock.nextPage)
         val productListData = viewModel.productListDataProduct.value
@@ -230,7 +181,7 @@ class MvcLockedToProductViewModelTest {
             AddToCartDataModel(
                 data = DataModel(
                     success = mockSuccessValue,
-                    productId = mockProductId.toLongOrZero()
+                    productId = mockProductId
                 )
             )
         )

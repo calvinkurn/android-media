@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.payment
 
-import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
 import com.tokopedia.oneclickcheckout.payment.list.data.ListingParam
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamRequest
+import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
 
-class FakeGetPaymentListingParamUseCase: GetPaymentListingParamUseCase {
+class FakeGetPaymentListingParamUseCase : GetPaymentListingParamUseCase {
 
     private var internalOnSuccess: ((ListingParam) -> Unit)? = null
     private var internalOnError: ((Throwable) -> Unit)? = null

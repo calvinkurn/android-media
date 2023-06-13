@@ -61,6 +61,8 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    String getShopAvatarOriginal();
+
     boolean isPowerMerchantIdle();
 
     String getAutofillUserData();
@@ -142,6 +144,8 @@ public interface UserSessionInterface {
 
     void setShopAvatar(String shopAvatar);
 
+    void setShopAvatarOriginal(String shopAvatarOriginal);
+
     void setIsPowerMerchantIdle(boolean powerMerchantIdle);
 
     void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
@@ -165,8 +169,6 @@ public interface UserSessionInterface {
     String getGTMLoginID();
 
     String getAndroidId();
-
-    String getAdsId();
 
     boolean isAffiliate();
 

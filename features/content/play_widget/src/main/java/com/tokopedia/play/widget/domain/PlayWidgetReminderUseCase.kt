@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,20 +12,21 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 21/10/20.
  */
+@GqlQuery(PlayWidgetReminderUseCase.query_name, PlayWidgetReminderUseCase.query)
 class PlayWidgetReminderUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<PlayWidgetReminder>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(PlayWidgetReminderUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(PlayWidgetReminder::class.java)
     }
 
     companion object {
-
-        private const val query = """
+        const val query_name = "PlayWidgetReminderUseCaseQuery"
+        const val query = """
         mutation playToggleChannelReminder(
             ${'$'}channel: String,
             ${'$'}active: Boolean

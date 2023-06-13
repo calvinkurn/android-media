@@ -20,6 +20,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:card_type="clear">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,10 +123,11 @@
 
             </LinearLayout>
 
-            <!--Shipping: Shipping Experience-->
-        <include
-            layout="@layout/item_shipment_shipping_experience"
-            tools:visibility="visible" />
+        <!--Shipping: Shipping Experience-->
+        <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+            android:id="@+id/shipping_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!--Shipping: Option (Insurance, dropshipper, etc)-->
         <include

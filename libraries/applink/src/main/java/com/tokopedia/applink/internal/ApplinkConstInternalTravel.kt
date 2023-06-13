@@ -23,7 +23,7 @@ object ApplinkConstInternalTravel {
 
     const val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"
 
-    const val HOTEL_PROMO_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://promoNative?menuID=4&categoryID=742"
+    const val HOTEL_PROMO_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://discovery/deals?activeTab=7&componentID=588"
 
     const val DASHBOARD_FLIGHT = "$INTERNAL_FLIGHT/dashboard"
     const val CANCELLATION_FLIGHT = "$INTERNAL_FLIGHT/cancellation"
@@ -36,4 +36,6 @@ object ApplinkConstInternalTravel {
     const val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
     const val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRAVEL_SLICE/main"
+
+    const val FLIGHT_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_FLIGHT/order/{orderId}"
 }

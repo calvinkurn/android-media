@@ -15,7 +15,10 @@ class ReportBottomSheet : BottomSheetUnify() {
     private var isClicked = 0
     private var reasonType: String = ""
     private var reasonDesc: String = ""
-    private var contentId: Int = 0
+    var onDismiss: (() -> Unit)? = null
+    var onClosedClicked: (() -> Unit)? = null
+    private var dismissedByClosing = false
+
 
 
     companion object {
@@ -25,10 +28,9 @@ class ReportBottomSheet : BottomSheetUnify() {
         private const val TYPE1 = 1
         private const val TYPE2 = 2
         private const val TYPE3 = 3
-        fun newInstance(postId: Int, context: OnReportOptionsClick): ReportBottomSheet {
+        fun newInstance(context: OnReportOptionsClick): ReportBottomSheet {
             return ReportBottomSheet().apply {
                 this.onReportOptionsClick = context
-                this.contentId = postId
             }
         }
     }
@@ -85,6 +87,15 @@ class ReportBottomSheet : BottomSheetUnify() {
         }
         report_subtext3_icon?.setOnClickListener {
             setInappropriateCase()
+        }
+        setCloseClickListener {
+            dismissedByClosing = true
+            onClosedClicked?.invoke()
+            dismiss()
+        }
+        setOnDismissListener {
+            if (!dismissedByClosing)
+                onDismiss?.invoke()
         }
     }
 

@@ -18,12 +18,12 @@ class AutoCompleteMapper @Inject constructor() {
         }
     }
 
-    private fun suggestedPlaceData(response: List<Prediction>) : List<SuggestedPlace> {
+    private fun suggestedPlaceData(response: List<Prediction>): List<SuggestedPlace> {
         return response.map {
             SuggestedPlace(
-                    it.structuredFormatting.mainText,
-                    it.structuredFormatting.secondaryText,
-                    it.placeId
+                it.structuredFormatting.mainText,
+                it.structuredFormatting.secondaryText,
+                it.placeId
             )
         }
     }
@@ -31,11 +31,10 @@ class AutoCompleteMapper @Inject constructor() {
     fun mapDistrictLoc(response: GetDistrictResponse): DistrictLocation {
         val data = response.keroPlacesGetDistrict.data
         return DistrictLocation(
-                data.title,
-                data.latitude,
-                data.longitude,
-                data.formattedAddress
+            data.title,
+            data.latitude,
+            data.longitude,
+            data.formattedAddress
         )
     }
-
 }

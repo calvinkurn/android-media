@@ -9,14 +9,16 @@ import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.Label
 
 /**
@@ -36,22 +38,20 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     private val pricePrefix: TextView? = itemView.findViewById(R.id.tv_price_prefix)
     private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_chatbot_6)
 
-
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            getStrokeWidthSenderDimenRes()
+        clContainer,
+        R.color.chatbot_dms_left_message_bg,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER,
+        R.color.chatbot_dms_stroke,
+        getStrokeWidthSenderDimenRes()
     )
-
 
     override fun bind(element: AttachInvoiceSentUiModel) {
         alignLayout(element)
@@ -60,21 +60,24 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     }
 
     private fun bindViewWithModel(invoice: AttachInvoiceSentUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, invoice.imageUrl, radiusInvoice)
+        thumbnail?.loadImageRounded(invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
         invoiceDesc?.text = invoice.description
         setPrice(invoice.totalAmount)
         invoiceDate?.text = invoice.createTime
-
     }
 
     private fun setStatus(invoice: AttachInvoiceSentUiModel) {
-        if (invoice.status?.isNotEmpty() == true) {
-            val labelType = getLabelType(invoice.statusId)
+        if (invoice.status.isNotEmpty()) {
+            val labelType: Int = if (invoice.color.isEmpty()) {
+                InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
+            } else {
+                InvoiceStatusLabelHelper.getLabelType(invoice.color)
+            }
             status?.text = invoice.status
             status?.setLabelType(labelType)
-        }else{
+        } else {
             status?.invisible()
         }
     }
@@ -83,28 +86,19 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         if (totalAmount.isNullOrEmpty()) {
             pricePrefix?.hide()
             price?.hide()
-        }else{
+        } else {
             pricePrefix?.show()
             price?.text = totalAmount
             price?.show()
         }
     }
 
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
-        }
-    }
-
     private fun bindBackground() {
-            clContainer?.background = bgSender
+        clContainer?.background = bgSender
     }
 
     private fun alignLayout(uiModel: AttachInvoiceSentUiModel) {
-            alignBubble(Gravity.END)
+        alignBubble(Gravity.END)
     }
 
     private fun alignBubble(gravity: Int) {
@@ -124,6 +118,6 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.attached_invoice_sent_chat_item
+        val LAYOUT = R.layout.item_chatbot_attached_invoice_sent
     }
 }

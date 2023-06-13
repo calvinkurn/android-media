@@ -11,6 +11,7 @@ import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.SHIPPING
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_BUAT
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_EXTEND
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_BUAT
@@ -60,7 +61,7 @@ annotation class ProgramActionType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, COUPON_MULTIPLE_BUAT, PREVIEW, PREVIEW_BUAT)
+@IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, COUPON_MULTIPLE_BUAT, COUPON_MULTIPLE_EXTEND, PREVIEW, PREVIEW_BUAT)
 annotation class CreateScreenType {
     companion object {
         const val CARD = 0
@@ -68,8 +69,10 @@ annotation class CreateScreenType {
         const val COUPON_SINGLE = 2
         const val COUPON_MULTIPLE = 3
         const val COUPON_MULTIPLE_BUAT = 4
-        const val PREVIEW = 5
-        const val PREVIEW_BUAT = 6
+        const val COUPON_MULTIPLE_EXTEND = 5
+        const val PREVIEW = 6
+        const val PREVIEW_BUAT = 7
+        const val PREVIEW_EXTEND = 8
     }
 }
 

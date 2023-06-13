@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class PageMode : Parcelable {
     CREATE,
-    UPDATE
+    UPDATE,
+    DRAFT
 }

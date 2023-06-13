@@ -1,9 +1,22 @@
 package com.tokopedia.play.broadcaster.util.permission
 
+import android.Manifest
+import android.os.Build
+
 /**
  * Created by jegul on 07/07/20
  */
 interface PermissionHelper {
+
+    companion object {
+
+        val READ_EXTERNAL_STORAGE: String
+            get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+    }
 
     /**
      * This method is used to request single permission to users following Android documentation best practice

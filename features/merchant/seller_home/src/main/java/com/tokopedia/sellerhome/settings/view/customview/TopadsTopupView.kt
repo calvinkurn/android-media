@@ -88,9 +88,9 @@ class TopadsTopupView @JvmOverloads constructor(
                 ?.translationYBy(translationYBy)
                 ?.setDuration(ANIM_DURATION)
                 ?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator) {}
 
-                    override fun onAnimationEnd(p0: Animator?) {
+                    override fun onAnimationEnd(p0: Animator) {
                         if (!isStoppingAnimation) {
                             if (hasNextAnimation) {
                                 animateMessage(false)
@@ -100,11 +100,10 @@ class TopadsTopupView @JvmOverloads constructor(
                         }
                     }
 
-                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator) {}
 
-                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
                 })
-
         }
     }
 
@@ -118,9 +117,9 @@ class TopadsTopupView @JvmOverloads constructor(
                 ?.translationYBy(translationYBy)
                 ?.setDuration(ANIM_DURATION)
                 ?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator) {}
 
-                    override fun onAnimationEnd(p0: Animator?) {
+                    override fun onAnimationEnd(p0: Animator) {
                         if (!isStoppingAnimation) {
                             if (hasNextAnimation) {
                                 animateValue(false)
@@ -130,9 +129,9 @@ class TopadsTopupView @JvmOverloads constructor(
                         }
                     }
 
-                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator) {}
 
-                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
                 })
         }
     }
@@ -161,7 +160,6 @@ class TopadsTopupView @JvmOverloads constructor(
         isAnimating = false
         onAnimationFinished.invoke(isValueShowing)
     }
-
 }
 
 data class TopadsTopupAlphaTransition(val startAlpha: Float,

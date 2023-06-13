@@ -36,6 +36,7 @@ class GqlGetIsShopPmUseCase @Inject constructor(
                       shopID
                       power_merchant {
                         status
+                        pm_tier
                         auto_extend{
                           status
                           tkpd_product_id

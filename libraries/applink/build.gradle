@@ -15,12 +15,16 @@ buildscript {
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    lintOptions {
+        ignore 'UnusedResources'
     }
 }
 
@@ -42,7 +46,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.applink_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.applink_annotation_processor
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore

@@ -16,11 +16,12 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         onSuccess: (PayLaterGetSimulation) -> Unit,
         onError: (Throwable) -> Unit,
         amount: Double,
-        productId: String
+        productId: String,
+        shopId: String,
     ) {
         try {
             this.setTypeClass(PayLaterSimulationData::class.java)
-            this.setRequestParams(getRequestParams(amount, productId))
+            this.setRequestParams(getRequestParams(amount, productId, shopId))
             this.setGraphqlQuery(PayLaterSimulationDataQuery.GQL_QUERY)
             this.execute(
                 { result ->
@@ -34,11 +35,12 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         }
     }
 
-    private fun getRequestParams(amount: Double, productId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(amount: Double, productId: String, shopId: String): MutableMap<String, Any?> {
         return mutableMapOf(
             "request" to mutableMapOf(
                 PARAM_PRODUCT_AMOUNT to amount,
-                PARAM_PRODUCT_ID to productId
+                PARAM_PRODUCT_ID to productId,
+                PARAM_SHOP_ID_V2 to shopId,
             )
         )
     }
@@ -46,5 +48,6 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
     companion object {
         const val PARAM_PRODUCT_AMOUNT = "amount"
         const val PARAM_PRODUCT_ID = "product_id"
+        const val PARAM_SHOP_ID_V2 = "shop_id_v2"
     }
 }

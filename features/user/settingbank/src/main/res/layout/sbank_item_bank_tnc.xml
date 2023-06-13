@@ -3,17 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/unify_space_16">
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="12dp">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/tickerCatatan"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBankNoteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tickerShapeType="loose"
-        app:tickerType="information" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBankNoteDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBankNoteTitle"
+        app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

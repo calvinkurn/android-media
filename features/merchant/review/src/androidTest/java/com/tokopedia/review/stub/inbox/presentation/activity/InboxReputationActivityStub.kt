@@ -2,10 +2,11 @@ package com.tokopedia.review.stub.inbox.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.review.stub.reviewlist.view.fragment.RatingProductFragmentStub
 
-class InboxReputationActivityStub: InboxReputationActivity() {
+class InboxReputationActivityStub: BaseSimpleActivity() {
 
     companion object {
         fun getCallingIntent(context: Context?): Intent {
@@ -13,7 +14,7 @@ class InboxReputationActivityStub: InboxReputationActivity() {
         }
     }
 
-    override fun createRatingProductFragment() {
-        reviewSellerFragment = RatingProductFragmentStub.createInstance()
+    override fun getNewFragment(): Fragment? {
+        return RatingProductFragmentStub.createInstance()
     }
 }

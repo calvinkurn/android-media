@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_has_password"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -36,9 +36,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:path="@string/path_add_password" />
+                    android:host="@string/host_user"
+                    android:path="@string/path_add_password"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -54,7 +54,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:path="@string/path_forgot_password"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

@@ -1,0 +1,13 @@
+{
+  "chipTopBotStatusInbox": {
+    "status": "OK",
+    "data": {
+      "is_active": true,
+      "is_success": 1,
+      "message_id": 4088588,
+      "welcome_message": "<p>Ada pertanyaan seputar transaksi? Chat dengan Tanya yuk!</p>",
+      "unread_notif": false
+    },
+    "message_error": []
+  }
+}

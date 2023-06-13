@@ -17,12 +17,14 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TokomemberBottomsheet : BottomSheetUnify() {
 
+    private var secondaryCta: (() -> Unit)? = null
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
     private var mBottomSheetClickListener: BottomSheetClickListener? = null
     private lateinit var imgBottomsheet: ImageUnify
     private lateinit var tvHeading: Typography
     private lateinit var tvDesc: Typography
     private lateinit var btnProceed: UnifyButton
+    private lateinit var btnSecondary: UnifyButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +47,7 @@ class TokomemberBottomsheet : BottomSheetUnify() {
         tvHeading = view.findViewById(R.id.tv_heading)
         tvDesc = view.findViewById(R.id.tv_desc)
         btnProceed = view.findViewById(R.id.btn_proceed)
+        btnSecondary = view.findViewById(R.id.btn_secondary)
         setDefaultParams()
         setChild(view)
         setData()
@@ -55,18 +58,37 @@ class TokomemberBottomsheet : BottomSheetUnify() {
            arguments?.getString(ARG_BOTTOMSHEET, ""),
            TmIntroBottomsheetModel::class.java
        )
-       tvHeading.text = tmIntroBottomSheetModel.title
-       tvDesc.text = tmIntroBottomSheetModel.desc
        if (tmIntroBottomSheetModel.image.isEmpty()) {
            imgBottomsheet.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
        } else {
            imgBottomsheet.loadImage(tmIntroBottomSheetModel.image)
        }
+       if(tmIntroBottomSheetModel.showSecondaryCta) {
+           btnSecondary.visibility = View.VISIBLE
+           imgBottomsheet.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
+       }
+       else{
+           btnSecondary.visibility = View.GONE
+       }
+       btnSecondary.setOnClickListener {
+           if(secondaryCta != null){
+               secondaryCta?.invoke()
+           }
+           else {
+               activity?.finish()
+           }
+       }
+       tvHeading.text = tmIntroBottomSheetModel.title
+       tvDesc.text = tmIntroBottomSheetModel.desc
        btnProceed.text = tmIntroBottomSheetModel.ctaName
        btnProceed.setOnClickListener {
            dismiss()
            mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
        }
+    }
+
+    fun setSecondaryCta(action:() -> Unit){
+        secondaryCta = action
     }
 
     private fun setDefaultParams() {

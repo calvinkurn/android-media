@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.uimodel.recom
 
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PartnerType
 
 /**
  * Created by jegul on 21/01/21
@@ -15,6 +15,9 @@ data class PlayPartnerInfo(
     val isLoadingFollow: Boolean = false,
     val appLink: String = "",
 )
+
+val PlayPartnerInfo.needFollow: Boolean
+    get() =  status is PlayPartnerFollowStatus.Followable && (status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
 
 sealed class PlayPartnerFollowStatus {
 

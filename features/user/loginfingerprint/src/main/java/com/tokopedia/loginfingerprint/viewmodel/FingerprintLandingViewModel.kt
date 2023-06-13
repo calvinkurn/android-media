@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
+import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
-                                                      private val rsaSignatureUtils: Lazy<RsaSignatureUtils?>,
+                                                      private val keyPairManager: Lazy<KeyPairManager?>,
                                                       private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
                                                       private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main){
@@ -31,7 +31,7 @@ class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun verifyFingerprint() {
         launchCatchError(block = {
-            val signature = rsaSignatureUtils.get()?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
+            val signature = keyPairManager.get()?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
             if(signature != null) {
                 val result = verifyFingerprintUseCase(signature)
                 onSuccessVerifyFP(result.data)

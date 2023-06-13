@@ -5,19 +5,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactoryImpl
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
-import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
-import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
-import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactoryImpl
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.PAYLOAD_UPDATE_PIN_STATUS
+import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
+import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
+import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 
 /**
  * @author : Steven 2019-08-09
@@ -38,13 +40,11 @@ class ChatListAdapter constructor(
     }
 
     fun notifyChanges(oldList: List<Visitable<*>>, newList: List<Visitable<*>>) {
-
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 val oldItem = oldList[oldItemPosition]
                 val newItem = newList[newItemPosition]
-
 
                 if (oldItem is ItemChatListPojo && newItem is ItemChatListPojo) {
                     return oldItem.msgId == newItem.msgId
@@ -85,9 +85,13 @@ class ChatListAdapter constructor(
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
         val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            visitables.goToFirst(chatItemPosition)
-            notifyItemMoved(chatItemPosition, 0)
-            notifyItemChanged(0, PAYLOAD_UPDATE_PIN_STATUS)
+            val bubbleCount = visitables
+                .filterIsInstance<ChatListTickerUiModel>()
+                .size
+
+            visitables.moveTo(chatItemPosition, bubbleCount)
+            notifyItemMoved(chatItemPosition, bubbleCount)
+            notifyItemChanged(bubbleCount, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 
@@ -198,23 +202,33 @@ class ChatListAdapter constructor(
         shouldUpdateReadStatus: Boolean = false
     ) {
         val isChatPinned = pinnedMsgId.contains(newChat.msgId)
+
         val newChatIndex = if (isChatPinned) {
             index
         } else {
             pinnedMsgId.size
         }
+
+        val sortChatIndexAfterTicker = visitables.indexOfFirst {
+            it is ChatListTickerUiModel
+        }.takeIf {
+            it != RecyclerView.NO_POSITION
+        }?.let {
+            it + Int.ONE
+        } ?: newChatIndex
+
         updateChatPojo(
-                index = index,
-                newChat = newChat,
-                readStatus = readStatus,
-                counterIncrement = counterIncrement,
-                shouldUpdateReadStatus = shouldUpdateReadStatus
+            index = index,
+            newChat = newChat,
+            readStatus = readStatus,
+            counterIncrement = counterIncrement,
+            shouldUpdateReadStatus = shouldUpdateReadStatus
         )
-        if (index != newChatIndex) {
-            visitables.moveTo(index, newChatIndex)
-            notifyItemMoved(index, newChatIndex)
+        if (index != sortChatIndexAfterTicker) {
+            visitables.moveTo(index, sortChatIndexAfterTicker)
+            notifyItemMoved(index, sortChatIndexAfterTicker)
         }
-        notifyItemChanged(newChatIndex, ChatItemListViewHolder.PAYLOAD_NEW_INCOMING_CHAT)
+        notifyItemChanged(sortChatIndexAfterTicker, ChatItemListViewHolder.PAYLOAD_NEW_INCOMING_CHAT)
     }
 
     fun showNoAccessView() {
@@ -274,9 +288,9 @@ class ChatListAdapter constructor(
         visitables[index].apply {
             if (this is ItemChatListPojo) {
                 if (
-                        attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD &&
-                        shouldUpdateReadStatus
+                    attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD &&
+                    shouldUpdateReadStatus
                 ) {
                     listener.increaseNotificationCounter()
                 }
@@ -294,8 +308,8 @@ class ChatListAdapter constructor(
     }
 
     fun getItemPosition(msgId: String): Pair<ItemChatListPojo, Int>? {
-        for(i in list.indices) {
-            if(list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).msgId == msgId) {
+        for (i in list.indices) {
+            if (list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).msgId == msgId) {
                 return Pair((list[i] as ItemChatListPojo), i)
             }
         }
@@ -303,19 +317,20 @@ class ChatListAdapter constructor(
     }
 
     fun deselectActiveChatIndicator(currentActiveChat: ItemChatListPojo) {
-        if(!activeChat.first?.msgId.isNullOrEmpty() &&
-            activeChat.first?.msgId != currentActiveChat.msgId) {
+        if (!activeChat.first?.msgId.isNullOrEmpty() &&
+            activeChat.first?.msgId != currentActiveChat.msgId
+        ) {
             val deactivateChat = activeChat.first
             deactivateChat?.markAsInactive()
-            if(deactivateChat != null && activeChat.second != null) {
+            if (deactivateChat != null && activeChat.second != null) {
                 notifyItemChanged(activeChat.second!!, deactivateChat)
             }
         }
     }
 
     fun resetActiveChatIndicator() {
-        for(i in list.indices) {
-            if(list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).isActive) {
+        for (i in list.indices) {
+            if (list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).isActive) {
                 (list[i] as ItemChatListPojo).markAsInactive()
             }
         }

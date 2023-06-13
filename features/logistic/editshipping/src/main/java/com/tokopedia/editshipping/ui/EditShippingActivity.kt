@@ -16,7 +16,8 @@ class EditShippingActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().add(R.id.main_view, EditShippingFragment.newInstance()).commit()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_view, EditShippingFragment.newInstance()).commit()
         }
 
     }

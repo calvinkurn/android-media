@@ -4,14 +4,15 @@ import android.view.View
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseViewHolder
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseItemViewHolder
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseShimerViewHolder
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseShimerUiModel
+
 
 class EtalaseAdapterTypeFactoryImpl(var actionClick: ((pos:Int) -> Unit)?) : EtalaseAdapterTypeFactory {
 
-    override fun type(model: EtalaseItemViewModel) = EtalaseItemViewHolder.LAYOUT
+    override fun type(model: EtalaseItemUiModel) = EtalaseItemViewHolder.LAYOUT
 
-    override fun type(model: EtalaseShimerViewModel) = EtalaseShimerViewHolder.LAYOUT
+    override fun type(model: EtalaseShimerUiModel) = EtalaseShimerViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): EtalaseViewHolder<*> {
         return when(type){

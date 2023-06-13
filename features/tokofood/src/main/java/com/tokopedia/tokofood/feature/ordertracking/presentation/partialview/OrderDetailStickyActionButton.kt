@@ -35,6 +35,11 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
             this,
             true
         )
+        setBackgroundColor()
+    }
+
+    private fun setBackgroundColor() {
+        binding?.orderDetailStickyActionButtons?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun onPrimaryActionButtonClickListener(trackingWrapperUiModel: TrackingWrapperUiModel, appUrl: String): OnClickListener {

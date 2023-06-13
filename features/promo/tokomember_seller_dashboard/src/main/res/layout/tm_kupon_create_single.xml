@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="@string/tm_kupon_single_ticker"
+                app:descriptionText="@string/tm_vip_coupon_ticker_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
@@ -269,7 +269,7 @@
                     android:gravity="center"
                     app:typographyType="display_3"
                     app:typographyWeight="reguler"
-                    android:textColor="@color/Unify_NN950"
+                    android:textColor="@color/Unify_NN600"
                     android:layout_marginBottom="@dimen/unify_space_16"
                     android:textColorLink="@color/Unify_G500"
                     android:text="@string/tm_kupon_tnc" />

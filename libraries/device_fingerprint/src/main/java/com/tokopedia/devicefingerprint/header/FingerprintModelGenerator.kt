@@ -44,6 +44,7 @@ object FingerprintModelGenerator {
 
     private var userSession: UserSessionInterface? = null
     private var fingerprintLastTs = -1L
+    private var fingerprintHasAdsId = false
     private var fingerprintCache = ""
 
     @JvmStatic
@@ -74,13 +75,20 @@ object FingerprintModelGenerator {
                 getFingerprintSharedPref(context).getString(FINGERPRINT_USE_CASE, "") ?: ""
         }
         val now = (System.currentTimeMillis() / 1000)
-        if (fingerprintCache.isEmpty() || isFingerprintExpired(context, now)) {
-            fingerprintCache = generateFingerprintData(context)
+        if (fingerprintCache.isEmpty() || isFingerprintExpired(context, now) ||
+            adsIdAlreadyRetrieved(context)) {
+            val fp = generateFingerprintData(context)
+            fingerprintHasAdsId = fp.hasUniqueId()
+            fingerprintCache = Gson().toJson(fp)
             getFingerprintSharedPref(context).edit().putString(FINGERPRINT_USE_CASE, fingerprintCache)
                 .putLong(FINGERPRINT_TS, now).apply()
             fingerprintLastTs = now
         }
         return fingerprintCache
+    }
+
+    private fun adsIdAlreadyRetrieved(context: Context): Boolean{
+        return !fingerprintHasAdsId && DeviceInfo.getCacheAdsId(context).isNotEmpty()
     }
 
     private fun getFingerprintSharedPref(context: Context): SharedPreferences {
@@ -98,7 +106,7 @@ object FingerprintModelGenerator {
         fingerprintLastTs = 0
     }
 
-    private fun generateFingerprintData(context: Context): String {
+    private fun generateFingerprintData(context: Context): FingerPrint {
         val deviceName = getModelName()
         val deviceFabrik = getManufacturerName()
         val deviceOS = getOSName()
@@ -151,7 +159,7 @@ object FingerprintModelGenerator {
                 uuid = uuid,
                 inval = VisorFingerprintInstance.getDVToken(context),
                 installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
-        return Gson().toJson(fp)
+        return fp
     }
 
     fun getUserSession(context: Context): UserSessionInterface {

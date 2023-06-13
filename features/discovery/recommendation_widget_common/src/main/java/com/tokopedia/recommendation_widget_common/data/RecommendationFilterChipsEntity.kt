@@ -1,15 +1,16 @@
 package com.tokopedia.recommendation_widget_common.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created by Lukas on 04/08/20.
  */
 
-data class RecommendationFilterChipsEntity (
-        @SerializedName("recommendationFilterChips")
-        val recommendationFilterChips: RecommendationFilterChips = RecommendationFilterChips()
-){
+data class RecommendationFilterChipsEntity(
+    @SerializedName("recommendationFilterChips", alternate = ["recommendationFilterChipsV2"])
+    val recommendationFilterChips: RecommendationFilterChips = RecommendationFilterChips()
+) {
     data class RecommendationFilterChips(@SerializedName("data") val data: FilterAndSort = FilterAndSort())
 
     data class FilterAndSort(
@@ -18,41 +19,42 @@ data class RecommendationFilterChipsEntity (
     )
 
     data class RecommendationSortChip(
-            @SerializedName("name")
-            val name: String = "",
-            @SerializedName("value")
-            val value: String = "",
-            @SerializedName("title")
-            val title: String = "",
-            @SerializedName("templateName")
-            val templateName: String = "",
-            @SerializedName("inputType")
-            val inputType: String = "",
-            @SerializedName("key")
-            val key: String = "",
-            var isSelected: Boolean = false
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("value")
+        val value: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("templateName")
+        val templateName: String = "",
+        @SerializedName("inputType")
+        val inputType: String = "",
+        @SerializedName("key")
+        val key: String = "",
+        @SuppressLint("EntityFieldAnnotation")
+        var isSelected: Boolean = false
     )
 
-    data class  RecommendationFilterChip(
-            @SerializedName("title")
-            val title: String = "",
-            @SerializedName("name")
-            val name: String = "",
-            @SerializedName("value")
-            val value: String = "",
-            @SerializedName("inputType")
-            val inputType: String = "",
-            @SerializedName("templateName")
-            val templateName: String = "",
-            @SerializedName("icon")
-            val icon: String = "",
-            @SerializedName("isActivated")
-            var isActivated: Boolean = false,
-            @SerializedName("search")
-            var search: Search = Search(),
-            @SerializedName("options")
-            val options: List<Option> = listOf()
-    ){
+    data class RecommendationFilterChip(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("value")
+        val value: String = "",
+        @SerializedName("inputType")
+        val inputType: String = "",
+        @SerializedName("templateName")
+        val templateName: String = "",
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("isActivated")
+        var isActivated: Boolean = false,
+        @SerializedName("search")
+        var search: Search = Search(),
+        @SerializedName("options")
+        val options: List<Option> = listOf()
+    ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is RecommendationFilterChip) return false
@@ -81,53 +83,55 @@ data class RecommendationFilterChipsEntity (
     }
 
     data class Option(
-            @SerializedName("name")
-            val name: String = "",
-            @SerializedName("value")
-            val value: String = "",
-            @SerializedName("key")
-            val key: String = "",
-            @SerializedName("icon")
-            val icon: String = "",
-            @SerializedName("inputType")
-            val inputType: String = "",
-            @SerializedName("isPopular")
-            val isPopular: Boolean = false,
-            @SerializedName("isActivated")
-            var isActivated: Boolean = false,
-            @SerializedName(value = "hex_color", alternate = ["hexColor"])
-            var hexColor: String = "",
-            @SerializedName(value = "val_min", alternate = ["valMin"])
-            var valMin: String = "",
-            @SerializedName(value = "val_max", alternate = ["valMax"])
-            var valMax: String = "",
-            @SerializedName(value = "description", alternate = ["Description"])
-            var description: String = "",
-            @SerializedName(value = "is_new", alternate = ["isNew"])
-            var isNew: Boolean = false,
-            @SerializedName("child")
-            val children: List<Child> = listOf()
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("value")
+        val value: String = "",
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("inputType")
+        val inputType: String = "",
+        @SerializedName("isPopular")
+        val isPopular: Boolean = false,
+        @SerializedName("isActivated")
+        var isActivated: Boolean = false,
+        @SerializedName(value = "hex_color", alternate = ["hexColor"])
+        var hexColor: String = "",
+        @SerializedName(value = "val_min", alternate = ["valMin"])
+        var valMin: String = "",
+        @SerializedName(value = "val_max", alternate = ["valMax"])
+        var valMax: String = "",
+        @SerializedName(value = "description", alternate = ["Description"])
+        var description: String = "",
+        @SerializedName(value = "is_new", alternate = ["isNew"])
+        var isNew: Boolean = false,
+        @SerializedName("child")
+        val children: List<Child> = listOf()
     )
 
     data class Child(
-            @SerializedName("name")
-            val name: String = "",
-            @SerializedName("value")
-            val value: String = "",
-            @SerializedName("inputType")
-            val inputType: String = "",
-            @SerializedName("icon")
-            val icon: String = "",
-            @SerializedName("key")
-            val key: String = ""
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("value")
+        val value: String = "",
+        @SerializedName("inputType")
+        val inputType: String = "",
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("key")
+        val key: String = ""
     )
 
-    data class Search(@SerializedName("searchable")
-                 var searchable: Int = 0,
-                 @SerializedName("placeholder")
-                 var placeholder: String = "")
+    data class Search(
+        @SerializedName("searchable")
+        var searchable: Int = 0,
+        @SerializedName("placeholder")
+        var placeholder: String = ""
+    )
 
-    companion object{
+    companion object {
         private const val HASH_CODE = 31
     }
 }

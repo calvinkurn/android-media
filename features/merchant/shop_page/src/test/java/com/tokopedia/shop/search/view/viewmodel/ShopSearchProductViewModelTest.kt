@@ -3,15 +3,13 @@ package com.tokopedia.shop.search.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.domain.interactor.GetSearchShopProductUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -31,7 +29,7 @@ class ShopSearchProductViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val coroutineDispatcherProvider =CoroutineTestDispatchersProvider
+    private val coroutineDispatcherProvider = CoroutineTestDispatchersProvider
 
     private val viewModel by lazy {
         ShopSearchProductViewModel(userSessionInterface, getSearchShopProductUseCase, coroutineDispatcherProvider)
@@ -47,10 +45,10 @@ class ShopSearchProductViewModelTest {
         mockkObject(GetSearchShopProductUseCase)
         coEvery {
             getSearchShopProductUseCase.executeOnBackground()
-        }returns UniverseSearchResponse()
+        } returns UniverseSearchResponse()
         viewModel.getSearchShopProduct(anyString(), anyString())
         verify {
-            GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
+            GetSearchShopProductUseCase.createRequestParam(anyInt(), anyString())
         }
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()
@@ -59,14 +57,14 @@ class ShopSearchProductViewModelTest {
     }
 
     @Test
-    fun `when user search product should return fail`(){
+    fun `when user search product should return fail`() {
         mockkObject(GetSearchShopProductUseCase)
         coEvery {
             getSearchShopProductUseCase.executeOnBackground()
-        }throws Throwable()
+        } throws Throwable()
         viewModel.getSearchShopProduct(anyString(), anyString())
         verify {
-            GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
+            GetSearchShopProductUseCase.createRequestParam(anyInt(), anyString())
         }
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()

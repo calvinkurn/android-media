@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 android {
     defaultConfig {
@@ -19,11 +18,6 @@ repositories {
     mavenCentral()
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 buildscript {
     repositories {
         google()
@@ -37,6 +31,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
@@ -99,8 +94,10 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

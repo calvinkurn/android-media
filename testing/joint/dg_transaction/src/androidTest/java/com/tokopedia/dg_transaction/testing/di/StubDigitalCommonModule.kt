@@ -5,14 +5,16 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.atc.RechargeAddToCartGqlUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.dg_transaction.testing.response.rest.DigitalAddToCartMockResponse
 import com.tokopedia.dg_transaction.testing.response.rest.RestRepositoryStub
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSession
@@ -48,9 +50,10 @@ class StubDigitalCommonModule {
 
     @DigitalCommonScope
     @Provides
-    fun provideDigitalCartInterceptor(@ApplicationContext context: Context,
-                                      networkRouter: NetworkRouter,
-                                      userSession: UserSessionInterface
+    fun provideDigitalCartInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSession: UserSessionInterface
     ): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
@@ -58,16 +61,17 @@ class StubDigitalCommonModule {
     @DigitalCommonScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return if (context is NetworkRouter) context
-        else throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
+        return if (context is NetworkRouter) {
+            context
+        } else {
+            throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
+        }
     }
 
     @Provides
     @DigitalCommonScope
     fun provideRestRepositoryStub(): RestRepositoryStub {
-        return RestRepositoryStub().apply {
-            responses = DigitalAddToCartMockResponse().getMockResponse()
-        }
+        return RestRepositoryStub()
     }
 
     @Provides
@@ -75,10 +79,20 @@ class StubDigitalCommonModule {
     @DigitalAddToCartQualifier
     fun provideRestRepository(repositoryStub: RestRepositoryStub): RestRepository = repositoryStub
 
+    @Provides
+    @DigitalCommonScope
+    @DigitalAddToCartQualifier
+    fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    @DigitalCommonScope
+    fun provideRechargeAddToCartGqluseCase(@DigitalAddToCartQualifier graphqlRepository: GraphqlRepository): RechargeAddToCartGqlUseCase =
+        RechargeAddToCartGqlUseCase(graphqlRepository)
+
     @DigitalCommonScope
     @Provides
-    fun provideDigitalAtcUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
-            : DigitalAddToCartUseCase = DigitalAddToCartUseCase(restRepository)
+    fun provideDigitalAtcUseCase(gqlUseCase: RechargeAddToCartGqlUseCase): DigitalAddToCartUseCase =
+        DigitalAddToCartUseCase(gqlUseCase)
 
     @Provides
     @DigitalCommonScope

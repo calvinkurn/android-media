@@ -12,18 +12,16 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.GetKeygenUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
-import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
-import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
+import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -49,30 +47,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideChatRoomApiStubStub(): ChatRoomApi {
-        return ChatRoomApiStub()
-    }
-
-    @Provides
-    @ChatScope
-    fun provideGetTemplateChatRoomUseCase(
-        stub: GetTemplateChatRoomUseCaseStub
-    ): GetTemplateChatRoomUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideGetTemplateChatRoomUseCaseStub(
-        api: ChatRoomApiStub,
-        mapper: GetTemplateChatRoomMapper,
-        dispatchers: CoroutineDispatchers
-    ): GetTemplateChatRoomUseCaseStub {
-        return GetTemplateChatRoomUseCaseStub(api, mapper, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideUploadImageUseCase(
         stub: TopchatUploadImageUseCaseStub
     ): TopchatUploadImageUseCase = stub
@@ -89,22 +63,6 @@ class ChatRoomFakeUseCaseModule {
             chatImageServerUseCase,
             dispatchers
         )
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideAddWishListUseCase(
-        stub: AddWishListUseCaseStub
-    ): AddWishListUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideAddWishListUseCaseStub(
-        @TopchatContext context: Context
-    ): AddWishListUseCaseStub {
-        return AddWishListUseCaseStub(context)
     }
 
     // -- separator -- view model usecase start here //
@@ -475,5 +433,40 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetChatPreAttachPayloadUseCaseStub {
         return GetChatPreAttachPayloadUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideAddToWishlistV2UseCase(
+        stub: AddToWishlistV2UseCaseStub
+    ): AddToWishlistV2UseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideAddToWishlistV2UseCaseStub(
+        repository: GraphqlRepositoryStub
+    ): AddToWishlistV2UseCaseStub {
+        return AddToWishlistV2UseCaseStub(repository)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetTemplateUseCaseStub(
+        repositoryStub: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetTemplateUseCaseStub {
+        return GetTemplateUseCaseStub(repositoryStub, dispatchers)
+    }
+
+    @Provides
+    @ChatScope
+    fun provideGetTemplateUseCase(
+        useCaseStub: GetTemplateUseCaseStub
+    ): GetTemplateUseCase {
+        return useCaseStub
     }
 }

@@ -12,6 +12,8 @@ import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
  */
 interface Broadcaster {
 
+    fun setConfig(audioRate: String, videoRate: String, videoFps: String)
+
     fun addListener(listener: Listener)
 
     fun removeListener(listener: Listener)

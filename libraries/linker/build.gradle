@@ -29,8 +29,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
     implementation rootProject.ext.firebase.dynamicLink
     implementation projectOrAar(rootProject.ext.libraries.applink)

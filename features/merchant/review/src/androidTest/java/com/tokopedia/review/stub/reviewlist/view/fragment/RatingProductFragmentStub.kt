@@ -4,9 +4,11 @@ import android.os.Bundle
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.review.feature.reviewlist.di.module.ReviewProductListModule
+import com.tokopedia.review.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.review.stub.reviewcommon.ReviewInstanceStub
 import com.tokopedia.review.stub.reviewlist.di.component.DaggerReviewProductListComponentStub
+import com.tokopedia.review.stub.reviewlist.view.adapter.SellerReviewListTypeFactoryStub
 
 class RatingProductFragmentStub : RatingProductFragment() {
 
@@ -14,6 +16,10 @@ class RatingProductFragmentStub : RatingProductFragment() {
         fun createInstance(): RatingProductFragment {
             return RatingProductFragmentStub()
         }
+    }
+
+    override val sellerReviewListTypeFactory: SellerReviewListTypeFactory by lazy {
+        SellerReviewListTypeFactoryStub(this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

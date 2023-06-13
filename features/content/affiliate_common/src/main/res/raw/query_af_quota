@@ -1,7 +1,0 @@
-query {
-    affiliatePostQuota() {
-        formatted
-        number
-        format
-    }
-}

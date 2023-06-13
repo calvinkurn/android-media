@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateAtfModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.databinding.HomeErrorStateAtfPositionBinding
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeAtfErrorViewHolder(itemView: View, private val listener: HomeCategoryListener?)
@@ -20,6 +23,11 @@ class HomeAtfErrorViewHolder(itemView: View, private val listener: HomeCategoryL
 
     override fun bind(element: ErrorStateAtfModel) {
         binding?.localloadErrorStateAtf?.progressState = false
+        if (HomeRollenceController.isUsingAtf2Variant()) {
+            binding?.shimmerDynamicIcon1?.root?.gone()
+        } else {
+            binding?.shimmerDynamicIcon1?.root?.visible()
+        }
 
         binding?.localloadErrorStateAtf?.refreshBtn?.setOnClickListener {
             listener?.refreshHomeData(forceRefresh = true)

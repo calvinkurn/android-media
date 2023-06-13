@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/infinite_reload_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:paddingVertical="16dp"
+    android:textAlignment="center"
+    android:textColor="@color/Unify_NN600"
+    app:typographyType="display_3"
+    android:text="@string/mp_ad_creation_grp_list_infinite_reload_text" />

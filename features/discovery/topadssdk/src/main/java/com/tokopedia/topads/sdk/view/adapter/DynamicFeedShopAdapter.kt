@@ -103,7 +103,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 }
                 ivProfile.addOnImpressionListener(shop.imageShop, object : ViewHintListener {
                     override fun onViewHint() {
-                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.getsUrl(), shop.id, shop.name, shop.imageShop.xsEcs)
+                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.sUrl, shop.id, shop.name, shop.imageShop.xsEcs)
                     }
                 })
                 imageLoader.loadCircle(shop, ivProfile)

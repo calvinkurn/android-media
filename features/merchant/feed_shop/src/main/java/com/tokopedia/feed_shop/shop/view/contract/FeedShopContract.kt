@@ -31,7 +31,7 @@ interface FeedShopContract {
 
         fun onSuccessDeletePost(rowNumber: Int)
 
-        fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
+        fun onErrorDeletePost(errorMessage: String, id: String, rowNumber: Int)
 
         fun onWhitelistClicked(element: WhitelistUiModel)
 
@@ -41,7 +41,7 @@ interface FeedShopContract {
 
         fun onGotoLearnMoreClicked(url: String): Boolean
 
-        fun onAddToCartSuccess()
+        fun onAddToCartSuccess(productId: String)
 
         fun onAddToCartFailed(pdpAppLink: String)
     }
@@ -57,11 +57,11 @@ interface FeedShopContract {
 
         fun unfollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
+        fun likeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
+        fun unlikeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun deletePost(id: Int, rowNumber: Int)
+        fun deletePost(id: String, rowNumber: Int)
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 

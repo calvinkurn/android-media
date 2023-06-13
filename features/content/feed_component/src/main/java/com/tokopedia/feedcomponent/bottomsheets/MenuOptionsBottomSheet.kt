@@ -9,9 +9,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
 
@@ -58,11 +55,10 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-        report.showWithCondition(!canBeDeleted && isReportable)
+        report.showWithCondition(isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
-        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow && !isCommentPage  && isEditable)
+        edit.showWithCondition(canBeDeleted && !isCommentPage && isEditable)
 
 
         if (canBeDeleted && report.isVisible && follow.isVisible) {
@@ -81,11 +77,11 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 div2.show()
                 div0.show()
             }
-            if(edit.isVisible){
+            if (edit.isVisible) {
                 div0.show()
             }
         }
-        if(!edit.isVisible){
+        if (!edit.isVisible) {
             div0.hide()
         }
 
@@ -119,12 +115,8 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 onDismiss?.invoke()
         }
     }
-    fun setIsCommentPage(isCommentPage: Boolean){
-        this.isCommentPage = isCommentPage
-    }
 
-    private fun enableContentCreationNewFlow(): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
+    fun setIsCommentPage(isCommentPage: Boolean) {
+        this.isCommentPage = isCommentPage
     }
 }

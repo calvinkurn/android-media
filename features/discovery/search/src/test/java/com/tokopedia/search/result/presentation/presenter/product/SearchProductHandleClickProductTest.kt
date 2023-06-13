@@ -19,7 +19,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val adapterPosition = 1
     private val userId = "12345678"
-    private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemDataView>()
     private var suggestedRelatedKeyword = ""
     private val suggestedRelatedKeywordSlot = slot<String>()

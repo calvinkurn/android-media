@@ -1,13 +1,14 @@
 package com.tokopedia.applink.tokofood
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperTokoFood {
 
@@ -25,27 +26,31 @@ object DeeplinkMapperTokoFood {
     const val BRAND_UID_PARAM = "brand_uid"
     const val SORT_BY_PARAM = "sortBy"
 
-    fun mapperInternalApplinkTokoFood(uri: Uri): String {
+    fun mapperInternalApplinkTokoFood(context: Context, uri: Uri): String {
         val url = uri.toString()
-        if (isGoToFoodPage()){
-            return when {
-                url.startsWith(ApplinkConst.TokoFood.HOME) -> getTokoFoodHomeInternalAppLink()
-                url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
-                isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
-                isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
-                    getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
-                url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
-                else -> url
-            }
-        } else {
-            return ApplinkConsInternalHome.HOME_NAVIGATION
+        return when {
+            url.startsWith(ApplinkConst.TokoFood.HOME) || url.startsWith(ApplinkConst.TokoFood.GOFOOD) -> getTokoFoodHomeInternalAppLink(context)
+            url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(context, uri)
+            isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
+            isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
+                    context, getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
+            url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
+            url.startsWith(ApplinkConst.TokoFood.SEARCH) ->
+                if (getIsTokofoodGtpMigration(context)) ApplinkConstInternalTokoFood.SEARCH else ApplinkConstInternalTokoFood.SEARCH_OLD
+            else -> url
         }
     }
 
-    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?, uri: Uri): String {
+    fun getTokoFoodMerchantInternalAppLink(context: Context, idList: List<String>?, uri: Uri): String {
+        val merchantApplink =
+            if (getIsTokofoodGtpMigration(context)) {
+                ApplinkConstInternalTokoFood.MERCHANT
+            } else {
+                ApplinkConstInternalTokoFood.MERCHANT_OLD
+            }
         val merchantId = idList?.getOrNull(0).orEmpty()
         val productId = uri.getQueryParameter(PARAM_PRODUCT_ID).orEmpty()
-        return Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        return Uri.parse(merchantApplink)
             .buildUpon()
             .appendQueryParameter(PARAM_MERCHANT_ID, merchantId)
             .appendQueryParameter(PARAM_PRODUCT_ID, productId)
@@ -60,18 +65,28 @@ object DeeplinkMapperTokoFood {
             .build().toString()
     }
 
-    private fun getTokoFoodHomeInternalAppLink(): String {
-        return ApplinkConstInternalTokoFood.HOME
+    private fun getTokoFoodHomeInternalAppLink(context: Context): String {
+        return if (getIsTokofoodGtpMigration(context)) {
+            ApplinkConstInternalTokoFood.HOME
+        } else {
+            ApplinkConstInternalTokoFood.HOME_OLD
+        }
     }
 
-    private fun getTokoFoodCategoryInternalAppLink(uri: Uri): String {
+    private fun getTokoFoodCategoryInternalAppLink(context: Context, uri: Uri): String {
+        val categoryApplink =
+            if (getIsTokofoodGtpMigration(context)) {
+                ApplinkConstInternalTokoFood.CATEGORY
+            } else {
+                ApplinkConstInternalTokoFood.CATEGORY_OLD
+            }
         val pageTitle = uri.getQueryParameter(PAGE_TITLE_PARAM) ?: ""
         val option = uri.getQueryParameter(OPTION_PARAM) ?: ""
         val cuisine = uri.getQueryParameter(CUISINE_PARAM) ?: ""
         val sortBy = uri.getQueryParameter(SORT_BY_PARAM) ?: ""
         val brandUId = uri.getQueryParameter(BRAND_UID_PARAM) ?: ""
 
-        return Uri.parse(ApplinkConstInternalTokoFood.CATEGORY)
+        return Uri.parse(categoryApplink)
             .buildUpon()
             .appendQueryParameter(PAGE_TITLE_PARAM, pageTitle)
             .appendQueryParameter(OPTION_PARAM, option)
@@ -81,21 +96,16 @@ object DeeplinkMapperTokoFood {
             .build().toString()
     }
 
-    private fun isGoToFoodPage(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_FOOD, ""
-            ) == RollenceKey.KEY_ROLLENCE_FOOD
-        } catch (e: Exception) {
-            true
-        }
-    }
-
     private fun getUriIdList(pattern:String, uri: Uri): List<String>? {
         return UriUtil.matchWithPattern(pattern, uri)
     }
 
     private fun isMatchPattern(pattern:String, uri: Uri): Boolean {
         return UriUtil.matchWithPattern(pattern, uri) != null
+    }
+
+    private fun getIsTokofoodGtpMigration(context: Context): Boolean {
+        return FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.IS_TOKOFOOD_NEW_GTP_FLOW)
+            .orFalse()
     }
 }

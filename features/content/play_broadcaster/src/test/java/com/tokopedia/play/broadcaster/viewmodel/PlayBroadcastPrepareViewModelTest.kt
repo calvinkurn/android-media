@@ -46,6 +46,7 @@ class PlayBroadcastPrepareViewModelTest {
     private val mockTitleDataStore: TitleDataStore = mockk(relaxed = true)
     private lateinit var tagsDataStore: TagsDataStore
     private lateinit var interactiveDataStore: InteractiveDataStore
+    private lateinit var productTagDataStoreImpl: ProductTagDataStoreImpl
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
     private lateinit var mockHydraDataStore: HydraConfigStore
@@ -63,16 +64,26 @@ class PlayBroadcastPrepareViewModelTest {
 
     private val mockException = modelBuilder.buildException()
 
+    private val authorId = "123"
+
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()
 
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        productTagDataStoreImpl = ProductTagDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(
+            coverDataStore,
+            broadcastScheduleDataStore,
+            titleDataStore,
+            tagsDataStore,
+            interactiveDataStore,
+            productTagDataStoreImpl,
+        )
         mockHydraDataStore = TestDoubleModelBuilder().buildHydraConfigStore()
         mockBroadcastSetupDataStore = TestDoubleModelBuilder().buildSetupDataStore(
             titleDataStore = mockTitleDataStore,
@@ -88,13 +99,14 @@ class PlayBroadcastPrepareViewModelTest {
         createLiveStreamChannelUseCase = mockk(relaxed = true)
 
         viewModel = PlayBroadcastPrepareViewModel(
-                dispatcher = dispatcherProvider,
-                hydraConfigStore = mockHydraDataStore,
-                setupDataStore = mockBroadcastSetupDataStore,
-                channelConfigStore = channelConfigStore,
-                createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
-                mDataStore = dataStore,
-                playBroadcastMapper = playBroadcastMapper,
+            dispatcher = dispatcherProvider,
+            hydraConfigStore = mockHydraDataStore,
+            setupDataStore = mockBroadcastSetupDataStore,
+            channelConfigStore = channelConfigStore,
+            createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
+            mDataStore = dataStore,
+            playBroadcastMapper = playBroadcastMapper,
+            sharedPref = mockk(relaxed = true),
         )
     }
 
@@ -177,9 +189,9 @@ class PlayBroadcastPrepareViewModelTest {
     /** Setup Title */
     @Test
     fun `when user successfully upload title, it should emit network result success`() {
-        coEvery { mockTitleDataStore.uploadTitle(any(), any()) } returns NetworkResult.Success(Unit)
+        coEvery { mockTitleDataStore.uploadTitle(any(), any(), any()) } returns NetworkResult.Success(Unit)
 
-        viewModel.uploadTitle("Test Title")
+        viewModel.uploadTitle(authorId, "Test Title")
 
         val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
 
@@ -188,9 +200,9 @@ class PlayBroadcastPrepareViewModelTest {
 
     @Test
     fun `when user failed upload title, it should emit network result fail`() {
-        coEvery { mockTitleDataStore.uploadTitle(any(), any()) } returns NetworkResult.Fail(mockException)
+        coEvery { mockTitleDataStore.uploadTitle(any(), any(), any()) } returns NetworkResult.Fail(mockException)
 
-        viewModel.uploadTitle("Test Title")
+        viewModel.uploadTitle(authorId, "Test Title")
 
         val result = viewModel.observableUploadTitleEvent.getOrAwaitValue()
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_tv_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="left|top"
+        android:lineSpacingMultiplier="1.1"
+        android:textColor="@color/Unify_NN950"
+        android:textIsSelectable="false"
+        app:typographyType="paragraph_2"
+        tools:ignore="RtlHardcoded"
+        tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_tv_msg_read_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_GN500"
+        android:textIsSelectable="false"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:text="@string/tokochat_read_more" />
+
+    <LinearLayout
+        android:id="@+id/tokochat_layout_msg_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom|center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tokochat_iv_msg_check_mark"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="2dp"
+            android:contentDescription="@null"
+            tools:srcCompat="@drawable/tokochat_ic_check_read_rounded_green" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_tv_msg_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:textColor="@color/Unify_NN400"
+            android:textIsSelectable="false"
+            app:typographyType="body_3"
+            tools:text="11:00" />
+    </LinearLayout>
+
+</merge>

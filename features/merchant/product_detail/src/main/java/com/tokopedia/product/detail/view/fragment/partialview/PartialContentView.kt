@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -28,14 +27,18 @@ class PartialContentView(
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
 
-    fun renderData(data: ProductContentMainData,
-                   isUpcomingNplType: Boolean, freeOngkirImgUrl: String) = with(binding) {
+    fun renderData(
+        data: ProductContentMainData,
+        isUpcomingNplType: Boolean,
+        freeOngkirImgUrl: String,
+        shouldShowCampaign: Boolean
+    ) = with(binding) {
         txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         productName.text = MethodChecker.fromHtml(data.productName)
 
         imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            imgFreeOngkir.loadIcon(freeOngkirImgUrl)
+            imgFreeOngkir.setImageUrl(freeOngkirImgUrl)
         }
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
@@ -71,11 +74,14 @@ class PartialContentView(
         }
 
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
+
+        if (!shouldShowCampaign) {
+            campaignRibbon.hide()
+        }
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) { hide() }
-        else {
+        if (!shouldShowWishlist) { hide() } else {
             if (wishlisted) {
                 hide()
                 isActivated = true
@@ -92,9 +98,7 @@ class PartialContentView(
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.loadIcon(freeOngkirUrl) {
-                fitCenter()
-            }
+            imgFreeOngkir.setImageUrl(freeOngkirUrl)
         }
     }
 
@@ -113,20 +117,26 @@ class PartialContentView(
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(binding) {
         txtMainPrice.run {
-            text = context.getString(R.string.template_price, "",
-                    campaign.discountedPriceFmt)
+            text = context.getString(
+                R.string.template_price,
+                "",
+                campaign.discountedPriceFmt
+            )
             show()
         }
 
         textSlashPrice.run {
-            text = context.getString(R.string.template_price, "",
-                    campaign.originalPriceFmt)
+            text = context.getString(
+                R.string.template_price,
+                "",
+                campaign.originalPriceFmt
+            )
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
 
         textDiscountRed.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount.toString())
+            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount)
             show()
         }
         hideGimmick(campaign)
@@ -148,8 +158,11 @@ class PartialContentView(
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = context.getString(R.string.template_price, "",
-                campaign.originalPrice.getCurrencyFormatted())
+        txtMainPrice.text = context.getString(
+            R.string.template_price,
+            "",
+            campaign.originalPrice.getCurrencyFormatted()
+        )
         campaignRibbon.hide()
         textDiscountRed.gone()
         textSlashPrice.gone()

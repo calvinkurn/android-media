@@ -1,28 +1,26 @@
 package com.tokopedia.unifyorderhistory.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 10/08/20.
- */
-class RechargeSetFailUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(orderId: Int): Result<RechargeSetFailData.Data> {
-        return try {
-            val request = GraphqlRequest(QUERY, RechargeSetFailData.Data::class.java, generateParam(orderId))
-            val response = gqlRepository.response(listOf(request)).getSuccessData<RechargeSetFailData.Data>()
-            Success(response)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+@GqlQuery("RechargeSetFailQuery", RechargeSetFailUseCase.query)
+class RechargeSetFailUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<Int, RechargeSetFailData>(dispatchers.io) {
+
+    override fun graphqlQuery(): String = query
+
+    override suspend fun execute(params: Int): RechargeSetFailData {
+        return repository.request(RechargeSetFailQuery(), generateParam(params))
     }
 
     private fun generateParam(orderId: Int): Map<String, Any?> {
@@ -30,9 +28,9 @@ class RechargeSetFailUseCase @Inject constructor(@ApplicationContext private val
     }
 
     companion object {
-        val QUERY = """
-            mutation rechargeSetOrderToFail(${'$'}orderId: Int!) {
-              rechargeSetOrderToFail(orderId:${'$'}orderId) {
+        const val query = """
+            mutation rechargeSetOrderToFail(${'$'}orderId: Int64!) {
+              rechargeSetOrderToFailV2(order_id:${'$'}orderId) {
                 attributes {
                   user_id
                   order_status
@@ -42,6 +40,6 @@ class RechargeSetFailUseCase @Inject constructor(@ApplicationContext private val
                 error
               }
             }
-            """.trimIndent()
+        """
     }
 }

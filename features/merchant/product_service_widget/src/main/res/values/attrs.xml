@@ -20,4 +20,7 @@
         <attr name="spannable_drawable_position" format="integer" />
         <attr name="spannable_use_small_text" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="ProductBundleWidgetView">
+        <attr name="bundlewidget_title" format="string" />
+    </declare-styleable>
 </resources>

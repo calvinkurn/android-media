@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 
-open class ThumbnailSmoothScroller(context: Context,
-                                   private val targetRv: RecyclerView)
-    : LinearSmoothScroller(context) {
+open class ThumbnailSmoothScroller(
+    context: Context,
+    private val targetRv: RecyclerView
+) : LinearSmoothScroller(context) {
 
     fun scrollThumbnail(selectedPosition: Int) {
         val thumbnailLayoutManager = targetRv.layoutManager as? LinearLayoutManager
@@ -17,18 +18,11 @@ open class ThumbnailSmoothScroller(context: Context,
             val firstVisibleItem = thumbnailLayoutManager.findFirstVisibleItemPosition()
             if (selectedPosition >= lastVisibleItem) {
                 targetPosition = selectedPosition
-                thumbnailLayoutManager.startSmoothScroll(
-                        this
-                )
+                thumbnailLayoutManager.startSmoothScroll(this)
             } else if (selectedPosition <= firstVisibleItem) {
                 targetPosition = selectedPosition - 1
-                targetPosition =
-                        if (selectedPosition - 1 > 0)
-                            selectedPosition - 1
-                        else 0
-                thumbnailLayoutManager.startSmoothScroll(
-                        this
-                )
+                targetPosition = if (selectedPosition - 1 > 0) selectedPosition - 1 else 0
+                thumbnailLayoutManager.startSmoothScroll(this)
             }
         }
     }
@@ -39,6 +33,7 @@ open class ThumbnailSmoothScroller(context: Context,
 
     override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
         return (targetRv.layoutManager as? LinearLayoutManager)?.computeScrollVectorForPosition(
-                targetPosition)
+            targetPosition
+        )
     }
 }

@@ -1,34 +1,58 @@
 package com.tokopedia.analyticsdebugger.websocket.domain.usecase
 
-import com.tokopedia.analyticsdebugger.websocket.domain.repository.WebSocketLogRespository
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.websocket.domain.param.GetWebSocketLogParam
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
 import com.tokopedia.analyticsdebugger.websocket.ui.mapper.WebSocketLogMapper
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on December 01, 2021
  */
 class GetWebSocketLogUseCase @Inject constructor(
-    private val webSocketLogRepository: WebSocketLogRespository,
-    private val webSocketLogMapper: WebSocketLogMapper
-): UseCase<List<WebSocketLogUiModel>>() {
+    private val playWebSocketLogRepository: PlayWebSocketLogRepository,
+    private val topchatWebSocketLogRepository: TopchatWebSocketLogRepository,
+    private val webSocketLogMapper: WebSocketLogMapper,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<GetWebSocketLogParam, List<WebSocketLogUiModel>>(dispatchers.io) {
 
-    private var query: String = ""
-    private var source: String = ""
-    private var page: Int = 0
-    private var limit: Int = 0
+    override suspend fun execute(params: GetWebSocketLogParam): List<WebSocketLogUiModel> {
+        val offset = params.limit * params.page
 
-    fun setParam(query: String, source: String, page: Int, limit: Int) {
-        this.query = "%$query%"
-        this.source = "%$source%"
-        this.page = page
-        this.limit = limit
+        return when (params.pageSource) {
+            WebSocketLogPageSource.PLAY -> getPlayWebSocketLog(params, offset)
+            WebSocketLogPageSource.TOPCHAT -> getTopchatWebSocketLog(params, offset)
+            else -> emptyList()
+        }
     }
 
-    override suspend fun executeOnBackground(): List<WebSocketLogUiModel> {
-        val offset = limit * page
-        val response = webSocketLogRepository.get(query, source, limit, offset)
-        return webSocketLogMapper.mapEntityToUiModel(response)
-    }
+    private suspend fun getPlayWebSocketLog(
+        params: GetWebSocketLogParam,
+        offset: Int
+    ) = webSocketLogMapper.mapPlayEntityToUiModel(
+        playWebSocketLogRepository.get(
+            "%${params.query}%",
+            "%${params.source}%",
+            params.limit,
+            offset
+        )
+    )
+
+    private suspend fun getTopchatWebSocketLog(
+        params: GetWebSocketLogParam,
+        offset: Int
+    ) = webSocketLogMapper.mapTopchatEntityToUiModel(
+        topchatWebSocketLogRepository.get(
+            "%${params.query}%",
+            "%${params.source}%",
+            params.limit,
+            offset
+        )
+    )
+
+    override fun graphqlQuery() = "" // no-op
 }

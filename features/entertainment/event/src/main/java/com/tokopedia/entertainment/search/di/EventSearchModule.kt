@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -40,16 +40,16 @@ class EventSearchModule {
 
     @EventSearchScope
     @Provides
-    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fun provideInterceptors(tkpdOldAuthInterceptor: TkpdOldAuthInterceptor,
                             loggingInterceptor: HttpLoggingInterceptor,
                             commonErrorResponseInterceptor: CommonErrorResponseInterceptor) =
-            mutableListOf(tkpdAuthInterceptor, loggingInterceptor, commonErrorResponseInterceptor)
+            mutableListOf(tkpdOldAuthInterceptor, loggingInterceptor, commonErrorResponseInterceptor)
 
     @EventSearchScope
     @Provides
     fun provideAuthInterceptors(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
+                                userSession: UserSessionInterface): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, context as NetworkRouter, userSession)
     }
 
     @EventSearchScope

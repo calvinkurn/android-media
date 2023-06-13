@@ -26,10 +26,4 @@ class CreateReviewTemplateDiffUtil(
         val newItem = newItems.getOrNull(newItemPosition)
         return oldItem?.areContentsTheSame(newItem) == true
     }
-
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val oldItem = oldItems.getOrNull(oldItemPosition)
-        val newItem = newItems.getOrNull(newItemPosition)
-        return oldItem?.getChangePayload(newItem)
-    }
 }

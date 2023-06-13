@@ -31,5 +31,6 @@ object RegisterConstants {
         const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
         const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_register_page"
+        const val REMOTE_CONFIG_KEY_REGISTER_ONLY_WITH_PHONE_NUMBER = "android_user_register_only_with_phone_number"
     }
 }

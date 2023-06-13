@@ -1,0 +1,2 @@
+include "wearosapp"
+include ':features:watch'

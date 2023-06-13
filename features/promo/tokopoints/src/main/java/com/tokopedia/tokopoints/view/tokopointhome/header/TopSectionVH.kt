@@ -17,6 +17,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -56,14 +58,13 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
-import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 
 class TopSectionVH(
     itemView: View,
     private val cardRuntimeHeightListener: CardRuntimeHeightListener,
     private val refreshOnTierUpgrade: RefreshOnTierUpgrade,
-    private val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
+    private val toolbarItemList: Any?
+) : RecyclerView.ViewHolder(itemView) {
 
     private var arrowIcon: AppCompatImageView? = null
     lateinit var cardTierInfo: ConstraintLayout
@@ -94,16 +95,15 @@ class TopSectionVH(
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
     private var digitContainer: LinearLayout? = null
     private var popupNotification: PopupNotif? = null
-    private var topSectionData : TopSectionResponse? =null
-    private var textTransaksi : Typography? = null
-    private var textLagi : Typography? = null
-    private var containerProgressBar : FrameLayout ? = null
+    private var topSectionData: TopSectionResponse? = null
+    private var textTransaksi: Typography? = null
+    private var textLagi: Typography? = null
+    private var containerProgressBar: FrameLayout ? = null
     private var isNextTier = false
     val maxProgress = 100
     private var TIME_DELAY_PROGRESS = 1000L
 
     fun bind(model: TopSectionResponse) {
-
         cardTierInfo = itemView.findViewById(R.id.container_target)
         dynamicAction = itemView.findViewById(R.id.dynamic_widget)
         mTextMembershipValue = itemView.findViewById(R.id.text_membership_value)
@@ -175,11 +175,11 @@ class TopSectionVH(
                 if (isContainsRp(diffAmount)) {
                     addRPToTransaction()
                     val digitTextView = DigitTextView(itemView.context)
-                    digitTextView.setValue(diffAmountCurrent.removePrefix("Rp"),diffAmount.removePrefix("Rp"))
+                    digitTextView.setValue(diffAmountCurrent.removePrefix("Rp"), diffAmount.removePrefix("Rp"))
                     digitContainer?.addView(digitTextView)
                 } else {
                     val digitTextView = DigitTextView(itemView.context)
-                    digitTextView.setValue(diffAmountCurrent,diffAmount)
+                    digitTextView.setValue(diffAmountCurrent, diffAmount)
                     digitContainer?.addView(digitTextView)
                     addXToTransaction()
                 }
@@ -206,9 +206,9 @@ class TopSectionVH(
             }
         }
 
-        if (isDarkMode(itemView.context)){
-            mTextMembershipLabel?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-            mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        if (isDarkMode(itemView.context)) {
+            mTextMembershipLabel?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
         ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.tier?.imageURL)
@@ -221,7 +221,7 @@ class TopSectionVH(
     }
 
     private fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
-        val mapOfIdtoPosition:HashMap<Int,Int> = HashMap()
+        val mapOfIdtoPosition: HashMap<Int, Int> = HashMap()
 
         if (dataList != null && dataList.isNotEmpty()) {
             for (i in dataList.indices) {
@@ -232,7 +232,9 @@ class TopSectionVH(
                 if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
                     dataList[i]?.let {
                         dynamicAction?.setLayoutNotification(
-                            it.counter?.counterStr ?: "", it.id ?: 0)
+                            it.counter?.counterStr ?: "",
+                            it.id ?: 0
+                        )
                     }
                 } else {
                     dynamicAction?.hideNotification(dataList[i]?.id ?: 0)
@@ -241,36 +243,38 @@ class TopSectionVH(
                 if (dataList[i]?.counterTotal?.isShowCounter!!) {
                     dataList[i]?.let {
                         dynamicAction?.setLayoutLabel(
-                            it.counterTotal?.counterStr ?: "", it.id ?: 0)
+                            it.counterTotal?.counterStr ?: "",
+                            it.id ?: 0
+                        )
                     }
                 }
             }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
-                    dataList[mapOfIdtoPosition?.get(TOKOMEMBER)?:0]?.cta?.let {
-                        hideNotification(mapOfIdtoPosition?.get(TOKOMEMBER)?:0, dataList[mapOfIdtoPosition?.get(TOKOMEMBER)?:0])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOKOMEMBER)
-                    }
+            dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
+                dataList[mapOfIdtoPosition?.get(TOKOMEMBER) ?: 0]?.cta?.let {
+                    hideNotification(mapOfIdtoPosition?.get(TOKOMEMBER) ?: 0, dataList[mapOfIdtoPosition?.get(TOKOMEMBER) ?: 0])
+                    dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOKOMEMBER)
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_topquest)?.setOnClickListener {
-                    dataList[mapOfIdtoPosition?.get(TOPQUEST)?:0]?.cta?.let {
-                        hideNotification(mapOfIdtoPosition?.get(TOPQUEST)?:0, dataList[mapOfIdtoPosition?.get(TOPQUEST)?:0])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOPQUEST)
-                    }
+            }
+            dynamicAction?.findViewById<LinearLayout>(R.id.holder_topquest)?.setOnClickListener {
+                dataList[mapOfIdtoPosition?.get(TOPQUEST) ?: 0]?.cta?.let {
+                    hideNotification(mapOfIdtoPosition?.get(TOPQUEST) ?: 0, dataList[mapOfIdtoPosition?.get(TOPQUEST) ?: 0])
+                    dynamicAction?.setLayoutClicklistener(it.appLink, it.text, TOPQUEST)
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
-                    dataList[mapOfIdtoPosition?.get(KUPON)?:0]?.cta?.let {
-                        hideNotification(mapOfIdtoPosition?.get(KUPON)?:0, dataList[mapOfIdtoPosition?.get(KUPON)?:0])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, KUPON)
-                    }
+            }
+            dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
+                dataList[mapOfIdtoPosition?.get(KUPON) ?: 0]?.cta?.let {
+                    hideNotification(mapOfIdtoPosition?.get(KUPON) ?: 0, dataList[mapOfIdtoPosition?.get(KUPON) ?: 0])
+                    dynamicAction?.setLayoutClicklistener(it.appLink, it.text, KUPON)
                 }
+            }
 
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_bbo)?.setOnClickListener {
-                    dataList[mapOfIdtoPosition?.get(BBO)?:0]?.cta?.let {
-                        hideNotification(mapOfIdtoPosition?.get(BBO)?:0, dataList[mapOfIdtoPosition?.get(BBO)?:0])
-                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, BBO)
-                    }
+            dynamicAction?.findViewById<LinearLayout>(R.id.holder_bbo)?.setOnClickListener {
+                dataList[mapOfIdtoPosition?.get(BBO) ?: 0]?.cta?.let {
+                    hideNotification(mapOfIdtoPosition?.get(BBO) ?: 0, dataList[mapOfIdtoPosition?.get(BBO) ?: 0])
+                    dynamicAction?.setLayoutClicklistener(it.appLink, it.text, BBO)
                 }
             }
+        }
     }
 
     inline fun View.doOnLayout(crossinline action: (view: View) -> Unit) {
@@ -286,15 +290,15 @@ class TopSectionVH(
     inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
         addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
             override fun onLayoutChange(
-                    view: View,
-                    left: Int,
-                    top: Int,
-                    right: Int,
-                    bottom: Int,
-                    oldLeft: Int,
-                    oldTop: Int,
-                    oldRight: Int,
-                    oldBottom: Int
+                view: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
             ) {
                 view.removeOnLayoutChangeListener(this)
                 action(view)
@@ -332,7 +336,7 @@ class TopSectionVH(
             val savingPercentStyle = userSavingInfo.descriptions[0]?.fontStyle
             var savingPercentColor = ""
             if (!savingPercentStyle.isNullOrEmpty()) {
-                savingPercentColor = savingPercentStyle?.replace(CommonConstant.USERSAVING_COLORSTR, "")
+                savingPercentColor = savingPercentStyle.replace(CommonConstant.USERSAVING_COLORSTR, "")
             }
             var savingDescription = ""
             var savingDescriptionStyle = ""
@@ -341,27 +345,31 @@ class TopSectionVH(
                 savingDescription = userSavingInfo.descriptions[1]?.text.toString()
                 savingDescriptionStyle = userSavingInfo.descriptions[1]?.fontStyle.toString()
                 if (!savingDescriptionStyle.isNullOrEmpty()) {
-                    savingDescriptionColor = savingDescriptionStyle?.replace(CommonConstant.USERSAVING_COLORSTR, "")
+                    savingDescriptionColor = savingDescriptionStyle.replace(CommonConstant.USERSAVING_COLORSTR, "")
                 }
             }
             val spannable = SpannableString("$savingPercent $savingDescription")
             if (!savingPercent.isNullOrEmpty() && !savingPercentColor.isNullOrEmpty()) {
                 savingPercent.length.let {
                     spannable.setSpan(
-                            ForegroundColorSpan(Color.parseColor(savingPercentColor)),
-                            0, it,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    if (userSavingInfo.descriptions.size>1) {
-                        spannable.setSpan(StyleSpan(Typeface.BOLD),0,it, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ForegroundColorSpan(Color.parseColor(savingPercentColor)),
+                        0,
+                        it,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    if (userSavingInfo.descriptions.size > 1) {
+                        spannable.setSpan(StyleSpan(Typeface.BOLD), 0, it, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
             }
             if (!savingDescription.isNullOrEmpty() && !savingDescriptionColor.isNullOrEmpty()) {
                 savingDescription.length.let {
                     spannable.setSpan(
-                            ForegroundColorSpan(Color.parseColor(savingDescriptionColor)),
-                            0, it,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ForegroundColorSpan(Color.parseColor(savingDescriptionColor)),
+                        0,
+                        it,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                 }
             }
             (savingDesc as TextView).text = spannable
@@ -372,11 +380,12 @@ class TopSectionVH(
         cardContainer?.setOnClickListener {
             RouteManager.route(itemView.context, CommonConstant.WebLink.USERSAVING)
             AnalyticsTrackerUtil.sendEvent(
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_USERSAVING_ENTRYPOINT, "",
-                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
-                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_USERSAVING_ENTRYPOINT,
+                "",
+                AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
             )
         }
     }
@@ -400,7 +409,8 @@ class TopSectionVH(
                 AnalyticsTrackerUtil.sendEvent(
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_STATUSMATCHING_ON_REWARDS, "",
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_STATUSMATCHING_ON_REWARDS,
+                    "",
                     AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
                     AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
                 )
@@ -414,22 +424,23 @@ class TopSectionVH(
         } else {
             timerTextView?.text = Html.fromHtml(metadata?.text?.content)
         }
-        if(metadata?.isShowTime == true){
+        if (metadata?.isShowTime == true) {
             setContainerWithTimer()
             setTimer(metadata)
         }
         AnalyticsTrackerUtil.sendEvent(
             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
+            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS,
+            "",
             AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
             AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
         )
     }
 
-    private fun setTimer(metadata: MetadataItem?){
+    private fun setTimer(metadata: MetadataItem?) {
         statusMatchingTimer?.timer?.cancel()
-        statusMatchingTimer?.targetDate = convertSecondsToHrMmSs(metadata?.timeRemainingSeconds?:0L)
+        statusMatchingTimer?.targetDate = convertSecondsToHrMmSs(metadata?.timeRemainingSeconds ?: 0L)
         statusMatchingTimer?.apply {
             timerTextWidth = TimerUnifySingle.TEXT_WRAP
             timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
@@ -442,7 +453,7 @@ class TopSectionVH(
         }
     }
 
-    private fun setContainerWithTimer(){
+    private fun setContainerWithTimer() {
         statusMatchingTimer?.show()
         parentStatusMatching = itemView.findViewById(R.id.container_statusmatching)
         val constraintSet = ConstraintSet()
@@ -477,33 +488,31 @@ class TopSectionVH(
         }
     }
 
-     private fun hideStatusMatching() {
-         cardStatusMatching?.hide()
-         containerStatusMatching?.hide()
+    private fun hideStatusMatching() {
+        cardStatusMatching?.hide()
+        containerStatusMatching?.hide()
     }
 
-    private fun isContainsRp(upgradeValue: String?) : Boolean {
-        return upgradeValue?.startsWith("Rp")?:false
+    private fun isContainsRp(upgradeValue: String?): Boolean {
+        return upgradeValue?.startsWith("Rp") ?: false
     }
 
-    private fun getProgress(progressInfoList: List<ProgressInfoList>) : Pair<Int?,Int?> {
+    private fun getProgress(progressInfoList: List<ProgressInfoList>): Pair<Int?, Int?> {
+        val currentAmountNext = progressInfoList[1].currentAmount?.toFloat() ?: 0F
+        val nextAmountNext = progressInfoList[1].nextAmount?.toFloat() ?: 1F
+        val endPercentage = (currentAmountNext / nextAmountNext * 100).toInt()
 
-        val currentAmountNext = progressInfoList[1].currentAmount?.toFloat()?:0F
-        val nextAmountNext = progressInfoList[1].nextAmount?.toFloat()?:1F
-        val endPercentage = (currentAmountNext/nextAmountNext *100).toInt()
+        val currentAmountLast = progressInfoList[0].currentAmount?.toFloat() ?: 0F
+        val nextAmountLast = progressInfoList[0].nextAmount?.toFloat() ?: 1F
+        val startPercentage = (currentAmountLast / nextAmountLast * 100).toInt()
 
-        val currentAmountLast = progressInfoList[0].currentAmount?.toFloat()?:0F
-        val nextAmountLast = progressInfoList[0].nextAmount?.toFloat()?:1F
-        val startPercentage = (currentAmountLast/nextAmountLast *100).toInt()
-
-        return Pair(startPercentage,endPercentage)
-
+        return Pair(startPercentage, endPercentage)
     }
 
-    private fun addRPToTransaction(){
-        val rpView =Typography(itemView.context)
+    private fun addRPToTransaction() {
+        val rpView = Typography(itemView.context)
         rpView.apply {
-            text="Rp"
+            text = "Rp"
             setWeight(Typography.BOLD)
             setType(Typography.BODY_3)
             setTextColor(Color.WHITE)
@@ -511,19 +520,18 @@ class TopSectionVH(
         digitContainer?.addView(rpView)
     }
 
-    private fun addXToTransaction(){
-        val dotView =Typography(itemView.context)
+    private fun addXToTransaction() {
+        val dotView = Typography(itemView.context)
         dotView.apply {
             text = "x"
             setWeight(Typography.BOLD)
             setType(Typography.BODY_3)
-            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White ) )
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
         digitContainer?.addView(dotView)
     }
 
     private fun progressBarAnimation(progressInfoList: List<ProgressInfoList>) {
-
         val container = progressBar?.progressBarContainer
         val progressValues = getProgress(progressInfoList)
         val progressLast = progressValues.first ?: -1
@@ -552,14 +560,14 @@ class TopSectionVH(
         progressBar?.postDelayed(
             {
                 handleDelayedProgress(container, progressCurrent)
-            }, TIME_DELAY_PROGRESS
+            },
+            TIME_DELAY_PROGRESS
         )
-
     }
 
-    private fun handleDelayedProgress(container: FrameLayout? , progressCurrent:Int){
+    private fun handleDelayedProgress(container: FrameLayout?, progressCurrent: Int) {
         try {
-            //Check max progress for higher tier and open bottomsheet
+            // Check max progress for higher tier and open bottomsheet
             if (progressBar?.getValue() == maxProgress) {
                 progressBarIconAnimation(container) {
                     progressBar?.setProgressIcon(null)
@@ -582,17 +590,17 @@ class TopSectionVH(
                     progressIconProgressCompletionHandle()
                 }
             }
-        } catch (e:Exception){}
+        } catch (e: Exception) {}
     }
 
-    private fun progressIconProgressCompletionHandle(){
+    private fun progressIconProgressCompletionHandle() {
         if (!isNextTier) {
             topSectionData?.popupNotification = null
             refreshOnTierUpgrade.refreshReward(popupNotification)
         }
     }
 
-    private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){
+    private fun progressBarIconAnimation(container: FrameLayout?, completion: (() -> Unit)? = null) {
         if (container?.childCount?.minus(1) ?: 0 >= 0) {
             val target = container?.getChildAt(container.childCount - 1)
             val animationScaleX =
@@ -612,31 +620,31 @@ class TopSectionVH(
             val animSetScaleUp = AnimatorSet()
             val animSetScaleDown = AnimatorSet()
             animSetScaleUp.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
-                override fun onAnimationEnd(p0: Animator?) {
-                    animSetScaleDown.playTogether( animationScaleXN ,animationScaleYN )
-                    animSetScaleDown.start()                }
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
+                    animSetScaleDown.playTogether(animationScaleXN, animationScaleYN)
+                    animSetScaleDown.start()
                 }
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
+                }
+                override fun onAnimationRepeat(p0: Animator) {
                 }
             })
-            animSetScaleUp.playTogether(animationScaleY, animationScaleX )
+            animSetScaleUp.playTogether(animationScaleY, animationScaleX)
             animSetScaleUp.start()
 
             animSetScaleDown.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     completion?.invoke()
                 }
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
             })
-
         }
     }
 
@@ -648,7 +656,7 @@ class TopSectionVH(
         containerProgressBar?.hide()
     }
 
-    private fun gotoMembershipPage(){
+    private fun gotoMembershipPage() {
         RouteManager.route(
             itemView.context,
             ApplinkConstInternalGlobal.WEBVIEW_TITLE,
@@ -656,18 +664,20 @@ class TopSectionVH(
             CommonConstant.WebLink.MEMBERSHIP
         )
 
-        AnalyticsTrackerUtil.sendEvent(itemView.context,
+        AnalyticsTrackerUtil.sendEvent(
+            itemView.context,
             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-            AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
+            AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
+            mValueMembershipDescription
+        )
     }
 
     interface CardRuntimeHeightListener {
-        fun setCardLayoutHeight(height: Int , heightBackground: Float)
+        fun setCardLayoutHeight(height: Int, heightBackground: Float)
     }
 
     interface RefreshOnTierUpgrade {
         fun refreshReward(popupNotification: PopupNotif?)
     }
-
 }

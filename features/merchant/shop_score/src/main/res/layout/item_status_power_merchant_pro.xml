@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl1"
-    android:layout_marginEnd="@dimen/spacing_lvl1">
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPowerMerchantPro"
@@ -14,7 +14,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bg_container_pm_pro_status"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/containerDescPmProSection"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +30,9 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_pm_pro_badge_current_status"
-                android:layout_width="@dimen/layout_lvl5"
-                android:layout_height="@dimen/layout_lvl5"
-                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
                 app:icon_name="BADGE_PM_FILLED"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pm_pro_reputation_value"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_pm_pro_reputation_score_label"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
@@ -53,21 +53,22 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_pm_pro_reputation_value"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:layout_marginTop="2dp"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@id/ic_pm_pro_reputation_right"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_pro_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_pro_reputation_score_label"
-                app:typographyType="heading_4"
+                app:typographyType="display_1"
+                app:typographyWeight="bold"
                 tools:text="@string/title_pm_pro_value" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_pm_pro_reputation_right"
-                android:layout_width="@dimen/spacing_lvl5"
-                android:layout_height="@dimen/spacing_lvl5"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginEnd="12dp"
                 app:icon_name="CHEVRON_RIGHT"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pm_pro_reputation_value"
@@ -102,7 +103,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierTitleContentPMProSection"
@@ -129,7 +131,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMProSection"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="@string/desc_content_pm_pro_section" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

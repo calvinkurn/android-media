@@ -62,7 +62,7 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun validateGroup() {
-        var actual : ResponseGroupValidateName.TopAdsGroupValidateName ?= null
+        var actual : ResponseGroupValidateName.TopAdsGroupValidateNameV2 ?= null
         val data = ResponseGroupValidateName()
         every { userSession.shopId } returns "123"
         every {

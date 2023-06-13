@@ -12,11 +12,10 @@
         android:id="@+id/tvShcRecommendationErrorStateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:drawablePadding="@dimen/layout_lvl1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:drawablePadding="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,10 +24,9 @@
         app:typographyWeight="bold"
         tools:text="Performa toko" />
 
-    <include
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetErrorStateView
         android:id="@+id/shcRecommendationCommonErrorView"
-        layout="@layout/shc_partial_common_widget_state_error"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/shc_dimen_80dp"
         android:layout_marginBottom="@dimen/shc_dimen_80dp"

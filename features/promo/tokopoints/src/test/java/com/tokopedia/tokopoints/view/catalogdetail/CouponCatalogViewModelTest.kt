@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -19,6 +20,7 @@ import org.junit.Test
 import java.lang.Exception
 import kotlin.reflect.KClass
 
+@ExperimentalCoroutinesApi
 class CouponCatalogViewModelTest {
 
 
@@ -235,9 +237,7 @@ class CouponCatalogViewModelTest {
     @Test
     fun `fetch Latest Status error case`() {
         val observer = mockk<Observer<CatalogStatusItem>>()
-        coEvery { repository.fetchLatestStatus(any()) } returns mockk {
-            every { catalogStatus } returns null
-        }
+        coEvery { repository.fetchLatestStatus(any()) } returns CatalogStatusOuter()
         viewModel.latestStatusLiveData.observeForever(observer)
         viewModel.fetchLatestStatus(listOf())
 

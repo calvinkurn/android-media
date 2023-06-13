@@ -19,12 +19,12 @@ class SingleTapListener(context: Context, action: (event: MotionEvent?) -> Boole
         action: (event: MotionEvent?) -> Boolean
     ): GestureDetector.SimpleOnGestureListener {
         return object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 return action(e)
             }
         }
     }
-    
+
     private fun createGestureDetector(
         context: Context,
         gestureListener: GestureDetector.SimpleOnGestureListener

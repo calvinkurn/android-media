@@ -11,4 +11,6 @@ interface PostListAdapterTypeFactory {
     fun type(post: PostItemUiModel.PostImageEmphasizedUiModel): Int
 
     fun type(post: PostItemUiModel.PostTextEmphasizedUiModel): Int
+
+    fun type(model: PostItemUiModel.PostTimerDismissalUiModel): Int
 }

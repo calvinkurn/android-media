@@ -1,5 +1,7 @@
 package com.tokopedia.smartbills.presentation.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -34,7 +36,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     companion object{
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
 
-        private const val EMPTY_IMAGE_GLOBAL_ERROR : String = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_4x.png"
+        private const val EMPTY_IMAGE_GLOBAL_ERROR = TokopediaImageUrl.EMPTY_IMAGE_GLOBAL_ERROR
 
         private const val PARAM_MENU_ID = "menu_id"
         private const val PARAM_CATEGORY_ID = "category_id"
@@ -144,13 +146,13 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     private fun getNominalTelco(){
+        showLoader()
         viewModel.getCatalogNominal(isRequestNominal, catalogProductInput,viewModel.createCatalogNominal(
                 menuId, platformId, operator))
-        showLoader()
     }
 
     private fun observeNominal(){
-        observe(viewModel.catalogProduct){
+        viewLifecycleOwner.observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
                     if(it.data.multitabData.productInputs.isNullOrEmpty()){
@@ -174,10 +176,10 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
 
     private fun showNominalCatalogList(listProduct: List<RechargeProduct>?){
         isFullpage = true
-        listProduct?.let {
+        listProduct?.let { products ->
             hideLoader()
             val adapterNominal = SmartBillsNominalAdapter(this@SmartBillsNominalBottomSheet)
-            adapterNominal.listRechargeProduct = listProduct
+            adapterNominal.listRechargeProduct = products
             recyclerView?.let {
                 it.adapter = adapterNominal
                 it.layoutManager = LinearLayoutManager(context)
@@ -188,7 +190,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
 
     private fun showLoader(){
         loader?.show()
-        recyclerView?.hide()
+        recyclerView?.invisible()
         errorViewGroup?.hide()
         globalError?.hide()
     }
@@ -204,7 +206,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
                                 throwable: Throwable = Throwable()){
         setTitle("")
         loader?.hide()
-        recyclerView?.hide()
+        recyclerView?.invisible()
         if (isEmptyData){
             errorViewGroup?.hide()
             globalError?.run {

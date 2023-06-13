@@ -4,11 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.gson.GsonSingleton
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
+import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
@@ -17,15 +21,20 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        private val talkInboxListUseCase: TalkInboxListUseCase,
-        private val userSession: UserSessionInterface,
-        private val talkInboxTracking: TalkInboxTracking
+    dispatcher: CoroutineDispatchers,
+    private val talkInboxListUseCase: TalkInboxListUseCase,
+    private val userSession: UserSessionInterface,
+    private val talkInboxTracking: TalkInboxTracking,
+    private val firebaseRemoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()
     val inboxList: LiveData<TalkInboxViewState<DiscussionInbox>>
         get() = _inboxList
+
+    private val _smartReplyDecommissionConfig: MutableLiveData<SmartReplyTalkDecommissionConfig.InboxPage> = MutableLiveData()
+    val smartReplyDecommissionConfig: LiveData<SmartReplyTalkDecommissionConfig.InboxPage>
+        get() = _smartReplyDecommissionConfig
 
     private var shopId: String = ""
     private var unreadCount: Long = 0
@@ -38,6 +47,7 @@ class TalkInboxViewModel @Inject constructor(
         _inboxList.addSource(page) {
             getInboxList(it)
         }
+        getSmartReplyDecommissionConfig()
     }
 
     fun getShopId(): String {
@@ -64,7 +74,6 @@ class TalkInboxViewModel @Inject constructor(
         return userSession.userId
     }
 
-
     fun setInboxType(inboxType: String) {
         this.type = inboxType
         resetFilter()
@@ -72,13 +81,13 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean, shouldTrack: Boolean) {
         if (this.filter == selectedFilter) {
-            if(shouldTrack) {
+            if (shouldTrack) {
                 sendFilterTracker(selectedFilter, isSellerView, false)
             }
             resetFilter()
             return
         }
-        if(shouldTrack) {
+        if (shouldTrack) {
             sendFilterTracker(selectedFilter, isSellerView, true)
         }
         this.filter = selectedFilter
@@ -122,5 +131,29 @@ class TalkInboxViewModel @Inject constructor(
         }) {
             _inboxList.postValue(TalkInboxViewState.Fail(it, page))
         }
+    }
+
+    private fun getSmartReplyDecommissionConfig() {
+        launchCatchError(block = {
+            if (GlobalConfig.isSellerApp()) {
+                firebaseRemoteConfig.getString(
+                    TalkConstants.SMART_REPLY_DECOMMISSION_REMOTE_CONFIG_KEY
+                ).let { jsonConfig ->
+                    val config = GsonSingleton
+                        .instance
+                        .fromJson(jsonConfig, SmartReplyTalkDecommissionConfig::class.java)
+                        .inboxPage
+                    _smartReplyDecommissionConfig.postValue(config)
+                }
+            } else {
+                setDefaultSmartDecommissionConfig()
+            }
+        }, onError = {
+                setDefaultSmartDecommissionConfig()
+            })
+    }
+
+    private fun setDefaultSmartDecommissionConfig() {
+        _smartReplyDecommissionConfig.postValue(SmartReplyTalkDecommissionConfig.InboxPage())
     }
 }

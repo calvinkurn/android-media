@@ -12,9 +12,9 @@ class ShopPageSearchProductPageMockResponseConfig : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
-                KEY_QUERY_GET_SEARCH_UNIVERSE,
-                getRawString(context, R.raw.response_mock_data_universe_search),
-                FIND_BY_CONTAINS
+            KEY_QUERY_GET_SEARCH_UNIVERSE,
+            getRawString(context, R.raw.response_mock_data_universe_search),
+            FIND_BY_CONTAINS
         )
         return this
     }

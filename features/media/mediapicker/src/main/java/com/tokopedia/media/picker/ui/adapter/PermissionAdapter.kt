@@ -1,9 +1,6 @@
 package com.tokopedia.media.picker.ui.adapter
 
 import android.Manifest.permission.*
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +10,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemRuntimePermissionBinding
-import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.media.picker.utils.goToSettings
+import com.tokopedia.media.picker.utils.permission.PermissionModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class PermissionAdapter constructor(
-    private val items: List<PermissionUiModel> = mutableListOf()
+    private val items: List<PermissionModel> = mutableListOf()
 ) : RecyclerView.Adapter<PermissionAdapter.PermissionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PermissionViewHolder {
@@ -33,10 +31,10 @@ class PermissionAdapter constructor(
     }
 
     fun updateState(permissionName: String, status: Boolean) {
-        val permission = items.first { it.name == permissionName }
+        val permission = items.firstOrNull { it.name == permissionName }
         val index = items.indexOf(permission)
 
-        if (index != -1) {
+        if (index != -1 && permission != null) {
             items[index].isGranted = status
             notifyItemChanged(index)
         }
@@ -47,7 +45,7 @@ class PermissionAdapter constructor(
         private val binding: ViewItemRuntimePermissionBinding? by viewBinding()
         private val context by lazy { itemView.context }
 
-        fun bind(element: PermissionUiModel) {
+        fun bind(element: PermissionModel) {
             binding?.txtTitle?.text = context.getString(element.title)
 
             binding?.btnGrant?.setOnClickListener {
@@ -59,13 +57,7 @@ class PermissionAdapter constructor(
         }
 
         private fun openAppSettings() {
-            context.startActivity(
-                Intent().apply {
-                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    data = Uri.parse("package:" + context.packageName)
-                    addCategory(Intent.CATEGORY_DEFAULT)
-                }
-            )
+            context.startActivity(context.goToSettings())
         }
 
         private fun setPermissionState(isGranted: Boolean) {
@@ -75,9 +67,11 @@ class PermissionAdapter constructor(
 
         private fun setIcon(permission: String) {
             when (permission) {
-                READ_EXTERNAL_STORAGE -> binding?.imgAction?.setImage(IconUnify.IMAGE)
                 RECORD_AUDIO -> binding?.imgAction?.setImage(IconUnify.MICROPHONE)
                 CAMERA -> binding?.imgAction?.setImage(IconUnify.CAMERA)
+                READ_MEDIA_VIDEO -> binding?.imgAction?.setImage(IconUnify.VIDEO)
+                READ_EXTERNAL_STORAGE,
+                READ_MEDIA_IMAGES -> binding?.imgAction?.setImage(IconUnify.IMAGE)
             }
         }
 

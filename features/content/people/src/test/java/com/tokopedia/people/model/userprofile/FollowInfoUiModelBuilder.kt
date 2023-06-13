@@ -18,5 +18,4 @@ class FollowInfoUiModelBuilder {
     )
 
     fun buildEmptyFollowInfo() = FollowInfoUiModel.Empty
-
 }

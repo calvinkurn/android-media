@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 2019-08-05.
@@ -23,7 +22,7 @@ class MentionableUserAdapter(
         fun shouldGetMentionableUser(keyword: String)
     }
 
-    private var filteredList: List<MentionableUserViewModel> = emptyList()
+    private var filteredList: List<MentionableUserModel> = emptyList()
 
     override fun isEmpty(): Boolean {
         return filteredList.isEmpty()
@@ -86,7 +85,7 @@ class MentionableUserAdapter(
 
                 return FilterResults().apply {
                     count = 0
-                    values = emptyList<MentionableUserViewModel>()
+                    values = emptyList<MentionableUserModel>()
                 }
             }
 
@@ -95,7 +94,7 @@ class MentionableUserAdapter(
         }
     }
 
-    fun setMentionableUser(userList: List<MentionableUserViewModel>) {
+    fun setMentionableUser(userList: List<MentionableUserModel>) {
         filteredList = userList
         notifyDataSetChanged()
     }

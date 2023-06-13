@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl5"
+    android:paddingTop="16dp"
+    android:paddingBottom="24dp"
     android:background="@drawable/bg_client_number_widget_shadow">
 
     <include
@@ -15,11 +15,10 @@
         android:id="@+id/client_number_widget_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:titleText="@string/cc_ticker_title"
-        app:descriptionText="@string/cc_ticker_desc"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:enableAutoSlide="true"
         app:tickerType="announcement"
         app:tickerShapeType="loose"
         app:layout_constraintTop_toBottomOf="@id/client_number_widget_base"
@@ -31,9 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/client_number_cta_primary"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
@@ -42,5 +41,19 @@
         app:layout_constraintTop_toBottomOf="@id/client_number_widget_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/client_number_cc_logo_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toBottomOf="@id/client_number_widget_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,10 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyAdditionalInfoUiModel(
-		var messageInfo: LastApplyMessageInfoUiModel = LastApplyMessageInfoUiModel(),
-		var errorDetail: LastApplyErrorDetailUiModel = LastApplyErrorDetailUiModel(),
-		var emptyCartInfo: LastApplyEmptyCartInfoUiModel = LastApplyEmptyCartInfoUiModel(),
-		var usageSummaries: List<LastApplyUsageSummariesUiModel> = emptyList(),
-		var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
-		var pomlAutoApplied: Boolean = false,
+    var messageInfo: LastApplyMessageInfoUiModel = LastApplyMessageInfoUiModel(),
+    var errorDetail: LastApplyErrorDetailUiModel = LastApplyErrorDetailUiModel(),
+    var emptyCartInfo: LastApplyEmptyCartInfoUiModel = LastApplyEmptyCartInfoUiModel(),
+    var usageSummaries: List<LastApplyUsageSummariesUiModel> = emptyList(),
+    var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
+    var pomlAutoApplied: Boolean = false,
+    var bebasOngkirInfo: LastApplyBebasOngkirInfo = LastApplyBebasOngkirInfo()
 ) : Parcelable

@@ -8,7 +8,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -68,7 +67,7 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
 
     @Test
     fun `WHEN generate recommendation impression data analytics with 1 item selected and cart is not empty THEN key 'category' should be 'cat1cat2cat3'`() {
-        //GIVEN
+        // GIVEN
         val result: Map<String, Any>?
         val categoryBreadcrumb = "cat1/cat2/cat3"
 
@@ -87,7 +86,7 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
 
     @Test
     fun `WHEN generate recommendation impression data analytics with 1 item selected and eligible for BO THEN dimension 83 should be 'bebas ongkir'`() {
-        //GIVEN
+        // GIVEN
         val result: Map<String, Any>?
 
         val recommendationDataList = mutableListOf<CartRecommendationItemHolderData>().apply {
@@ -105,7 +104,7 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
 
     @Test
     fun `WHEN generate recommendation impression data analytics with 1 item selected and eligible for BOE THEN dimension 83 should be 'bebas ongkir extra'`() {
-        //GIVEN
+        // GIVEN
         val result: Map<String, Any>?
 
         val recommendationDataList = mutableListOf<CartRecommendationItemHolderData>().apply {
@@ -119,7 +118,6 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
         val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
         val dimension83 = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
         assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
-
     }
 
     @Test
@@ -138,7 +136,6 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
         val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
         val dimension83 = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
         assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-
     }
 
     @Test

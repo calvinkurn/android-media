@@ -52,6 +52,11 @@ fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<S
     return this
 }
 
+fun MutableMap<String, Any>.appendPageSource(source: String): MutableMap<String, Any> {
+    put(AnalyticConstant.KEY_PAGE_SOURCE, source)
+    return this
+}
+
 fun MutableMap<String, Any>.appendTrackerIdIfNotBlank(trackerId: String): MutableMap<String, Any> {
     if (trackerId.isNotBlank()) put(AnalyticConstant.KEY_TRACKER_ID, trackerId)
     return this

@@ -25,7 +25,7 @@
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
             android:src="@drawable/iconunify_reload"
-            android:tint="@color/green_200"
+            android:tint="@color/Unify_G400_96"
             app:layout_constraintEnd_toEndOf="@id/iv_error_bg"
             app:layout_constraintBottom_toBottomOf="@id/iv_error_bg"
             app:layout_constraintStart_toStartOf="@id/iv_error_bg"

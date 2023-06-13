@@ -1,14 +1,19 @@
 package com.tokopedia.talk.feature.inbox
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
 import com.tokopedia.talk.feature.inbox.data.DiscussionInboxResponseWrapper
+import com.tokopedia.talk.feature.inbox.data.SmartReplyTalkDecommissionConfig
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
+import com.tokopedia.talk.feature.inbox.data.TickerConfig
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockkStatic
 import org.junit.Assert
 import org.junit.Test
 
@@ -23,6 +28,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.setInboxType(expectedInboxType.tabParam)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
@@ -41,6 +47,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.setFilter(expectedFilter, isSellerView = true, shouldTrack = false)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
@@ -58,6 +65,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = false, shouldTrack = true)
         viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = true, shouldTrack = true)
 
@@ -77,6 +85,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = false, shouldTrack = false)
         viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = true, shouldTrack = false)
 
@@ -96,6 +105,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.updatePage(expectedPage)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
@@ -112,6 +122,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.setInboxType(TalkInboxTab.SHOP_OLD)
         viewModel.updatePage(expectedPage)
 
@@ -128,6 +139,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListError_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.updatePage(expectedPage)
 
         val expectedLiveDataValue = TalkInboxViewState.Fail<DiscussionInbox>(expectedData, expectedPage)
@@ -144,12 +156,82 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
+        viewModel.inboxList.observeForever { }
         viewModel.resetPage()
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
         verifyTalkInboxListUseCaseCalled()
         verifyInboxListValueEquals(expectedLiveDataValue)
+    }
+
+    @Test
+    fun `getSmartReplyDecommissionConfig should success map config from remote config when on sellerapp`() {
+        val expected = SmartReplyTalkDecommissionConfig.InboxPage(
+            isSmartReviewDisabled = true,
+            tickerConfig = TickerConfig(title = "Dummy Title", text = "Dummy text")
+        )
+        val partialRemoteConfigJson = """
+            {
+                "inbox_page": {
+                    "is_smart_review_disabled": true,
+                    "ticker_config": {
+                        "title": "Dummy Title",
+                        "text": "Dummy text"
+                    }
+                }
+            }
+        """.trimIndent()
+        mockkStatic(GlobalConfig::class) {
+            every {
+                GlobalConfig.isSellerApp()
+            } returns true
+
+            every {
+                firebaseRemoteConfig.getString("android_seller_app_smart_reply_talk_decommission_config")
+            } returns partialRemoteConfigJson
+
+            Assert.assertEquals(expected, viewModel.smartReplyDecommissionConfig.value)
+        }
+    }
+
+    @Test
+    fun `getSmartReplyDecommissionConfig should not map config from remote config when on customerapp`() {
+        val expected = SmartReplyTalkDecommissionConfig.InboxPage(
+            isSmartReviewDisabled = false,
+            tickerConfig = TickerConfig(title = "", text = "")
+        )
+        mockkStatic(GlobalConfig::class) {
+            every {
+                GlobalConfig.isSellerApp()
+            } returns false
+
+            coVerify(inverse = true) {
+                firebaseRemoteConfig.getString(any())
+            }
+
+            Assert.assertEquals(expected, viewModel.smartReplyDecommissionConfig.value)
+        }
+    }
+
+    @Test
+    fun `getSmartReplyDecommissionConfig should set smartReplyDecommissionConfig default config when JSON mapping is error`() {
+        val expected = SmartReplyTalkDecommissionConfig.InboxPage(
+            isSmartReviewDisabled = false,
+            tickerConfig = TickerConfig(title = "", text = "")
+        )
+        val partialRemoteConfigJson = "this is invalid json"
+        mockkStatic(GlobalConfig::class) {
+            every {
+                GlobalConfig.isSellerApp()
+            } returns true
+
+            every {
+                firebaseRemoteConfig.getString("android_seller_app_smart_reply_talk_decommission_config")
+            } returns partialRemoteConfigJson
+
+            Assert.assertEquals(expected, viewModel.smartReplyDecommissionConfig.value)
+        }
     }
 
     private fun verifyTalkInboxListUseCaseCalled() {
@@ -179,7 +261,4 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
     private fun verifyUnreadCount(unread: Long) {
         Assert.assertEquals(viewModel.getUnreadCount(), unread)
     }
-
-
-
 }

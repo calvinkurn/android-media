@@ -9,8 +9,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_post_video.view.*
 
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
  * @author by yfsx on 20/03/19.
  */
 class VideoViewHolder(private val listener: VideoViewListener) :
-    BasePostViewHolder<VideoViewModel>() {
+    BasePostViewHolder<VideoModel>() {
 
     override var layoutRes = R.layout.item_post_video
     var isPlaying = false
@@ -28,19 +28,20 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
-    override fun bind(element: VideoViewModel) {
+    override fun bind(element: VideoModel) {
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
+            itemView.image.setImageResource(com.tokopedia.design.R.drawable.ic_loading_image)
             itemView.image.setOnClickListener {
                 if (element.url.isNotBlank()) {
                     listener.onVideoPlayerClicked(
                         element.positionInFeed,
                         pagerPosition,
-                        element.postId.toString(),
+                        element.postId,
                         element.redirectLink,
                         "",
                         "",
                         true,
-                            0L
+                        0L
                     )
                 }
             }
@@ -66,7 +67,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         }
     }
 
-    private fun canPlayVideo(element: VideoViewModel): Boolean {
+    private fun canPlayVideo(element: VideoModel): Boolean {
         return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(itemView.context)
     }
 
@@ -74,7 +75,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         if (!isPlaying) {
             itemView.frame_video.visibility = View.INVISIBLE
             if (URLUtil.isValidUrl(url))
-            itemView.layout_video.setVideoURI(Uri.parse(url))
+                itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
@@ -119,6 +120,6 @@ class VideoViewHolder(private val listener: VideoViewListener) :
 
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 }

@@ -23,7 +23,7 @@ class TopAdsImageViewUseCase constructor(
 ) {
 
     suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
-        return repository.getImageData(queryParams,irisSessionId)
+        return repository.getImageData(queryParams, irisSessionId)
     }
 
     fun getQueryMap(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String, productID: String = "", page: String = ""): MutableMap<String, Any> {

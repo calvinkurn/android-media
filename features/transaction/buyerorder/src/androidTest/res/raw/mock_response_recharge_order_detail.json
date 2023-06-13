@@ -12,7 +12,7 @@
           "status": 800,
           "statusText": "Transaksi tidak berhasil",
           "statusLabel": "Status",
-          "iconUrl": "https://ecs7.tokopedia.net/img/recharge/category/pulsa/widget-active.png",
+          "iconUrl": "https://images.tokopedia.net/img/recharge/category/pulsa/widget-active.png",
           "textColor": "#d50000",
           "backgroundColor": "",
           "fontSize": "16sp"

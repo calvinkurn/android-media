@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -9,12 +10,27 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodBusinessData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodGetMerchantData
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
@@ -23,14 +39,27 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
-import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 class MerchantPageViewModel @Inject constructor(
@@ -44,13 +73,21 @@ class MerchantPageViewModel @Inject constructor(
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>> get() = _chooseAddress
+    private val _mvcLiveData = SingleLiveEvent<MvcData?>()
+    val mvcLiveData: LiveData<MvcData?> get() = _mvcLiveData
+
+    private val _quantityUpdateState = MutableSharedFlow<Boolean>()
+    private val _currentProductsWithUpdatedQuantity: MutableMap<String, Int> = mutableMapOf()
+    val updateQuantityParam = MutableSharedFlow<UpdateQuantityTokofoodParam>(Int.ONE)
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
 
+    var sameProductList: List<String> = listOf()
+
     var productListItems: MutableList<ProductListItem> = mutableListOf()
 
-    var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+    var selectedProducts: List<CartListCartGroupCart> = listOf()
 
     var isAddressManuallyUpdated = false
 
@@ -72,6 +109,24 @@ class MerchantPageViewModel @Inject constructor(
 
     var merchantData: TokoFoodGetMerchantData? = null
 
+    init {
+        viewModelScope.launch {
+            _quantityUpdateState
+                .debounce(UPDATE_QUANTITY_DEBOUNCE)
+                .flatMapConcat {
+                    flow {
+                        getCurrentQuantityUpdateParams().forEach {
+                            emit(it)
+                        }
+                    }
+                }
+                .collect {
+                    _currentProductsWithUpdatedQuantity.clear()
+                    updateQuantityParam.emit(it)
+                }
+        }
+    }
+
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -85,9 +140,12 @@ class MerchantPageViewModel @Inject constructor(
             }
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
+            setProductsWithSameId(result.tokofoodGetMerchantData.categories.flatMap { it.catalogs })
             getMerchantDataResultLiveData.value = Success(result)
+            _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
+            _mvcLiveData.value = null
         })
     }
 
@@ -221,7 +279,7 @@ class MerchantPageViewModel @Inject constructor(
                 maxQty = variant.maxQty,
                 minQty = variant.minQty,
                 options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
-                outOfStockWording = resourceProvider.getOutOfStockWording().orEmpty()
+                outOfStockWording = resourceProvider.getOutOfStockWording()
         )
     }
 
@@ -247,29 +305,33 @@ class MerchantPageViewModel @Inject constructor(
         }
     }
 
-    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CheckoutTokoFoodProduct>): List<ProductListItem> {
+    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CartListCartGroupCart>): List<ProductListItem> {
         val mutableProductListItems = productListItems.toMutableList()
         val selectedProductMap = selectedProducts.groupBy { it.productId }
         selectedProductMap.forEach { entry ->
-            if (entry.value.first().variants.isNotEmpty()) {
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+            if (entry.value.first().customResponse.variants.isNotEmpty()) {
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
+                        isAtc = true
+                        customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                    }
                 }
             } else {
                 // NON-VARIANT PRODUCT ORDER
                 val selectedProduct = entry.value.first()
-                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                val selectedProductListItems = mutableProductListItems.filter { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    cartId = selectedProduct.cartId
-                    orderQty = selectedProduct.quantity
-                    orderNote = selectedProduct.notes
+                selectedProductListItems.forEach {
+                    with(it.productUiModel) {
+                        isAtc = true
+                        cartId = selectedProduct.cartId
+                        orderQty = selectedProduct.quantity
+                        orderNote = selectedProduct.customResponse.notes
+                    }
                 }
             }
         }
@@ -277,7 +339,9 @@ class MerchantPageViewModel @Inject constructor(
     }
 
     fun getAppliedProductSelection(): List<ProductListItem>? {
-        return (getMerchantDataResultLiveData.value as? Success)?.data?.tokofoodGetMerchantData?.let { merchantData ->
+        val successMerchantData = (getMerchantDataResultLiveData.value as? Success)?.data
+        val tokofoodGetMerchantData = successMerchantData?.tokofoodGetMerchantData
+        return tokofoodGetMerchantData?.let { merchantData ->
             val isShopClosed = merchantData.merchantProfile.opsHourFmt.isWarning
             val foodCategories = merchantData.categories
             val productListItems = mapFoodCategoriesToProductListItems(
@@ -304,7 +368,7 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartListCartGroupCart, productUiModel: ProductUiModel): CustomOrderDetail? {
         if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
@@ -313,18 +377,67 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
+    fun updateQuantity(
+        cartId: String,
+        quantity: Int
+    ) {
+        _currentProductsWithUpdatedQuantity[cartId]
+        _currentProductsWithUpdatedQuantity[cartId] = quantity
+
+        viewModelScope.launch {
+            _quantityUpdateState.emit(true)
+        }
+    }
+
+    private fun getCurrentQuantityUpdateParams(): List<UpdateQuantityTokofoodParam> {
+        return _currentProductsWithUpdatedQuantity.entries.map {
+            UpdateQuantityTokofoodParam(
+                source = SOURCE,
+                businessData = UpdateQuantityTokofoodBusinessData(
+                    businessId = TokoFoodCartUtil.getBusinessId(),
+                    carts = listOf(
+                        UpdateQuantityTokofoodCart(
+                            cartId = it.key,
+                            quantity = it.value
+                        )
+                    )
+                )
+            )
+        }
+    }
+
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
         customListItems.forEach {
             it.orderNote = String.EMPTY
-            it.addOnUiModel?.isSelected = false
-            it.addOnUiModel?.options?.forEach { optionUiModel ->
-                optionUiModel.isSelected = false
+            it.addOnUiModel?.run {
+                isSelected = false
+                options.forEach { optionUiModel ->
+                    optionUiModel.isSelected = false
+                }
+                selectedAddOns = listOf()
             }
-            it.addOnUiModel?.selectedAddOns = listOf()
         }
         return customListItems
     }
 
+    private fun getMvcData(topBanner: TokoFoodTopBanner): MvcData? {
+        return topBanner.takeIf { it.isShown }?.let {
+            MvcData(
+                listOf(
+                    AnimatedInfos(
+                        title = it.title,
+                        subTitle = it.subtitle,
+                        iconURL = it.imageUrl
+                    )
+                )
+            )
+        }
+    }
+
+    private fun setProductsWithSameId(productList: List<TokoFoodCatalogDetail>) {
+        val sameProducts = productList.groupingBy { it.id }.eachCount().filter { it.value > Int.ONE }.keys.toList()
+        sameProductList = sameProducts
+    }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
@@ -333,5 +446,8 @@ class MerchantPageViewModel @Inject constructor(
     companion object {
         private const val DAYS_DECREASE = 5
         private const val DAYS_INCREASE = 2
+
+        private const val UPDATE_QUANTITY_DEBOUNCE = 500L
+        private const val SOURCE = "merchant_page"
     }
 }

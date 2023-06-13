@@ -7,9 +7,9 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 
 class KeywordSearchData : Parcelable {
     @SerializedName("universe_placeholder")
-     val searchData: SearchPlaceholder = SearchPlaceholder()
+    val searchData: SearchPlaceholder = SearchPlaceholder()
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {}
+    override fun writeToParcel(dest: Parcel, flags: Int) {}
 
     override fun describeContents(): Int = 0
 
@@ -22,5 +22,4 @@ class KeywordSearchData : Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }

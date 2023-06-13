@@ -6,18 +6,49 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
-import com.tokopedia.home_account.domain.query.GetCentralizedUserAssetConfigQuery
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 open class GetCentralizedUserAssetConfigUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher
-) : CoroutineUseCase<String, CentralizedUserAssetDataModel>(dispatcher) {
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<String, CentralizedUserAssetDataModel>(dispatcher.io) {
 
-    override fun graphqlQuery(): String {
-        return GetCentralizedUserAssetConfigQuery.query
-    }
+    override fun graphqlQuery(): String = """
+        query get_centralized_user_asset_config(${'$'}entryPoint: String!){
+          GetCentralizedUserAssetConfig(entryPoint:${'$'}entryPoint){
+            asset_config_horizontal {
+              title
+              subtitle_color
+              subtitle
+              applink
+              icon
+              is_active
+              id
+              hide_title
+            }
+            asset_config_vertical {
+              title
+              subtitle_color
+              subtitle
+              applink
+              icon
+              is_active
+              id
+              hide_title
+            }
+            asset_config {
+              title
+              subtitle_color
+              subtitle
+              applink
+              icon
+              is_active
+              id
+              hide_title
+            }
+          }
+        }
+    """.trimIndent()
 
     override suspend fun execute(params: String): CentralizedUserAssetDataModel {
         val mapParams = getParams(params)

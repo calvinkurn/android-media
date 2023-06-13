@@ -9,8 +9,10 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 class CustomDimensionShopPageAttribution : CustomDimensionShopPageProduct() {
     @JvmField
     var attribution: String? = null
+
     @JvmField
     var isFulfillmentExist: Boolean? = null
+
     @JvmField
     var isFreeOngkirActive: Boolean? = null
 
@@ -25,8 +27,14 @@ class CustomDimensionShopPageAttribution : CustomDimensionShopPageProduct() {
             return customDimensionShopPage
         }
 
-        fun create(shopId: String?, isOfficial: Boolean, isGold: Boolean,
-                   productId: String?, attribution: String?, shopRef: String?): CustomDimensionShopPageAttribution {
+        fun create(
+            shopId: String?,
+            isOfficial: Boolean,
+            isGold: Boolean,
+            productId: String?,
+            attribution: String?,
+            shopRef: String?
+        ): CustomDimensionShopPageAttribution {
             val customDimensionShopPage = CustomDimensionShopPageAttribution()
             customDimensionShopPage.shopId = shopId
             customDimensionShopPage.shopType = if (isOfficial) TrackShopTypeDef.OFFICIAL_STORE else if (isGold) TrackShopTypeDef.GOLD_MERCHANT else TrackShopTypeDef.REGULAR_MERCHANT
@@ -36,8 +44,16 @@ class CustomDimensionShopPageAttribution : CustomDimensionShopPageProduct() {
             return customDimensionShopPage
         }
 
-        fun create(shopId: String?, isOfficial: Boolean, isGold: Boolean,
-                   productId: String?, attribution: String?, shopRef: String?, isFulfillmentExist: Boolean, isFreeOngkirActive: Boolean): CustomDimensionShopPageAttribution {
+        fun create(
+            shopId: String?,
+            isOfficial: Boolean,
+            isGold: Boolean,
+            productId: String?,
+            attribution: String?,
+            shopRef: String?,
+            isFulfillmentExist: Boolean,
+            isFreeOngkirActive: Boolean
+        ): CustomDimensionShopPageAttribution {
             val customDimensionShopPage = CustomDimensionShopPageAttribution()
             customDimensionShopPage.shopId = shopId
             customDimensionShopPage.shopType = if (isOfficial) TrackShopTypeDef.OFFICIAL_STORE else if (isGold) TrackShopTypeDef.GOLD_MERCHANT else TrackShopTypeDef.REGULAR_MERCHANT

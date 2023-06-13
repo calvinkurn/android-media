@@ -29,18 +29,32 @@
                 android:layout_marginStart="@dimen/tm_dash_dp_16"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/tm_dash_dp_16"
-                android:background="@drawable/tm_bg_round_home">
+                >
 
-                <LinearLayout
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/flShopbg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    />
+
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/container_logo">
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivShopIcon"
@@ -52,8 +66,8 @@
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivShopIconMark"
-                        android:layout_width="@dimen/tm_dash_dp_12"
-                        android:layout_height="@dimen/tm_dash_dp_12"
+                        android:layout_width="@dimen/tm_dash_dp_10"
+                        android:layout_height="@dimen/tm_dash_dp_10"
                         app:layout_constraintEnd_toEndOf="@+id/ivShopIcon"
                         app:layout_constraintStart_toEndOf="@+id/ivShopIcon"
                         app:srcCompat="@drawable/tm_check_mark"
@@ -64,15 +78,26 @@
                         android:id="@+id/tvShopName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/container_logo"
                         android:layout_marginStart="@dimen/unify_space_12"
                         android:text="@string/tm_shop_name"
                         android:textColor="@color/Unify_N0"
-                        app:layout_constraintBottom_toBottomOf="@id/ivShopIcon"
-                        app:layout_constraintStart_toEndOf="@id/ivShopIcon"
-                        app:layout_constraintTop_toTopOf="@id/ivShopIcon"
                         app:typographyType="heading_5" />
 
-                </LinearLayout>
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_edit_card"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/tm_dash_dp_12"
+                        app:unifyButtonType="alternate"
+                        android:text="Ubah Kartu"
+                        android:textColor="@color/Unify_NN0"
+                        app:unifyButtonSize="small"
+                        app:unifyButtonVariant="text" />
+
+                </RelativeLayout>
 
             </FrameLayout>
 

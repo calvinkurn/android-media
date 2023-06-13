@@ -6,6 +6,7 @@ import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -15,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.reflect.KClass
 
+@ExperimentalCoroutinesApi
 class CatalogListingViewModelTest {
 
     lateinit var viewModel: CatalogListingViewModel
@@ -145,17 +147,7 @@ class CatalogListingViewModelTest {
     @Test
     fun `getPointData error case`(){
         val observer = mockk<Observer<Resources<TokoPointStatusEntity>>>()
-        val data = mockk<TokoPointStatusEntity>(){
-            every { points } returns null
-        }
-        coEvery{ repository.getPointData() } returns mockk{
-            every { tokoPoints } returns mockk{
-                every { status } returns data
-                every { resultStatus } returns mockk{
-                    every { code } returns CommonConstant.CouponRedemptionCode.SUCCESS
-                }
-            }
-        }
+        coEvery{ repository.getPointData() } returns null
         viewModel.pointLiveData.observeForever(observer)
         viewModel.getPointData()
 

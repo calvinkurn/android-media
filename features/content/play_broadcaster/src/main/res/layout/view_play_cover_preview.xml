@@ -70,7 +70,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/tv_cover_shop_name"
+        app:layout_constraintBottom_toTopOf="@id/tv_cover_author_name"
         app:layout_constraintEnd_toEndOf="@id/iv_cover_preview"
         app:layout_constraintStart_toStartOf="@id/iv_cover_preview"
         app:layout_constraintTop_toBottomOf="@id/gl_cover_preview"
@@ -80,7 +80,7 @@
         tools:text="Review Peralatan Sepeda Rockbros" />
     
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cover_shop_name"
+        android:id="@+id/tv_cover_author_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"

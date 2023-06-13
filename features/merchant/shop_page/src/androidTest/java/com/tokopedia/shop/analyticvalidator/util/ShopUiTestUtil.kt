@@ -24,8 +24,8 @@ object ShopUiTestUtil {
             override fun perform(uiController: UiController?, view: View) {
                 val rv = view as RecyclerView
                 val layoutManager = rv.layoutManager
-                layoutManager?.let{
-                    if(it is StaggeredGridLayoutManager){
+                layoutManager?.let {
+                    if (it is StaggeredGridLayoutManager) {
                         it.scrollToPositionWithOffset(position, 0)
                         return
                     }
@@ -34,6 +34,4 @@ object ShopUiTestUtil {
             }
         }
     }
-
-
 }

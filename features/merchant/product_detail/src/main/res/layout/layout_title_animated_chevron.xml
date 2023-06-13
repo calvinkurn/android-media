@@ -9,10 +9,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/product_detail_toggle"
+        app:layout_constraintEnd_toStartOf="@+id/product_detail_toggle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/product_detail_toggle"
         app:typographyType="heading_4"
         tools:text="Informasi Penting" />
 

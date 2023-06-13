@@ -18,7 +18,7 @@ data class DataResponse(
 
         @SerializedName("product_id")
         @Expose
-        val productId: Long = 0,
+        val productId: String = "",
 
         @SerializedName("quantity")
         @Expose
@@ -30,15 +30,15 @@ data class DataResponse(
 
         @SerializedName("shop_id")
         @Expose
-        val shopId: Long = 0,
+        val shopId: String = "",
 
         @SerializedName("customer_id")
         @Expose
-        val customerId: Long = 0,
+        val customerId: String = "",
 
         @SerializedName("warehouse_id")
         @Expose
-        val warehouseId: Long = 0,
+        val warehouseId: String = "",
 
         @SerializedName("tracker_attribution")
         @Expose

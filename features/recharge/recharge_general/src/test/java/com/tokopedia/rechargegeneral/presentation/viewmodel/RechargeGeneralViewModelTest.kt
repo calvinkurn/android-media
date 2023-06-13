@@ -9,7 +9,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.rechargegeneral.domain.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,8 +19,12 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +41,9 @@ class RechargeGeneralViewModelTest {
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
+    @RelaxedMockK
+    lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
+
     lateinit var rechargeGeneralViewModel: RechargeGeneralViewModel
 
     @Before
@@ -50,16 +59,20 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
+            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), CoroutineTestDispatchersProvider)
     }
 
     @Test
     fun getOperatorCluster_Success() {
-        val operatorCluster = RechargeGeneralOperatorCluster.Response(RechargeGeneralOperatorCluster(
-                operatorGroups = listOf(RechargeGeneralOperatorCluster.CatalogOperatorGroup(
+        val operatorCluster = RechargeGeneralOperatorCluster.Response(
+            RechargeGeneralOperatorCluster(
+                operatorGroups = listOf(
+                    RechargeGeneralOperatorCluster.CatalogOperatorGroup(
                         operators = listOf(CatalogOperator("1"))
-                ))
-        ))
+                    )
+                )
+            )
+        )
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val objectType = RechargeGeneralOperatorCluster.Response::class.java
@@ -81,9 +94,11 @@ class RechargeGeneralViewModelTest {
     // Field value in response is null
     @Test
     fun getOperatorCluster_Fail_NullResponse() {
-        val operatorCluster = RechargeGeneralOperatorCluster.Response(RechargeGeneralOperatorCluster(
+        val operatorCluster = RechargeGeneralOperatorCluster.Response(
+            RechargeGeneralOperatorCluster(
                 operatorGroups = null
-        ))
+            )
+        )
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val objectType = RechargeGeneralOperatorCluster.Response::class.java
@@ -108,14 +123,20 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getProductList_Success() {
-        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
-                enquiryFields = listOf(RechargeGeneralDynamicField(
+        val productData = RechargeGeneralDynamicInput.Response(
+            RechargeGeneralDynamicInput(
+                enquiryFields = listOf(
+                    RechargeGeneralDynamicField(
                         name = "product_id",
-                        dataCollections = listOf(RechargeGeneralDynamicField.DataCollection(
+                        dataCollections = listOf(
+                            RechargeGeneralDynamicField.DataCollection(
                                 products = listOf(CatalogProduct(id = "1"))
-                        ))
-                ))
-        ))
+                            )
+                        )
+                    )
+                )
+            )
+        )
 
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
@@ -131,15 +152,18 @@ class RechargeGeneralViewModelTest {
         val product = (actualData as Success).data.enquiryFields
         assertNotNull(product)
         product?.run {
-            assertEquals(actualData.data.enquiryFields[0].dataCollections[0].products[0].id, "1") }
+            assertEquals(actualData.data.enquiryFields[0].dataCollections[0].products[0].id, "1")
+        }
     }
 
     // Field value in response is null
     @Test
     fun getProductList_Fail_NullResponse() {
-        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
+        val productData = RechargeGeneralDynamicInput.Response(
+            RechargeGeneralDynamicInput(
                 enquiryFields = listOf(RechargeGeneralDynamicField())
-        ))
+            )
+        )
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val objectType = RechargeGeneralDynamicInput.Response::class.java
@@ -165,6 +189,42 @@ class RechargeGeneralViewModelTest {
     }
 
     @Test
+    fun getProductList_CancelJob_NullResponse() {
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers {
+            delay(5000)
+            gqlResponseFail
+        }
+
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
+        rechargeGeneralViewModel.productListJob?.cancel()
+        val actualData = rechargeGeneralViewModel.productList.value
+        assertTrue(actualData == null)
+    }
+
+    @Test
+    fun getProductList_invokeTwice_WillCancelFirstJob() {
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers {
+            delay(5000)
+            gqlResponseFail
+        }
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
+        val firstJob = rechargeGeneralViewModel.productListJob
+
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
+        val secondJob = rechargeGeneralViewModel.productListJob
+
+        assertTrue(firstJob?.isCancelled == true)
+        assertTrue(firstJob != secondJob)
+    }
+
+    @Test
+    fun productListJob_setJob_shouldNotBeNull() {
+        assertTrue(rechargeGeneralViewModel.productListJob == null)
+        rechargeGeneralViewModel.productListJob = Job()
+        assertTrue(rechargeGeneralViewModel.productListJob != null)
+    }
+
+    @Test
     fun createOperatorClusterParams() {
         val menuId = 1
 
@@ -178,9 +238,13 @@ class RechargeGeneralViewModelTest {
         val operatorId = "1"
 
         val actual = rechargeGeneralViewModel.createProductListParams(menuId, operatorId)
-        assertEquals(actual, mapOf(
+        assertEquals(
+            actual,
+            mapOf(
                 RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
-                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId.toString()))
+                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId.toString()
+            )
+        )
     }
 
     // Add Bills
@@ -197,24 +261,36 @@ class RechargeGeneralViewModelTest {
     fun createProductAddBills() {
         val categoryName = "Pulsa"
         val operatorName = "Telkom"
-        val listProduct = listOf(RechargeGeneralProductSelectData("1", "Title",
-                "Desc", "Rp.0","Rp.0", "Label", true))
-        val listResult = listOf(RechargeAddBillsProductTrackData(0,
+        val listProduct = listOf(
+            RechargeGeneralProductSelectData(
+                "1",
+                "Title",
+                "Desc",
+                "Rp.0",
+                "Rp.0",
+                "Label",
+                true
+            )
+        )
+        val listResult = listOf(
+            RechargeAddBillsProductTrackData(
+                0,
                 operatorName,
                 categoryName,
                 "1",
                 "Title",
                 "",
-                "Rp.0"))
+                "Rp.0"
+            )
+        )
 
         val actual = rechargeGeneralViewModel.createProductAddBills(listProduct, categoryName, operatorName)
-        assertEquals(actual,listResult)
+        assertEquals(actual, listResult)
     }
-
 
     @Test
     fun getAddBillRecharge_Success() {
-        //given
+        // given
         val addBills = AddSmartBills(RechargeAddBills(message = "Anda berhasil menambahkan data"))
 
         val result = HashMap<Type, Any>()
@@ -225,10 +301,10 @@ class RechargeGeneralViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
-        //when
+        // when
         rechargeGeneralViewModel.addBillRecharge(mapParams)
 
-        //then
+        // then
         val actualData = rechargeGeneralViewModel.addBills.value
         assert(actualData is Success)
         val actual = (actualData as Success).data
@@ -244,5 +320,48 @@ class RechargeGeneralViewModelTest {
 
         val actualData = rechargeGeneralViewModel.addBills.value
         assert(actualData is Fail)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Success() {
+        // given
+        val consentDesc = "Tokopedia"
+        val rechargeGeneralDppoConsent = RechargeGeneralDppoConsent(
+            RechargeRecommendationData(
+                items = listOf(
+                    RechargeRecommendationItem(
+                        id = "1",
+                        title = consentDesc
+                    )
+                )
+            )
+        )
+
+        coEvery { getDppoConsentUseCase.execute(any()) } returns rechargeGeneralDppoConsent
+
+        // when
+        rechargeGeneralViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeGeneralViewModel.dppoConsent.value
+        assertNotNull(actualData)
+        assertTrue(actualData is Success)
+        assertTrue((actualData as Success).data.description == consentDesc)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Fail() {
+        // given
+        val errorMessage = "Tokopedia"
+        coEvery { getDppoConsentUseCase.execute(any()) } throws MessageErrorException(errorMessage)
+
+        // when
+        rechargeGeneralViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeGeneralViewModel.dppoConsent.value
+        assertNotNull(actualData)
+        assertTrue(actualData is Fail)
+        assertTrue((actualData as Fail).throwable.message == errorMessage)
     }
 }

@@ -8,7 +8,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:layout_marginBottom="8dp"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/white"
+        android:background="@color/Unify_NN0"
         android:padding="8dp">
 
         <ImageView
@@ -28,50 +28,45 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:drawablePadding="12dp"
             android:gravity="center_vertical"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/header_logo"
             app:layout_constraintStart_toEndOf="@+id/header_logo"
             app:layout_constraintTop_toTopOf="@+id/header_logo"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Modal Toko" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/text_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="9dp"
-            android:background="@drawable/bg_textbadge"
-            android:padding="2dp"
-            android:textSize="@dimen/sp_10"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/text_title"
             app:layout_constraintStart_toEndOf="@+id/text_title"
             app:layout_constraintTop_toTopOf="@+id/text_title"
+            app:labelType="general_light_grey"
             tools:text="New" />
 
-
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_side"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif-medium"
-            android:paddingRight="8dp"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_12"
+            android:textColor="@color/Unify_GN500"
             android:visibility="gone"
+            android:paddingRight="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_title"
-            tools:text="Side Text"
-            tools:visibility="visible" />
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Side Text"/>
 
         <Switch
             android:id="@+id/switch_enable"
@@ -100,7 +95,7 @@
                 android:id="@+id/info_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_11"
+                android:layout_marginTop="11dp"
                 android:layout_marginBottom="9dp"
                 android:orientation="vertical"
                 android:visibility="gone"

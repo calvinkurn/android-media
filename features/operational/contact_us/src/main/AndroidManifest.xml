@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.contactus">
+    package="com.tokopedia.contactus" >
 
     <application>
         <activity
@@ -7,42 +8,21 @@
             android:exported="false"
             android:label="@string/contact_us_title_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:label="deeplink second activity">
+            android:theme="@style/Theme.White" >
+            <intent-filter android:label="deeplink second activity" >
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/host_contactus" />
+                    android:host="@string/host_contactus"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.contactus.createticket.activity.ContactUsActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/contact_us_title_home"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/host_contact_us" />
-            </intent-filter>
-        </activity>
         <activity
-            android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".inboxticket2.view.activity.InboxListActivity"
+            android:name=".inboxtickets.view.inbox.InboxContactUsActivity"
             android:exported="false"
             android:label="@string/contact_us_inbox"
             android:screenOrientation="portrait"
@@ -58,8 +38,9 @@
                     android:host="@string/host_customercare_inbox_list"/>
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".inboxticket2.view.activity.InboxDetailActivity"
+            android:name=".inboxtickets.view.inboxdetail.InboxDetailActivity"
             android:exported="false"
             android:label="@string/detail_kendala"
             android:screenOrientation="portrait"
@@ -76,18 +57,18 @@
                     android:pathPattern="@string/path_ticket_detail" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name="com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity"
+            android:name="com.tokopedia.contactus.inboxtickets.view.activity.ContactUsProvideRatingActivity"
             android:exported="true"
             android:label="@string/survey_layanan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
-            android:name=".inboxticket2.view.activity.ClearCacheActivity"
+            android:name=".inboxtickets.view.activity.ClearCacheActivity"
             android:exported="false"
             android:label="@string/contact_us_title_clear_cache"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -95,10 +76,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_contactus"
-                    android:pathPattern="@string/path_clear_cache" />
+                    android:pathPattern="@string/path_clear_cache"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

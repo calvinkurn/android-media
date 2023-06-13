@@ -5,5 +5,5 @@ import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 
 data class LayoutQuestWidgetAttr(
         @SerializedName("jsonQuestWidgetDisplayParam")
-        val jsonQuestWidgetDisplayParam: String? = null,
+        val jsonQuestWidgetDisplayParam: String = "",
 )

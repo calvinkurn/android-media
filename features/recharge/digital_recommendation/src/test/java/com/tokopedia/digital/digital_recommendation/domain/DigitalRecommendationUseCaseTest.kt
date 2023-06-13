@@ -14,7 +14,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -30,7 +30,7 @@ class DigitalRecommendationUseCaseTest {
     private lateinit var usecase: DigitalRecommendationUseCase
 
     private companion object{
-        const val DUMMY_BG = "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2021/7/29/148831929/148831929_109ef2c3-c536-406a-80ba-9a86ef03477a.jpg"
+        const val DUMMY_BG = "https://images.tokopedia.net/img/cache/200-square/attachment/2021/7/29/148831929/148831929_109ef2c3-c536-406a-80ba-9a86ef03477a.jpg"
         const val ASSERT_DELTA = 0.0
     }
 
@@ -280,7 +280,7 @@ class DigitalRecommendationUseCaseTest {
         }
         coEvery { userSession.phoneNumber } returns "080808080808"
 
-        runBlockingTest {
+        runTest {
             // when
             val data = usecase.execute(
                     DigitalRecommendationPage.DIGITAL_GOODS,
@@ -328,7 +328,7 @@ class DigitalRecommendationUseCaseTest {
         )
         coEvery { userSession.phoneNumber } returns "080808080808"
 
-        runBlockingTest {
+        runTest {
             // when
             val data = usecase.execute(
                     DigitalRecommendationPage.DIGITAL_GOODS,
@@ -373,7 +373,7 @@ class DigitalRecommendationUseCaseTest {
         )
         coEvery { userSession.phoneNumber } returns "080808080808"
 
-        runBlockingTest {
+        runTest {
             // when
             val data = usecase.execute(
                     DigitalRecommendationPage.DIGITAL_GOODS,

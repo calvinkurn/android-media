@@ -11,8 +11,10 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                          private val schedulers: ExecutorSchedulers) : UseCase<Boolean>() {
+class SetCartlistCheckboxStateUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<Boolean>() {
 
     companion object {
         const val PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST = "PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST"
@@ -24,10 +26,10 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
         val cartlistCheckboxStateRequestList = ArrayList<SetCartlistCheckboxStateRequest>()
         cartItemDataList.forEach {
             cartlistCheckboxStateRequestList.add(
-                    SetCartlistCheckboxStateRequest(
-                            cartId = it.cartId,
-                            checkboxState = it.isSelected
-                    )
+                SetCartlistCheckboxStateRequest(
+                    cartId = it.cartId,
+                    checkboxState = it.isSelected
+                )
             )
         }
 
@@ -48,16 +50,14 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    var result: Boolean = false
-                    it.getData<SetCartlistCheckboxGqlResponse>(SetCartlistCheckboxGqlResponse::class.java)?.let {
-                        result = it.setCartlistCheckboxStateResponse.data.success == 1
-                        result
-                    }
-
+            .map {
+                var result: Boolean = false
+                it.getData<SetCartlistCheckboxGqlResponse>(SetCartlistCheckboxGqlResponse::class.java)?.let {
+                    result = it.setCartlistCheckboxStateResponse.data.success == 1
+                    result
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

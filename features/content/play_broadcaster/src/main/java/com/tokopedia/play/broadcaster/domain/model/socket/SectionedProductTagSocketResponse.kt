@@ -50,5 +50,14 @@ data class SectionedProductTagSocketResponse(
 
         @SerializedName("quantity")
         val quantity: Long = 0,
+
+        @SerializedName("is_pinned")
+        val isPinned: Boolean = false,
+
+        @SerializedName("is_pinnable")
+        val isPinnable: Boolean = false,
+
+        @SerializedName("product_number")
+        val productNumber: Int = 0,
     )
 }

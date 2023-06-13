@@ -14,68 +14,89 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_ticker_reminder_when_successfull() {
-        //Given
+        // Given
         val expectedResponse = GetReminderTickerResponse()
         coEvery {
             reminderTickerUseCase.invoke(any())
         } returns expectedResponse
 
-        //When
-        viewModel.getTickerReminder()
+        // When
+        viewModel.getTickerReminder(false)
 
-        //Then
+        // Then
         assertThat(
-            viewModel.srwTickerReminder.value,
+            viewModel.tickerReminder.value,
             `is`(Success(expectedResponse.getReminderTicker))
         )
     }
 
     @Test
-    fun should_do_nothing_when_error_get_ticker_reminder() {
-        //Given
-        coEvery {
-            reminderTickerUseCase.invoke(any())
-        } throws IllegalStateException()
-
-        //When
-        viewModel.getTickerReminder()
-
-        //Then
-        assertEquals(
-            viewModel.srwTickerReminder.value, null
-        )
-    }
-
-    @Test
-    fun should_remove_ticker_reminder_when_removed() {
-        //Given
+    fun should_get_ticker_reminder_when_successfull_even_when_msg_id_zero() {
+        // Given
         val expectedResponse = GetReminderTickerResponse()
         coEvery {
             reminderTickerUseCase.invoke(any())
         } returns expectedResponse
+        viewModel.setRoomMetaData(null)
 
-        //When
-        viewModel.getTickerReminder()
-        viewModel.removeTicker()
+        // When
+        viewModel.getTickerReminder(false)
 
-        //Then
+        // Then
+        assertThat(
+            viewModel.tickerReminder.value,
+            `is`(Success(expectedResponse.getReminderTicker))
+        )
+        assertEquals(null, viewModel.roomMetaData.value)
+    }
+
+    @Test
+    fun should_do_nothing_when_error_get_ticker_reminder() {
+        // Given
+        coEvery {
+            reminderTickerUseCase.invoke(any())
+        } throws IllegalStateException()
+
+        // When
+        viewModel.getTickerReminder(false)
+
+        // Then
         assertEquals(
-            viewModel.srwTickerReminder.value, null
+            viewModel.tickerReminder.value,
+            null
         )
     }
 
     @Test
     fun should_close_ticker_reminder_when_closed() {
-        //Given
+        // Given
         val response = GetReminderTickerResponse()
         coEvery {
             closeReminderTicker.invoke(any())
         } returns Unit
 
-        //When
-        viewModel.closeTickerReminder(response.getReminderTicker)
+        // When
+        viewModel.closeTickerReminder(response.getReminderTicker, false)
 
-        //Then
+        // Then
+        coVerify {
+            closeReminderTicker(any())
+        }
+    }
+
+    @Test
+    fun should_close_ticker_reminder_when_closed_even_when_room_meta_data_is_null() {
+        // Given
+        val response = GetReminderTickerResponse()
+        coEvery {
+            closeReminderTicker.invoke(any())
+        } returns Unit
+        viewModel.setRoomMetaData(null)
+
+        // When
+        viewModel.closeTickerReminder(response.getReminderTicker, false)
+
+        // Then
         coVerify {
             closeReminderTicker(any())
         }
@@ -83,13 +104,13 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_do_nothing_when_error_close_ticker_reminder() {
-        //Given
+        // Given
         val response = GetReminderTickerResponse()
         coEvery {
             closeReminderTicker.invoke(any())
         } throws IllegalStateException()
 
-        //When
-        viewModel.closeTickerReminder(response.getReminderTicker)
+        // When
+        viewModel.closeTickerReminder(response.getReminderTicker, false)
     }
 }

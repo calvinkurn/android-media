@@ -5,8 +5,8 @@ import com.tokopedia.minicart.common.widget.shoppingsummary.adapter.ShoppingSumm
 
 data class ShoppingSummaryProductUiModel(
     val name: String,
-    val value: String,
-): Visitable<ShoppingSummaryTypeFactory> {
+    val value: String
+) : Visitable<ShoppingSummaryTypeFactory> {
 
     override fun type(typeFactory: ShoppingSummaryTypeFactory): Int {
         return typeFactory.type(this)

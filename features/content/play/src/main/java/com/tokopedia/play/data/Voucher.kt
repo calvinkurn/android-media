@@ -26,7 +26,7 @@ class Voucher (
         val title: String = "",
         @SerializedName("subtitle")
         val subtitle: String = "",
-        @SerializedName("voucher_quota")
+        @SerializedName("is_quota_available")
         val quota: Int = 0,
         @SerializedName("voucher_finish_time")
         val finishTime: String = "", // formatted string date
@@ -34,8 +34,6 @@ class Voucher (
         val code: String = "",
         @SerializedName("voucher_image_square")
         val imageSquare: String = "",
-        @SerializedName("is_quota_available")
-        val isAvailable: Int = 0,
         @SerializedName("tnc")
         val termAndCondition: String = "",
         @SerializedName("is_copyable")

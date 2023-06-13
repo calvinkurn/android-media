@@ -40,9 +40,11 @@
         <activity
             android:name=".silentverification.view.activity.SilentVerificationActivity"
             android:label=""
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

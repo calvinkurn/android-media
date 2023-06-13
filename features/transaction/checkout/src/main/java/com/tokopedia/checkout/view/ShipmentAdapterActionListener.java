@@ -2,19 +2,24 @@ package com.tokopedia.checkout.view;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
+
+import rx.subjects.PublishSubject;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -22,7 +27,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
@@ -30,13 +35,13 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, boolean epharmacyError);
 
     void onChangeAddress();
 
     void onTotalPaymentChange(String totalPayment, boolean enable);
 
-    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse, boolean skipValidateUse);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -93,7 +98,7 @@ public interface ShipmentAdapterActionListener {
 
     void onProcessToPayment();
 
-    void onChangeTradeInDropOffClicked();
+    void onChangeTradeInDropOffClicked(String latitude, String longitude);
 
     boolean isTradeInByDropOff();
 
@@ -141,5 +146,19 @@ public interface ShipmentAdapterActionListener {
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
+    void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
+    void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel);
+
     void onViewFreeShippingPlusBadge();
+
+    void onInsuranceInfoTooltipClickedTrackingAnalytics();
+
+    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position, PublishSubject<Boolean> donePublisher);
+
+    void checkPlatformFee();
+
+    void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel);
 }

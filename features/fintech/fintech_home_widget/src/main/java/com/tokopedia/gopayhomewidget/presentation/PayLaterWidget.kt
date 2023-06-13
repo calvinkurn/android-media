@@ -15,6 +15,7 @@ import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetCompon
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterButton
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class PayLaterWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0,
+    @AttrRes defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     val applink = 1
@@ -67,7 +68,8 @@ class PayLaterWidget @JvmOverloads constructor(
         if (payLaterWidgetData.isShow == true) {
             analyticsUpload.sendWidgetAnalyticsEvent(
                 AnalyticsEventGenerator.WidgetImpressionAnalytics(
-                    payLaterWidgetData.caseType.toString()
+                    payLaterWidgetData.caseType.toString(),
+                    payLaterWidgetData.gatewayCode ?: ""
                 )
             )
             this.visibility = VISIBLE
@@ -80,11 +82,9 @@ class PayLaterWidget @JvmOverloads constructor(
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
 
             initListner(payLaterWidgetData)
+        } else {
+            this.visibility = GONE
         }
-        else {
-           this.visibility = GONE
-        }
-
     }
 
     private fun initListner(payLaterWidgetData: PayLaterWidgetData) {
@@ -117,7 +117,8 @@ class PayLaterWidget @JvmOverloads constructor(
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
-                        button.appsUrl ?: ""
+                        button.appsUrl ?: "",
+                        payLaterWidgetData.gatewayCode ?: ""
                     )
                 )
                 RouteManager.route(context, button.appsUrl)
@@ -127,7 +128,8 @@ class PayLaterWidget @JvmOverloads constructor(
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
                         payLaterWidgetData.caseType.toString(),
-                        button.webUrl ?: ""
+                        button.webUrl ?: "",
+                        payLaterWidgetData.gatewayCode ?: ""
                     )
                 )
                 val webViewAppLink =
@@ -140,5 +142,4 @@ class PayLaterWidget @JvmOverloads constructor(
     private fun closeHomeWidget() {
         payLaterWidgetListener?.onClosePayLaterWidget()
     }
-
 }

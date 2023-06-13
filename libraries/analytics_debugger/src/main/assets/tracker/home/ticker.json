@@ -7,14 +7,18 @@
       "event": "clickTicker",
       "eventAction": "click on close ticker",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "eventCategory": "ticker homepage",
       "event": "clickTicker",
       "eventAction": "click ticker",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace"
     }
   ]
 }

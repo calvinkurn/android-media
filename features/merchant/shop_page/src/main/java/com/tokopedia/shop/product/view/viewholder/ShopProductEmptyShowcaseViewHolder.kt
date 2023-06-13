@@ -11,24 +11,25 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductEmptyShowcaseUiModel
 import com.tokopedia.shop.product.view.listener.ShopShowcaseEmptySearchListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopProductEmptyShowcaseViewHolder(val view: View,
-                                         private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?): AbstractViewHolder<ShopProductEmptyShowcaseUiModel>(view) {
+class ShopProductEmptyShowcaseViewHolder(
+    val view: View,
+    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?
+) : AbstractViewHolder<ShopProductEmptyShowcaseUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.shop_showcase_product_empty_state
     }
 
-    private val viewBinding : ShopShowcaseProductEmptyStateBinding? by viewBinding()
+    private val viewBinding: ShopShowcaseProductEmptyStateBinding? by viewBinding()
     private val shopShowcaseEmptyState: EmptyStateUnify? = viewBinding?.shopShowcaseEmptyState
-    
+
     override fun bind(element: ShopProductEmptyShowcaseUiModel) {
         try {
-            if(shopShowcaseEmptyState?.context?.isValidGlideContext() == true)
+            if (shopShowcaseEmptyState?.context?.isValidGlideContext() == true)
                 shopShowcaseEmptyState.setImageUrl(ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE)
         } catch (e: Throwable) { }
         shopShowcaseEmptyState?.setPrimaryCTAClickListener {
             shopShowcaseEmptySearchListener?.onShowcaseEmptyBackButtonClicked()
         }
     }
-
 }

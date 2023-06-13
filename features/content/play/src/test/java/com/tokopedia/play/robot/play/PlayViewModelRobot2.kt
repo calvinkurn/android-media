@@ -8,6 +8,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatManager
 import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
@@ -20,6 +21,7 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
@@ -32,6 +34,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import java.io.Closeable
 
 /**
@@ -57,6 +60,7 @@ class PlayViewModelRobot2(
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper,
     playShareExperience: PlayShareExperience,
+    chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
     liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
@@ -83,9 +87,10 @@ class PlayViewModelRobot2(
         castPlayerHelper,
         playShareExperience,
         playLog,
+        chatManagerFactory,
         chatStreamsFactory,
         liveRoomMetricsCommon,
-        )
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)
@@ -159,6 +164,20 @@ class PlayViewModelRobot2(
         return uiState to uiEvents
     }
 
+    fun recordChatState(fn: suspend PlayViewModelRobot2.() -> Unit): List<PlayChatUiModel> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var chats: List<PlayChatUiModel>
+        scope.launch {
+            viewModel.chats.collect {
+                chats = it
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return chats
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
@@ -193,6 +212,7 @@ fun createPlayViewModelRobot(
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
+    chatManagerFactory: ChatManager.Factory = mockk(relaxed = true),
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     playLog: PlayLog = mockk(relaxed = true),
     liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
@@ -218,6 +238,7 @@ fun createPlayViewModelRobot(
         timerFactory = timerFactory,
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
+        chatManagerFactory = chatManagerFactory,
         chatStreamsFactory = chatStreamsFactory,
         playLog = playLog,
         liveRoomMetricsCommon = liveRoomMetricsCommon,

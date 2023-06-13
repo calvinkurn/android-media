@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.categorylist.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

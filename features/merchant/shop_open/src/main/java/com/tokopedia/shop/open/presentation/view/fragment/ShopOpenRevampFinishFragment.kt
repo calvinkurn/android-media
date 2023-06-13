@@ -13,6 +13,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.EspressoIdlingResource
@@ -32,13 +33,12 @@ class ShopOpenRevampFinishFragment : Fragment() {
     private lateinit var loading: LoaderUnify
     private var txtGreeting: Typography? = null
 
-
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
     }
 
     companion object {
-        const val LOTTIE_ANIMATION = "https://ecs7.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
+        const val LOTTIE_ANIMATION = TokopediaImageUrl.LOTTIE_ANIMATION
         private const val LOTTIE_ANIMATION_DURATION = 3000L
     }
 
@@ -50,7 +50,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+            shopOpenRevampTracking = ShopOpenRevampTracking()
         }
     }
 
@@ -70,13 +70,13 @@ class ShopOpenRevampFinishFragment : Fragment() {
         val fullName = userSession.name
         val firstName = fullName.split(" ")[0]
 
-        setupAnimation(view, shopId)
+        setupAnimation(shopId)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_CONGRATULATION)
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
         txtGreeting?.text = greetingText
     }
 
-    private fun setupAnimation(view: View, shopId: String) {
+    private fun setupAnimation(shopId: String) {
         context?.let {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, LOTTIE_ANIMATION)
 
@@ -88,7 +88,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
                 lottieAnimationView.repeatCount = LottieDrawable.INFINITE
 
                 handler.postDelayed({
-                    activity?.let{
+                    activity?.let {
                         it.finish()
                         val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId)
                         intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
@@ -99,5 +99,4 @@ class ShopOpenRevampFinishFragment : Fragment() {
             }
         }
     }
-
 }

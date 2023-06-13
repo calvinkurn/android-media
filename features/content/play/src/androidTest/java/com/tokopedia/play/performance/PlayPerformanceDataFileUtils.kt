@@ -10,10 +10,10 @@ import java.io.File
  * copy from [com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile]
  */
 class PlayPerformanceDataFileUtils(
-        private val activity: Activity,
-        private val testCaseName: String,
-        private val performanceData: PltPerformanceData,
-        private val videoLatencyDuration: Long
+    private val activity: Activity,
+    private val testCaseName: String,
+    private val performanceData: PltPerformanceData,
+    private val videoLatencyDuration: Long
 ) {
 
     companion object {

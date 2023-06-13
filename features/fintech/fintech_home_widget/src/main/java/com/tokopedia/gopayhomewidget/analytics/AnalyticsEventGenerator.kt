@@ -2,10 +2,14 @@ package com.tokopedia.gopayhomewidget.analytics
 
 sealed interface AnalyticsEventGenerator {
 
-    data class WidgetImpressionAnalytics(val widgetType: String) : AnalyticsEventGenerator
+    data class WidgetImpressionAnalytics(
+        val caseType: String,
+        val partnerName: String
+    ) : AnalyticsEventGenerator
 
     data class WidgetCtaClickedButton(
-        val widgetType: String,
-        val redirectionPage: String
+        val caseType: String,
+        val redirectionPage: String,
+        val partnerName: String
     ) : AnalyticsEventGenerator
 }

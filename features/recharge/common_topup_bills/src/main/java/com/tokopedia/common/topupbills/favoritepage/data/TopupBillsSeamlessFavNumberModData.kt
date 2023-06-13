@@ -15,6 +15,8 @@ data class UpdateFavoriteDetail(
     val categoryID: Int,
     @SerializedName("clientNumber")
     val clientNumber: String,
+    @SerializedName("hashedClientNumber")
+    val hashedClientNumber: String,
     @SerializedName("label")
     val label: String,
     @SerializedName("lastOrderDate")

@@ -20,14 +20,14 @@
             android:layout_height="@dimen/gami_direct_view_image_w"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/colorPrimary" />
+             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/gami_direct_view_title_start_margin"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gami_direct_view_tvMessage_top_margin"
-            android:textColor="@color/gf_white_66"
+            android:textColor="@color/Unify_Static_White_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"

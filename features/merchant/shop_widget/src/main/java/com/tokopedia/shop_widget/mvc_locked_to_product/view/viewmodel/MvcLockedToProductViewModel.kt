@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -156,7 +157,8 @@ class MvcLockedToProductViewModel @Inject constructor(
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId,
-            quantity = quantity
+            quantity = quantity,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({

@@ -19,6 +19,15 @@
             app:tickerType="warning"
             app:tickerShapeType="full" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_saldo_withdrawal_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:tickerType="announcement"
+            app:tickerShapeType="full"
+            />
+
         <include
             android:id="@+id/deposit_header_layout"
             layout="@layout/saldo_deposit_header"

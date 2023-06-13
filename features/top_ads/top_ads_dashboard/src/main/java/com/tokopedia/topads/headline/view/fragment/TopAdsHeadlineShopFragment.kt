@@ -431,16 +431,18 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         val endDate = Utils.format.format(
             (parentFragment as? TopAdsHeadlineBaseFragment)?.endDate ?: Utils.getEndDate()
         )
-        presenter.getGroupData(
-            currentPageNum,
-            searchBar?.searchBarTextField?.text.toString(),
-            groupFilterSheet.getSelectedSortId(),
-            groupFilterSheet.getSelectedStatusId(),
-            startDate,
-            endDate,
-            TopAdsDashboardConstant.GROUP_TYPE_HEADLINE,
-            this::onSuccessGroupResult
-        )
+        if(this::presenter.isInitialized) {
+            presenter.getGroupData(
+                currentPageNum,
+                searchBar?.searchBarTextField?.text.toString(),
+                groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(),
+                startDate,
+                endDate,
+                TopAdsDashboardConstant.GROUP_TYPE_HEADLINE,
+                this::onSuccessGroupResult
+            )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

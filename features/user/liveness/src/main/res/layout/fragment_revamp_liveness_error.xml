@@ -1,95 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:background="@color/Unify_Background">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/error_liveness_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/spacing_lvl4"
-        android:visibility="visible">
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/livenessToolbarIcon"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:icon_name="ARROW_BACK" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintTop_toBottomOf="@+id/error_liveness_toolbar">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/livenessToolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN700"
-            android:text="@string/liveness_title"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            app:layout_constraintBottom_toBottomOf="@id/livenessToolbarIcon"
-            app:layout_constraintLeft_toRightOf="@id/livenessToolbarIcon"
-            app:layout_constraintTop_toTopOf="@id/livenessToolbarIcon"
-            app:typographyType="heading_4"
-            tools:text="@string/liveness_title" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/livenessErrorImage"
-            android:layout_width="@dimen/liveness_224"
-            android:layout_height="@dimen/liveness_179"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/layout_lvl4"
-            app:layout_constraintBottom_toTopOf="@+id/livenessErrorTitle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/livenessToolbarTitle"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/livenessErrorTitle"
-            app:typographyType="heading_2"
-            app:typographyWeight="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/fontSize_lvl6"
-            app:layout_constraintBottom_toTopOf="@+id/livenessErrorSubtitle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/livenessErrorImage"
-            tools:text="Yaa, waktu habis" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/livenessErrorSubtitle"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/spacing_lvl5"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="@dimen/liveness_text_spacing_6"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/livenessErrorTitle"
-            tools:text="Kamu telah melebihi batas waktu. Coba lagi dan ikuti instruksinya, ya." />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/button"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl6"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginLeft="@dimen/liveness_52"
-            android:layout_marginRight="@dimen/liveness_52"
-            app:layout_constraintTop_toBottomOf="@id/livenessErrorSubtitle"
-            android:text="@string/liveness_retry"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/livenessErrorImage"
+                android:layout_width="224dp"
+                android:layout_height="179dp"
+                app:layout_constraintBottom_toTopOf="@+id/livenessErrorTitle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/livenessErrorTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintBottom_toTopOf="@+id/livenessErrorSubtitle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/livenessErrorImage"
+                app:typographyType="heading_2"
+                app:typographyWeight="bold"
+                tools:text="Yaa, waktu habis" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/livenessErrorSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/livenessErrorTitle"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Kamu telah melebihi batas waktu. Coba lagi dan ikuti instruksinya, ya." />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="52dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="52dp"
+                android:gravity="center"
+                android:text="@string/liveness_retry"
+                app:layout_constraintTop_toBottomOf="@+id/livenessErrorSubtitle" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

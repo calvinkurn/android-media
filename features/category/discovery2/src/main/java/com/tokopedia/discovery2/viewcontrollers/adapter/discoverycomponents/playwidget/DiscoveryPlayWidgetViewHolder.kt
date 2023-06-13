@@ -63,6 +63,14 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                     (fragment as DiscoveryFragment).openLoginScreen(discoveryPlayWidgetViewModel.position)
             })
 
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, {
+                if(it){
+                    (fragment as DiscoveryFragment).reSync()
+                }
+            })
+            discoveryPlayWidgetViewModel.hideSectionLD.observe(fragment.viewLifecycleOwner, { sectionId ->
+                (fragment as DiscoveryFragment).handleHideSection(sectionId)
+            })
         }
     }
 
@@ -84,6 +92,8 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             discoveryPlayWidgetViewModel.getPlayWidgetUILiveData().removeObservers(it)
             discoveryPlayWidgetViewModel.reminderObservable.removeObservers(it)
             discoveryPlayWidgetViewModel.reminderLoginEvent.removeObservers(it)
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().removeObservers(it)
+            discoveryPlayWidgetViewModel.hideSectionLD.removeObservers(it)
         }
     }
 

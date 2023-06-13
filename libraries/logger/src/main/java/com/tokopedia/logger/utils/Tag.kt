@@ -1,3 +1,3 @@
 package com.tokopedia.logger.utils
 
-class Tag(val postPriority: Int)
+open class Tag(open val postPriority: Int)

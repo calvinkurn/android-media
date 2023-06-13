@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_input_promo_code"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/et_input_promo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btn_apply_promo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label="@string/label_promo_input_bottom_sheet_hint"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_placeholder="@string/label_promo_input_bottom_sheet_hint" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_apply_promo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginVertical="16dp"
+        android:text="@string/label_button_apply_manual_input_promo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_input_promo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonVariant="filled"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

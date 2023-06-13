@@ -30,7 +30,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ChooseAddressWidget : ConstraintLayout,
+class ChooseAddressWidget :
+    ConstraintLayout,
     ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     constructor(context: Context?) : super(context)
@@ -102,7 +103,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive() && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
                                 chooseAddressPref?.setLocalCache(localData)
                                 chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                                 // trigger home to refresh data
@@ -127,7 +128,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive() && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
                                 chooseAddressPref?.setLocalCache(localData)
                                 chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                                 // trigger home to refresh data
@@ -186,9 +187,24 @@ class ChooseAddressWidget : ConstraintLayout,
         if (textColor != null) {
             val newColor = ContextCompat.getColor(context, textColor)
             textChosenAddress?.setTextColor(newColor)
-            iconChooseAddress?.setImage(null, newColor, newColor, newColor, newColor)
+            val iconColorID = chooseAddressWidgetListener?.iconLocationColor()
+            val iconLocation = chooseAddressWidgetListener?.iconLocation()
+            if (iconLocation != null && iconColorID != null) {
+                val iconColor = ContextCompat.getColor(
+                    context,
+                    iconColorID
+                )
+                iconChooseAddress?.setImage(
+                    iconLocation,
+                    iconColor,
+                    iconColor,
+                    iconColor,
+                    iconColor
+                )
+            } else {
+                iconChooseAddress?.setImage(null, newColor, newColor, newColor, newColor)
+            }
             iconChevronChooseAddress?.setImage(null, newColor, newColor, newColor, newColor)
-
         }
         val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
@@ -213,7 +229,7 @@ class ChooseAddressWidget : ConstraintLayout,
                 initChosenAddressObserver()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive()) {
+            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true) {
                 initRefreshTokonowObserver()
                 viewModel.getTokonowData(localData)
             } else {
@@ -279,8 +295,11 @@ class ChooseAddressWidget : ConstraintLayout,
 
     override fun getLocalizingAddressHostSourceBottomSheet(): String {
         val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-        return if (source?.isNotEmpty() == true) source
-        else ""
+        return if (source?.isNotEmpty() == true) {
+            source
+        } else {
+            ""
+        }
     }
 
     override fun onLocalizingAddressLoginSuccessBottomSheet() {
@@ -293,6 +312,10 @@ class ChooseAddressWidget : ConstraintLayout,
 
     override fun isSupportWarehouseLoc(): Boolean {
         return chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: false
+    }
+
+    override fun isFromTokonowPage(): Boolean {
+        return chooseAddressWidgetListener?.isFromTokonowPage() ?: false
     }
 
     private fun onLocalizingAddressError() {
@@ -407,5 +430,26 @@ class ChooseAddressWidget : ConstraintLayout,
          * To trigger UI refresh after getting new tokonow warehouse data
          */
         fun onTokonowDataRefreshed() {}
+
+        /**
+         * To check from tokonow page or not
+         */
+        fun isFromTokonowPage(): Boolean {
+            return false
+        }
+
+        /**
+         * To set icon location
+         */
+        fun iconLocation(): Int {
+            return IconUnify.LOCATION
+        }
+
+        /**
+         * To set icon location color
+         */
+        fun iconLocationColor(): Int {
+            return onChangeTextColor()
+        }
     }
 }

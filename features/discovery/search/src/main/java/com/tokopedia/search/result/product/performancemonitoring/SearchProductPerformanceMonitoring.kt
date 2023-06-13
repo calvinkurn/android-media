@@ -28,6 +28,10 @@ internal const val SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH =
 internal const val SEARCH_RESULT_PLT_RENDER_LOGIC_TDN =
     "search_result_plt_render_logic_tdn"
 
+internal const val SEARCH_RESULT_PLT_NETWORK_USE_CASE_ATTRIBUTION = "search_result_plt_network_use_case_attribution"
+internal const val SEARCH_RESULT_PLT_NETWORK_USE_CASE_NORMAL = "normal"
+internal const val SEARCH_RESULT_PLT_NETWORK_USE_CASE_TYPO_CORRECTED = "typo_corrected"
+
 internal fun searchProductPerformanceMonitoring(): PageLoadTimePerformanceInterface =
     PageLoadTimePerformanceCallback(
         SEARCH_RESULT_PLT_PREPARE_METRICS,

@@ -30,67 +30,6 @@ import com.tokopedia.unifycomponents.Toaster;
 @Deprecated
 public class NetworkErrorHelper {
 
-    public static void showDialog(Context context, final RetryClickedListener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        String noConnection = context.getResources().getString(R.string.msg_no_connection) + ".\n"
-                + context.getResources().getString(R.string.error_no_connection2) + ".";
-        msg.setText(noConnection);
-        dialog.setView(promptsView);
-        if (listener != null) {
-            dialog.setPositiveButton(context.getString(R.string.title_try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onRetryClicked();
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        Dialog finalDialog = dialog.create();
-        finalDialog.setCanceledOnTouchOutside(false);
-        finalDialog.show();
-    }
-
-    public static SnackbarRetry createSnackbarWithAction(CoordinatorLayout coordinatorLayout, final RetryClickedListener listener) {
-        return new SnackbarRetry(SnackbarManager.make(coordinatorLayout,
-                coordinatorLayout.getContext().getResources().getString(R.string.msg_network_error), Snackbar.LENGTH_INDEFINITE), listener);
-    }
-
-    public static SnackbarRetry createSnackbarWithAction(
-            CoordinatorLayout coordinatorLayout, String message, final RetryClickedListener listener) {
-        return new SnackbarRetry(SnackbarManager.make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE), listener);
-    }
-
-    public static SnackbarRetry createSnackbarWithAction(
-            CoordinatorLayout coordinatorLayout, String message, int duration, final RetryClickedListener listener) {
-        return createSnackbarWithAction(coordinatorLayout, message, duration,
-                coordinatorLayout.getContext().getString(R.string.title_try_again), listener);
-    }
-
-    public static SnackbarRetry createSnackbarWithAction(
-            CoordinatorLayout coordinatorLayout, String message, int duration, String actionText, final RetryClickedListener listener) {
-        return new SnackbarRetry(SnackbarManager.make(coordinatorLayout, message, duration), actionText, listener);
-    }
-
-    public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
-        String message = "";
-        if (activity != null) {
-            message = activity.getResources().getString(R.string.msg_network_error);
-        }
-        return createSnackbarWithAction(activity, message, listener);
-    }
-
     public static SnackbarRetry createSnackbarWithAction(
             Activity activity, String message, final RetryClickedListener listener) {
         return createSnackbarWithAction(activity, message, Snackbar.LENGTH_INDEFINITE, listener);
@@ -104,17 +43,6 @@ public class NetworkErrorHelper {
     public static SnackbarRetry createSnackbarWithAction(
             Activity activity, String message, int duration, String actionText, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(activity, message, duration), actionText, listener);
-    }
-
-    public static void showCloseSnackbar(Activity activity, String message) {
-        SnackbarManager.make(activity, message, Snackbar.LENGTH_LONG).setAction(
-                activity.getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no operation
-                    }
-                }
-        ).show();
     }
 
     public static void showSnackbar(Activity activity) {

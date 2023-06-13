@@ -60,6 +60,7 @@ class GetAnnouncementDataUseCase(
                   button {
                     applink
                   }
+                  widgetDataSign
                 }
               }
             }

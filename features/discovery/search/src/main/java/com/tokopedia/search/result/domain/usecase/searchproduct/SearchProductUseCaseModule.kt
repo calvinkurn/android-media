@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -8,6 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -22,6 +24,7 @@ import javax.inject.Named
 
 @Module(includes = [SearchProductMapperModule::class])
 class SearchProductUseCaseModule {
+
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -30,20 +33,23 @@ class SearchProductUseCaseModule {
         userSession: UserSessionInterface,
         coroutineDispatchers: CoroutineDispatchers,
         topAdsIrisSession: TopAdsIrisSession,
-        @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
-        remoteConfigAbTest: RemoteConfig,
+        performanceMonitoringProvider: PerformanceMonitoringProvider,
+        remoteConfig: RemoteConfig,
     ): UseCase<SearchProductModel> {
         val firstPageGqlUseCase = provideSearchProductFirstPageUseCase(
             searchProductModelMapper,
             userSession,
             coroutineDispatchers,
-            topAdsIrisSession
+            topAdsIrisSession,
+            remoteConfig,
         )
-        val topAdsGqlUseCase = provideSearchProductTopAddsUseCase()
+
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
+
         return SearchProductTypoCorrectionUseCase(
             firstPageGqlUseCase,
             topAdsGqlUseCase,
-            remoteConfigAbTest,
+            performanceMonitoringProvider,
         )
     }
 
@@ -51,7 +57,8 @@ class SearchProductUseCaseModule {
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
         userSession: UserSessionInterface,
         coroutineDispatchers: CoroutineDispatchers,
-        topAdsIrisSession: TopAdsIrisSession
+        topAdsIrisSession: TopAdsIrisSession,
+        remoteConfig: RemoteConfig,
     ): UseCase<SearchProductModel> {
         val topAdsImageViewUseCase = TopAdsImageViewUseCase(
             userSession.userId,
@@ -63,12 +70,11 @@ class SearchProductUseCaseModule {
             searchProductModelMapper,
             topAdsImageViewUseCase,
             coroutineDispatchers,
-            SearchLogger()
+            SearchLogger(
+                remoteConfig,
+                GlobalConfig.VERSION_CODE,
+            ),
         )
-    }
-
-    private fun provideSearchProductTopAddsUseCase(): UseCase<TopAdsModel> {
-        return SearchProductTopAdsUseCase(GraphqlUseCase())
     }
 
     @SearchScope
@@ -76,21 +82,27 @@ class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     fun provideSearchLoadMoreUseCase(
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-        @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
-        remoteConfigAbTest: RemoteConfig,
+        performanceMonitoringProvider: PerformanceMonitoringProvider,
     ): UseCase<SearchProductModel> {
         val loadMoreGqlUseCase = provideSearchProductLoadMoreUseCase(searchProductModelMapper)
-        val topAdsGqlUseCase = provideSearchProductTopAddsUseCase()
+        val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
         return SearchProductTypoCorrectionUseCase(
             loadMoreGqlUseCase,
             topAdsGqlUseCase,
-            remoteConfigAbTest,
+            performanceMonitoringProvider,
         )
     }
 
-    fun provideSearchProductLoadMoreUseCase(
+    private fun provideSearchProductLoadMoreUseCase(
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
     ): UseCase<SearchProductModel> {
         return SearchProductLoadMoreGqlUseCase(GraphqlUseCase(), searchProductModelMapper)
+    }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_TOPADS_USE_CASE)
+    fun provideSearchProductTopAdsUseCase(): UseCase<TopAdsModel> {
+        return SearchProductTopAdsUseCase(GraphqlUseCase())
     }
 }

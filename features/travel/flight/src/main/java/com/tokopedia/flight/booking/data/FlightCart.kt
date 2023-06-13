@@ -366,7 +366,7 @@ data class FlightCart(
 
             @SerializedName("discountAmount")
             @Expose
-            val discountAmount: Int = 0,
+            val discountAmount: Long = 0L,
 
             @SerializedName("discountPrice")
             @Expose
@@ -374,7 +374,7 @@ data class FlightCart(
 
             @SerializedName("discountedAmount")
             @Expose
-            val discountedAmount: Int = 0,
+            val discountedAmount: Long = 0L,
 
             @SerializedName("discountedPrice")
             @Expose

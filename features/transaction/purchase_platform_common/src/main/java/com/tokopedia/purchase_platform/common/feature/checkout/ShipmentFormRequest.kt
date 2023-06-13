@@ -31,5 +31,4 @@ class ShipmentFormRequest(private val deviceId: String) {
     companion object {
         const val EXTRA_DEVICE_ID = "EXTRA_DEVICE_ID"
     }
-
 }

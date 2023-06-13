@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingStart="16dp"
     android:paddingTop="12dp"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp"
     android:background="@color/Unify_Background">
 
     <EditText
@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_toStartOf="@+id/replySendButton"
         android:layout_toLeftOf="@+id/replySendButton"
         android:background="@drawable/bg_rounded_chat_input"
@@ -26,24 +26,24 @@
         android:textColorHint="@color/Unify_N700_32"
         android:maxLines="4"
         android:scrollbars="vertical"
-        android:minHeight="@dimen/layout_lvl5"
-        android:paddingStart="@dimen/spacing_lvl7"
-        android:paddingLeft="@dimen/spacing_lvl7"
+        android:minHeight="40dp"
+        android:paddingStart="40dp"
+        android:paddingLeft="40dp"
         android:paddingTop="10dp"
-        android:paddingEnd="@dimen/spacing_lvl7"
-        android:paddingRight="@dimen/spacing_lvl7"
+        android:paddingEnd="40dp"
+        android:paddingRight="40dp"
         android:paddingBottom="10dp"
-        android:textSize="@dimen/fontSize_lvl4" />
+        android:textSize="16sp" />
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl1"
+        android:paddingBottom="8dp"
         android:layout_alignBottom="@id/replyEditText"
         android:layout_alignEnd="@+id/replyEditText"
         android:layout_alignRight="@+id/replyEditText"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3">
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp">
 
         <ImageView
             android:id="@+id/replyAttachProduct"
@@ -53,14 +53,14 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_alignStart="@+id/replyEditText"
         android:layout_alignLeft="@+id/replyEditText"
         android:layout_alignBottom="@id/replyEditText"
-        android:layout_marginBottom="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1">
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/replyUserProfilePicture"

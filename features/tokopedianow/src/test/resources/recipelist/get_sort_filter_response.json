@@ -1,0 +1,136 @@
+{
+  "TokonowRecipesFilterSort": {
+    "header": {
+      "success": true,
+      "message": "Your request has been processed successfully",
+      "statusCode": "200",
+      "processTime": 0.0208612
+    },
+    "data": {
+      "filter": [
+        {
+          "title": "Bahan",
+          "options": [
+            {
+              "name": "Balado",
+              "key": "ingredient_ids",
+              "icon": "https://images-staging.tokopedia.net/img/MKEzJd/2022/9/29/4a72ad37-909f-4677-8f97-4076a278c285.jpg",
+              "value": "53",
+              "inputType": "checkbox",
+              "isPopular": true,
+              "isNew": false
+            },
+            {
+              "name": "Test Create Ingredient 6",
+              "key": "ingredient_ids",
+              "icon": "",
+              "value": "11",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            }
+          ]
+        },
+        {
+          "title": "Lama Masak",
+          "options": [
+            {
+              "name": "\u003c 30 Menit",
+              "key": "duration",
+              "icon": "",
+              "value": "LessThan30",
+              "inputType": "checkbox",
+              "isPopular": true,
+              "isNew": false
+            },
+            {
+              "name": "30 - 60 Menit",
+              "key": "duration",
+              "icon": "",
+              "value": "30To60",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            },
+            {
+              "name": "\u003e 60 Menit",
+              "key": "duration",
+              "icon": "",
+              "value": "MoreThan60",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            }
+          ]
+        },
+        {
+          "title": "Porsi",
+          "options": [
+            {
+              "name": "\u003c 5 Orang",
+              "key": "portion",
+              "icon": "",
+              "value": "LessThan5",
+              "inputType": "checkbox",
+              "isPopular": true,
+              "isNew": false
+            },
+            {
+              "name": "5 - 10 Orang",
+              "key": "portion",
+              "icon": "",
+              "value": "5To10",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            },
+            {
+              "name": "\u003e 10 Orang",
+              "key": "portion",
+              "icon": "",
+              "value": "MoreThan10",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            }
+          ]
+        },
+        {
+          "title": "Label",
+          "options": [
+            {
+              "name": "Test Create Tag 2",
+              "key": "tag_ids",
+              "icon": "",
+              "value": "3",
+              "inputType": "checkbox",
+              "isPopular": true,
+              "isNew": false
+            },
+            {
+              "name": "Test Create Tag 3",
+              "key": "tag_ids",
+              "icon": "",
+              "value": "4",
+              "inputType": "checkbox",
+              "isPopular": false,
+              "isNew": false
+            }
+          ]
+        }
+      ],
+      "sort": [
+        {
+          "name": "Terbaru",
+          "key": "sort_by",
+          "value": "Newest"
+        },
+        {
+          "name": "Terlama",
+          "key": "sort_by",
+          "value": "Oldest"
+        }
+      ]
+    }
+  }
+}

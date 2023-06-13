@@ -125,7 +125,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             val variant = Variant(listOf(), listOf(), listOf())
             val getProductV3 =
-                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, variant)
+                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, Int.ZERO, variant)
             val getProductVariantResponse = GetProductVariantResponse(getProductV3)
 
             onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)
@@ -149,7 +149,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             val variant = Variant(listOf(), listOf(), listOf())
             val getProductV3 =
-                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, variant)
+                GetProductV3(productId, String.EMPTY, String.EMPTY, Int.ZERO, Int.ZERO, Int.ZERO, variant)
             val getProductVariantResponse = GetProductVariantResponse(getProductV3)
 
             onGetProduct_thenReturn(productId, wareHouseId, getProductVariantResponse)

@@ -18,6 +18,7 @@ class FakePlayWebSocket(
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(extraBufferCapacity = 100)
     private var isOpen = false
+    private var onConnected: ((FakePlayWebSocket) -> Unit)? = null
 
     override fun listenAsFlow(): Flow<WebSocketAction> = webSocketFlow.filterNotNull().buffer().flowOn(dispatchers.io)
 
@@ -26,10 +27,15 @@ class FakePlayWebSocket(
 
     override fun connect(channelId: String, warehouseId: String, gcToken: String, source: String) {
         isOpen = true
+        onConnected?.invoke(this)
     }
 
     override fun close() {
         isOpen = false
+    }
+
+    fun setOnConnected(onConnected: (FakePlayWebSocket) -> Unit) {
+        this.onConnected = onConnected
     }
 
     fun fakeReceivedMessage(text: String) {

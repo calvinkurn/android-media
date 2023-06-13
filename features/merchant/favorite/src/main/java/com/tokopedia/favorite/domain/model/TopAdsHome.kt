@@ -25,14 +25,10 @@ class TopAdsHome {
 
         @SerializedName("applinks")
         var applinks: String? = null
-        var isSelected = false
 
     }
 
     class Headline {
-        @SerializedName("template_id")
-        private val templateId: String? = null
-
         @SerializedName("name")
         var name: String? = null
 
@@ -42,23 +38,8 @@ class TopAdsHome {
         @SerializedName("shop")
         var shop: Shop? = null
 
-        @SerializedName("button_text")
-        var buttonText: String? = null
-
-        @SerializedName("promoted_text")
-        private val promotedText: String? = null
-
-        @SerializedName("description")
-        var description: String? = null
-
-        @SerializedName("uri")
-        var uri: String? = null
-
         @SerializedName("layout")
         var layout: Int? = null
-
-        @SerializedName("badges")
-        var badges: List<*>? = null
 
         class Image {
             @SerializedName("full_url")
@@ -80,20 +61,8 @@ class TopAdsHome {
         @SerializedName("domain")
         var domain: String? = null
 
-        @SerializedName("tagline")
-        var tagline: String? = null
-
-        @SerializedName("slogan")
-        var slogan: String? = null
-
         @SerializedName("location")
         var location: String? = null
-
-        @SerializedName("city")
-        var city: String? = null
-
-        @SerializedName("gold_shop_badge")
-        private val goldShopBadge = false
 
         @SerializedName("shop_is_official")
         val shopIsOfficial = false
@@ -120,28 +89,12 @@ class TopAdsHome {
             @SerializedName("name")
             var name: String? = null
 
-            @SerializedName("price_format")
-            private val priceFormat: String? = null
-
-            @SerializedName("applinks")
-            var applinks: String? = null
-
             @SerializedName("image_product")
             val imageProduct: ImageProduct? = null
 
             class ImageProduct {
-                @SerializedName("product_id")
-                var productId: String? = null
-
-                @SerializedName("product_name")
-                var productName: String? = null
-
                 @SerializedName("image_url")
                 var imageUrl: String? = null
-
-                @SerializedName("image_click_url")
-                private val imageClickUrl: String? = null
-
             }
         }
     }

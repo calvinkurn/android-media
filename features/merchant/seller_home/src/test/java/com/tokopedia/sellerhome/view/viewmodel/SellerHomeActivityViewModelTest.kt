@@ -1,8 +1,18 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
+import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.CapabilityInfo
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
+import com.google.common.util.concurrent.ListenableFuture
+import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.device.info.DeviceInfo.await
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
@@ -10,11 +20,14 @@ import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,8 +35,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -56,6 +71,15 @@ class SellerHomeActivityViewModelTest {
     @RelaxedMockK
     lateinit var authorizeOrderAccessUseCase: AuthorizeAccessUseCase
 
+    @RelaxedMockK
+    lateinit var capabilityClient: CapabilityClient
+
+    @RelaxedMockK
+    lateinit var nodeClient: NodeClient
+
+    @RelaxedMockK
+    lateinit var remoteActivityHelper: RemoteActivityHelper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -71,14 +95,26 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase,
-                sellerAdminUseCase, authorizeChatAccessUseCase, authorizeOrderAccessUseCase, coroutineTestRule.dispatchers)
+        SellerHomeActivityViewModel(
+            userSession,
+            getNotificationUseCase,
+            getShopInfoUseCase,
+            sellerAdminUseCase,
+            authorizeChatAccessUseCase,
+            authorizeOrderAccessUseCase,
+            capabilityClient,
+            nodeClient,
+            remoteActivityHelper,
+            coroutineTestRule.dispatchers
+        )
 
     @Test
     fun `get notifications then returns success result`() {
-
-        val notifications = NotificationUiModel(0, 0,
-            NotificationSellerOrderStatusUiModel())
+        val notifications = NotificationUiModel(
+            0,
+            0,
+            NotificationSellerOrderStatusUiModel()
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -99,7 +135,6 @@ class SellerHomeActivityViewModelTest {
 
     @Test
     fun `get notifications then returns failed result`() = runBlocking {
-
         val throwable = MessageErrorException()
 
         coEvery {
@@ -119,9 +154,12 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+    fun `get notifications but chat admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runTest {
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -144,9 +182,12 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+    fun `get notifications but order admin role is ineligible, should make the chat notif count 0`() = coroutineTestRule.runTest {
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -165,15 +206,18 @@ class SellerHomeActivityViewModelTest {
         verifyCheckAdminOrderPermissionIsCalled()
 
         val expectedNotification = notifications.copy(
-                chat = 0
+            chat = 0
         )
         assertNotificationDataEquals(Success(expectedNotification), viewModel)
     }
 
     @Test
-    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+    fun `get notifications and both chat and order admin role is eligible, should not change the notif counts`() = coroutineTestRule.runTest {
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
@@ -195,9 +239,12 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runBlockingTest {
-        val notifications = NotificationUiModel(5, 5,
-                NotificationSellerOrderStatusUiModel(5, 5))
+    fun `get notifications success but check role is fail, should still make the notifications result success`() = coroutineTestRule.runTest {
+        val notifications = NotificationUiModel(
+            5,
+            5,
+            NotificationSellerOrderStatusUiModel(5, 5)
+        )
         val throwable = MessageErrorException()
 
         coEvery {
@@ -248,7 +295,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get shop info then returns failed result`() = coroutineTestRule.runBlockingTest {
+    fun `get shop info then returns failed result`() = coroutineTestRule.runTest {
         val userId = "123456"
         val throwable = MessageErrorException()
 
@@ -279,7 +326,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner, user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner, user is eligible`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -290,7 +337,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -316,7 +363,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is not shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is not shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -342,7 +389,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is not shop owner and is location admin then mark as user is not eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is not shop owner and is location admin then mark as user is not eligible`() = coroutineTestRule.runTest {
         val isEligible = false
         val response = AdminDataResponse(
             data = AdminData(
@@ -368,7 +415,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner and is location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner and is location admin then mark as user is eligible`() = coroutineTestRule.runTest {
         val isEligible = true
         val response = AdminDataResponse(
             data = AdminData(
@@ -394,7 +441,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -406,7 +453,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `if user is shop owner but is location admin, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
+    fun `if user is shop owner but is location admin, we dont need to check for role permission`() = coroutineTestRule.runTest {
         coEvery {
             userSession.isShopOwner
         } returns true
@@ -421,7 +468,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get admin info then success return isEligible`() = coroutineTestRule.runBlockingTest {
+    fun `get admin info then success return isEligible`() = coroutineTestRule.runTest {
         val adminData = AdminDataResponse()
 
         everyGetAdminTypeThenReturn(adminData)
@@ -435,7 +482,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `get admin info then return failed result`() = coroutineTestRule.runBlockingTest {
+    fun `get admin info then return failed result`() = coroutineTestRule.runTest {
         val throwable = MessageErrorException("")
 
         everyGetAdminTypeThenThrow(throwable)
@@ -449,16 +496,16 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runTest {
         val isShopAdmin = true
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -472,18 +519,18 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is not shop admin but is location admin, get admin info will return isEligible false result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is not shop admin but is location admin, get admin info will return isEligible false result`() = coroutineTestRule.runTest {
         val isShopAdmin = false
         val isLocationAdmin = true
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin,
-                                        isLocationAdmin = isLocationAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin,
+                        isLocationAdmin = isLocationAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -497,18 +544,18 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
-    fun `when admin info is not shop admin and not is location admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+    fun `when admin info is not shop admin and not is location admin, get admin info will return isEligible true result`() = coroutineTestRule.runTest {
         val isShopAdmin = false
         val isLocationAdmin = false
         val adminData = AdminDataResponse(
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = AdminRoleType(
-                                        isShopAdmin = isShopAdmin,
-                                        isLocationAdmin = isLocationAdmin
-                                )
-                        )
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isShopAdmin = isShopAdmin,
+                        isLocationAdmin = isLocationAdmin
+                    )
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -529,12 +576,12 @@ class SellerHomeActivityViewModelTest {
         val roleType = AdminRoleType(isShopAdmin, isLocationAdmin, isShopOwner)
         val isMultiLocationShop = true
         val adminData = AdminDataResponse(
-                isMultiLocationShop = isMultiLocationShop,
-                data = AdminData(
-                        detail = AdminDetailInformation(
-                                roleType = roleType
-                        )
+            isMultiLocationShop = isMultiLocationShop,
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = roleType
                 )
+            )
         )
 
         everyGetAdminTypeThenReturn(adminData)
@@ -574,6 +621,256 @@ class SellerHomeActivityViewModelTest {
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
+    @Test
+    fun `when calling checkIfWearHasCompanionApp and both node is not matched, then shouldAskInstallCompanionApp value should be true`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        val mockCapabilityInfoNode = mockk<Node>()
+        coEvery {
+            mockCapabilityInfoNode.isNearby
+        } returns true
+        val mockSetNode = HashSet<Node>(3).apply {
+            add(mockCapabilityInfoNode)
+        }
+        val mockCapabilityInfo = mockk<CapabilityInfo>()
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } returns mockCapabilityInfo
+        every { mockCapabilityInfo.nodes } returns mockSetNode
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == true)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp and all node on CapabilityInfo is false, then shouldAskInstallCompanionApp value should be true`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        val mockCapabilityInfoNode = mockk<Node>()
+        coEvery {
+            mockCapabilityInfoNode.isNearby
+        } returns false
+        val mockSetNode = HashSet<Node>(3).apply {
+            add(mockCapabilityInfoNode)
+        }
+        val mockCapabilityInfo = mockk<CapabilityInfo>()
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } returns mockCapabilityInfo
+        every { mockCapabilityInfo.nodes } returns mockSetNode
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == true)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp and both node is matched, then shouldAskInstallCompanionApp value should be false`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        val mockSetNode = HashSet<Node>(3).apply {
+            add(mockConnectedNode)
+        }
+        val mockCapabilityInfo = mockk<CapabilityInfo>()
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } returns mockCapabilityInfo
+        every { mockCapabilityInfo.nodes } returns mockSetNode
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == false)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp and there are no CapabilityInfo node, then shouldAskInstallCompanionApp value should be true`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } returns null
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == true)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp and nodeClient connectedNodes return null, then shouldAskInstallCompanionApp value should be null`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        coEvery {
+            mockTaskListNode.await()
+        } returns null
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == null)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp but capabilityInfo await throw CancellationException, then shouldAskInstallCompanionApp value should be null`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        val mockCapabilityInfoNode = mockk<Node>()
+        coEvery {
+            mockCapabilityInfoNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } throws CancellationException()
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == null)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp but capabilityInfo await throw Exception, then shouldAskInstallCompanionApp value should be null`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        val mockTaskCapabilityInfo = mockk<Task<CapabilityInfo>>()
+        every {
+            capabilityClient.getCapability(any(), any())
+        } returns mockTaskCapabilityInfo
+        val mockCapabilityInfoNode = mockk<Node>()
+        coEvery {
+            mockCapabilityInfoNode.isNearby
+        } returns true
+        coEvery {
+            mockTaskCapabilityInfo.await()
+        } throws Exception()
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == null)
+    }
+
+    @Test
+    fun `when calling checkIfWearHasCompanionApp but connectedNodes nearby is false, then shouldAskInstallCompanionApp value should be null`() = runBlocking {
+        mockkObject(DeviceInfo)
+        val mockTaskListNode = mockk<Task<List<Node>>>()
+        every {
+            nodeClient.connectedNodes
+        } returns mockTaskListNode
+        val mockConnectedNode = mockk<Node>()
+        coEvery {
+            mockConnectedNode.isNearby
+        } returns false
+        coEvery {
+            mockTaskListNode.await()
+        } returns listOf(mockConnectedNode)
+        mViewModel.checkIfWearHasCompanionApp()
+        assert(mViewModel.shouldAskInstallCompanionApp.value == null)
+    }
+
+    @Test
+    fun `when calling launchMarket success, then remoteActivityHelper should call startRemoteActivity`() = runBlocking {
+        val mockIntent = mockk<Intent>()
+        mockkStatic("kotlinx.coroutines.guava.ListenableFutureKt")
+        coEvery {
+            any<ListenableFuture<Void>>().await()
+        } returns mockk()
+        mViewModel.launchMarket(mockIntent)
+        verify {
+            remoteActivityHelper.startRemoteActivity(any())
+        }
+    }
+
+    @Test
+    fun `when calling launchMarket throw exception, then remoteActivityHelper should call startRemoteActivity`() = runBlocking {
+        every {
+            remoteActivityHelper.startRemoteActivity(any())
+        } throws Exception()
+        val mockIntent = mockk<Intent>()
+        mViewModel.launchMarket(mockIntent)
+        verify {
+            remoteActivityHelper.startRemoteActivity(any())
+        }
+    }
+
+    @Test
+    fun `when calling launchMarket throw CancellationException, then remoteActivityHelper should call startRemoteActivity`() = runBlocking {
+        every {
+            remoteActivityHelper.startRemoteActivity(any())
+        } throws CancellationException()
+        val mockIntent = mockk<Intent>()
+        mViewModel.launchMarket(mockIntent)
+        verify {
+            remoteActivityHelper.startRemoteActivity(any())
+        }
+    }
+
     inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(coroutineTestRule.dispatchers) {
 
         private val _mockLiveData = MutableLiveData<Result<Any>>()
@@ -583,14 +880,14 @@ class SellerHomeActivityViewModelTest {
         fun noCustomContext() = executeCall(_mockLiveData, onError = {
             _mockLiveData.value = Fail(it)
         }, block = {
-            getResult()
-        })
+                getResult()
+            })
 
         fun withCustomContext() = executeCall(_mockLiveData, job, onError = {
             _mockLiveData.value = Fail(it)
         }, block = {
-            getResult()
-        })
+                getResult()
+            })
 
         private fun getResult(): Any {
             throw RuntimeException()

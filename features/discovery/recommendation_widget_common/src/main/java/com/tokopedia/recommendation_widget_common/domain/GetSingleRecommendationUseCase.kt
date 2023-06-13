@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
@@ -21,30 +22,33 @@ import javax.inject.Inject
 @Deprecated(message = "please use GetSingleRecommendationUseCase from coroutine folder instead")
 open class GetSingleRecommendationUseCase @Inject
 constructor(
-        private val context: Context,
-        private val recomRawString: String,
-        private val graphqlUseCase: GraphqlUseCase,
-        private val userSession: UserSessionInterface) : UseCase<RecommendationEntity.RecommendationData>() {
+    private val context: Context,
+    private val recomRawString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val userSession: UserSessionInterface
+) : UseCase<RecommendationEntity.RecommendationData>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<RecommendationEntity.RecommendationData> {
         val graphqlRequest = GraphqlRequest(recomRawString, SingleProductRecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
-                    entity.productRecommendationWidget.data
-                }
+            .map {
+                val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
+                entity.productRecommendationWidget.data
+            }
     }
 
-    fun getRecomParams(pageNumber: Int,
-                       productIds: List<String>,
-                       queryParam: String = ""): RequestParams {
+    fun getRecomParams(
+        pageNumber: Int,
+        productIds: List<String>,
+        queryParam: String = ""
+    ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
         val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
         if (userSession.isLoggedIn) {
-            params.putInt(USER_ID, userSession.userId.toInt())
+            params.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             params.putInt(USER_ID, 0)
         }

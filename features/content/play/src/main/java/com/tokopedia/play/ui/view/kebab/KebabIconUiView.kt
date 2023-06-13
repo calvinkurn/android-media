@@ -8,7 +8,7 @@ import com.tokopedia.play.databinding.ViewKebabIconBinding
  */
 class KebabIconUiView(
     private val binding: ViewKebabIconBinding,
-    listener: Listener,
+    private val listener: Listener
 ) {
 
     init {
@@ -19,9 +19,11 @@ class KebabIconUiView(
 
     fun show(shouldShow: Boolean) {
         binding.root.showWithCondition(shouldShow)
+        if (shouldShow) listener.onImpressed(this)
     }
 
     interface Listener {
         fun onClicked(view: KebabIconUiView)
+        fun onImpressed(view: KebabIconUiView)
     }
 }

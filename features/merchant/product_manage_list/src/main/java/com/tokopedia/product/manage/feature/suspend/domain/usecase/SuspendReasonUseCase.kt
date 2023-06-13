@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.suspend.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.feature.suspend.data.SuspendReasonDetailResponse
@@ -8,6 +9,7 @@ import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUi
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("SuspendReasonGqlQuery", SuspendReasonUseCase.QUERY)
 class SuspendReasonUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val mapper: SuspendReasonMapper
@@ -15,7 +17,7 @@ class SuspendReasonUseCase @Inject constructor(
     GraphqlUseCase<SuspendReasonDetailResponse>(graphqlRepository) {
 
     companion object {
-        private val QUERY = """
+        const val QUERY = """
             query checkProductViolation(${'$'}productID: [String!]!, ${'$'}type: ProductViolationType!, ${'$'}lang: ProductViolationLang!) {
               CheckProductViolation(productID: ${'$'}productID, type: ${'$'}type, lang: ${'$'}lang) {
                 data {
@@ -29,7 +31,7 @@ class SuspendReasonUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
 
         private const val PRODUCT_ID_KEY = "productID"
         private const val VIOLATION_TYPE = "type"

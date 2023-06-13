@@ -21,6 +21,8 @@ import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewTextArea @JvmOverloads constructor(
     context: Context,
@@ -29,7 +31,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
 ) : BaseReviewCustomView<WidgetCreateReviewTextAreaBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
+        const val PADDING_BOTTOM = 8
     }
 
     private val transitionHandler = TransitionHandler()
@@ -100,7 +102,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
     }
 
     private fun WidgetCreateReviewTextAreaBinding.setupHint(hint: StringRes) {
-        layoutTextArea.root.setPlaceholder(hint.getStringValue(context))
+        layoutTextArea.root.setPlaceholder(hint.getStringValueWithDefaultParam(context))
     }
 
     private fun WidgetCreateReviewTextAreaBinding.setupHelper(helper: StringRes) {
@@ -156,17 +158,24 @@ class CreateReviewTextArea @JvmOverloads constructor(
         )
     }
 
-    fun updateUi(uiState: CreateReviewTextAreaUiState, source: CreateReviewTextAreaTextUiModel.Source) {
+    fun updateUi(
+        uiState: CreateReviewTextAreaUiState,
+        source: CreateReviewTextAreaTextUiModel.Source,
+        continuation: Continuation<Unit>
+    ) {
         this.sourceName = source
         when(uiState) {
             is CreateReviewTextAreaUiState.Loading -> showLoading()
             is CreateReviewTextAreaUiState.Showing -> binding.showTextArea(uiState)
         }
         if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
-            animateShow()
+            animateShow(onAnimationEnd = {
+                continuation.resume(Unit)
+            })
         } else {
             binding.root.makeMatchParent()
             binding.layoutTextArea.root.makeMatchParent()
+            continuation.resume(Unit)
         }
     }
 
@@ -190,7 +199,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutTextArea.root)
                 addTarget(binding.layoutTextAreaLoading.root)
                 interpolator = AccelerateInterpolator()

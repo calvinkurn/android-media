@@ -8,7 +8,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.shouldBe
@@ -81,6 +80,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         val emptyStateDataView = visitableList.filterIsInstance<EmptyStateKeywordDataView>().first()
 
         emptyStateDataView.keyword shouldBe keyword
+        emptyStateDataView.verticalSeparator.hasBottomSeparator shouldBe false
     }
 
     private fun `Then verify empty search recommendation use case is called`() {
@@ -99,7 +99,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
     }
 
     @Test
-    fun `test empty search by filter`() {
+    fun `Empty search by filter`() {
         `Given search product API will return empty product`()
         `Given recommendation API will return recommendation list`()
         `Given view has filter active`()

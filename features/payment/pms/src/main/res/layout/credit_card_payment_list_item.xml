@@ -129,5 +129,19 @@
             app:typographyType="heading_6"
             tools:text="Rp1.330.000" />
 
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/completePaymentButton"
+            android:visibility="gone"
+            android:layout_width="@dimen/unify_space_128"
+            android:layout_height="wrap_content"
+            android:text="@string/pms_complete_credit_card_payment"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTotalPaymentAmount"
+            app:layout_constraintEnd_toEndOf="@id/headerDivider"
+            app:layout_constraintTop_toTopOf="@+id/tvTotalAmountHeading"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            tools:visibility="visible"
+            app:unifyButtonVariant="filled" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

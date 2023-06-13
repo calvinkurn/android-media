@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "ticker": {
+        "meta": {
+          "total_data": 0
+        },
+        "tickers": [
+          {
+            "id": "593",
+            "title": "Android Test - Ticker",
+            "message": "We are running android instrumentation test journey.  &nbsp;<a href=\\\"tokopedia://home\\\"\\>Ticker support button</a>",
+            "color": "#cde4c3",
+            "layout": "default",
+            "ticker_type": 0
+          }
+        ]
+      }
+    }
+  }
+]

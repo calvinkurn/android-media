@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "getEpharmacyCheckoutData": {
+        "data": {
+          "checkout_id": "804e0a0073039e0073819e469ec4fc1a",
+          "prescription_images": [
+            {
+              "prescription_id": 2235
+            }
+          ]
+        }
+      }
+    }
+  }
+]

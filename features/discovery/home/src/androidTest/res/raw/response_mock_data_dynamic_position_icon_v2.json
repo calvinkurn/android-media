@@ -1,0 +1,164 @@
+[
+    {
+        "data": {
+            "getHomeIconV2": {
+                "icons": [
+                    {
+                        "id": 909,
+                        "url": "https://www.tokopedia.com/discovery/deals?source=homepage.dynamic_icon.0.909",
+                        "name": "Promo Hari Ini",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/deals?source=homepage.dynamic_icon.0.909",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/8/1/971aeca9-f3cc-4e15-a6b9-eb7667e08dd3.png.webp",
+                        "buIdentifier": "PG_PG_Promo Hari Ini",
+                        "campaignCode": "deals",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 756,
+                        "url": "https://www.tokopedia.com/kategori-lainnya",
+                        "name": "Lihat Semua",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://category-explore?type=2&tab=1",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/4/19/25916fd0-94f8-467a-a0e4-be6049ba820d.png.webp",
+                        "buIdentifier": "PG_PG_Lihat Semua",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 792,
+                        "url": "https://www.tokopedia.com/now?source=homepage.dynamic_icon.0.792",
+                        "name": "Belanja 2 Jam Tiba",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://now?source=homepage.dynamic_icon.0.792",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/11/8/90ff9a30-6d48-49ad-aa60-2a7c59a28765.png.webp",
+                        "buIdentifier": "PG_PG_Belanja 2 Jam Tiba",
+                        "campaignCode": "thco0002157",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 710,
+                        "url": "https://www.tokopedia.com/p/kecantikan?source=homepage.dynamic_icon.0.710",
+                        "name": "Kecantikan",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/clp_kecantikan_61?source=homepage.dynamic_icon.0.710",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/5/13/cd0a2833-cbf3-4796-a29b-3b27a0559519.png.webp",
+                        "buIdentifier": "PG_PG_Kecantikan",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 922,
+                        "url": "https://www.tokopedia.com/top-up-tagihan",
+                        "name": "Top-Up & Tagihan",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://recharge/home?platform_id=31&personalize=true",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/4/21/8e9919b8-4ba2-49a6-a722-2bd93e834f93.png.webp",
+                        "buIdentifier": "DG_DG_Top-Up & Tagihan",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "DG"
+                    },
+                    {
+                        "id": 754,
+                        "url": "https://www.tokopedia.com/travel-entertainment?source=homepage.dynamic_icon.0.754",
+                        "name": "Travel & Entertainment",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Ftravel-entertainment%3Fsource%3Dhomepage.dynamic_icon.0.754",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/4/19/5d3183b0-ca7e-4004-be96-51d78c9b8d75.png.webp",
+                        "buIdentifier": "DG_DG_Travel & Entertainment",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "DG"
+                    },
+                    {
+                        "id": 753,
+                        "url": "https://www.tokopedia.com/discovery/keuangan?source=homepage.dynamic_icon.0.753",
+                        "name": "Keuangan",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/keuangan?source=homepage.dynamic_icon.0.753",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/4/19/40a65733-60b7-46f4-af28-1253e96803a3.png.webp",
+                        "buIdentifier": "PG_PG_Keuangan",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 882,
+                        "url": "https://www.tokopedia.com/p/kesehatan?source=homepage.dynamic_icon.0.882",
+                        "name": "Kesehatan",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/clp_kesehatan_715?source=homepage.dynamic_icon.0.882",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/2/9/6adaf16c-ab81-4b66-96e1-0150d2d06d0a.png.webp",
+                        "buIdentifier": "PG_PG_Kesehatan",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 654,
+                        "url": "https://www.tokopedia.com/p/ibu-bayi/?source=homepage.dynamic_icon.0.654",
+                        "name": "Ibu & Bayi",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/clp_ibu-bayi_56?source=homepage.dynamic_icon.0.654",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2021/4/20/797e27eb-1d0f-40b9-bf44-7d037c420553.png.webp",
+                        "buIdentifier": "PG_PG_Ibu & Bayi",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": "PG"
+                    },
+                    {
+                        "id": 216,
+                        "url": "https://www.tokopedia.com/p/makanan-minuman?source=homepage.dynamic_icon.0.216",
+                        "name": "Makanan & Minuman",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/clp_makanan-minuman_35?source=homepage.dynamic_icon.0.216",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/2/7/d34838c2-1c8c-46b0-b687-3fb46498bec0.png.webp",
+                        "buIdentifier": "",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": ""
+                    },
+                    {
+                        "id": 236,
+                        "url": "https://www.tokopedia.com/p/perawatan-hewan?source=homepage.dynamic_icon.0.236",
+                        "name": "Perawatan Hewan",
+                        "persona": "",
+                        "brandID": "",
+                        "applinks": "tokopedia://discovery/clp_perawatan-hewan_4030?source=homepage.dynamic_icon.0.236",
+                        "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2022/2/7/eb4d4d34-9a1c-48c4-bf7e-22141f15ed31.png.webp",
+                        "buIdentifier": "PG_PG_Perawatan Hewan",
+                        "campaignCode": "",
+                        "withBackground": true,
+                        "categoryPersona": "",
+                        "galaxyAttribution": ""
+                    }
+                ]
+            }
+        }
+    }
+]

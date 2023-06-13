@@ -73,7 +73,7 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
         data.swipe?.apply {
             if (isNeedSwipe) {
                 if (pin.isPinRequire) {
-                    pinPageData.value = PinPageData(data.realCode ?: "", pin.text)
+                    pinPageData.value = PinPageData(data.realCode, pin.text)
                 } else {
                     swipeMyCoupon(data) //Empty for online partner
                 }

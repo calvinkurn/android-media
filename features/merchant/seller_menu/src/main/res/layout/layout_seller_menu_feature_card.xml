@@ -5,9 +5,9 @@
     android:id="@+id/cardStatistics"
     android:layout_width="match_parent"
     android:layout_height="@dimen/seller_menu_business_card_height"
-    android:layout_marginTop="@dimen/spacing_lvl4"
-    android:paddingLeft="@dimen/spacing_lvl3"
-    android:paddingRight="@dimen/spacing_lvl3">
+    android:layout_marginTop="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageFeature"
@@ -20,8 +20,8 @@
         android:id="@+id/textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:drawablePadding="@dimen/spacing_lvl3"
+        android:layout_marginStart="8dp"
+        android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="@id/imageFeature"
@@ -36,7 +36,7 @@
         android:id="@+id/textDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textTitle"

@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cm_home_widget_view_all_card"
     android:layout_width="@dimen/cm_home_widget_dp_144"
-    android:layout_height="@dimen/cm_home_widget_dp_174"
+    android:layout_height="match_parent"
     app:view_all_card_unify_mode="invert" />
 

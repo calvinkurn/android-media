@@ -5,7 +5,7 @@ import java.util.*
 
 object GqlQueryParser {
 
-    val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+\))""")
+    val QUERY_PATTERN = Regex("""(\w+)\s*(\(?.*)""")
 
     /**
      * A utils method to parse query from graphql request(s). Support multiple request and
@@ -54,9 +54,11 @@ object GqlQueryParser {
             }
         }
         return result.filterValues { it == 1 }
-            .map {
+            .mapNotNull {
                 val s = it.key.trim()
-                QUERY_PATTERN.find(s)!!.groupValues[1]
+                runCatching {
+                    QUERY_PATTERN.find(s)!!.groupValues[1]
+                }.getOrNull()
             }
     }
 }

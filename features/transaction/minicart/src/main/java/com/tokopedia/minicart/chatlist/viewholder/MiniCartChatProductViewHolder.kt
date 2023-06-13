@@ -107,5 +107,4 @@ class MiniCartChatProductViewHolder(
     interface ChatProductListener {
         fun onClickProduct(element: MiniCartChatProductUiModel, isChecked: Boolean)
     }
-
 }

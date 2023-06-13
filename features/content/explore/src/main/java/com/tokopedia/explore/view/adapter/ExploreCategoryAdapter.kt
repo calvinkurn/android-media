@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
 
     lateinit var listener: ContentExploreContract.View
     companion object {
-        const val CAT_ID_AFFILIATE = 2000001
+        const val CAT_ID_AFFILIATE = 2000001L
     }
     val list: MutableList<ExploreCategoryViewModel> = arrayListOf()
 
@@ -52,6 +53,7 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
         return list.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<ExploreCategoryViewModel>) {
         this.list.clear()
         this.list.addAll(list)

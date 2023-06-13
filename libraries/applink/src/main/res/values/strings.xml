@@ -42,6 +42,7 @@
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
     <string name="title_wishlist">Wishlist</string>
+    <string name="title_collection_wishlist">Wishlist Collection</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="title_recent_view">Terakhir Dilihat</string>
 
@@ -84,7 +85,10 @@
 
     <!-- Shop Score -->
     <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
-    
+
+    <!-- Campaign List -->
+    <string name="title_campaign_list">Daftar Campaign Aktif</string>
+
     <!--Product Add Edit-->
     <string name="title_product_add_edit">Product Add Edit</string>
 
@@ -113,6 +117,10 @@
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <string name="title_seller_persona">Seller Persona</string>
+
+    <string name="title_seller_feedback">Seller Feedback</string>
+
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
@@ -139,6 +147,7 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+    <string name="title_bulk_create_review">Kasih Ulasan Sekaligus</string>
     <string name="title_review_reminder">Review Reminder</string>
     <string name="title_review_credibility">Review Credibility</string>
     <string name="title_review_media_gallery">Foto &amp; Video Pembeli</string>
@@ -148,11 +157,14 @@
 
     <!-- Product Detail -->
     <string name="title_product_detail">Product Detail</string>
+    <string name="title_product_ar">Product Ar</string>
 
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>
 
     <string name="title_image_picker">Image Picker</string>
+
+    <string name="title_image_editor">Image Editor</string>
 
     <!--Revamped Buyer Order Detail-->
     <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
@@ -168,4 +180,20 @@
     <!-- Shop Flash Sale -->
     <string name="title_shop_flash_sale">Flash Sale Toko</string>
 
+    <!--Tokopedia Flash Sale-->
+    <string name="title_tokopedia_flash_sale">Flash Sale Tokopedia</string>
+
+<!--    Tokomember seller dashboard-->
+    <string name="title_tokomember" translatable="false">Tokomember</string>
+    <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
+
+    <!--Centralized Promo-->
+    <string name="title_centralized_promo">Centralized Promo</string>
+
+    <string name="title_seller_mvc_redirection_page">Mvc Redirection Page</string>
+    <string name="title_seller_mvc_intro">Mvc Intro</string>
+    <string name="title_seller_mvc_list">Mvc list</string>
+    <string name="title_seller_mvc_create">Mvc Create</string>
+    <string name="title_seller_mvc_product_create">Mvc Product Create</string>
+    <string name="title_seller_mvc_detail">Mvc Detail</string>
 </resources>

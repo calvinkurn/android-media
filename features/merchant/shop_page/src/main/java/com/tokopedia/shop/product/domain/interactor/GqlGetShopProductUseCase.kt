@@ -11,10 +11,10 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GqlGetShopProductUseCase @Inject constructor (
-        private val gqlUseCase: MultiRequestGraphqlUseCase
-): UseCase<ShopProduct.GetShopProduct>() {
-  
+class GqlGetShopProductUseCase @Inject constructor(
+    private val gqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<ShopProduct.GetShopProduct>() {
+
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
@@ -26,25 +26,27 @@ class GqlGetShopProductUseCase @Inject constructor (
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopProduct.Response::class.java)
 
-        if (error == null || error.isEmpty()){
+        if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopProduct.Response>(ShopProduct.Response::class.java)
-                    .getShopProduct
+                .getShopProduct
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
     }
 
-    fun clearCache(){
+    fun clearCache() {
         gqlUseCase.clearCache()
     }
 
-    companion object{
+    companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_FILTER = "filter"
 
         @JvmStatic
         fun createParams(shopId: String, filter: ShopProductFilterInput): Map<String, Any> =
-                mapOf(PARAM_SHOP_ID to shopId,
-                PARAM_FILTER to filter)
+            mapOf(
+                PARAM_SHOP_ID to shopId,
+                PARAM_FILTER to filter
+            )
     }
 }

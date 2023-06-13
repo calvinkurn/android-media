@@ -11,13 +11,13 @@ import androidx.lifecycle.ViewModelStore
 fun ViewModel.callOnCleared() {
     val viewModelStore = ViewModelStore()
     val viewModelProvider = ViewModelProvider(
-            viewModelStore,
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel?> create(
-                        modelClass: Class<T>
-                ): T = this@callOnCleared as T
+        viewModelStore,
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return this@callOnCleared as T
             }
+        }
     )
     viewModelProvider.get(this@callOnCleared::class.java)
     viewModelStore.clear()

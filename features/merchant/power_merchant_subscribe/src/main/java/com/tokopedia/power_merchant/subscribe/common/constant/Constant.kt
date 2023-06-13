@@ -9,17 +9,13 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val REGULAR_MERCHANT_CHARGING = "0,5%"
-    const val POWER_MERCHANT_CHARGING = "1,25%"
-    const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
-
-    const val PM_TOP_ADS_CREDIT = "5%"
+    const val PM_TOP_ADS_CREDIT = "1,5%"
     const val PM_BROAD_CAST_CHAT = "200"
-    const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "2%"
     const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
-    const val PM_PRO_EXP_TOP_ADS_CREDIT = "6%"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "2,5%"
     const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
-    const val PM_PRO_ULT_TOP_ADS_CREDIT = "6,5%"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "3%"
     const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
     const val PM_SPECIAL_RELEASE = 5
     const val PM_PRO_ADV_SPECIAL_RELEASE = 10
@@ -29,8 +25,7 @@ object Constant {
     const val PM_PRO_ADV_PRODUCT_BUNDLING = 10
     const val PM_PRO_EXP_PRODUCT_BUNDLING = 15
     const val PM_PRO_ULT_PRODUCT_BUNDLING = 25
-    const val PM_FREE_DELIVERY = "2,25%"
-    const val PM_PRO_FREE_DELIVERY = "1,5%"
+    const val PM_FREE_DELIVERY = "3%"
 
     const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"
@@ -51,8 +46,8 @@ object Constant {
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
         const val PM_PRO_IDLE =
             "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
-        const val PM_FEE_SERVICE =
-            "https://seller.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori"
+        const val PM_SERVICE_FEE =
+            "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia"
     }
 
     object Image {
@@ -72,12 +67,8 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
         const val IC_PM_PRO_UPGRADE_LEVEL =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
-        const val IC_PM_CASH_BACK =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
         const val IC_PM_FLASH_SALE =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
-        const val IC_PM_FREE_DELIVERY =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_free_delivery.png"
         const val IC_PM_PRODUCT_BUNDLING =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_product_bundling.png"
         const val IC_PM_SPECIAL_RELEASE =
@@ -88,6 +79,17 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_broadcast_chat.png"
         const val IMG_PM_REGISTRATION =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_registration_banner.png"
+        const val IC_FLASH_SALE_SHOP = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale_toko.png"
+        const val IC_DISCOUNT_SHOP = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_diskon_toko.png"
+        const val IC_SMART_REPLY = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_smart_reply.png"
+        const val IC_TOKOPEDIA_PLAY = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_tokopedia_play.png"
+        const val IC_TOPADS = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_topads.png"
+        const val IC_BROADCAST_CHAT = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_broadcast_chat.png"
+        const val BG_AFFECT_PM_DEACTIVATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_deactivation.png"
+        const val BG_AFFECT_PM_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_deactivation_dark_mode.png"
+        const val BG_AFFECT_PM_PRO_DEACTIVATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation.png"
+        const val BG_AFFECT_PM_PRO_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation_dark_mode.png"
+        const val IL_PM_OPT_OUT_CONFIRMATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/il_pm_opt_out_confirmation.png"
     }
 
     object MembershipConst {

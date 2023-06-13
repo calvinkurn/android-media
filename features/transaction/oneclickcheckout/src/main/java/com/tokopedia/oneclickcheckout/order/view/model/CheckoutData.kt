@@ -1,34 +1,34 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 data class CheckoutOccData(
-        val status: String = "",
-        val headerMessage: String? = null,
-        val result: CheckoutOccResult = CheckoutOccResult()
+    val status: String = "",
+    val headerMessage: String? = null,
+    val result: CheckoutOccResult = CheckoutOccResult()
 )
 
 data class CheckoutOccResult(
-        val success: Int = 0,
-        val error: CheckoutOccErrorData = CheckoutOccErrorData(),
-        val paymentParameter: CheckoutOccPaymentParameter = CheckoutOccPaymentParameter(),
-        val prompt: OccPrompt = OccPrompt()
+    val success: Int = 0,
+    val error: CheckoutOccErrorData = CheckoutOccErrorData(),
+    val paymentParameter: CheckoutOccPaymentParameter = CheckoutOccPaymentParameter(),
+    val prompt: OccPrompt = OccPrompt()
 )
 
 data class CheckoutOccPaymentParameter(
-        val callbackUrl: String = "",
-        val payload: String = "",
-        val redirectParam: CheckoutOccRedirectParam = CheckoutOccRedirectParam(),
-        var transactionId: String = ""
+    val callbackUrl: String = "",
+    val payload: String = "",
+    val redirectParam: CheckoutOccRedirectParam = CheckoutOccRedirectParam(),
+    var transactionId: String = ""
 )
 
 data class CheckoutOccRedirectParam(
-        val url: String = "",
-        val gateway: String = "",
-        val method: String = "",
-        val form: String = ""
+    val url: String = "",
+    val gateway: String = "",
+    val method: String = "",
+    val form: String = ""
 )
 
 data class CheckoutOccErrorData(
-        val code: String = "",
-        val imageUrl: String = "",
-        val message: String = ""
+    val code: String = "",
+    val imageUrl: String = "",
+    val message: String = ""
 )

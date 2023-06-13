@@ -5,13 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ProductDetailCardViewHolderBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 
-class ProductDetailInfoCardViewHolder(view: View,
-                                      private val listener: ProductDetailInfoListener)
-    : AbstractViewHolder<ProductDetailInfoCardDataModel>(view) {
+class ProductDetailInfoCardViewHolder(
+    view: View,
+    private val listener: ProductDetailInfoListener
+) : AbstractViewHolder<ProductDetailInfoCardDataModel>(view) {
+
     companion object {
+
         val LAYOUT = R.layout.product_detail_card_view_holder
     }
 

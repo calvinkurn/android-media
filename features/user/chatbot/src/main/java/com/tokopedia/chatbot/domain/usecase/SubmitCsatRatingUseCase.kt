@@ -1,43 +1,50 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.domain.gqlqueries.SubmitCsatRatingQuery
+import com.tokopedia.chatbot.domain.gqlqueries.queries.SUBMIT_CSAT_RATING
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import rx.Subscriber
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
+@GqlQuery("submitRatingCSAT", SUBMIT_CSAT_RATING)
+class SubmitCsatRatingUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<SubmitCsatGqlResponse>(graphqlRepository) {
 
-class SubmitCsatRatingUseCase @Inject constructor(val resources: Resources,
-                                                  private val graphqlUseCase: GraphqlUseCase) {
+    fun submitCsatRating(
+        onSuccess: (SubmitCsatGqlResponse) -> Unit,
+        onError: (Throwable) -> Unit,
+        input: InputItem,
+        messageId: String
+    ) {
+        try {
+            this.setTypeClass(SubmitCsatGqlResponse::class.java)
+            this.setRequestParams(generateParam(input))
+            this.setGraphqlQuery(SubmitCsatRatingQuery())
 
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_submit_csat_rating)
-        val graphqlRequest = GraphqlRequest(query,
-                SubmitCsatGqlResponse::class.java, requestParams, false)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
-    }
-
-    companion object {
-
-        private val PARAM_INPUT: String = "input"
-
-        fun generateParam(input:InputItem): Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_INPUT] = input
-            return requestParams
+            this.execute(
+                { result ->
+                    onSuccess(result)
+                },
+                { error ->
+                    onError(error)
+                }
+            )
+        } catch (throwable: Throwable) {
+            onError(throwable)
         }
     }
 
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+    private fun generateParam(input: InputItem): Map<String, Any> {
+        val requestParams = HashMap<String, Any>()
+        requestParams[PARAM_INPUT] = input
+        return requestParams
     }
 
+    companion object {
+        private val PARAM_INPUT: String = "input"
+    }
 }

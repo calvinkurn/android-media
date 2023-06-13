@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.domain.usecase.shoprecom
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
+import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -21,13 +21,30 @@ class ShopRecomUseCase @Inject constructor(
         setTypeClass(UserShopRecomModel::class.java)
     }
 
+    suspend fun executeOnBackground(
+        screenName: String,
+        limit: Int,
+        cursor: String,
+    ): UserShopRecomModel {
+        val request = mapOf(
+            KEY_SCREEN_NAME to screenName,
+            KEY_LIMIT to limit,
+            KEY_CURSOR to cursor
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_SCREEN_NAME = "screenName"
         private const val KEY_LIMIT = "limit"
         private const val KEY_CURSOR = "cursor"
-        private const val VALUE_SCREEN_NAME = "user_profile"
-        private const val VALUE_LIMIT = 10
-        private const val VALUE_CURSOR = ""
+
+        const val VAL_SCREEN_NAME_USER_PROFILE = "user_profile"
+        const val VAL_SCREEN_NAME_FEED_UPDATE = "update_tab"
+        const val VAL_LIMIT = 10
+
         const val QUERY_NAME = "ShopRecommendationUseCaseQuery"
         const val QUERY = """
             query FeedXRecomWidget(
@@ -55,16 +72,5 @@ class ShopRecomUseCase @Inject constructor(
               }
             }
         """
-
-        fun createParam(
-            screenName: String = VALUE_SCREEN_NAME,
-            limit: Int = VALUE_LIMIT,
-            cursor: String = VALUE_CURSOR
-        ) = mapOf<String, Any>(
-            KEY_SCREEN_NAME to screenName,
-            KEY_LIMIT to limit,
-            KEY_CURSOR to cursor
-        )
     }
-
 }

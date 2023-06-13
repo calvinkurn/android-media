@@ -6,4 +6,7 @@ package com.tokopedia.feedcomponent.view.base
 interface FeedPlusContainerListener {
     fun expandFab()
     fun shrinkFab()
+
+    fun onChildRefresh()
+    fun updateVideoTabSelectedChipValue(chipValue: String)
 }

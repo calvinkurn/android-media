@@ -28,10 +28,10 @@ data class AtcMultiData (
         ) {
             data class AtcProduct(
                     @SerializedName("cart_id")
-                    val cartId: Long = -1,
+                    val cartId: String = "",
 
                     @SerializedName("product_id")
-                    val productId: Long = -1,
+                    val productId: String = "",
 
                     @SerializedName("quantity")
                     val quantity: Int = -1,
@@ -40,10 +40,10 @@ data class AtcMultiData (
                     val notes: String = "",
 
                     @SerializedName("shop_id")
-                    val shopId: Int = -1,
+                    val shopId: String = "",
 
                     @SerializedName("customer_id")
-                    val customerId: Int = -1
+                    val customerId: String = ""
             )
         }
     }

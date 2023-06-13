@@ -66,7 +66,7 @@ class UserInteractionTest {
 
     @Test
     fun `WHEN user change product quantity THEN quantity should be updated accordingly on bottomsheet ui model`() {
-        //given
+        // given
         val productId = "1920796612"
         val newQty = 5
         val productUiModel = MiniCartProductUiModel(productId = productId)
@@ -75,16 +75,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductQty(productUiModel, newQty)
 
-        //then
+        // then
         assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productQty ?: 0 == newQty)
     }
 
     @Test
     fun `WHEN user change product quantity THEN quantity should be updated accordingly on widget ui model`() {
-        //given
+        // given
         val productId = "1920796612"
         val newQty = 5
         val productUiModel = MiniCartProductUiModel(productId = productId)
@@ -93,16 +93,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductQty(productUiModel, newQty)
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.quantity ?: 0 == newQty)
     }
 
     @Test
     fun `WHEN user change product quantity with invalid id THEN quantity should not be updated accordingly on widget ui model`() {
-        //given
+        // given
         val productId = "19207966120"
         val newQty = 5
         val productUiModel = MiniCartProductUiModel(productId = productId)
@@ -111,16 +111,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductQty(productUiModel, newQty)
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartItems == miniCartSimplifiedData.miniCartItems)
     }
 
     @Test
     fun `WHEN user change product notes THEN notes should be updated accordingly on bottomsheet ui model`() {
-        //given
+        // given
         val productId = "1920796612"
         val isBundling = false
         val bundleId = ""
@@ -131,16 +131,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductNotes(productId, isBundling, bundleId, bundleGroupId, newNotes)
 
-        //then
+        // then
         assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productNotes ?: 0 == newNotes)
     }
 
     @Test
     fun `WHEN user change product notes THEN notes should be updated accordingly on widget ui model`() {
-        //given
+        // given
         val productId = "1920796612"
         val isBundling = false
         val bundleId = ""
@@ -151,16 +151,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductNotes(productId, isBundling, bundleId, bundleGroupId, newNotes)
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.notes ?: 0 == newNotes)
     }
 
     @Test
     fun `WHEN user change product bundle notes THEN notes should be updated accordingly on bottomsheet ui model`() {
-        //given
+        // given
         val productId = "2148476278"
         val isBundling = true
         val bundleId = "36012"
@@ -171,16 +171,16 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductNotes(productId, isBundling, bundleId, bundleGroupId, newNotes)
 
-        //then
+        // then
         assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productNotes ?: 0 == newNotes)
     }
 
     @Test
     fun `WHEN user change product bundle notes THEN notes should be updated accordingly on widget ui model`() {
-        //given
+        // given
         val productId = "2148476278"
         val isBundling = true
         val bundleId = "36012"
@@ -191,10 +191,10 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductNotes(productId, isBundling, bundleId, bundleGroupId, newNotes)
 
-        //then
+        // then
         val miniCartItemBundle = viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundleGroup(bundleGroupId)
         val productBundle = miniCartItemBundle?.products?.get(MiniCartItemKey(productId))
 
@@ -203,7 +203,7 @@ class UserInteractionTest {
 
     @Test
     fun `WHEN user change product bundle notes with invalid id THEN notes should not be updated accordingly on widget ui model`() {
-        //given
+        // given
         val productId = "21484762780"
         val isBundling = true
         val bundleId = "360120"
@@ -214,10 +214,10 @@ class UserInteractionTest {
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.updateProductNotes(productId, isBundling, bundleId, bundleGroupId, newNotes)
 
-        //then
+        // then
         val miniCartItemBundle = viewModel.miniCartSimplifiedData.value?.miniCartItems
 
         assert(miniCartItemBundle == miniCartSimplifiedData.miniCartItems)
@@ -225,38 +225,38 @@ class UserInteractionTest {
 
     @Test
     fun `WHEN user toggle accordion from expanded to collapsed THEN temporary collapsed data should not be empty`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.toggleUnavailableItemsAccordion()
 
-        //then
+        // then
         assert(viewModel.tmpHiddenUnavailableItems.size > 0)
     }
 
     @Test
     fun `WHEN user toggle accordion from collapsed to expanded THEN temporary collapsed data should be empty`() {
-        //given
+        // given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        //when
+        // when
         viewModel.toggleUnavailableItemsAccordion()
         viewModel.toggleUnavailableItemsAccordion()
 
-        //then
+        // then
         assert(viewModel.tmpHiddenUnavailableItems.size == 0)
     }
 
     @Test
     fun `WHEN close bottom sheet and get latest mini cart data with collapsed unavailable items THEN cart item count should be correct`() {
-        //given
+        // given
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
         val unavailableItem = MiniCartProductUiModel()
@@ -266,26 +266,25 @@ class UserInteractionTest {
 
         val expectedSize = 7
 
-        //when
+        // when
         val value = viewModel.getLatestMiniCartData()
 
-        //then
+        // then
         assert(value.miniCartItems.size == expectedSize)
     }
 
     @Test
     fun `WHEN close bottom sheet and get latest mini cart data without collapsed unavailable items THEN cart item count should be correct`() {
-        //given
+        // given
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         val expectedSize = 5
 
-        //when
+        // when
         val value = viewModel.getLatestMiniCartData()
 
-        //then
+        // then
         assert(value.miniCartItems.size == expectedSize)
     }
-
 }

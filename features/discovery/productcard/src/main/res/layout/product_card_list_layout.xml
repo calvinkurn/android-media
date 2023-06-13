@@ -36,16 +36,16 @@
         <ImageView
             android:id="@+id/productCardImage"
             android:contentDescription="@string/content_desc_imageProduct"
-            android:layout_width="@dimen/product_card_list_image_size"
-            android:layout_height="@dimen/product_card_list_image_size"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:visibility="visible"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
+            app:layout_constraintTop_toTopOf="@id/mediaAnchorProduct"
+            app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
             tools:visibility="visible" />
 
         <View
@@ -61,16 +61,16 @@
 
         <com.tokopedia.video_widget.VideoPlayerView
             android:id="@+id/videoProduct"
-            android:layout_width="@dimen/product_card_list_image_size"
-            android:layout_height="@dimen/product_card_list_image_size"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:visibility="gone"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
+            app:layout_constraintTop_toTopOf="@id/mediaAnchorProduct"
+            app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
             tools:visibility="visible" />
 
         <ImageView
@@ -273,7 +273,7 @@
             android:layout_height="@dimen/product_card_flashsale_label_height"
             android:textStyle="bold"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
             android:layout_marginEnd="8dp"
             app:srcCompat="@drawable/ic_pdp_view"

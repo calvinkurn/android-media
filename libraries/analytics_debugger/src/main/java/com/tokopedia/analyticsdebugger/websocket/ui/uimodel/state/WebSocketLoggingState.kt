@@ -1,7 +1,6 @@
 package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state
 
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 
 /**

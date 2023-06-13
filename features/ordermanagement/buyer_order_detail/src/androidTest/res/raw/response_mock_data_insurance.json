@@ -1,0 +1,38 @@
+{
+  "ppGetInsuranceDetail": {
+    "data": {
+      "protectionProduct": {
+        "protections": [
+          {
+            "orderDetailID": 20534844,
+            "bundleID": 0,
+            "isBundle": false,
+            "productID": 2147827287,
+            "protectionConfig": {
+              "icon": {
+                "label": "https://upload.wikimedia.org/wikipedia/en/thumb/3/33/Patrick_Star.svg/1200px-Patrick_Star.svg.png"
+              },
+              "wording": {
+                "id": {
+                  "label": "Dilindungi proteksi"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "orderConfig": {
+        "redirection": "http://insurance",
+        "icon": {
+          "banner": "https://upload.wikimedia.org/wikipedia/en/thumb/3/33/Patrick_Star.svg/1200px-Patrick_Star.svg.png"
+        },
+        "wording": {
+          "id": {
+            "bannerTitle": "Kamu pakai Proteksi di product ini",
+            "bannerSubtitle": "Ada kendala? Cek polis dan ajukan klaim lewat sini"
+          }
+        }
+      }
+    }
+  }
+}

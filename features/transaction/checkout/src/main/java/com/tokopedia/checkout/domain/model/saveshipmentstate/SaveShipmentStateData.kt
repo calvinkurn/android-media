@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class SaveShipmentStateData(
     var isSuccess: Boolean = false,
     var error: String = "",
-    var message: String = "",
+    var message: String = ""
 ) : Parcelable

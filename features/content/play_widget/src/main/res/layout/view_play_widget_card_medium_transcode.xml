@@ -132,18 +132,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             >
 
-            <include
-                android:id="@+id/play_widget_badge_promo"
-                layout="@layout/layout_promo_badge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/spacing_lvl2"
-                app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-                app:layout_constraintStart_toStartOf="parent"
-                />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
                 android:layout_width="match_parent"

@@ -5,5 +5,4 @@ interface GlobalErrorBottomSheetActionListener {
     fun onGoToHome()
 
     fun onRefreshErrorPage()
-
 }

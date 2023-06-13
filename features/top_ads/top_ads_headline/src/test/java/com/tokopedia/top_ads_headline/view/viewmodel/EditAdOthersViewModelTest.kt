@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import org.junit.Assert.*
 
@@ -15,6 +16,9 @@ class EditAdOthersViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase =
         mockk(relaxed = true)
@@ -55,7 +59,7 @@ class EditAdOthersViewModelTest {
 
     @Test
     fun `validateGroup exception test`() {
-        every { topAdsGroupValidateNameUseCase.setParams(any()) } throws Throwable()
+        every { topAdsGroupValidateNameUseCase.setParams(any(), any()) } throws Throwable()
 
         var successCalled = false
 

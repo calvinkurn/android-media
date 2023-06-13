@@ -1,5 +1,4 @@
-package com.tokopedia.shop.common.view.listener;
-
+package com.tokopedia.shop.common.view.listener
 
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 /**

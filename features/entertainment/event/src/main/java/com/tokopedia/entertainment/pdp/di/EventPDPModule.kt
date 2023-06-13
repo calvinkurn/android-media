@@ -1,12 +1,10 @@
 package com.tokopedia.entertainment.pdp.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
@@ -18,8 +16,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,7 +25,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 
 /**
@@ -95,34 +92,20 @@ class EventPDPModule {
         return EventPDPTracking(userSession, irisSession)
     }
 
-    @Provides
-    @EventPDPScope
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
     @EventPDPScope
     @Provides
     fun provideAuthInterceptors(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
+                                userSession: UserSessionInterface): TkpdOldAuthInterceptor {
+        return TkpdOldAuthInterceptor(context, context as NetworkRouter, userSession)
     }
 
     @Provides
     @EventPDPScope
-    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+    fun provideInterceptors(tkpdOldAuthInterceptor: TkpdOldAuthInterceptor,
+                            fingerprintInterceptor: FingerprintInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
-        listInterceptor.add(tkpdAuthInterceptor)
-
-        if (GlobalConfig.isAllowDebuggingTools()){
-            listInterceptor.add(httpLoggingInterceptor)
-            listInterceptor.add(chuckerInterceptor)
-        }
-
+        listInterceptor.add(tkpdOldAuthInterceptor)
         return listInterceptor
     }
 

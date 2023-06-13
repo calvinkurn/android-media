@@ -3,31 +3,38 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.CanLoadPartially
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
 
 object VisitableDataHelper {
 
     private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
     private const val INDEX_AFTER_FROM_UNAVAILABLE_SECTION = 2
 
-    fun MutableList<Visitable<*>>.getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseAddressTokoFoodPurchaseUiModel -> {
+            when {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
                     return Pair(index, data)
+                }
+                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
+                    break@loop
                 }
             }
         }
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductByCartId(cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.cartId == cartId -> {
                     return Pair(index, data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
@@ -100,7 +107,7 @@ object VisitableDataHelper {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>? {
+    private fun MutableList<Visitable<*>>.getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
             if (data is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
                 return Pair(index, data)
@@ -148,9 +155,9 @@ object VisitableDataHelper {
         return count == Int.ONE
     }
 
-    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartTokoFoodData): String? {
-        return cartTokoFoodData.carts.find { cartData ->
-            cartData.productId == this.id && cartData.getMetadata()?.variants?.let { variants ->
+    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartListBusinessData): String? {
+        return cartTokoFoodData.getAvailableSectionProducts().find { cartData ->
+            cartData.productId == this.id && cartData.metadata.variants.let { variants ->
                 var isSameVariants = true
                 run checkVariant@ {
                     variants.forEach { variant ->
@@ -165,7 +172,7 @@ object VisitableDataHelper {
                     }
                 }
                 variants.isEmpty() || isSameVariants && variants.size == this.variantsParam.size
-            } != false
+            }
         }?.cartId
     }
 

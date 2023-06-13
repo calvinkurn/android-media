@@ -43,11 +43,9 @@ object ProductAnalytics {
     private const val EVENT_ATC = "addToCart"
     private const val EVENT_VIEW = "viewPushNotifIris"
     private const val EVENT_CLICK = "clickPushNotif"
-    private const val EVENT_PRODUCT_VIEW = "productView"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val CATEGORY = "push notif"
     private const val ACTION_VIEW = "view on push notif"
-    private const val ACTION_VIEW_EXPAND = "view on expanded push"
     private const val ACTION_CLICK_PUSH_BODY = "click on push body"
     private const val ACTION_CLICK_EXPAND = "click on expanded push body"
     private const val ACTION_CLICK_EXPAND_OCC = "click on expanded push occ"
@@ -102,38 +100,6 @@ object ProductAnalytics {
                 KEY_EVENT_LABEL to element?.transactionId.toString(),
                 KEY_SHOP_ID to product?.shopId.toString(),
                 KEY_USER_ID to userId
-        ))
-    }
-
-    fun impressionExpanded(
-            userId: String,
-            element: BaseNotificationModel,
-            product: ProductInfo
-    ) {
-        val impressions = mapOf(
-                KEY_ID to product.productId.toString(),
-                KEY_NAME to product.productTitle,
-                KEY_PRICE to product.getNumberPrice(),
-                KEY_BRAND to "",
-                KEY_VARIANT to "",
-                KEY_LIST to LIST,
-                KEY_POSITION to POSITION,
-                KEY_CATEGORY to "",
-                KEY_DIMENSION_79 to product.shopId.toString()
-        )
-
-        val ecommerce = mapOf(
-                KEY_CURRENCY_CODE to IDR,
-                KEY_IMPRESSIONS to listOf(impressions)
-        )
-
-        sendTracker(mapOf(
-                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                KEY_EVENT_CATEGORY to CATEGORY,
-                KEY_EVENT_ACTION to ACTION_VIEW_EXPAND,
-                KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to userId,
-                KEY_ECOMMERCE to ecommerce
         ))
     }
 

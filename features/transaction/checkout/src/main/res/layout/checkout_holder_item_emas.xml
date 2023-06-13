@@ -28,20 +28,40 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_emas_title"
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/emas_checkout_title"
-            android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Bulatkan Tagihan dengan Nabung Emas" />
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_emas_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:text="@string/emas_checkout_title"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Bulatkan Tagihan dengan Nabung Emas" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/img_emas_info"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginStart="4dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:icon_name="INFORMATION"
+                app:layout_flexShrink="0" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:flexWrap="wrap"
             android:orientation="horizontal">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -50,23 +70,27 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
+                android:layout_marginEnd="4dp"
                 android:text="@string/emas_checkout_desc"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
                 tools:text="Pembulatan Emas sebesar Rp600" />
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/img_emas_info"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:paddingStart="@dimen/spacing_lvl2"
-                android:paddingEnd="@dimen/spacing_lvl2"
-                app:icon_name="INFORMATION"
-                app:layout_flexShrink="0" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_emas_hyperlink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:text="@string/emas_checkout_desc"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="(S&amp;K berlaku)" />
+
         </com.google.android.flexbox.FlexboxLayout>
 
     </LinearLayout>
+
 </LinearLayout>

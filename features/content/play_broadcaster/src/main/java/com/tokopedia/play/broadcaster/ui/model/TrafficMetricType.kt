@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.ui.model
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.play.broadcaster.R
 
@@ -15,6 +14,7 @@ enum class TrafficMetricType(
     TotalViews(R.string.play_summary_total_view),
     VideoLikes(R.string.play_summary_total_likes),
     ShopVisit(R.string.play_summary_shop_visit),
+    ProfileVisit(R.string.play_summary_profile_visit),
     ProductVisit(R.string.play_summary_product_visit),
     NumberOfAtc(R.string.play_summary_atc),
     NumberOfPaidOrders(R.string.play_summary_purchased_product),

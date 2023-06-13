@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselPlaceholderBinding
 import com.tokopedia.shop.home.view.adapter.ShopCarouselProductPlaceholderAdapter
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeCarousellProductPlaceholderViewHolder(
-        itemView: View,
-) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
+    itemView: View
+) : AbstractViewHolder<BaseShopHomeWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,7 +22,7 @@ class ShopHomeCarousellProductPlaceholderViewHolder(
     private val viewBinding: ItemShopHomeProductCarouselPlaceholderBinding? by viewBinding()
     private val recyclerView: RecyclerView? = viewBinding?.rvProductCarouselPlaceholder
 
-    override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+    override fun bind(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel) {
         recyclerView?.apply {
             layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollHorizontally(): Boolean {
@@ -33,5 +33,4 @@ class ShopHomeCarousellProductPlaceholderViewHolder(
             adapter?.notifyDataSetChanged()
         }
     }
-
 }

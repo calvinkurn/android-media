@@ -1,10 +1,13 @@
 package com.tokopedia.product.addedit.description.presentation.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FULL_YOUTUBE_URL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
@@ -26,7 +29,15 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -85,44 +96,44 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private fun initVideoYoutube() = launch {
         videoYoutubeLiveData
-                .asFlow()
-                .filter {
-                    return@filter it.isNotBlank()
-                }
-                .debounce(INPUT_DEBOUNCE)
-                .flatMapLatest { url ->
-                    getYoutubeVideo(url)
-                            .catch {
-                                emit(Fail(it))
-                            }
-                }
-                .flowOn(coroutineDispatcher.io)
-                .collect {
-                    _videoYoutubeNew.value = it
-                }
+            .asFlow()
+            .filter {
+                return@filter it.isNotBlank()
+            }
+            .debounce(INPUT_DEBOUNCE)
+            .flatMapLatest { url ->
+                getYoutubeVideo(url)
+                    .catch {
+                        emit(Fail(it))
+                    }
+            }
+            .flowOn(coroutineDispatcher.io)
+            .collect {
+                _videoYoutubeNew.value = it
+            }
     }
 
     private fun initDescription() = launch {
         descriptionFlow
-                .filter {
-                    return@filter it.isNotBlank()
-                }
-                .debounce(INPUT_DEBOUNCE)
-                .flatMapLatest { desc ->
-                    validateDescription(desc)
-                            .catch {
-                                AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-                            }
-                }
-                .flowOn(coroutineDispatcher.io)
-                .collect {
-                    _descriptionValidationMessage.value = it
-                }
+            .filter {
+                return@filter it.isNotBlank()
+            }
+            .debounce(INPUT_DEBOUNCE)
+            .flatMapLatest { desc ->
+                validateDescription(desc)
+                    .catch {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                    }
+            }
+            .flowOn(coroutineDispatcher.io)
+            .collect {
+                _descriptionValidationMessage.value = it
+            }
     }
 
     private fun getYoutubeVideo(url: String): Flow<Result<YoutubeVideoDetailModel>> {
         return flow {
-            getIdYoutubeUrl(url)?.let { youtubeId  ->
+            getIdYoutubeUrl(url)?.let { youtubeId ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
             }
             emit(Success(convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())))
@@ -134,7 +145,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             validateProductDescriptionUseCase.setParams(desc)
             val response = validateProductDescriptionUseCase.executeOnBackground()
             val validationMessage = response.productValidateV3.data.validationResults
-                    .joinToString("\n")
+                .joinToString("\n")
             emit(validationMessage)
         }
     }

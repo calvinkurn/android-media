@@ -8,13 +8,14 @@ import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
  */
 
 data class ProfileDataView(
-        val name: String = "",
-        val phone: String = "",
-        val email: String = "",
-        val avatar: String = "",
-        var isLinked: Boolean = false,
-        var isShowLinkStatus: Boolean = false,
-        var memberStatus: TierData = TierData(),
-        var isSuccessGetTokopediaPlusData: Boolean = false,
-        var tokopediaPlusWidget: TokopediaPlusDataModel = TokopediaPlusDataModel()
+    val name: String = "",
+    val phone: String = "",
+    val email: String = "",
+    val avatar: String = "",
+    var isLinked: Boolean = false,
+    var isShowLinkStatus: Boolean = false,
+    var memberStatus: TierData = TierData(),
+    var isSuccessGetTokopediaPlusData: Boolean = false,
+    var tokopediaPlusWidget: TokopediaPlusDataModel = TokopediaPlusDataModel(),
+    var offerInterruptData: OfferInterruptData = OfferInterruptData()
 )

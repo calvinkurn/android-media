@@ -5,8 +5,8 @@ import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 class PromoTabUiModel(
-        var uiData: UiData,
-        var uiState: UiState
+    var uiData: UiData,
+    var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
 
     override fun type(typeFactory: PromoCheckoutAdapterTypeFactory): Int {
@@ -14,13 +14,12 @@ class PromoTabUiModel(
     }
 
     data class UiData(
-            var tabs: List<SectionTab> = emptyList()
+        var tabs: List<SectionTab> = emptyList()
     )
 
     data class UiState(
-            var isInitialization: Boolean = false,
-            var isSelectionAction: Boolean = false,
-            var selectedTabPosition: Int = 0
+        var isInitialization: Boolean = false,
+        var isSelectionAction: Boolean = false,
+        var selectedTabPosition: Int = 0
     )
-
 }

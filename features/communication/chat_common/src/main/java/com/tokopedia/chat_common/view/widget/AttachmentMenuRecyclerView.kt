@@ -95,4 +95,25 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
         }
     }
 
+    fun addVideoAttachmentMenu() {
+        if (!adapter.alreadyHasVideoMenu()) {
+            adapter.addVideoAttachmentMenu()
+        }
+    }
+
+    fun addChatbotImageAttachmentMenu() {
+        if (!adapter.alreadyHasChatbotImageMenu())
+            adapter.addChatbotImageAttachmentMenu()
+    }
+
+    fun removeChatbotImageAttachmentMenu() {
+        if (adapter.alreadyHasChatbotImageMenu())
+            adapter.removeChatbotImageAttachmentMenu()
+    }
+
+    fun removeVideoAttachmentMenu() {
+        if (adapter.alreadyHasVideoMenu())
+            adapter.removeVideoAttachmentMenu()
+    }
+
 }

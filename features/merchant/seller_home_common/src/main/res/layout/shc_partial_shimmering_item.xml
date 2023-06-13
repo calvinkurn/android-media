@@ -17,7 +17,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_info_seller_title_first_line"
         android:layout_width="@dimen/shc_dimen_156dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         android:layout_marginStart="@dimen/shc_dimen_12dp"
         android:layout_marginLeft="@dimen/shc_dimen_12dp"
         app:loader_corner_radius="5dp"
@@ -30,7 +30,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_info_seller_title_second_line"
         android:layout_width="@dimen/shc_dimen_190dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toTopOf="@+id/shimmering_info_seller_description"
@@ -40,7 +40,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_info_seller_description"
         android:layout_width="@dimen/shc_dimen_120dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_info_seller_image"

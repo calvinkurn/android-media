@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetShopPageHomeLayoutUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopLayoutWidget>() {
 
     companion object {
@@ -21,18 +21,17 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
 
-
         @JvmStatic
         fun createParams(
-                paramsModel: ShopLayoutWidgetParamsModel
+            paramsModel: ShopLayoutWidgetParamsModel
         ) = mapOf<String, Any>(
-                KEY_SHOP_ID to paramsModel.shopId,
-                KEY_STATUS to paramsModel.status,
-                KEY_LAYOUT_ID to paramsModel.layoutId,
-                KEY_DISTRICT_ID to paramsModel.districtId,
-                KEY_CITY_ID to paramsModel.cityId,
-                KEY_LATITUDE to paramsModel.latitude,
-                KEY_LONGITUDE to paramsModel.longitude
+            KEY_SHOP_ID to paramsModel.shopId,
+            KEY_STATUS to paramsModel.status,
+            KEY_LAYOUT_ID to paramsModel.layoutId,
+            KEY_DISTRICT_ID to paramsModel.districtId,
+            KEY_CITY_ID to paramsModel.cityId,
+            KEY_LATITUDE to paramsModel.latitude,
+            KEY_LONGITUDE to paramsModel.longitude
         )
     }
 
@@ -150,14 +149,16 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopLayoutWidget {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
 
         val gqlRequest = GraphqlRequest(query, ShopLayoutWidget.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
@@ -165,7 +166,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopLayoutWidget.Response>(ShopLayoutWidget.Response::class.java)
-                    .shopLayoutWidget
+                .shopLayoutWidget
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -174,5 +175,4 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
     fun clearCache() {
         gqlUseCase.clearCache()
     }
-
 }

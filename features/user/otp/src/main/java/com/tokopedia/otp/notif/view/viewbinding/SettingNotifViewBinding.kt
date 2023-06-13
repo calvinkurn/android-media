@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,7 +25,7 @@ class SettingNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
     var mainImage: ImageUnify? = null
     var switch: SwitchUnify? = null
     var switchLayout: FrameLayout? = null
-    var toolbar: Toolbar? = null
+    var headerUnify: HeaderUnify? = null
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
@@ -32,6 +33,6 @@ class SettingNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
                 mainImage = findViewById(R.id.main_image)
                 switch = findViewById(R.id.switch_button)
                 switchLayout = findViewById(R.id.switch_layout)
-                toolbar = findViewById(R.id.toolbar_otp)
+                headerUnify = findViewById(R.id.toolbar_otp)
             }
 }

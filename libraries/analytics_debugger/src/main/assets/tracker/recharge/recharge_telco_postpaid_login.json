@@ -16,6 +16,7 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "item_list": ".*",
+      "item_list_name": ".*",
       "items": [
         {
           "item_id": ".*",

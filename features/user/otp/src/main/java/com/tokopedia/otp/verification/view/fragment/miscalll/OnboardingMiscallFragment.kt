@@ -1,5 +1,7 @@
 package com.tokopedia.otp.verification.view.fragment.miscalll
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -15,11 +17,9 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import javax.inject.Inject
@@ -41,7 +41,7 @@ open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed 
 
     private val permissionCheckerHelper = PermissionCheckerHelper()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_COTP_MISSCALL
 
@@ -115,35 +115,15 @@ open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed 
     }
 
     private fun getTitle(): String {
-        var title = ""
-        context?.let {
-            title = if (isOtpMiscallNew()) {
-                getString(R.string.cotp_miscall_onboarding_title_new)
-            } else {
-                getString(R.string.cotp_miscall_onboarding_title)
-            }
-        }
-        return title
+        return context?.getString(R.string.cotp_miscall_onboarding_title).orEmpty()
     }
 
     private fun getDescription(): String {
-        var description = ""
-        context?.let {
-            description = if (isOtpMiscallNew()) {
-                getString(R.string.cotp_miscall_onboarding_desc_new)
-            } else {
-                getString(R.string.cotp_miscall_onboarding_desc)
-            }
-        }
-        return description
-    }
-
-    private fun isOtpMiscallNew(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY_MISCALL_OTP).contains(ROLLANCE_KEY_MISCALL_OTP)
+        return context?.getString(R.string.cotp_miscall_onboarding_desc).orEmpty()
     }
 
     companion object {
-        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding_2.png"
+        private const val URL_IMG_ON_BOARDING_NEW = TokopediaImageUrl.URL_IMG_ON_BOARDING_NEW
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = OnboardingMiscallFragment()

@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -92,17 +93,19 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        bottomSheetHeader.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+        context?.let { context ->
+            bottomSheetHeader.setPadding(
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
                 bottomSheetWrapper.right,
                 bottomSheetHeader.bottom)
+        }
+
         bottomSheetWrapper.setPadding(0,
-                bottomSheetWrapper.paddingTop,
-                0,
-                bottomSheetWrapper.paddingBottom)
-        bottomSheetWrapper.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            bottomSheetWrapper.paddingTop,
+            0,
+            bottomSheetWrapper.paddingBottom)
+        bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         initView()
     }
@@ -148,10 +151,18 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
     private fun initBottomSheet() {
         showCloseIcon = true
         isFullpage = true
-        setTitle(getString(R.string.flight_search_airport_arrival_title))
+        initializeTitle()
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_flight_airport_picker, null)
         setChild(mChildView)
+    }
+
+    private fun initializeTitle() {
+        if (tag == TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER) {
+            setTitle(getString(R.string.flight_search_airport_departure_title))
+        } else {
+            setTitle(getString(R.string.flight_search_airport_arrival_title))
+        }
     }
 
     private fun initView() {
@@ -244,7 +255,8 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
-        const val TAG_FLIGHT_AIRPORT_PICKER = "TAG_FLIGHT_AIRPORT_PICKER"
+        const val TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER = "TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER"
+        const val TAG_FLIGHT_DESTINATION_AIRPORT_PICKER = "TAG_FLIGHT_DESTINATION_AIRPORT_PICKER"
 
         private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300)
 

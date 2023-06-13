@@ -10,12 +10,15 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
@@ -30,8 +33,8 @@ import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -76,7 +79,11 @@ class EmoneyPdpActivityLoginTest {
     }
 
     private fun setUpLaunchActivity() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.userSession {
+            /** content.prod.automation2+frontendtest@tokopedia.com */
+            userId = "17211048"
+            shopId = "3533069"
+        }
         setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = true))
         val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
                 Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")

@@ -43,7 +43,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.UUID
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * Created by yfsx on 30/08/21.
@@ -89,6 +91,7 @@ class InfiniteTokonowRecomFragment :
     private var pageName = ""
     private var recomPageUiUpdater: RecomPageUiUpdater = RecomPageUiUpdater(mutableListOf())
     private var firstRecomWidget: RecommendationWidget? = null
+    private val affiliateTrackerId: String = UUID.randomUUID().toString()
 
 
     private val adapter by lazy {
@@ -131,6 +134,8 @@ class InfiniteTokonowRecomFragment :
             getMiniCartData()
             loadInitData(false)
         }
+
+        viewModel.initCookieAffiliate(affiliateTrackerId)
     }
 
     override fun createAdapterInstance(): RecomPageAdapter = adapter
@@ -219,7 +224,7 @@ class InfiniteTokonowRecomFragment :
 
     override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
         recomPageUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity, affiliateTrackerId)
     }
 
     override fun onProductTokonowVariantClicked(recomItem: RecommendationItem, adapterPosition: Int) {
@@ -235,9 +240,6 @@ class InfiniteTokonowRecomFragment :
                     }
             )
         }
-    }
-
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
     }
 
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {

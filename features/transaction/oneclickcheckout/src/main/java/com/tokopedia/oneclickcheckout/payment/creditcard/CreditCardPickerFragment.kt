@@ -17,10 +17,10 @@ import android.webkit.WebViewClient
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
 import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -38,8 +38,11 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         // no op
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentPaymentMethodBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -60,7 +63,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 domStorageEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = true
-                setAppCacheEnabled(true)
+//                setAppCacheEnabled(true)
             }
             webView.webViewClient = PaymentMethodWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false
@@ -79,15 +82,15 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
     private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
         return "merchant_code=${getUrlEncoded(additionalData.merchantCode)}&" +
-                "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
-                "enable_add_card=${getUrlEncoded("false")}&" +
-                "user_id=${getUrlEncoded(additionalData.id.toString())}&" +
-                "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
-                "customer_email=${getUrlEncoded(additionalData.email)}&" +
-                "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
-                "signature=${getUrlEncoded(additionalData.signature)}&" +
-                "callback_url=${getUrlEncoded(additionalData.callbackUrl)}&" +
-                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}"
+            "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
+            "enable_add_card=${getUrlEncoded("false")}&" +
+            "user_id=${getUrlEncoded(additionalData.id)}&" +
+            "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
+            "customer_email=${getUrlEncoded(additionalData.email)}&" +
+            "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
+            "signature=${getUrlEncoded(additionalData.signature)}&" +
+            "callback_url=${getUrlEncoded(additionalData.callbackUrl)}&" +
+            "version=${getUrlEncoded(generateAppVersionForPayment())}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {
@@ -131,7 +134,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                         try {
                             map[key] = JsonParser().parse(value)
                         } catch (e: Exception) {
-                            //failed parse json string
+                            // failed parse json string
                             map[key] = value
                         }
                     }
@@ -156,10 +159,13 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
     private fun goToNextStep(data: Pair<String, String>) {
         activity?.let {
-            it.setResult(RESULT_OK, Intent().apply {
-                putExtra(EXTRA_RESULT_GATEWAY_CODE, data.first)
-                putExtra(EXTRA_RESULT_METADATA, data.second)
-            })
+            it.setResult(
+                RESULT_OK,
+                Intent().apply {
+                    putExtra(EXTRA_RESULT_GATEWAY_CODE, data.first)
+                    putExtra(EXTRA_RESULT_METADATA, data.second)
+                }
+            )
             it.finish()
         }
     }

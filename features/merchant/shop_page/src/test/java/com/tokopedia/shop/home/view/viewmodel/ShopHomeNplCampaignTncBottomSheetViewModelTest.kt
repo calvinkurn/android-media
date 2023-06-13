@@ -8,13 +8,13 @@ import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStat
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
-import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.domain.GetShopHomeMerchantCampaignTncUseCase
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -31,10 +31,13 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
+
     @RelaxedMockK
     lateinit var getMerchantCampaignTncUseCase: GetShopHomeMerchantCampaignTncUseCase
+
     @RelaxedMockK
     lateinit var updateFollowStatusUseCase: UpdateFollowStatusUseCase
+
     @RelaxedMockK
     lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
 
@@ -43,16 +46,15 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     }
     private lateinit var viewModel: ShopHomeNplCampaignTncBottomSheetViewModel
 
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopHomeNplCampaignTncBottomSheetViewModel(
-                testCoroutineDispatcherProvider,
-                userSession,
-                getMerchantCampaignTncUseCase,
-                updateFollowStatusUseCase,
-                getFollowStatusUseCase
+            testCoroutineDispatcherProvider,
+            userSession,
+            getMerchantCampaignTncUseCase,
+            updateFollowStatusUseCase,
+            getFollowStatusUseCase
         )
     }
 
@@ -159,7 +161,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _followUnfollowShopLiveData post success data`() {
         val shopId = "123"
         every { userSession.isLoggedIn } returns true
-        coEvery { updateFollowStatusUseCase.executeOnBackground() } returns FollowShopResponse(FollowShop(true,null,null,null, null, null))
+        coEvery { updateFollowStatusUseCase.executeOnBackground() } returns FollowShopResponse(FollowShop(true, null, null, null, null, null))
         viewModel.updateFollowStatus(shopId, UpdateFollowStatusUseCase.ACTION_FOLLOW)
         coVerify { updateFollowStatusUseCase.executeOnBackground() }
         assert(viewModel.followUnfollowShopLiveData.value is Success)
@@ -183,6 +185,4 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
         verify { userSession.isLoggedIn }
         assert(viewModel.followUnfollowShopLiveData.value is Fail)
     }
-
-
 }

@@ -17,16 +17,6 @@ class ProductManageActivityStub: ProductManageActivity() {
         @JvmStatic
         fun createIntent(context: Context): Intent =
             Intent(context, ProductManageActivityStub::class.java)
-
-        @JvmStatic
-        fun createIntent(context: Context,
-                         filterId: String,
-                         searchKeyword: String): Intent {
-            return Intent(context, ProductManageActivityStub::class.java).apply {
-                putExtra(FILTER_ID_KEY, filterId)
-                putExtra(SEARCH_KEYWORD_KEY, searchKeyword)
-            }
-        }
     }
 
     private val filterId by lazy {

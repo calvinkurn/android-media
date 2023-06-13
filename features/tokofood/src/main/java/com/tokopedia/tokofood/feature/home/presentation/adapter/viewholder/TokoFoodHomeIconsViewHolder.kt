@@ -7,11 +7,12 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconBinding
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconsBinding
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -24,6 +25,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class TokoFoodHomeIconsViewHolder(
     itemView: View,
     private val homeIconsListener: TokoFoodHomeIconsListener? = null,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener?
 ): AbstractViewHolder<TokoFoodHomeIconsUiModel>(itemView) {
 
     companion object {
@@ -70,9 +72,11 @@ class TokoFoodHomeIconsViewHolder(
     }
 
     private fun setItemViewImpression(element: TokoFoodHomeIconsUiModel) {
-        itemView.addOnImpressionListener(element) {
-            element.listIcons?.let {
-                homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), verticalPosition = element.verticalPosition)
+        tokofoodScrollChangedListener?.let { scrollChangedListener ->
+            itemView.addAndReturnImpressionListener(element, scrollChangedListener) {
+                element.listIcons?.let {
+                    homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), verticalPosition = element.verticalPosition)
+                }
             }
         }
     }
@@ -101,18 +105,16 @@ class TokoFoodHomeIconsViewHolder(
         }
 
         fun submitList(list: List<DynamicIcon>, verticalPosition: Int) {
-            list?.let {
-                iconList.clear()
-                iconList.addAll(it.take(MAX_ICON_ITEM))
-            }
+            iconList.clear()
+            iconList.addAll(list.take(MAX_ICON_ITEM))
             this.verticalPosition = verticalPosition
         }
     }
 
     internal inner class TokoFoodIconViewHolder(private val bindingIcon: ItemTokofoodIconBinding):
         RecyclerView.ViewHolder(bindingIcon.root){
-        var imgIcon : ImageUnify? = null
-        var tgIcon : Typography? = null
+        private var imgIcon : ImageUnify? = null
+        private var tgIcon : Typography? = null
 
         fun bind(item: DynamicIcon, verticalPosition: Int){
             imgIcon = bindingIcon.imgIconTokofoodHome

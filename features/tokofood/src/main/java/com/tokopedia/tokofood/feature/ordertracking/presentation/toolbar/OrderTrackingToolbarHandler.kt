@@ -20,7 +20,11 @@ class OrderTrackingToolbarHandler(
     init {
         (activity.get() as? AppCompatActivity)?.apply {
             supportActionBar?.hide()
+
             setSupportActionBar(binding?.orderTrackingToolbar)
+
+            binding?.orderTrackingToolbar?.bringToFront()
+
             supportActionBar?.run {
                 title = getString(com.tokopedia.tokofood.R.string.title_tokofood_post_purchase)
             }

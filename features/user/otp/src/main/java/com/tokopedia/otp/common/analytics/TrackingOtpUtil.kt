@@ -1,6 +1,7 @@
 package com.tokopedia.otp.common.analytics
 
 import android.os.Build
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
@@ -11,11 +12,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.data.OtpConstant
-import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
-import com.tokopedia.otp.verification.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -29,9 +26,6 @@ import javax.inject.Inject
  */
 
 class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
-
-    private val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
-    private val isNewOtpMiscall = remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -812,6 +806,40 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         )
     }
 
+    /**
+     * tracker for default otp method, when clicking footer text 'Pakai Metode SMS'
+     * on [com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment]
+     */
+    fun trackClickUseWithOtpSms() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_ACCOUNT,
+            Category.CATEGORY_MAIN_OTP_PAGE,
+            Action.ACTION_CLICK_USE_OTP_SMS,
+            Label.LABEL_EMPTY
+        )
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    /**
+     * tracker for default otp method, when clicking footer text 'Pakai Metode Lain'
+     * on [com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment]
+     */
+    fun trackClickUseWithOthersMethod() {
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_ACCOUNT,
+            Category.CATEGORY_MAIN_OTP_PAGE,
+            Action.ACION_CLICK_CHOOSE_OTHER_METHOD,
+            Label.LABEL_EMPTY
+        )
+
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     private fun getLabelWithOtpMethod(labelType: TrackerLabelType, otpData: OtpData, otpModeListData: ModeListData, message: String = ""): String {
         val label = if (message.isNotEmpty()) {
             "$labelType $message"
@@ -819,16 +847,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             labelType.toString()
         }
 
-        val tag = when(otpModeListData.modeText) {
-            OtpConstant.OtpMode.MISCALL -> {
-                if (isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
-            }
-            else -> {
-                ""
-            }
-        }
-
-        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}$tag"
+        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}"
     }
 
     private enum class TrackerLabelType {

@@ -1,11 +1,10 @@
 package com.tokopedia.shop.product.view.viewholder
 
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -17,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStampAdapter.MembershipStampAdapterListener?) : AbstractViewHolder<MembershipStampProgressUiModel>(itemView) {
 
-    private val viewBinding : ItemRvMembershipBinding? by viewBinding()
+    private val viewBinding: ItemRvMembershipBinding? by viewBinding()
     private var rvMembership: RecyclerView? = null
     private var circleIndicator: CircleIndicatorView? = null
     private val membershipAdapter: MembershipStampAdapter? by lazy {
@@ -52,11 +51,10 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
         rvMembership = viewBinding?.rvMembership
         rvMembership?.apply {
             itemView.context?.let {
-                layoutManager = LinearLayoutManager(it, LinearLayout.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(it, LinearLayoutManager.HORIZONTAL, false)
                 adapter = membershipAdapter
             }
         }
         PagerSnapHelper().attachToRecyclerView(rvMembership)
     }
-
 }

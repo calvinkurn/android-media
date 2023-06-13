@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ErrorReporterText(
-        var submitTitle: String = "",
-        var submitDescription: String = "",
-        var submitButton: String = "",
-        var cancelButton: String = ""
-): Parcelable
+    var submitTitle: String = "",
+    var submitDescription: String = "",
+    var submitButton: String = "",
+    var cancelButton: String = ""
+) : Parcelable

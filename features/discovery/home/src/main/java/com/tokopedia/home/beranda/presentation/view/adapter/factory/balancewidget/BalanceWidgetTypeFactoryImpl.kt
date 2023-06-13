@@ -11,34 +11,41 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetFailedViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2FailedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ShimmerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ViewHolder
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 
 /**
- * Created by dhaba
+ * Created by frenzel
  */
 class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
-    private var balanceWidgetViewHolder : BalanceWidgetViewHolder ? = null
-
     override fun type(dataModel: HomeBalanceModel): Int {
-        return BalanceWidgetViewHolder.LAYOUT
+        return if(HomeRollenceController.isUsingAtf2Variant()) {
+            BalanceWidgetAtf2ViewHolder.LAYOUT
+        } else BalanceWidgetViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
-        balanceWidgetViewHolder?.clearPreviousData()
-        return BalanceWidgetShimmerViewHolder.LAYOUT
+        return if(HomeRollenceController.isUsingAtf2Variant()) {
+            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT
+        } else BalanceWidgetShimmerViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceWidgetFailedModel): Int {
-        return BalanceWidgetFailedViewHolder.LAYOUT
+        return if(HomeRollenceController.isUsingAtf2Variant()) {
+            BalanceWidgetAtf2FailedViewHolder.LAYOUT
+        } else BalanceWidgetFailedViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            BalanceWidgetViewHolder.LAYOUT -> {
-                balanceWidgetViewHolder = BalanceWidgetViewHolder(view, listener)
-                balanceWidgetViewHolder
-            }
+            BalanceWidgetViewHolder.LAYOUT -> BalanceWidgetViewHolder(view, listener)
+            BalanceWidgetAtf2ViewHolder.LAYOUT -> BalanceWidgetAtf2ViewHolder(view, listener)
             BalanceWidgetShimmerViewHolder.LAYOUT -> BalanceWidgetShimmerViewHolder(view, listener)
+            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT -> BalanceWidgetAtf2ShimmerViewHolder(view, listener)
             BalanceWidgetFailedViewHolder.LAYOUT -> BalanceWidgetFailedViewHolder(view, listener)
+            BalanceWidgetAtf2FailedViewHolder.LAYOUT -> BalanceWidgetAtf2FailedViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         } as AbstractViewHolder<BalanceWidgetVisitable>
     }

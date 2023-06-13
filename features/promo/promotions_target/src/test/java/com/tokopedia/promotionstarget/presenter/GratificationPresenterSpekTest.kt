@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
@@ -12,7 +13,6 @@ import com.tokopedia.promotionstarget.data.di.components.CmGratificationPresente
 import com.tokopedia.promotionstarget.data.di.components.DaggerTestCmGratificationPresenterComponent
 import com.tokopedia.promotionstarget.data.di.components.componentProvider.CmGratifiPresenterComponentProvider
 import com.tokopedia.promotionstarget.data.di.modules.TestAppModule
-import com.tokopedia.promotionstarget.data.gql.GraphqlHelper
 import com.tokopedia.promotionstarget.data.notification.GratifNotificationResponse
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType

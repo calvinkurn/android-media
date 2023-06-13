@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
+import android.annotation.SuppressLint
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -52,6 +53,7 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
         return simulationUiList
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun mapTenureToUi(payLaterGetSimulation: PayLaterGetSimulation?): ArrayList<SimulationUiModel> {
         val uiList = arrayListOf<SimulationUiModel>()
         payLaterGetSimulation?.let {
@@ -74,7 +76,9 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
                     text = data.text,
                     smallText = data.smallText,
                     simulationList = getPayLaterList,
-                    isSelected = defaultTenure == data.tenure
+                    isSelected = defaultTenure == data.tenure,
+                    label = SimulationUiModel.LabelUiModel.create(data.label),
+                    promoName = data.promoName.orEmpty()
                 )
                 uiList.add(simulationUiModel)
             }

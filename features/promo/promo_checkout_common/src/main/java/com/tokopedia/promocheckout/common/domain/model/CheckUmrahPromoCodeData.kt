@@ -21,13 +21,13 @@ data class CheckUmrahPromoCodeData(
         var titleDescription : String = "",
         @SerializedName("discountAmount")
         @Expose
-        var discountAmount : Int = 0,
+        var discountAmount : Long = 0L,
         @SerializedName("cashbackWalletAmount")
         @Expose
-        var cashbackWalletAmount : Int = 0,
+        var cashbackWalletAmount : Long = 0L,
         @SerializedName("cashbackAdvocateReferralAmount")
         @Expose
-        var cashbackAdvocateReferralAmount : Int = 0,
+        var cashbackAdvocateReferralAmount : Long = 0L,
         @SerializedName("invoiceDescription")
         @Expose
         var invoiceDescription : String = "",

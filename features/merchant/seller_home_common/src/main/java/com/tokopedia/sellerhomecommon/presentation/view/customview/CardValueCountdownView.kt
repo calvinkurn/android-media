@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.unifyprinciples.Typography
 
-class CardValueCountdownView: FrameLayout {
+class CardValueCountdownView : FrameLayout {
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -48,23 +48,22 @@ class CardValueCountdownView: FrameLayout {
             nextTypography?.text = nextValue.parseAsHtml()
 
             previousTypography
-                    ?.animate()
-                    ?.alpha(0f)
-                    ?.duration = ANIM_DURATION
+                ?.animate()
+                ?.alpha(0f)
+                ?.duration = ANIM_DURATION
             nextTypography?.run {
                 animate()?.alpha(MAX_ALPHA)?.setDuration(ANIM_DURATION)?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator) {}
 
-                    override fun onAnimationEnd(p0: Animator?) {
+                    override fun onAnimationEnd(p0: Animator) {
                         previousTypography?.alpha = 0f
                     }
 
-                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator) {}
 
-                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
                 })
             }
         }
     }
-
 }

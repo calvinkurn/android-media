@@ -11,10 +11,8 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import android.widget.ScrollView
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -32,7 +30,15 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.util.OperationalHoursUtil
@@ -40,15 +46,17 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSetOperationalHoursViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.FragmentShopSettingsSetOperationalHoursBinding
+import com.tokopedia.shop.settings.databinding.ItemShopSetOpsHourAccordionBinding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -59,21 +67,21 @@ import kotlin.math.roundToInt
 class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasComponent<ShopSettingsComponent> {
 
     companion object {
-
-        @LayoutRes
-        val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_set_operational_hours
-        @LayoutRes
-        val ACCORDION_CHILD_VIEW = R.layout.item_shop_set_ops_hour_accordion
         @IdRes
         val START_TIME_TEXTFIELD_ID = R.id.text_field_start_time_ops_hour
+
         @IdRes
         val END_TIME_TEXTFIELD_ID = R.id.text_field_end_time_ops_hour
+
         @IdRes
         val ALL_DAY_OPTION_ID = R.id.option_all_day
+
         @IdRes
         val HOLIDAY_CAN_ATC_OPTION_ID = R.id.option_holiday
+
         @IdRes
         val HOLIDAY_CANNOT_ATC_OPTION_ID = R.id.option_holiday_cannot_atc
+
         @IdRes
         val CHOOSE_TIME_OPTION_ID = R.id.option_choose
 
@@ -99,7 +107,6 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
         @JvmStatic
         fun createInstance(): ShopSettingsSetOperationalHoursFragment = ShopSettingsSetOperationalHoursFragment()
-
     }
 
     @Inject
@@ -108,6 +115,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var binding by autoClearedNullable<FragmentShopSettingsSetOperationalHoursBinding>()
     private var opsHourListContainer: ScrollView? = null
     private var headerSetOpsHour: HeaderUnify? = null
     private var opsHourAccordion: AccordionUnify? = null
@@ -124,9 +132,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private var isSellerSetHolidayForAWeek = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
+        binding = FragmentShopSettingsSetOperationalHoursBinding.inflate(inflater, container, false).apply {
             initView(this)
         }
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -139,9 +148,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     override fun getComponent(): ShopSettingsComponent? = activity?.run {
         DaggerShopSettingsComponent
-                .builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun getScreenName(): String = ShopSettingsSetOperationalHoursFragment::class.java.simpleName
@@ -161,13 +170,15 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         removeObservers(shopSetOperationalHoursViewModel.shopOperationalHoursListData)
     }
 
-    private fun initView(view: View) = with(view) {
-        opsHourListContainer = findViewById(R.id.ops_hour_list_content_view)
-        headerSetOpsHour = findViewById(R.id.header_shop_set_operational_hours)
-        opsHourAccordion = findViewById(R.id.shop_ops_hour_list_accordion)
-        loader = findViewById(R.id.ops_hour_list_loader)
-        opsHourFooter = findViewById(R.id.cv_save_ops_hour_container)
-        opsHourSaveButton = findViewById(R.id.btn_ops_hour_save)
+    private fun initView(binding: FragmentShopSettingsSetOperationalHoursBinding?) {
+        binding?.apply {
+            opsHourListContainer = opsHourListContentView
+            headerSetOpsHour = headerShopSetOperationalHours
+            opsHourAccordion = shopOpsHourListAccordion
+            loader = opsHourListLoader
+            opsHourFooter = cvSaveOpsHourContainer
+            opsHourSaveButton = btnOpsHourSave
+        }
     }
 
     private fun initListener() {
@@ -192,17 +203,17 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             if (isSellerSetHolidayForAWeek) {
                 // restrict set holiday for a whole week
                 showConfirmDialog(
-                        title = getString(R.string.shop_operational_hour_holiday_warning_dialog_title),
-                        description = getString(R.string.shop_operational_hour_holiday_warning_dialog_desc),
-                        primaryCtaText = getString(R.string.shop_operational_hour_label_set_holiday_sch),
-                        secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
-                        imageUrl = getString(R.string.shop_operational_hour_ops_hour_holiday_illustration),
-                        dialogAction = DialogUnify.VERTICAL_ACTION,
-                        imageType = DialogUnify.WITH_ILLUSTRATION,
-                        primaryCtaClickListener = {
-                            activity?.setResult(Activity.RESULT_CANCELED, Intent().putExtra(EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY, true))
-                            activity?.finish()
-                        }
+                    title = getString(R.string.shop_operational_hour_holiday_warning_dialog_title),
+                    description = getString(R.string.shop_operational_hour_holiday_warning_dialog_desc),
+                    primaryCtaText = getString(R.string.shop_operational_hour_label_set_holiday_sch),
+                    secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
+                    imageUrl = getString(R.string.shop_operational_hour_ops_hour_holiday_illustration),
+                    dialogAction = DialogUnify.VERTICAL_ACTION,
+                    imageType = DialogUnify.WITH_ILLUSTRATION,
+                    primaryCtaClickListener = {
+                        activity?.setResult(Activity.RESULT_CANCELED, Intent().putExtra(EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY, true))
+                        activity?.finish()
+                    }
                 )
             } else {
                 showConfirmDialog(
@@ -224,14 +235,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun handleBackPressed() {
         if (isOperationalHourDataChanged) {
             showConfirmDialog(
-                    title = getString(R.string.shop_operational_hour_dialog_data_change_title),
-                    description = getString(R.string.shop_operational_hour_dialog_data_change_description),
-                    primaryCtaText = getString(R.string.action_delete),
-                    secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
-                    primaryCtaClickListener = {
-                        activity?.onBackPressed()
-                        activity?.finish()
-                    }
+                title = getString(R.string.shop_operational_hour_dialog_data_change_title),
+                description = getString(R.string.shop_operational_hour_dialog_data_change_description),
+                primaryCtaText = getString(R.string.action_delete),
+                secondaryCtaText = getString(R.string.shop_operational_hour_label_back),
+                primaryCtaClickListener = {
+                    activity?.onBackPressed()
+                    activity?.finish()
+                }
             )
         } else {
             activity?.finish()
@@ -240,10 +251,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     private fun setBackgroundColor() = activity?.run {
         window.decorView.setBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(
-                        this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
+            ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
         )
     }
 
@@ -297,8 +308,8 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun updateShopOperationalHoursList() {
         // update new shop operational hours list
         shopSetOperationalHoursViewModel.updateOperationalHoursList(
-                userSession.shopId,
-                currentSetShopOperationalHourList
+            userSession.shopId,
+            currentSetShopOperationalHourList
         )
     }
 
@@ -323,14 +334,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     run {
                         currentExpandedAccordionPosition = index
                         val accordionOpsHourItem = AccordionDataUnify(
-                                title = OperationalHoursUtil.getDayName(opsHour.day),
-                                subtitle = OperationalHoursUtil.generateDatetime(
-                                        opsHour.startTime,
-                                        opsHour.endTime,
-                                        opsHour.status
-                                ),
-                                expandableView = generateAccordionChildView(opsHour),
-                                isExpanded = index == DEFAULT_FIRST_INDEX
+                            title = OperationalHoursUtil.getDayName(opsHour.day),
+                            subtitle = OperationalHoursUtil.generateDatetime(
+                                opsHour.startTime,
+                                opsHour.endTime,
+                                opsHour.status
+                            ),
+                            expandableView = generateAccordionChildView(opsHour),
+                            isExpanded = index == DEFAULT_FIRST_INDEX
                         )
                         if (index == hourList.lastIndex) {
                             accordionOpsHourItem.setBorder(borderTop = false, borderBottom = true)
@@ -360,19 +371,22 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     private fun setAllAccordionsItemViewCustomHeight() {
         opsHourAccordion?.accordionData?.forEachIndexed { index, accordionDataUnify ->
-            val contentViewHeight = when (OperationalHoursUtil.generateDatetime(
+            val contentViewHeight = when (
+                OperationalHoursUtil.generateDatetime(
                     currentSetShopOperationalHourList[index].startTime,
                     currentSetShopOperationalHourList[index].endTime,
                     currentSetShopOperationalHourList[index].status
-            )) {
+                )
+            ) {
                 OperationalHoursUtil.ALL_DAY -> ACCORDION_ITEM_VIEW_24_HOURS_HEIGHT
                 OperationalHoursUtil.HOLIDAY_CAN_ATC -> ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CAN_ATC_HEIGHT
                 OperationalHoursUtil.HOLIDAY_CANNOT_ATC -> ACCORDION_ITEM_VIEW_WEEKLY_HOLIDAY_CANNOT_ATC_HEIGHT
                 else -> {
-                    if (index == DEFAULT_FIRST_INDEX)
+                    if (index == DEFAULT_FIRST_INDEX) {
                         ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_FOR_MONDAY
-                    else
+                    } else {
                         ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_BESIDE_MONDAY
+                    }
                 }
             }
             accordionDataUnify.apply {
@@ -406,69 +420,74 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun generateAccordionChildView(opsHour: ShopOperationalHour): View {
-        return View.inflate(context, ACCORDION_CHILD_VIEW, null).apply {
-
-            val optionsGroup = findViewById<RadioGroup>(R.id.ops_hour_options)
-            val allDayRadioButton = findViewById<RadioButtonUnify>(R.id.option_all_day)
-            val holidayRadioButton = findViewById<RadioButtonUnify>(R.id.option_holiday)
-            val holidayCannotAtcRadioButton = findViewById<RadioButtonUnify>(R.id.option_holiday_cannot_atc)
-            val chooseRadioButton = findViewById<RadioButtonUnify>(R.id.option_choose)
-            val startTimeTextField = findViewById<TextFieldUnify2>(START_TIME_TEXTFIELD_ID)
-            val endTimeTextField = findViewById<TextFieldUnify2>(END_TIME_TEXTFIELD_ID)
-            val holidayCanAtcDescriptionContainer = findViewById<ConstraintLayout>(R.id.holiday_can_atc_description_container)
-            val holidayCannotAtcDescriptionContainer = findViewById<ConstraintLayout>(R.id.holiday_cannot_atc_description_container)
-            val icCopyToAll = findViewById<IconUnify>(R.id.ic_copy_to_all_day)
-            val tvCopyToAll = findViewById<Typography>(R.id.tv_copy_to_all_day)
-            val tvCanAtcDescription = findViewById<Typography>(R.id.tv_can_atc_description)
-            val tvCannotAtcDescription = findViewById<Typography>(R.id.tv_cannot_atc_description)
+        return ItemShopSetOpsHourAccordionBinding.inflate(LayoutInflater.from(context)).apply {
+            val optionsGroup = opsHourOptions
+            val allDayRadioButton = optionAllDay
+            val holidayRadioButton = optionHoliday
+            val holidayCannotAtcRadioButton = optionHolidayCannotAtc
+            val chooseRadioButton = optionChoose
+            val startTimeTextField = textFieldStartTimeOpsHour
+            val endTimeTextField = textFieldEndTimeOpsHour
+            val holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer
+            val holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+            val icCopyToAll = icCopyToAllDay
+            val tvCopyToAll = tvCopyToAllDay
+            val tvCanAtcDescription = tvCanAtcDescription
+            val tvCannotAtcDescription = tvCannotAtcDescription
 
             setupTimeTextField(startTimeTextField, endTimeTextField, opsHour)
             setupApplyToAllButton(icCopyToAll, tvCopyToAll)
-            tvCanAtcDescription?.apply {
+            tvCanAtcDescription.apply {
                 text = OperationalHoursUtil.getClickableSpanText(
-                        fulltext = getString(R.string.shop_operational_hour_holiday_can_atc_description),
-                        keyword = getString(R.string.shop_operational_hour_read_tnc_label),
-                        clickableSpan = object : ClickableSpan() {
-                            override fun onClick(textView: View) {
-                                // go to seller education page
-                                RouteManager.route(context, String.format(
-                                        WEBVIEW_APPLINK_FORMAT,
-                                        ApplinkConst.WEBVIEW,
-                                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
-                                ))
-                            }
-
-                            override fun updateDrawState(ds: TextPaint) {
-                                ds.isUnderlineText = false
-                                ds.typeface = Typeface.DEFAULT_BOLD
-                                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                            }
+                    fulltext = getString(R.string.shop_operational_hour_holiday_can_atc_description),
+                    keyword = getString(R.string.shop_operational_hour_read_tnc_label),
+                    clickableSpan = object : ClickableSpan() {
+                        override fun onClick(textView: View) {
+                            // go to seller education page
+                            RouteManager.route(
+                                context,
+                                String.format(
+                                    WEBVIEW_APPLINK_FORMAT,
+                                    ApplinkConst.WEBVIEW,
+                                    getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
+                                )
+                            )
                         }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.isUnderlineText = false
+                            ds.typeface = Typeface.DEFAULT_BOLD
+                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        }
+                    }
                 )
                 isClickable = true
                 movementMethod = LinkMovementMethod.getInstance()
             }
 
-            tvCannotAtcDescription?.apply {
+            tvCannotAtcDescription.apply {
                 text = OperationalHoursUtil.getClickableSpanText(
-                        fulltext = getString(R.string.shop_operational_hour_holiday_cannot_atc_description),
-                        keyword = getString(R.string.shop_operational_hour_read_tnc_label),
-                        clickableSpan = object : ClickableSpan() {
-                            override fun onClick(textView: View) {
-                                // go to seller education page
-                                RouteManager.route(context, String.format(
-                                        WEBVIEW_APPLINK_FORMAT,
-                                        ApplinkConst.WEBVIEW,
-                                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
-                                ))
-                            }
-
-                            override fun updateDrawState(ds: TextPaint) {
-                                ds.isUnderlineText = false
-                                ds.typeface = Typeface.DEFAULT_BOLD
-                                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                            }
+                    fulltext = getString(R.string.shop_operational_hour_holiday_cannot_atc_description),
+                    keyword = getString(R.string.shop_operational_hour_read_tnc_label),
+                    clickableSpan = object : ClickableSpan() {
+                        override fun onClick(textView: View) {
+                            // go to seller education page
+                            RouteManager.route(
+                                context,
+                                String.format(
+                                    WEBVIEW_APPLINK_FORMAT,
+                                    ApplinkConst.WEBVIEW,
+                                    getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
+                                )
+                            )
                         }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.isUnderlineText = false
+                            ds.typeface = Typeface.DEFAULT_BOLD
+                            ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        }
+                    }
                 )
                 isClickable = true
                 movementMethod = LinkMovementMethod.getInstance()
@@ -482,16 +501,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             }
 
             renderAccordionContent(
-                    opsHourDay = opsHour.day,
-                    isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
-                    isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
-                    isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
-                    startTimeTextField = startTimeTextField,
-                    endTimeTextField = endTimeTextField,
-                    icCopyToAll = icCopyToAll,
-                    tvCopyToAll = tvCopyToAll,
-                    holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
-                    holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+                opsHourDay = opsHour.day,
+                isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
+                isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
+                isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
+                startTimeTextField = startTimeTextField,
+                endTimeTextField = endTimeTextField,
+                icCopyToAll = icCopyToAll,
+                tvCopyToAll = tvCopyToAll,
+                holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
+                holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
             )
 
             // set on checked listener radio button
@@ -502,16 +521,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     ALL_DAY_OPTION_ID -> {
                         // set time for selected day to 24 hours
                         renderAccordionContent(
-                                opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
-                                isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
-                                isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
-                                isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
-                                startTimeTextField = startTimeTextField,
-                                endTimeTextField = endTimeTextField,
-                                icCopyToAll = icCopyToAll,
-                                tvCopyToAll = tvCopyToAll,
-                                holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
-                                holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+                            opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
+                            isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
+                            isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
+                            isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
+                            startTimeTextField = startTimeTextField,
+                            endTimeTextField = endTimeTextField,
+                            icCopyToAll = icCopyToAll,
+                            tvCopyToAll = tvCopyToAll,
+                            holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
+                            holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
                         )
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MAX_END_TIME
@@ -522,16 +541,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     HOLIDAY_CAN_ATC_OPTION_ID -> {
                         // set close time for selected day
                         renderAccordionContent(
-                                opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
-                                isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
-                                isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
-                                isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
-                                startTimeTextField = startTimeTextField,
-                                endTimeTextField = endTimeTextField,
-                                icCopyToAll = icCopyToAll,
-                                tvCopyToAll = tvCopyToAll,
-                                holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
-                                holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+                            opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
+                            isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
+                            isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
+                            isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
+                            startTimeTextField = startTimeTextField,
+                            endTimeTextField = endTimeTextField,
+                            icCopyToAll = icCopyToAll,
+                            tvCopyToAll = tvCopyToAll,
+                            holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
+                            holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
                         )
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
@@ -542,16 +561,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     HOLIDAY_CANNOT_ATC_OPTION_ID -> {
                         // set close time for selected day
                         renderAccordionContent(
-                                opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
-                                isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
-                                isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
-                                isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
-                                startTimeTextField = startTimeTextField,
-                                endTimeTextField = endTimeTextField,
-                                icCopyToAll = icCopyToAll,
-                                tvCopyToAll = tvCopyToAll,
-                                holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
-                                holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+                            opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
+                            isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
+                            isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
+                            isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
+                            startTimeTextField = startTimeTextField,
+                            endTimeTextField = endTimeTextField,
+                            icCopyToAll = icCopyToAll,
+                            tvCopyToAll = tvCopyToAll,
+                            holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
+                            holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
                         )
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
@@ -563,16 +582,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         // show textField to choose open & close time
                         resetTimeTextField()
                         renderAccordionContent(
-                                opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
-                                isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
-                                isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
-                                isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
-                                startTimeTextField = startTimeTextField,
-                                endTimeTextField = endTimeTextField,
-                                icCopyToAll = icCopyToAll,
-                                tvCopyToAll = tvCopyToAll,
-                                holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
-                                holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
+                            opsHourDay = currentSetShopOperationalHourList[currentExpandedAccordionPosition].day,
+                            isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
+                            isShowHolidayCanAtcDescription = holidayRadioButton.isChecked,
+                            isShowHolidayCannotAtcDescription = holidayCannotAtcRadioButton.isChecked,
+                            startTimeTextField = startTimeTextField,
+                            endTimeTextField = endTimeTextField,
+                            icCopyToAll = icCopyToAll,
+                            tvCopyToAll = tvCopyToAll,
+                            holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
+                            holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
                         )
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CAN_ATC_STATUS
                         val contentHeight = if (currentExpandedAccordionPosition == DEFAULT_FIRST_INDEX) {
@@ -584,15 +603,15 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     }
                 }
                 updateAccordionDescriptionByPosition(
-                        newDescription = OperationalHoursUtil.generateDatetime(
-                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime,
-                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime,
-                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].status,
-                        ),
-                        position = currentExpandedAccordionPosition
+                    newDescription = OperationalHoursUtil.generateDatetime(
+                        currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime,
+                        currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime,
+                        currentSetShopOperationalHourList[currentExpandedAccordionPosition].status
+                    ),
+                    position = currentExpandedAccordionPosition
                 )
             }
-        }
+        }.root
     }
 
     private fun getAccordionChildViewByPosition(position: Int): View? {
@@ -607,16 +626,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun renderAccordionContent(
-            opsHourDay: Int,
-            isChooseTimeRadioButtonChecked: Boolean,
-            isShowHolidayCanAtcDescription: Boolean,
-            isShowHolidayCannotAtcDescription: Boolean,
-            startTimeTextField: TextFieldUnify2?,
-            endTimeTextField: TextFieldUnify2?,
-            icCopyToAll: IconUnify?,
-            tvCopyToAll: Typography?,
-            holidayCanAtcDescriptionContainer: ConstraintLayout?,
-            holidayCannotAtcDescriptionContainer: ConstraintLayout?
+        opsHourDay: Int,
+        isChooseTimeRadioButtonChecked: Boolean,
+        isShowHolidayCanAtcDescription: Boolean,
+        isShowHolidayCannotAtcDescription: Boolean,
+        startTimeTextField: TextFieldUnify2?,
+        endTimeTextField: TextFieldUnify2?,
+        icCopyToAll: IconUnify?,
+        tvCopyToAll: Typography?,
+        holidayCanAtcDescriptionContainer: ConstraintLayout?,
+        holidayCannotAtcDescriptionContainer: ConstraintLayout?
     ) {
         shouldShowTimeTextField(opsHourDay, startTimeTextField, endTimeTextField, icCopyToAll, tvCopyToAll, isChooseTimeRadioButtonChecked)
         shouldShowHolidayCanAtcContainer(holidayCanAtcDescriptionContainer, isShowHolidayCanAtcDescription)
@@ -695,12 +714,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun shouldShowTimeTextField(
-            opsHourDay: Int,
-            startTimeTextField: TextFieldUnify2?,
-            endTimeTextField: TextFieldUnify2?,
-            icCopyToAll: IconUnify?,
-            tvCopyToAll: Typography?,
-            isChooseRadioButtonChecked: Boolean
+        opsHourDay: Int,
+        startTimeTextField: TextFieldUnify2?,
+        endTimeTextField: TextFieldUnify2?,
+        icCopyToAll: IconUnify?,
+        tvCopyToAll: Typography?,
+        isChooseRadioButtonChecked: Boolean
     ) {
         // only show "Terapkan ke semua hari" if selected day is Monday
         val isMonday = opsHourDay == (DEFAULT_FIRST_INDEX + 1)
@@ -713,29 +732,29 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun setupEndTimePicker(currentStartTime: String, currentEndTime: String) {
         context?.let { ctx ->
 
-            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toInt()
-            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toInt()
-            val endTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentEndTime).toInt()
-            val endTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentEndTime).toInt()
+            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toIntOrZero()
+            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toIntOrZero()
+            val endTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentEndTime).toIntOrZero()
+            val endTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentEndTime).toIntOrZero()
 
             // create instance
             endTimePicker = DateTimePickerUnify(
-                    context = ctx,
-                    minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        // set minimum end time +1 hour from start time
-                        set(Calendar.HOUR_OF_DAY, startTimeHour)
-                        set(Calendar.MINUTE, startTimeMinute + ADDITIONAL_MINUTE_FOR_ENDTIME)
-                    },
-                    defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        // set default selected end time same with minimum
-                        set(Calendar.HOUR_OF_DAY, endTimeHour)
-                        set(Calendar.MINUTE, endTimeMinute)
-                    },
-                    maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
-                        set(Calendar.MINUTE, MAX_CLOSE_MINUTE)
-                    },
-                    type = DateTimePickerUnify.TYPE_TIMEPICKER
+                context = ctx,
+                minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    // set minimum end time +1 hour from start time
+                    set(Calendar.HOUR_OF_DAY, startTimeHour)
+                    set(Calendar.MINUTE, startTimeMinute + ADDITIONAL_MINUTE_FOR_ENDTIME)
+                },
+                defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    // set default selected end time same with minimum
+                    set(Calendar.HOUR_OF_DAY, endTimeHour)
+                    set(Calendar.MINUTE, endTimeMinute)
+                },
+                maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
+                    set(Calendar.MINUTE, MAX_CLOSE_MINUTE)
+                },
+                type = DateTimePickerUnify.TYPE_TIMEPICKER
             )
 
             // set time picker minute interval
@@ -762,33 +781,32 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 endTimePicker?.setInfo(getString(R.string.shop_operational_hour_endtime_info))
                 endTimePicker?.show(it, screenName)
             }
-
         }
     }
 
     private fun setupStartTimePicker(currentStartTime: String) {
         context?.let { ctx ->
 
-            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toInt()
-            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toInt()
+            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toIntOrZero()
+            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toIntOrZero()
 
             // create instance
             startTimePicker = DateTimePickerUnify(
-                    context = ctx,
-                    minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        set(Calendar.HOUR_OF_DAY, MIN_OPEN_HOUR)
-                        set(Calendar.MINUTE, MIN_OPEN_MINUTE)
-                    },
-                    defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        // set default selected end time same with minimum
-                        set(Calendar.HOUR_OF_DAY, startTimeHour)
-                        set(Calendar.MINUTE, startTimeMinute)
-                    },
-                    maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
-                        set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
-                        set(Calendar.MINUTE, MAX_OPEN_MINUTE_BY_TIME_PICKER)
-                    },
-                    type = DateTimePickerUnify.TYPE_TIMEPICKER
+                context = ctx,
+                minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    set(Calendar.HOUR_OF_DAY, MIN_OPEN_HOUR)
+                    set(Calendar.MINUTE, MIN_OPEN_MINUTE)
+                },
+                defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    // set default selected end time same with minimum
+                    set(Calendar.HOUR_OF_DAY, startTimeHour)
+                    set(Calendar.MINUTE, startTimeMinute)
+                },
+                maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                    set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
+                    set(Calendar.MINUTE, MAX_OPEN_MINUTE_BY_TIME_PICKER)
+                },
+                type = DateTimePickerUnify.TYPE_TIMEPICKER
             )
 
             // set time picker minute interval
@@ -816,7 +834,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 }
 
                 val autoSelectedEndTimeString = if (nineHourAfterSelectedStartTime < TWO_DIGIT_TIME_THRESHOLD) {
-                    "0${autoSelectedEndTime}"
+                    "0$autoSelectedEndTime"
                 } else {
                     autoSelectedEndTime.toString()
                 }
@@ -837,29 +855,32 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 startTimePicker?.setTitle(getString(R.string.shop_operational_hour_choose_open_shop))
                 startTimePicker?.show(it, screenName)
             }
-            
         }
     }
 
     private fun setNewStartTimeInfo(accordionItemView: View?, newHour: String?, newMinute: String?) = accordionItemView?.run {
         // set new time to startTime textField
         findViewById<TextFieldUnify2>(START_TIME_TEXTFIELD_ID)?.textInputLayout?.editText?.apply {
-            setText(getString(
+            setText(
+                getString(
                     R.string.shop_operational_hour_format_with_timezone,
                     newHour,
                     newMinute
-            ))
+                )
+            )
         }
     }
 
     private fun setNewEndTimeInfo(accordionItemView: View?, newHour: String?, newMinute: String?) = accordionItemView?.run {
         // set new time to endTime textField
         findViewById<TextFieldUnify2>(END_TIME_TEXTFIELD_ID)?.textInputLayout?.editText?.apply {
-            setText(getString(
+            setText(
+                getString(
                     R.string.shop_operational_hour_format_with_timezone,
                     newHour,
                     newMinute
-            ))
+                )
+            )
         }
     }
 
@@ -870,12 +891,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         currentSetShopOperationalHourList[position].startTime = currentSelectedStartTime
         changeResetButtonState()
         updateAccordionDescriptionByPosition(
-                newDescription = OperationalHoursUtil.generateDatetime(
-                        currentSetShopOperationalHourList[position].startTime,
-                        currentSetShopOperationalHourList[position].endTime,
-                        currentSetShopOperationalHourList[position].status
-                ),
-                position = position
+            newDescription = OperationalHoursUtil.generateDatetime(
+                currentSetShopOperationalHourList[position].startTime,
+                currentSetShopOperationalHourList[position].endTime,
+                currentSetShopOperationalHourList[position].status
+            ),
+            position = position
         )
     }
 
@@ -886,12 +907,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         currentSetShopOperationalHourList[position].endTime = currentSelectedEndTime
         changeResetButtonState()
         updateAccordionDescriptionByPosition(
-                newDescription = OperationalHoursUtil.generateDatetime(
-                        currentSetShopOperationalHourList[position].startTime,
-                        currentSetShopOperationalHourList[position].endTime,
-                        currentSetShopOperationalHourList[position].status
-                ),
-                position = position
+            newDescription = OperationalHoursUtil.generateDatetime(
+                currentSetShopOperationalHourList[position].startTime,
+                currentSetShopOperationalHourList[position].endTime,
+                currentSetShopOperationalHourList[position].status
+            ),
+            position = position
         )
     }
 
@@ -901,14 +922,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun showConfirmDialog(
-            title: String,
-            description: String,
-            primaryCtaText: String,
-            secondaryCtaText: String,
-            imageUrl: String = "",
-            dialogAction: Int = DialogUnify.HORIZONTAL_ACTION,
-            imageType: Int = DialogUnify.NO_IMAGE,
-            primaryCtaClickListener: () -> Unit
+        title: String,
+        description: String,
+        primaryCtaText: String,
+        secondaryCtaText: String,
+        imageUrl: String = "",
+        dialogAction: Int = DialogUnify.HORIZONTAL_ACTION,
+        imageType: Int = DialogUnify.NO_IMAGE,
+        primaryCtaClickListener: () -> Unit
     ) {
         context?.let { ctx ->
             DialogUnify(ctx, dialogAction, imageType).apply {
@@ -924,7 +945,6 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 setSecondaryCTAClickListener { dismiss() }
                 show()
             }
-
         }
     }
 

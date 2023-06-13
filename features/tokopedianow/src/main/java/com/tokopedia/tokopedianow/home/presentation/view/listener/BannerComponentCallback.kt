@@ -23,6 +23,7 @@ class BannerComponentCallback(
 ): BannerComponentListener {
 
     private val context by lazy { view.getFragmentPage().context }
+    private val impressionStatusList = mutableMapOf<String, Boolean>()
 
     override fun onBannerClickListener(
         position: Int,
@@ -44,27 +45,32 @@ class BannerComponentCallback(
         }
     }
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        context?.let {
-            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
-            val warehouseId = localCacheModel.warehouse_id.toLongOrZero().toString()
-            analytics.onImpressBannerPromo(channelModel, warehouseId)
-        }
-    }
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) { /* nothing to do */ }
 
     override fun isMainViewVisible(): Boolean = true
-
-    override fun isBannerImpressed(id: String): Boolean = true
 
     override fun onPromoScrolled(
         channelModel: ChannelModel,
         channelGrid: ChannelGrid,
         position: Int
-    ) { /* nothing to do */ }
+    ) {
+        context?.let {
+            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            val warehouseId = localCacheModel.warehouse_id.toLongOrZero().toString()
+            analytics.onImpressBannerPromo(channelModel, channelGrid, warehouseId, position)
+        }
+        impressionStatusList[channelGrid.id] = true
+    }
 
     override fun onPageDragStateChanged(isDrag: Boolean) { /* nothing to do */ }
 
     override fun onPromoAllClick(channelModel: ChannelModel) { /* nothing to do */ }
+
+    override fun isBannerImpressed(id: String): Boolean {
+        return if (impressionStatusList.containsKey(id)) {
+            impressionStatusList[id]?:false
+        } else false
+    }
 
     private fun onRefreshPage(localCacheModel: LocalCacheModel) {
         if (userSession.isLoggedIn) {
@@ -81,5 +87,9 @@ class BannerComponentCallback(
     private fun openLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         view.getFragmentPage().startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    fun resetImpression() {
+        impressionStatusList.clear()
     }
 }

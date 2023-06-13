@@ -11,17 +11,15 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
@@ -32,7 +30,6 @@ import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceM
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantPrefManager
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentPmPowerMerchantSubscriptionBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.FallbackActivity
@@ -57,10 +54,11 @@ import javax.inject.Inject
  */
 
 open class PowerMerchantSubscriptionFragment :
-    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(), PMWidgetListener {
+    BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(),
+    PMWidgetListener,
+    OptInConfirmationBottomSheet.OptInConfirmationListener {
 
     companion object {
-        private const val COACH_MARK_RENDER_SHOW = 1000L
         fun createInstance(): PowerMerchantSubscriptionFragment {
             return PowerMerchantSubscriptionFragment()
         }
@@ -86,9 +84,6 @@ open class PowerMerchantSubscriptionFragment :
     protected var isModeratedShop = false
     protected var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
 
-    private val coachMark by getCoachMarkInstance()
-    private var feeServiceView: View? = null
-
     protected val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(
             requireActivity(),
@@ -96,21 +91,8 @@ open class PowerMerchantSubscriptionFragment :
         ).get(PowerMerchantSharedViewModel::class.java)
     }
 
-    private val powerMerchantPrefManager: PowerMerchantPrefManager? by lazy {
-        context?.let { context ->
-            PowerMerchantPrefManager(context)
-        }
-    }
-
-    private val isUpgradePm by lazy {
-        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE)
-            .toBoolean()
-    }
-
     private val indexOfUpgradePmProWidget: Int
         get() = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
-
-    private var isAlreadyScrolled = false
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_SUBSCRIBE
 
@@ -160,9 +142,11 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun setOnTickerWidgetRemoved(position: Int) {
-        adapter.data.removeAt(position)
-        recyclerView?.post {
-            adapter.notifyItemRemoved(position)
+        if (position != RecyclerView.NO_POSITION) {
+            adapter.data.removeAt(position)
+            recyclerView?.post {
+                adapter.notifyItemRemoved(position)
+            }
         }
     }
 
@@ -199,18 +183,22 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun showServiceFeeByCategory() {
-        if (childFragmentManager.isStateSaved) return
-
-        val bottomSheet = PMFeeServiceBottomSheet.createInstance()
-        bottomSheet.show(childFragmentManager)
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                Constant.Url.PM_SERVICE_FEE
+            )
+        }
     }
 
-    override fun setOnServiceFeeViewBind(view: View) {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (!isShowCoachMark) {
-            this.feeServiceView = view
-            scrollTo<WidgetShopGradeUiModel>()
+    override fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel, isPmPro: Boolean) {
+        val successMessage = if (isPmPro) {
+            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_pro_activation_success_message)
+        } else {
+            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_activation_success_message)
         }
+        setOnPmActivationSuccess(pmActivationStatusUiModel, successMessage)
     }
 
     protected open fun observePowerMerchantBasicInfo() {
@@ -218,6 +206,22 @@ open class PowerMerchantSubscriptionFragment :
             if (it is Success) {
                 initBasicInfo(it.data)
                 fetchPageContent()
+                showPmOptOutConfirmation(it.data)
+            }
+        }
+    }
+
+    private fun showPmOptOutConfirmation(data: PowerMerchantBasicInfoUiModel) {
+        if (!data.pmStatus.autoExtendEnabled) {
+            activity?.intent?.data?.let {
+                val params = UriUtil.uriQueryParamsToMap(it)
+                val showPopupValue = params[PowerMerchantDeepLinkMapper.QUERY_PARAM_SHOW_POPUP]
+                showPopupValue?.let { showPopup ->
+                    val isPmProActive = data.pmStatus.isPowerMerchantPro()
+                    val bottomSheet = OptInConfirmationBottomSheet.newInstance(isPmProActive)
+                    bottomSheet.setOptInListener(this)
+                    bottomSheet.show(childFragmentManager)
+                }
             }
         }
     }
@@ -232,8 +236,11 @@ open class PowerMerchantSubscriptionFragment :
                 context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
             view?.rootView?.let {
                 Toaster.build(
-                    it, message, Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, actionText
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText
                 )
                     .show()
             }
@@ -253,13 +260,17 @@ open class PowerMerchantSubscriptionFragment :
             illustrationUrl,
             onPrimaryCtaClicked = {
                 powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
-            })
+            }
+        )
 
         powerMerchantTracking.sendEventPopupUnableToRegisterShopModeration()
     }
 
     protected fun showNotificationBottomSheet(
-        title: String, description: String, primaryCtaText: String, imgUrl: String,
+        title: String,
+        description: String,
+        primaryCtaText: String,
+        imgUrl: String,
         secondaryCtaText: String? = null,
         onPrimaryCtaClicked: (() -> Unit)? = null,
         onSecondaryCtaClicked: (() -> Unit)? = null,
@@ -329,19 +340,20 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun showRegularPmDeactivationBottomSheet() {
-        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt())
+        val isPmPro = pmBasicInfo?.pmStatus?.isPowerMerchantPro() == true
+        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(isPmPro)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.setListener(object :
-            PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
-            override fun onClickCancelButton() {
-                showDeactivationQuestionnaire()
-                bottomSheet.dismiss()
-            }
+                PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
+                override fun onClickCancelButton() {
+                    showDeactivationQuestionnaire()
+                    bottomSheet.dismiss()
+                }
 
-            override fun onClickBackButton() {
-                bottomSheet.dismiss()
-            }
-        })
+                override fun onClickBackButton() {
+                    bottomSheet.dismiss()
+                }
+            })
         bottomSheet.show(childFragmentManager)
     }
 
@@ -414,7 +426,7 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun observePmActivationStatus() {
-        mViewModel.pmActivationStatus.observeOnce(viewLifecycleOwner, {
+        mViewModel.pmActivationStatus.observeOnce(this.viewLifecycleOwner) {
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
@@ -423,11 +435,11 @@ open class PowerMerchantSubscriptionFragment :
                     logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVATION_ERROR, it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observePmCancelDeactivationSubmission() {
-        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner, {
+        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner) {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
                 is Fail -> {
@@ -438,7 +450,7 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
             }
-        })
+        }
     }
 
     private fun setOnCancelDeactivationFailed(throwable: Throwable) {
@@ -457,10 +469,18 @@ open class PowerMerchantSubscriptionFragment :
 
         view?.run {
             Toaster.toasterCustomBottomHeight =
-                context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).orZero()
-            val message = context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
+                context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+                    .orZero()
+            val message =
+                if (pmBasicInfo?.pmStatus?.isPowerMerchantPro() == true) {
+                    context?.getString(R.string.pm_cancel_pm_pro_deactivation_message).orEmpty()
+                } else {
+                    context?.getString(R.string.pm_cancel_pm_deactivation_message).orEmpty()
+                }
             Toaster.build(
-                rootView, message, Toaster.LENGTH_LONG,
+                rootView,
+                message,
+                Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             ).show()
         }
@@ -511,11 +531,11 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
+    private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel, successMessage: String? = null) {
         notifyUpgradePmProWidget()
 
         if (data.isSuccess) {
-            renderUiOnActivationSuccess()
+            renderUiOnActivationSuccess(successMessage)
         } else {
             if (data.shouldUpdateApp()) {
                 openFallbackPage()
@@ -532,15 +552,17 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun renderUiOnActivationSuccess() {
+    private fun renderUiOnActivationSuccess(successMessage: String?) {
         view?.rootView?.let {
             it.post {
-                val message = context?.getString(R.string.pm_submit_activation_success).orEmpty()
+                val message = if (successMessage.isNullOrBlank()) getString(R.string.pm_submit_activation_success) else successMessage
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl5
                 )
                 Toaster.build(
-                    it, message, Toaster.LENGTH_LONG,
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL
                 ).show()
             }
@@ -586,7 +608,6 @@ open class PowerMerchantSubscriptionFragment :
             when (it) {
                 is Success -> {
                     renderPmActiveState(it.data)
-                    showCoachMarkPm()
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
@@ -612,7 +633,7 @@ open class PowerMerchantSubscriptionFragment :
         val tickerList = pmBasicInfo?.tickers
         val isRegularMerchant =
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
-                    pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
+                pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isPmActive = isPm && isActive
         val deactivatedStatusName = if (pmBasicInfo?.pmStatus?.subscriptionType.isZero()) {
             context?.getString(R.string.pm_regular_merchant)
@@ -635,8 +656,8 @@ open class PowerMerchantSubscriptionFragment :
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
-                && isPmActive
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro &&
+            isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget(getShopGradeWidgetData(data), data)?.let {
@@ -662,20 +683,16 @@ open class PowerMerchantSubscriptionFragment :
         adapter.clearAllElements()
         renderList(widgets, false)
         recyclerView?.post {
-            if (isUpgradePm && !isAlreadyScrolled) {
-                smoothScrollToPmProSection()
-            } else {
-                recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
-            }
+            recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
         }
     }
 
     private fun showUpgradePmProStickyView() {
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val isNewSeller30FirstMonday = pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
-        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
-                && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
-                && isNewSeller30FirstMonday && isAutoExtendEnabled
+        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+            pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE &&
+            isNewSeller30FirstMonday && isAutoExtendEnabled
         binding?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
@@ -780,110 +797,5 @@ open class PowerMerchantSubscriptionFragment :
             }
         }
         return null
-    }
-
-    private fun showCoachMarkPm() {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (!isShowCoachMark) {
-            recyclerView?.post {
-                scrollTo<WidgetFeeServiceUiModel>()
-            }
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                val coachMarkItems = getCoachMarkItems()
-                if (coachMarkItems.value.isNotEmpty()) {
-                    coachMark?.showCoachMark(coachMarkItems.value)
-                }
-            }, COACH_MARK_RENDER_SHOW)
-        }
-    }
-
-    private inline fun <reified T : Visitable<*>> scrollTo() {
-        val positionItem = adapter.list.indexOfFirst { it is T }
-
-        context?.let {
-            if (positionItem != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller =
-                    object : LinearSmoothScroller(it) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_END
-                        }
-                    }
-                smoothScroller.targetPosition = positionItem
-                recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
-            }
-        }
-    }
-
-    private fun smoothScrollToPmProSection() {
-        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
-        if (indexOfUpgradePmProWidget != RecyclerView.NO_POSITION && isShowCoachMark) {
-            context?.let {
-                val smoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int = SNAP_TO_START
-                }
-                val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
-                smoothScroller.targetPosition = indexOfUpgradePmProWidget
-                layoutManager?.startSmoothScroll(smoothScroller)
-                isAlreadyScrolled = true
-            }
-        }
-    }
-
-    private fun getCoachMarkInstance(): Lazy<CoachMark2?> {
-        return lazy {
-            val coachMark = context?.let { CoachMark2(it) }
-            coachMark?.isDismissed = false
-            coachMark?.onFinishListener = {
-                powerMerchantPrefManager?.setIsShowCoachMarkPM(true)
-            }
-            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    val isGoingToNext = currentIndex == Int.ZERO
-                    if (isGoingToNext) {
-                        scrollTo<WidgetShopGradeUiModel>()
-                    } else {
-                        scrollTo<WidgetFeeServiceUiModel>()
-                    }
-                }
-            })
-            return@lazy coachMark
-        }
-    }
-
-    private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
-        return lazy {
-            arrayListOf<CoachMark2Item>().apply {
-                getPmGradesChevronView()?.let { view ->
-                    add(
-                        CoachMark2Item(
-                            view,
-                            view.context.getString(R.string.pm_coachmark_title_1),
-                            view.context.getString(R.string.pm_coachmark_description_1),
-                            position = CoachMark2.POSITION_BOTTOM
-                        )
-                    )
-                }
-                feeServiceView?.let { view ->
-                    add(
-                        CoachMark2Item(
-                            view,
-                            view.context.getString(R.string.pm_coachmark_title_2),
-                            view.context.getString(R.string.pm_coachmark_description_2),
-                            position = CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getPmGradesChevronView(): View? {
-        return getViewHolder<WidgetShopGradeUiModel>()?.findViewById(R.id.chevronPmGrade)
-    }
-
-    private inline fun <reified T : Visitable<*>> getViewHolder(): View? {
-        val position = adapter.list.indexOfFirst { it is T }
-        return recyclerView?.layoutManager?.getChildAt(position)
     }
 }

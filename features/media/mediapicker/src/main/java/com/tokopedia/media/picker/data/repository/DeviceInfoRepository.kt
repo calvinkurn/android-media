@@ -2,14 +2,15 @@ package com.tokopedia.media.picker.data.repository
 
 import android.os.Environment
 import android.os.StatFs
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.picker.common.base.BaseRepository
+import javax.inject.Inject
 
-open class DeviceInfoRepository constructor(
-    dispatcher: CoroutineDispatchers
-) : BaseRepository<Long, Boolean>(dispatcher.main) {
+interface DeviceInfoRepository {
+    fun isDeviceStorageAlmostFull(minStorageThreshold: Long): Boolean
+}
 
-    override fun execute(param: Long): Boolean {
+open class DeviceInfoRepositoryImpl @Inject constructor() : DeviceInfoRepository {
+
+    override fun isDeviceStorageAlmostFull(minStorageThreshold: Long): Boolean {
         val userData = Environment.getDataDirectory()
         if (!userData.exists()) return false
 
@@ -19,7 +20,6 @@ open class DeviceInfoRepository constructor(
 
         val result = availableBlocks * blockSize
 
-        return result < param
+        return result < minStorageThreshold
     }
-
 }

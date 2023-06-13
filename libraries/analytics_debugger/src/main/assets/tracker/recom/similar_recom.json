@@ -27,6 +27,7 @@
     {
       "eventCategory": "similar product recommendation page",
       "item_list": ".*",
+      "item_list_name": ".*",
       "event": "view_item_list",
       "eventAction": "impression - product recommendation|impression - product recommendation - non login",
       "sessionIris" : ".*",

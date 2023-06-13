@@ -13,9 +13,11 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING_ADDRESS_MUTATION) private val queryString: String,
-                                                          private val graphqlUseCase: GraphqlUseCase,
-                                                          private val schedulers: ExecutorSchedulers) : UseCase<SetShippingAddressData>() {
+class ChangeShippingAddressGqlUseCase @Inject constructor(
+    @Named(CHANGE_SHIPPING_ADDRESS_MUTATION) private val queryString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<SetShippingAddressData>() {
 
     companion object {
         const val CHANGE_SHIPPING_ADDRESS_MUTATION = "CHANGE_SHIPPING_ADDRESS_MUTATION"
@@ -31,19 +33,18 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val gqlResponse = it.getData<ChangeShippingAddressGqlResponse>(ChangeShippingAddressGqlResponse::class.java)
-                    if (gqlResponse != null) {
-                        SetShippingAddressData().apply {
-                            isSuccess = gqlResponse.changeShippingAddressResponse.dataResponse.success == 1
-                            messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList()
-                        }
-                    } else {
-                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
+            .map {
+                val gqlResponse = it.getData<ChangeShippingAddressGqlResponse>(ChangeShippingAddressGqlResponse::class.java)
+                if (gqlResponse != null) {
+                    SetShippingAddressData().apply {
+                        isSuccess = gqlResponse.changeShippingAddressResponse.dataResponse.success == 1
+                        messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList()
                     }
+                } else {
+                    throw CartResponseErrorException(CART_ERROR_GLOBAL)
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

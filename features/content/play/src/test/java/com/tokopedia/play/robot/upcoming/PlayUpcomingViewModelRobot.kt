@@ -1,7 +1,6 @@
 package com.tokopedia.play.robot.upcoming
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
@@ -17,7 +16,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -31,7 +29,6 @@ class PlayUpcomingViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     userSession: UserSessionInterface = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = mockk(relaxed = true),
-    playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true)
@@ -44,7 +41,6 @@ class PlayUpcomingViewModelRobot(
         dispatchers = dispatchers,
         userSession = userSession,
         playUiModelMapper = playUiModelMapper,
-        playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
         playShareExperience = playShareExperience,
@@ -123,7 +119,6 @@ fun createPlayUpcomingViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase  = mockk(relaxed = true),
     userSession: UserSessionInterface  = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper  = mockk(relaxed = true),
-    playAnalytic: PlayNewAnalytic  = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE  = mockk(relaxed = true),
     repo: PlayViewerRepository  = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
@@ -136,7 +131,6 @@ fun createPlayUpcomingViewModelRobot(
         dispatchers = dispatchers,
         userSession = userSession,
         playUiModelMapper = playUiModelMapper,
-        playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
         playShareExperience = playShareExperience,

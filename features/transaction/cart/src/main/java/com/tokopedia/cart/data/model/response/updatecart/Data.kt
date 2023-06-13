@@ -9,12 +9,12 @@ import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
  */
 
 data class Data(
-        @SerializedName("error")
-        val error: String = "",
-        @SerializedName("status")
-        val status: Boolean = false,
-        @SerializedName("out_of_service")
-        val outOfService: OutOfService = OutOfService(),
-        @SerializedName("toaster_action")
-        val toasterAction: ToasterAction = ToasterAction()
+    @SerializedName("error")
+    val error: String = "",
+    @SerializedName("status")
+    val status: Boolean = false,
+    @SerializedName("out_of_service")
+    val outOfService: OutOfService = OutOfService(),
+    @SerializedName("toaster_action")
+    val toasterAction: ToasterAction = ToasterAction()
 )

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/close_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:icon_name="CLOSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lbl_PAP_title_bottomsheet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/close_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        android:text="@string/epharmacy_upload_resep_atau_chat_dokter"
+        />
+
+    <include
+        android:id="@+id/chooser_upload"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lbl_PAP_title_bottomsheet"
+        layout="@layout/epharmacy_chooser_item"
+        />
+
+    <include
+        android:id="@+id/chooser_mini_consultation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chooser_upload"
+        layout="@layout/epharmacy_chooser_item"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/static_title_partner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/chooser_mini_consultation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/epharmacy_dilayani_oleh"
+        android:gravity="center"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/bottom_image"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/static_title_partner"
+        app:completeUrl="https://images.tokopedia.net/img/green-waves.png"
+        app:imageDpiSupportType="singleDpi"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bottom_image_logo"
+        android:layout_width="105dp"
+        android:layout_height="26dp"
+        app:layout_constraintTop_toTopOf="@id/bottom_image"
+        app:layout_constraintStart_toStartOf="@id/bottom_image"
+        app:layout_constraintEnd_toEndOf="@id/bottom_image"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

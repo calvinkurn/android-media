@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true"
+    app:layout_goneMarginStart="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ViewStub
+            android:id="@+id/vsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:inflatedId="@+id/channel_title"
+            android:layout="@layout/partial_tokopedianow_view_stub_dc_title"
+            app:layout_constraintBottom_toTopOf="@id/text_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Kategori di TokoNOW!" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toTopOf="@id/rv_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vsTitle"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Hemat 20rb dari belanjaan sebelumnya" />
+
+        <com.tokopedia.tokopedianow.common.view.CircularCardView
+            android:id="@+id/card_view_chevron"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/text_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/vsTitle">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/iconunify_chevron_right"
+                app:tint="@color/Unify_NN900" />
+        </com.tokopedia.tokopedianow.common.view.CircularCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/text_subtitle"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/carousel_shimmering"
+            layout="@layout/layout_tokopedianow_repurchase_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

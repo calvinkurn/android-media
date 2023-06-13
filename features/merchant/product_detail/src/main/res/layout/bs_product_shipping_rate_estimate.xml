@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,15 +23,15 @@
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                app:icon_color_light_enable="@color/Unify_N400"
-                app:icon_color_night_enable="@color/Unify_N500"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_color_night_enable="@color/Unify_NN900"
                 app:icon_name="CLOSE" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shipment_bottom_sheet_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:layout_gravity="center"
                 android:text="@string/merchant_product_detail_shipping"

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar
+package com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,15 +11,15 @@ class TokoFoodPromoToolbar : Toolbar {
     var listener: TokoFoodPromoToolbarListener? = null
     private var viewBinding: ToolbarPromoBinding? = null
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -33,5 +33,4 @@ class TokoFoodPromoToolbar : Toolbar {
             listener?.onBackPressed()
         }
     }
-
 }

@@ -8,9 +8,8 @@
     <color name="orange_red">#ff5722</color>
     <color name="label_color">#868686</color>
     <color name="warm_grey">#999999</color>
-    <color name="transparent">#00000000</color>
     <color name="label_text_color">#9b9b9b</color>
-    <color name="black">#000000</color>
+    <color name="black">@color/Unify_Static_Black</color>
     <color name="black_70">#b2000000</color>
     <color name="black_70_new">#b3000000</color>
     <color name="black_36">#5b000000</color>
@@ -32,11 +31,11 @@
     <color name="white_solid">#ffffffff</color>
     <color name="gradient_solid_bu_widget">#ffe5f5ff</color>
     <color name="topads_borderColor">#50000000</color>
-    <color name="topads_blue_one_gradient_bottom_color">#1C829E</color>
-    <color name="topads_blue_two_gradient_top_color">#3E6786</color>
-    <color name="topads_blue_two_gradient_bottom_color">#2B4A62</color>
-    <color name="topads_green_gradient_top_color">#60BB55</color>
-    <color name="topads_green_gradient_bottom_color">#26A116</color>
-    <color name="topads_purple_gradient_top_color">#7F66D1</color>
-    <color name="topads_purple_gradient_bottom_color">#4F2DC0</color>
+    <color name="topadssdk_dms_blue_one_gradient_bottom_color">#1C829E</color>
+    <color name="topadssdk_dms_blue_two_gradient_top_color">#3E6786</color>
+    <color name="topadssdk_dms_blue_two_gradient_bottom_color">#2B4A62</color>
+    <color name="topadssdk_dms_green_gradient_top_color">#60BB55</color>
+    <color name="topadssdk_dms_green_gradient_bottom_color">#26A116</color>
+    <color name="topadssdk_dms_purple_gradient_top_color">#7F66D1</color>
+    <color name="topadssdk_dms_purple_gradient_bottom_color">#4F2DC0</color>
 </resources>

@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.content.common">
+
+    <application>
+        <activity
+            android:name=".producttag.container.ContentProductTagTestActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.WhiteUnify" />
+    </application>
+</manifest>

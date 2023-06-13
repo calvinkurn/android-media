@@ -9,7 +9,8 @@
     android:layout_margin="14dp"
     app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true"
-    app:contentPadding="16dp">
+    app:contentPadding="16dp"
+    app:cardBackgroundColor="@color/Unify_Background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"

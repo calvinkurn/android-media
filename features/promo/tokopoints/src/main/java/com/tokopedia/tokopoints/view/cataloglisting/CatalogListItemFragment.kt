@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.cataloglisting
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
@@ -17,18 +16,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
-import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS
@@ -37,8 +33,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.CatalogEntity
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
-import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
 import java.util.*
@@ -71,6 +67,30 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
+    override val currentCategoryId: Int
+        get() {
+            return if (arguments != null) {
+                requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
+            } else {
+                CommonConstant.DEFAULT_CATEGORY_TYPE
+            }
+        }
+
+    override val currentSubCategoryId: Int
+        get() {
+            return if (arguments != null) {
+                requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
+            } else {
+                CommonConstant.DEFAULT_CATEGORY_TYPE
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -110,28 +130,37 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         addCatalogListObserver()
     }
 
-    private fun addCatalogListObserver() = viewModel.listCatalogItem.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it.let {
-            when (it) {
-                is Loading -> showLoader()
-                is ErrorMessage -> showError()
-                is Success -> {
-                    hideLoader()
-                    populateCatalog(it.data)
+    private fun addCatalogListObserver() = viewModel.listCatalogItem.observe(
+        viewLifecycleOwner,
+        androidx.lifecycle.Observer {
+            it.let {
+                when (it) {
+                    is Loading -> showLoader()
+                    is ErrorMessage -> showError()
+                    is Success -> {
+                        hideLoader()
+                        populateCatalog(it.data)
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
         }
-    })
+    )
 
-    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let {
-            stopNetworkRequestPerformanceMonitoring()
-            startRenderPerformanceMonitoring()
-            refreshCatalog(it)
-            stopRenderPerformanceMonitoring()
-            stopPerformanceMonitoring()
+    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(
+        viewLifecycleOwner,
+        androidx.lifecycle.Observer {
+            it?.let {
+                stopNetworkRequestPerformanceMonitoring()
+                startRenderPerformanceMonitoring()
+                refreshCatalog(it)
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
+            }
         }
-    })
+    )
 
     override fun onClick(view: View) {
         if (view.id == R.id.text_failed_action) {
@@ -183,32 +212,12 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         mSwipeToRefresh!!.isRefreshing = false
     }
 
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
-
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
-
-    override fun getCurrentCategoryId(): Int {
-        return if (arguments != null) {
-            requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
-        } else CommonConstant.DEFAULT_CATEGORY_TYPE
-        // default category id
-    }
-
-    override fun getCurrentSubCategoryId(): Int {
-        return if (arguments != null) {
-            requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
-        } else CommonConstant.DEFAULT_CATEGORY_TYPE
-        // default category id
-    }
-
     val pointsAvailability: Boolean
         get() = if (arguments != null) {
             requireArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
-        } else false
+        } else {
+            false
+        }
 
     fun getCatalogList(currentCategoryId: Int, currentSubCategoryId: Int) {
         viewModel.getCataloglistItem(currentCategoryId, currentSubCategoryId, viewModel.pointRange)
@@ -245,31 +254,42 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     private fun decorateDialog(dialog: AlertDialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                ContextCompat.getColor(
+                    activityContext,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+            )
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                ContextCompat.getColor(
+                    activityContext,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200
+                )
+            )
         }
     }
 
     /*This section is exclusively for handling flash-sale timer*/
     private fun startUpdateCatalogStatusTimer() {
         mTimer = Timer()
-        mTimer?.schedule(object : TimerTask() {
-            override fun run() {
-                if (mHandler != null) {
-                    mRunnableUpdateCatalogStatus?.let { it ->
-                        mHandler!!.post(it)
+        mTimer?.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    if (mHandler != null) {
+                        mRunnableUpdateCatalogStatus?.let { it ->
+                            mHandler!!.post(it)
+                        }
                     }
                 }
-            }
-        }, 0, if (mRefreshTime > 0) mRefreshTime else CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
+            },
+            0,
+            if (mRefreshTime > 0) mRefreshTime else CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong()
+        )
     }
-
 
     private fun fetchRemoteConfig() {
         mRefreshTime = instance(requireContext()).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
@@ -294,8 +314,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         val adb = AlertDialog.Builder(activityContext)
         adb.setTitle(title)
         adb.setMessage(message)
-        adb.setPositiveButton(R.string.tp_label_ok
-        ) { dialogInterface: DialogInterface?, i: Int -> }
+        adb.setPositiveButton(
+            R.string.tp_label_ok
+        ) { _, _ -> }
         val dialog = adb.create()
         dialog.show()
         decorateDialog(dialog)
@@ -312,7 +333,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun populateCatalog(catalogEntity: CatalogEntity) {
-
         if (catalogEntity.catalogs.isNullOrEmpty()) {
             onEmptyCatalog()
         } else {
@@ -323,9 +343,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
             mAdapter = CatalogListAdapter(finalCatalogList)
             if (mRecyclerViewCatalog?.itemDecorationCount == 0) {
-                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(R.dimen.dp_10),
+                mRecyclerViewCatalog?.addItemDecoration(
+                    SpacesItemDecoration(
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_10),
                         activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14),
-                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14)))
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14)
+                    )
+                )
             }
             mRecyclerViewCatalog?.adapter = mAdapter
             mAdapter?.notifyDataSetChanged()
@@ -353,14 +377,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS,
-                CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS,
-                CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS,
+            CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS,
+            CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGLISTITEM_TOKOPOINT_PLT)

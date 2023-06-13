@@ -1,7 +1,7 @@
 package com.tokopedia.homenav.component
 
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.MatcherAssert
 
 /**
@@ -13,7 +13,7 @@ fun mainNavCassavaTest(func: MainNavCassavaHelper.() -> Unit) =
 
 class MainNavCassavaHelper {
     fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(2000)
     }
 
     infix fun validateAnalytics(func: MainNavCassavaResult.() -> Unit): MainNavCassavaResult {
@@ -32,12 +32,4 @@ class MainNavCassavaResult {
 
 fun waitForLoadCassavaAssert() {
     Thread.sleep(2000)
-}
-
-fun waitForData() {
-    Thread.sleep(10000)
-}
-
-fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryFileName: String) {
-    MatcherAssert.assertThat(cassavaTestRule.validate(queryFileName), hasAllSuccess())
 }

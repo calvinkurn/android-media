@@ -2,6 +2,7 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.gamification.R
@@ -14,6 +15,7 @@ class CekTokoButtonContainer @JvmOverloads constructor(
 
     var btnReminder: GiftBoxReminderButton
     var btnSecond: GreenGradientButton
+    var btnThird:GiftBoxSeruButton
     var viewDivider: View
     var isTablet = false
 
@@ -21,9 +23,11 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         View.inflate(context, layout, this)
         btnReminder = findViewById(R.id.btnFirst)
         btnSecond = findViewById(R.id.btnSecond)
+        btnThird = findViewById(R.id.btnThird)
         viewDivider = findViewById(R.id.view_divider)
         isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
         val lp = LayoutParams(if (isTablet) LayoutParams.WRAP_CONTENT else LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        lp.gravity = Gravity.CENTER_VERTICAL
         layoutParams = lp
         orientation = HORIZONTAL
     }

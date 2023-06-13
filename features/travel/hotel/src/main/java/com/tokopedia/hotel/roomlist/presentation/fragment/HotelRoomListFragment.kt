@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.dialog.DialogUnify
@@ -349,9 +350,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
-        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
-        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
-
+        val minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
@@ -439,7 +438,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun navigateToAddEmailPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+        RouteManager.route(context, ApplinkConstInternalUserPlatform.ADD_EMAIL)
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
@@ -469,7 +468,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun navigateToAddPhonePage() {
-        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+        RouteManager.route(requireContext(), ApplinkConstInternalUserPlatform.ADD_PHONE)
     }
 
     private fun showFailedGetRoomErrorDialog(message: String) {

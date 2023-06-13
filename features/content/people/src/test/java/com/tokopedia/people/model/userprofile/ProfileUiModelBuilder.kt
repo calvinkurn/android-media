@@ -13,14 +13,16 @@ class ProfileUiModelBuilder {
     fun buildProfile(
         userID: String = "1",
         encryptedUserID: String = "1",
-        imageCover: String = "",
+        imageCover: String = "123.jpg",
         name: String = "Jonathan Darwin",
         username: String = "jonathandarwin",
         biography: String = "testing",
-        badges: List<Any?> = emptyList(),
+        badges: List<String> = emptyList(),
         stats: ProfileStatsUiModel = ProfileStatsUiModel.Empty,
         shareLink: LinkUiModel = LinkUiModel.Empty,
         liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,
+        isBlocking: Boolean = false,
+        isBlockedBy: Boolean = false,
     ) = ProfileUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
@@ -32,5 +34,7 @@ class ProfileUiModelBuilder {
         stats = stats,
         shareLink = shareLink,
         liveInfo = liveInfo,
+        isBlocking = isBlocking,
+        isBlockedBy = isBlockedBy,
     )
 }

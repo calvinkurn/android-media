@@ -244,7 +244,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
 
     private fun handlePageMode() {
-        if (pageMode == PageMode.UPDATE) {
+        if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
             binding?.btnSaveDraft?.gone()
         }
     }
@@ -329,6 +329,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             when (it) {
                 false -> onUniqueAccountRequired()
                 true -> onUniqueAccountNotRequired()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -354,12 +357,18 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             when (it) {
                 true -> renderNotCampaignRelation()
                 false -> renderCampaignRelation()
+                else -> {
+                    //no-op
+                }
             }
         }
         viewModel.isRelatedCampaignsVisible.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showRelatedCampaignsGroup()
                 false -> hideRelatedCampaignsGroup()
+                else -> {
+                    // no-op
+                }
             }
         }
         viewModel.isRelatedCampaignButtonActive.observe(viewLifecycleOwner) {
@@ -375,6 +384,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         when (active) {
             true -> choosePreviousCampaignButton.enable()
             false -> choosePreviousCampaignButton.disable()
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -578,6 +590,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                     showActionErrorMessage(it.error)
                     hideSaveDraftButtonLoading()
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -600,6 +615,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 is CampaignRuleActionResult.ShowConfirmation -> {
                     hideCreateCampaignButtonLoading()
                     showCreateCampaignConfirmationDialog()
+                }
+                else -> {
+                    //no-op
                 }
             }
         }
@@ -625,6 +643,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             CampaignRuleValidationResult.InvalidBuyerOptions -> showErrorMessageToaster(R.string.campaign_rule_invalid_buyer_options_message)
             CampaignRuleValidationResult.InvalidPaymentMethod -> showErrorMessageToaster(R.string.campaign_rule_invalid_payment_type_message)
             CampaignRuleValidationResult.TNCNotAccepted -> showErrorMessageToaster(R.string.campaign_rule_tnc_not_accepted_message)
+            else -> {
+                //no-op
+            }
         }
     }
 

@@ -13,10 +13,14 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LA
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.WAREHOUSES
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import kotlin.math.cos
 import kotlin.math.roundToInt
+
+private const val WAREHOUSES_SEPARATOR = ","
+private const val WAREHOUSE_ID_SERVICE_TYPE_SEPARATOR = "#"
 
 @Suppress("MagicNumber")
 internal fun CardView.getVerticalShadowOffset(): Int {
@@ -94,4 +98,14 @@ internal fun RequestParams.putChooseAddressParams(localCacheModel: LocalCacheMod
 
     if (localCacheModel.warehouse_id.isNotEmpty())
         putString(USER_WAREHOUSE_ID, localCacheModel.warehouse_id)
+
+    if (localCacheModel.warehouses.isNotEmpty())
+        putString(WAREHOUSES, localCacheModel.warehousesParams())
 }
+
+private fun LocalCacheModel.warehousesParams() =
+    warehouses.joinToString(separator = WAREHOUSES_SEPARATOR) {
+        it.warehouse_id.toString() +
+            WAREHOUSE_ID_SERVICE_TYPE_SEPARATOR +
+            it.service_type
+    }

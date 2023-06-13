@@ -13,16 +13,7 @@ object ProductAddEditImageTracking {
         sendAddProductClick(SCREEN, shopId, "click back on gallery page")
     }
 
-    fun trackContinue(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click continue on gallery page")
-    }
-
     fun trackEditBack(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click back on edit photo page")
     }
-
-    fun trackEditContinue(shopId: String) {
-        sendAddProductClick(SCREEN, shopId, "click continue on edit photo page")
-    }
-
 }

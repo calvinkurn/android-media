@@ -3,9 +3,14 @@ package com.tokopedia.play.broadcaster.viewmodel.pinnedmessage
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertEvent
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -24,16 +29,21 @@ class PlayBroadcastPinnedMessageTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val uiModelBuilder = UiModelBuilder()
+    private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
 
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
         streamAllowed = true,
         channelId = "123"
     )
+    private val mockException = Exception("any fail")
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     @Before
     fun setUp() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
     }
 
     @Test
@@ -53,7 +63,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -79,7 +89,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -100,7 +110,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -124,7 +134,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 setPinned(newMessage)
@@ -152,7 +162,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 setPinned(newMessage)
@@ -173,7 +183,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 editPinned()
@@ -194,7 +204,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val stateList = robot.recordStateAsList {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 editPinned()
@@ -208,6 +218,80 @@ class PlayBroadcastPinnedMessageTest {
             stateList.last().pinnedMessage
                 .editStatus.isNothing
                 .assertTrue()
+        }
+    }
+
+    @Test
+    fun `when user click pin and request success`() {
+        val pinnedProduct = mockProductTagSectionList.first().products.first()
+
+        coEvery { mockRepo.setPinProduct(any(), pinnedProduct) } returns true
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val stateList = robot.recordStateAsList {
+                getAccountConfiguration()
+                startLive()
+
+                getViewModel().submitAction(PlayBroadcastAction.SetProduct(mockProductTagSectionList))
+                getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(pinnedProduct))
+            }.takeLast(2)
+
+            val result = stateList.last().selectedProduct.map {
+                it.products.findLast { product ->
+                    product.id == pinnedProduct.id
+                }
+            }.first()
+
+            result?.assertEqualTo(pinnedProduct.copy(pinStatus = PinProductUiModel(
+                isPinned = !pinnedProduct.pinStatus.isPinned,
+                canPin = pinnedProduct.pinStatus.canPin,
+                isLoading = pinnedProduct.pinStatus.isLoading,
+            )))
+        }
+    }
+
+    @Test
+    fun `when user click pin and request fail wont do anything`() {
+        val pinnedProduct = mockProductTagSectionList.first().products.first()
+
+        coEvery { mockRepo.setPinProduct(any(), pinnedProduct) } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+           robot.recordStateAsList {
+                getAccountConfiguration()
+                startLive()
+                getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(pinnedProduct))
+            }
+        }
+    }
+
+    @Test
+    fun `when user click pin and request throws exception`() {
+        val pinnedProduct = mockProductTagSectionList.first().products.first()
+
+        coEvery { mockRepo.setPinProduct(any(), pinnedProduct) } throws mockException
+
+        val robot = PlayBroadcastViewModelRobot(dispatchers = testDispatcher, channelRepo = mockRepo)
+
+        robot.use {
+            val event = robot.recordEvent {
+                getAccountConfiguration()
+                startLive()
+                getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(pinnedProduct))
+            }
+            event.last().assertEvent(
+                PlayBroadcastEvent.FailPinUnPinProduct(mockException, pinnedProduct.pinStatus.isPinned)
+            )
         }
     }
 

@@ -28,6 +28,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VISIT_CAMERA = "visit camera"
 
     const val EVENT_CATEGORY = "product review detail page"
+    const val EVENT_CATEGORY_EDIT = "product review detail page - edit"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
         "product review detail page - create review form bottomsheet"
     const val EVENT_CATEGORY_MEDIA_CAMERA = "media camera"

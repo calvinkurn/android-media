@@ -9,6 +9,8 @@ object DiscountUtil {
 
     private const val DISCOUNT_MAX = 100
     private const val DISCOUNT_INPUT_MAX = 99L
+    private const val MAX_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.99
+    private const val MIN_CAMPAIGN_DISCOUNT_PERCENTAGE = 0.01
 
     fun getDiscountPercent(originalPrice: Double, discountedPrice: Double): Double {
         return (DISCOUNT_MAX - (originalPrice / discountedPrice) * DISCOUNT_MAX)
@@ -40,6 +42,14 @@ object DiscountUtil {
 
     fun getPercentLong(percent: Double): Long {
         return ceil(DISCOUNT_MAX * percent).toLong()
+    }
+
+    fun getProductMaxDiscountedPrice(originalPrice: Long): Int {
+        return ceil(originalPrice * MAX_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
+    }
+
+    fun getProductMinDiscountedPrice(originalPrice: Long): Int {
+        return ceil(originalPrice * MIN_CAMPAIGN_DISCOUNT_PERCENTAGE).toInt()
     }
 
 }

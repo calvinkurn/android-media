@@ -10,7 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -45,8 +47,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -56,6 +56,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
     private val analyticManager: ProductChooserAnalyticManager,
+    private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
@@ -140,16 +141,27 @@ class ProductChooserBottomSheet @Inject constructor(
         setupObserve()
     }
 
+    override fun onStart() {
+        super.onStart()
+        eventBus.emit(Event.ViewBottomSheet)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductSortBottomSheet -> childFragment.setListener(this)
+            is ProductSortBottomSheet -> {
+                childFragment.setListener(this)
+            }
         }
     }
 
@@ -175,7 +187,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
         setCloseClickListener {
@@ -241,9 +253,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(
-                                R.string.play_bro_product_chooser_error_save
-                            )
+                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
                         )
                     }
                     else -> {}
@@ -428,7 +438,7 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 isSelectedProductsChanged = true
-                viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
+                viewModel.submitAction(ProductSetupAction.ToggleSelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
@@ -442,6 +452,9 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is SearchBarViewComponent.Event.OnSearched -> {
                 viewModel.submitAction(ProductSetupAction.SearchProduct(event.keyword))
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -457,7 +470,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
-                RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
+                router.route(context, ApplinkConst.PRODUCT_ADD)
             }
             ProductErrorViewComponent.Event.RetryClicked -> {
                 viewModel.submitAction(ProductSetupAction.RetryFetchProducts)
@@ -478,6 +491,9 @@ class ProductChooserBottomSheet @Inject constructor(
             }
             is Event.SortChosen -> {
                 viewModel.submitAction(ProductSetupAction.SetSort(event.sort))
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -510,6 +526,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroProductChooserBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,
@@ -535,7 +552,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     sealed class Event {
-
+        object ViewBottomSheet : Event()
         object ExitDialogConfirm : Event()
         object ExitDialogCancel : Event()
         object CloseClicked : Event()

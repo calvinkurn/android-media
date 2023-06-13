@@ -21,19 +21,26 @@ class CMHomeWidgetViewHolder(
     private val binding: HomeDcCmHomeWidgetItemBinding? by viewBinding()
 
     override fun bind(dataModel: CMHomeWidgetDataModel) {
-        binding?.run{
+        binding?.run {
             dataModel.cmHomeWidgetData?.let { cmHomeWidgetData ->
-                if(cmHomeWidgetData.cmHomeWidgetProductCardData.isNullOrEmpty()){
-                    cmHomeWidget.visibility = View.GONE
-                }else {
-                    cmHomeWidget.visibility = View.VISIBLE
-                    cmHomeWidget.setOnCMHomeWidgetCloseClickListener(this@CMHomeWidgetViewHolder)
-                    cmHomeWidget.loadCMHomeWidgetData(cmHomeWidgetData)
-                    setChannelDivider(dataModel.channel)
+                if(cmHomeWidgetData.cmHomeWidgetProductCardData.isNullOrEmpty() &&
+                    cmHomeWidgetData.cMHomeWidgetPaymentData.isNullOrEmpty()) {
+                        cmHomeWidget.visibility = View.GONE
+                } else {
+                    activateCMHomeWidget(dataModel)
                 }
             } ?: run {
                 callback.getCMHomeWidget()
             }
+        }
+    }
+
+    private fun activateCMHomeWidget(dataModel: CMHomeWidgetDataModel) {
+        binding?.run {
+            cmHomeWidget.visibility = View.VISIBLE
+            cmHomeWidget.setOnCMHomeWidgetCloseClickListener(this@CMHomeWidgetViewHolder)
+            dataModel.cmHomeWidgetData?.let { cmHomeWidget.loadCMHomeWidgetData(it) }
+            setChannelDivider(dataModel.channel)
         }
     }
 
@@ -64,5 +71,9 @@ class CMHomeWidgetViewHolder(
     override fun onRemoveCmWidgetLocally() {
         binding?.cmHomeWidget?.visibility = View.GONE
         callback.onRemoveCMWidgetLocally()
+    }
+
+    override fun updateCmMHomeWidget() {
+        callback.getCMHomeWidget()
     }
 }

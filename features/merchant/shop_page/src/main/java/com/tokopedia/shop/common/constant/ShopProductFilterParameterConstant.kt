@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.constant
 
 const val SORT_PARAM_KEY = "order_by"
+const val IS_FULFILLMENT_KEY = "is_fulfillment"
 const val PMIN_PARAM_KEY = "pmin"
 const val PMAX_PARAM_KEY = "pmax"
 const val RATING_PARAM_KEY = "rt"

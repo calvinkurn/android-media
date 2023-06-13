@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Main Page-->
+    <string name="privacy_center_footer_image" translatable="false">https://images.tokopedia.net/img/android/user/privacy_center_footer/img_main_page_privacy_center.png</string>
+
+    <!--Search History-->
+    <string name="search_history_empty_image" translatable="false">https://images.tokopedia.net/img/android/user/privacy_center/img_privacy_center_search_history_empty.png</string>
+
+    <!--Recommendation Section-->
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_1" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_1.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_2" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_2.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_3" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_3.png</string>
+
+    <!--Share Wishlist-->
+    <string name="sharing_wishlist_empty_page">https://images.tokopedia.net/img/android/user/privacy_center/img_privacy_center_empty_wishlist.png</string>
+
+    <string name="dsar_add_email_illustration" translatable="false">https://images.tokopedia.net/img/android/account/privacycenter/img_add_name_illustration.png</string>
+    <string name="dsar_on_progress_illustration" translatable="false">https://images.tokopedia.net/img/android/account/privacycenter/img_request_on_progress.png</string>
+    <string name="dsar_request_success_illustration" translatable="false">https://images.tokopedia.net/img/android/accounts/privacycenter/request_success.png</string>
+
+
+</resources>

@@ -3,11 +3,15 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
+import com.tokopedia.buyerorderdetail.presentation.adapter.OrderStatusLabelsAdapter
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -29,18 +33,19 @@ class OrderStatusHeaderViewHolder(
     private val tvBuyerOrderDetailSeeDetail = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeDetail)
     private val tvBuyerOrderDetailStatusOrder = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailStatusOrder)
 
-    init {
-        setupSeeOrderStatusDetail()
-    }
+    private val labelsAdapter = OrderStatusLabelsAdapter()
 
-    private var element: OrderStatusUiModel.OrderStatusHeaderUiModel? = null
+    init {
+        setupOrderStatusLabelsRecyclerView()
+    }
 
     override fun bind(element: OrderStatusUiModel.OrderStatusHeaderUiModel?) {
         element?.let {
-            this.element = element
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
             setupPreOrderLabel(it.preOrder)
+            setupOrderStatusLabels(it.labels)
+            setupSeeOrderStatusDetail(it)
             setupSeeDetailVisibility(it.orderId)
         }
     }
@@ -51,7 +56,6 @@ class OrderStatusHeaderViewHolder(
                 val (oldItem, newItem) = it
                 if (oldItem is OrderStatusUiModel.OrderStatusHeaderUiModel && newItem is OrderStatusUiModel.OrderStatusHeaderUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-                    this.element = element
                     if (oldItem.indicatorColor != newItem.indicatorColor) {
                         setupIndicatorColor(newItem.indicatorColor)
                     }
@@ -61,6 +65,10 @@ class OrderStatusHeaderViewHolder(
                     if (oldItem.preOrder != newItem.preOrder) {
                         setupPreOrderLabel(newItem.preOrder)
                     }
+                    if (oldItem.labels != newItem.labels) {
+                        setupOrderStatusLabels(newItem.labels)
+                    }
+                    setupSeeOrderStatusDetail(newItem)
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
@@ -69,15 +77,25 @@ class OrderStatusHeaderViewHolder(
         super.bind(element, payloads)
     }
 
-    private fun setupSeeOrderStatusDetail() {
+    private fun setupOrderStatusLabelsRecyclerView() {
+        val rv = itemView.findViewById<RecyclerView>(R.id.rv_buyer_order_detail_order_status_labels)
+        rv.layoutManager = FlexboxLayoutManager(itemView.context).apply {
+            alignItems = AlignItems.FLEX_START
+        }
+        rv.adapter = labelsAdapter
+    }
+
+    private fun setupSeeOrderStatusDetail(element: OrderStatusUiModel.OrderStatusHeaderUiModel) {
         tvBuyerOrderDetailSeeDetail?.apply {
             setOnClickListener {
-                val element = element
-                if (element == null || element.orderId.isBlank()) {
+                if (element.orderId.isBlank()) {
                     showToaster(context.getString(R.string.error_message_please_reload_order_detail))
                 } else {
                     navigator.goToTrackOrderPage(element.orderId)
-                    BuyerOrderDetailTracker.eventClickSeeOrderHistoryDetail(element.orderStatusId, element.orderId)
+                    BuyerOrderDetailTracker.eventClickSeeOrderHistoryDetail(
+                        orderStatusCode = element.orderStatusId,
+                        orderId = element.orderId
+                    )
                 }
             }
         }
@@ -97,6 +115,10 @@ class OrderStatusHeaderViewHolder(
         } else {
             labelBuyerOrderDetailPreOrder?.gone()
         }
+    }
+
+    private fun setupOrderStatusLabels(labels: List<String>) {
+        labelsAdapter.setLabels(labels)
     }
 
     private fun setupSeeDetailVisibility(orderId: String) {

@@ -178,7 +178,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
             loadingLayout.hide()
             when (it) {
                 is Success -> {
-                    redirectToSuccessFragment(it.data)
+                    redirectToThankYouFragment(it.data)
                 }
                 is Fail -> {
                     handleThrowable(it.throwable)
@@ -271,9 +271,9 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
         showToaster(errorMessage, toasterType = Toaster.TYPE_ERROR)
     }
 
-    private fun redirectToSuccessFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
+    private fun redirectToThankYouFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
         loadingLayout.gone()
-        (activity as WithdrawActivity).openSuccessFragment(withdrawalRequest, submitWithdrawalResponse)
+        (activity as WithdrawActivity).openThankYouFragment(withdrawalRequest, submitWithdrawalResponse)
     }
 
     private fun showUIComponent() {

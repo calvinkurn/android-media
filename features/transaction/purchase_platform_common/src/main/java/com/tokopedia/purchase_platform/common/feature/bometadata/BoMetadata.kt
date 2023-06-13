@@ -6,16 +6,16 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class BoMetadata(
-        @SerializedName("bo_type")
-        val boType: Int = 0,
-        @SerializedName("bo_eligibilities")
-        val boEligibilities: List<BoEligibility> = emptyList()
-): Parcelable
+    @SerializedName("bo_type")
+    val boType: Int = 0,
+    @SerializedName("bo_eligibilities")
+    val boEligibilities: List<BoEligibility> = emptyList()
+) : Parcelable
 
 @Parcelize
 class BoEligibility(
-        @SerializedName("key")
-        val key: String = "",
-        @SerializedName("value")
-        val value: String = ""
-): Parcelable
+    @SerializedName("key")
+    val key: String = "",
+    @SerializedName("value")
+    val value: String = ""
+) : Parcelable

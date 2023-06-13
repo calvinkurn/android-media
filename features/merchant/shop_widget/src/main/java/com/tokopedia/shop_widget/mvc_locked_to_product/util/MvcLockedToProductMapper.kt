@@ -115,16 +115,14 @@ object MvcLockedToProductMapper {
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
         isSellerView: Boolean
     ): ProductCardModel {
-        return if(!MvcLockedToProductUtil.isMvcPhase2()){
-            createProductCardModelPhase1(productResponse)
-        } else {
+
             val model = createBaseProductCartModelPhase2(productResponse)
             if (productResponse.isVariant() || isSellerView) {
-                createProductCardWithDefaultAtcModel(model)
+                return createProductCardWithDefaultAtcModel(model)
             } else {
-                createProductCardWithQuantityAtcModel(productResponse, model)
+                return createProductCardWithQuantityAtcModel(productResponse, model)
             }
-        }
+
     }
 
     private fun createBaseProductCartModelPhase2(
@@ -175,26 +173,6 @@ object MvcLockedToProductMapper {
             hasAddToCartButton = true
         )
     }
-
-    private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
-        return ProductCardModel(
-            productName = productResponse.name,
-            productImageUrl = productResponse.imageUrl,
-            formattedPrice = productResponse.displayPrice,
-            slashedPrice = productResponse.originalPrice,
-            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
-            freeOngkir = ProductCardModel.FreeOngkir(
-                productResponse.isShowFreeOngkir,
-                productResponse.freeOngkirPromoIcon
-            ),
-            isOutOfStock = productResponse.isSoldOut,
-            ratingCount = productResponse.rating,
-            countSoldRating = getProductCardRating(productResponse.averageRating),
-            reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
-        )
-    }
-
 
     private fun getProductCardRating(averageRating: Double): String {
         return averageRating.toString().takeIf { averageRating != 0.0 }.orEmpty()

@@ -4,6 +4,7 @@ object BuyerOrderDetailActionButtonKey {
     const val ASK_SELLER = "ask_seller"
     const val BACK = "back"
     const val BUY_AGAIN = "buy_again"
+    const val REORDER = "retry_order"
     const val FINISH_ORDER = "finish_order"
     const val GIVE_REVIEW = "give_review"
     const val HELP = "help"
@@ -15,4 +16,7 @@ object BuyerOrderDetailActionButtonKey {
     const val VIEW_COMPLAINT = "view_complaint"
     const val RESPONSE_EXTEND_ORDER = "response_extend_order"
     const val SEE_POD = "pod_details"
+    const val RE_UPLOAD_PRESCRIPTION = "epharmacy_reupload_prescription"
+    const val CHECK_PRESCRIPTION = "epharmacy_check_prescription"
+    const val PARTIAL_ORDER_FULFILLMENT = "response_partial_order_fulfillment"
 }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.tokopedia.tokopoints.view.adapter.SectionCarouselAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
@@ -54,7 +52,7 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_carousel)
             btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener { v: View? ->
+            btnSeeAll.setOnClickListener {
                 handledClick(content.cta.appLink, content.cta.url,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
             }

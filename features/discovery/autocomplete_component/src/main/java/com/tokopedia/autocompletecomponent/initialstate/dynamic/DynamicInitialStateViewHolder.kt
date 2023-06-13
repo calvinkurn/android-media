@@ -7,14 +7,13 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicInitialStateBinding
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicItemInitialStateBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.util.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicInitialStateViewHolder(
@@ -99,12 +98,7 @@ class DynamicInitialStateViewHolder(
                 val icon = binding?.initialStateDynamicIcon ?: return
 
                 icon.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-                    ImageHandler.loadImageRounded(
-                        itemView.context,
-                        icon,
-                        item.imageUrl,
-                        6.toDp().toFloat()
-                    )
+                    icon.loadImageRounded(item.imageUrl)
                 }
             }
 

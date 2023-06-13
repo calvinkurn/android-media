@@ -7,7 +7,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -153,17 +152,11 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         visitableList.size shouldBe 19
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 0) {
-                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
-            }
-            else if (index == 1 || index == 17) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-            }
-            else if (index == 2 || index == 18) {
-                visitable.shouldBeInstanceOf<CpmDataView>()
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemDataView>()
+            when (index) {
+                0 -> visitable.shouldBeInstanceOf<ChooseAddressDataView>()
+                1, 17 -> visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+                2, 18 -> visitable.shouldBeInstanceOf<CpmDataView>()
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }
@@ -190,17 +183,11 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         visitableList.size shouldBe 37
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 0) {
-                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
-            }
-            else if (index == 1 || index == 17 || index == 33) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-            }
-            else if (index == 2 || index == 18 || index == 35 || index == 36) {
-                visitable.shouldBeInstanceOf<CpmDataView>()
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemDataView>()
+            when (index) {
+                0 -> visitable.shouldBeInstanceOf<ChooseAddressDataView>()
+                1, 17, 33 -> visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+                2, 18, 35, 36 -> visitable.shouldBeInstanceOf<CpmDataView>()
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }

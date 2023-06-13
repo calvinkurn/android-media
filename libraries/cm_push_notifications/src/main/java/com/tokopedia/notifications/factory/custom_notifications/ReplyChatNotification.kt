@@ -5,18 +5,22 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.RemoteInput
+import com.tokopedia.bubbles.factory.BubblesFactoryImpl
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.factory.RichDefaultNotification
+import com.tokopedia.notifications.factory.helper.BubbleTopChatNotificationHelper
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.user.session.UserSession
 
 class ReplyChatNotification(
     context: Context,
-    baseNotificationModel: BaseNotificationModel
-) : RichDefaultNotification(context, baseNotificationModel) {
+    baseNotificationModel: BaseNotificationModel,
+    private val baseNotificationTopChatList: List<BaseNotificationModel>
+) : RichDefaultNotification(context, baseNotificationModel, baseNotificationTopChatList) {
 
     override fun createNotification(): Notification? {
         val replyAbleNotificationBuilder = setupReplyAbleNotificationBuilder()
@@ -33,6 +37,7 @@ class ReplyChatNotification(
         }
         setNotificationIcon(builder)
         addReplyChatAction(builder)
+        addBubbleChatAction(builder)
         return builder
     }
 
@@ -99,9 +104,21 @@ class ReplyChatNotification(
         intent.putExtra(MESSAGE_ID, baseNotificationModel.payloadExtra?.topchat?.messageId)
         intent.putExtra(NOTIFICATION_ID, notificationId)
         intent.putExtra(USER_ID, userSession.userId)
-        return PendingIntent.getBroadcast(
-            context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context,
+                notificationId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                notificationId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
     }
 
     /**
@@ -113,7 +130,7 @@ class ReplyChatNotification(
         return if (messageId == null) {
             EMPTY_MESSAGE_ID
         } else {
-            val result: Int = if (messageId.length > LIMIT_NOTIFICATION_ID) {
+            val result: Int = if (messageId.length >= LIMIT_NOTIFICATION_ID) {
                 val tempId =
                     messageId.substring(messageId.length - LIMIT_NOTIFICATION_ID, messageId.length)
                 tempId.toIntOrZero()
@@ -128,6 +145,21 @@ class ReplyChatNotification(
         return RemoteInput.Builder(REPLY_KEY).setLabel(REPLY_LABEL).build()
     }
 
+    private fun addBubbleChatAction(builder: NotificationCompat.Builder) {
+        if (baseNotificationModel.isEnableBubbleOnSellerTopChat(context)) {
+            val bubblesFactory = BubblesFactoryImpl(context)
+            val bubbleTopChatNotificationHelper = BubbleTopChatNotificationHelper(
+                baseNotificationTopChatList,
+                bubblesFactory,
+                null
+            )
+            bubbleTopChatNotificationHelper.setupBubble(
+                builder,
+                baseNotificationModel
+            )
+        }
+    }
+
     companion object {
         private const val INTENT_ACTION_REPLY = "NotificationChatServiceReceiver.REPLY_CHAT"
         private const val REPLY_KEY = "reply_chat_key"
@@ -136,6 +168,6 @@ class ReplyChatNotification(
         private const val NOTIFICATION_ID = "notification_id"
         private const val USER_ID = "user_id"
         private const val EMPTY_MESSAGE_ID = 0
-        private const val LIMIT_NOTIFICATION_ID = 4
+        private const val LIMIT_NOTIFICATION_ID = 9
     }
 }

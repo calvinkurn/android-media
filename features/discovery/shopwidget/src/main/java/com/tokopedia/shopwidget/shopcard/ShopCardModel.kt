@@ -43,7 +43,7 @@ data class ShopCardModel(
     val isInactive = status == KEY_SHOP_STATUS_INACTIVE
 
     data class ShopItemProduct(
-            val id: Int = 0,
+            val id: String = "0",
             val name: String = "",
             val url: String = "",
             val applink: String = "",

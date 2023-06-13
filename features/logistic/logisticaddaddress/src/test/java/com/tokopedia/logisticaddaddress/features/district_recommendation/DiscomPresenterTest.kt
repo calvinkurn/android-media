@@ -12,6 +12,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import io.mockk.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,8 +47,9 @@ class DiscomPresenterTest {
     fun `load data with data`() {
         val expected = DiscomDummyProvider.getSuccessResponse()
 
-        every { getDistrictRecommendation.execute(any(), any())
-        } answers  {
+        every {
+            getDistrictRecommendation.execute(any(), any())
+        } answers {
             Observable.just(expected)
         }
 
@@ -62,8 +64,9 @@ class DiscomPresenterTest {
 
     @Test
     fun `load data with data return error`() {
-        every { getDistrictRecommendation.execute(any(), any())
-        } answers  {
+        every {
+            getDistrictRecommendation.execute(any(), any())
+        } answers {
             Observable.error(throwable)
         }
 
@@ -80,8 +83,9 @@ class DiscomPresenterTest {
     fun `load data with data return empty`() {
         val expected = DiscomDummyProvider.getEmptyResponse()
 
-        every { getDistrictRecommendation.execute(any(), any())
-        } answers  {
+        every {
+            getDistrictRecommendation.execute(any(), any())
+        } answers {
             Observable.just(expected)
         }
 
@@ -98,11 +102,12 @@ class DiscomPresenterTest {
     fun `load data with token data`() {
         val expected = AddressResponse().apply {
             addresses = arrayListOf(
-                    Address().apply { cityName = "Jakarta" }
+                Address().apply { cityName = "Jakarta" }
             )
             isNextAvailable = false
         }
-        every { getDistrictRequestUseCase.execute(any(), any())
+        every {
+            getDistrictRequestUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddressResponse>>().onNext(expected)
         }
@@ -116,8 +121,8 @@ class DiscomPresenterTest {
 
     @Test
     fun `load data with token data return error`() {
-
-        every { getDistrictRequestUseCase.execute(any(), any())
+        every {
+            getDistrictRequestUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddressResponse>>().onError(throwable)
         }
@@ -136,7 +141,8 @@ class DiscomPresenterTest {
             isNextAvailable = false
         }
 
-        every { getDistrictRequestUseCase.execute(any(), any())
+        every {
+            getDistrictRequestUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddressResponse>>().onNext(expected)
         }
@@ -152,7 +158,8 @@ class DiscomPresenterTest {
     fun `autofill succcess`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
 
-        every { revGeocodeUseCase.execute(any())
+        every {
+            revGeocodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -171,7 +178,8 @@ class DiscomPresenterTest {
     fun `autofill success with circuit breaker on code`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("message error"), errorCode = 101)
 
-        every { revGeocodeUseCase.execute(any())
+        every {
+            revGeocodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -186,7 +194,8 @@ class DiscomPresenterTest {
     @Test
     fun `autofill success with foreign country`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
-        every { revGeocodeUseCase.execute(any())
+        every {
+            revGeocodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -201,7 +210,8 @@ class DiscomPresenterTest {
     @Test
     fun `autofill success with not found location`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
-        every { revGeocodeUseCase.execute(any())
+        every {
+            revGeocodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -225,6 +235,14 @@ class DiscomPresenterTest {
         verifyOrder {
             defaultThrowable.printStackTrace()
         }
+    }
+
+    @Test
+    fun `verify set gms availability flag is correct`() {
+        val gmsAvailable = false
+        presenter.setLocationAvailability(gmsAvailable)
+
+        Assert.assertEquals(presenter.getLocationAvailability(), gmsAvailable)
     }
 
     @Test

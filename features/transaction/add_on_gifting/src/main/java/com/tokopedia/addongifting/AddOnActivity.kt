@@ -28,11 +28,16 @@ class AddOnActivity : BaseSimpleActivity() {
             val source = it.getString(AddOnConstant.EXTRA_ADD_ON_SOURCE) ?: ""
             when (addOnProductData.bottomSheetType) {
                 AddOnProductData.ADD_ON_BOTTOM_SHEET -> {
-                    val addOnBottomSheet = AddOnBottomSheet(addOnProductData, source)
+                    val addOnBottomSheet = AddOnBottomSheet().apply {
+                        this.addOnProductData = addOnProductData
+                        this.source = source
+                    }
                     addOnBottomSheet.show(supportFragmentManager, "")
                 }
                 AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET -> {
-                    val addOnUnavailableBottomSheet = AddOnUnavailableBottomSheet(addOnProductData)
+                    val addOnUnavailableBottomSheet = AddOnUnavailableBottomSheet().apply {
+                        this.addOnProductData = addOnProductData
+                    }
                     addOnUnavailableBottomSheet.show(supportFragmentManager, "")
                 }
                 else -> {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:id="@+id/uc_tool_watermark"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/watermark_type_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="@dimen/editor_watermark_selected_padding"
+            android:id="@+id/btn_watermark_diagonal"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="@dimen/editor_watermark_selected_padding"
+            android:layout_marginStart="16dp"
+            android:id="@+id/btn_watermark_center"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/watermark_type_container"
+        android:text="@string/editor_tool_watermark_label"
+        app:typographyType="small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

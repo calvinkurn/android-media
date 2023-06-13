@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.view.carousel.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
@@ -15,11 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayPinnedProductBinding
-import com.tokopedia.play.view.type.ComingSoon
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,7 +29,7 @@ class ProductCarouselViewHolder private constructor() {
 
     class PinnedProduct(
         private val binding: ItemPlayPinnedProductBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
         private val context: Context
@@ -48,14 +45,14 @@ class ProductCarouselViewHolder private constructor() {
         private val iconCartEnabled = getIconUnifyDrawable(
             context,
             IconUnify.CART,
-            MethodChecker.getColor(context, unifyR.color.Unify_GN500),
+            MethodChecker.getColor(context, unifyR.color.Unify_GN500)
         )
 
         private val iconCartDisabled by lazy {
             getIconUnifyDrawable(
                 context,
                 IconUnify.CART,
-                MethodChecker.getColor(context, unifyR.color.Unify_NN300),
+                MethodChecker.getColor(context, unifyR.color.Unify_NN300)
             )
         }
 
@@ -64,30 +61,50 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        private fun UnifyButton.configButton(button: ProductButtonUiModel) {
+            // Setup Icon if any, for now its only for ATC
+            val isDisabled = button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON
+            val iconType = if (isDisabled) iconCartDisabled else iconCartEnabled
+
+            when (button.type) {
+                ProductButtonType.ATC -> {
+                    text = "+"
+                    setDrawable(iconType, UnifyButton.DrawablePosition.RIGHT)
+                }
+                else -> {
+                    text = button.text
+                }
+            }
+
+            binding.btnFirst.isEnabled = !isDisabled
+            binding.btnSecond.isEnabled = !isDisabled
+        }
+
+        @SuppressLint("ResourceType")
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
             binding.labelOos.showWithCondition(item.stock == OutOfStock)
-
-            binding.btnAtc.setDrawable(
-                if (item.stock is StockAvailable) iconCartEnabled else iconCartDisabled,
-                UnifyButton.DrawablePosition.RIGHT,
-            )
-
             binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
 
-            binding.btnAtc.isEnabled = item.stock is StockAvailable
-            binding.btnBuy.isEnabled = item.stock is StockAvailable
+            /**
+             * Buttons
+             * First button must be ATC
+             */
+            val firstButton = item.buttons.firstOrNull { it.type == ProductButtonType.ATC }.orDefault()
+            val lastButton = item.buttons.firstOrNull { it.type != ProductButtonType.ATC }.orDefault()
 
-            binding.btnAtc.showWithCondition(item.stock != ComingSoon)
-            binding.btnBuy.showWithCondition(item.stock != ComingSoon)
+            binding.btnFirst.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnSecond.showWithCondition(item.buttons.isNotEmpty())
+            binding.btnFirst.configButton(firstButton)
+            binding.btnSecond.configButton(lastButton)
 
             when (item.price) {
                 is DiscountedPrice -> {
                     binding.tvDiscount.visibility = View.VISIBLE
                     binding.tvDiscount.text = context.getString(
                         R.string.play_discount_percent,
-                        item.price.discountPercent,
+                        item.price.discountPercent
                     )
                     binding.tvOriginalPrice.visibility = View.VISIBLE
                     binding.tvOriginalPrice.text = item.price.originalPrice
@@ -101,15 +118,19 @@ class ProductCarouselViewHolder private constructor() {
             }
             binding.tvInfo.text = getInfo(item)
 
-            binding.btnAtc.setOnClickListener {
-                listener.onAtcClicked(this, item)
+            binding.btnFirst.setOnClickListener {
+                listener.onTransactionClicked(this, item, firstButton.type.toAction)
             }
-            binding.btnBuy.setOnClickListener {
-                listener.onBuyClicked(this, item)
+
+            binding.btnSecond.setOnClickListener {
+                listener.onTransactionClicked(this, item, lastButton.type.toAction)
             }
+
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
+            binding.lblProductNumber.showWithCondition(item.isNumerationShown)
+            binding.lblProductNumber.text = item.number
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -117,14 +138,17 @@ class ProductCarouselViewHolder private constructor() {
                 append(getString(R.string.play_product_pinned))
 
                 if (item.stock !is StockAvailable ||
-                    item.stock.stock > MIN_STOCK) return@buildSpannedString
+                    item.stock.stock > MIN_STOCK
+                ) {
+                    return@buildSpannedString
+                }
 
                 append(' ')
                 val separator = getString(R.string.play_product_pinned_info_separator)
                 append(separator, separatorSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 
                 append(' ')
-                val stockText = getString(R.string.play_product_item_stock, item.stock.stock)
+                val stockText = getString(R.string.play_product_item_stock, item.stock.stock.toString())
                 append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
         }
@@ -134,21 +158,20 @@ class ProductCarouselViewHolder private constructor() {
 
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ) = PinnedProduct(
                 ItemPlayPinnedProductBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
-                listener,
+                listener
             )
         }
 
         interface Listener {
             fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onAtcClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
-            fun onBuyClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
+            fun onTransactionClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, action: ProductAction)
         }
     }
 }

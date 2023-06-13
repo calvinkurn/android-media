@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chat_common.domain.pojo.tickerreminder.TickerReminderPojo
 import com.tokopedia.chat_common.util.IdentifierUtil
 import java.util.*
 
@@ -24,7 +25,8 @@ open class BaseChatUiModel constructor(
     val fraudStatus: Int = 0,
     val label: String = "",
     val parentReply: ParentReply? = null,
-    val bubbleStatus: Int = STATUS_NORMAL
+    val bubbleStatus: Int = STATUS_NORMAL,
+    val tickerReminder: TickerReminderPojo? = null
 ) {
 
     constructor(builder: Builder<*, *>) : this(
@@ -43,7 +45,8 @@ open class BaseChatUiModel constructor(
         fraudStatus = builder.fraudStatus,
         label = builder.label,
         parentReply = builder.parentReply,
-        bubbleStatus = builder.bubbleStatus
+        bubbleStatus = builder.bubbleStatus,
+        tickerReminder = builder.tickerReminder
     )
 
     /**
@@ -111,6 +114,7 @@ open class BaseChatUiModel constructor(
         internal var label: String = ""
         internal var parentReply: ParentReply? = null
         internal var bubbleStatus: Int = STATUS_NORMAL
+        internal var tickerReminder: TickerReminderPojo? = null
 
         open fun withResponseFromGQL(
             reply: Reply
@@ -150,6 +154,7 @@ open class BaseChatUiModel constructor(
             withOrGenerateLocalId(reply.localId)
             withParentReply(reply.parentReply)
             withFraudStatus(reply.fraudStatus)
+            withTickerReminder(reply.tickerReminder)
             return self()
         }
 
@@ -306,6 +311,11 @@ open class BaseChatUiModel constructor(
                 source = "chat"
             )
             return withParentReply(parentReply)
+        }
+
+        fun withTickerReminder(tickerReminder: TickerReminderPojo?): B {
+            this.tickerReminder = tickerReminder
+            return self()
         }
 
         @Suppress("UNCHECKED_CAST")

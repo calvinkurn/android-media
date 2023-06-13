@@ -3,6 +3,7 @@ package com.tokopedia.sessioncommon.domain.subscriber
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
@@ -17,6 +18,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
                            val getAdminTypeUseCase: GetAdminTypeUseCase? = null,
                            val showLocationAdminPopUp: (() -> Unit)? = null,
+                           val onLocationAdminRedirection: (() -> Unit)? = null,
                            val showErrorGetAdminType: ((e: Throwable) -> Unit)? = null,
                            val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
@@ -67,20 +69,26 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         return {
             val shopId = profile.shopInfo.shopData.shopId
             val isLocationAdmin = it.data.detail.roleType.isLocationAdmin
+            val isAdminActive = it.data.isShopActive()
 
             // If shopId in profile is empty, set shopId from admin data response
             // for user other than location admin.
             // Also, if shop is inactive, set shopId to zero
             val shouldSetShopIdFromAdminData =
-                    (!isLocationAdmin && shopId.isEmpty()) || !it.data.isShopActive()
-            val userProfile = if(shouldSetShopIdFromAdminData) {
+                (!isLocationAdmin && shopId.isEmpty()) || !it.data.isShopActive()
+            val userProfile = if (shouldSetShopIdFromAdminData) {
                 setShopIdFromAdminData(profile, it)
             } else {
                 profile
             }
 
-            if(GlobalConfig.isSellerApp() && isLocationAdmin) {
+            val isAdminRedirection = it.data.isAdminInvitation()
+
+            if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
                 showLocationAdminPopUp?.invoke()
+            } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
+                saveProfileData(userProfile)
+                onLocationAdminRedirection?.invoke()
             } else {
                 saveProfileData(userProfile)
                 onSuccessGetProfile(userProfile)
@@ -123,6 +131,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                     pojo.profileInfo.phone)
             userSession.setIsShopOfficialStore(isOfficialStore(pojo.shopInfo.shopData.shopLevel))
             userSession.shopAvatar = pojo.shopInfo.shopData.shopAvatar
+            userSession.shopAvatarOriginal = pojo.shopInfo.shopData.shopAvatarOriginal
         }
     }
 

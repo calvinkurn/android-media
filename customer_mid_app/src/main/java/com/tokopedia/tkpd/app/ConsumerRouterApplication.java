@@ -7,24 +7,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import androidx.core.app.TaskStackBuilder;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -34,7 +34,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -46,7 +45,12 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.SendTokenToCMHandler;
+import com.tokopedia.fcmcommon.common.FcmCacheHandler;
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils;
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -57,7 +61,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.loyalty.di.component.TokopointComponent;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.network.NetworkRouter;
@@ -82,8 +86,8 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -96,14 +100,11 @@ import java.util.List;
 import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
-import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -125,15 +126,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     protected CacheManager cacheManager;
 
     private OmsComponent omsComponent;
-    private TokopointComponent tokopointComponent;
-    private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
 
     private static final int REDIRECTION_HOME = 1;
     private static final int REDIRECTION_WEBVIEW = 2;
-    private static final int REDIRECTION_DEFAULT= 0;
+    private static final int REDIRECTION_DEFAULT = 0;
 
     @Override
     public void onCreate() {
@@ -150,7 +149,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
-        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
+        return new TkpdAuthenticatorGql(this, this, userSession, new RefreshTokenGql());
     }
 
     private void warmUpGQLClient() {
@@ -190,29 +189,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initRefreshProfileWorker();
         initSeamlessLoginWorker();
+        connectTokoChat(false);
         return true;
     }
 
     // To Refresh the seamless login token every week
     private void initSeamlessLoginWorker() {
-        UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             TemporaryTokenWorker.Companion.scheduleWorker(this);
         }
     }
 
     private void initDataStoreMigration() {
-        UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             DataStoreMigrationWorker.Companion.scheduleWorker(this);
         }
     }
 
-    private void initCMDependencies(){
+    private void initRefreshProfileWorker() {
+        if (userSession.isLoggedIn()) {
+            RefreshProfileWorker.scheduleWorker(this);
+        }
+    }
+
+    private void initCMDependencies() {
         WeaveInterface gratiWeave = () -> {
             GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
             return true;
@@ -259,20 +263,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return true;
     }
 
-    private void initTetraDebugger() {
-        if (com.tokopedia.config.GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
-    }
-
-
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             try {
@@ -303,8 +293,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
-        UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
+        disconnectTokoChat();
     }
 
     @Override
@@ -318,11 +308,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
         forceLogout();
-        if(redirectionType == REDIRECTION_HOME) {
+        if (redirectionType == REDIRECTION_HOME) {
             Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        } else if(redirectionType == REDIRECTION_WEBVIEW) {
+        } else if (redirectionType == REDIRECTION_WEBVIEW) {
             Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
@@ -415,7 +405,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         messageMap.put("type", type);
         messageMap.put("path", path);
         messageMap.put("error", error);
-        if(!accessToken.isEmpty()) {
+        if (!accessToken.isEmpty()) {
             messageMap.put("oldToken", accessToken);
         }
         ServerLogger.log(Priority.P2, "USER_AUTHENTICATOR", messageMap);
@@ -472,25 +462,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            if(isOldGcmUpdate()) {
+            if (isOldGcmUpdate()) {
                 sessionRefresh.gcmUpdate();
             } else {
-                if(fcmManager == null) {
+                if (fcmManager == null) {
                     provideFcmManager();
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful() || task.getResult() == null) {
-                    gcmUpdateLegacy(sessionRefresh);
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    if (!TextUtils.isEmpty(token)) {
+                        fcmManager.onNewToken(token);
+                    } else {
+                        gcmUpdateLegacy(sessionRefresh);
+                    }
                 } else {
-                    fcmManager.onNewToken(task.getResult().getToken());
+                    gcmUpdateLegacy(sessionRefresh);
                 }
             }
         });
@@ -503,7 +499,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public Boolean execute() {
                 try {
                     sessionRefresh.gcmUpdate();
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 return true;
             }
         };
@@ -577,18 +574,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(TextUtils.isEmpty(errorMessage)){
+        if (TextUtils.isEmpty(errorMessage)) {
             SessionAnalytics.trackRefreshTokenSuccess();
-        }else {
+        } else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
         }
-    }
-
-    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
-    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
-        return Class.forName(activityFullPath);
     }
 
     private void provideFcmManager() {
@@ -598,7 +588,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
-                new UserSession(context)
+                userSession,
+                provideCMHandler()
         );
+    }
+
+    private SendTokenToCMHandler provideCMHandler() {
+        return new SendTokenToCMHandler(
+                new SendTokenToCMUseCase(
+                        GraphqlInteractor.getInstance().getGraphqlRepository()
+                ),
+                getApplicationContext(),
+                userSession,
+                new FcmRemoteConfigUtils(context),
+                new FcmTokenUtils(new FcmCacheHandler(context)),
+                new FcmCacheHandler(context)
+        );
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        TokoChatConnection.init(getApplicationContext(), isFromLoginFlow);
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        TokoChatConnection.disconnect();
     }
 }

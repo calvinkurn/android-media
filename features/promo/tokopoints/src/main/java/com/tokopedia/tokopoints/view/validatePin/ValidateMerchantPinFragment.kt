@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -35,6 +34,12 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     private var mTextError: TextView? = null
     private var mTextInfo: TextView? = null
     private var mValidatePinCallBack: ValidatePinCallBack? = null
+
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
 
     fun setmValidatePinCallBack(mValidatePinCallBack: ValidatePinCallBack) {
         this.mValidatePinCallBack = mValidatePinCallBack
@@ -73,11 +78,14 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
         addSwipeObserver()
     }
 
-    private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this, Observer {
+    private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this.viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Success -> onSuccess(it.data)
                 is ErrorMessage -> onError(it.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     })
@@ -114,14 +122,6 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     override fun onError(error: String) {
         mTextError!!.visibility = View.VISIBLE
         mTextError!!.text = error
-    }
-
-    override fun getAppContext(): Context? {
-        return activity
-    }
-
-    override fun getActivityContext(): Context? {
-        return activity
     }
 
     interface ValidatePinCallBack {

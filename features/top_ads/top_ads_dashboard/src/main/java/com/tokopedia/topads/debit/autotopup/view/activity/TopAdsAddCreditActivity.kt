@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -35,7 +37,7 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    override fun getNewFragment() = null
+    override fun getNewFragment(): Fragment? = null
     private var creditResponse: CreditResponse? = null
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
@@ -75,13 +77,12 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
-
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent).build()
 
     private fun populateData() {
         userSession = UserSession(this)
-        viewModel.populateCreditList(userSession?.shopId.toString(), ::onSuccessCreditInfo)
+        viewModel.populateCreditList(::onSuccessCreditInfo)
     }
 
     private fun onSuccessCreditInfo(data: CreditResponse) {

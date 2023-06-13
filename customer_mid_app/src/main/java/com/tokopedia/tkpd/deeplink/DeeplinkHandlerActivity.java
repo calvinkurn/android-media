@@ -54,7 +54,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        GratificationSubscriber.addActivityNameToExclude(getClass().getCanonicalName());
         super.onCreate(savedInstanceState);
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();

@@ -3,6 +3,7 @@ package com.tokopedia.digital.home
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -13,12 +14,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
@@ -34,12 +34,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
 class RechargeHomepageInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+
+    private val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @get:Rule
     var activityRule: IntentsTestRule<RechargeHomepageActivity> = object : IntentsTestRule<RechargeHomepageActivity>(RechargeHomepageActivity::class.java) {
@@ -52,8 +53,6 @@ class RechargeHomepageInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-
             setupGraphqlMockResponse(RechargeHomepageMockResponseConfig())
         }
     }
@@ -80,10 +79,7 @@ class RechargeHomepageInstrumentTest {
         check_3_icons_section()
         check_product_card_custom_banner_section()
 
-        assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
-                hasAllSuccess()
-        )
+        assertThat(cassavaTestRule.validate(SUBHOME_ANALYTIC_VALIDATOR_QUERY), hasAllSuccess())
     }
 
     private fun show_contents_digital_homepage() {
@@ -217,7 +213,7 @@ class RechargeHomepageInstrumentTest {
     private fun check_swipe_banner_section(){
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(13)
         )
         Thread.sleep(2000)
         onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
@@ -236,14 +232,13 @@ class RechargeHomepageInstrumentTest {
     private fun check_product_card_custom_banner_section(){
         Thread.sleep(1000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(15)
+            RecyclerViewActions.scrollTo<RechargeHomepageProductCardCustomBannerV2ViewHolder>(
+                hasDescendant(withText("Dummy Channel")))
         )
         onView(withId(R.id.rv_recharge_product)).check(matches(isDisplayed()))
-        Thread.sleep(1000)
         onView(withId(R.id.rv_recharge_product)).perform(
             RecyclerViewActions.scrollToPosition<DigitalUnifyCardViewHolder>(3)
         )
-        Thread.sleep(2000)
     }
 
     companion object {

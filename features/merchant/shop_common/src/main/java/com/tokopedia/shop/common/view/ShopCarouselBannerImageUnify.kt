@@ -68,6 +68,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     private var isLoadError = false
     private var hasImageUrl = false
     private var prevScaleType = ScaleType.FIT_XY
+    private var isOverrideScaleType = true
     private val errorDrawable = LayerDrawable(arrayOf(AppCompatResources.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.imagestate_error)))
     private var shimmerDrawable: AnimatedVectorDrawableCompat? = null
     private var prevWidth = 0
@@ -260,7 +261,8 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         Glide.with(context).asGif().load(drawable).into(this)
     }
 
-    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false) {
+    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false, isOverrideScaleType: Boolean = true) {
+        this.isOverrideScaleType = isOverrideScaleType
         if(!context.isValidGlideContext()) return
         this.post {
             heightRatio?.let {
@@ -342,7 +344,8 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
             if (measuredWidth.toDp() <= MINIMUM_MEASURED_WIDTH || measuredHeight.toDp() <= MINIMUM_MEASURED_HEIGHT) {
                 if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
                     prevScaleType = scaleType
-                    scaleType = ScaleType.FIT_CENTER
+                    if(isOverrideScaleType)
+                        scaleType = ScaleType.FIT_CENTER
                 }
             }
         }

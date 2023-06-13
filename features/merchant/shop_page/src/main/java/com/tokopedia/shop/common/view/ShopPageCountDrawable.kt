@@ -8,7 +8,7 @@ import com.tokopedia.shop.R
 
 class ShopPageCountDrawable(context: Context) : Drawable() {
 
-    companion object{
+    companion object {
         private const val CENTER_X_COUNTER = 1
         private const val CENTER_Y_COUNTER = 3
         private const val RADIUS_COUNTER_FOR_SHORT_COUNT = 5.5
@@ -50,7 +50,7 @@ class ShopPageCountDrawable(context: Context) : Drawable() {
         val radius = Math.max(width, height) / 2 / 2
         val centerX = width - radius - CENTER_X_COUNTER
         val centerY = radius - CENTER_Y_COUNTER
-        badgePaint?.let{
+        badgePaint?.let {
             if (count.length <= 2) {
                 // Draw badge circle.
                 canvas.drawCircle(centerX, centerY, (radius + RADIUS_COUNTER_FOR_SHORT_COUNT).toFloat(), it)

@@ -7,5 +7,4 @@ import javax.inject.Scope
  */
 
 @Scope
-annotation class CartScope {
-}
+annotation class CartScope

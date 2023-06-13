@@ -114,7 +114,7 @@ internal data class ShopDataView(
         }
 
         data class ShopItemProduct(
-                val id: Int = 0,
+                val id: String = "0",
                 val name: String = "",
                 val url: String = "",
                 val applink: String = "",
@@ -179,7 +179,7 @@ internal data class ShopDataView(
             }
 
             constructor(parcel: Parcel) : this(
-                    parcel.readInt(),
+                    parcel.readString() ?: "0",
                     parcel.readString() ?: "",
                     parcel.readString() ?: "",
                     parcel.readString() ?: "",
@@ -190,7 +190,7 @@ internal data class ShopDataView(
             }
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(id)
+                parcel.writeString(id)
                 parcel.writeString(name)
                 parcel.writeString(url)
                 parcel.writeString(applink)

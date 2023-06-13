@@ -6,6 +6,7 @@ package com.tokopedia.logisticCommon.data.constant;
 
 public final class InsuranceConstant {
 
+    public static final int INSURANCE_TYPE_NONE = 0;
     public static final int INSURANCE_TYPE_NO = 1;
     public static final int INSURANCE_TYPE_OPTIONAL = 2;
     public static final int INSURANCE_TYPE_MUST = 3;

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.RemoteViews
@@ -159,14 +160,25 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
 
             intent.action = "$truePosition"
 
-            notificationLayout.setOnClickPendingIntent(starId,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                notificationLayout.setOnClickPendingIntent(starId,
+                        PendingIntent.getBroadcast(
+                                context,
+                                0,
+                                intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                        )
+                )
+            }else{
+                notificationLayout.setOnClickPendingIntent(starId,
                     PendingIntent.getBroadcast(
-                            context,
-                            0,
-                            intent,
-                            0
+                        context,
+                        0,
+                        intent,
+                        0
                     )
-            )
+                )
+            }
         }
         return notificationLayout
     }

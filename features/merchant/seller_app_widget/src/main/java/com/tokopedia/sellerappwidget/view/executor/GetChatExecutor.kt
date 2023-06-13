@@ -1,5 +1,6 @@
 package com.tokopedia.sellerappwidget.view.executor
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
@@ -15,6 +16,8 @@ import com.tokopedia.sellerappwidget.view.state.chat.ChatWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.ChatAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetChatWorker
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 
 /**
@@ -24,6 +27,7 @@ import timber.log.Timber
 class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel> {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         private var INSTANCE: GetChatExecutor? = null
 
         fun run(context: Context, showLoadingState: Boolean = false) {
@@ -39,13 +43,16 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
         return@lazy ChatAppWidgetViewModel(getChatUseCase, CoroutineDispatchersProvider)
     }
     private val cacheHandler by lazy { AppWidgetHelper.getCacheHandler(context) }
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(context)
+    }
 
     fun run(showLoadingState: Boolean) {
         if (showLoadingState) {
             showLoadingState()
         }
         viewModel.bindView(this)
-        viewModel.getChatList()
+        viewModel.getChatList(userSession.shopId)
     }
 
     override fun onSuccess(result: ChatUiModel) {

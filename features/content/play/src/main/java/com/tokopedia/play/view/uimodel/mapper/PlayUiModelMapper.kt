@@ -5,26 +5,26 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -39,19 +39,37 @@ class PlayUiModelMapper @Inject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val playUserReportMapper: PlayUserReportReasoningMapper,
-    private val cartMapper: PlayCartMapper,
+    private val cartMapper: PlayCartMapper
 ) {
 
-    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
-        return input.map(productTagMapper::mapSection)
+    fun mapProductSection(input: List<Section>, channelType: PlayChannelType): List<ProductSectionUiModel.Section> {
+        val controlTime = DateUtil.getCurrentDate()
+        return input.map {
+            productTagMapper.mapSection(it, controlTime, channelType)
+        }
     }
 
-    fun mapMerchantVouchers(input: List<Voucher>): List<MerchantVoucherUiModel> {
-        return input.map(merchantVoucherMapper::mapMerchantVoucher)
+    fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
+        val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
+        val eligibleForShown = vouchers.find { !it.isPrivate }
+        val newVoucher = buildList {
+            if (eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
+            addAll(vouchers)
+        }
+        return VoucherUiModel(newVoucher)
     }
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
         return chatMapper.mapChat(input)
+    }
+
+    fun mapHistoryChat(response: PlayChatHistoryResponse): PlayChatHistoryUiModel {
+        return PlayChatHistoryUiModel(
+            chatList = response.wrapper.data.map {
+                mapChat(it)
+            },
+            nextCursor = response.wrapper.pagination.nextCursor
+        )
     }
 
     fun mapStatus(input: ChannelStatusResponse): PlayStatusType {
@@ -70,12 +88,12 @@ class PlayUiModelMapper @Inject constructor(
         return channelInteractiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): GameUiModel {
         return interactiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapNewLeaderboard(input) { false }
+    fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): List<LeaderboardGameUiModel> {
+        return interactiveLeaderboardMapper.mapNewPlayLeaderboard(input) { false }
     }
 
     fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {
@@ -98,7 +116,7 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapVariantChildToProduct(
         child: VariantChild,
-        prevDetail: PlayProductUiModel.Product,
+        prevDetail: PlayProductUiModel.Product
     ): PlayProductUiModel.Product {
         val stock = child.stock
 
@@ -107,14 +125,17 @@ class PlayUiModelMapper @Inject constructor(
             shopId = prevDetail.shopId,
             imageUrl = child.picture?.original.orEmpty(),
             title = child.name,
-            stock = if (stock == null) OutOfStock
-            else StockAvailable(stock.stock ?: 0),
+            stock = if (stock == null) {
+                OutOfStock
+            } else {
+                StockAvailable(stock.stock ?: 0)
+            },
             isVariantAvailable = true,
             price = if (child.campaign?.discountedPercentage != 0f) {
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
-                    discountPercent = child.campaign?.discountedPercentage?.toInt() ?: 0,
+                    discountPercent = child.campaign?.discountedPercentage?.toLong() ?: 0,
                     discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                 )
             } else {
@@ -126,6 +147,11 @@ class PlayUiModelMapper @Inject constructor(
             isTokoNow = prevDetail.isTokoNow,
             isPinned = prevDetail.isPinned,
             isRilisanSpesial = prevDetail.isRilisanSpesial,
+            buttons = prevDetail.buttons,
+            number = prevDetail.number,
+            isNumerationShown = prevDetail.isNumerationShown,
+            rating = prevDetail.rating,
+            soldQuantity = prevDetail.soldQuantity,
         )
     }
 }

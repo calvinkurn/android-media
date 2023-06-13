@@ -6,11 +6,10 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -47,8 +46,9 @@ class AtcVariantModule {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_shipment)
     }
 
-    @AtcVariantScope
     @Provides
-    fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase =
-        AddWishListUseCase(context)
+    @AtcVariantScope
+    fun provideRemoteConfig(
+        @ApplicationContext context: Context
+    ): RemoteConfig = FirebaseRemoteConfigImpl(context)
 }

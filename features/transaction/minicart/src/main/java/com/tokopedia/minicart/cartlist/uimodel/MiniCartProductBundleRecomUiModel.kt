@@ -8,7 +8,7 @@ data class MiniCartProductBundleRecomUiModel(
     val shopId: String = "",
     val warehouseId: String = "",
     val title: String = "",
-    var productBundleList: List<ShopHomeProductBundleItemUiModel> = listOf(),
-): Visitable<MiniCartListAdapterTypeFactory> {
+    var productBundleList: List<ShopHomeProductBundleItemUiModel> = listOf()
+) : Visitable<MiniCartListAdapterTypeFactory> {
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int = typeFactory.type(this)
 }

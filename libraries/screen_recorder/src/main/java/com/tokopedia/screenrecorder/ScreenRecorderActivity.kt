@@ -23,8 +23,11 @@ class ScreenRecorderActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_PERMISSION_RECORD_SCREEN = 1;
         private val PERMISSIONS = mutableSetOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                Manifest.permission.READ_MEDIA_VIDEO
+            }else{
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
         )
 
         private const val REQUEST_MEDIA_PROJECTION = 123
@@ -42,6 +45,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
     private fun activateScreenRecorder() {
         isRecordMic = findViewById<CheckboxUnify>(R.id.checkboxRecordMic)?.isChecked ?: false
 
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (isRecordMic) PERMISSIONS.add(Manifest.permission.RECORD_AUDIO)
 
         var allPermissionsGranted = true

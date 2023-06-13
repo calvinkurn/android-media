@@ -18,9 +18,9 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  * Created by jegul on 03/08/20
  */
 class VideoSettingsViewComponent(
-        container: ViewGroup,
-        @IdRes idRes: Int,
-        private val listener: Listener
+    container: ViewGroup,
+    @IdRes idRes: Int,
+    private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
     companion object {
@@ -31,39 +31,39 @@ class VideoSettingsViewComponent(
     private val ivFullscreenControl: IconUnify = findViewById(R.id.iv_fullscreen_control)
 
     private val fadeInListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = rootView.isFullSolid
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             rootView.isClickable = false
         }
     }
 
     private val fadeOutListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = false
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = rootView.isFullSolid
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             rootView.isClickable = false
         }
     }
@@ -74,8 +74,11 @@ class VideoSettingsViewComponent(
     internal fun setFullscreen(isFullscreen: Boolean) {
         ivFullscreenControl.setImage(if (isFullscreen) SCREEN_NORMAL else SCREEN_FULL)
         rootView.setOnClickListener {
-            if (isFullscreen) listener.onExitFullscreen(this)
-            else listener.onEnterFullscreen(this)
+            if (isFullscreen) {
+                listener.onExitFullscreen(this)
+            } else {
+                listener.onEnterFullscreen(this)
+            }
         }
     }
 

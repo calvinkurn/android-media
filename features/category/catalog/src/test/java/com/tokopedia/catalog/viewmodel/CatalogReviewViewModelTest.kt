@@ -11,6 +11,7 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +28,9 @@ class CatalogReviewViewModelTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val catalogAllReviewRepository : CatalogAllReviewRepository = mockk(relaxed = true)
     private var catalogReviewUseCase = spyk(CatalogAllReviewUseCase(catalogAllReviewRepository))

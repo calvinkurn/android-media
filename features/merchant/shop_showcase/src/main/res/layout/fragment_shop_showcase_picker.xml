@@ -60,8 +60,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -126,13 +126,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="@dimen/dp_32"
+            app:layout_constraintGuide_end="32dp"
             />
 
         <View
             android:id="@+id/view_line_separator"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginTop="20dp"
             android:background="@color/Unify_N75"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -156,8 +156,8 @@
         <ImageView
             android:id="@+id/img_empty_state"
             android:contentDescription="@string/shop_page_showcase_empty_state_showcase_picker"
-            android:layout_width="@dimen/dp_280"
-            android:layout_height="@dimen/dp_210"
+            android:layout_width="280dp"
+            android:layout_height="210dp"
             android:layout_gravity="center" />
 
         <com.tokopedia.unifyprinciples.Typography

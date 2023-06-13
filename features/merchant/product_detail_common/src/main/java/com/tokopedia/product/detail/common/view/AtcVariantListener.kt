@@ -10,13 +10,13 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 interface AtcVariantListener {
     fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int = IGNORE_STATE)
     fun getStockWording(): String = ""
-
     fun onVariantGuideLineClicked(url: String) {}
+
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
     fun onVariantImageClicked(url: String) {}
-
     fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {}
+
     fun onDeleteQuantityClicked(productId: String) {}
     fun onClickRefresh() {}
     fun hideVariantName(): Boolean = false

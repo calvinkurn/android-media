@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
@@ -20,7 +22,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryH
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
 
-class ProductListAdapter(private val clickListener: OnProductCardItemClickListener) :
+class ProductListAdapter(private val clickListener: OnProductCardItemClickListener,
+                         private val tokofoodScrollChangedListener: TokofoodScrollChangedListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
@@ -44,7 +47,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
             PRODUCT_CARD -> {
                 val binding = TokofoodProductCardLayoutBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false)
-                ProductCardViewHolder(binding, clickListener)
+                ProductCardViewHolder(binding, clickListener, tokofoodScrollChangedListener)
             }
         }
     }
@@ -79,26 +82,45 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         return productListItems.getOrNull(dataSetPosition)?.productUiModel
     }
 
+    fun getProductUiModel(cartId: String): ProductUiModel? {
+        return productListItems.find {
+            it.productUiModel.cartId == cartId ||
+                it.productUiModel.customOrderDetails.any { customOrderDetail ->
+                    customOrderDetail.cartId == cartId
+                }
+        }?.productUiModel
+    }
+
+    fun getProductUiModelPositions(productId: String): List<Int> {
+        val dataSetPositions: MutableList<Int> = mutableListOf()
+        productListItems.forEachIndexed { index, productListItem ->
+            if (productListItem.productUiModel.id == productId) {
+                dataSetPositions.add(index)
+            }
+        }
+        return dataSetPositions
+    }
+
     fun updateProductUiModel(
-        cartTokoFood: CartTokoFood,
+        cartTokoFood: CartListCartGroupCart,
         dataSetPosition: Int,
         adapterPosition: Int,
         customOrderDetail: CustomOrderDetail? = null
     ) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
-            var sameCustomProductExist = false
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.run {
+            val sameCustomProductExist: Boolean
             val sameCustomProduct = this.customOrderDetails.firstOrNull { it.cartId == cartTokoFood.cartId }
             sameCustomProductExist = sameCustomProduct != null
             if (sameCustomProductExist) {
                 if (!isCustomizable) cartId = cartTokoFood.cartId
                 orderQty = cartTokoFood.quantity
-                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                orderNote = cartTokoFood.metadata.notes
                 isAtc = cartTokoFood.quantity.isMoreThanZero()
                 sameCustomProduct?.apply { qty += 1 }
             } else {
                 if (!isCustomizable) cartId = cartTokoFood.cartId
                 orderQty = cartTokoFood.quantity
-                orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
+                orderNote = cartTokoFood.metadata.notes
                 isAtc = cartTokoFood.quantity.isMoreThanZero()
                 customOrderDetail?.let { customOrderDetails.add(it) }
             }
@@ -106,26 +128,34 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         }
     }
 
-    fun updateCartProductUiModel(
-        cartTokoFood: CartTokoFood,
+    fun updateProductUiModel(
         dataSetPosition: Int,
         adapterPosition: Int,
-        customOrderDetail: CustomOrderDetail? = null
+        quantity: Int,
+        currentCartId: String
+    ) {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.run {
+            orderQty = quantity
+            cartId = currentCartId
+            isAtc = quantity.isMoreThanZero()
+        }
+        notifyItemChanged(adapterPosition)
+    }
+
+    fun updateCartProductUiModel(
+        cartTokoFood: CartListCartGroupCart? = null,
+        cartTokoFoodList: List<CartListCartGroupCart>,
+        dataSetPosition: Int,
+        adapterPosition: Int
     ) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
-            if (customOrderDetail != null) {
-                val position = customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
-                if (position > RecyclerView.NO_POSITION) {
+            if (!isCustomizable) cartId = cartTokoFood?.cartId.orEmpty()
+            orderQty = cartTokoFoodList.size
+            orderNote = cartTokoFood?.metadata?.notes.orEmpty()
+            isAtc = cartTokoFoodList.sumOf { it.quantity }.isMoreThanZero()
 
-                    if (!isCustomizable) cartId = cartTokoFood.cartId
-                    orderQty = cartTokoFood.quantity
-                    orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
-                    isAtc = cartTokoFood.quantity.isMoreThanZero()
-
-                    customOrderDetails[position] = customOrderDetail
-                    notifyItemChanged(adapterPosition)
-                }
-            }
+            customOrderDetails = CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails(cartTokoFoodList)
+            notifyItemChanged(adapterPosition)
         }
     }
 

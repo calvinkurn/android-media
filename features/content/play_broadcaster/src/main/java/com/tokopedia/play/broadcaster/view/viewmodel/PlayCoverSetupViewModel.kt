@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.*
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -11,16 +10,16 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
 import com.tokopedia.play.broadcaster.error.CoverChangeForbiddenException
-import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.event.Event
 import dagger.assisted.Assisted
@@ -39,7 +38,9 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @AssistedInject constructor(
     @Assisted productList: List<ProductUiModel>,
-    @Assisted private val channelId: String,
+    @Assisted("account") val account: ContentAccountUiModel,
+    @Assisted("channelId") private val channelId: String,
+    @Assisted("pageSource") val pageSource: PlayBroPageSource,
     private val hydraConfigStore: HydraConfigStore,
     private val dispatcher: CoroutineDispatchers,
     private val setupDataStore: PlayBroadcastSetupDataStore,
@@ -53,7 +54,9 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             productList: List<ProductUiModel>,
-            channelId: String,
+            @Assisted("account") account: ContentAccountUiModel,
+            @Assisted("channelId") channelId: String,
+            @Assisted("pageSource") pageSource: PlayBroPageSource,
         ): PlayCoverSetupViewModel
     }
 
@@ -123,7 +126,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             uploadImageAndUpdateCoverState()
 
-            val result = setupDataStore.uploadSelectedCover(channelId)
+            val result = setupDataStore.uploadSelectedCover(account.id, channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
             else if (result is NetworkResult.Fail) throw result.error
         }) {

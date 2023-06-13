@@ -52,5 +52,4 @@ class CartChooseAddressViewHolder(private val binding: ItemCartChooseAddressBind
             }
         })
     }
-
 }

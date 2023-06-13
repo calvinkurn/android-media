@@ -54,16 +54,36 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
         android:lineSpacingExtra="5sp"
+        android:lines="1"
+        app:layout_constraintEnd_toStartOf="@id/label_epharmacy"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
         app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_label"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Toko Adidas"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_epharmacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:labelType="highlight_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/tv_shop_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_shop_name"
+        app:layout_constraintTop_toTopOf="@id/tv_shop_name"
+        tools:labelTitle="halodoc" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/layout_shop_info"
@@ -149,11 +169,12 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:adjustViewBounds="true"
             android:gravity="center_vertical"
             android:scaleType="fitStart"
-            app:unify_image_corner_radius="0"
+            app:layout_maxWidth="100dp"
             tools:src="@color/Unify_G500" />
 
     </com.google.android.flexbox.FlexboxLayout>

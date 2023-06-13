@@ -1,14 +1,13 @@
 package com.tokopedia.tokopedianow.categoryfilter.domain.mapper
 
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.unifycomponents.ChipsUnify
 
 object CategoryFilterMapper {
 
     fun mapToCategoryList(
-        response: CategoryListResponse,
+        response: GetCategoryListResponse.CategoryListResponse,
         selectedFilterIds: List<String>
     ): List<CategoryFilterChip> {
         return response.data.map {
@@ -18,7 +17,7 @@ object CategoryFilterMapper {
     }
 
     private fun mapCategoryChild(
-        categoryList: List<CategoryResponse>,
+        categoryList: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>,
         selectedFilterIds: List<String>
     ): List<CategoryFilterChip> {
         return categoryList.map {

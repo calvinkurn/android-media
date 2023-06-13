@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_promote"
-        android:textSize="@dimen/sp_18"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/Unify_N700"
         android:layout_marginBottom="5dp" />

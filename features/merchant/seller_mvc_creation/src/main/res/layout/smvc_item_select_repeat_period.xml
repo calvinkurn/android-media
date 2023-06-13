@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textRepeatPeriod"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iconCheck"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tool:text="1 Bulan" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconCheck"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_name="CHECK"
+        app:layout_constraintBottom_toBottomOf="@id/textRepeatPeriod"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/textRepeatPeriod"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textRepeatPeriod" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

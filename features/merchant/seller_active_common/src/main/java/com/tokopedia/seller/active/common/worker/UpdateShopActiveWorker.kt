@@ -14,7 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class UpdateShopActiveWorker(
-    appContext: Context, params: WorkerParameters
+    appContext: Context,
+    params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
     companion object {
@@ -23,20 +24,27 @@ class UpdateShopActiveWorker(
 
         @JvmStatic
         fun execute(context: Context) {
-            if (workRequest == null) {
-                val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+            try {
+                if (workRequest == null) {
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
 
-                workRequest = OneTimeWorkRequest.Builder(UpdateShopActiveWorker::class.java)
-                    .setConstraints(constraints)
-                    .build()
+                    workRequest = OneTimeWorkRequest.Builder(UpdateShopActiveWorker::class.java)
+                        .setConstraints(constraints)
+                        .build()
+                }
+
+                workRequest?.let {
+                    WorkManager.getInstance(context)
+                        .beginUniqueWork(TAG_WORKER, ExistingWorkPolicy.REPLACE, it)
+                        .enqueue()
+                }
             }
-
-            workRequest?.let {
-                WorkManager.getInstance(context)
-                    .beginUniqueWork(TAG_WORKER, ExistingWorkPolicy.REPLACE, it)
-                    .enqueue()
+            // to handle security exception in android 8
+            // https://stackoverflow.com/questions/38764497/security-exception-unable-to-start-service-user-0-is-restricted
+            catch (e: Exception) {
+                // no op
             }
         }
     }

@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -54,6 +55,7 @@ public class RouteManager {
 
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
+    public static final String SELLER_APP_APPLINK = "applink_in_sellerapp";
 
     public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
     public static final String DEFAULT_VIEW = "android.intent.action.VIEW";
@@ -158,11 +160,16 @@ public class RouteManager {
      * If sellerapp not installed yet then open sellerapp on google playstore
      */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
-        if (null != intent) {
-            intent.setData(uri);
+        Intent sellerIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
+        if (sellerIntent == null) return getIntentSellerappToPlayStore(context);
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setPackage(SELLER_APP_PACKAGE_NAME);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.putExtra(SELLER_APP_APPLINK, uri);
             return intent;
-        } else {
+        } catch (Throwable throwable) {
             return getIntentSellerappToPlayStore(context);
         }
     }
@@ -208,7 +215,7 @@ public class RouteManager {
         } else {
             destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
         }
-        if( destinationFragment == null){
+        if (destinationFragment == null) {
             logErrorGetFragmentDF(activity, classPathName);
         }
         return destinationFragment;
@@ -253,8 +260,10 @@ public class RouteManager {
     private static void showAndCopyApplink(Context context, String applink) {
         if (GlobalConfig.isAllowDebuggingTools()) {
             if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE)) {
-                Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
-
+                if (Looper.myLooper() == Looper.getMainLooper()) {
+                    // only show toast from main thread.
+                    Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
+                }
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
                 clipboard.setPrimaryClip(clip);
@@ -498,7 +507,7 @@ public class RouteManager {
         return resultIntent;
     }
 
-    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink){
+    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink) {
         return (intent == null || intent.resolveActivity(context.getPackageManager()) == null)
                 &&
                 (!GlobalConfig.isSellerApp() && deeplink.startsWith(SCHEME_SELLERAPP));

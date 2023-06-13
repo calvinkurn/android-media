@@ -36,35 +36,51 @@ class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragmen
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         categoryNavigationViewModel = discoveryBaseViewModel as CategoryNavigationViewModel
         getSubComponent().inject(categoryNavigationViewModel)
-        categoryNavigationViewModel.getTitle().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is Success -> {
-                    title.setTextAndCheckShow(item.data)
-                }
-            }
-        })
-
-        categoryNavigationViewModel.getImageUrl().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is Success -> {
-                    if (item.data.isEmpty()) {
-                        imageView.invisible()
-                    } else {
-                        imageView.loadImageWithoutPlaceholder(item.data)
+        categoryNavigationViewModel.getTitle().observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                when (item) {
+                    is Success -> {
+                        title.setTextAndCheckShow(item.data)
+                    }
+                    else -> {
+                        // no-op
                     }
                 }
             }
-        })
+        )
 
-        categoryNavigationViewModel.getListData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            when (item) {
-                is Success -> {
-                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationImpression(item.data)
-                    discoveryRecycleAdapter.setDataList(item.data)
+        categoryNavigationViewModel.getImageUrl().observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                when (item) {
+                    is Success -> {
+                        if (item.data.isEmpty()) {
+                            imageView.invisible()
+                        } else {
+                            imageView.loadImageWithoutPlaceholder(item.data)
+                        }
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
 
+        categoryNavigationViewModel.getListData().observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                when (item) {
+                    is Success -> {
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationImpression(item.data)
+                        discoveryRecycleAdapter.setDataList(item.data)
+                    }
+                    else -> {
+                        // no-op
+                    }
+                }
+            }
+        )
     }
-
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_icon_pull_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:paddingTop="6dp"
+    android:visibility="gone">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/progress_pull_refresh"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_decorative_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_pull_refresh"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

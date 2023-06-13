@@ -3,11 +3,11 @@ package com.tokopedia.shop.settings.etalase.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.AddShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.UpdateShopEtalaseUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment.Companion.ID
 import com.tokopedia.usecase.UseCase
@@ -21,12 +21,12 @@ import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditViewModel
 @Inject constructor(
-        private val addShopEtalaseUseCase: AddShopEtalaseUseCase,
-        private val updateShopEtalaseUseCase: UpdateShopEtalaseUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+    private val addShopEtalaseUseCase: AddShopEtalaseUseCase,
+    private val updateShopEtalaseUseCase: UpdateShopEtalaseUseCase,
+    private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     val shopEtalase: LiveData<Result<List<ShopEtalaseModel>>> get() = _shopEtalase
     val saveMessage: LiveData<Result<String>> get() = _saveMessage

@@ -59,6 +59,11 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     private var tabList = hashMapOf<TabLayoutActiveStatus, TabView>()
     var tabState: TabLayoutActiveStatus = TabLayoutActiveStatus.SRW
 
+    /**
+     * Listener
+     */
+    private var listener: ChatTextAreaTabLayoutListener? = null
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -114,12 +119,12 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     private fun initBackground() {
         tabBackgroundActive = ViewUtil.generateBackgroundWithShadow(
             this,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             topLeftRadius = R.dimen.dp_topchat_8,
             topRightRadius = R.dimen.dp_topchat_8,
             bottomLeftRadius = R.dimen.dp_topchat_8,
             bottomRightRadius = R.dimen.dp_topchat_8,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             elevation = R.dimen.dp_topchat_0,
             shadowRadius = R.dimen.dp_topchat_0,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
@@ -133,7 +138,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
             topRightRadius = R.dimen.dp_topchat_8,
             bottomLeftRadius = R.dimen.dp_topchat_8,
             bottomRightRadius = R.dimen.dp_topchat_8,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             elevation = R.dimen.dp_topchat_0,
             shadowRadius = R.dimen.dp_topchat_0,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
@@ -151,6 +156,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
             onTabClicked(
                 clickedTab = TabLayoutActiveStatus.SRW,
                 additional = {
+                    listener?.onClickSRWTab()
                     chatMenu?.hideKeyboard()
                 }
             )
@@ -159,6 +165,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
             onTabClicked(
                 clickedTab = TabLayoutActiveStatus.ReplyBox,
                 additional = {
+                    listener?.onClickReplyTab()
                     replyEditText?.requestFocus()
                     chatMenu?.showKeyboard(replyEditText)
                 }
@@ -280,6 +287,10 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         )
     }
 
+    fun setupListener(listener: ChatTextAreaTabLayoutListener) {
+        this.listener = listener
+    }
+
     enum class TabLayoutActiveStatus {
         SRW, ReplyBox
     }
@@ -293,4 +304,9 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     companion object {
         private val LAYOUT = R.layout.layout_text_area_tab
     }
+}
+
+interface ChatTextAreaTabLayoutListener {
+    fun onClickSRWTab()
+    fun onClickReplyTab()
 }

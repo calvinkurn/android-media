@@ -6,6 +6,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import kotlin.math.roundToInt
 
 class BroadcastBannerNotificationImageView : AppCompatImageView {
@@ -19,24 +20,41 @@ class BroadcastBannerNotificationImageView : AppCompatImageView {
     private val path: Path = Path()
     private var rect: RectF = RectF()
     private val radius = context.resources.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
     )
     private val outerRadius = floatArrayOf(
-            radius, radius, radius, radius,
-            radius, radius, radius, radius
+        radius,
+        radius,
+        radius,
+        radius,
+        radius,
+        radius,
+        radius,
+        radius
     )
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+            context: Context, attrs: AttributeSet?, defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val width = measuredWidth
-        val height = (width * ratio).roundToInt()
-        setMeasuredDimension(width, height)
+        safelySetMeasureDimension()
+    }
+
+    private fun safelySetMeasureDimension() {
+        try {
+            val width = measuredWidth
+            val heightFloat = width * ratio
+            val height = if (!heightFloat.isNaN()) {
+                heightFloat.roundToInt()
+            } else {
+                Int.ZERO
+            }
+            setMeasuredDimension(width, height)
+        } catch (ignored: Throwable) {}
     }
 
     override fun onDraw(canvas: Canvas?) {

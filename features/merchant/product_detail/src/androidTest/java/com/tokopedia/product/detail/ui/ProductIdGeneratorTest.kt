@@ -85,14 +85,14 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
 
     private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition,
             customIdPrefix = "P",
-            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+            packageName = BuildConfig.APPLICATION_ID)
     private val vhViewPrinter = ViewHierarchyPrinter(printConditions,
             customIdPrefix = "P",
-            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+            packageName = BuildConfig.APPLICATION_ID)
 
     @Test
     fun captureParentFragmentId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val parentProductView = activity?.getPdpFragment()?.view
@@ -105,7 +105,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
 
     @Test
     fun captureVhId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
@@ -114,7 +114,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         Thread.sleep(2000)
 
         repeat(rvSize - 1) {
-            findViewHolderAndDo(com.tokopedia.product.detail.R.id.rv_pdp, it) { viewResult ->
+            findViewHolderAndDo(R.id.rv_pdp, it) { viewResult ->
                 viewResult?.let { view ->
                     printCsvAndSave(view, "product_detail_vh_$it", vhViewPrinter)
                 }

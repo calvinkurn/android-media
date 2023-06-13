@@ -83,7 +83,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify(), GateWayCardClicked {
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickChangePartnerEvent(
                     productId, checkoutData.userState ?: "",
-                    checkoutData.gateway_name.orEmpty(),
+                    checkoutData.gatewayCode.orEmpty(),
                     selectedEmiOption,
                     selectedTenure,
                     quantitySelected.toString(),

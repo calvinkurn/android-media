@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
             android:gravity="center"
             android:paddingTop="20dp"
             android:text="@string/yuk_iklankan_produkmu"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +43,7 @@
             android:gravity="center"
             android:paddingBottom="20dp"
             android:text="@string/pilih_cara_beriklan_yang_sesuai_kebutuhanmu"
-            android:textColor="#AD31353B"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -96,7 +97,7 @@
                     android:layout_marginTop="@dimen/dp_22"
                     android:gravity="start"
                     android:text="@string/topads_common_iklan_otomatis"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Unify_NN1000"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -130,16 +131,18 @@
                         android:layout_gravity="center" />
                 </androidx.cardview.widget.CardView>
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon2"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/typography"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/typography8"
-                    app:layout_constraintTop_toTopOf="@+id/typography" />
+                    app:layout_constraintTop_toTopOf="@+id/typography"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography"
@@ -153,17 +156,19 @@
                     app:layout_constraintTop_toBottomOf="@+id/typography8"
                     app:typographyType="body_3" />
 
-
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon3"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/typography2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon2"
-                    app:layout_constraintTop_toTopOf="@+id/typography2" />
+                    app:layout_constraintTop_toTopOf="@+id/typography2"/>
+
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography2"
@@ -173,21 +178,23 @@
                     android:layout_marginTop="20dp"
                     android:gravity="start"
                     android:text="@string/iklan_otomatis_desc2"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Unify_NN1000"
                     app:layout_constraintStart_toEndOf="@+id/icon3"
                     app:layout_constraintTop_toBottomOf="@+id/typography"
                     app:typographyType="body_3" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon4"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/typography3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon3"
-                    app:layout_constraintTop_toTopOf="@+id/typography3" />
+                    app:layout_constraintTop_toTopOf="@+id/typography3"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography3"
@@ -197,7 +204,7 @@
                     android:layout_marginTop="20dp"
                     android:gravity="start"
                     android:text="@string/iklan_otomatis_desc3"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Unify_NN1000"
                     app:layout_constraintStart_toEndOf="@+id/icon3"
                     app:layout_constraintTop_toBottomOf="@+id/typography2"
                     app:typographyType="body_3" />
@@ -209,13 +216,27 @@
                     android:layout_marginTop="@dimen/dp_36"
                     android:layout_marginBottom="16dp"
                     android:text="@string/mulai_iklan_otomatis"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/typography3"
                     app:unifyButtonSize="medium"
                     app:unifyButtonType="main"
                     app:unifyButtonVariant="filled" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_learn_auto_ads"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/learn_more"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_start_auto_ads"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonVariant="text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -253,7 +274,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="@dimen/dp_22"
                     android:text="@string/iklan_manual"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Unify_NN1000"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -285,17 +306,19 @@
                         android:layout_gravity="center" />
                 </androidx.cardview.widget.CardView>
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon6"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/desc1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/typography10"
                     app:layout_constraintTop_toTopOf="@+id/desc_1"
-                    tools:ignore="UnknownIdInLayout" />
+                    tools:ignore="UnknownIdInLayout"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/desc_1"
@@ -309,11 +332,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/typography10"
                     app:typographyType="body_3" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon7"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@id/desc_2"
                     app:layout_constraintStart_toStartOf="parent"
@@ -331,16 +356,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/desc_1"
                     app:typographyType="body_3" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon8"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/desc_3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon7"
-                    app:layout_constraintTop_toTopOf="@+id/desc_3" />
+                    app:layout_constraintTop_toTopOf="@+id/desc_3"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/desc_3"
@@ -353,6 +380,31 @@
                     app:layout_constraintTop_toBottomOf="@+id/desc_2"
                     app:typographyType="body_3" />
 
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon9"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_enable_state="true"
+                    app:icon_name="CHECK"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/desc_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon8"
+                    app:layout_constraintTop_toTopOf="@+id/desc_4"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/desc_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/iklan_manual_desc4"
+                    app:layout_constraintStart_toEndOf="@+id/icon8"
+                    app:layout_constraintTop_toBottomOf="@+id/desc_3"
+                    app:typographyType="body_3" />
+
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_start_manual_ads"
                     android:layout_width="0dp"
@@ -361,13 +413,27 @@
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="@string/gunakan_iklan_manual"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/desc_3"
+                    app:layout_constraintTop_toBottomOf="@+id/desc_4"
                     app:unifyButtonSize="medium"
                     app:unifyButtonType="main"
                     app:unifyButtonVariant="filled" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_learn_manual_ads"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/learn_more"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_start_manual_ads"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonVariant="text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

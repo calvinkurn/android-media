@@ -9,15 +9,14 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/parent_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -40,6 +39,7 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarInitialTheme = "light"
+            app:toolbarInitialFillColor="transparent"
             app:toolbarDefaultHint = "@string/discovery_default_search_title"
             app:toolbarContentType="typeSearchbar"
             app:toolbarBackButton="back"

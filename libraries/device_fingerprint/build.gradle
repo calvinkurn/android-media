@@ -22,7 +22,6 @@ android {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.dataVisor
     implementation rootProject.ext.tkpdInternalLibDependencies.secUtil
-    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
     implementation rootProject.ext.miscDependencies.multiDex
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
@@ -30,6 +29,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.playIntegrityApi
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.libraries.logger)

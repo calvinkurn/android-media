@@ -55,5 +55,14 @@ data class GetProductTagSummarySectionResponse(
 
         @SerializedName("quantity")
         val quantity: Int = 0,
+
+        @SerializedName("is_pinned")
+        val isPinned: Boolean = false,
+
+        @SerializedName("is_pinnable")
+        val isPinnable: Boolean = false,
+
+        @SerializedName("product_number")
+        val productNumber: Int = 0,
     )
 }

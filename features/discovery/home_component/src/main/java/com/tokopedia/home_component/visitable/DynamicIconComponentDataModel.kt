@@ -23,7 +23,6 @@ data class DynamicIconComponentDataModel(
     override fun equalsWith(b: Any?): Boolean {
         return b is DynamicIconComponentDataModel &&
                 b.isCache == isCache &&
-                b.currentFetch == currentFetch &&
                 b.dynamicIconComponent.dynamicIcon.zip(dynamicIconComponent.dynamicIcon).all { (newIcon, oldIcon) ->
                     newIcon.id == oldIcon.id && newIcon.name == oldIcon.name && newIcon.imageUrl == oldIcon.imageUrl
                 }

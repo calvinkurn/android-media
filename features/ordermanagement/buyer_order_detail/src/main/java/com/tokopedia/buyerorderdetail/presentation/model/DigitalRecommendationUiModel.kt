@@ -8,5 +8,5 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
  */
 class DigitalRecommendationUiModel : Visitable<BuyerOrderDetailTypeFactory> {
     override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int =
-            typeFactory.type(this)
+        typeFactory.type(this)
 }

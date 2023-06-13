@@ -56,7 +56,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 channelPositionInList = position,
             )
 
-            mAnalyticListener?.onImpressReminderIcon(
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
                 view = this@PlayWidgetLargeView,
                 item = item,
                 channelPositionInList = position,
@@ -96,6 +97,23 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 position
             )
         }
+
+        override fun onMenuActionButtonClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onClickMenuActionChannel(
+                this@PlayWidgetLargeView,
+                item,
+                position,
+            )
+            mWidgetListener?.onMenuActionButtonClicked(
+                this@PlayWidgetLargeView,
+                item,
+                position,
+            )
+        }
     }
 
     private val bannerCardListener = object : PlayWidgetLargeViewHolder.Banner.Listener {
@@ -120,9 +138,21 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
         }
     }
 
+    private val transcodeCardListener = object : PlayWidgetLargeViewHolder.Transcode.Listener {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onClickDeleteChannel(this@PlayWidgetLargeView, item, position)
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetLargeView, item.channelId)
+        }
+    }
+
     private val adapter = PlayWidgetLargeAdapter(
         cardChannelListener = channelCardListener,
         cardBannerListener = bannerCardListener,
+        cardTranscodeListener = transcodeCardListener,
     )
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty

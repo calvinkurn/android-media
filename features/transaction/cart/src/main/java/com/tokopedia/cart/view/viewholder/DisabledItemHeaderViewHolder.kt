@@ -21,5 +21,4 @@ class DisabledItemHeaderViewHolder(private val binding: ItemCartDisabledHeaderBi
         binding.textDisabledItemCount.text = disabledLabelText
         binding.textDelete.setOnClickListener { actionListener?.onDeleteAllDisabledProduct() }
     }
-
 }

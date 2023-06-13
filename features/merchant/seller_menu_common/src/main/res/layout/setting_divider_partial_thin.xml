@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/setting_divider_thin_padding"
-    android:paddingBottom="@dimen/spacing_lvl2"
+    android:paddingBottom="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/thinPartialDivider"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_divider_thin"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

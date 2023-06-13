@@ -52,7 +52,7 @@ class TopAdsSheetViewModel @Inject constructor(
                 })
     }
 
-    fun getGroupProductData(groupId: Int, onSuccess: (List<WithoutGroupDataItem>) -> Unit) {
+    fun getGroupProductData(groupId: String, onSuccess: (List<WithoutGroupDataItem>) -> Unit) {
         launchCatchError(block = {
             val requestParams =
                 topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
@@ -89,7 +89,7 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun getAutoAdsStatus(shopId: String, resources: Resources) {
-        val params = mapOf(ParamObject.SHOP_Id to shopId.toInt())
+        val params = mapOf(ParamObject.SHOP_Id to shopId, ParamObject.SOURCE to "android.topads_sheet")
         topAdsGetAutoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
         topAdsGetAutoAdsStatusUseCase.setTypeClass(TopAdsAutoAds.Response::class.java)
         topAdsGetAutoAdsStatusUseCase.setRequestParams(params)

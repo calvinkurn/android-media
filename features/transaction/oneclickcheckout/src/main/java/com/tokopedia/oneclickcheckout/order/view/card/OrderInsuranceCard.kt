@@ -14,7 +14,11 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private val listener: OrderInsuranceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(binding.root) {
+class OrderInsuranceCard(
+    private val binding: CardOrderInsuranceBinding,
+    private val listener: OrderInsuranceCardListener,
+    private val orderSummaryAnalytics: OrderSummaryAnalytics
+) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 5
@@ -25,43 +29,32 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         val insuranceData = insurance.insuranceData
         binding.apply {
             if (insuranceData != null && !shipment.isLoading && !shipment.isDisabled && profile.enable) {
-                setupListeners(insuranceData)
+                forceSetChecked(cbInsurance, insurance.isCheckInsurance)
                 when (insuranceData.insuranceType) {
                     InsuranceConstant.INSURANCE_TYPE_MUST -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance)
                         cbInsurance.isEnabled = false
-                        forceSetChecked(cbInsurance, true)
-                        listener.onInsuranceChecked(true)
                         setVisibility(View.VISIBLE)
                     }
                     InsuranceConstant.INSURANCE_TYPE_NO -> {
-                        listener.onInsuranceChecked(false)
                         setVisibility(View.GONE)
                     }
                     InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
                         cbInsurance.isEnabled = true
-                        if (insurance.isFirstLoad) {
-                            if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
-                                forceSetChecked(cbInsurance, true)
-                                listener.onInsuranceChecked(true)
-                            } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                                forceSetChecked(cbInsurance, false)
-                                listener.onInsuranceChecked(false)
-                            }
-                        } else {
-                            forceSetChecked(cbInsurance, insurance.isCheckInsurance)
-                            listener.onInsuranceChecked(insurance.isCheckInsurance)
-                        }
                         setVisibility(View.VISIBLE)
                     }
                 }
                 if (insuranceData.insurancePrice > 0) {
-                    tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
+                    tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        insuranceData.insurancePrice,
+                        false
+                    ).removeDecimalSuffix()
                     tvInsurancePrice.visible()
                 } else {
                     tvInsurancePrice.gone()
                 }
+                setupListeners(insuranceData)
             } else if (insuranceData == null || shipment.isDisabled || !profile.enable) {
                 setVisibility(View.GONE)
             } else {
@@ -74,16 +67,20 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         binding.apply {
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
-                    listener.onClickInsuranceInfo(iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                            insuranceData.insuranceUsedInfo,
-                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
+                    listener.onClickInsuranceInfo(insuranceData.insuranceUsedInfo)
                 }
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->
                 if (!isChecked) {
-                    orderSummaryAnalytics.eventClickOnInsurance("uncheck", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(
+                        "uncheck",
+                        insuranceData.insurancePrice.toString()
+                    )
                 } else {
-                    orderSummaryAnalytics.eventClickOnInsurance("check", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(
+                        "check",
+                        insuranceData.insurancePrice.toString()
+                    )
                 }
                 listener.onInsuranceChecked(isChecked)
             }
@@ -110,7 +107,12 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
             tvInsurance.visibility = visibility
             imgBtInsuranceInfo.visibility = visibility
             tvInsurancePrice.visibility = visibility
-            spaceInsurance.visibility = if (visibility == View.VISIBLE) View.INVISIBLE else visibility
+            spaceInsurance.visibility =
+                if (visibility == View.VISIBLE) {
+                    View.INVISIBLE
+                } else {
+                    visibility
+                }
         }
     }
 
@@ -118,6 +120,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
 
         fun onInsuranceChecked(isChecked: Boolean)
 
-        fun onClickInsuranceInfo(title: String, message: String, image: Int)
+        fun onClickInsuranceInfo(message: String)
     }
 }

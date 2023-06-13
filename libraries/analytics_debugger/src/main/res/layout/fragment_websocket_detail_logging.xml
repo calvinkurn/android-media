@@ -7,15 +7,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_websocket_detail_log_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
             android:id="@+id/tv_websocket_detail_log_date_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/analyticsdebugger_dms_black_55"
@@ -38,105 +38,159 @@
             tools:text="11 Nov 2021 12:12:12.123" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_log_channel_id_label"
+            android:id="@+id/tv_websocket_detail_log_1_label"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/websocket_log_channel_id_label"
-            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_channel_id"
+            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_1"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_date_time"
             app:typographyType="body_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_log_channel_id"
+            android:id="@+id/tv_websocket_detail_log_1"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
-            app:layout_constraintBottom_toBottomOf="@id/tv_websocket_detail_log_channel_id_label"
+            app:layout_constraintBottom_toBottomOf="@id/tv_websocket_detail_log_1_label"
             app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintStart_toEndOf="@id/tv_websocket_detail_log_channel_id_label"
-            app:layout_constraintTop_toTopOf="@id/tv_websocket_detail_log_channel_id_label"
+            app:layout_constraintStart_toEndOf="@id/tv_websocket_detail_log_1_label"
+            app:layout_constraintTop_toTopOf="@id/tv_websocket_detail_log_1_label"
             app:typographyType="body_3"
+            tools:visibility="visible"
             tools:text="123123" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_log_gc_token_label"
+            android:id="@+id/tv_websocket_detail_log_3_label"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/websocket_log_gc_token_label"
-            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_gc_token"
+            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_3"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
-            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_warehouse_id"
+            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_log_2"
             app:typographyType="body_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_log_gc_token"
+            android:id="@+id/tv_websocket_detail_log_3"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-
+            android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintStart_toEndOf="@id/tv_websocket_detail_log_gc_token_label"
-            app:layout_constraintTop_toTopOf="@id/tv_websocket_detail_log_gc_token_label"
+            app:layout_constraintStart_toEndOf="@id/tv_websocket_detail_log_3_label"
+            app:layout_constraintTop_toTopOf="@id/tv_websocket_detail_log_3_label"
             app:typographyType="body_3"
-            tools:text="123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfdklasjflkasjfjasfjkla" />
+            tools:visibility="visible"
+            tools:text="123123asdkfaksdfjklajdfkajsdfjajfklasjkdfjakjfd" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_websocket_header_label"
+            android:visibility="gone"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/websocket_log_header_label"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_3"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_websocket_detail_log_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/analyticsdebugger_dms_black_55"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_websocket_header_label"
+            app:typographyType="body_3"
+            tools:text="This is header"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_websocket_payload_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/websocket_log_payload_label"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_header"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_websocket_detail_log_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:textColor="@color/analyticsdebugger_dms_black_55"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_gc_token"
+            app:layout_constraintTop_toBottomOf="@id/tv_websocket_payload_label"
             app:typographyType="body_3"
             tools:text="This is message" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_warehouse"
+            android:id="@+id/tv_websocket_detail_log_2_label"
+            android:visibility="gone"
             app:layout_constraintHorizontal_weight="1"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_warehouse_id"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_2"
             android:text="@string/warehouse_id"
-            app:layout_constraintStart_toStartOf="@+id/tv_websocket_detail_log_channel_id_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_log_channel_id_label" />
+            app:layout_constraintStart_toStartOf="@+id/tv_websocket_detail_log_1_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_log_1_label"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_websocket_detail_warehouse_id"
+            android:id="@+id/tv_websocket_detail_log_2"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_websocket_detail_warehouse"
-            app:layout_constraintEnd_toEndOf="@+id/tv_websocket_detail_log_channel_id"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_websocket_detail_log_2_label"
+            app:layout_constraintEnd_toEndOf="@+id/tv_websocket_detail_log_1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintStart_toEndOf="@+id/tv_websocket_detail_warehouse"
-            app:layout_constraintTop_toTopOf="@+id/tv_websocket_detail_warehouse"
+            app:layout_constraintStart_toEndOf="@+id/tv_websocket_detail_log_2_label"
+            app:layout_constraintTop_toTopOf="@+id/tv_websocket_detail_log_2_label"
             app:layout_constraintVertical_bias="0.0"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="1234701919" />
+            tools:text="1234701919"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -24,8 +24,6 @@ class GetReviewerCredibilityUseCase @Inject constructor(
                 query getReviewerCredibilityStats(${'$'}userID: String!, ${'$'}entrypoint: String) {
                   productrevGetReviewerCredibilityStats(userID: ${'$'}userID, entrypoint: ${'$'}entrypoint) {
                     label {
-                      userName
-                      joinDate
                       subtitle
                       footer
                       ctaText
@@ -36,7 +34,6 @@ class GetReviewerCredibilityUseCase @Inject constructor(
                       achievements {
                         image
                         name
-                        total
                         color
                         mementoLink
                       }
@@ -50,6 +47,13 @@ class GetReviewerCredibilityUseCase @Inject constructor(
                       count
                       countFmt
                       show
+                    }
+                    userProfile {
+                      firstName
+                      profilePicture
+                      joinDate
+                      buttonProfileText
+                      buttonProfileLink
                     }
                   }
                 }

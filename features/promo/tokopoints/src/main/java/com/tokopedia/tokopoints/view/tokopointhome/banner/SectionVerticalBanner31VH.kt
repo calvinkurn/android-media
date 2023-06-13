@@ -47,7 +47,7 @@ class SectionVerticalBanner31VH(val view: View) : RecyclerView.ViewHolder(view) 
             view.findViewById<View>(R.id.text_sub_title).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title) as TextView).text = content.sectionSubTitle
         }
-        if (content.layoutBannerAttr.imageList != null && !content.layoutBannerAttr.imageList.isEmpty()
+        if (content.layoutBannerAttr.imageList.isNotEmpty()
                 && URLUtil.isValidUrl(content.layoutBannerAttr.imageList[0].imageURLMobile)) {
             val imgBanner = view.findViewById<ImageView>(R.id.img_banner)
             val data = content.layoutBannerAttr.imageList[0]

@@ -19,6 +19,7 @@ object PlayViewerMockRepository {
         broTrackerRepo: PlayViewerBroTrackerRepository = mockk(relaxed = true),
         userReportRepository: PlayViewerUserReportRepository = mockk(relaxed = true),
         socketRepo: PlayViewerSocketRepository = mockk(relaxed = true),
+        exploreWidgetRepo: PlayExploreWidgetRepository = mockk(relaxed = true),
     ): PlayViewerRepository {
         return PlayViewerRepositoryImpl(
             interactiveRepo = interactiveRepo,
@@ -30,6 +31,7 @@ object PlayViewerMockRepository {
             broTrackerRepo = broTrackerRepo,
             userReportRepo = userReportRepository,
             socketRepo = socketRepo,
+            widgetRepo = exploreWidgetRepo,
         )
     }
 }

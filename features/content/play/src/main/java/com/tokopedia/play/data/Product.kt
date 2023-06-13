@@ -23,7 +23,7 @@ data class Product(
         @SerializedName("price_formatted")
         val priceFormatted: String = "",
         @SerializedName("discount")
-        val discount: Int = 0,
+        val discount: Long = 0,
         @SerializedName("order")
         val order: Int = 0,
         @SerializedName("is_variant")
@@ -44,4 +44,21 @@ data class Product(
         val isTokoNow: Boolean = false,
         @SerializedName("is_pinned")
         val isPinned: Boolean = false,
-)
+        @SerializedName("available_buttons")
+        val buttons: List<ProductButton> = emptyList(),
+        @SerializedName("product_number")
+        val number: Int = 0,
+        @SerializedName("rating")
+        val rating: String = "",
+        @SerializedName("sold_quantity")
+        val soldQuantity: String = "",
+){
+    data class ProductButton(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("button_type")
+        val buttonType: String = ""
+    )
+}

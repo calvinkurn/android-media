@@ -18,7 +18,7 @@ class NetworkClientHelperImpl (val cellularNetworkRequest: NetworkRequest): Netw
 
     override fun makeNetworkRequest(context: Context, listener: NetworkRequestListener) {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.requestNetwork(cellularNetworkRequest,
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {

@@ -195,7 +195,7 @@ open class BaseChatViewHolder<T : Visitable<*>>(
             return
         }
         if (chat.fromRole.isNotEmpty() &&
-            chat.fromRole.lowercase(Locale.getDefault()) != ROLE_USER.toLowerCase() &&
+            chat.fromRole.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault()) &&
             chat.isSender &&
             !chat.isDummy &&
             chat.isShowRole

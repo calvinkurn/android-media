@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.feedcomponent">
+
+    <application>
+        <activity android:name="com.tokopedia.feed.component.sample.FeedCaptionTestActivity" />
+        <activity android:name="com.tokopedia.feed.component.sample.FeedPostCampaignTestActivity" />
+    </application>
+</manifest>

@@ -9,11 +9,20 @@ object OneClickCheckoutInterceptor {
     val promoInterceptor = PromoTestInterceptor()
     val checkoutInterceptor = CheckoutTestInterceptor()
     val paymentInterceptor = PaymentTestInterceptor()
+    val ethicalDrugTestInterceptor = EthicalDrugTestInterceptor()
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(cartInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
-                context)
+            listOf(
+                cartInterceptor,
+                logisticInterceptor,
+                promoInterceptor,
+                checkoutInterceptor,
+                paymentInterceptor,
+                ethicalDrugTestInterceptor
+            ),
+            context
+        )
     }
 
     fun resetAllCustomResponse() {
@@ -22,5 +31,6 @@ object OneClickCheckoutInterceptor {
         promoInterceptor.resetInterceptor()
         checkoutInterceptor.resetInterceptor()
         paymentInterceptor.resetInterceptor()
+        ethicalDrugTestInterceptor.resetInterceptor()
     }
 }

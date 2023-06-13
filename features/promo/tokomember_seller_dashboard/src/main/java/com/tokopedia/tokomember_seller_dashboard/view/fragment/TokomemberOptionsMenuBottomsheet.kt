@@ -14,6 +14,7 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
@@ -108,7 +109,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                     it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR, STOP) }
                 }
                 it?.type.equals(SHARE) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE, SHARE) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE_MOBILE, SHARE) }
                 }
                 it?.type.equals(DUPLICATE) -> {
                     it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY, DUPLICATE) }
@@ -129,6 +130,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         childLayout.setOnClickListener {
             parentFragment?.let{
                 if(it is ProgramActions){
+                    if(type == EXTEND){
+                        tmTracker?.clickProgramBsExtension(shopId.toString(), programId.toString())
+                    }
                     it.option(type, shopId = shopId, programId = programId)
                 }
                 if(it is TmCouponActions){
@@ -152,6 +156,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
         const val TAG = "TM_DASH_OPTIONS_MENU_BOTTOM_SHEET"
         private lateinit var programActions: ProgramActions
+        private var tmTracker: TmTracker? = null
         private lateinit var tmCouponActions: TmCouponActions
 
         fun show(
@@ -159,7 +164,8 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             shopId: Int,
             programId: Int,
             childFragmentManager: FragmentManager,
-            programActions: ProgramActions
+            programActions: ProgramActions,
+            tmTracker: TmTracker?
         ) {
             val bundle = Bundle()
             bundle.putString(BUNDLE_OPTION_MENU, actions)
@@ -169,6 +175,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                 arguments = bundle
             }
             this.programActions = programActions
+            if (tmTracker != null) {
+                this.tmTracker = tmTracker
+            }
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
 

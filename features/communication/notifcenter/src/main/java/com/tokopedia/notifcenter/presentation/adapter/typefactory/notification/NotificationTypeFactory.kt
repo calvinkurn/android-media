@@ -7,7 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
-import com.tokopedia.notifcenter.data.uimodel.*
+import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
+import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
+import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 
 interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(sectionTitleUiModel: SectionTitleUiModel): Int
@@ -20,6 +28,7 @@ interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(emptyNotificationUiModel: EmptyNotificationUiModel): Int
     fun type(notifOrderListUiModel: NotifOrderListUiModel): Int
     fun type(notifTopAdsHeadline: NotifTopAdsHeadline): Int
+    fun type(affiliateEducationUiModel: NotificationAffiliateEducationUiModel): Int
 
     /**
      * to support 1 uiModel has several type of view
@@ -34,6 +43,8 @@ interface NotificationTypeFactory : AdapterTypeFactory {
      * to call `this` multiple times
      */
     fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int, adapterListener: Any
+        parent: ViewGroup,
+        viewType: Int,
+        adapterListener: Any
     ): AbstractViewHolder<out Visitable<*>>
 }

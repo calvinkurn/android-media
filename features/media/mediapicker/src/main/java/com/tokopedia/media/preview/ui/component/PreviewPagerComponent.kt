@@ -4,10 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapter
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
+import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 class PreviewPagerComponent(
     parent: ViewGroup
@@ -63,7 +63,7 @@ class PreviewPagerComponent(
         adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.pause()
     }
 
-    override fun release() {} //no-op
+    override fun release() {} // no-op
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
@@ -88,12 +88,12 @@ class PreviewPagerComponent(
     }
 
     private fun setData(medias: List<MediaUiModel>) {
-        val asPreviewUiModel = medias.map {
+        val toPreviewUiModel = medias.map {
             PreviewUiModel(it)
         }
 
         this.medias.clear()
-        this.medias.addAll(asPreviewUiModel)
+        this.medias.addAll(toPreviewUiModel)
     }
 
     private fun getData(media: MediaUiModel) = medias.firstOrNull {
@@ -101,15 +101,12 @@ class PreviewPagerComponent(
     }
 
     private fun attachStateListener() = object : View.OnAttachStateChangeListener {
-        override fun onViewAttachedToWindow(v: View?) {
-            v?.post {
-                adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
-            }
+        override fun onViewAttachedToWindow(view: View) {
+            view.post { adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start() }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
         }
     }
-
 }

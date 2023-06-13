@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 
 class MiniCartChatListAdapter(adapterTypeFactoryChat: MiniCartChatListAdapterTypeFactory) :
-        BaseListAdapter<Visitable<*>, MiniCartChatListAdapterTypeFactory>(adapterTypeFactoryChat) {
+    BaseListAdapter<Visitable<*>, MiniCartChatListAdapterTypeFactory>(adapterTypeFactoryChat) {
 
     fun updateList(newList: List<Visitable<*>>) {
         val diffResult = DiffUtil.calculateDiff(MiniCartChatListDiffUtilCallback(list, newList))
@@ -15,5 +15,4 @@ class MiniCartChatListAdapter(adapterTypeFactoryChat: MiniCartChatListAdapterTyp
 
         diffResult.dispatchUpdatesTo(this)
     }
-
 }

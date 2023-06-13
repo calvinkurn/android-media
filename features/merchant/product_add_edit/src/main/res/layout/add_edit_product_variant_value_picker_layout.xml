@@ -28,16 +28,16 @@
             android:contentDescription="@string/content_desc_textFieldUnifyVariantUnit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             app:text_field_append_drawable_icon_2="@drawable/unify_chips_ic_chevron_normal"
             app:text_field_label_static="true" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl3"
+            android:layout_height="8dp"
             android:background="@color/Unify_N50" />
     </LinearLayout>
 
@@ -61,17 +61,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="UnifyComponentUsage"
-        app:cardElevation="@dimen/layout_lvl2">
+        app:cardElevation="16dp">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonSave"
             android:contentDescription="@string/content_desc_buttonSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="0"
             android:gravity="center|bottom"
             android:text="@string/action_variant_save" />

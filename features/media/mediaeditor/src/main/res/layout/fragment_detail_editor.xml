@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editor_fragment_detail_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/uc_tool_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+            android:id="@+id/img_ucrop_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_view_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:scaleType="fitCenter" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/ldr_preview"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_preview_overlay"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:translationZ="2dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/uc_tool_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/action_btn_container"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+        <!--    Brightness Tool-->
+        <include
+            layout="@layout/ui_component_tool_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Remove Background-->
+        <include
+            layout="@layout/ui_component_tool_remove_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Contrast Tool-->
+        <include
+            layout="@layout/ui_component_tool_contrast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Contrast Tool-->
+        <include
+            layout="@layout/ui_component_tool_watermark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Rotate Tool-->
+        <include
+            layout="@layout/ui_component_tool_rotate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
+        <!--    Crop Tool-->
+        <include
+            layout="@layout/ui_component_tool_crop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
+        <!--    Add Logo Tool-->
+        <include
+            layout="@layout/ui_component_tool_add_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/action_btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/editor_button_title_cancel"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="text" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/editor_button_title_save"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

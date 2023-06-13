@@ -3,12 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 apply plugin: 'robust'
 
-repositories{
-    flatDir {
-        dirs 'libs'
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
 
 buildscript {
     repositories {
@@ -36,6 +30,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 
@@ -56,6 +56,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.sellerMvcCreation)
+
 	implementation projectOrAar(rootProject.ext.features.shopDiscount)
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -63,7 +65,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.productManageList)
-    implementation projectOrAar(rootProject.ext.features.shopSettings)
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
@@ -72,7 +73,6 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -107,7 +107,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
-    implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
@@ -121,7 +120,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
     implementation projectOrAar(rootProject.ext.features.statistic)
-    implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopAdmin)
@@ -130,6 +128,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
     //Media
+    implementation projectOrAar(rootProject.ext.features.mediaeditor)
     implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+
+    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
+    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
+    implementation projectOrAar(rootProject.ext.features.centralizedPromo)
+    implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
 }

@@ -1,15 +1,18 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.general
 
+import android.content.Intent
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
-import android.content.Intent
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import org.hamcrest.core.Is.`is`
 
 object GeneralResult {
 
@@ -20,7 +23,8 @@ object GeneralResult {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, viewId
+                position,
+                viewId
             )
         ).check(matches(matcher))
     }
@@ -33,9 +37,17 @@ object GeneralResult {
         intended(hasData(intent.data))
     }
 
+    fun openPageWithExtra(key: String, value: String) {
+        intended(hasExtra(key, value))
+    }
+
     fun assertChatRecyclerview(matcher: Matcher<in View>) {
         onView(
             withId(R.id.recycler_view_chatroom)
         ).check(matches(matcher))
+    }
+
+    fun <T>assertViewObjectValue(realValue: T, expectedValue: T) {
+        assertThat(realValue, `is`(expectedValue))
     }
 }

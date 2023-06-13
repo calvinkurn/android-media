@@ -1,6 +1,6 @@
 package com.tokopedia.logisticcart.datamock
 
-val shippingParamJson = """
+val SHIPPING_PARAM_JSON = """
     {
       "addressId": 99367774,
       "categoryIds": "753",
@@ -33,13 +33,13 @@ val shippingParamJson = """
     }
 """.trimIndent()
 
-val shopShipmentsJson = """
+val SHOP_SHIPMENTS_JSON = """
     [
       {
         "isDropshipEnabled": true,
         "shipCode": "jne",
         "shipId": 1,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-jne.png",
         "shipName": "JNE",
         "shipProds": [
           {
@@ -72,7 +72,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": true,
         "shipCode": "pos",
         "shipId": 4,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-pos.png",
         "shipName": "Pos Indonesia",
         "shipProds": [
           {
@@ -89,7 +89,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": false,
         "shipCode": "gojek",
         "shipId": 10,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-gosend.png",
         "shipName": "GO-JEK",
         "shipProds": [
           {
@@ -114,7 +114,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": false,
         "shipCode": "ninja",
         "shipId": 12,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-ninja.png",
         "shipName": "Ninja Xpress",
         "shipProds": [
           {
@@ -131,7 +131,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": false,
         "shipCode": "grab",
         "shipId": 13,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-grab.png",
         "shipName": "Grab",
         "shipProds": [
           {
@@ -156,7 +156,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": true,
         "shipCode": "anteraja",
         "shipId": 23,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-anteraja.png",
         "shipName": "AnterAja",
         "shipProds": [
           {
@@ -181,7 +181,7 @@ val shopShipmentsJson = """
         "isDropshipEnabled": true,
         "shipCode": "lion",
         "shipId": 24,
-        "shipLogo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+        "shipLogo": "https://images.tokopedia.net/img/kurir-lionparcel.png",
         "shipName": "Lion Parcel",
         "shipProds": [
           {
@@ -197,6 +197,6 @@ val shopShipmentsJson = """
     ]
 """.trimIndent()
 
-val productsJson = """
+val PRODUCTS_JSON = """
     [{"is_free_shipping":false,"product_id":516791889}]
 """.trimIndent()

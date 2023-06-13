@@ -1,0 +1,496 @@
+[
+  {
+    "data": {
+      "playGetWidgetV2": {
+        "data": [
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "719313",
+            "title": "Flash Sale🥰",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/719313?source_id=642097\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/719313",
+            "startTime": "2022-11-14T14:30:31+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Kupon Spesial",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "642097",
+              "name": "applewatchstuff"
+            },
+            "video": {
+              "ID": "1117054",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/14/816c13a9-634e-4178-8715-940db9ea9e92.jpg?b=UOPFlvsp%2BrjFxvOFw%5DSK%5B7aLEQs%3AiHOsMxof",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=37f20715-63ee-11ed-b35b-42010a2946ba",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "201"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Flash Sale🥰\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/719313?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Toko di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Toko di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "711563",
+            "title": "Ngerakit Yuk ,Gabung Aja ",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/711563?source_id=10958899\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/711563",
+            "startTime": "2022-11-14T14:48:23+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": false,
+              "isReminderSet": false,
+              "promo_labels": []
+            },
+            "partner": {
+              "ID": "10958899",
+              "name": "MEGA COMPUTER JAKARTA"
+            },
+            "video": {
+              "ID": "1117110",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/14/9143594a-008a-4481-9653-4a5e63d78781.jpg?b=U%24J8Y9ayt6of_NWBt7j%5B%25Mj%5BofWBoJj%5Bj%5DWB",
+              "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=b75d01e1-63f0-11ed-b370-42010a2946ba",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "17"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Ngerakit Yuk ,Gabung Aja \" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/711563?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Toko di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Toko di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "719356",
+            "title": "Rakit Pc Yuk Gabung",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/719356?source_id=7531734\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/719356",
+            "startTime": "2022-11-14T14:48:18+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": false,
+              "isReminderSet": false,
+              "promo_labels": []
+            },
+            "partner": {
+              "ID": "7531734",
+              "name": "MPSS Computer Cirebon"
+            },
+            "video": {
+              "ID": "1117109",
+              "type": "live",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/14/71cb3ed2-b2ee-4a40-9f63-7c07abee5060.jpg?b=U%24J8Y9ayt6of_NWBt7j%5B%25Mj%5BofWBoJj%5Bj%5DWB",
+              "streamSource": "https://live-stream.tokopedia.net/live/v0.2/play_20221114144817_b3b5d116-63f0-11ed-b36f-42010a2946ba/live/abr.m3u8",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "15"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Rakit Pc Yuk Gabung\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/719356?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton MPSS Computer Cirebon di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton MPSS Computer Cirebon di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "718377",
+            "title": "PROMO ASUS NEW ZENBOOK UX5401ZAS",
+            "widgetType": "LIVE",
+            "appLink": "tokopedia://play/718377?source_id=1696269\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/718377",
+            "startTime": "2022-11-14T14:59:40+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Kupon Spesial",
+                  "type": "ONLY_LIVE"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "1696269",
+              "name": "Megastar Marina"
+            },
+            "video": {
+              "ID": "0",
+              "type": "",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/13/c024d0c1-202e-49b9-911f-168f4ab41e3a.jpg?b=UXO%7CRzIT%25Nx%5D%5E%2BWBRjj%5B_NxuRPRP4ooLWBWB",
+              "streamSource": "",
+              "isShowTotalView": true,
+              "isLive": true
+            },
+            "stats": {
+              "view": {
+                "formatted": "0"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"PROMO ASUS NEW ZENBOOK UX5401ZAS\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/718377?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Megastar Marina di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Megastar Marina di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "715471",
+            "title": "LIVE PROMO 11.11 CASHBACK 🥳",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/715471?source_id=10563434\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/715471",
+            "startTime": "2022-11-11T16:12:08+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 8%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "10563434",
+              "name": "PT INDO BISMAR"
+            },
+            "video": {
+              "ID": "1110713",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/11/a09c3294-f2d5-4340-84cc-b6618bea1c9d.jpg?b=UFFP%5ByRPP0ov5Mogw%7DS1H1ozD%25RQIXrq%3FIbJ",
+              "streamSource": "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/eb019028-61a0-11ed-ac82-42010a2946ba/2022-11-11-17-12-09_2022-11-11-18-15-12.m3u8",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "2 rb"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"LIVE PROMO 11.11 CASHBACK 🥳\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/715471?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton PT INDO BISMAR di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton PT INDO BISMAR di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "709316",
+            "title": "November SALEbration With AMD",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/709316?source_id=2411241\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/709316",
+            "startTime": "2022-11-11T19:01:57+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 16%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "2411241",
+              "name": "Lenovo Official"
+            },
+            "video": {
+              "ID": "1111403",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/10/b6374545-bc93-4fc2-9db4-d9c787cc81f7.jpg?b=UBF5KvxZ4nRiGubE%251RP0xnOOtg3s%2Axvoda%23",
+              "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=3746297061c571edbf9287c7361c0102",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "752"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"November SALEbration With AMD\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/709316?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Lenovo Official di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Lenovo Official di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "717367",
+            "title": "Sale Peralatan Rumah Tangga",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/717367?source_id=9361236\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/717367",
+            "startTime": "2022-11-12T20:50:36+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 100%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "9361236",
+              "name": "Oxihom"
+            },
+            "video": {
+              "ID": "1114067",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/12/908f3ace-f2f1-425b-8cfb-8c02bb79b032.jpg?b=UZRLO%2Ar%3F%25gKO%3BfS~IUv~qFW.xGaKPVv%23x%5DXm",
+              "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=47095e17480a4d88a261bd39e58c3019",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "613"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Sale Peralatan Rumah Tangga\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/717367?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Oxihom di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Oxihom di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "717069",
+            "title": "Sabtu Ceria 🥰",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/717069?source_id=642097\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/717069",
+            "startTime": "2022-11-12T18:00:30+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": false,
+              "isReminderSet": false,
+              "promo_labels": []
+            },
+            "partner": {
+              "ID": "642097",
+              "name": "applewatchstuff"
+            },
+            "video": {
+              "ID": "1113741",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/12/e1b1cb3c-3a27-4e46-ba3f-9a06e6e128b2.jpg?b=UOPFlvsp%2BrjFxvOFw%5DSK%5B7aLEQs%3AiHOsMxof",
+              "streamSource": "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/38cc8c22-6279-11ed-afa3-42010a2946ba/2022-11-12-19-00-31_2022-11-12-20-30-37.m3u8",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "550"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Sabtu Ceria 🥰\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/717069?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton applewatchstuff di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton applewatchstuff di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "702945",
+            "title": "Suka Banget Warna Baru M350 \u0026 K380!",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/702945?source_id=2642798\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/702945",
+            "startTime": "2022-11-11T19:00:16+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 31%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "2642798",
+              "name": "Logitech Official Store"
+            },
+            "video": {
+              "ID": "1111226",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/3/21e0673c-5e3c-4122-87ba-2b5ec74b8ba9.jpg?b=UCF%7D6YtHDvV~%5E%3DW8Icog4%2BV%7Cx%2BotDvalx.t0",
+              "streamSource": "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/679e43c8-61b8-11ed-ad09-42010a2946ba/2022-11-11-20-00-17_2022-11-11-21-00-16.m3u8",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "524"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"Suka Banget Warna Baru M350 \u0026 K380!\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/702945?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Logitech Official Store di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Logitech Official Store di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          },
+          {
+            "__typename": "PlayWidgetChannel",
+            "ID": "716009",
+            "title": "11.11 Nih",
+            "widgetType": "WATCH_AGAIN",
+            "appLink": "tokopedia://play/716009?source_id=9361236\u0026source_type=PDP_WIDGET",
+            "webLink": "https://www.tokopedia.com/play/channel/716009",
+            "startTime": "2022-11-11T21:32:06+07:00",
+            "widgetSortingMethod": "PINNED",
+            "recommendationType": "category_level3",
+            "config": {
+              "hasPromo": true,
+              "isReminderSet": false,
+              "promo_labels": [
+                {
+                  "text": "Diskon 100%",
+                  "type": "DEFAULT"
+                }
+              ]
+            },
+            "partner": {
+              "ID": "9361236",
+              "name": "Oxihom"
+            },
+            "video": {
+              "ID": "1111675",
+              "type": "vod",
+              "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2022/11/11/813cc444-7966-43ca-aa5e-9e763358c349.jpg?b=UNNT%2Cz-mx%5ERiDz-pt9aeTJ%251jDaxgjxuxCs-",
+              "streamSource": "https://vod.tokopedia.net/liveRecord/f85e64cd584687e170c3fb851569d466/play_record/9ddaead6-61cd-11ed-ad69-42010a2946ba/2022-11-11-22-32-07_2022-11-11-23-31-01.m3u8",
+              "isShowTotalView": true,
+              "isLive": false
+            },
+            "stats": {
+              "view": {
+                "formatted": "509"
+              }
+            },
+            "share": {
+              "text": "Udah pada nonton \"11.11 Nih\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+              "redirect_url": "https://www.tokopedia.com/play/channel/716009?titlebar=false",
+              "use_short_url": false,
+              "meta_title": "Tonton Oxihom di Tokopedia Play",
+              "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Oxihom di Tokopedia Play!",
+              "is_show_button": true
+            },
+            "performanceSummaryPageLink": "",
+            "__typename": "PlayWidgetChannel"
+          }
+        ],
+        "meta": {
+          "isAutoRefresh": true,
+          "autoRefreshTimer": 30,
+          "widgetTitle": "Tayangan seru dari barang serupa",
+          "buttonText": "Lihat Semua",
+          "widgetBackground": "",
+          "autoplayAmount": 2,
+          "autoplay": false,
+          "buttonApplink": "tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+          "buttonWeblink": "https://www.tokopedia.com/play/channels",
+          "overlayImage": "",
+          "overlayImageAppLink": "",
+          "overlayImageWebLink": "",
+          "gradient": [],
+          "serverTimeOffset": "1668412785",
+          "maxAutoplayCell": 30,
+          "maxAutoplayWifi": 300,
+          "template": "MEDIUM",
+          "isButtonVisible": false,
+          "businessWidgetPosition": 0
+        }
+      }
+    }
+  }
+]

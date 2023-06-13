@@ -31,9 +31,18 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
     @GqlQuery(QUERY_NAME, QUERY)
     private fun setupUseCase() {
         setGraphqlQuery(ShopPageGetDynamicTabQuery())
-        setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        setCacheStrategy()
         setTypeClass(ShopPageGetDynamicTabResponse::class.java)
+    }
+
+    private fun setCacheStrategy(){
+        setCacheStrategy(GraphqlCacheStrategy
+            .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+    }
+
+    override suspend fun executeOnBackground(): ShopPageGetDynamicTabResponse {
+        setCacheStrategy()
+        return super.executeOnBackground()
     }
 
     companion object {
@@ -85,6 +94,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   type
                   bgColors
                   textColor
+                  bgImage
+                  imgLottie
                   shopLayoutFeatures {
                     name
                     isActive
@@ -99,6 +110,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                           widgetMasterID
                           widgetType
                           widgetName
+                          isFestivity
                           header {
                             title
                             ctaText
@@ -112,6 +124,10 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             errMsgBrokenLink
                             etalaseID
                             isShowEtalaseName
+                            data {
+                                linkID
+                                linkType
+                            }
                           }
                         }
                       }

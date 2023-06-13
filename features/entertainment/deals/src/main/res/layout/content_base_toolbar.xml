@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/deals_dp_12"
-    android:paddingRight="@dimen/deals_dp_12"
-    android:paddingBottom="@dimen/spacing_lvl2"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="4dp"
     app:contentInsetLeft="0dp"
     app:contentInsetStart="0dp"
     app:contentInsetStartWithNavigation="0dp">
@@ -22,16 +22,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
             app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtDealsBaseLocationHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/deals_dp_12"
-            android:layout_marginLeft="@dimen/deals_dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
             android:text="@string/deals_base_activity_location_placeholder"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_96"
@@ -51,11 +51,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtDealsBaseLocationTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@id/imgDealsOrderListMenu"
             app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
@@ -66,11 +65,10 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmerDealsBaseLocationTitle"
-            android:layout_width="@dimen/deals_dp_100"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:loader_corner_radius="4dp"
@@ -84,13 +82,11 @@
             android:id="@+id/imgDealsOrderListMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toStartOf="@id/imgDealsSearchIcon"
-            app:layout_goneMarginEnd="@dimen/layout_lvl0"
-            app:layout_goneMarginRight="@dimen/layout_lvl0"
+            app:layout_goneMarginEnd="8dp"
             app:srcCompat="@drawable/ic_deals_voucher_order_list_24dp" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -100,7 +96,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/ic_system_action_search_grayscale_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

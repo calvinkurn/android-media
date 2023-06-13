@@ -27,22 +27,27 @@
         android:layout_marginStart="16dp"
         android:textSize="16sp"
         android:textColor="@color/Unify_Static_White"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_action"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/picker_toolbar_main_title"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/action_text_done"
+        app:typographyType="heading_5"
         android:text="@string/picker_toolbar_continue"
-        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_marginEnd="16dp"
         android:visibility="gone"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unifyButtonSize="medium"
-        app:unifyButtonVariant="text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:maxLength="13"
+        android:ellipsize="end"
         tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

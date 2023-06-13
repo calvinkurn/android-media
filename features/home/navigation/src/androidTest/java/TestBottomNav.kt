@@ -10,12 +10,9 @@ import androidx.test.rule.ActivityTestRule
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar
 import com.tokopedia.navigation.test.R
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 
@@ -74,10 +71,10 @@ class TestBottomNav {
 
         //assert both currentSelectedItem and nextSelectedItem is animating
         val lottieAnimation3 = linearLayout.findViewWithTag<LottieAnimationView>(currentSelectedTag)
-        assertThat(lottieAnimation3.speed, Matchers.greaterThan(0f))
+        assert(lottieAnimation3.speed > 0f)
 
         val lottieAnimation4 = linearLayout.findViewWithTag<LottieAnimationView>(newSelectedTag)
-        assertThat(lottieAnimation4.speed, Matchers.greaterThan(0f))
+        assert(lottieAnimation4.speed > 0f)
     }
 
     @Test

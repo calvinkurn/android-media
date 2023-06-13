@@ -85,6 +85,35 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
+            <LinearLayout
+                android:id="@+id/layout_tnc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon_info"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    app:icon_name="INFORMATION" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/txt_shop_open_revamp_tnc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/open_shop_revamp_tnc_open_shop"
+                    app:typographyType="paragraph_3" />
+            </LinearLayout>
+
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/shop_registration_button"
                 android:layout_width="match_parent"
@@ -94,14 +123,6 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/button_label_continue" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_shop_open_revamp_tnc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:text="@string/tnc_input_shop" />
         </LinearLayout>
 
     </ScrollView>

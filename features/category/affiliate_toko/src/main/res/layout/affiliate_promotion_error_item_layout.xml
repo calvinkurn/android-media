@@ -7,22 +7,22 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/error_image"
-        android:layout_width="@dimen/unify_space_96"
-        android:layout_height="@dimen/unify_space_96"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl5"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/error_image_deffered"
-        android:layout_width="@dimen/unify_space_96"
-        android:layout_height="@dimen/unify_space_96"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl5"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         tools:ignore="ContentDescription"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
         app:imageDpiSupportType="singleDpi"
@@ -34,9 +34,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/error_image"
         app:layout_constraintTop_toTopOf="@id/error_image"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_3"
         tools:text="Oops, produk nggak ditemukan"
@@ -48,9 +48,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/error_image"
         app:layout_constraintTop_toBottomOf="@id/error_title"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN600"
@@ -68,9 +68,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         android:id="@+id/buttonsLL"
         >
@@ -78,9 +78,9 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/lihat_kategori"
             android:layout_width="0dp"
-            android:layout_height="@dimen/unify_space_32"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
             tools:text="Lihat Kategori"
             android:layout_weight="1"
             app:unifyButtonSize="small"
@@ -91,9 +91,9 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/ganti_link"
             android:layout_width="0dp"
-            android:layout_height="@dimen/unify_space_32"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             tools:text="Ganti Link"
             app:unifyButtonSize="small"
@@ -102,15 +102,5 @@
             />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/buttonsLL"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/Unify_N50"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

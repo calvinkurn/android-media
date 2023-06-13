@@ -15,8 +15,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateViewHolder
@@ -27,8 +25,8 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewViewHolder
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
@@ -37,21 +35,21 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-   private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/autocomplete/initial_state.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/autocomplete/initial_state.json"
 
 internal class AutocompleteInitialStateTrackingTest {
     @get:Rule
     val activityRule = IntentsTestRule(AutoCompleteActivityStub::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     private val recyclerViewId = R.id.recyclerViewInitialState
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
 
         setupGraphqlMockResponse(AutocompleteMockModelConfig())
 
@@ -137,14 +135,12 @@ internal class AutocompleteInitialStateTrackingTest {
     }
 
     private fun assertCassavaTracker() {
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
                 hasAllSuccess())
     }
 
     @After
     fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }

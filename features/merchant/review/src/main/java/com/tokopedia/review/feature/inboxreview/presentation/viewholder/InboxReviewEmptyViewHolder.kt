@@ -11,7 +11,7 @@ class InboxReviewEmptyViewHolder(view: View) : AbstractViewHolder<InboxReviewEmp
 
     companion object {
         const val EMPTY_STATE_IMAGE_URL =
-            "https://ecs7.tokopedia.net/android/others/empty_review_inbox_seller.png"
+            "https://images.tokopedia.net/android/others/empty_review_inbox_seller.png"
         val LAYOUT = R.layout.item_empty_state_list_rating_product
     }
 

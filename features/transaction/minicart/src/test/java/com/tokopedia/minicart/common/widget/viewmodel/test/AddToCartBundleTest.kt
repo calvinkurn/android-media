@@ -196,7 +196,6 @@ class AddToCartBundleTest {
         Assert.assertTrue(viewModel.globalEvent.getOrAwaitValue().state == GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM)
     }
 
-
     @Test
     fun `WHEN add to cart bundle not success should return failed state from global event`() = runBlocking {
         /**

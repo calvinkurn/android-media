@@ -1,13 +1,13 @@
 package com.tokopedia.tokofood.feature.purchase.promopage.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.CartGeneralBusinessDataCustomResponse
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodCoupon
-import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodData
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.*
 
 object TokoFoodPromoUiModelMapper {
 
-    fun mapResponseDataToVisitables(data: PromoListTokoFoodData): MutableList<Visitable<*>> {
+    fun mapResponseDataToVisitables(data: CartGeneralBusinessDataCustomResponse): MutableList<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             val isAvailableSectionEnabled = data.availableSection.subSection.coupons.isNotEmpty()
             if (isAvailableSectionEnabled) {
@@ -15,12 +15,14 @@ object TokoFoodPromoUiModelMapper {
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
                 data.availableSection.subSection.let { availableSubSection ->
-                    add(
-                        TokoFoodPromoHeaderUiModel(
-                            title = availableSubSection.title,
-                            iconUrl = availableSubSection.iconUrl
+                    availableSubSection.title.takeIf { it.isNotBlank() }?.let {
+                        add(
+                            TokoFoodPromoHeaderUiModel(
+                                title = availableSubSection.title,
+                                iconUrl = availableSubSection.iconUrl
+                            )
                         )
-                    )
+                    }
                     availableSubSection.tickerMessage.takeIf { it.isNotEmpty() }
                         ?.let { tickerMessage ->
                             add(TokoFoodPromoTickerUiModel(tickerMessage))
@@ -39,12 +41,14 @@ object TokoFoodPromoUiModelMapper {
                     add(TokoFoodPromoEligibilityHeaderUiModel(title = title))
                 }
                 data.unavailableSection.subSection.let { unavailableSubSection ->
-                    add(
-                        TokoFoodPromoHeaderUiModel(
-                            title = unavailableSubSection.title,
-                            iconUrl = unavailableSubSection.iconUrl
+                    unavailableSubSection.title.takeIf { it.isNotBlank() }?.let {
+                        add(
+                            TokoFoodPromoHeaderUiModel(
+                                title = unavailableSubSection.title,
+                                iconUrl = unavailableSubSection.iconUrl
+                            )
                         )
-                    )
+                    }
                     unavailableSubSection.tickerMessage.takeIf { it.isNotEmpty() }
                         ?.let { tickerMessage ->
                             add(TokoFoodPromoTickerUiModel(tickerMessage))
@@ -59,7 +63,7 @@ object TokoFoodPromoUiModelMapper {
         }
     }
 
-    fun mapResponseDataToFragmentUiModel(data: PromoListTokoFoodData): TokoFoodPromoFragmentUiModel {
+    fun mapResponseDataToFragmentUiModel(data: CartGeneralBusinessDataCustomResponse): TokoFoodPromoFragmentUiModel {
         return TokoFoodPromoFragmentUiModel(
             pageTitle = data.title,
             promoTitle = data.promoSummary.title,
@@ -72,6 +76,7 @@ object TokoFoodPromoUiModelMapper {
                                     isAvailable: Boolean): TokoFoodPromoItemUiModel {
         return TokoFoodPromoItemUiModel(
             isAvailable = isAvailable,
+            isSelected = coupon.isSelected,
             highlightWording = if (isAvailable) coupon.topBannerTitle else "",
             title = coupon.title,
             timeValidityWording = coupon.expiryInfo,

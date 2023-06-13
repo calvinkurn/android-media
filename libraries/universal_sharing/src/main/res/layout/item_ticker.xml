@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_ticker"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/unify_space_16"
+            android:paddingVertical="@dimen/unify_space_8">
+
+            <ImageView
+                android:id="@+id/iv_ticker"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="@dimen/unify_space_48"
+                android:layout_height="@dimen/unify_space_48"
+                android:contentDescription="@string/content_icon_broadcast"
+                android:src="@drawable/ic_broadcast" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_ticker"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tv_description_ticker"
+                app:layout_constraintStart_toEndOf="@id/iv_ticker"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_N700"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Tokopedia Affiliate"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/tv_title_ticker"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                app:typographyType="small"
+                android:textColor="@color/Unify_GN500"
+                android:paddingHorizontal="@dimen/unify_space_4"
+                android:paddingVertical="@dimen/unify_space_2"
+                android:background="@drawable/background_ticker_free"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintBottom_toBottomOf="@id/tv_title_ticker"
+                app:layout_constraintTop_toTopOf="@id/tv_title_ticker"
+                android:text="@string/ticker_free"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_description_ticker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/iv_ticker"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_ticker"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="@dimen/unify_space_4"
+                android:textColor="@color/Unify_N600"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:typographyType="body_2"
+                android:ellipsize="end"
+                tools:text="Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini."/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</FrameLayout>

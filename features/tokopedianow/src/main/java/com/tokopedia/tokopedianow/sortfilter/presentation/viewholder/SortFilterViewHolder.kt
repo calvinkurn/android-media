@@ -28,15 +28,15 @@ class SortFilterViewHolder(
             rbSort.isChecked = element.isChecked == true
             divider.showWithCondition(!element.isLastItem)
             container.setOnClickListener {
-                listener.onClickItem(rbSort.isChecked, adapterPosition, element.value)
+                listener.onClickSortItem(rbSort.isChecked, adapterPosition, element.value)
             }
             rbSort.setOnClickListener {
-                listener.onClickItem(rbSort.isChecked, adapterPosition, element.value)
+                listener.onClickSortItem(rbSort.isChecked, adapterPosition, element.value)
             }
         }
     }
 
     interface SortFilterViewHolderListener {
-        fun onClickItem(isChecked: Boolean, position: Int, value: Int)
+        fun onClickSortItem(isChecked: Boolean, position: Int, value: Int)
     }
 }

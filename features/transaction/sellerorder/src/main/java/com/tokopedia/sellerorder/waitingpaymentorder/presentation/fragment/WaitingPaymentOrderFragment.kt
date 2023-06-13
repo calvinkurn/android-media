@@ -131,9 +131,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     override fun initInjector() {
         activity?.let {
             DaggerWaitingPaymentOrderComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(it.application))
-                    .build()
-                    .inject(this)
+                .somComponent(SomComponentInstance.getSomComponent(it.application))
+                .build()
+                .inject(this)
         }
     }
 
@@ -142,12 +142,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
             animateCheckAndSetStockButtonLeave()
         }
         waitingPaymentOrderViewModel.loadWaitingPaymentOrder(
-                WaitingPaymentOrderRequestParam(
-                        page = page,
-                        batchPage = page,
-                        nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
-                        showPage = page
-                )
+            WaitingPaymentOrderRequestParam(
+                page = page,
+                batchPage = page,
+                nextPaymentDeadline = waitingPaymentOrderViewModel.paging.nextPaymentDeadline,
+                showPage = page
+            )
         )
     }
 
@@ -181,11 +181,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     override fun onGetListErrorWithExistingData(throwable: Throwable?) {
         view?.run {
-            Toaster.make(this, getString(R.string.global_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.btn_reload), View.OnClickListener {
-                enableLoadMore()
-                scrollToBottomAfterLoadMoreViewInflated()
-                endlessRecyclerViewScrollListener.loadMoreNextPage()
-            })
+            Toaster.make(
+                this, getString(R.string.global_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.btn_reload),
+                View.OnClickListener {
+                    enableLoadMore()
+                    scrollToBottomAfterLoadMoreViewInflated()
+                    endlessRecyclerViewScrollListener.loadMoreNextPage()
+                }
+            )
         }
     }
 
@@ -212,9 +215,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
             }
             if (intent != null) {
                 eventClickCheckAndSetStockButton(
-                        adapter.data.filterIsInstance<WaitingPaymentOrderUiModel>().size,
-                        userSession.userId,
-                        userSession.shopId
+                    adapter.data.filterIsInstance<WaitingPaymentOrderUiModel>().size,
+                    userSession.userId,
+                    userSession.shopId
                 )
             }
         }
@@ -255,10 +258,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     private fun observeWaitingPaymentOrderResult() {
-        waitingPaymentOrderViewModel.waitingPaymentOrderUiModelResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val newItems = ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>(
+        waitingPaymentOrderViewModel.waitingPaymentOrderUiModelResult.observe(
+            viewLifecycleOwner,
+            Observer { result ->
+                when (result) {
+                    is Success -> {
+                        val newItems = ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>(
                             result.data.map { newItem ->
                                 val oldItem = adapter.data.find { oldItem ->
                                     oldItem is WaitingPaymentOrderUiModel && newItem.orderId == oldItem.orderId
@@ -269,47 +274,48 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                                 newItem.expandedHeight = (oldItem as? WaitingPaymentOrderUiModel)?.expandedHeight.orZero()
                                 newItem
                             }
-                    )
-                    if (isLoadingInitialData) {
-                        if (newItems.isNotEmpty()) {
-                            newItems.add(0, createTicker())
-                            (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
-                            animateCheckAndSetStockButtonEnter()
+                        )
+                        if (isLoadingInitialData) {
+                            if (newItems.isNotEmpty()) {
+                                newItems.add(0, createTicker())
+                                (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
+                                animateCheckAndSetStockButtonEnter()
+                            } else {
+                                binding?.cardCheckAndSetStock?.invisible()
+                                (adapter as WaitingPaymentOrderAdapter).showEmpty()
+                            }
                         } else {
-                            binding?.cardCheckAndSetStock?.invisible()
-                            (adapter as WaitingPaymentOrderAdapter).showEmpty()
+                            hideLoading()
+                            adapter.addMoreData(newItems)
                         }
-                    } else {
-                        hideLoading()
-                        adapter.addMoreData(newItems)
+                        updateScrollListenerState(hasNextPage(newItems.size))
+                        binding?.swipeRefreshLayoutWaitingPaymentOrder?.isEnabled = true
                     }
-                    updateScrollListenerState(hasNextPage(newItems.size))
-                    binding?.swipeRefreshLayoutWaitingPaymentOrder?.isEnabled = true
-                }
-                is Fail -> {
-                    showGetListError(result.throwable)
-                    if (isLoadingInitialData) {
-                        animateCheckAndSetStockButtonLeave()
+                    is Fail -> {
+                        showGetListError(result.throwable)
+                        if (isLoadingInitialData) {
+                            animateCheckAndSetStockButtonLeave()
+                        }
+                        SomErrorHandler.logExceptionToServer(
+                            errorTag = SomErrorHandler.SOM_TAG,
+                            throwable = result.throwable,
+                            errorType =
+                            SomErrorHandler.SomMessage.GET_WAITING_PAYMENT_ORDER_LIST_ERROR,
+                            deviceId = userSession.deviceId.orEmpty()
+                        )
                     }
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
-                        throwable = result.throwable,
-                        errorType =
-                        SomErrorHandler.SomMessage.GET_WAITING_PAYMENT_ORDER_LIST_ERROR,
-                        deviceId = userSession.deviceId.orEmpty()
-                    )
                 }
+                binding?.swipeRefreshLayoutWaitingPaymentOrder?.isRefreshing = false
             }
-            binding?.swipeRefreshLayoutWaitingPaymentOrder?.isRefreshing = false
-        })
+        )
     }
 
     private fun createTicker(): WaitingPaymentTickerUiModel {
         return WaitingPaymentTickerUiModel(
-                title = "",
-                description = getString(R.string.som_waiting_payment_orders_ticker_description),
-                type = Ticker.TYPE_INFORMATION,
-                showCloseIcon = false
+            title = "",
+            description = getString(R.string.som_waiting_payment_orders_ticker_description),
+            type = Ticker.TYPE_INFORMATION,
+            showCloseIcon = false
         )
     }
 
@@ -342,9 +348,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         binding?.cardCheckAndSetStock?.visible()
         buttonEnterAnimation = animateCheckAndSetStockButton(binding?.cardCheckAndSetStock?.height?.toFloat().orZero(), Float.ZERO)
         buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 if (isLoadingInitialData) {
                     if (shouldScrollToTop) {
                         scrollToTopAfterRecyclerViewInflated()
@@ -354,9 +360,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                 }
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
@@ -364,18 +370,18 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
         buttonLeaveAnimation = animateCheckAndSetStockButton(Float.ZERO, binding?.cardCheckAndSetStock?.height?.toFloat().orZero())
         buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 binding?.cardCheckAndSetStock?.gone()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
     private fun hasNextPage(newItemsSize: Int) =
-            waitingPaymentOrderViewModel.paging.nextPaymentDeadline != 0L && newItemsSize != 0
+        waitingPaymentOrderViewModel.paging.nextPaymentDeadline != 0L && newItemsSize != 0
 }

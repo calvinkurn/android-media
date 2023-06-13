@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -39,7 +39,6 @@ class TableViewHolder(
     }
 
     private val binding by lazy { ShcWidgetTableBinding.bind(itemView) }
-    private val errorStateBinding by lazy { binding.shcTableErrorStateView }
     private val loadingStateBinding by lazy { binding.shcTableLoadingStateView }
 
     override fun bind(element: TableWidgetUiModel) {
@@ -48,7 +47,7 @@ class TableViewHolder(
         }
         binding.tvTableWidgetTitle.text = element.title
         binding.tvTableWidgetTitle.visible()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcTableErrorStateView.gone()
 
         setTagNotification(element.tag)
         setupTooltip(element)
@@ -57,8 +56,8 @@ class TableViewHolder(
         when {
             data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> {
-                showErrorState()
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                showErrorState(element)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -69,7 +68,7 @@ class TableViewHolder(
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendTableImpressionEvent(
                 model = element,
-                position = this@TableViewHolder.adapterPosition,
+                position = this@TableViewHolder.absoluteAdapterPosition,
                 slidePosition = Int.ZERO,
                 maxSlidePosition = element.data?.dataSet?.size.orZero(),
                 isSlideEmpty = dataSet.getOrNull(Int.ZERO)?.rows.isNullOrEmpty()
@@ -77,7 +76,7 @@ class TableViewHolder(
         }
 
         with(binding) {
-            errorStateBinding.commonWidgetErrorState.gone()
+            binding.shcTableErrorStateView.gone()
             loadingStateBinding.shimmerTableWidgetWidget.gone()
 
             if (dataSet.isNotEmpty()) {
@@ -93,12 +92,12 @@ class TableViewHolder(
                     shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
-                        listener.sendTableImpressionEvent(element, adapterPosition, position, maxPosition, isEmpty)
+                        listener.sendTableImpressionEvent(element, absoluteAdapterPosition, position, maxPosition, isEmpty)
                     }
                     shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
                         listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
                     }
-                    shcTableView.addOnHtmlClickListener { url, isEmpty ->
+                    shcTableView.addOnHtmlClickListener { url, _, _, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                 }
@@ -110,9 +109,9 @@ class TableViewHolder(
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
                         itemView.toggleWidgetHeight(false)
-                        listener.removeWidget(adapterPosition, element)
+                        listener.removeWidget(absoluteAdapterPosition, element)
                     } else {
-                        listener.onRemoveWidget(adapterPosition)
+                        listener.onRemoveWidget(absoluteAdapterPosition)
                         itemView.toggleWidgetHeight(false)
                     }
                 }
@@ -186,9 +185,8 @@ class TableViewHolder(
         btnTableCta.gone()
     }
 
-    private fun showErrorState() = with(binding) {
+    private fun showErrorState(element: TableWidgetUiModel) = with(binding) {
         loadingStateBinding.shimmerTableWidgetWidget.gone()
-        errorStateBinding.commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
@@ -198,10 +196,10 @@ class TableViewHolder(
         btnShcTableEmpty.gone()
         luvShcTable.gone()
         btnTableCta.gone()
-
-        errorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        binding.shcTableErrorStateView.visible()
+        binding.shcTableErrorStateView.setOnReloadClicked {
+            refreshWidget(element)
+        }
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
@@ -251,7 +249,7 @@ class TableViewHolder(
                 text = selectedFilter?.name.orEmpty()
                 setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
                 setOnClickListener {
-                    listener.showTableFilter(element, adapterPosition)
+                    listener.showTableFilter(element, absoluteAdapterPosition)
                 }
             }
         } else {
@@ -318,7 +316,7 @@ class TableViewHolder(
         ) {
         }
 
-        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}

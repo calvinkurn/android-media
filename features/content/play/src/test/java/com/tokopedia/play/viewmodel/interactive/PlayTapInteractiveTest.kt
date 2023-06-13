@@ -24,12 +24,12 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -44,6 +44,9 @@ class PlayTapInteractiveTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -84,7 +87,7 @@ class PlayTapInteractiveTest {
 
         }
 
-        override fun save(model: InteractiveUiModel) {
+        override fun save(model: GameUiModel) {
 
         }
 
@@ -136,11 +139,11 @@ class PlayTapInteractiveTest {
     fun `given tap is active and tap is success, when click tap, then user should have joined the tap`() {
         val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
-        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Giveaway(
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns GameUiModel.Giveaway(
             id = "1",
             title = title,
             waitingDuration = 200L,
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+            status = GameUiModel.Giveaway.Status.Ongoing(
                 endTime = durationTap,
             )
         )
@@ -170,11 +173,11 @@ class PlayTapInteractiveTest {
     fun `given tap is active and tap is error, when click tap, then user should have not joined the tap`() {
         val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
-        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Giveaway(
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns GameUiModel.Giveaway(
             id = "1",
             title = title,
             waitingDuration = 200L,
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(
+            status = GameUiModel.Giveaway.Status.Ongoing(
                 endTime = durationTap,
             )
         )

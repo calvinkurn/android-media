@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
@@ -81,19 +80,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getTargetComponent(): ComponentsItem? {
-        var compId = components.properties?.targetId?:""
-        if (components.properties?.dynamic == true) {
-            getComponent(components.parentComponentId, components.pageEndPoint)?.let parent@{ parentItem ->
-                parentItem.getComponentsItem()?.forEach {
-                    if (!it.dynamicOriginalId.isNullOrEmpty())
-                        if (it.dynamicOriginalId == compId) {
-                            compId = it.id
-                            return@parent
-                        }
-                }
-            }
-        }
-        return getComponent(compId, components.pageEndPoint)
+        return Utils.getTargetComponentOfFilter(components)
     }
 
     fun getDynamicFilterModelLiveData() = dynamicFilterModel
@@ -137,6 +124,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         if (components.filterController.filterViewStateSet.isNullOrEmpty()) {
             val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
             components.filterController.initFilterController(components.searchParameter.getSearchParameterHashMap(), initializedFilterList)
+            quickFiltersLiveData.value = quickFilterList
         }
 
         getSelectedFilterCount()
@@ -148,8 +136,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun setFilterData(filters: List<Filter>?) {
-        if (filters?.isNotEmpty() == true)
+        if (filters?.isNotEmpty() == true) {
             components.filters.addAll(filters)
+            if (quickFilterList.isNotEmpty())
+                components.filters.addAll(quickFilterList)
+        }
     }
 
     private fun setSortData(sort: List<Sort>?) {
@@ -177,7 +168,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
+            if(option.inputType == Option.INPUT_TYPE_RADIO) {
+                components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = true)
+            }else{
+                components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
+            }
         } else {
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
@@ -236,14 +231,19 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if(!components.searchParameter.contains(SORT_KEY))
+        if(components.isFromCategory && !components.searchParameter.contains(SORT_KEY))
             components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         setSelectedSort(applySortFilterModel.mapParameter)
-        applyFilterToSearchParameter(applySortFilterModel.mapParameter)
-        setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
+        if (applySortFilterModel.selectedFilterMapParameter.isEmpty() && applySortFilterModel.selectedSortMapParameter.isEmpty()) {
+            setSelectedFilter(HashMap(applySortFilterModel.selectedFilterMapParameter))
+            applyFilterToSearchParameter(mapOf())
+        } else {
+            applyFilterToSearchParameter(applySortFilterModel.mapParameter)
+            setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
+        }
         reloadData()
     }
 

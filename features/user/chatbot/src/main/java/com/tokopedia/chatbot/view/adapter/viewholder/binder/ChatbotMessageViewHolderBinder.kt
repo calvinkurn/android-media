@@ -4,10 +4,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -23,12 +25,30 @@ object ChatbotMessageViewHolderBinder {
         chatlayout?.setMovementMethod(movementMethod)
     }
 
+    fun bindChatMessage(
+        chat: String,
+        messageBubble: MessageBubbleLayout?,
+        movementMethod: ChatLinkHandlerMovementMethod,
+        isSender: Boolean = false
+    ) {
+        messageBubble?.fxChat?.setMessage(chat, isSender)
+        messageBubble?.fxChat?.setMovementMethod(movementMethod)
+    }
+
     fun bindHour(
             replyTime: String?,
             chatLayout: CustomChatbotChatLayout?
     ) {
         val hourTime = getHourTime(replyTime)
         chatLayout?.setHourTime(hourTime)
+    }
+
+    fun bindHour(
+        replyTime: String?,
+        messageBubble: MessageBubbleLayout?
+    ) {
+        val hourTime = getHourTime(replyTime)
+        messageBubble?.fxChat?.setHourTime(hourTime)
     }
 
     fun bindHourTextView(
@@ -55,7 +75,13 @@ object ChatbotMessageViewHolderBinder {
         }
     }
 
-    fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
+    fun bindChatReadStatus(element: SendableUiModel, messageBubble: MessageBubbleLayout?) {
+        messageBubble?.fxChat?.checkMark?.let {
+            bindChatReadStatus(element, it)
+        }
+    }
+
+    fun bindChatReadStatus(element: SendableUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {

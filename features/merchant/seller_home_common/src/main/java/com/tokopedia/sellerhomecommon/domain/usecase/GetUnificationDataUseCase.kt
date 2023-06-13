@@ -10,8 +10,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.UnificationMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
@@ -20,7 +21,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -30,8 +31,8 @@ import javax.inject.Inject
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
 class GetUnificationDataUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
-    unificationMapper: UnificationMapper,
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
+    private val unificationMapper: UnificationMapper,
     private val getTableDataUseCase: GetTableDataUseCase,
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(
     gqlRepository, unificationMapper, dispatchers, GetUnificationDataGqlQuery()
@@ -39,7 +40,7 @@ class GetUnificationDataUseCase @Inject constructor(
 
     private var shopId: String = String.EMPTY
     private var widgets: List<UnificationWidgetUiModel> = emptyList()
-    private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
+    private var dynamicParameter: ParamCommonWidgetModel = ParamCommonWidgetModel()
 
     override val classType: Class<GetUnificationDataResponse>
         get() = GetUnificationDataResponse::class.java
@@ -57,7 +58,7 @@ class GetUnificationDataUseCase @Inject constructor(
     fun setParam(
         shopId: String,
         widgets: List<UnificationWidgetUiModel>,
-        dynamicParameter: DynamicParameterModel
+        dynamicParameter: ParamCommonWidgetModel
     ) {
         this.shopId = shopId
         this.widgets = widgets
@@ -115,23 +116,25 @@ class GetUnificationDataUseCase @Inject constructor(
         isFromCache: Boolean
     ): List<UnificationDataUiModel> {
         return unificationUiModels
-            .filter { it.tabs.isNotEmpty() }
             .map { model ->
-                val tab = if (isExistingWidgetDataFetch) {
-                    model.tabs.firstOrNull { it.isSelected } ?: model.tabs.first()
-                } else {
-                    model.tabs.first()
-                }
+                return@map withContext(dispatchers.io) {
+                    if (model.tabs.isEmpty()) {
+                        return@withContext async { model }
+                    }
 
-                val dataKeyModel = TableAndPostDataKey(
-                    dataKey = tab.dataKey,
-                    filter = String.EMPTY,
-                    maxData = tab.config.maxData,
-                    maxDisplayPerPage = tab.config.maxDisplay
-                )
+                    return@withContext async {
+                        val tab = if (isExistingWidgetDataFetch) {
+                            model.tabs.firstOrNull { it.isSelected } ?: model.tabs.first()
+                        } else {
+                            model.tabs.first()
+                        }
 
-                return@map coroutineScope {
-                    async {
+                        val dataKeyModel = TableAndPostDataKey(
+                            dataKey = tab.dataKey,
+                            filter = String.EMPTY,
+                            maxData = tab.config.maxData,
+                            maxDisplayPerPage = tab.config.maxDisplay
+                        )
                         val tabData = fetchTableData(tab, dataKeyModel, isFromCache)
                         return@async model.copy(
                             tabs = model.tabs.map tab@{
@@ -143,7 +146,10 @@ class GetUnificationDataUseCase @Inject constructor(
                                     it.isSelected = false
                                 }
                                 return@tab it
-                            }
+                            },
+                            lastUpdated = unificationMapper.getLastUpdated(
+                                model.dataKey, isFromCache
+                            )
                         )
                     }
                 }
@@ -156,8 +162,13 @@ class GetUnificationDataUseCase @Inject constructor(
         isFromCache: Boolean
     ): TableDataUiModel {
         val metricParam = getMetricParamFromTab(tab.metricParam)
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
-            listOf(dataKeyModel), dynamicParameter.copy(
+            listOf(dataKeyModel), dynamicParam.copy(
                 subPageSource = metricParam.subPageSource
             )
         )
@@ -178,8 +189,8 @@ class GetUnificationDataUseCase @Inject constructor(
         return tableResult
     }
 
-    private fun getMetricParamFromTab(metricParam: String): DynamicParameterModel {
-        return Gson().fromJson(metricParam, DynamicParameterModel::class.java)
+    private fun getMetricParamFromTab(metricParam: String): ParamTableWidgetModel {
+        return Gson().fromJson(metricParam, ParamTableWidgetModel::class.java)
     }
 
     companion object {
@@ -202,6 +213,7 @@ class GetUnificationDataUseCase @Inject constructor(
                     }
                   }
                   error
+                  errorMsg
                   showWidget
                 }
               }

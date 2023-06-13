@@ -6,7 +6,6 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -17,18 +16,17 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
@@ -40,14 +38,11 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.QuestUser
 import com.tokopedia.tokopedianow.home.domain.model.ResultStatus
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.model.Ticker
-import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
-import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -120,14 +115,6 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
             layout = "left_carousel_atc",
             header = Header(
                 name = "Mix Left Atc Carousel",
-                serverTimeUnix = 0
-            )
-        ),
-        HomeLayoutResponse(
-            id = "2333",
-            layout = "left_carousel",
-            header = Header(
-                name = "Mix Left Carousel",
                 serverTimeUnix = 0
             )
         )
@@ -236,20 +223,33 @@ fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
     )
 }
 
-fun createTicker(): TickerResponse {
-    return  TickerResponse(
-            ticker = Tickers(
-                    tickerList = listOf(
-                            Ticker(
-                                    id = "10",
-                                    title = "Welcome to Tokonow",
-                                    message = "Tokonow is one of the best feature",
-                                    color = "#FFF",
-                                    layout = "default"
+fun createTicker(): GetTargetedTickerResponse {
+    return GetTargetedTickerResponse(
+        getTargetedTicker = GetTargetedTickerResponse.GetTargetedTicker(
+            tickers = listOf(
+                GetTargetedTickerResponse.GetTargetedTicker.TickerResponse(
+                    action = GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Action(
+                        appURL = "",
+                        label = "",
+                        type = "",
+                        webURL = ""
+                    ),
+                    content = "Maaf, kamu baru bisa belanja setelah kami kembali beroperasi.",
+                    iD = "",
+                    metadata = listOf(
+                        GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata(
+                            type = "blockAddToCart",
+                            values = listOf(
+                                "true"
                             )
-
-                    )
+                        )
+                    ),
+                    priority = 1,
+                    title = "Tokopedia NOW! sedang tidak beroperasi",
+                    type = ""
+                )
             )
+        )
     )
 }
 
@@ -279,7 +279,7 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
     return MiniCartSimplifiedData(
             miniCartWidgetData = MiniCartWidgetData(
                     totalProductCount = 1,
-                    totalProductPrice = 100
+                    totalProductPrice = 100.0
             ),
             miniCartItems = mapOf(
                     MiniCartItemKey("125") to MiniCartItem.MiniCartItemProduct(
@@ -311,7 +311,8 @@ fun createCategoryGridListFirstFetch(): CategoryListResponse {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
             )
     ))
 }
@@ -328,7 +329,8 @@ fun createCategoryGridListSecondFetch(): CategoryListResponse {
                             imageUrl = "tokopedia://",
                             parentId = "2",
                             childList = listOf(),
-                            isAdult = 0
+                            isAdult = 0,
+                            color = "#FFFFFF"
                     )
             ))
 }
@@ -345,7 +347,8 @@ fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
                 imageUrl = "tokopedia://",
                 parentId = "2",
                 childList = listOf(),
-                isAdult = 0
+                isAdult = 0,
+                color = "#FFFFFF"
             ),
             CategoryResponse(
                 id = "2",
@@ -355,7 +358,8 @@ fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
                 imageUrl = "tokopedia://",
                 parentId = "2",
                 childList = listOf(),
-                isAdult = 1
+                isAdult = 1,
+                color = "#FFFFFF"
             ),
             CategoryResponse(
                 id = "3",
@@ -365,7 +369,8 @@ fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
                 imageUrl = "tokopedia://",
                 parentId = "2",
                 childList = listOf(),
-                isAdult = 0
+                isAdult = 0,
+                color = "#FFFFFF"
             ),
             CategoryResponse(
                 id = "4",
@@ -375,7 +380,8 @@ fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
                 imageUrl = "tokopedia://",
                 parentId = "2",
                 childList = listOf(),
-                isAdult = 1
+                isAdult = 1,
+                color = "#FFFFFF"
             )
         )
     )
@@ -421,45 +427,33 @@ fun createSliderBannerDataModel(
 fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
+    warehouseId: String = ""
 ): HomeLeftCarouselAtcUiModel {
     return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+        productList = listOf(),
+        realTimeRecom = HomeRealTimeRecomUiModel(
+            channelId = id,
+            headerName = headerName,
+            warehouseId = warehouseId,
+            type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+        )
     )
-}
-
-fun createLeftCarouselDataModel(
-    id: String,
-    groupId: String,
-    headerName: String,
-    headerServerTimeUnix: Long = 0,
-    layout: String = "lego_3_image"
-): MixLeftDataModel {
-    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = layout)
-    val channelModel = ChannelModel(
-        id = id,
-        groupId = groupId,
-        layout = layout,
-        channelHeader = channelHeader,
-        channelConfig = channelConfig
-    )
-    return MixLeftDataModel(channelModel = channelModel)
 }
 
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: TokoNowCategoryListUiModel?,
+    categoryList: List<Visitable<*>>?,
     @TokoNowLayoutState state: Int
-): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
+): TokoNowCategoryMenuUiModel {
+    return TokoNowCategoryMenuUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
-fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
-    return HomeTickerUiModel(id = "1", tickers = tickers)
+fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoNowTickerUiModel {
+    return TokoNowTickerUiModel(id = "1", tickers = tickers)
 }
 
 fun createTickerData(
@@ -471,14 +465,32 @@ fun createTickerData(
 }
 
 fun createHomeProductCardUiModel(
+    channelId: String = "",
     productId: String = "",
     shopId: String = "",
     quantity: Int = 0,
+    stock: Int = 0,
+    minOrder: Int = 0,
+    maxOrder: Int = 0,
     parentId: String = "",
-    product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
-): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+    position: Int = 0,
+    originalPosition: Int = 0,
+    headerName: String = ""
+): TokoNowRepurchaseProductUiModel {
+    return TokoNowRepurchaseProductUiModel(
+        channelId = channelId,
+        productId = productId,
+        shopId = shopId,
+        orderQuantity = quantity,
+        availableStock = stock,
+        minOrder = minOrder,
+        maxOrder = maxOrder,
+        parentId = parentId,
+        position = position,
+        originalPosition = originalPosition,
+        needToShowQuantityEditor = true,
+        headerName = headerName
+    )
 }
 
 fun createLocalCacheModel(

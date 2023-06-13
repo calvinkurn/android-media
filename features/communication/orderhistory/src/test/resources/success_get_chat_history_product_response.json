@@ -5,10 +5,10 @@
     {
       "categoryId": 1758,
       "discountedPercentage": 90,
-      "imageUrl": "https://ecs7.tokopedia.net/img/cache/700/attachment/2020/4/23/32520341/32520341_b8b2d0fc-527b-421a-87ab-2c1e5cf9ca39.jpg.webp",
+      "imageUrl": "https://images.tokopedia.net/img/cache/700/attachment/2020/4/23/32520341/32520341_b8b2d0fc-527b-421a-87ab-2c1e5cf9ca39.jpg.webp",
       "isCampaignActive": true,
       "listImageUrl": [
-        "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/18/12299749/12299749_147b4105-bd1a-4128-8828-98136290af18_795_795"
+        "https://images.tokopedia.net/img/cache/700/product-1/2020/2/18/12299749/12299749_147b4105-bd1a-4128-8828-98136290af18_795_795"
       ],
       "minOrder": 1,
       "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at feugiat ex, vel tempus turpis. Donec mollis dictum gravida. Nullam aliquet massa ac hendrerit semper. Nullam molestie in ex quis condimentum. Maecenas eleifend tristique nisl at varius. Nunc dapibus nisi ultricies erat finibus laoreet",
@@ -25,10 +25,10 @@
     {
       "categoryId": 8,
       "discountedPercentage": 0,
-      "imageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/4/16/6064990/6064990_5dec1aa8-52d7-45f8-bb1d-d35d86b349e8_1000_1000.webp",
+      "imageUrl": "https://images.tokopedia.net/img/cache/700/product-1/2020/4/16/6064990/6064990_5dec1aa8-52d7-45f8-bb1d-d35d86b349e8_1000_1000.webp",
       "isCampaignActive": false,
       "listImageUrl": [
-        "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/13/12299749/12299749_6a85a642-6e99-4c0a-9bf6-460c83135f61_1156_1156"
+        "https://images.tokopedia.net/img/cache/700/product-1/2020/2/13/12299749/12299749_6a85a642-6e99-4c0a-9bf6-460c83135f61_1156_1156"
       ],
       "minOrder": 1,
       "name": "hai there",

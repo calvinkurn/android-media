@@ -3,15 +3,21 @@ package com.tokopedia.tokofood.common
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokofoodParam
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartDataData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralRemoveCartData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralUpdateCartQuantityData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataCustomResponse
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
-import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
-import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.MiniCartListTokofoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokofoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.UpdateQuantityTokofoodUseCase
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -24,9 +30,10 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.pauseDispatcher
+import kotlinx.coroutines.test.runCurrent
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,7 +52,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
     protected lateinit var savedStateHandle: SavedStateHandle
 
     @RelaxedMockK
-    protected lateinit var loadCartTokoFoodUseCase: Lazy<LoadCartTokoFoodUseCase>
+    protected lateinit var loadCartTokoFoodUseCase: Lazy<MiniCartListTokofoodUseCase>
 
     @RelaxedMockK
     protected lateinit var addToCartTokoFoodUseCase: Lazy<AddToCartTokoFoodUseCase>
@@ -54,7 +61,10 @@ abstract class MultipleFragmentsViewModelTestFixture {
     protected lateinit var updateCartTokoFoodUseCase: Lazy<UpdateCartTokoFoodUseCase>
 
     @RelaxedMockK
-    protected lateinit var removeCartTokoFoodUseCase: Lazy<RemoveCartTokoFoodUseCase>
+    protected lateinit var updateQuantityTokofoodUseCase: Lazy<UpdateQuantityTokofoodUseCase>
+
+    @RelaxedMockK
+    protected lateinit var removeCartTokoFoodUseCase: Lazy<RemoveCartTokofoodUseCase>
 
     protected lateinit var viewModel: MultipleFragmentsViewModel
 
@@ -66,6 +76,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
             loadCartTokoFoodUseCase,
             addToCartTokoFoodUseCase,
             updateCartTokoFoodUseCase,
+            updateQuantityTokofoodUseCase,
             removeCartTokoFoodUseCase,
             CoroutineTestDispatchersProvider
         )
@@ -76,7 +87,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
         unmockkAll()
     }
 
-    protected fun onLoadCartList_shouldReturn(response: CheckoutTokoFood) {
+    protected fun onLoadCartList_shouldReturn(response: CartGeneralCartListData?) {
         coEvery {
             loadCartTokoFoodUseCase.get().execute(SOURCE)
         } returns response
@@ -89,7 +100,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
     }
 
     protected fun onAddToCart_shouldReturn(updateParam: UpdateParam,
-                                           response: CartTokoFoodResponse) {
+                                           response: CartGeneralAddToCartData) {
         coEvery {
             addToCartTokoFoodUseCase.get().execute(updateParam)
         } returns response
@@ -103,28 +114,45 @@ abstract class MultipleFragmentsViewModelTestFixture {
     }
 
     protected fun onUpdateCart_shouldReturn(updateParam: UpdateParam,
-                                            response: CartTokoFoodResponse) {
+                                            source: String,
+                                            response: CartGeneralAddToCartData
+    ) {
         coEvery {
-            updateCartTokoFoodUseCase.get().execute(updateParam)
+            updateCartTokoFoodUseCase.get().execute(updateParam, source)
         } returns response
     }
 
     protected fun onUpdateCart_shouldThrow(updateParam: UpdateParam,
+                                           source: String,
                                            throwable: Throwable) {
         coEvery {
-            updateCartTokoFoodUseCase.get().execute(updateParam)
+            updateCartTokoFoodUseCase.get().execute(updateParam, source)
         } throws throwable
     }
 
-    protected fun onRemoveCart_shouldReturn(removeCartParam: RemoveCartTokoFoodParam,
-                                            response: CartTokoFoodResponse) {
+    protected fun onUpdateQuantity_shouldReturn(updateParam: UpdateQuantityTokofoodParam,
+                                                response: CartGeneralUpdateCartQuantityData) {
+        coEvery {
+            updateQuantityTokofoodUseCase.get().execute(updateParam)
+        } returns response
+    }
+
+    protected fun onUpdateQuantity_shouldThrow(updateParam: UpdateQuantityTokofoodParam,
+                                               throwable: Throwable) {
+        coEvery {
+            updateQuantityTokofoodUseCase.get().execute(updateParam)
+        } throws throwable
+    }
+
+    protected fun onRemoveCart_shouldReturn(removeCartParam: RemoveCartTokofoodParam,
+                                            response: CartGeneralRemoveCartData) {
         coEvery {
             removeCartTokoFoodUseCase.get().execute(removeCartParam)
         } returns response
     }
 
-    protected fun onRemoveCart_shouldThrow(removeCartParam: RemoveCartTokoFoodParam,
-                                            throwable: Throwable) {
+    protected fun onRemoveCart_shouldThrow(removeCartParam: RemoveCartTokofoodParam,
+                                           throwable: Throwable) {
         coEvery {
             removeCartTokoFoodUseCase.get().execute(removeCartParam)
         } throws throwable
@@ -148,23 +176,45 @@ abstract class MultipleFragmentsViewModelTestFixture {
         job.cancel()
     }
 
-    protected fun getSuccessUpdateCartResponse(): CartTokoFoodResponse {
-        return CartTokoFoodResponse(
-            status = TokoFoodCartUtil.SUCCESS_STATUS,
-            data = CartTokoFoodData(
-                success = TokoFoodCartUtil.SUCCESS_STATUS_INT
+    protected fun getSuccessUpdateCartResponse(): CartGeneralAddToCartData {
+        return CartGeneralAddToCartData(
+            success = 1,
+            data = CartGeneralAddToCartDataData(
+                businessData = listOf(
+                    CartListBusinessData(
+                        businessId = TokoFoodCartUtil.getBusinessId()
+                    )
+                )
             )
         )
     }
 
-    protected fun getPhoneVerificationAddToCartResponse(): CartTokoFoodResponse {
-        return CartTokoFoodResponse(
-            status = TokoFoodCartUtil.SUCCESS_STATUS,
-            data = CartTokoFoodData(
-                success = TokoFoodCartUtil.SUCCESS_STATUS_INT,
-                bottomSheet = CartTokoFoodBottomSheet(
-                    isShowBottomSheet = true,
-                    title = "Need phone verification"
+    protected fun getSuccessRemoveCartResponse(): CartGeneralRemoveCartData {
+        return CartGeneralRemoveCartData(
+            success = TokoFoodCartUtil.SUCCESS_STATUS_INT
+        )
+    }
+
+    protected fun getSuccessUpdateQuantityResponse(): CartGeneralUpdateCartQuantityData {
+        return CartGeneralUpdateCartQuantityData(
+            success = TokoFoodCartUtil.SUCCESS_STATUS_INT
+        )
+    }
+
+    protected fun getPhoneVerificationAddToCartResponse(): CartGeneralAddToCartData {
+        return CartGeneralAddToCartData(
+            success = 1,
+            data = CartGeneralAddToCartDataData(
+                businessData = listOf(
+                    CartListBusinessData(
+                        businessId = TokoFoodCartUtil.getBusinessId(),
+                        nullableCustomResponse = CartListBusinessDataCustomResponse(
+                            bottomSheet = CartListBusinessDataBottomSheet(
+                                isShowBottomSheet = true,
+                                title = "Need phone verification"
+                            )
+                        )
+                    )
                 )
             )
         )
@@ -175,6 +225,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
         const val SOURCE = "source"
 
         const val PURCHASE_SUCCESS_MINI_CART_JSON = "json/purchase/purchase_success_mini_cart.json"
+        const val PURCHASE_UNAVAILABLE_MINI_CART_JSON = "json/purchase/purchase_success_unavailable_products.json"
 
     }
 

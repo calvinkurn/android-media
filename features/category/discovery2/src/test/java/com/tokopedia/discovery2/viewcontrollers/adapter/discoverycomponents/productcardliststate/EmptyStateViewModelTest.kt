@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.emptystate.EmptyStateModel
+import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
+import com.tokopedia.discovery2.usecase.emptystateusecase.EmptyStateUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
@@ -26,6 +28,14 @@ class EmptyStateViewModelTest{
     private val application: Application = mockk()
     private val viewModel: EmptyStateViewModel by lazy {
         spyk(EmptyStateViewModel(application, componentsItem, 99))
+    }
+
+    private val emptyStateUseCase: EmptyStateUseCase by lazy {
+        mockk()
+    }
+
+    private val emptyStateRepository: EmptyStateRepository by lazy {
+        mockk()
     }
 
     @Before
@@ -55,6 +65,8 @@ class EmptyStateViewModelTest{
 
     @Test
     fun getEmptyStateData() {
+        viewModel.emptyStateUseCase = emptyStateUseCase
+        viewModel.emptyStateRepository = emptyStateRepository
         val emptyStateModel = mockk<EmptyStateModel>(relaxed = true)
         every { viewModel.emptyStateRepository.getEmptyStateData(any()) } returns emptyStateModel
 

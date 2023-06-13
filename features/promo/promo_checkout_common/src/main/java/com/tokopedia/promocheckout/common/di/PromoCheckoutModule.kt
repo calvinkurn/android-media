@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
@@ -15,6 +14,7 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCa
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -76,10 +76,10 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter,
+    fun provideTkpdOldAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter,
                                    @PromoCheckoutQualifier userSession: UserSession): ArrayList<Interceptor> {
         val listInterceptor = ArrayList<Interceptor>()
-        listInterceptor.add(TkpdAuthInterceptor(context, networkRouter, userSession))
+        listInterceptor.add(TkpdOldAuthInterceptor(context, networkRouter, userSession))
         if (GlobalConfig.DEBUG) {
             listInterceptor.add(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         }

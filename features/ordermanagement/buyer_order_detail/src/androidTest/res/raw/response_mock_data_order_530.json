@@ -31,7 +31,7 @@
       "shop_id": 479933,
       "shop_name": "dhanny-shop",
       "shop_type": 2,
-      "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_official.png"
+      "badge_url": "https://images.tokopedia.net/img/official_store/badge_official.png"
     },
     "details": {
       "non_bundles": [
@@ -39,7 +39,7 @@
           "product_id": 15122393,
           "order_detail_id": 20530101,
           "product_name": "alphabet",
-          "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/7/14/5512090/5512090_fc6b0895-a7fd-46fd-a148-1f90fb5bbaf8_1058_595.png",
+          "thumbnail": "https://images.tokopedia.net/img/cache/100-square/product-1/2017/7/14/5512090/5512090_fc6b0895-a7fd-46fd-a148-1f90fb5bbaf8_1058_595.png",
           "price": 22000,
           "price_text": "Rp22.000",
           "quantity": 1,

@@ -1,7 +1,6 @@
-package com.tokopedia.shop.product.view.listener;
+package com.tokopedia.shop.product.view.listener
 
-
-import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 
 /**
  * Created by normansyahputa on 2/24/18.
@@ -14,6 +13,6 @@ interface ShopProductImpressionListener {
 
     fun onImpressionProductAtc(
         shopProductUiModel: ShopProductUiModel,
-        position: Int,
+        position: Int
     )
 }

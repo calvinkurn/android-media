@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.common.util.setDescriptionClick
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
@@ -84,9 +86,10 @@ class ProductLimitationBottomSheet(
         val ticker = contentView?.findViewById<Ticker>(R.id.ticker_product_limitation)
         val iconTitle = contentView?.findViewById<IconUnify>(R.id.icon_product_limitation)
         val tvTitle = contentView?.findViewById<TextView>(R.id.tv_title_product_limitation)
+        val itemDecorPadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
         rvItems?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
+        rvItems?.addItemDecoration(HorizontalItemDecoration(itemDecorPadding.orZero()))
         rvItems?.adapter = ProductLimitationItemAdapter().apply {
             setData(actionItems)
             setOnItemClick { category, title: String, url: String ->
@@ -109,7 +112,7 @@ class ProductLimitationBottomSheet(
                 closeButtonVisibility = VISIBLE
             }
             setHtmlDescription(tickerDesc)
-            setOnClickListener {
+            setDescriptionClick {
                 ProductLimitationTracking.clickEduTicker()
                 onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
             }

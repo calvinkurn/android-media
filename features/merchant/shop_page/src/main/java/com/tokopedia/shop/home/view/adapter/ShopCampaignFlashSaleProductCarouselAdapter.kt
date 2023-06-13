@@ -12,11 +12,13 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
-class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var flashSaleUiModel: ShopHomeFlashSaleUiModel? = null
     var flashSaleProductList: List<ShopHomeProductUiModel> = listOf()
+    var measureListener: HeightMeasureListener? = null
+    var parentPosition: Int = -1
 
     companion object {
         private const val SINGLE_PRODUCT = 1
@@ -45,15 +47,15 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
             }
             PRODUCT_CARD_LIST -> {
                 val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_list)
-                ShopHomeFlashSaleProductListViewHolder(itemView, listener)
+                ShopHomeFlashSaleProductListViewHolder(itemView, listener, parentPosition)
             }
             PRODUCT_CARD_BIG_GRID -> {
                 val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid_big)
-                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener)
+                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener, parentPosition)
             }
             else -> {
                 val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
-                ShopHomeFlashSaleProductCardGridViewHolder(itemView, listener)
+                ShopHomeFlashSaleProductCardGridViewHolder(itemView, listener, parentPosition)
             }
         }
     }
@@ -72,10 +74,16 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
                 val productCardBigGridViewHolder =
                     holder as ShopHomeFlashSaleProductCardBigGridViewHolder
                 productCardBigGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
+                productCardBigGridViewHolder.getHeightOfImageProduct { height ->
+                    measureListener?.setHeightListener(height)
+                }
             }
             else -> {
                 val productCardGridViewHolder = holder as ShopHomeFlashSaleProductCardGridViewHolder
                 productCardGridViewHolder.bindData(uiModel = flashSaleProductList[position], fsUiModel = flashSaleUiModel)
+                productCardGridViewHolder.getHeightOfImageProduct { height ->
+                    measureListener?.setHeightListener(height)
+                }
             }
         }
     }
@@ -91,5 +99,9 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
 
     fun setFsUiModel(flashSaleUiModel: ShopHomeFlashSaleUiModel) {
         this.flashSaleUiModel = flashSaleUiModel
+    }
+
+    fun setHeightMeasureListener(listener: HeightMeasureListener) {
+        measureListener = listener
     }
 }

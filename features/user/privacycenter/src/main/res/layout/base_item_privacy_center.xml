@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemViewPrivacyCenter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:title="Title"
+    app:description="Description"
+    app:type="DEFAULT"/>

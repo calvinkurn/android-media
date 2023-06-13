@@ -1,5 +1,7 @@
 package com.tokopedia.seller.menu.common.constant
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.url.TokopediaUrl
 
@@ -18,12 +20,19 @@ class SellerBaseUrl {
 
         const val NEW_MEMBERSHIP_SCHEME_PATH = "skema-keanggotaan-baru"
 
-        const val ADMIN_ERROR_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/ic_admin_no_permission.png"
+        const val ADMIN_ERROR_ILLUSTRATION = TokopediaImageUrl.ERROR_ILLUSTRATION
 
         const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
+        private const val RM_EDU_SCHEME_PATH = "edu/regular-merchant/"
+
         fun getNewMembershipSchemeApplink(): String {
             val url = "${SELLER_HOSTNAME}${NEW_MEMBERSHIP_SCHEME_PATH}"
+            return String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        }
+
+        fun getRegularMerchantEduApplink(): String {
+            val url = "${SELLER_HOSTNAME}${RM_EDU_SCHEME_PATH}"
             return String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         }
 

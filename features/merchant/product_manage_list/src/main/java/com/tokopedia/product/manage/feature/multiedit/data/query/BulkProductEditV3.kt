@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.multiedit.data.query
 
 internal object BulkProductEditV3 {
 
-    val QUERY = """
+   const val QUERY = """
         mutation BulkProductEditV3(${'$'}input:[ProductInputV3]!) {
           BulkProductEditV3(input:${'$'}input) 
           {
@@ -17,5 +17,5 @@ internal object BulkProductEditV3 {
             }
           }
         }
-    """.trimIndent()
+    """
 }

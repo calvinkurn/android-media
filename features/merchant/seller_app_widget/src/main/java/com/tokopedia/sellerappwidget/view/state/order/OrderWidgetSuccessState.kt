@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
@@ -99,7 +100,11 @@ object OrderWidgetSuccessState {
                 putExtra(Const.Extra.ORDER_STATUS_ID, mOrderStatusId)
                 putExtra(Const.Extra.SELLER_ORDER, order)
             }
-            val switchPendingIntent = PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val switchPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             setOnClickPendingIntent(R.id.containerSawOrderSwitch, switchPendingIntent)
 
             val orderTypeStringRes = if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
@@ -172,7 +177,11 @@ object OrderWidgetSuccessState {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
-            val itemPendingIntent = PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val itemPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+            } else {
+                PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             setPendingIntentTemplate(R.id.lvSawOrderList, itemPendingIntent)
 
             //setup empty state for new order / ready to ship

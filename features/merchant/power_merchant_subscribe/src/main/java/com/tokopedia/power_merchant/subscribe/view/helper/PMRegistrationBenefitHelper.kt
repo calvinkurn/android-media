@@ -48,9 +48,7 @@ object PMRegistrationBenefitHelper {
                 ),
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_ULT_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_ULT_PRODUCT_BUNDLING),
-                getFreeDeliveryBenefit(context),
-                getFlashSaleBenefit(context),
-                getRewardBenefit(context)
+                getFlashSaleBenefit(context)
             )
         )
     }
@@ -72,9 +70,7 @@ object PMRegistrationBenefitHelper {
                 ),
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_EXP_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_EXP_PRODUCT_BUNDLING),
-                getFreeDeliveryBenefit(context),
-                getFlashSaleBenefit(context),
-                getRewardBenefit(context)
+                getFlashSaleBenefit(context)
             )
         )
     }
@@ -96,12 +92,10 @@ object PMRegistrationBenefitHelper {
                 ),
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_ADV_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_ADV_PRODUCT_BUNDLING),
-                getFreeDeliveryBenefit(context),
                 PMBenefitItemUiModel(
                     iconUrl = Constant.Image.IC_PM_FLASH_SALE,
                     benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
-                ),
-                getRewardBenefit(context)
+                )
             )
         )
     }
@@ -119,22 +113,8 @@ object PMRegistrationBenefitHelper {
             benefitList = listOf(
                 getTopAdsBenefit(context, Constant.PM_TOP_ADS_CREDIT, Constant.PM_BROAD_CAST_CHAT),
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
-                getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING),
-                PMBenefitItemUiModel(
-                    iconUrl = Constant.Image.IC_PM_FREE_DELIVERY,
-                    benefitDescription = context.getString(
-                        R.string.pm_benefit_free_delivery_pm,
-                        Constant.PM_FREE_DELIVERY
-                    )
-                )
+                getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING)
             )
-        )
-    }
-
-    private fun getRewardBenefit(context: Context): PMBenefitItemUiModel {
-        return PMBenefitItemUiModel(
-            iconUrl = Constant.Image.IC_PM_CASH_BACK,
-            benefitDescription = context.getString(R.string.pm_benefit_reward)
         )
     }
 
@@ -142,16 +122,6 @@ object PMRegistrationBenefitHelper {
         return PMBenefitItemUiModel(
             iconUrl = Constant.Image.IC_PM_FLASH_SALE,
             benefitDescription = context.getString(R.string.pm_benefit_flash_sale_and_discount)
-        )
-    }
-
-    private fun getFreeDeliveryBenefit(context: Context): PMBenefitItemUiModel {
-        return PMBenefitItemUiModel(
-            iconUrl = Constant.Image.IC_PM_FREE_DELIVERY,
-            benefitDescription = context.getString(
-                R.string.pm_benefit_free_delivery_pm_pro,
-                Constant.PM_PRO_FREE_DELIVERY
-            )
         )
     }
 

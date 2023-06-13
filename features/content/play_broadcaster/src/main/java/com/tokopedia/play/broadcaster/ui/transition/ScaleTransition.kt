@@ -19,7 +19,7 @@ import androidx.transition.Visibility
 class ScaleTransition : Visibility {
 
     constructor() : super()
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     override fun captureStartValues(transitionValues: TransitionValues) {
         super.captureStartValues(transitionValues)
@@ -28,20 +28,20 @@ class ScaleTransition : Visibility {
     }
 
     override fun onAppear(
-            sceneRoot: ViewGroup?,
-            view: View?,
-            startValues: TransitionValues?,
-            endValues: TransitionValues?
+        sceneRoot: ViewGroup?,
+        view: View?,
+        startValues: TransitionValues?,
+        endValues: TransitionValues?
     ): Animator {
         val startScaleX = getStartScaleValue(startValues, PROPNAME_TRANSITION_SCALE_X, 0f)
         val startScaleY = getStartScaleValue(startValues, PROPNAME_TRANSITION_SCALE_Y, 0f)
 
         return createScaleAnimation(
-                view = view,
-                startScaleX = if (startScaleX == 1f) 0f else startScaleX,
-                startScaleY = if (startScaleY == 1f) 0f else startScaleY,
-                endScaleX = 1f,
-                endScaleY = 1f
+            view = view,
+            startScaleX = if (startScaleX == 1f) 0f else startScaleX,
+            startScaleY = if (startScaleY == 1f) 0f else startScaleY,
+            endScaleX = 1f,
+            endScaleY = 1f
         )
     }
 
@@ -50,11 +50,11 @@ class ScaleTransition : Visibility {
         val startScaleY = getStartScaleValue(startValues, PROPNAME_TRANSITION_SCALE_Y, 1f)
 
         return createScaleAnimation(
-                view = view,
-                startScaleX = startScaleX,
-                startScaleY = startScaleY,
-                endScaleX = 0f,
-                endScaleY = 0f
+            view = view,
+            startScaleX = startScaleX,
+            startScaleY = startScaleY,
+            endScaleX = 0f,
+            endScaleY = 0f
         )
     }
 
@@ -78,7 +78,7 @@ class ScaleTransition : Visibility {
 
     private fun getAnimatorListener(view: View): AnimatorListenerAdapter {
         return object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 doOnEnd(view)
             }
         }

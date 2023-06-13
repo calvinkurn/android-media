@@ -1,0 +1,129 @@
+{
+  "TokonowGetRecipes": {
+    "header": {
+      "processTime": 0.26543536,
+      "success": true,
+      "message": "Your request has been processed successfully",
+      "statusCode": "200"
+    },
+    "metadata": {
+      "hasNext": true,
+      "total": 14
+    },
+    "data": {
+      "recipes": [
+        {
+          "id": "28",
+          "title": "Kangkung",
+          "status": "Published",
+          "instruction": "\u003cp\u003etesttt\u003c/p\u003e\n",
+          "portion": 4,
+          "duration": 30,
+          "createdTime": "2022-09-14T10:43:32Z",
+          "updatedTime": null,
+          "publishedTime": null,
+          "isBookmarked": true,
+          "category": {
+            "id": "9",
+            "name": "Test Create Category 4"
+          },
+          "tags": [
+            {
+              "id": "3",
+              "name": "Test Create Tag 2"
+            },
+            {
+              "id": "4",
+              "name": "Test Create Tag 3"
+            },
+            {
+              "id": "5",
+              "name": "Test Create Tag 4"
+            },
+            {
+              "id": "6",
+              "name": "Test Create Tag 5"
+            }
+          ],
+          "products": [
+            {
+              "id": "2147817044",
+              "quantity": 2,
+              "detail": {
+                "name": "tokonow - test variant 01",
+                "url": "https://staging.tokopedia.com/tokonow/tokonow-test-variant-01",
+                "imageUrl": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/5/25/f28923cd-af0a-43a4-a9d2-0f5614777a8f.png",
+                "fmtPrice": "Rp150",
+                "appUrl": "tokopedia://product/2147817044",
+                "slashedPrice": "",
+                "discountPercentage": 0,
+                "parentProductID": "",
+                "minOrder": 1,
+                "stock": 0,
+                "categoryName": "",
+                "countReview": "0",
+                "rating": 0,
+                "ratingAverage": "",
+                "shopID": "480552",
+                "maxOrder": 1,
+                "categoryID": "",
+                "redirectLink": "",
+                "labelGroups": [
+                  {
+                    "title": "Stok Habis",
+                    "type": "transparentBlack",
+                    "position": "status",
+                    "url": ""
+                  }
+                ],
+                "labelGroupVariants": []
+              }
+            }
+          ],
+          "ingredients": [
+            {
+              "id": "45",
+              "name": "Kangkung",
+              "quantity": 100,
+              "unit": "g",
+              "image": {
+                "urlOriginal": "https://images-staging.tokopedia.net/img/MKEzJd/2022/9/14/1f7c9db5-7380-443c-a59c-d63840f134e1.jpg",
+                "urlThumbnail": "",
+                "fileName": "1f7c9db5-7380-443c-a59c-d63840f134e1.jpg",
+                "filePath": "MKEzJd/2022/9/14",
+                "width": 255,
+                "height": 215
+              }
+            }
+          ],
+          "images": [
+            {
+              "urlOriginal": "https://images-staging.tokopedia.net/img/DqYeeh/2022/9/14/97f92d84-6b16-47cd-9af7-c3e77ac31dc5.jpg",
+              "urlThumbnail": "",
+              "fileName": "97f92d84-6b16-47cd-9af7-c3e77ac31dc5.jpg",
+              "filePath": "DqYeeh/2022/9/14",
+              "width": 424,
+              "height": 318
+            }
+          ],
+          "videos": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id\u003de978568f4b22404fa0da0010eeab9a1e",
+              "type": "Upload"
+            }
+          ],
+          "medias": [
+            {
+              "url": "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id\u003de978568f4b22404fa0da0010eeab9a1e",
+              "type": "Video"
+            },
+            {
+              "url": "https://images-staging.tokopedia.net/img/DqYeeh/2022/9/14/97f92d84-6b16-47cd-9af7-c3e77ac31dc5.jpg",
+              "type": "Image"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

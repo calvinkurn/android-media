@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutTitleChipWidgetBinding
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -14,10 +15,13 @@ class InitialStateChipWidgetTitleViewHolder(
     private var binding: LayoutTitleChipWidgetBinding? by viewBinding()
 
     override fun bind(element: InitialStateChipWidgetTitleDataView) {
-        binding?.autoCompleteLayout?.titleTextView?.let {
+        val title = element.title
+        val titleTextView = binding?.autoCompleteLayout?.titleTextView ?: return
+
+        titleTextView.shouldShowWithAction(title.isNotEmpty()) {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
-                it,
-                element.title,
+                titleTextView,
+                title,
                 getString(R.string.content_desc_titleTextView)
             )
         }

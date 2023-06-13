@@ -2,9 +2,13 @@ package com.tokopedia.play.widget.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
@@ -18,20 +22,36 @@ import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallAdapter
 import com.tokopedia.play.widget.ui.widget.small.adapter.PlayWidgetSmallViewHolder
+import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
+class PlayWidgetSmallView : FrameLayout, IPlayWidgetView {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    private val tvTitle: TextView
-    private val tvSeeAll: TextView
-    private val rvWidgetCardSmall: RecyclerView
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    init {
+        LayoutInflater.from(context).inflate(R.layout.view_play_widget_small, this)
+    }
+
+    private val root: ConstraintLayout = findViewById(R.id.cl_root)
+    private val rvWidgetCardSmall: RecyclerView = findViewById(R.id.rv_widget_card_small)
+
+    private var header: View = findViewById(R.id.view_play_widget_header)
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
@@ -82,16 +102,31 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     )
 
     init {
-        val view = View.inflate(context, R.layout.view_play_widget_small, this)
-        tvTitle = view.findViewById(R.id.tv_title)
-        tvSeeAll = view.findViewById(R.id.tv_see_all)
-        rvWidgetCardSmall = view.findViewById(R.id.rv_widget_card_small)
-
-        setupView(view)
+        setupView()
     }
 
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
         mWidgetInternalListener = listener
+    }
+
+    fun setCustomHeader(header: View) {
+        require(header is ViewGroup)
+        requireNotNull(header.findViewById(R.id.tv_play_widget_title))
+        requireNotNull(header.findViewById(R.id.tv_play_widget_action))
+
+        val currentHeader = getHeader()
+        header.id = currentHeader.id
+
+        root.removeView(currentHeader)
+        root.addView(header)
+
+        this.header = header
+
+        setupHeader(data = mModel)
+    }
+
+    fun getHeader(): View {
+        return header
     }
 
     fun setWidgetListener(listener: PlayWidgetSmallListener?) {
@@ -106,20 +141,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
-            tvSeeAll.addOneTimeGlobalLayoutListener {
-                mAnalyticListener?.onImpressViewAll(this)
-            }
-        }
-
-        tvTitle.text = data.title
-
-        tvSeeAll.visibility = if (data.hasAction) View.VISIBLE else View.GONE
-        tvSeeAll.text = data.actionTitle
-        tvSeeAll.setOnClickListener {
-            mAnalyticListener?.onClickViewAll(this)
-            RouteManager.route(context, data.actionAppLink)
-        }
+        setupHeader(prevModel, data)
 
         val isNewChannelAdded = isNewItemAdded(data.items)
 
@@ -133,7 +155,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         mIsAutoPlay = data.config.autoPlay
     }
 
-    private fun setupView(view: View) {
+    private fun setupView() {
         rvWidgetCardSmall.adapter = adapter
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
 
@@ -149,6 +171,37 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                 }
             }
         })
+    }
+
+    private fun setupHeader(
+        prevData: PlayWidgetUiModel = PlayWidgetUiModel.Empty,
+        data: PlayWidgetUiModel,
+    ) {
+        val tvAction = getWidgetAction()
+        val tvTitle = getWidgetTitle()
+
+        if (prevData.hasAction != data.hasAction && data.hasAction) {
+            tvAction.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
+        }
+
+        tvTitle.text = data.title
+
+        tvAction.visibility = if (data.hasAction) View.VISIBLE else View.GONE
+        tvAction.text = data.actionTitle
+        tvAction.setOnClickListener {
+            mAnalyticListener?.onClickViewAll(this)
+            RouteManager.route(context, data.actionAppLink)
+        }
+    }
+
+    private fun getWidgetTitle(): TextView {
+        return header.findViewById(R.id.tv_play_widget_title)
+    }
+
+    private fun getWidgetAction(): TextView {
+        return header.findViewById(R.id.tv_play_widget_action)
     }
 
     private fun isNewItemAdded(items: List<PlayWidgetItemUiModel>): Boolean {

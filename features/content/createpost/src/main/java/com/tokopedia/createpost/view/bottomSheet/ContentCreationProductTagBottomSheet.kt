@@ -39,7 +39,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
         val childView = LayoutInflater.from(context).inflate(childLayoutRes,
             null, false)
         setChild(childView)
-        setTitle(getString(R.string.feed_content_product_bottom_sheet_name))
+        setTitle(getString(com.tokopedia.content.common.R.string.feed_content_product_bottom_sheet_name))
     }
 
 
@@ -62,9 +62,9 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
     private fun onDeleteProduct(position: Int) {
         view?.rootView?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
+            Toaster.toasterCustomBottomHeight = requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
             Toaster.build(it,
-                getString(R.string.feed_content_delete_toaster_text),
+                getString(com.tokopedia.content.common.R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
         }

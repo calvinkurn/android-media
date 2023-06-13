@@ -48,8 +48,6 @@ abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
 
         fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>,viewedTopAdsList: List<Visitable<Any>>)
 
-        fun wishListEnabledTracker(wishListTrackerUrl: String)
-
         fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String)
     }
 

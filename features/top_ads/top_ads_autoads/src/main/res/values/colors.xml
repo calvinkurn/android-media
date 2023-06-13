@@ -11,9 +11,9 @@
     <color name="auto_ads_grey">#888888</color>
     <color name="grey">#888888</color>
     <color name="topads_heading_color">#F531353B</color>
-    <color name="topads_autoads_background_tint">#FFFCF5</color>
-    <color name="topads_autoads_onboarding_color1">#D8F3F2</color>
-    <color name="topads_autoads_onboarding_color2">#FFDC80</color>
+    <color name="top_ads_autoads_dms_onboarding_color1">#D8F3F2</color>
+    <color name="top_ads_autoads_dms_onboarding_color2">#FFDC80</color>
+    <color name="top_ads_autoads_dms_red_error">#eb3c0d</color>
 
 
 

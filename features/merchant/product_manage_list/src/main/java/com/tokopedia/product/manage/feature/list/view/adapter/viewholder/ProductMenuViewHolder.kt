@@ -31,15 +31,38 @@ class ProductMenuViewHolder(
             textMenu.text = itemView.context?.getString(menu.title).orEmpty()
             if (getString(menu.title) == getString(R.string.product_manage_create_broadcast_chat)) {
                 itemView.context?.let {
-                    icuPmlMoreMenu.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_bc_chat))
+                    icuPmlMoreMenu.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_bc_chat
+                        )
+                    )
                 }
             } else {
                 icuPmlMoreMenu.setImage(menu.icon)
             }
             labelProductManageMenuNew.showIfNew(menu.newTagEndMillis)
-            itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+            if (menu.limitFromShopModerate) {
+                icuPmlMoreMenu.isEnabled = false
+                textMenu.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifycomponents.R.color.Unify_NN400
+                    )
+                )
+                itemView.setOnClickListener(null)
+            } else {
+                icuPmlMoreMenu.isEnabled = true
+                textMenu.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifycomponents.R.color.Unify_NN950
+                    )
+                )
+                itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+            }
 
-            if (menu.title == R.string.product_manage_stock_reminder_menu){
+            if (menu.title == R.string.product_manage_stock_reminder_menu) {
                 listener.onFinishBindMenuReminder(itemView)
             }
         }

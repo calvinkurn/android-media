@@ -1,8 +1,8 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
-import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
 
 interface CsatOptionListListener {
-    fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?)
+    fun csatOptionListSelected(selected: ChatOptionListUiModel, model: CsatOptionsUiModel?)
 }

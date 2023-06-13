@@ -11,6 +11,7 @@ data class PlayUpcomingUiModel(
     val startTime: String = "",
     val isAlreadyLive: Boolean = false,
     val refreshWaitingDuration: Int = REFRESH_WAITING_DURATION,
+    val description: String = "",
 ) {
     companion object {
         const val COMING_SOON = "COMING_SOON"

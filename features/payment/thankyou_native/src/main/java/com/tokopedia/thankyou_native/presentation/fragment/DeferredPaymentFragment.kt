@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -20,16 +22,28 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.GyroView
-import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.htmltags.HtmlUtil
+import java.util.Calendar
+import java.util.Date
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
+import kotlinx.android.synthetic.main.thank_fragment_deferred.btnShopAgain
+import kotlinx.android.synthetic.main.thank_fragment_deferred.carouselBanner
+import kotlinx.android.synthetic.main.thank_fragment_deferred.featureListingContainer
+import kotlinx.android.synthetic.main.thank_fragment_deferred.loadingLayout
+import kotlinx.android.synthetic.main.thank_fragment_deferred.recommendationContainer
+import kotlinx.android.synthetic.main.thank_fragment_deferred.rvBottomContent
+import kotlinx.android.synthetic.main.thank_fragment_deferred.topAdsView
+import kotlinx.android.synthetic.main.thank_fragment_deferred.topTicker
+import kotlinx.android.synthetic.main.thank_fragment_deferred.tvBannerTitle
+import kotlinx.android.synthetic.main.thank_fragment_deferred.tvTotalAmount
+import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
-class DeferredPaymentFragment : ThankYouBaseFragment(),
-    ThankYouPageTimerView.ThankTimerViewListener {
+class DeferredPaymentFragment : ThankYouBaseFragment() {
 
     var paymentType: PaymentType? = null
 
@@ -46,6 +60,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
+    override fun getBannerTitle(): Typography? = tvBannerTitle
+    override fun getBannerCarousel(): CarouselUnify? = carouselBanner
 
     override fun getTopTickerView(): Ticker? = topTicker
 
@@ -79,6 +96,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
                     highlightAmountDigits = false,
                     paymentType = paymentType
                 )
+                else -> {
+                    //no-op
+                }
             }
         }
         if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {
@@ -153,13 +173,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
             tvBankName.text =
-                "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
+                "${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
         tvSeePaymentMethods.setOnClickListener { openHowToPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
-        tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
+        setDeadlineTimer(thanksPageData.expireTimeUnix)
         if (paymentType == VirtualAccount
             && (thanksPageData.combinedAmount > thanksPageData.amount)
         ) {
@@ -267,18 +287,15 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         }
     }
 
-    override fun onTimerFinished() {
-        refreshThanksPageData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        tvDeadlineTimer.startTimer()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        tvDeadlineTimer.stopTimer()
+    private fun setDeadlineTimer(expireOnTimeUnix: Long) {
+        tvDeadlineTimer?.let { timerView ->
+            val calendar = Calendar.getInstance()
+            calendar.time = Date(expireOnTimeUnix * ONE_SECOND_TO_MILLIS)
+            timerView.targetDate = calendar
+            timerView.onFinish = {
+                refreshThanksPageData()
+            }
+        }
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
@@ -293,20 +310,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         return false
     }
 
-    private fun isPaymentTimerExpired(): Boolean {
-        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / ONE_SECOND_TO_MILLIS)
-            return true
-        return false
-    }
-
-    internal fun onBackPressed(): Boolean {
-        if (!isPaymentTimerExpired()) {
-            refreshThanksPageData()
-            return true
-        }
-        return false
-    }
-
     companion object {
         const val HIGHLIGHT_DIGIT_COUNT = 3
         const val ONE_SECOND_TO_MILLIS = 1000L
@@ -314,11 +317,15 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
 
         const val GATEWAY_KLIK_BCA = "KlikBCA"
 
-        fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
-                DeferredPaymentFragment = DeferredPaymentFragment().apply {
+        fun getFragmentInstance(
+            bundle: Bundle,
+            thanksPageData: ThanksPageData,
+            isWidgetOrderingEnabled: Boolean,
+        ): DeferredPaymentFragment = DeferredPaymentFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+                bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
             }
         }
     }

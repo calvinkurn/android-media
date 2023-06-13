@@ -20,6 +20,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -33,10 +35,10 @@ import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,6 +51,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
+
+        private const val MAX_RM_TRANSACTION_THRESHOLD = 100
     }
 
     @Inject
@@ -160,6 +164,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         viewModel.getShopAccountInfo()
     }
 
+    override fun onRMTransactionClicked(totalTransaction: Long) {
+        if (totalTransaction < MAX_RM_TRANSACTION_THRESHOLD) {
+            openRmTransactionBottomSheet(totalTransaction)
+        } else {
+            goToNewMembershipScheme()
+        }
+    }
+
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -220,6 +232,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopProductLiveData) {
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
+                else -> {
+                    //no-op
+                }
             }
             swipeRefreshLayout?.isRefreshing = false
         }
@@ -234,6 +249,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     adapter.showNotificationCounter(notificationCount = it.data.resolutionCount, matcher = { item ->
                         item is SellerMenuItemUiModel && item.title == getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
                     })
+                }
+                else -> {
+                    //no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false
@@ -337,4 +355,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
         }
     }
+
+    private fun openRmTransactionBottomSheet(currentTransactionTotal: Long) {
+        RMTransactionBottomSheet.createInstance(currentTransactionTotal).show(childFragmentManager)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
+    }
+
 }

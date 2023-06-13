@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,6 +15,7 @@ public class ProductFeatures implements Parcelable {
     @SerializedName("mvc")
     @Expose
     private MerchantVoucherProductData merchantVoucherProductData;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("dynamic_price")
     @Expose
     private DynamicPriceData dynamicPriceData;

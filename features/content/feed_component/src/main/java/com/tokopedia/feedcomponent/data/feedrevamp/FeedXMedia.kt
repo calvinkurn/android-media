@@ -46,11 +46,14 @@ data class FeedXMedia(
 
     val isImage: Boolean
         get() = type == TYPE_IMAGE
+    val isVideo: Boolean
+        get() = type == TYPE_VIDEO
 
     val impressHolder = ImpressHolder()
 
     companion object {
         private const val TYPE_IMAGE = "image"
+        private const val TYPE_VIDEO = "video"
     }
 }
 

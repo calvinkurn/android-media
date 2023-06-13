@@ -8,10 +8,12 @@ import com.tokopedia.officialstore.common.OfficialStoreConstant
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class OfficialProductRecommendationViewHolder(
-        view: View
+        view: View,
+        private val listener: RecommendationListener
 ): AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
@@ -34,7 +36,7 @@ class OfficialProductRecommendationViewHolder(
                             )
                         }
                     }
-                    element.listener.onProductImpression(element.productItem)
+                    listener.onProductImpression(element.productItem)
                 }
             })
 
@@ -51,11 +53,11 @@ class OfficialProductRecommendationViewHolder(
                         )
                     }
                 }
-                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
+                listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
             }
 
             setThreeDotsOnClickListener {
-                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
+                listener.onThreeDotsClick(element.productItem, adapterPosition)
             }
         }
     }
@@ -64,7 +66,7 @@ class OfficialProductRecommendationViewHolder(
         if (payloads.getOrNull(0) !is Boolean) return
 
         productCardView?.setThreeDotsOnClickListener {
-            element.listener.onThreeDotsClick(element.productItem, adapterPosition)
+            listener.onThreeDotsClick(element.productItem, adapterPosition)
         }
     }
 

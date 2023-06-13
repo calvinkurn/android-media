@@ -1,14 +1,17 @@
 package com.tokopedia.loginregister.registerinitial.tracker
 
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics.Companion.LABEL_PHONE_EXIST
 import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
@@ -74,9 +77,9 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
 
     //click
     private fun checkRegisterPhoneNumber() {
-        Thread.sleep(1000)
+//        Thread.sleep(1000)
 
-        onView(withId(R.id.input_email_phone))
+        onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
                 .perform(replaceText(""))
                 .perform(typeText(phoneNumberNotRegistered))
 
@@ -92,12 +95,12 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
                 "click on button daftar - phone number",
                 "click"
             ),
-//            CassavaTestRuleMatcher.getAnalyticValidator(
-//                "clickRegister",
-//                "register page",
-//                "click on button daftar - phone number",
-//                "failed - ${Event.ANY}"
-//            )
+            CassavaTestRuleMatcher.getAnalyticValidator(
+                "clickRegister",
+                "register page",
+                "click on button daftar - phone number",
+                "failed - $LABEL_PHONE_EXIST"
+            )
         )
     }
 

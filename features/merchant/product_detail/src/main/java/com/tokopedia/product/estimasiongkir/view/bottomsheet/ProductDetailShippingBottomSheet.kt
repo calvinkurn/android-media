@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
@@ -31,16 +32,18 @@ import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingE
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
+import com.tokopedia.product.estimasiongkir.tracking.SellyTracker
+import com.tokopedia.product.estimasiongkir.tracking.SellyTracking
 import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingTracking
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAdapter
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-
 
 /**
  * Created by Yehezkiel on 25/01/21
@@ -50,13 +53,34 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
         const val SOURCE = "product detail page"
+
+        private const val ARG_BUYER_DISTRICT_ID = "buyer_district_id"
+        private const val ARG_SELLER_DISTRICT_ID = "seller_district_id"
+        private const val ARG_LAYOUT_ID = "layout_id"
+
+        fun instance(
+            buyerDistrictId: String,
+            sellerDistrictId: String,
+            layoutId: String
+        ): ProductDetailShippingBottomSheet {
+            return ProductDetailShippingBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_BUYER_DISTRICT_ID, buyerDistrictId)
+                    putString(ARG_SELLER_DISTRICT_ID, sellerDistrictId)
+                    putString(ARG_LAYOUT_ID, layoutId)
+                }
+            }
+        }
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private var viewModel: RatesEstimationBoeViewModel? = null
-    private var adapter: ProductDetailShippingAdapter? = null
+    private var shippingAdapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
     private var viewContainer: View? = null
     private val sharedViewModel by lazy {
@@ -105,9 +129,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private fun initInjector() {
         activity?.let {
             DaggerRatesEstimationComponent.builder()
-                    .baseAppComponent((activity?.application as com.tokopedia.abstraction.base.app.BaseMainApplication).baseAppComponent)
-                    .ratesEstimationModule(RatesEstimationModule()).build()
-                    .inject(this)
+                .baseAppComponent((activity?.application as com.tokopedia.abstraction.base.app.BaseMainApplication).baseAppComponent)
+                .ratesEstimationModule(RatesEstimationModule()).build()
+                .inject(this)
         }
     }
 
@@ -126,9 +150,9 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             viewModel?.setRatesRequest(it)
         }
 
-        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                adapter?.submitList(it.data)
+        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) { result ->
+            result.doSuccessOrFail({
+                shippingAdapter?.submitList(it.data)
             }) { throwable ->
                 showError(throwable)
             }
@@ -141,26 +165,37 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         } else {
             GlobalError.SERVER_ERROR
         }
-        adapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
+        shippingAdapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
     }
 
     private fun setupRecyclerView(view: View) {
-        rv = view.findViewById(R.id.rv_product_shipping)
-        if (rv?.itemDecorationCount == 0 && context != null) {
-            rv?.addItemDecoration(ProductSeparatorItemDecoration(requireContext()))
+        rv = view.findViewById<RecyclerView?>(R.id.rv_product_shipping).apply {
+            if (itemDecorationCount == Int.ZERO && context != null) {
+                val decorator = ProductSeparatorItemDecoration(
+                    context = requireContext()
+                )
+                addItemDecoration(decorator)
+            }
+            itemAnimator = null
+
+            val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil()).build()
+
+            shippingAdapter = ProductDetailShippingAdapter(
+                asyncDifferConfig = asyncDiffer,
+                typeFactory = ProductShippingFactoryImpl(
+                    listener = this@ProductDetailShippingBottomSheet,
+                    chooseAddressListener = this@ProductDetailShippingBottomSheet
+                )
+            )
+
+            adapter = shippingAdapter
         }
-        rv?.itemAnimator = null
-        val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
-                .build()
 
-        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this, this))
-
-        rv?.adapter = adapter
         showShimmerPage()
     }
 
     private fun showShimmerPage(height: Int = 0) {
-        adapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
+        shippingAdapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
     }
 
     override fun onChooseAddressClicked() {
@@ -171,8 +206,10 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun openUspBottomSheet(uspImageUrl: String) {
         context?.let {
             val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
-            ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
-                    ?: "")
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(
+                ratesEstimateRequest?.userId
+                    ?: ""
+            )
             if (ratesEstimateRequest?.isTokoNow == true) {
                 RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
@@ -210,5 +247,36 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
+    override fun impressScheduledDelivery(prices: List<Pair<String, String>>, date: String) {
+        val buyerDistrictId = arguments?.getString(ARG_BUYER_DISTRICT_ID) ?: ""
+        val sellerDistrictId = arguments?.getString(ARG_SELLER_DISTRICT_ID) ?: ""
+        val layoutId = arguments?.getString(ARG_LAYOUT_ID) ?: ""
+        val beratSatuan = sharedViewModel.rateEstimateRequest.value?.productWeight?.toString() ?: ""
+        val productId = sharedViewModel.rateEstimateRequest.value?.productId ?: ""
+        val shopId = sharedViewModel.rateEstimateRequest.value?.shopId ?: ""
+        val userId = sharedViewModel.rateEstimateRequest.value?.userId ?: ""
+
+        val data = SellyTracker.ImpressionComponent(
+            buyerDistrictId = buyerDistrictId,
+            sellerDistrictId = sellerDistrictId,
+            prices = prices,
+            layoutId = layoutId,
+            beratSatuan = beratSatuan,
+            productId = productId,
+            shopId = shopId,
+            userId = userId
+        )
+
+        SellyTracking.impressScheduledDelivery(
+            trackingQueue,
+            data
+        )
     }
 }

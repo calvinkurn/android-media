@@ -16,45 +16,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_bottom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="16dp"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
+        android:textColor="@color/Unify_NN950"
         tools:text="Menunggu  jmktgtkgmtkgkgg  "
-        android:textColor="@color/clr_f531353b"
         app:layout_constraintStart_toEndOf="@+id/iv_cancel"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="@dimen/dp_18"
-        android:textStyle="bold"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="@+id/iv_cancel"
         app:layout_constraintBottom_toBottomOf="@+id/iv_cancel"
         />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_detail_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:lineSpacingExtra="@dimen/sp_6"
         tools:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
-        android:textColor="@color/clr_ae31353b"
-        android:textSize="14sp"
+        android:textColor="@color/Unify_NN700"
+        app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@+id/iv_cancel"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_bottom" />
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_bottomsheet"
         android:layout_width="@dimen/mlp_button_bottomsheet_width"
         android:layout_height="@dimen/mlp_button_bottomsheet_height"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/bg_button_green"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

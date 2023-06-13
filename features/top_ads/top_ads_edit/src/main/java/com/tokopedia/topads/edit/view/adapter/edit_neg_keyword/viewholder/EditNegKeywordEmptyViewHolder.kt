@@ -40,6 +40,7 @@ class EditNegKeywordEmptyViewHolder(val view: View, var actionAdd: (() -> Unit?)
         var view4 = TipsRowItem(view.context)
         var view5 = TipsRowItem(view.context)
 
+        tipsLayout.removeAllViews()
         tipsLayout.addView(view1)
         tipsLayout.addView(view2)
         tipsLayout.addView(view3)

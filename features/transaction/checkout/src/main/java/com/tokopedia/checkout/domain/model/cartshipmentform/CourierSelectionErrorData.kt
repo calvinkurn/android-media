@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CourierSelectionErrorData(
-        val title: String = "",
-        val description: String = ""
-): Parcelable
+    val title: String = "",
+    val description: String = ""
+) : Parcelable

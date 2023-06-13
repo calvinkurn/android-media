@@ -30,12 +30,12 @@ class SpacingViewModel(val application: Application, private val components: Com
             viewHeight.value = spacingSize.toIntOrZero()
             val spacingBackgroundColor = components.data?.getOrNull(0)?.background
             if (spacingBackgroundColor.isNullOrEmpty()) {
-                viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             } else {
                 try {
                     viewBackgroundColor.value = Color.parseColor(spacingBackgroundColor)
                 } catch (exception: IllegalArgumentException) {
-                    viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_Background)
                 }
             }
         }

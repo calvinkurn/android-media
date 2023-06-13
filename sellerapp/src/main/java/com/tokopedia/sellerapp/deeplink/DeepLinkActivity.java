@@ -1,11 +1,14 @@
 package com.tokopedia.sellerapp.deeplink;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
 
@@ -13,60 +16,23 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
  * Created by Herdi_WORK on 10.05.17.
  */
 
-public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements DeepLinkView {
+public class DeepLinkActivity extends AppCompatActivity {
     private Uri uriData;
-    private Bundle extras;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
+    private DeepLinkPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getData() != null) {
+            setupURIPass(getIntent().getData());
+        }
+        presenter = new DeepLinkPresenterImpl(this);
         initDeepLink();
     }
 
-    @Override
-    public void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragment, tag).commit();
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
+    private void setupURIPass(Uri data) {
         uriData = data;
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        this.extras = extras;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new DeepLinkPresenterImpl(this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_deeplink_viewer;
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -99,4 +65,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.installActivity(this);
+    }
 }

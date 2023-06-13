@@ -95,7 +95,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         )
         if (walletUiModel.isFailed) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
-            viewModel.getBalanceAndPoint(walletUiModel.id, walletUiModel.hideTitle)
+            viewModel.getBalanceAndPoint(walletUiModel.id, walletUiModel.hideTitle, walletUiModel.title)
         } else if (!walletUiModel.applink.isEmpty()) {
             goToApplink(walletUiModel.applink)
         }
@@ -136,7 +136,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
                 adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                viewModel.getBalanceAndPoint(it.id, it.hideTitle)
+                viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
             }
         }
 
@@ -145,7 +145,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
                 if (it.id == AccountConstants.WALLET.CO_BRAND_CC) {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                    viewModel.getBalanceAndPoint(it.id, it.hideTitle)
+                    viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
                 } else {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletUiModel(it))
                 }

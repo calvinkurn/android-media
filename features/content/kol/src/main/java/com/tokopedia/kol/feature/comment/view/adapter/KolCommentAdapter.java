@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +25,9 @@ import javax.inject.Inject;
 
 public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private List<Visitable> list;
+    private final List<Visitable> list;
     private final KolCommentTypeFactory typeFactory;
-    private LoadingModel loadingModel;
+    private final LoadingModel loadingModel;
 
     @Inject
     public KolCommentAdapter(KolCommentTypeFactory typeFactory) {
@@ -65,6 +64,7 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         notifyItemInserted(list.size());
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearList() {
         list.clear();
         notifyDataSetChanged();
@@ -79,29 +79,9 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         this.list.addAll(list);
     }
 
-    public KolCommentHeaderViewModel getHeader() {
-        if (list.size() == 0) return null;
-        else if (list.get(0) instanceof KolCommentHeaderViewModel)
-            return (KolCommentHeaderViewModel) list.get(0);
-        else
-            return null;
-    }
-
     public void addList(ArrayList<Visitable> list) {
         this.list.addAll(1, list);
         notifyItemRangeInserted(1, list.size());
-    }
-
-    public KolCommentProductViewModel getFooter() {
-        if (list.get(list.size() - 1) instanceof KolCommentHeaderViewModel)
-            return (KolCommentProductViewModel) list.get(list.size() - 1);
-        else
-            return null;
-    }
-
-    public void addHeader(KolCommentHeaderViewModel header) {
-        this.list.add(0, header);
-        notifyItemInserted(0);
     }
 
     public void addHeaderNew(KolCommentHeaderNewModel header) {

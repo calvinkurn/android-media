@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -31,16 +32,20 @@ import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
-import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
+import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.microinteraction.SEARCH_BAR_MICRO_INTERACTION_FLAG_BUNDLE
+import com.tokopedia.discovery.common.microinteraction.SearchBarMicroInteractionAttributes
+import com.tokopedia.discovery.common.microinteraction.autocomplete.autoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSession
@@ -61,6 +66,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         findViewById<ViewGroup?>(R.id.search_initial_state_container)
     }
 
+    private val autoCompleteMicroInteraction by autoCompleteMicroInteraction()
+
     private lateinit var searchParameter: SearchParameter
     private lateinit var autoCompleteTracking: AutoCompleteTracking
 
@@ -73,6 +80,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         init()
 
         sendTracking()
+
+        tryExecuteMicroInteraction()
     }
 
     private fun init() {
@@ -105,7 +114,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun initTracking() {
-        autoCompleteTracking = AutoCompleteTracking(UserSession(this))
+        autoCompleteTracking = AutoCompleteTracking(
+            UserSession(this),
+            IrisAnalytics.getInstance(this),
+        )
     }
 
     private fun initViews() {
@@ -187,6 +199,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun sendTracking() {
         sendTrackingInitiateSearchSession()
         sendTrackingFromAppShortcuts()
+        sendTrackingVoiceSearchImpression()
     }
 
     private fun sendTrackingInitiateSearchSession() {
@@ -201,6 +214,26 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         if (isFromAppShortcuts)
             autoCompleteTracking.eventSearchShortcut()
     }
+
+    private fun sendTrackingVoiceSearchImpression() {
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        autoCompleteTracking.eventImpressDiscoveryVoiceSearch(pageSource)
+    }
+
+    private fun tryExecuteMicroInteraction() {
+        val searchBarMicroInteractionAttributes = getMicroInteractionFlag() ?: return
+
+        autoCompleteMicroInteraction?.run {
+            searchBarView?.setupMicroInteraction(this)
+            setSearchBarMicroInteractionAttributes(searchBarMicroInteractionAttributes)
+            animateSearchBar()
+        }
+    }
+
+    // Suppressed because the alternative requires min sdk 33
+    @SuppressLint("DeprecatedMethod")
+    private fun getMicroInteractionFlag(): SearchBarMicroInteractionAttributes? =
+        intent?.getParcelableExtra(SEARCH_BAR_MICRO_INTERACTION_FLAG_BUNDLE)
 
     override fun onStart() {
         super.onStart()
@@ -262,29 +295,20 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val parameter = searchParameter.getSearchParameterMap()
         val pageSource = Dimension90Utils.getDimension90(parameter)
         val isInitialState = query.isEmpty()
-        val fallback = { trackEventManualSearch(parameter, queryOrHint) }
 
-        if (isInitialState)
-            autoCompleteTracking.eventClickSubmitInitialState(
+        when {
+            isTokoNow(parameter) -> autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
+            isInitialState -> autoCompleteTracking.eventClickSubmitInitialState(
                 queryOrHint,
                 pageSource,
                 searchResultApplink,
-                fallback,
             )
-        else
-            autoCompleteTracking.eventClickSubmitAutoComplete(
+            else -> autoCompleteTracking.eventClickSubmitAutoComplete(
                 queryOrHint,
                 pageSource,
                 searchResultApplink,
-                fallback,
             )
-    }
-
-    private fun trackEventManualSearch(parameter: Map<String, Any>, keyword: String) {
-        if (isTokoNow(parameter))
-            autoCompleteTracking.eventClickSubmitTokoNow(keyword)
-        else
-            autoCompleteTracking.eventClickSubmit(keyword)
+        }
     }
 
     private fun clearFocusSearchView() {
@@ -314,11 +338,15 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             .findFragmentByTag(SUGGESTION_FRAGMENT_TAG) as? SuggestionFragment
 
     override fun showInitialStateView() {
+        autoCompleteMicroInteraction?.animateContent(initialStateContainer)
+
         suggestionContainer?.hide()
         initialStateContainer?.show()
     }
 
     override fun showSuggestionView() {
+        autoCompleteMicroInteraction?.animateContent(suggestionContainer)
+
         initialStateContainer?.hide()
         suggestionContainer?.show()
     }
@@ -350,8 +378,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun sendVoiceSearchGTM(keyword: String?) {
-        if (keyword != null && keyword.isNotEmpty())
-            autoCompleteTracking.eventDiscoveryVoiceSearch(keyword)
+        if (keyword != null && keyword.isNotEmpty()) {
+            val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+            autoCompleteTracking.eventClickDiscoveryVoiceSearch(keyword, pageSource)
+        }
     }
 
     override fun onBackPressed() {

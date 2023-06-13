@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyErrorDetailUiModel(
-        var message: String = ""
+    var message: String = ""
 ) : Parcelable

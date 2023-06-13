@@ -1,21 +1,16 @@
 package com.tokopedia.kol.feature.comment.data.mapper;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Comment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.type.SourceType;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 import com.tokopedia.kolcommon.util.GraphqlErrorException;
-import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -34,11 +29,8 @@ public class KolGetCommentMapper
     private static final String ERROR_NETWORK = "ERROR_NETWORK";
     private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
 
-    private final Context context;
-
     @Inject
-    KolGetCommentMapper(@ApplicationContext Context context) {
-        this.context = context;
+    KolGetCommentMapper() {
     }
 
     @Override
@@ -47,23 +39,11 @@ public class KolGetCommentMapper
 
         PostKol postKol = getUserPostComment.getPostKol();
         KolCommentHeaderNewModel kolCommentHeaderNewModel;
-        KolCommentHeaderViewModel kolCommentHeaderViewModel = new KolCommentHeaderViewModel(
-                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
-                postKol.getUserName() == null ? "" : postKol.getUserName(),
-                postKol.getDescription() == null ? "" : postKol.getDescription(),
-                postKol.getCreateTime() == null ? "" :
-                        postKol.getCreateTime(),
-                postKol.getUserId(),
-                postKol.getUserUrl(),
-                getTagsLink(postKol),
-                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
-                postKol.getSource().getType() == SourceType.SHOP.getTypeInt()
-        );
         kolCommentHeaderNewModel = new KolCommentHeaderNewModel(
-                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
-                postKol.getUserName() == null ? "" : postKol.getUserName(),
-                postKol.getDescription() == null ? "" : postKol.getDescription(),
-                postKol.getCreateTime() == null ? "" : postKol.getCreateTime(),
+                postKol.getUserPhoto(),
+                postKol.getUserName(),
+                postKol.getDescription(),
+                postKol.getCreateTime(),
                 postKol.getUserId(),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
@@ -72,12 +52,9 @@ public class KolGetCommentMapper
         );
 
         return new KolComments(
-                getUserPostComment.getLastCursor() == null ? "" :
-                        getUserPostComment.getLastCursor(),
+                getUserPostComment.getLastCursor(),
                 !TextUtils.isEmpty(getUserPostComment.getLastCursor()),
-                convertCommentList(getUserPostComment),
                 convertCommentNewList(getUserPostComment),
-                kolCommentHeaderViewModel,
                 kolCommentHeaderNewModel
         );
     }
@@ -102,31 +79,6 @@ public class KolGetCommentMapper
         }
     }
 
-    private ArrayList<KolCommentViewModel> convertCommentList(
-            GetUserPostComment getUserPostComment) {
-        ArrayList<KolCommentViewModel> viewModelList = new ArrayList<>();
-
-        for (Comment comment : getUserPostComment.getComments()) {
-            KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(
-                    comment.getId(),
-                    comment.getUserID(),
-                    null,
-                    comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
-                    comment.getUserName() == null ? "" : comment.getUserName(),
-                    comment.getComment() == null ? "" : comment.getComment(),
-                    comment.getCreateTime() == null ? "" :
-                            TimeConverter.generateTime(context, comment.getCreateTime()),
-                    comment.isKol(),
-                    comment.isCommentOwner(),
-                    comment.getUserBadges(),
-                    comment.isShop()
-            );
-            viewModelList.add(kolCommentViewModel);
-        }
-
-        return viewModelList;
-    }
-
     private ArrayList<KolCommentNewModel> convertCommentNewList(
             GetUserPostComment getUserPostComment) {
         ArrayList<KolCommentNewModel> viewModelList = new ArrayList<>();
@@ -136,15 +88,15 @@ public class KolGetCommentMapper
                     comment.getId(),
                     comment.getUserID(),
                     null,
-                    comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
-                    comment.getUserName() == null ? "" : comment.getUserName(),
-                    comment.getComment() == null ? "" : comment.getComment(),
-                    comment.getCreateTime() == null ? "" :
-                            comment.getCreateTime(),
+                    comment.getUserPhoto(),
+                    comment.getUserName(),
+                    comment.getComment(),
+                    comment.getCreateTime(),
                     comment.isKol(),
                     comment.isCommentOwner(),
                     comment.getUserBadges(),
-                    comment.isShop()
+                    comment.isShop(),
+                    comment.getAllowReport()
             );
             viewModelList.add(kolCommentViewModel);
         }
@@ -156,7 +108,7 @@ public class KolGetCommentMapper
     private String getTagsLink(PostKol postKol) {
         try {
             return postKol.getContent().get(0).getTags().get(0).getLink();
-        } catch (NullPointerException|IndexOutOfBoundsException e) {
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
             return "";
         }
     }

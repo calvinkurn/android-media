@@ -14,9 +14,9 @@ const val GQL_QUERY_PAYLATER_WIDGET_DATA =
        web_url
        apps_url
       }
+       gateway_code
     }
 }"""
-
 
 const val GQL_QUERY_PAYLATER_WIDGET_CLOSE =
     """query PaylaterCloseHomeWidget{

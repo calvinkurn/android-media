@@ -26,7 +26,8 @@
     <string name="smart_bills_no_item_price">Rp -</string>
     <string name="smart_bills_item_default_error">Terdapat kendala pada tagihan ini</string>
     <string name="smart_bills_checkout_error">Maaf, terdapat kendala pada pemrosesan tagihan</string>
-    <string name="smart_bills_ticker">Belum berlangganan? Mulai bayar tagihanmu secara otomatis [di sini]{%1$s}</string>
+    <string name="smart_bills_ticker_title">Fitur Kelola Tagihan datang buat kamu!</string>
+    <string name="smart_bills_ticker">Sekarang Bayar Sekaligus semua tagihan dan Bayar Otomatis bisa di [Kelola Tagihan]{%1$s}!</string>
 
     <string name="smart_bills_onboarding_title_1">Bisa pilih semua tagihan</string>
     <string name="smart_bills_onboarding_description_1">Klik disini untuk pilih semua tagihan yang akan kamu bayar sekaligus.</string>

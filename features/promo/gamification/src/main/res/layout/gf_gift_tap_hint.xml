@@ -20,10 +20,8 @@
     android:paddingEnd="@dimen/dp_15"
     android:paddingRight="@dimen/dp_15"
     android:paddingBottom="10dp"
-    android:textColor="@color/gf_box_hint_color"
     android:translationY="@dimen/gami_dp_108"
     app:typographyType="heading_3"
     app:typographyWeight="bold"
     tools:alpha="1"
-    tools:backgroundTint="@color/colorAccent"
     tools:text="Tap kotak ini untuk buka hadiahmu!" />

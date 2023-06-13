@@ -9,12 +9,14 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.imagepicker_insta.common.ImagePickerInstaQueryBuilder
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.databinding.ItemSellerMenuFeatureSectionBinding
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.shopadmin.common.util.AdminFeature
 
 class SellerFeatureViewHolder(
         itemView: View,
@@ -61,7 +63,7 @@ class SellerFeatureViewHolder(
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
                 add(UriUtil.buildUri(ApplinkConst.SHOP, feature.userSession.shopId))
-                add(ApplinkConst.CONTENT_CREATE_POST)
+                add(generateFeedCreatePostAppLink())
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
             sellerMenuTracker?.sendEventClickFeedAndPlay()
@@ -84,9 +86,20 @@ class SellerFeatureViewHolder(
         }
     }
 
-    private fun goToToAdminAuthorizationPage(@AdminFeature featureName: String) {
+    private fun goToToAdminAuthorizationPage(@com.tokopedia.shopadmin.common.util.AdminFeature featureName: String) {
         itemView.context?.run {
             RouteManager.route(this, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, featureName))
         }
+    }
+
+    private fun generateFeedCreatePostAppLink(): String {
+        val queries = listOf<Pair<String, Any>>(
+            Pair(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI),
+            Pair(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
+            Pair(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
+            Pair(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED),
+            Pair(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE),
+        )
+        return "${ApplinkConst.IMAGE_PICKER_V2}?${ImagePickerInstaQueryBuilder.generateQuery(queries)}"
     }
 }

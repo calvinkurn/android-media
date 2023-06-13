@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.gm.common.utils.SpannableUtil
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmProMembershipCheckListViewBinding
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -31,13 +31,13 @@ class MembershipPmProCheckListView : LinearLayout {
         ViewPmProMembershipCheckListViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
     private val eligibleColor by lazy {
-        PowerMerchantSpannableUtil.getColorHexString(
+        SpannableUtil.getColorHexString(
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
     }
     private val notEligibleColor by lazy {
-        PowerMerchantSpannableUtil.getColorHexString(
+        SpannableUtil.getColorHexString(
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         )
@@ -85,13 +85,13 @@ class MembershipPmProCheckListView : LinearLayout {
         val totalOrderStr = data.getTotalOrderValue().toString()
         val orderFmt = if (data.isEligibleOrder()) {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 eligibleColor,
                 totalOrderStr
             )
         } else {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 notEligibleColor,
                 totalOrderStr
             )

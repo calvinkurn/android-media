@@ -6,12 +6,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment.Companion.TIME_STAMP
-import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
-import java.util.ArrayList
+import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 
-class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
-
+class ChatBotProvideRatingActivity : BaseProvideRatingActivity() {
 
     override fun getNewFragment(): Fragment {
         return ChatBotProvideRatingFragment.newInstance(intent.extras)
@@ -19,7 +17,7 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
 
     companion object {
 
-        val MESSAGE_ID= 0
+        val MESSAGE_ID = 0L
         val BOT_OTHER_REASON = "bot_other_reason"
         val CSAT_TITLE = "csatTitle"
         val OTHER_REASON_TITLE = "otherReasonTitle"
@@ -27,16 +25,16 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
         val QUESTION_LIST = "questionList"
         val IS_SHOW_OTHER_REASON = "is_show_other_reason"
 
-        fun getInstance(context: Context, clickEmoji: Int, mCsatResponse: WebSocketCsatResponse): Intent {
+        fun getInstance(context: Context, clickEmoji: Long, mCsatResponse: WebSocketCsatResponse): Intent {
             val webSocketCsatattribute = mCsatResponse.attachment?.attributes
             val intent = Intent(context, ChatBotProvideRatingActivity::class.java)
             intent.putExtra(CLICKED_EMOJI, clickEmoji)
             val list = ArrayList<BadCsatReasonListItem>()
             var id = MESSAGE_ID
             webSocketCsatattribute?.reasons?.let {
-                for(message in it){
+                for (message in it) {
                     val badCsatReasonListItem = BadCsatReasonListItem()
-                    badCsatReasonListItem.id = id
+                    badCsatReasonListItem.id = id.toLong()
                     badCsatReasonListItem.message = message
                     list.add(badCsatReasonListItem)
                     id++
@@ -49,7 +47,7 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
             val captionList = ArrayList<String>()
             val questionList = ArrayList<String>()
             webSocketCsatattribute?.points?.let {
-                for(point in it){
+                for (point in it) {
                     point?.caption?.let {
                         captionList.add(it)
                     }
@@ -59,12 +57,13 @@ class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
                 }
             }
 
-            intent.putExtra(IS_SHOW_OTHER_REASON,webSocketCsatattribute?.showOtherReason)
-            intent.putExtra(CSAT_TITLE,webSocketCsatattribute?.title)
-            intent.putExtra(OTHER_REASON_TITLE,webSocketCsatattribute?.reasonTitle)
-            intent.putStringArrayListExtra(CAPTION_LIST,captionList)
-            intent.putStringArrayListExtra(QUESTION_LIST,questionList)
-            intent.putExtra(TIME_STAMP,mCsatResponse.message?.timestampUnix.toString())
+            intent.putExtra(IS_SHOW_OTHER_REASON, webSocketCsatattribute?.showOtherReason)
+            intent.putExtra(CSAT_TITLE, webSocketCsatattribute?.title)
+            intent.putExtra(OTHER_REASON_TITLE, webSocketCsatattribute?.reasonTitle)
+            intent.putStringArrayListExtra(CAPTION_LIST, captionList)
+            intent.putStringArrayListExtra(QUESTION_LIST, questionList)
+            intent.putExtra(TIME_STAMP, mCsatResponse.message?.timestampUnix.toString())
             return intent
-        } }
+        }
+    }
 }

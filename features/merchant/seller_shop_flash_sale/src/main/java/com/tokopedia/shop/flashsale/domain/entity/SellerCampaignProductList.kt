@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.domain.entity
 
 import android.os.Parcelable
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import kotlinx.parcelize.Parcelize
 
 data class SellerCampaignProductList(
@@ -29,8 +30,8 @@ data class SellerCampaignProductList(
         val warehouseList: List<WarehouseData> = listOf(),
         val viewCount: Int = 0,
         val highlightProductWording: String = "",
-        var errorMessage: String = "",
-        var isInfoComplete: Boolean = false
+        var isInfoComplete: Boolean = false,
+        var errorType: ManageProductErrorType = ManageProductErrorType.NOT_ERROR
     ): Parcelable
 
     @Parcelize

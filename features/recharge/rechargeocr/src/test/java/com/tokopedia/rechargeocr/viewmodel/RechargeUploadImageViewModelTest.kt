@@ -48,7 +48,7 @@ class RechargeUploadImageViewModelTest {
         //given
         coEvery { RechargeCameraUtil.trimBitmap("") } returns ""
 
-        val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
+        val stringUrl = "https://images.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
         coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
                 RechargeUploadImageResponse.RechargeUploadImageData(picSrc = stringUrl))
 
@@ -93,7 +93,7 @@ class RechargeUploadImageViewModelTest {
         // given
         coEvery { RechargeCameraUtil.trimBitmap("") } returns ""
 
-        val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
+        val stringUrl = "https://images.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
         coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
                 RechargeUploadImageResponse.RechargeUploadImageData(picSrc = stringUrl))
 

@@ -36,14 +36,12 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
     private var avatarImageView: ImageView? = null
     private var nameTextView: TextView? = null
     private var locationTextview: TextView? = null
-    private var favoriteImageView: ImageView? = null
     private var badgeIcon: ImageView? = null
 
     private fun initView(itemView: View) {
         avatarImageView = itemView.findViewById(R.id.shop_avatar)
         nameTextView = itemView.findViewById(R.id.shop_name)
         locationTextview = itemView.findViewById(R.id.location)
-        favoriteImageView = itemView.findViewById(R.id.fav_button)
         badgeIcon = itemView.findViewById(R.id.image_badge)
         val shopLayout = itemView.findViewById<View>(R.id.shop_layout)
         shopLayout.setOnClickListener { onShopLayoutClicked() }
@@ -59,8 +57,6 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
         if (favoriteShop.shopLocation != null) {
             locationTextview!!.text = favoriteShop.shopLocation
         }
-        favoriteImageView!!.setImageResource(
-                if (favoriteShop.isFavoriteShop) R.drawable.ic_faved else R.drawable.ic_fav)
         if (favoriteShop.shopAvatarImageUrl != null) {
             ImageHandler.loadImageFit2(
                     itemView.context, avatarImageView, favoriteShop.shopAvatarImageUrl)
@@ -74,13 +70,13 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
         }
     }
 
-    fun onShopLayoutClicked() {
+    private fun onShopLayoutClicked() {
         eventFavoriteShop()
         val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShop!!.shopId)
         context.startActivity(intent)
     }
 
-    fun eventFavoriteShop() {
+    private fun eventFavoriteShop() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackingConst.Event.FAVORITE,
                 TrackingConst.Category.HOMEPAGE.toLowerCase(Locale.getDefault()),

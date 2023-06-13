@@ -59,7 +59,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
-            android:textColor="@color/topads_common_shimmer_color"
+            android:textColor="@color/Unify_Y500"
             app:loader_corner_radius="4dp"
             app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@+id/product_image"

@@ -29,8 +29,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_96"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintDimensionRatio="1:1"
@@ -40,8 +40,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/buttonWishlist"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="@drawable/product_card_wishlist_icon_background"
             android:padding="4dp"
             android:scaleType="fitXY"
@@ -123,7 +123,7 @@
         <LinearLayout
             android:id="@+id/linearLayoutImageRating"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_18"
+            android:layout_height="18dp"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:orientation="horizontal"
@@ -237,7 +237,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCartCollapsed"
-            android:layout_width="@dimen/dp_100"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:foreground="?attr/selectableItemBackground"
             android:clickable="false"

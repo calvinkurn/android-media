@@ -4,7 +4,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
 
@@ -91,5 +96,4 @@ class UpdateAndReloadCartTest : BaseCartTest() {
             view.hideProgressLoading()
         }
     }
-
 }

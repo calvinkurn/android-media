@@ -11,63 +11,12 @@
         android:id="@+id/saldo_balance_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
         android:background="@drawable/saldo_card_bg_green_gradient"
         android:orientation="vertical"
-        android:paddingTop="@dimen/unify_space_16"
         android:paddingStart="@dimen/unify_space_16"
+        android:paddingTop="@dimen/unify_space_16"
         android:paddingEnd="@dimen/unify_space_16"
         android:paddingBottom="@dimen/unify_space_12">
-
-        <LinearLayout
-            android:id="@+id/ticker_message_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/sd_dp_9"
-            android:background="@drawable/sp_bg_rounded_corners_light_green"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="2"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone">
-
-            <View
-                android:id="@+id/status_ticker_side_view"
-                android:layout_width="@dimen/sd_dp_3"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/sd_dp_1"
-                android:layout_marginTop="@dimen/sd_dp_1"
-                android:layout_marginBottom="@dimen/sd_dp_1"
-                android:alpha="0.4"
-                android:background="@drawable/sp_line_green" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/ticker_message_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.8"
-                android:lineSpacingExtra="@dimen/sp_4"
-                android:paddingStart="@dimen/unify_space_16"
-                android:paddingLeft="@dimen/unify_space_16"
-                android:paddingTop="@dimen/unify_space_8"
-                android:paddingEnd="@dimen/unify_space_16"
-                android:paddingRight="@dimen/unify_space_16"
-                android:paddingBottom="@dimen/unify_space_16"
-                android:textColor="@color/Unify_N700_96"
-                app:typographyType="body_3" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/close_ticker_message"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/unify_space_4"
-                android:layout_weight="0.2"
-                android:padding="@dimen/sd_dp_6"
-                app:icon_color_light_enable="@color/Unify_G500"
-                app:icon_color_night_enable="@color/Unify_G500"
-                app:icon_enable_state="true"
-                app:icon_name="CLOSE" />
-        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/withdraw_layout"
@@ -83,6 +32,7 @@
                 app:card_type="shadow">
 
                 <LinearLayout
+                    android:id="@+id/llWithdrawBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -150,8 +100,8 @@
                         android:id="@+id/saldo_type_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="@dimen/unify_space_8">
+                        android:layout_marginBottom="@dimen/unify_space_8"
+                        android:orientation="vertical">
 
                         <com.tokopedia.unifycomponents.DividerUnify
                             android:id="@+id/saldo_balance_separator"
@@ -198,9 +148,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/unify_space_4"
                                 android:maxLines="1"
                                 android:textColor="@color/Unify_N700_68"
-                                android:layout_marginEnd="@dimen/unify_space_4"
                                 app:typographyType="body_3"
                                 tools:text="Rp 1.000.000" />
 
@@ -256,11 +206,12 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/hold_balance_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/unify_space_8"
                         android:paddingStart="@dimen/unify_space_8"
-                        android:paddingEnd="@dimen/unify_space_8"
-                        android:layout_marginBottom="@dimen/unify_space_8">
+                        android:paddingEnd="@dimen/unify_space_8">
 
                         <com.tokopedia.unifycomponents.ticker.Ticker
                             android:id="@+id/hold_balance_layout"
@@ -313,6 +264,7 @@
         tools:visibility="visible">
 
         <LinearLayout
+            android:id="@+id/merchant_detail_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_4"
@@ -322,6 +274,7 @@
             android:weightSum="1">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/merchant_detail_title_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
@@ -349,12 +302,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sd_dp_6"
             android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/merchant_credit_line_widget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible" />
 
             <FrameLayout
                 android:id="@+id/saldo_prioritas_widget"

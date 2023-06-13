@@ -5,6 +5,7 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -25,7 +26,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import com.tokopedia.dialog.R as unifyDialogR
 import com.tokopedia.unifycomponents.R as unifyR
@@ -52,7 +53,7 @@ class ProductChooserRobot(
         ProductSetupContainer(viewModel, onAttach) {
             when (it) {
                 ProductSortBottomSheet::class.java.name -> {
-                    ProductSortBottomSheet()
+                    ProductSortBottomSheet(mockk(relaxed = true))
                 }
                 else -> {
                     ProductChooserBottomSheet(
@@ -63,7 +64,8 @@ class ProductChooserRobot(
                                 userSession = analyticUserSession,
                             ),
                             CoroutineDispatchersProvider,
-                        )
+                        ),
+                        mockk(relaxed = true),
                     )
                 }
             }
@@ -75,7 +77,7 @@ class ProductChooserRobot(
         delay()
     }
 
-    fun close() {
+    fun close() = chainable {
         onView(
             ViewMatchers.withId(unifyR.id.bottom_sheet_close)
         ).perform(click())
@@ -93,7 +95,7 @@ class ProductChooserRobot(
         ).perform(click())
     }
 
-    fun selectProduct(position: Int = 0) {
+    fun selectProduct(position: Int = 0) = chainable {
         onView(
             ViewMatchers.withId(R.id.rv_products)
         ).perform(RecyclerViewActions.actionOnItemAtPosition<ProductListViewHolder.Product>(
@@ -101,7 +103,8 @@ class ProductChooserRobot(
         )
     }
 
-    fun saveProducts() {
+    fun saveProducts() = chainable {
+        closeSoftKeyboard()
         onView(
             ViewMatchers.withId(R.id.btn_next)
         ).perform(click())
@@ -111,6 +114,8 @@ class ProductChooserRobot(
         onView(
             ViewMatchers.withId(R.id.chips_sort)
         ).perform(click())
+
+        delay(300)
     }
 
     fun clickEtalaseCampaignChips() {
@@ -155,5 +160,10 @@ class ProductChooserRobot(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()
         )
+    }
+
+    private fun chainable(fn: () -> Unit): ProductChooserRobot {
+        fn()
+        return this
     }
 }

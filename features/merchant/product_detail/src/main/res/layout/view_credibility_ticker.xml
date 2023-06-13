@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/shop_credibility_info_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        tools:descriptionText="Toko sedang libur. Ada potensi keterlambatan dalam pengiriman. Cek Jadwal"
+        tools:layout_editor_absoluteX="12dp"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/shop_credibility_info_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:unify_tips_description="Sebagian keuntungan toko akan didonasikan. Lihat"
+        tools:unify_tips_title="Title Goes Here" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

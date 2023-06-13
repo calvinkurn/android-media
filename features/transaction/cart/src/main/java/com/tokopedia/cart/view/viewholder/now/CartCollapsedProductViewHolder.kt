@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-
 
 class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
@@ -43,7 +43,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
             CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
         } else {
             CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
-        }
+        }.removeDecimalSuffix()
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
@@ -87,5 +87,4 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
         }
         constraintSet.applyTo(viewBinding.containerCollapsedProduct)
     }
-
 }

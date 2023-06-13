@@ -37,9 +37,8 @@ const val PRODUCT_ID = "product_id"
 class TopAdsHeadlineViewHolder(
     val view: View,
     val userId: String,
-    val listener: DynamicProductDetailListener
-) :
-    AbstractViewHolder<TopadsHeadlineUiModel>(view) {
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<TopadsHeadlineUiModel>(view) {
 
     private val topadsHeadlineView: TopAdsHeadlineView =
         view.findViewById(R.id.topads_headline_view)
@@ -59,8 +58,6 @@ class TopAdsHeadlineViewHolder(
             this::onSuccessResponse,
             this::hideHeadlineView
         )
-
-
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -94,7 +91,7 @@ class TopAdsHeadlineViewHolder(
     override fun bind(element: TopadsHeadlineUiModel?) {
         topadsHeadlineUiModel = element
         hideHeadlineView()
-        topadsHeadlineUiModel?.run {
+        topadsHeadlineUiModel?.apply {
             if (cpmModel != null) {
                 showHeadlineView(cpmModel!!)
             } else if (!isHeadlineDataFetched) {

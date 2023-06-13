@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class SummariesItem(
 
 	@field:SerializedName("amount")
-	val amount: Int = 0,
+	val amount: Long = 0L,
 
 	@field:SerializedName("description")
 	val description: String = "",

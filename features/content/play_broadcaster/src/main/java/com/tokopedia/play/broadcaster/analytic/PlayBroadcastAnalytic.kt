@@ -1,12 +1,16 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
+import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,13 +32,21 @@ class PlayBroadcastAnalytic(
     private val setupProductAnalytic: PlayBroSetupProductAnalytic,
     private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
     private val scheduleAnalytic: PlayBroScheduleAnalytic,
+    private val pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+    private val accountAnalytic: PlayBroadcastAccountAnalytic,
+    private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+    private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
     PlayBroSetupCoverAnalytic by setupCoverAnalytic,
     PlayBroSetupProductAnalytic by setupProductAnalytic,
     PlayBroadcastSummaryAnalytic by summaryAnalytic,
-    PlayBroScheduleAnalytic by scheduleAnalytic {
+    PlayBroScheduleAnalytic by scheduleAnalytic,
+    PlayBroadcastPinProductAnalytic by pinProductAnalytic,
+    PlayBroadcastAccountAnalytic by accountAnalytic,
+    PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
+    PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -56,140 +68,6 @@ class PlayBroadcastAnalytic(
     fun clickCloseOnSetupPage() {
         clickGeneralEvent(
                 action = "close onboarding"
-        )
-    }
-
-    /**
-     * View Add Cover and Title Bottomsheet
-     */
-    fun viewAddCoverTitleBottomSheet() {
-        viewGeneralEvent(
-                action = "add cover and title"
-        )
-    }
-
-    /**
-     * Click Add Cover
-     */
-    fun clickAddCover() {
-        clickGeneralEvent(
-                action = "add cover"
-        )
-    }
-
-    /**
-     * View Add Cover Source Bottomsheet
-     */
-    fun viewAddCoverSourceBottomSheet() {
-        viewGeneralEvent(
-                action = "add cover source bottom sheet"
-        )
-    }
-
-    /**
-     * Click Camera Source
-     */
-    fun clickAddCoverFromCameraSource() {
-        clickGeneralEvent(
-                action = "camera source"
-        )
-    }
-
-    /**
-     * Click PDP Image Source
-     */
-    fun clickAddCoverFromPdpSource() {
-        clickGeneralEvent(
-                action = "pdp photo source"
-        )
-    }
-
-    /**
-     * Click Internal Gallery Source
-     */
-    fun clickAddCoverFromGallerySource() {
-        clickGeneralEvent(
-                action = "internal gallery source"
-        )
-    }
-
-    /**
-     * View Camera Page
-     */
-    fun openCameraScreenToAddCover() {
-        sendScreen("/$KEY_TRACK_CATEGORY - camera - ${userSession.shopId}")
-    }
-
-    /**
-     * Click Capture
-     */
-    fun clickCaptureFromCameraPage() {
-        clickGeneralEvent(
-                action = "capture"
-        )
-    }
-
-    /**
-     * Click Switch Camera
-     */
-    fun clickSwitchCameraOnCameraPage() {
-        clickGeneralEvent(
-                action = "switch camera on add cover"
-        )
-    }
-
-    /**
-     * Click Timer
-     */
-    fun clickTimerCameraOnCameraPage(second: Int) {
-        clickGeneralEvent(
-                action = "timer",
-                label = "- $second"
-        )
-    }
-
-    /**
-     * Click Cancel
-     */
-    fun clickCancelOnCameraPage() {
-        clickGeneralEvent(
-                action = "cancel"
-        )
-    }
-
-    /**
-     * View Cropping Page
-     */
-    fun viewCroppingPage() {
-        viewGeneralEvent(
-                action = "cropping page"
-        )
-    }
-
-    /**
-     * Click `Ganti` on Cropping Page
-     */
-    fun clickChangeCoverOnCroppingPage() {
-        clickGeneralEvent(
-                action = "ganti"
-        )
-    }
-
-    /**
-     * Click `Lanjutkan` on Cropping Page
-     */
-    fun clickContinueOnCroppingPage() {
-        clickGeneralEvent(
-                action = "lanjutkan on cropping page"
-        )
-    }
-
-    /**
-     * Click `Lanjutkan` on Add Cover and Title
-     */
-    fun clickContinueOnAddCoverAndTitlePage() {
-        clickGeneralEvent(
-                action = "lanjutkan on add cover"
         )
     }
 
@@ -267,16 +145,6 @@ class PlayBroadcastAnalytic(
         clickGeneralEvent(
             "save pin chat message",
             "- $channelId - $titleChannel"
-        )
-    }
-
-    /**
-     * Impress Product Tag Carousel
-     */
-    fun impressProductTag(channelId: String) {
-        impressionGeneralEvent(
-            "- product tag carousel",
-            "- $channelId"
         )
     }
 

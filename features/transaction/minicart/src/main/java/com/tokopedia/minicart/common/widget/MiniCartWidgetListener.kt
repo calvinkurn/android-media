@@ -11,5 +11,4 @@ interface MiniCartWidgetListener {
     * Holder fragment need to hide / set MiniCartWidget to gone as well if value `miniCartSimplifiedData.isShowMiniCartWidget` is false.
     * */
     fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData)
-
 }

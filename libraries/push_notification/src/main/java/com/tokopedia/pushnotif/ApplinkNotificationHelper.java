@@ -54,6 +54,7 @@ public class ApplinkNotificationHelper {
         model.setMainAppPriority(data.getString("mainapp_priority", ""));
         model.setSellerAppPriority(data.getString("sellerapp_priority", ""));
         model.setIsAdvanceTarget(data.getString("is_advance_target", "false").equals("true"));
+        model.setSentTime(data.getLong("sent_time", System.currentTimeMillis()));
         return model;
     }
 
@@ -79,9 +80,9 @@ public class ApplinkNotificationHelper {
     }
 
     private static int getTruncatedMessageId(String messageId) {
-        int LIMIT_NOTIFICATION_ID = 4;
+        int LIMIT_NOTIFICATION_ID = 9;
         int result;
-        if (messageId.length() > LIMIT_NOTIFICATION_ID) {
+        if (messageId.length() >= LIMIT_NOTIFICATION_ID) {
             String tempId = messageId.substring(messageId.length() - LIMIT_NOTIFICATION_ID);
             result = safelyCastStringToInt(tempId);
         } else {

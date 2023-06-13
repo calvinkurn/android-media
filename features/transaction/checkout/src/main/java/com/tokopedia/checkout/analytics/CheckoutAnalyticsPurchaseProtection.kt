@@ -34,10 +34,12 @@ class CheckoutAnalyticsPurchaseProtection @Inject constructor() : TransactionAna
     }
 
     private fun sendBayarClickEvent(userId: String, label: String) {
-        val gtmData = getGtmData(ConstantTransactionAnalytics.EventName.PURCHASE_PROTECTION_CLICK,
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.PURCHASE_PROTECTION_CLICK,
             ConstantTransactionAnalytics.EventCategory.PURCHASE_PROTECTION,
             ConstantTransactionAnalytics.EventAction.CLICK_PURCHASE_PROTECTION_PAY,
-            label)
+            label
+        )
         gtmData[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userId
         gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_FINTECH
         gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH
@@ -48,16 +50,18 @@ class CheckoutAnalyticsPurchaseProtection @Inject constructor() : TransactionAna
      * Impression of product with pelajari appears AS not all product has the pelajari impression
      */
     fun eventImpressionOfProduct(userId: String, eventLabelList: List<String>) {
-       eventLabelList.forEach {
-           sendPurchaseProtectionImpression(userId, it)
-       }
+        eventLabelList.forEach {
+            sendPurchaseProtectionImpression(userId, it)
+        }
     }
 
     private fun sendPurchaseProtectionImpression(userId: String, label: String) {
-        val gtmData = getGtmData(ConstantTransactionAnalytics.EventName.PURCHASE_PROTECTION_IMPRESSION,
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.PURCHASE_PROTECTION_IMPRESSION,
             ConstantTransactionAnalytics.EventCategory.PURCHASE_PROTECTION,
             ConstantTransactionAnalytics.EventAction.IMPRESSION_PELAJARI,
-            label)
+            label
+        )
         gtmData[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userId
         gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_FINTECH
         gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH

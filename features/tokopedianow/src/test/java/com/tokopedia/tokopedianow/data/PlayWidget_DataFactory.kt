@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -24,7 +25,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
         totalView = PlayWidgetTotalView(totalView, true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
-        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
+        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", PartnerType.Shop),
         video = createVideoUiModel(PlayWidgetChannelType.Live),
         hasAction = true,
         share = PlayWidgetShareUiModel(
@@ -36,6 +37,7 @@ fun createPlayWidgetChannel(channelId: String, totalView: String): PlayWidgetCha
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Live),
+        shouldShowPerformanceDashboard = false
     )
 }
 
@@ -72,7 +74,7 @@ fun createPlayWidgetConfigUiModel() = PlayWidgetConfigUiModel(
 )
 
 fun createPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
-    overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
+    overlayImageUrl = "https://images.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
     overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
     overlayImageWebLink = "www.tokopedia.com/play/channels",
     gradientColors = listOf("#B4DAD1"),

@@ -2,6 +2,7 @@ package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -25,12 +26,13 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -38,7 +40,6 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
@@ -110,6 +111,20 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     }
                 }
             }
+        }
+    }
+
+    fun mapToProductBundlRecomAtcItemTracker(
+        productList: List<ProductDataModel>,
+        productDetails: List<ShopHomeBundleProductUiModel>
+    ): List<ProductBundleRecomAtcItemTracker> {
+        return productList.map { product ->
+            ProductBundleRecomAtcItemTracker(
+                id = product.productId,
+                name = productDetails.firstOrNull { it.productId == product.productId }?.productName.orEmpty(),
+                cartId = product.cartId,
+                quantity = product.quantity
+            )
         }
     }
 
@@ -215,10 +230,6 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         if (miniCartProductUiModel.isBundlingItem) {
-                            /**
-                             * Because groupId from minicartV3 is not as expected as BE bundling-now wants
-                             * So we use list of bundleId to exclude product bundling if exist on minicart
-                             */
                             bundleIds.add(miniCartProductUiModel.bundleId)
                         } else {
                             productIds.add(miniCartProductUiModel.productId)
@@ -369,7 +380,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
             productSlashPriceLabel = product.slashPriceLabel
             productOriginalPrice = product.productOriginalPrice
-            productWholeSalePrice = 0
+            productWholeSalePrice = 0.0
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
@@ -408,9 +419,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 productQtyLeft = product.productWarningMessage
             }
             productCashbackPercentage = product.productCashback
-                    .replace(" ", "")
-                    .replace("%", "")
-                    .toIntOrZero()
+                .replace(" ", "")
+                .replace("%", "")
+                .toIntOrZero()
             bundleId = bundleDetail.bundleId
             bundleGroupId = bundleDetail.bundleGroupId
             bundleName = bundleDetail.bundleName
@@ -434,7 +445,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             isLastProductItem = lastProductItem
             editBundleApplink = cartDetail.bundleDetail.editBundleApplink
 
-            if(bundlingItem) {
+            if (bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
                 bundleLabelQty = productQuantity / bundleQuantity
             }
@@ -449,7 +460,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         val actionList = action.toMutableList()
         val isBundlingItem = bundleDetail.isBundlingItem()
 
-        if(isBundlingItem && !isLastItem) {
+        if (isBundlingItem && !isLastItem) {
             actionList.find { it.id == ACTION_DELETE }?.let {
                 actionList.remove(it)
             }
@@ -558,17 +569,17 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             unavailableItemCount++
                         }
                         miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundleGroup(
-                                isError = miniCartItem.isError,
-                                bundleId = visitable.bundleId,
-                                bundleGroupId = visitable.bundleGroupId,
-                                bundleTitle = visitable.bundleName,
-                                bundlePrice = visitable.bundlePrice,
-                                bundleSlashPriceLabel = visitable.slashPriceLabel,
-                                bundleOriginalPrice = visitable.bundleOriginalPrice,
-                                bundleQuantity = visitable.bundleQty,
-                                bundleMultiplier = visitable.bundleMultiplier,
-                                bundleLabelQuantity = visitable.bundleLabelQty,
-                                products = hashMapOf(key to miniCartItem)
+                            isError = miniCartItem.isError,
+                            bundleId = visitable.bundleId,
+                            bundleGroupId = visitable.bundleGroupId,
+                            bundleTitle = visitable.bundleName,
+                            bundlePrice = visitable.bundlePrice,
+                            bundleSlashPriceLabel = visitable.slashPriceLabel,
+                            bundleOriginalPrice = visitable.bundleOriginalPrice,
+                            bundleQuantity = visitable.bundleQty,
+                            bundleMultiplier = visitable.bundleMultiplier,
+                            bundleLabelQuantity = visitable.bundleLabelQty,
+                            products = hashMapOf(key to miniCartItem)
                         )
                     } else {
                         val currentBundleItem = miniCartItems[bundleKey] as MiniCartItem.MiniCartItemBundleGroup
@@ -589,9 +600,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val parentKey = MiniCartItemKey(miniCartItem.productParentId, type = MiniCartItemType.PARENT)
                     if (!miniCartItems.contains(parentKey)) {
                         miniCartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                parentId = miniCartItem.productParentId,
-                                totalQuantity = miniCartItem.quantity,
-                                products = hashMapOf(key to miniCartItem)
+                            parentId = miniCartItem.productParentId,
+                            totalQuantity = miniCartItem.quantity,
+                            products = hashMapOf(key to miniCartItem)
                         )
                     } else {
                         val currentParentItem = miniCartItems[parentKey] as MiniCartItem.MiniCartItemParentProduct
@@ -599,7 +610,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         products[key] = miniCartItem
                         val totalQuantity = currentParentItem.totalQuantity + miniCartItem.quantity
                         miniCartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                miniCartItem.productParentId, totalQuantity, products
+                            miniCartItem.productParentId,
+                            totalQuantity,
+                            products
                         )
                     }
                 }
@@ -618,6 +631,6 @@ class MiniCartListUiModelMapper @Inject constructor() {
     class VisitableListModel(
         val availableProductIds: ArrayList<String>,
         val availableBundleIds: ArrayList<String>,
-        val constructVisitableOrder: MutableList<Visitable<*>>,
+        val constructVisitableOrder: MutableList<Visitable<*>>
     )
 }

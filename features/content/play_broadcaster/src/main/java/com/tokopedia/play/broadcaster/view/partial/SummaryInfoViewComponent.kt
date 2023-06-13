@@ -65,6 +65,8 @@ class SummaryInfoViewComponent(
         binding.tvBroSummaryLiveTitle.text = data.title
         binding.tvBroSummaryDuration.text = data.duration
         binding.tvBroSummaryDate.text = data.date
+        binding.imageAuthor.setImageUrl(data.author.iconUrl)
+        binding.tvAuthor.text = data.author.name
     }
 
     fun addTrafficMetrics(dataList: List<TrafficMetricUiModel>) {

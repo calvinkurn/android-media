@@ -15,7 +15,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTra
 import com.tokopedia.unifyprinciples.Typography
 
 class RMTransactionViewHolder(itemView: View?,
-                              private val onRmTransactionClicked: () -> Unit,
+                              private val onRmTransactionClicked: (Long) -> Unit,
                               private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<RMTransactionWidgetUiModel>(itemView) {
 
@@ -54,7 +54,7 @@ class RMTransactionViewHolder(itemView: View?,
         errorLayout?.gone()
 
         itemView.setOnClickListener {
-            onRmTransactionClicked()
+            onRmTransactionClicked(rmTransaction.totalTransaction)
         }
     }
 

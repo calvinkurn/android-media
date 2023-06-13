@@ -1,11 +1,11 @@
-query GetAutoAds($shopId: Int!){
-  topAdsGetAutoAds(shopId:$shopId){
+query GetAutoAds($shopId: String!, $source: String!){
+  topAdsGetAutoAdsV2(shopID: $shopId, source: $source){
     data {
-      shop_id
+      shopID
       status
-      status_desc
-      daily_budget
-      daily_usage
+      statusDesc
+      dailyBudget
+      dailyUsage
       info {
         reason
         message

@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers 
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -11,33 +11,42 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 open class InboxNotificationUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<InboxNotificationResponse>,
-        private val dispatchers: CoroutineDispatchers
+    private val gqlUseCase: GraphqlUseCase<InboxNotificationResponse>,
+    private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getNotification(
-            onSuccess: (Notifications) -> Unit,
-            onError: (Throwable) -> Unit
+        shopId: String,
+        onSuccess: (Notifications) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         launchCatchError(
-                block = {
-                    val response = gqlUseCase.apply {
-                        setTypeClass(InboxNotificationResponse::class.java)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    onSuccess(response.notifications)
-                },
-                onError = {
-                    onError(it)
-                }
+            block = {
+                val param = getParams(shopId)
+                val response = gqlUseCase.apply {
+                    setTypeClass(InboxNotificationResponse::class.java)
+                    setRequestParams(param)
+                    setGraphqlQuery(query)
+                }.executeOnBackground()
+                onSuccess(response.notifications)
+            },
+            onError = {
+                onError(it)
+            }
+        )
+    }
+
+    private fun getParams(shopId: String): Map<String, Any?> {
+        return mapOf(
+            PARAM_INPUT to shopId
         )
     }
 
     private val query = """
-        query notifications_inbox_counter {
-          notifications{
+        query notifications_inbox_counter($$PARAM_INPUT: String) {
+          notifications(input: {shop_id: $$PARAM_INPUT}){
             total_cart
             chat{
               unreads
@@ -70,4 +79,8 @@ open class InboxNotificationUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    companion object {
+        private const val PARAM_INPUT = "input"
+    }
 }

@@ -71,10 +71,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar_otp"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:theme="@style/CustomActionBar" />
+        app:unify_header_title="@string/title_setting_push_notif"
+        app:unify_header_is_show_back_button="true"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

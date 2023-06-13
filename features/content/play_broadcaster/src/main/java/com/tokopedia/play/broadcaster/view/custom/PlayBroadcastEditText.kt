@@ -10,15 +10,14 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import com.tokopedia.play.broadcaster.R
 
-
 /**
  * Created by jegul on 16/07/20
  */
 class PlayBroadcastEditText : AppCompatEditText {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
 
     private val forbiddenMimeTypes = arrayOf("image/*", "image/png", "image/gif", "image/jpeg")
     private val errorMessageForbiddenMime = context.getString(R.string.play_error_image_edit_text)
@@ -32,6 +31,8 @@ class PlayBroadcastEditText : AppCompatEditText {
                 Toast.makeText(context, errorMessageForbiddenMime, Toast.LENGTH_SHORT).show()
                 true
             }
-        } else inputConnection
+        } else {
+            inputConnection
+        }
     }
 }

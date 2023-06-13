@@ -7,11 +7,9 @@ import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUserReportReasoningMapper
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -19,7 +17,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -42,6 +40,12 @@ class PlayViewerUserReportTest {
     private val classBuilder = ClassBuilder()
     private val mapper = classBuilder.getPlayUiModelMapper()
 
+    /**
+     * Partner Id
+     */
+    private val userId = 10L
+    private val shopId = 12L
+
     @Before
     fun setUp(){
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
@@ -54,7 +58,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return success`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "success"
@@ -66,11 +70,11 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                shopId = 111L,
+                partnerId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
-                reportDesc = "OK"
-            )
+                reportDesc = "OK",
+                partnerType = PartnerType.Shop)
 
             result.assertTrue()
         }
@@ -78,7 +82,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return failed`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "failed"
@@ -90,10 +94,60 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                shopId = 111L,
+                partnerId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
-                reportDesc = "OK"
+                reportDesc = "OK",
+                partnerType = PartnerType.Shop
+            )
+
+            result.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when submit report return success - kol`(){
+        runTest {
+            val response = UserReportSubmissionResponse(
+                submissionReport = UserReportSubmissionResponse.Result(
+                    "success"
+                )
+            )
+
+            coEvery { postUserReportUseCase.executeOnBackground() } returns response
+
+            val result = userReportRepo.submitReport(
+                channelId = 1L,
+                mediaUrl = "htpp://tokopedia",
+                partnerId = 111L,
+                timestamp = 9000L,
+                reasonId = 1,
+                reportDesc = "OK",
+                partnerType = PartnerType.Buyer)
+
+            result.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when submit report return failed - kol`(){
+        runTest {
+            val response = UserReportSubmissionResponse(
+                submissionReport = UserReportSubmissionResponse.Result(
+                    "failed"
+                )
+            )
+
+            coEvery { postUserReportUseCase.executeOnBackground() } returns response
+
+            val result = userReportRepo.submitReport(
+                channelId = 1L,
+                mediaUrl = "htpp://tokopedia",
+                partnerId = 111L,
+                timestamp = 9000L,
+                reasonId = 1,
+                reportDesc = "OK",
+                partnerType = PartnerType.Buyer
             )
 
             result.assertFalse()
@@ -102,7 +156,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `get reasoning list is success`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportOptions.Response(
                 data = listOf(UserReportOptions(
                     id = 1,
@@ -124,7 +178,6 @@ class PlayViewerUserReportTest {
             )
 
             coEvery { getUserReportListUseCase.executeOnBackground() } returns response
-
             val result = userReportRepo.getReasoningList()
 
             result.isNotEmpty().assertTrue()

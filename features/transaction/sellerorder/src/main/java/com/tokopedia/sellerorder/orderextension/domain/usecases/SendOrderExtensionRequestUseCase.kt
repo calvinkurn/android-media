@@ -15,9 +15,10 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
         orderId: String,
         shopId: String,
         reasonCode: Int,
-        reasonText: String
+        reasonText: String,
+        extensionTime: Int
     ): SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData {
-        val requests = createRequests(orderId, shopId, reasonCode, reasonText)
+        val requests = createRequests(orderId, shopId, reasonCode, reasonText, extensionTime)
         val responses = graphQlRepository.response(requests)
         return responses.getSuccessData<SendOrderExtensionRequestResponse.Data>().orderExtensionRequest.data
     }
@@ -26,13 +27,14 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
         orderId: String,
         shopId: String,
         reasonCode: Int,
-        reasonText: String
+        reasonText: String,
+        extensionTime: Int
     ): List<GraphqlRequest> {
         return listOf(
             GraphqlRequest(
                 QUERY,
                 SendOrderExtensionRequestResponse.Data::class.java,
-                generateRequestParams(orderId, shopId, reasonCode, reasonText)
+                generateRequestParams(orderId, shopId, reasonCode, reasonText, extensionTime)
             )
         )
     }
@@ -41,14 +43,16 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
         orderId: String,
         shopId: String,
         reasonCode: Int,
-        reasonText: String
+        reasonText: String,
+        extensionTime: Int
     ): Map<String, Any> {
         return mapOf(
             PARAM_INPUT to SendOrderExtensionRequestParam(
                 orderId.toLongOrZero(),
                 shopId.toLongOrZero(),
                 reasonCode,
-                reasonText
+                reasonText,
+                extensionTime
             )
         )
     }

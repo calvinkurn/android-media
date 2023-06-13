@@ -10,7 +10,11 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -23,8 +27,17 @@ class PartialProductItemViewHolder(
     private var element: ProductListUiModel.ProductUiModel
 ) : View.OnClickListener {
 
+    companion object {
+        const val CARD_ALPHA_NON_POF = 1f
+        const val CARD_ALPHA_POF = 0.5f
+    }
+
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
+    private val ivBuyerOrderDetailInsuranceLogo =
+        partialProductItemViewStub?.findViewById<ImageUnify>(R.id.iv_buyer_order_detail_product_insurance_logo)
+    private val tvBuyerOrderDetailInsuranceLabel =
+        partialProductItemViewStub?.findViewById<Typography>(R.id.tv_buyer_order_detail_product_insurance_label)
     private val tvBuyerOrderDetailProductName =
         partialProductItemViewStub?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
     private val tvBuyerOrderDetailProductPriceQuantity =
@@ -42,10 +55,12 @@ class PartialProductItemViewHolder(
 
     init {
         setupClickListeners()
+        setupCardProductAlpha(element.isPof)
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
         setupTotalPrice(element.totalPriceText)
+        setupInsurance(element.insurance)
     }
 
     fun bindProductItemPayload(
@@ -67,7 +82,23 @@ class PartialProductItemViewHolder(
         if (oldItem.totalPriceText != newItem.totalPriceText) {
             setupTotalPrice(newItem.totalPriceText)
         }
+        if (oldItem.insurance != newItem.insurance) {
+            setupInsurance(newItem.insurance)
+        }
+
+        if (oldItem.isPof != newItem.isPof) {
+            setupCardProductAlpha(newItem.isPof)
+        }
+
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun setupCardProductAlpha(isPof: Boolean) {
+        container?.alpha = if (isPof) {
+            CARD_ALPHA_POF
+        } else {
+            CARD_ALPHA_NON_POF
+        }
     }
 
     private fun goToProductSnapshotPage() {
@@ -108,6 +139,22 @@ class PartialProductItemViewHolder(
 
     private fun setupTotalPrice(totalPrice: String) {
         tvBuyerOrderDetailProductPriceValue?.text = totalPrice
+    }
+
+    private fun setupInsurance(insurance: ProductListUiModel.ProductUiModel.Insurance?) {
+        if (insurance == null) {
+            ivBuyerOrderDetailInsuranceLogo?.gone()
+            tvBuyerOrderDetailInsuranceLabel?.gone()
+        } else {
+            ivBuyerOrderDetailInsuranceLogo?.apply {
+                loadImage(insurance.logoUrl)
+                show()
+            }
+            tvBuyerOrderDetailInsuranceLabel?.apply {
+                text = insurance.label
+                show()
+            }
+        }
     }
 
     private fun showToaster(message: String) {

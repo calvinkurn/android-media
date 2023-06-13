@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class EstimatedTimeArrival(
-        @SerializedName("text_eta")
-        @Expose
-        val textEta: String = "",
-        @SerializedName("error_code")
-        @Expose
-        val errorCode: Int = -1
+    @SerializedName("text_eta")
+    @Expose
+    val textEta: String = "",
+    @SerializedName("error_code")
+    @Expose
+    val errorCode: Int = -1
 ) : Parcelable

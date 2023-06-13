@@ -1,7 +1,10 @@
 package com.tokopedia.media.preview.ui.activity
 
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,24 +14,20 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
-import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_LANJUT
-import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_UPLOAD
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_CAMMERA
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_GALLERY
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
-import com.tokopedia.media.preview.analytics.PreviewAnalytics
+import com.tokopedia.media.picker.utils.goToSettings
+import com.tokopedia.media.picker.utils.parcelableArrayListExtra
+import com.tokopedia.media.picker.utils.permission.PermissionManager
+import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
+import com.tokopedia.media.picker.utils.permission.isGranted
+import com.tokopedia.media.preview.analytics.*
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
-import com.tokopedia.picker.common.RESULT_INTENT_PREVIEW
-import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
-import com.tokopedia.picker.common.EXTRA_EDITOR_PICKER
-import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -38,12 +37,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
-open class PickerPreviewActivity : BaseActivity()
-    , NavToolbarComponent.Listener
-    , DrawerSelectionWidget.Listener {
+open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
+    DrawerSelectionWidget.Listener {
 
     @Inject
-    lateinit var param: ParamCacheManager
+    lateinit var param: PickerCacheManager
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -72,6 +70,24 @@ open class PickerPreviewActivity : BaseActivity()
         PreviewPagerComponent(
             parent = it
         )
+    }
+
+    private val permissionManager: PermissionManager by lazy {
+        PermissionManager.init(
+            this,
+            object : PermissionRequestCallback {
+            override fun onDenied(permissions: List<String>) {}
+
+            override fun onPermissionPermanentlyDenied(permissions: List<String>) {
+                if (permissions.isNotEmpty()) {
+                    startActivity(goToSettings())
+                }
+            }
+
+            override fun onGranted(permissions: List<String>) {
+                viewModel.files(uiModel)
+            }
+        })
     }
 
     private val viewModel by lazy {
@@ -119,7 +135,7 @@ open class PickerPreviewActivity : BaseActivity()
         }
     }
 
-    override fun onItemClicked(media: MediaUiModel) {
+    override fun onDrawerItemClicked(media: MediaUiModel) {
         val previousIndex = drawerIndexSelected
         drawerIndexSelected = pickerPager.moveToOf(media)
 
@@ -128,7 +144,7 @@ open class PickerPreviewActivity : BaseActivity()
         previewAnalytics.clickDrawerThumbnail()
     }
 
-    override fun onDataSetChanged(action: DrawerActionType) {
+    override fun onDrawerDataSetChanged(action: DrawerActionType) {
         when (action) {
             is DrawerActionType.Remove -> {
                 val removedIndex = pickerPager.removeData(action.mediaToRemove)
@@ -161,7 +177,26 @@ open class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
-        viewModel.files(uiModel)
+        checkPermission()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            permissionManager.onRequestPermissionsResult(permissions, grantResults)
+        }
+    }
+
+    private fun checkPermission() {
+        if (isGranted(this, WRITE_EXTERNAL_STORAGE) && SDK_INT <= VERSION_CODES.P) {
+            permissionManager.requestPermission(WRITE_EXTERNAL_STORAGE, PERMISSION_REQUEST_CODE)
+        } else {
+            viewModel.files(uiModel)
+        }
     }
 
     private fun initObservable() {
@@ -202,8 +237,7 @@ open class PickerPreviewActivity : BaseActivity()
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
         intent?.let {
-            val items =
-                it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
+            val items = it.parcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
 
             if (items.isNotEmpty()) {
                 setUiModelData(items)
@@ -235,8 +269,16 @@ open class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().isEditorEnabled()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
+        param.get().apply {
+            if (!isEditorEnabled()) {
+                navToolbar.setContinueTitle(
+                    if (previewActionText().isNotEmpty()) {
+                        previewActionText()
+                    } else {
+                        getString(R.string.picker_button_upload)
+                    }
+                )
+            }
         }
     }
 
@@ -265,16 +307,15 @@ open class PickerPreviewActivity : BaseActivity()
 
     private fun retakeButtonAction(media: MediaUiModel) {
         binding?.btnRetake?.show()
+        binding?.btnRetake?.setModeUi(media)
 
-        val retakeState = if (media.file?.isVideo() == true && media.isFromPickerCamera) {
-            binding?.btnRetake?.videoMode()
-            PREVIEW_RETAKE_RECORDER
-        } else if (media.file?.isImage() == true && media.isFromPickerCamera) {
-            binding?.btnRetake?.photoMode()
-            PREVIEW_RETAKE_CAMMERA
-        } else {
-            binding?.btnRetake?.commonMode()
-            PREVIEW_RETAKE_GALLERY
+        val isVideoFromCamera = media.file?.isVideo() == true && media.isCacheFile
+        val isImageFromCamera = media.file?.isImage() == true && media.isCacheFile
+
+        val retakeState = when {
+            isVideoFromCamera -> PREVIEW_RETAKE_RECORDER
+            isImageFromCamera -> PREVIEW_RETAKE_CAMMERA
+            else -> PREVIEW_RETAKE_GALLERY
         }
 
         binding?.btnRetake?.setOnClickListener {
@@ -284,7 +325,7 @@ open class PickerPreviewActivity : BaseActivity()
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) {
+        if (media.isCacheFile) {
             media.file?.safeDelete()
         }
 
@@ -325,6 +366,7 @@ open class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+        private const val PERMISSION_REQUEST_CODE = 135
 
         fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
             activity.startActivityForResult(

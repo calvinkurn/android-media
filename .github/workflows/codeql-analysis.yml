@@ -1,3 +1,4 @@
+# This configuration/runner/tools is maintained by IT Security Team, any unauthorized changes will be detected and considered as violation against IT Security Policy
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
@@ -28,6 +29,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: [runnerset=code-scanning-runners]
+    permissions: write-all
     env: 
       CODEQL_RAM: 8192
       CODEQL_THREADS: 2
@@ -38,11 +40,38 @@ jobs:
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['java', 'javascript', 'python']
+        language: ['javascript', 'python']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
+    - name: Google Auth
+      id: auth
+      uses: google-github-actions/auth@v0
+      with:
+        token_format: 'access_token'
+        workload_identity_provider: 'projects/208021311280/locations/global/workloadIdentityPools/github-identity-pool/providers/code-scanning-pool-provider'
+        service_account: wif-code-scanning@secrets-management-staging.iam.gserviceaccount.com
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+    - id: 'secrets'
+      uses: 'google-github-actions/get-secretmanager-secrets@v1'
+      with:
+        min_mask_length: '20'
+        secrets: |-
+            codescanner-credential:${{ secrets.CODESCANNER_GSM }}/appsec-codescanner-key
+    - name: Check out itsec-sdk-go
+      uses: actions/checkout@v3
+      with:
+          repository: tokopedia/itsec-sdk-go
+          ref: main
+          ssh-key: ${{ steps.secrets.outputs.codescanner-credential}}
+          path: ./.github/actions/itsec-sdk-go
+    - name: Setup SSH
+      uses: ./.github/actions/itsec-sdk-go/ssh-setup-action
+      with:
+          host: github.com
+          private-key: ${{ steps.secrets.outputs.codescanner-credential }}
     - name: Checkout repository
       uses: actions/checkout@v2
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
@@ -50,7 +79,7 @@ jobs:
       if: matrix.language == 'go'
       uses: actions/setup-go@v2
       with:
-        go-version: 1.14
+        go-version: 1.19
     - name: Set Up Node
       if: matrix.language == 'javascript'
       uses: actions/setup-node@v3

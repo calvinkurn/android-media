@@ -12,6 +12,7 @@
         <activity
             android:name=".stub.AddEditProductPreviewActivityStub"
             android:label="@string/label_title_add_product"
+            android:exported="true"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

@@ -25,9 +25,7 @@ class DefaultNetworkMonitor(
     lifecycleOwner: LifecycleOwner?
 ) : NetworkMonitor,
     LifecycleObserver {
-    private val contextReference = WeakReference<Context?>(context)
-    private val context: Context?
-        get() = contextReference.get()
+    private val applicationContext: Context? = context?.applicationContext
 
     private val connectedToWifiState : MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -42,7 +40,7 @@ class DefaultNetworkMonitor(
         }
 
         private fun isConnectedToWifi(): Boolean {
-            val currentContext = this@DefaultNetworkMonitor.context ?: return false
+            val currentContext = this@DefaultNetworkMonitor.applicationContext ?: return false
             return DeviceConnectionInfo.isConnectWifi(currentContext)
         }
     }
@@ -67,7 +65,7 @@ class DefaultNetworkMonitor(
     }
 
     private fun registerNetworkCallback() {
-        val context = context ?: return
+        val context = applicationContext ?: return
         val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
         try {
@@ -87,7 +85,7 @@ class DefaultNetworkMonitor(
     }
 
     private fun unregisterNetworkCallback() {
-        val context = context ?: return
+        val context = applicationContext ?: return
         val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }

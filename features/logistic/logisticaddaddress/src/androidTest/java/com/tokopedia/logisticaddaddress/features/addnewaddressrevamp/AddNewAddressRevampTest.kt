@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
@@ -44,6 +44,7 @@ class AddNewAddressRevampTest {
         logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
         logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
         logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_add)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -64,6 +65,7 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -82,6 +84,7 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -99,6 +102,7 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }

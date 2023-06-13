@@ -5,20 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:alpha="0.4"
-    android:background="@color/Unify_NN1000">
+    android:background="@color/Unify_NN1000_44">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_action"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/iconunify_video"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/txt_title"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/picker_cd_retake"/>
+        android:contentDescription="@string/picker_cd_retake"
+        tools:icon_name="CAMERA"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_title"

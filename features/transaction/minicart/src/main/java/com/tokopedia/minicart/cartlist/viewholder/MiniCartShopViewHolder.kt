@@ -8,8 +8,8 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartShopBinding
 
-class MiniCartShopViewHolder(private val viewBinding: ItemMiniCartShopBinding)
-    : AbstractViewHolder<MiniCartShopUiModel>(viewBinding.root) {
+class MiniCartShopViewHolder(private val viewBinding: ItemMiniCartShopBinding) :
+    AbstractViewHolder<MiniCartShopUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_shop
@@ -46,5 +46,4 @@ class MiniCartShopViewHolder(private val viewBinding: ItemMiniCartShopBinding)
             }
         }
     }
-
 }

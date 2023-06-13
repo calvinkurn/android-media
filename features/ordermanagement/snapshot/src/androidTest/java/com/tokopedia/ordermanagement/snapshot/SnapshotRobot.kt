@@ -12,10 +12,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
-import org.hamcrest.MatcherAssert
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import org.hamcrest.MatcherAssert.assertThat
 
 /**
  * Created by fwidjaja on 2/6/21.
@@ -58,8 +57,8 @@ class SnapshotRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        MatcherAssert.assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+    fun hasPassedAnalytics(cassavaRule: CassavaTestRule, queryString: String) {
+        assertThat(cassavaRule.validate(queryString), hasAllSuccess())
     }
 }
 

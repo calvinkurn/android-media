@@ -94,6 +94,10 @@ data class PaymentListItem(
 
     @SerializedName("app_link")
     val appLink: String?,
+
+    @SerializedName("continue_purchase_url")
+    val continuePurchaseUrl: String?
+
 )
 
 data class DestBankAccount(

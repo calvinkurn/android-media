@@ -21,6 +21,10 @@ data class ServiceModel(
         @Expose
         val status: Int = 0,
 
+        @SerializedName("service_based_shipment")
+        @Expose
+        val serviceBasedShipment: ServiceBasedShipment = ServiceBasedShipment(),
+
         @SuppressLint("Invalid Data Type")
         @SerializedName("range_price")
         @Expose

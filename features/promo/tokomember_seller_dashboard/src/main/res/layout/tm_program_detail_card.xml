@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/tm_dash_dp_12"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="@dimen/tm_dash_dp_160"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:background="@color/Unify_NN0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/unify_space_4"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                android:text="@string/tm_detail_pertambahan_member"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMemberCount"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="heading_4"
+                />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="@dimen/tm_dash_dp_160"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:background="@color/Unify_NN0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/unify_space_4"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                android:text="@string/tm_detail_jumlah_transaksi"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTransactionCount"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="heading_4"
+                />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="@dimen/tm_dash_dp_160"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:background="@color/Unify_NN0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/unify_space_4"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                android:text="@string/tm_detail_pendapatan"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvIncome"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="heading_4"
+                />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</GridLayout>

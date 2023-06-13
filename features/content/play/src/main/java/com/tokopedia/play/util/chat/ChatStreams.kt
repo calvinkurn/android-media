@@ -18,7 +18,7 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Created by kenny.hadisaputra on 23/05/22
  */
-class ChatStreams @AssistedInject constructor(
+open class ChatStreams @AssistedInject constructor(
     @Assisted private val scope: CoroutineScope,
     private val dispatchers: CoroutineDispatchers,
 ) {
@@ -40,7 +40,7 @@ class ChatStreams @AssistedInject constructor(
         setLoopingTimer()
     }
 
-    fun addChat(chat: PlayChatUiModel) {
+    open fun addChat(chat: PlayChatUiModel) {
         scope.launch(dispatchers.computation) {
             mutex.withLock {
                 pendingChats.add(chat)
@@ -49,7 +49,17 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
-    private fun setLoopingTimer() {
+    fun addHistoryChat(chatList: List<PlayChatUiModel>) {
+        scope.launch(dispatchers.computation) {
+            mutex.withLock {
+                pendingChats.clear()
+                pendingChats.addAll(chatList)
+                sendPendingChats(isClearAllPrevChats = true)
+            }
+        }
+    }
+
+    protected open fun setLoopingTimer() {
         scope.launch(dispatchers.computation) {
             while (isActive) {
                 delay(DELAY_PER_STREAM)
@@ -58,16 +68,20 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
-    private fun sendPendingChats() {
+    protected fun sendPendingChats(isClearAllPrevChats: Boolean = false) {
         if (pendingChats.isEmpty()) return
+
         _chats.update {
-            it.takeLast((MAX_CHAT - pendingChats.size).coerceAtLeast(0)) + pendingChats
+            if(isClearAllPrevChats)
+                pendingChats.takeLast(MAX_CHAT)
+            else
+                it.takeLast((MAX_CHAT - pendingChats.size).coerceAtLeast(0)) + pendingChats
         }
         pendingChats.clear()
     }
 
     companion object {
-        private const val MAX_CHAT = 30
+        private const val MAX_CHAT = 100
         private const val DELAY_PER_STREAM = 500L
     }
 }

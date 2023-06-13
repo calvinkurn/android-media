@@ -5,10 +5,16 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.CategoryDetail
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 
 data class CategoryModel(
+        @SerializedName("get_targeted_ticker")
+        @Expose
+        val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse(),
+
         @SerializedName("category_detail")
         @Expose
         val categoryDetail: CategoryDetail = CategoryDetail(),
@@ -31,5 +37,9 @@ data class CategoryModel(
 
         @SerializedName("TokonowRepurchaseWidget")
         @Expose
-        val tokonowRepurchaseWidget: RepurchaseData = RepurchaseData()
+        val tokonowRepurchaseWidget: RepurchaseData = RepurchaseData(),
+
+        @SerializedName("feedbackFieldToggle")
+        @Expose
+        val feedbackFieldToggle: GetFeedbackFieldModel = GetFeedbackFieldModel()
 )

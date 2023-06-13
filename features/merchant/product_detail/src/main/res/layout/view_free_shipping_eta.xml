@@ -20,9 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_free_shipping_eta_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pdp_free_shipping_eta_text"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_free_shipping_price"
+        app:layout_constraintEnd_toStartOf="@id/pdp_free_shipping_price"
+        app:layout_constraintTop_toTopOf="@id/pdp_free_shipping_price"
         app:typographyType="display_3"
         tools:text="Rp10.000" />
 
@@ -30,11 +31,10 @@
         android:id="@+id/pdp_free_shipping_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_free_shipping_original_price"
-        app:layout_constraintEnd_toStartOf="@id/pdp_free_shipping_original_price"
-        app:layout_constraintTop_toTopOf="@id/pdp_free_shipping_original_price"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_free_shipping_eta_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_free_shipping_eta_text"
         app:typographyType="display_3"
         tools:text="Rp0" />
 

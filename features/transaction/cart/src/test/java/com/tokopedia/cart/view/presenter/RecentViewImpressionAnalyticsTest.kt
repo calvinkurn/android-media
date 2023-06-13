@@ -59,6 +59,5 @@ class RecentViewImpressionAnalyticsTest : BaseCartTest() {
         // THEN
         val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
         assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
-
     }
 }

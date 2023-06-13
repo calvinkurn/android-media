@@ -82,4 +82,19 @@ data class Properties(
         @SerializedName("mix_left")
         val mixLeft: MixLeft? = null,
 
+        @SerializedName("index")
+        val index: Int = 0,
+
+        @SerializedName("targeted_component_id")
+        val targetedComponentId: String = "",
+
+        @SerializedName("catalog_slug")
+        val catalogSlug: String? = "",
+
+        @SerializedName("category_slug")
+        val categorySlug: String? = "",
+
+        @SerializedName("supergraphic_image_url")
+        val supergraphicImageUrl: String? = "",
+
 )

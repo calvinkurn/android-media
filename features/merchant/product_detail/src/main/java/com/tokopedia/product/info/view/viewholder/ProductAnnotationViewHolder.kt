@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
+import com.tokopedia.product.info.view.models.AnnotationValueDataModel
 
 class ProductAnnotationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

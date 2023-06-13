@@ -203,5 +203,6 @@ enum class VariantPageSource(val source: String) {
     BUNDLING_PAGESOURCE("bundling page"),
     TOKONOW_PAGESOURCE("tokonow"),
     BNPL_PAGESOURCE("bnpl-v2"),
-    SHOP_COUPON_PAGESOURCE("shop-coupon-product")
+    SHOP_COUPON_PAGESOURCE("shop-coupon-product"),
+    SRP_PAGESOURCE("srp_search")
 }

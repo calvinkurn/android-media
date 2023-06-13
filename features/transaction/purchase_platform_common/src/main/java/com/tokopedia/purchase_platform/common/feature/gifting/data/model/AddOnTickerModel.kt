@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddOnTickerModel(
-        var text: String = ""
-): Parcelable
+    var text: String = ""
+) : Parcelable

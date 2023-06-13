@@ -10,10 +10,10 @@
     <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/labelViewLogisticTitle"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="50dp"
         app:shop_lv_title="@string/shop_info_label_logistic"
         app:shop_lv_title_color="@color/Unify_N700"
-        app:shop_lv_title_text_size="@dimen/sp_16"
+        app:shop_lv_title_text_size="16sp"
         app:shop_lv_content_text_size="14sp"
         app:shop_lv_content_color="@color/Unify_G400"/>
 

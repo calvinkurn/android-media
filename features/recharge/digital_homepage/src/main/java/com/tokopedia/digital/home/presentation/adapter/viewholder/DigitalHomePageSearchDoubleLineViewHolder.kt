@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewDigitalHomeSearchDoubleLineItemBinding
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper.boldReverseSearchAutoComplete
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -27,9 +27,9 @@ class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?,
             tgMainTitleDoubleLine.text = boldReverseSearchAutoComplete(element.label, element.searchQuery)
             tgMainDescDoubleLine.text = element.subtitle
 
-            itemView.addOnImpressionListener(element, {
+            itemView.addOnImpressionListener(element) {
                 listener.impressOperatorListener(element.trackerUser, element.trackerItem)
-            })
+            }
 
             root.setOnClickListener {
                 listener.clickOperatorListener(element.trackerUser, element.trackerItem)

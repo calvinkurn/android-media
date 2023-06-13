@@ -7,9 +7,9 @@
 
     <View
         android:id="@+id/outerCircle"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="96dp"
         android:layout_height="@dimen/setting_zero_dp"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
@@ -37,7 +37,7 @@
         android:id="@+id/shimmerShopName"
         android:layout_width="@dimen/setting_zero_dp"
         android:layout_height="@dimen/setting_shop_name_shimmer_height"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         app:loader_type="line"
         app:loader_corner_radius="@dimen/setting_shimmer_radius"
@@ -48,7 +48,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerBadgeFollowers"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="96dp"
         android:layout_height="@dimen/setting_shop_badge_height"
         android:gravity="center_vertical"
         app:loader_type="line"

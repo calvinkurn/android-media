@@ -3,29 +3,42 @@ package com.tokopedia.plugin
 import getCommitId
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import versionToInt
 
 open class ScanProjectTask : DefaultTask() {
 
-    //input:
+    // input:
+    @Internal
     var versionConfigMap = mutableMapOf<String, Int>()
+
+    @Internal
     var versionSuffix = ""
+
+    @Internal
     var moduleLatestVersionMap = hashMapOf<String, ArtifactLatestVersionInfo>()
+
+    @Internal
     var moduleToPublishList = mutableSetOf<String>()
 
-    //output:
+    // output:
+    @Internal
     val dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
+
+    @Internal
     val projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
+
+    @Internal
     val artifactIdToProjectNameList = hashMapOf<String, String>()
 
     @TaskAction
     fun run() {
-        //get project info
-        //result stored in projectToArtifactInfoList and artifactIdToProjectNameList
+        // get project info
+        // result stored in projectToArtifactInfoList and artifactIdToProjectNameList
         populateProject()
 
-        //get dependencies [project to project]
+        // get dependencies [project to project]
         // stored in dependenciesProjectNameHashSet
         populateProjectDependencies()
 
@@ -68,7 +81,7 @@ open class ScanProjectTask : DefaultTask() {
     private fun populateProjectDependencies() {
         val dependenciesHashSet = HashSet<Pair<String, String>>()
         val queue = mutableListOf<Project>(project)
-        //BFS to get all projects
+        // BFS to get all projects
         while (queue.isNotEmpty()) {
             val projectItem = queue.removeAt(0)
             queue.addAll(projectItem.childProjects.values)
@@ -104,18 +117,32 @@ open class ScanProjectTask : DefaultTask() {
         try {
             projectToArtifactInfoList.forEach { artifactItem ->
                 artifactItem.value.maxCurrentVersionName = moduleLatestVersionMap[artifactItem.value.artifactId]?.versionName
-                        ?: "0.0.0"
-                val currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
-                val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
-                    "-$versionSuffix"
-                } else "")
-                val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
-                        ?: 1)).toVersion(versionConfigMap) + versionSuffixString
+                    ?: "0.0.0"
+                // version from file
+                var currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
+                // version from artifact (key: versionName)
+                val versionArtifact = artifactItem.value.versionName.versionToInt(versionConfigMap).first
+                // get the version, bigger either from the versionName of artifact or from the file in server.
+                if (versionArtifact >= currentMaxVersion) {
+                    currentMaxVersion = versionArtifact
+                }
+                val versionSuffixString = (
+                    if (versionSuffix.isNotEmpty()) {
+                        "-$versionSuffix"
+                    } else {
+                        ""
+                    }
+                    )
+                val increasedVersionString = (
+                    currentMaxVersion + (
+                        versionConfigMap["Step"]
+                            ?: 1
+                        )
+                    ).toVersion(versionConfigMap) + versionSuffixString
                 artifactItem.value.increaseVersionString = increasedVersionString
                 println(artifactItem.value.projectName + currentMaxVersion + " - " + increasedVersionString)
             }
         } catch (ignored: Exception) {
-
         }
     }
 
@@ -153,5 +180,4 @@ open class ScanProjectTask : DefaultTask() {
         }
         return result.joinToString(".")
     }
-
 }

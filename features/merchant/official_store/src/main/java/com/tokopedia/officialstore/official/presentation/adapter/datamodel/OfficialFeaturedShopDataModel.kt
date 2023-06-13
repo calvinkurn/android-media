@@ -12,7 +12,6 @@ class OfficialFeaturedShopDataModel(
         val featuredShop: List<Shop>,
         val headerShop: HeaderShop?,
         val categoryName: String,
-        val listener: FeaturedShopListener
 ) : OfficialHomeVisitable{
 
     override fun getChangePayloadFrom(b: Any?): Bundle? = null

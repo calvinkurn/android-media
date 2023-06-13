@@ -20,6 +20,14 @@ internal class ProductSummaryListViewComponent(
         override fun onProductDeleteClicked(product: ProductUiModel) {
             listener.onProductDeleteClicked(product)
         }
+
+        override fun onPinClicked(product: ProductUiModel) {
+            listener.onPinClicked(product)
+        }
+
+        override fun onImpressPinnedProduct(product: ProductUiModel) {
+            listener.onImpressPinnedProduct(product)
+        }
     })
 
     init {
@@ -27,8 +35,8 @@ internal class ProductSummaryListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    fun setProductList(productSectionList: List<ProductTagSectionUiModel>) {
+    fun setProductList(productSectionList: List<ProductTagSectionUiModel>, isEligibleForPin: Boolean, isProductNumerationShown: Boolean) {
+        var productIdx = 0 //Product Index
         val finalList = buildList {
             productSectionList.forEachIndexed { idx, section ->
                 /** Don't display section title if its at the top && title is empty */
@@ -37,7 +45,8 @@ internal class ProductSummaryListViewComponent(
                 }
 
                 addAll(section.products.map { product ->
-                    ProductSummaryAdapter.Model.Body(product)
+                    productIdx += 1
+                    ProductSummaryAdapter.Model.Body(product.copy(number = productIdx.toString()), isEligibleForPin, isProductNumerationShown)
                 })
             }
         }
@@ -47,5 +56,7 @@ internal class ProductSummaryListViewComponent(
 
     interface Listener {
         fun onProductDeleteClicked(product: ProductUiModel)
+        fun onPinClicked(product: ProductUiModel)
+        fun onImpressPinnedProduct(product: ProductUiModel)
     }
 }

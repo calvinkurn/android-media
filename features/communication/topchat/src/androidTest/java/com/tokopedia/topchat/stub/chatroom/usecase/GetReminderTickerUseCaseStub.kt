@@ -19,26 +19,59 @@ class GetReminderTickerUseCaseStub @Inject constructor(
         }
 
     private val defaultResponse =
-        "default_success_get_reminder_ticker.json"
+        "ticker_reminder/success_get_reminder_ticker.json"
 
-    val defaultSrwPrompt: GetReminderTickerResponse
+    val defaultTickerReminder: GetReminderTickerResponse
         get() = alterResponseOf(defaultResponse) { }
 
     val falseSrwPrompt: GetReminderTickerResponse
         get() = alterResponseOf(defaultResponse) {
-            val ticker = it.getAsJsonObject(GetReminderTicker)
-            ticker.addProperty(enable, false)
+            val ticker = it.getAsJsonObject(GET_REMINDER_TICKER)
+            ticker.addProperty(ENABLE, false)
         }
 
     val noRegexMatchSrwPrompt: GetReminderTickerResponse
         get() = alterResponseOf(defaultResponse) {
-            val ticker = it.getAsJsonObject(GetReminderTicker)
-            ticker.addProperty(regexMessage, "random message not gonna happened")
+            val ticker = it.getAsJsonObject(GET_REMINDER_TICKER)
+            ticker.addProperty(REGEX_MESSAGE, "random message not gonna happened")
         }
 
+    fun customTickerReminder(
+        featureId: Long = FEATURE_ID_GENERAL,
+        mainText: String = "",
+        subText: String = "",
+        url: String = "",
+        urlLabel: String = "",
+        enableClose: Boolean = true,
+        replyId: String = "-1",
+        tickerType: String = ""
+    ): GetReminderTickerResponse {
+        return alterResponseOf(defaultResponse) {
+            val ticker = it.getAsJsonObject(GET_REMINDER_TICKER)
+            ticker.addProperty(FEATURE_ID, featureId)
+            ticker.addProperty(MAIN_TEXT, mainText)
+            ticker.addProperty(SUB_TEXT, subText)
+            ticker.addProperty(URL, url)
+            ticker.addProperty(URL_LABEL, urlLabel)
+            ticker.addProperty(ENABLE_CLOSE, enableClose)
+            ticker.addProperty(REPLY_ID, replyId)
+            ticker.addProperty(TICKER_TYPE, tickerType)
+            ticker.addProperty(REGEX_MESSAGE, "")
+        }
+    }
+
+
     companion object {
-        const val GetReminderTicker = "GetReminderTicker"
-        const val enable = "enable"
-        const val regexMessage = "regexMessage"
+        private const val GET_REMINDER_TICKER = "GetReminderTicker"
+        private const val ENABLE = "enable"
+        private const val REGEX_MESSAGE = "regexMessage"
+        private const val FEATURE_ID = "featureId"
+        private const val MAIN_TEXT = "mainText"
+        private const val SUB_TEXT = "subText"
+        private const val URL = "url"
+        private const val URL_LABEL = "urlLabel"
+        private const val ENABLE_CLOSE = "enableClose"
+        private const val REPLY_ID = "replyId"
+        private const val TICKER_TYPE = "tickerType"
     }
 }

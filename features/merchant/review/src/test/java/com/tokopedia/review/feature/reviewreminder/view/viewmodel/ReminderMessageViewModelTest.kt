@@ -3,7 +3,13 @@ package com.tokopedia.review.feature.reviewreminder.view.viewmodel
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounterResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderListResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminder
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevSendReminderResponseWrapper
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
@@ -74,5 +80,25 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
     fun `when send reminder should call usecase`() {
         viewModel.sendReminder(anyString())
         coVerify { productrevSendReminderUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `when send reminder success should update result live data`() {
+        val responseWrapper = ProductrevSendReminderResponseWrapper(
+            ProductrevSendReminder(success = true)
+        )
+        coEvery { productrevSendReminderUseCase.executeOnBackground() } returns responseWrapper
+        viewModel.sendReminder(anyString())
+        coVerify { productrevSendReminderUseCase.executeOnBackground() }
+        viewModel.getSendReminderResult().verifySuccessEquals(Success(true))
+    }
+
+    @Test
+    fun `when send reminder error should update result live data with the throwable`() {
+        val throwable = Throwable()
+        coEvery { productrevSendReminderUseCase.executeOnBackground() } throws throwable
+        viewModel.sendReminder(anyString())
+        coVerify { productrevSendReminderUseCase.executeOnBackground() }
+        viewModel.getSendReminderResult().verifyErrorEquals(Fail(throwable))
     }
 }

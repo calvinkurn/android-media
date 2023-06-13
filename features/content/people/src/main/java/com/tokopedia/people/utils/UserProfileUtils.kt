@@ -1,13 +1,11 @@
 package com.tokopedia.people.utils
 
+import android.content.Context
 import android.view.View
-import android.widget.Toast
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import java.math.RoundingMode
 import kotlin.reflect.KProperty1
 
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
@@ -28,8 +26,8 @@ data class CachedState<T>(val prevValue: T? = null, val value: T) {
     }
 }
 
-internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
-    var cachedValue : T? = null
+internal fun <T : Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue: T? = null
     return map {
         val prevValue = cachedValue
         cachedValue = it
@@ -56,4 +54,9 @@ fun View.showToast(
         duration,
         type,
     ).show()
+}
+
+fun Context.isInternetAvailable(): Boolean {
+    return DeviceConnectionInfo.isConnectWifi(this.applicationContext) ||
+        DeviceConnectionInfo.isConnectCellular(this.applicationContext)
 }

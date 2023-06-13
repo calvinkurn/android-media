@@ -24,7 +24,6 @@ object LoginConstants {
     object RemoteConfigKey {
         const val KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         const val KEY_BANNER = "android_user_banner_login"
-        const val KEY_LOGIN_FP = "android_user_fingerprint_login_new"
         const val KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page"
     }
 
@@ -57,10 +56,12 @@ object LoginConstants {
 
     object DiscoverLoginId {
         const val GPLUS = "gplus"
+        const val EMAIL = "local-email"
     }
 
     object RollenceKey {
         const val LOGIN_PAGE_BIOMETRIC = "and_biom_entry_point"
+        const val DIRECT_LOGIN_BIOMETRIC = "loginbiom_an"
     }
 
     object AutoLogin {
@@ -69,10 +70,5 @@ object LoginConstants {
         const val IS_AUTO_LOGIN = "auto_login"
         const val IS_AUTO_FILL = "auto_fill"
         const val AUTO_FILL_EMAIL = "email"
-    }
-
-    object TopAdsClickUrlTrackerConstant{
-        const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
-        const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
     }
 }

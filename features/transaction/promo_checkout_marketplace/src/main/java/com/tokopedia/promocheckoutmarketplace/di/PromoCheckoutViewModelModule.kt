@@ -21,5 +21,4 @@ abstract class PromoCheckoutViewModelModule {
     @IntoMap
     @ViewModelKey(PromoCheckoutViewModel::class)
     internal abstract fun promoCheckoutViewModel(viewModel: PromoCheckoutViewModel): ViewModel
-
 }

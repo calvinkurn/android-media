@@ -21,7 +21,8 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
         private const val ORDER_ID = "order_id"
 
         @JvmStatic
-        fun newInstance(index: Int, orderId: String): UohLsFinishOrderBottomSheet { return UohLsFinishOrderBottomSheet().apply {
+        fun newInstance(index: Int, orderId: String): UohLsFinishOrderBottomSheet {
+            return UohLsFinishOrderBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putInt(INDEX, index)
                 bundle.putString(ORDER_ID, orderId)

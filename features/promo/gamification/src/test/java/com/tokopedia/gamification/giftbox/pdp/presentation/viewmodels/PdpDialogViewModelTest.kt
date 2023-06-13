@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.giftbox.pdp.presentation.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
@@ -9,14 +8,10 @@ import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -43,13 +38,9 @@ class PdpDialogViewModelTest {
     val rule: TestRule = InstantTaskExecutorRule()
 
     val recommendationProductUseCase: GamingRecommendationProductUseCase = mockk()
-    val addWishListUseCase: AddWishListUseCase = mockk()
-    val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk()
     val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk()
-    val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
-    private var deleteWishlistObserver = mockk<Observer<Result<DeleteWishlistV2Response>>>(relaxed = true)
 
     @Before
     fun setup() {
@@ -59,8 +50,7 @@ class PdpDialogViewModelTest {
     }
 
     private fun getRealViewModel(): PdpDialogViewModel {
-        return (PdpDialogViewModel(recommendationProductUseCase, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, topAdsWishlishedUseCase, userSessionInterface, dispatcher))
+        return (PdpDialogViewModel(recommendationProductUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, userSessionInterface, dispatcher))
     }
 
     private fun prepareViewModel() {
@@ -139,57 +129,6 @@ class PdpDialogViewModelTest {
     }
 
     @Test
-    fun addToWishlistTestForTopAds() {
-//        prepareRelaxedViewModel()
-        prepareViewModel()
-        val recommendationItem: RecommendationItem = RecommendationItem(isTopAds = true)
-        val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
-        coEvery { topAdsWishlishedUseCase.execute(any(), any()) } just runs
-        viewModel.addToWishlist(recommendationItem, callback)
-        verify { topAdsWishlishedUseCase.execute(any(), any()) }
-    }
-
-    @Test
-    fun addToWishlistTestForNonTopAds() {
-        prepareViewModel()
-        val recommendationItem: RecommendationItem = RecommendationItem(productId = 1)
-        val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
-        val userId = "1"
-        every { userSessionInterface.userId } returns userId
-        every { addWishListUseCase.createObservable(recommendationItem.productId.toString(), userId, any()) } just runs
-        viewModel.addToWishlist(recommendationItem, callback)
-        verify { addWishListUseCase.createObservable(recommendationItem.productId.toString(), userId, any()) }
-    }
-
-    @Test
-    fun testGetWishListActionListener() {
-        prepareViewModel()
-        val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
-        val wishListActionListener = viewModel.getWishListActionListener(callback)
-        wishListActionListener.onSuccessRemoveWishlist("1")
-        wishListActionListener.onErrorRemoveWishlist("1", "")
-        Assert.assertEquals(wishListActionListener != null, true)
-    }
-
-    @Test
-    fun testGetWishListActionListenerOnSuccessAddWishlist() {
-        prepareViewModel()
-        val callback: ((Boolean, Throwable?) -> Unit) = spyk({ s, t -> })
-        val wishListActionListener = viewModel.getWishListActionListener(callback)
-        wishListActionListener.onSuccessAddWishlist("1")
-        verify { callback.invoke(true, null) }
-    }
-
-    @Test
-    fun testGetWishListActionListenerOnErrorAddWishList() {
-        prepareViewModel()
-        val callback: ((Boolean, Throwable?) -> Unit) = spyk({ s, t -> })
-        val wishListActionListener = viewModel.getWishListActionListener(callback)
-        wishListActionListener.onErrorAddWishList("1", "")
-        verify { callback.invoke(false, any()) }
-    }
-
-    @Test
     fun testGetSubscriberOnCompleted() {
         prepareViewModel()
         val callback: ((Boolean, Throwable?) -> Unit) = spyk({ s, t -> })
@@ -220,33 +159,6 @@ class PdpDialogViewModelTest {
         val subsciber: Subscriber<WishlistModel> = viewModel.getSubscriber(callback)
         subsciber.onNext(wishlistModel)
         verify { callback.invoke(true, null) }
-    }
-
-    @Test
-    fun removeFromWishlist(){
-        prepareViewModel()
-        val model:RecommendationItem = RecommendationItem(productId = 1)
-        val wishlistCallback: (((Boolean, Throwable?) -> Unit)) = mockk()
-        val userId = "1"
-        every { userSessionInterface.userId } returns userId
-        every { removeWishListUseCase.createObservable(model.productId.toString(),userId, any()) } just runs
-        viewModel.removeFromWishlist(model,wishlistCallback)
-        verify { removeWishListUseCase.createObservable(model.productId.toString(),userId, any()) }
-    }
-
-    @Test
-    fun testGetWishListActionListenerForRemoveFromWishList(){
-        prepareViewModel()
-        val wishlistCallback: (((Boolean, Throwable?) -> Unit)) = spyk()
-        val wishListActionListener = viewModel.getWishListActionListenerForRemoveFromWishList(wishlistCallback)
-        wishListActionListener.onErrorAddWishList("","")
-        wishListActionListener.onSuccessAddWishlist("",)
-
-        wishListActionListener.onErrorRemoveWishlist("error","1")
-        verify { wishlistCallback.invoke(false, any()) }
-
-        wishListActionListener.onSuccessRemoveWishlist("1")
-        verify { wishlistCallback.invoke(true, null) }
     }
 
     @Test

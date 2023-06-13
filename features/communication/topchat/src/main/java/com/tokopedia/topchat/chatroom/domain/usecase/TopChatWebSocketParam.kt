@@ -5,12 +5,14 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
@@ -34,9 +36,10 @@ object TopChatWebSocketParam {
         localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null,
-        referredMsg: ParentReply? = null
+        referredMsg: ParentReply? = null,
+        sourceReply: String
     ): String {
-        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg)
+        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg, sourceReply)
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
@@ -44,11 +47,13 @@ object TopChatWebSocketParam {
             addProperty("local_id", localId)
             addProperty("message_id", roomeMetaData.msgId.toLongOrZero())
             addProperty("message", messageText)
-            addProperty("source", "inbox")
+            addProperty("source", sourceReply)
             addProperty("start_time", startTime)
             if (attachments.isNotEmpty()) {
                 val extras = createMessageExtrasAttachments(
-                    attachments, intention, userLocationInfo
+                    attachments,
+                    intention,
+                    userLocationInfo
                 )
                 add("extras", extras)
             }
@@ -61,19 +66,20 @@ object TopChatWebSocketParam {
     }
 
     fun generateParentReplyRequestPayload(
-        parentReply: ParentReply?
+        parentReply: ParentReply?,
+        sourceReply: String
     ): JsonElement? {
         if (parentReply == null) return null
         val requestContract = ParentReplyWsRequest(
             attachment_id = parentReply.attachmentId.toLongOrZero(),
             attachment_type = parentReply.attachmentType.toLongOrZero(),
-            sender_id = parentReply.senderId.toLongOrZero() ,
+            sender_id = parentReply.senderId.toLongOrZero(),
             reply_time = parentReply.replyTime.toLongOrZero(),
             main_text = parentReply.mainText,
             sub_text = parentReply.subText,
             image_url = parentReply.imageUrl,
             local_id = parentReply.localId,
-            source = "inbox"
+            source = sourceReply
         )
         return gson.toJsonTree(requestContract)
     }
@@ -85,7 +91,8 @@ object TopChatWebSocketParam {
         toUid: String,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -95,7 +102,7 @@ object TopChatWebSocketParam {
         data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
-        data.addProperty("attachment_type", TYPE_PRODUCT_ATTACHMENT.toInt())
+        data.addProperty("attachment_type", TYPE_PRODUCT_ATTACHMENT.toIntOrZero())
         data.addProperty("product_id", product.productId.toLongOrZero())
 
         val productProfile = createProductProfilePayload(product, message)
@@ -103,13 +110,14 @@ object TopChatWebSocketParam {
 
         data.add("extras", extras)
         data.add("product_profile", productProfile)
+        data.addProperty("source", sourceReply)
         json.add("data", data)
         return json
     }
 
     private fun createProductProfilePayload(
-            product: TopchatProductAttachmentPreviewUiModel,
-            message: String
+        product: TopchatProductAttachmentPreviewUiModel,
+        message: String
     ): JsonObject {
         val productProfile = JsonObject()
         productProfile.addProperty("name", product.productName)
@@ -171,7 +179,8 @@ object TopChatWebSocketParam {
     }
 
     private fun applyExtrasProductTo(
-        jsonObject: JsonObject, attachments: List<SendablePreview>
+        jsonObject: JsonObject,
+        attachments: List<SendablePreview>
     ) {
         val extrasProducts = JsonArray()
         attachments.forEach { attachment ->
@@ -187,7 +196,8 @@ object TopChatWebSocketParam {
     }
 
     private fun applyExtrasIntentionTo(
-        jsonObject: JsonObject, intention: String?
+        jsonObject: JsonObject,
+        intention: String?
     ) {
         intention?.let {
             jsonObject.addProperty("intent", it)
@@ -195,7 +205,8 @@ object TopChatWebSocketParam {
     }
 
     private fun applyExtrasLocationStockTo(
-        jsonObject: JsonObject, userLocationInfo: LocalCacheModel?
+        jsonObject: JsonObject,
+        userLocationInfo: LocalCacheModel?
     ) {
         userLocationInfo?.let {
             val locationStock = createLocationStockProperty(it)
@@ -211,12 +222,15 @@ object TopChatWebSocketParam {
             val long = userLocationInfo.long
             val latlon = if (lat.isNotEmpty() && long.isNotEmpty()) {
                 "$lat,$long"
-            } else ""
+            } else {
+                ""
+            }
             addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
             addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
             addProperty("postal_code", userLocationInfo.postal_code)
             addProperty(
-                "address_name", AddressUtil.getAddressMasking(userLocationInfo.label)
+                "address_name",
+                AddressUtil.getAddressMasking(userLocationInfo.label)
             )
             addProperty("latlon", latlon)
         }
@@ -225,9 +239,11 @@ object TopChatWebSocketParam {
     fun generateParamSendImage(
         thisMessageId: String,
         path: String,
-        image: ImageUploadUiModel
+        image: ImageUploadUiModel,
+        isSecure: Boolean,
+        sourceReply: String
     ): String {
-        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply)
+        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply, sourceReply)
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
@@ -236,10 +252,16 @@ object TopChatWebSocketParam {
         data.addProperty("message", UPLOADING)
         data.addProperty("start_time", image.startTime)
         data.addProperty("file_path", path)
-        data.addProperty("attachment_type", Integer.parseInt(TYPE_IMAGE_UPLOAD))
+        val attachmentType = if (isSecure) {
+            TYPE_IMAGE_UPLOAD_SECURE
+        } else {
+            TYPE_IMAGE_UPLOAD
+        }
+        data.addProperty("attachment_type", attachmentType.toIntOrZero())
         if (referredMsgRequest != null) {
             data.add("parent_reply", referredMsgRequest)
         }
+        data.addProperty("source", sourceReply)
         json.add("data", data)
         return json.toString()
     }
@@ -270,5 +292,4 @@ object TopChatWebSocketParam {
         json.add("data", data)
         return json.toString()
     }
-
 }

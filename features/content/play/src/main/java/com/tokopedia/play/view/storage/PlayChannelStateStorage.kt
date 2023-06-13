@@ -18,7 +18,7 @@ class PlayChannelStateStorage {
         playPageMap[channelId] = channelData
     }
 
-    fun getChannelList() = playPageMap.keys.toList()
+    fun getChannelList() = playPageMap.values.toList()
 
     fun clearData() = playPageMap.clear()
 }
@@ -36,4 +36,9 @@ data class PlayChannelData(
     val upcomingInfo: PlayUpcomingUiModel,
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
+)
+
+data class PagingChannel(
+    val channelList: List<PlayChannelData>,
+    val cursor: String,
 )

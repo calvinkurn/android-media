@@ -14,18 +14,20 @@ import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                            private val mapper: GetOccCartMapper,
-                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
+class GetOccCartUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val mapper: GetOccCartMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) {
 
     fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
         return mapOf(
-                PARAM_SOURCE to source,
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_ADDITIONAL_PARAMS to mapOf(
-                        PARAM_GATEWAY_CODE to gatewayCode,
-                        PARAM_TENOR to tenor
-                )
+            PARAM_SOURCE to source,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_ADDITIONAL_PARAMS to mapOf(
+                PARAM_GATEWAY_CODE to gatewayCode,
+                PARAM_TENOR to tenor
+            )
         )
     }
 
@@ -42,8 +44,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
             return mapper.mapGetOccCartDataToOrderData(response.response.data)
         } else {
-            throw MessageErrorException(response.response.errorMessages.firstOrNull()
-                    ?: DEFAULT_ERROR_MESSAGE)
+            throw MessageErrorException(
+                response.response.errorMessages.firstOrNull()
+                    ?: DEFAULT_ERROR_MESSAGE
+            )
         }
     }
 
@@ -60,6 +64,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
     error_message
     status
     data {
+      cart_data
       errors
       error_code
       pop_up_message
@@ -225,6 +230,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             slash_price_label
             product_finsurance
             warehouse_id
+            ethical_drug {
+              need_prescription
+              icon_url
+              text
+            }
             free_shipping {
               eligible
             }
@@ -559,6 +569,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               success
               cart_id
               unique_id
+              shipping_id
+              sp_id
               order_id
               shop_id
               is_po
@@ -678,6 +690,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         change_cc_link
         callback_url
       }
+      image_upload {
+		show_image_upload
+		text
+		left_icon_url
+		right_icon_url
+		checkout_id
+		front_end_validation
+		lite_url
+	  }
       prompt {
         type
         title

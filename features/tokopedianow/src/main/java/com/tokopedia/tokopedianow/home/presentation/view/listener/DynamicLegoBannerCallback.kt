@@ -19,14 +19,19 @@ class DynamicLegoBannerCallback(
     private val viewModel: TokoNowHomeViewModel,
     private val userSession: UserSessionInterface,
     private val analytics: HomeAnalytics
-    ): DynamicLegoBannerListener {
+) : DynamicLegoBannerListener {
 
     private val context by lazy { view.getFragmentPage().context }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context,
-            if (channelModel.channelHeader.applink.isNotEmpty())
-                channelModel.channelHeader.applink else channelModel.channelHeader.url)
+        RouteManager.route(
+            context,
+            if (channelModel.channelHeader.applink.isNotEmpty()) {
+                channelModel.channelHeader.applink
+            } else {
+                channelModel.channelHeader.url
+            }
+        )
         trackClickLego6ViewAll(channelModel, position)
     }
 
@@ -34,9 +39,14 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context,
-            if (channelModel.channelHeader.applink.isNotEmpty())
-                channelModel.channelHeader.applink else channelModel.channelHeader.url)
+        RouteManager.route(
+            context,
+            if (channelModel.channelHeader.applink.isNotEmpty()) {
+                channelModel.channelHeader.applink
+            } else {
+                channelModel.channelHeader.url
+            }
+        )
     }
 
     override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
@@ -48,12 +58,18 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        trackClickLego4Banner(channelModel, channelGrid, position, parentPosition)
     }
 
     override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        RouteManager.route(context,
-            if (channelGrid.applink.isNotEmpty())
-                channelGrid.applink else channelGrid.url)
+        RouteManager.route(
+            context,
+            if (channelGrid.applink.isNotEmpty()) {
+                channelGrid.applink
+            } else {
+                channelGrid.url
+            }
+        )
         analytics.trackClickLego3Banner(position, channelModel, channelGrid)
     }
 
@@ -64,6 +80,7 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+        analytics.trackImpressionLego3Banner(channelModel)
     }
 
     override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
@@ -80,6 +97,7 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
+        analytics.trackImpressionLego4Banner(channelModel)
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
@@ -112,6 +130,18 @@ class DynamicLegoBannerCallback(
     private fun openLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         view.getFragmentPage().startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    private fun trackClickLego4Banner(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        parentPosition: Int
+    ) {
+        context?.let {
+            val warehouseId = ChooseAddressUtils.getLocalizingAddressData(it).warehouse_id
+            analytics.trackClickLego4Banner(channelModel, channelGrid, warehouseId, position, parentPosition)
+        }
     }
 
     private fun trackClickLego6Banner(

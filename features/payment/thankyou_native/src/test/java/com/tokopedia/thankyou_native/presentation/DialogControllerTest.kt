@@ -14,7 +14,18 @@ class DialogControllerTest {
 
     @Before
     fun setup() {
-        every { gratifPoresenter.showGratificationInApp(any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            gratifPoresenter.showGratificationInApp(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
     }
 
     @Test
@@ -25,14 +36,22 @@ class DialogControllerTest {
 
         }
         val screenName = javaClass.name
-        dialogController.showGratifDialog(mockk(), paymentId, gratifPopupCallback = callback, screenName = screenName)
+        dialogController.showGratifDialog(
+            mockk(),
+            paymentId,
+            gratifPopupCallback = callback,
+            screenName = screenName
+        )
         verifyOrder {
-            gratifPoresenter.showGratificationInApp(any(),
-                    paymentID = paymentId.toLong(),
-                    gratifPopupCallback = callback,
-                    screenName = screenName,
-                    notificationEntryType = NotificationEntryType.ORGANIC,
-                    timeout = GRATIF_TIMEOUT, closeCurrentActivity = true)
+            gratifPoresenter.showGratificationInApp(
+                any(),
+                paymentID = paymentId.toLong(),
+                gratifPopupCallback = callback,
+                screenName = screenName,
+                notificationEntryType = NotificationEntryType.ORGANIC,
+                timeout = GRATIF_TIMEOUT,
+                closeCurrentActivity = true
+            )
         }
     }
 

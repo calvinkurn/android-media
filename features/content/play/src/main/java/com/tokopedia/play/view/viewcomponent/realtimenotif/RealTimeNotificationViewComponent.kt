@@ -29,13 +29,13 @@ import kotlin.coroutines.resume
  * Created by jegul on 12/08/21
  */
 class RealTimeNotificationViewComponent(
-        container: ViewGroup,
+    container: ViewGroup
 ) : ViewComponent(container, R.id.view_real_time_notification) {
 
     private val offset16 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private val rtnBubbleView: RealTimeNotificationBubbleView = findViewById(
-            R.id.rtn_bubble
+        R.id.rtn_bubble
     )
 
     private var lifespanInMs = DEFAULT_LIFESPAN_IN_MS
@@ -46,8 +46,8 @@ class RealTimeNotificationViewComponent(
     private val isActive = AtomicBoolean(true)
 
     private val rtnQueue = MutableSharedFlow<RealTimeNotificationUiModel>(
-            extraBufferCapacity = 64,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
     private val showListener = object : DefaultAnimatorListener() {
@@ -103,8 +103,8 @@ class RealTimeNotificationViewComponent(
             Color.parseColor(notification.bgColor)
         } catch (e: Throwable) {
             MethodChecker.getColor(
-                    rootView.context,
-                    R.color.play_dms_default_real_time_notif_bg
+                rootView.context,
+                R.color.play_dms_default_real_time_notif_bg
             )
         }
         rtnBubbleView.setBackgroundColor(bgColor)
@@ -120,16 +120,16 @@ class RealTimeNotificationViewComponent(
                 if (cont.isActive) cont.resume(Unit)
             }
 
-            override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
+            override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
                 rtnBubbleView.show()
             }
         }
 
         showAnimation = ObjectAnimator.ofFloat(
-                rtnBubbleView,
-                View.TRANSLATION_X,
-                -1f * (rtnBubbleView.measuredWidth + offset16)
-                , 0f
+            rtnBubbleView,
+            View.TRANSLATION_X,
+            -1f * (rtnBubbleView.measuredWidth + offset16),
+            0f
         ).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(showListener)
@@ -140,10 +140,10 @@ class RealTimeNotificationViewComponent(
         }
 
         hideAnimation = ObjectAnimator.ofFloat(
-                rtnBubbleView,
-                View.TRANSLATION_X,
-                0f,
-                -1f * (rtnBubbleView.measuredWidth + offset16)
+            rtnBubbleView,
+            View.TRANSLATION_X,
+            0f,
+            -1f * (rtnBubbleView.measuredWidth + offset16)
         ).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(hideListener)

@@ -24,14 +24,14 @@ public interface GraphqlApi {
 
 
     @POST("./")
-    @Headers(ANDROID_FLAG)
+    @Headers({ANDROID_FLAG, "Content-Type: application/json"})
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values,
                                                 @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) String queryIdentifier);
 
     @POST()
-    @Headers(ANDROID_FLAG)
+    @Headers({ANDROID_FLAG, "Content-Type: application/json"})
     Observable<Response<JsonArray>> getResponseWithPath(@Url String url,
                                                 @Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,

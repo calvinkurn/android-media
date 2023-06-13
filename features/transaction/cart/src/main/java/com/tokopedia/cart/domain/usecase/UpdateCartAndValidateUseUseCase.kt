@@ -13,9 +13,11 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2020-03-04.
  */
-class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCartUseCase: UpdateCartUseCase,
-                                                          private val validateUseUseCase: OldValidateUsePromoRevampUseCase,
-                                                          private val schedulers: ExecutorSchedulers) : com.tokopedia.usecase.UseCase<UpdateAndValidateUseData>() {
+class UpdateCartAndValidateUseUseCase @Inject constructor(
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val validateUseUseCase: OldValidateUsePromoRevampUseCase,
+    private val schedulers: ExecutorSchedulers
+) : com.tokopedia.usecase.UseCase<UpdateAndValidateUseData>() {
 
     companion object {
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
@@ -37,24 +39,24 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
         requestParamValidateUse.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, paramValidateUse)
 
         return Observable.just(UpdateAndValidateUseData())
-                .flatMap { updateAndValidateUseData ->
-                    updateCartUseCase.createObservable(requestParamUpdateCart)
-                            .map { updateCartData ->
-                                updateAndValidateUseData.updateCartData = updateCartData
-                                if (!updateCartData.isSuccess) {
-                                    throw CartResponseErrorException(updateCartData.message)
-                                }
-                                updateAndValidateUseData
-                            }
-                }
-                .flatMap { updateAndValidateUseData ->
-                    validateUseUseCase.createObservable(requestParamValidateUse)
-                            .map { validateUseRevampUiModel ->
-                                updateAndValidateUseData.promoUiModel = validateUseRevampUiModel.promoUiModel
-                                updateAndValidateUseData
-                            }
-                }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+            .flatMap { updateAndValidateUseData ->
+                updateCartUseCase.createObservable(requestParamUpdateCart)
+                    .map { updateCartData ->
+                        updateAndValidateUseData.updateCartData = updateCartData
+                        if (!updateCartData.isSuccess) {
+                            throw CartResponseErrorException(updateCartData.message)
+                        }
+                        updateAndValidateUseData
+                    }
+            }
+            .flatMap { updateAndValidateUseData ->
+                validateUseUseCase.createObservable(requestParamValidateUse)
+                    .map { validateUseRevampUiModel ->
+                        updateAndValidateUseData.promoUiModel = validateUseRevampUiModel.promoUiModel
+                        updateAndValidateUseData
+                    }
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
 }

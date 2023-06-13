@@ -141,7 +141,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             TopAdsDashboardConstant.ACTION_DEACTIVATE
         val resources = context?.resources ?: return
         viewModel.setKeywordAction(actionActivate,
-            listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()),
+            listOf((adapter.items[pos] as KeywordItemModel).result.keywordId),
             resources, ::onSuccessAction)
     }
 
@@ -277,7 +277,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         adapter.getSelectedItems().forEach {
-            ads.add(it.result.keywordId.toString())
+            ads.add(it.result.keywordId)
         }
         return ads
     }

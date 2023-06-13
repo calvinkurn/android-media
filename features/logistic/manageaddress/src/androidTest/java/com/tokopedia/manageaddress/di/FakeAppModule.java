@@ -2,6 +2,7 @@ package com.tokopedia.manageaddress.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -11,6 +12,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
+import com.tokopedia.test.application.datastore.TestUserSessionDataStore;
+import com.tokopedia.user.session.datastore.UserSessionDataStore;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,14 +62,32 @@ public class FakeAppModule {
 
     @ApplicationScope
     @Provides
-    @ApplicationContext
-    public GraphqlRepository provideGraphqlRepository() {
-        return new FakeGraphqlRepository();
+    public FakeGraphqlRepository provideFakeRepo() {
+        return new FakeGraphqlRepository(context, new Gson());
     }
 
     @ApplicationScope
     @Provides
-    public GraphqlUseCaseInterface provideGraphqlUsecase() {
+    @ApplicationContext
+    public GraphqlRepository provideGraphqlRepository(FakeGraphqlRepository fakeRepo) {
+        return fakeRepo;
+    }
+
+    @ApplicationScope
+    @Provides
+    public GraphqlUseCaseInterface provideGraphqlUsecase(FakeGraphqlUseCase fakeUseCase) {
+        return fakeUseCase;
+    }
+
+    @ApplicationScope
+    @Provides
+    public FakeGraphqlUseCase provideFakeUseCase() {
         return new FakeGraphqlUseCase(context);
+    }
+
+    @ApplicationScope
+    @Provides
+    public UserSessionDataStore provideUserSessionDataStore() {
+        return new TestUserSessionDataStore();
     }
 }

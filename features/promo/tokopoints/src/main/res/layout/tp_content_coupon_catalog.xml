@@ -18,7 +18,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/img_banner"
@@ -220,10 +220,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
                 android:layout_marginTop="6dp"
+                android:visibility="gone"
                 android:background="@color/Unify_N50"
                 app:layout_constraintLeft_toLeftOf="@+id/text_description"
                 app:layout_constraintRight_toRightOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/container_quotatransaction" />
+
+            <include layout="@layout/tp_layout_item_coupon_code"
+                android:id="@+id/layout_coupon_code"
+                app:layout_constraintTop_toBottomOf="@id/top_separator"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tnc"
@@ -231,27 +238,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:lineSpacingExtra="@dimen/sp_6"
+                android:lineSpacingExtra="6sp"
                 android:text="@string/tnc_coupon_catalog"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintLeft_toLeftOf="@+id/top_separator"
-                app:layout_constraintTop_toBottomOf="@+id/top_separator"
+                app:layout_constraintLeft_toLeftOf="@+id/layout_coupon_code"
+                app:layout_constraintTop_toBottomOf="@+id/layout_coupon_code"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <WebView
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                app:typographyType="body_2"
                 android:clickable="true"
                 android:autoLink="all"
-                android:textColor="@color/Unify_N700"
-                app:layout_constraintLeft_toLeftOf="@+id/tnc"
-                app:layout_constraintRight_toRightOf="@+id/tnc"
+                app:layout_constraintStart_toStartOf="@+id/tnc"
                 app:layout_constraintTop_toBottomOf="@+id/tnc"
                 android:focusable="true" />
 
@@ -272,7 +275,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:lineSpacingExtra="@dimen/sp_6"
+                android:lineSpacingExtra="6sp"
                 android:text="@string/how_to_use_coupon_catalog"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="@+id/tp_mid_separator"
@@ -345,11 +348,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/gift_btn"
-                    android:layout_width="@dimen/dp_120"
+                    android:layout_width="120dp"
                     android:layout_height="40dp"
                     android:background="@drawable/rounded_red_border_only_tokopoints"
                     android:gravity="center"
-                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:lineSpacingExtra="4sp"
                     android:paddingLeft="24dp"
                     android:paddingRight="24dp"
                     android:text="@string/tp_gift_btn_text"
@@ -459,10 +462,9 @@
             app:typographyWeight="bold"
             tools:text="point value" />
 
-
         <RelativeLayout
             android:id="@+id/btnContainer"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
@@ -476,7 +478,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/bg_button_buy_orange_tokopoints"
+                android:background="@drawable/bg_button_buy_green_tokopoints"
                 android:gravity="center"
                 android:textAllCaps="false"
                 android:textColor="@color/Unify_N0"
@@ -495,4 +497,16 @@
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_action_claim"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginEnd="@dimen/tp_margin_medium"
+        android:layout_marginBottom="@dimen/tp_margin_small"
+        android:layout_marginTop="@dimen/tp_margin_small"/>
+
+
+
 </LinearLayout>

@@ -112,6 +112,10 @@ public class LocationPass implements Parcelable {
         return generatedAddress;
     }
 
+    public boolean hasPinpointData() {
+        return this.latitude != null && !this.latitude.isEmpty() && this.longitude != null && !this.longitude.isEmpty();
+    }
+
     public static class Builder {
         private String latitude;
         private String longitude;

@@ -7,8 +7,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.dg_transaction.testing.di.DaggerStubEmoneyPdpComponent
 import com.tokopedia.dg_transaction.testing.di.StubEmoneyPdpComponent
 import com.tokopedia.dg_transaction.testing.di.util.StubCommonTopupBillsComponentInstance

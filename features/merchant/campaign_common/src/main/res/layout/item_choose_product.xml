@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkboxItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgProduct" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgProduct"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/checkboxItem"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        tool:text="Judul Produk Bisa Sepanjang Dua Baris Kebawah" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelVariantCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductName"
+        tool:text="6 Variant Produk" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/labelVariantCount"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        tool:text="Rp75.000.000 " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDisabledReason"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvStock"
+        app:typographyType="paragraph_3"
+        tool:text="Produk tidak bisa dipilih karena terdaftar di campaign lain" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvVariantTips"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/labelVariantCount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelVariantCount"
+        app:layout_constraintTop_toTopOf="@+id/labelVariantCount"
+        app:typographyType="small"
+        tool:text="3 varian sesuai kriteria" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconProduct"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        app:icon_name="PRODUCT"
+        app:layout_constraintBottom_toBottomOf="@+id/tvStock"
+        app:layout_constraintStart_toStartOf="@+id/tvProductPrice"
+        app:layout_constraintTop_toTopOf="@+id/tvStock" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/iconProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductPrice"
+        app:typographyType="paragraph_3"
+        tool:text="Total stok: 999" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCheckDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvDisabledReason"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        android:text="Cek Detail" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCheckDetail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

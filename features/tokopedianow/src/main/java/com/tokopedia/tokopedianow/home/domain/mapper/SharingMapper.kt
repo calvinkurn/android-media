@@ -32,7 +32,8 @@ object SharingMapper {
             state = state,
             slug = response.widgetParam,
             campaignCode = response.campaignCode,
-            warehouseId = warehouseId
+            warehouseId = warehouseId,
+            titleSection = response.header.name
         )
         return HomeLayoutItemUiModel(layout, state)
     }

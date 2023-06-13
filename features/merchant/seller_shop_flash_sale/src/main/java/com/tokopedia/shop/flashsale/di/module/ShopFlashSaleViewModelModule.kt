@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductViewModel
-import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.CampaignInformationViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.VpsPackageViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
@@ -18,6 +19,7 @@ import com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.shop.flashsale.presentation.draft.viewmodel.DraftDeleteViewModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerViewModel
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListViewModel
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -92,4 +94,14 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignDetailViewModel::class)
     internal abstract fun provideCampaignDetailViewModel(viewModel: CampaignDetailViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(VpsPackageViewModel::class)
+    internal abstract fun provideVpsPackageViewModel(viewModel: VpsPackageViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QuotaMonitoringViewModel::class)
+    internal abstract fun provideQuotaMonitoringViewModel(viewModel: QuotaMonitoringViewModel) : ViewModel
 }

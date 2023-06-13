@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.USER_ADDRESS_KEY
 import com.tokopedia.discovery2.Constant.QueryParamConstants.QUERY_PARAMS_KEY
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
@@ -21,6 +22,8 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 
     suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String,
                                             queryParameterMap: MutableMap<String, String?>,
+                                            queryParameterMapWithRpc: MutableMap<String, String>,
+                                            queryParameterMapWithoutRpc: MutableMap<String, String>,
                                             userAddressData: LocalCacheModel?): DiscoveryPageData {
         var userAddressDataCopy = userAddressData
         val paramMap :MutableMap<String,Any> = mutableMapOf()
@@ -36,6 +39,9 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
                 it
             } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier, paramMap).apply {
                 discoveryPageData[pageIdentifier] = this
+                this.queryParamMap = queryParameterMap
+                this.queryParamMapWithRpc = queryParameterMapWithRpc
+                this.queryParamMapWithoutRpc = queryParameterMapWithoutRpc
                 componentMap = HashMap()
                 if (this.pageInfo.showChooseAddress && userAddressDataCopy == null)
                     userAddressDataCopy = localCacheModel
@@ -51,5 +57,9 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 
     fun clearPage(pageIdentifier: String) {
         discoveryPageData.remove(pageIdentifier)
+    }
+
+    fun getDiscoResponseIfPresent(pageIdentifier: String): DiscoveryResponse? {
+        return discoveryPageData[pageIdentifier]
     }
 }

@@ -23,7 +23,7 @@ class GetRecentViewTest : BaseCartTest() {
                         }
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
@@ -52,7 +52,7 @@ class GetRecentViewTest : BaseCartTest() {
                     [
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
@@ -91,7 +91,6 @@ class GetRecentViewTest : BaseCartTest() {
             view.setHasTriedToLoadRecentView()
             view.stopAllCartPerformanceTrace()
         }
-
     }
 
     @Test
@@ -106,7 +105,7 @@ class GetRecentViewTest : BaseCartTest() {
                         }
                     ]
                 }
-            """.trimIndent()
+        """.trimIndent()
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
@@ -125,5 +124,4 @@ class GetRecentViewTest : BaseCartTest() {
             view.showItemLoading()
         }
     }
-
 }

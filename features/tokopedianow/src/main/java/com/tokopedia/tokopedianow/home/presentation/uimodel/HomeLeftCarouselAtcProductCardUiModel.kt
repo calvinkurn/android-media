@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardTypeFactory
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactory
 
 data class HomeLeftCarouselAtcProductCardUiModel(
     var id: String? = null,
@@ -20,7 +20,10 @@ data class HomeLeftCarouselAtcProductCardUiModel(
     var recommendationType: String = "",
     var warehouseId: String = "",
     var campaignCode: String = "",
-    val productCardModel: ProductCardModel
+    val categoryBreadcrumbs: String = "",
+    val productCardModel: ProductCardCompactUiModel,
+    val hasBlockedAddToCart: Boolean = false,
+    val position: Int = 0
 ): Visitable<HomeLeftCarouselAtcProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: HomeLeftCarouselAtcProductCardTypeFactory): Int {
         return typeFactory.type(this)

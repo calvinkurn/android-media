@@ -1,10 +1,14 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.contentCard.LandingPage
+import com.tokopedia.discovery2.data.contentCard.Product
+import com.tokopedia.discovery2.data.contentCard.TotalItem
+import com.tokopedia.discovery2.data.productbundling.BundleDetails
+import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
@@ -13,508 +17,557 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
-
 data class DataItem(
 
-        @SerializedName("chipSelectionType")
-        var chipSelectionType: String = "0",
+    @SerializedName("chipSelectionType")
+    var chipSelectionType: String = "0",
 
-        @SerializedName("key")
-        val key: String? = "",
+    @SerializedName("key")
+    val key: String? = "",
 
-        @SerializedName("target_component")
-        val targetComponent: String? = "",
+    @SerializedName("target_component")
+    val targetComponent: String? = "",
 
-        @SerializedName("value")
-        val value: String? = "",
+    @SerializedName("value")
+    val value: String? = "",
 
-        @SerializedName("target_component_id")
-        var targetComponentId: String? = "",
+    @SerializedName("target_component_id")
+    var targetComponentId: String? = "",
 
-        @SerializedName("background_image")
-        val backgroundImage: String? = "",
+    @SerializedName("background_image")
+    val backgroundImage: String? = "",
 
-        @SerializedName("filters")
-        var filter: ArrayList<Filter>? = null,
+    @SerializedName("filters")
+    var filter: ArrayList<Filter>? = null,
 
-        @SerializedName("sort")
-        var sort: ArrayList<Sort>? = null,
+    @SerializedName("sort")
+    var sort: ArrayList<Sort>? = null,
 
-        @SerializedName("filter_value")
-        val filterValue: String? = "",
+    @SerializedName("filter_value")
+    val filterValue: String? = "",
 
-        @SerializedName("filter")
-        val filterKey: String? = "",
+    @SerializedName("filter")
+    val filterKey: String? = "",
 
-        @SerializedName("isSelected")
-        var isSelected: Boolean = false,
+    @SerializedName("isSelected")
+    var isSelected: Boolean = false,
 
-        @SerializedName("end_date",alternate = ["end_time"])
-        val endDate: String? = "",
+    @SerializedName("end_date", alternate = ["end_time"])
+    val endDate: String? = "",
 
-        @SerializedName("button_applink", alternate = ["cta_applink"])
-        val buttonApplink: String? = "",
+    @SerializedName("button_applink", alternate = ["cta_applink"])
+    val buttonApplink: String? = "",
 
-        @SerializedName("code")
-        val code: String? = "",
+    @SerializedName("code")
+    val code: String? = "",
 
-        @SerializedName("dep_id")
-        val depID:String? = "",
+    @SerializedName("dep_id")
+    val depID: String? = "",
 
-        @SerializedName("mobile_url")
-        val mobileUrl: String? = "",
+    @SerializedName("mobile_url")
+    val mobileUrl: String? = "",
 
-        @SerializedName("image_alt")
-        val imageAlt: String? = "",
+    @SerializedName("image_alt")
+    val imageAlt: String? = "",
 
-        @SerializedName("params_mobile")
-        val paramsMobile: String? = "",
+    @SerializedName("params_mobile")
+    val paramsMobile: String? = "",
 
-        @SerializedName("notification_id")
-        val notificationId: String? = "",
+    @SerializedName("notification_id")
+    val notificationId: String? = "",
 
-        @SerializedName("image_title",alternate = ["title_image_url"])
-        val imageTitle: String? = "",
+    @SerializedName("image_title", alternate = ["title_image_url"])
+    val imageTitle: String? = "",
 
-        @SerializedName("registered_image_app")
-        val registeredImageApp: String? = "",
+    @SerializedName("registered_image_app")
+    val registeredImageApp: String? = "",
 
-        @SerializedName("image_url_mobile")
-        var imageUrlMobile: String? = "",
+    @SerializedName("image_url_mobile")
+    var imageUrlMobile: String? = "",
 
-        @SerializedName("promo_id")
-        var promoId: String? = "",
+    @SerializedName("product_image")
+    var productImage: String? = "",
 
-        @SerializedName("image_url_dynamic_mobile")
-        val imageUrlDynamicMobile: String? = "",
+    @SerializedName("product_name")
+    var productName: String? = "",
 
-        @SerializedName("applinks", alternate = ["applink", "appLink", "timer_applink"])
-        var applinks: String? = "",
+    @SerializedName("promo_id")
+    var promoId: String? = "",
 
-        @SerializedName("name", alternate = ["text"])
-        var name: String? = "",
+    @SerializedName("image_url_dynamic_mobile")
+    val imageUrlDynamicMobile: String? = "",
 
-        @SerializedName("persona")
-        var persona: String? = "",
+    @SerializedName("applinks", alternate = ["applink", "appLink", "timer_applink"])
+    var applinks: String? = "",
 
-        @SerializedName("bu")
-        var attribution: String? = "",
+    @SerializedName("name", alternate = ["text"])
+    var name: String? = "",
 
-        @SerializedName("category")
-        var category: String? = "",
+    @SerializedName("persona")
+    var persona: String? = "",
 
-        @SerializedName("action")
-        val action: String? = "",
+    @SerializedName("bu")
+    var attribution: String? = "",
 
-        @SerializedName("notification_title")
-        val notificationTitle: String? = "",
+    @SerializedName("category")
+    var category: String? = "",
 
-        @SerializedName("notification_description")
-        val notificationDescription: String? = "",
+    @SerializedName("action")
+    val action: String? = "",
 
-        @SerializedName("description", alternate = ["description_copywriting"])
-        val description: String? = "",
+    @SerializedName("notification_title")
+    val notificationTitle: String? = "",
 
-        @SerializedName("start_date",alternate = ["start_time"])
-        val startDate: String? = "",
+    @SerializedName("notification_description")
+    val notificationDescription: String? = "",
 
-        @SerializedName("left_margin_mobile")
-        val leftMarginMobile: String? = "0",
+    @SerializedName("description", alternate = ["description_copywriting"])
+    val description: String? = "",
 
-        @SerializedName("right_margin_mobile")
-        val rightMarginMobile: String? = "0",
+    @SerializedName("start_date", alternate = ["start_time"])
+    val startDate: String? = "",
 
-        @SerializedName("category_detail_url")
-        val categoryDetailUrl: String? = "",
+    @SerializedName("left_margin_mobile")
+    val leftMarginMobile: String? = "0",
 
-        @SerializedName("background_image_apps")
-        val backgroundImageApps: String? = "",
+    @SerializedName("right_margin_mobile")
+    val rightMarginMobile: String? = "0",
 
-        @SerializedName("background_url_mobile")
-        val backgroundUrlMobile: String? = "",
+    @SerializedName("category_detail_url")
+    val categoryDetailUrl: String? = "",
 
-        @SerializedName("alternate_background_url_mobile")
-        val alternateBackgroundUrlMobile: String? = "",
+    @SerializedName("background_image_apps")
+    val backgroundImageApps: String? = "",
 
-        @SerializedName("box_color", alternate = ["background_color", "header_color"])
-        val boxColor: String? = "",
+    @SerializedName("background_url_mobile")
+    val backgroundUrlMobile: String? = "",
 
-        @SerializedName("font_color", alternate = ["text_color"])
-        val  fontColor: String? = "",
+    @SerializedName("alternate_background_url_mobile")
+    val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("variant")
-        val variant: String? = "",
+    @SerializedName("box_color", alternate = ["background_color", "header_color"])
+    val boxColor: String? = "",
 
-        @SerializedName("color")
-        val color:String? = "",
+    @SerializedName("font_color", alternate = ["text_color"])
+    val fontColor: String? = "",
 
-        @SerializedName("button_text")
-        var buttonText: String? = "",
+    @SerializedName("variant")
+    val variant: String? = "",
 
-        @SerializedName("creative_name")
-        var creativeName: String? = "",
+    @SerializedName("color")
+    val color: String? = "",
 
-        @SerializedName("title", alternate = ["title_copywriting"])
-        var title: String? = "",
+    @SerializedName("button_text")
+    var buttonText: String? = "",
 
-        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
-        val thumbnailUrlMobile: String? = "",
+    @SerializedName("creative_name")
+    var creativeName: String? = "",
 
-        @SerializedName("points_str")
-        val pointsStr: String? = "",
+    @SerializedName("title", alternate = ["title_copywriting"])
+    var title: String? = "",
 
-        @SerializedName("points_slash_str")
-        val pointsSlashStr: String? = "",
+    @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
+    val thumbnailUrlMobile: String? = "",
 
-        @SerializedName("discount_percentage_str")
-        val discountPercentageStr: String? = "",
+    @SerializedName("points_str")
+    val pointsStr: String? = "",
 
-        @SerializedName("points_slash")
-        val pointsSlash: String? = "",
+    @SerializedName("points_slash_str")
+    val pointsSlashStr: String? = "",
 
-        @SerializedName("slug")
-        val slug: String? = "",
+    @SerializedName("discount_percentage_str")
+    val discountPercentageStr: String? = "",
 
-        @SerializedName("btn_applink")
-        val btnApplink: String? = "",
+    @SerializedName("points_slash")
+    val pointsSlash: String? = "",
 
-        @SerializedName("price_format")
-        var priceFormat: String? = "",
+    @SerializedName("slug")
+    val slug: String? = "",
 
-        @SerializedName("image_click_url", alternate = ["url"])
-        var imageClickUrl: String? = "",
+    @SerializedName("btn_applink")
+    val btnApplink: String? = "",
 
-        @SerializedName("size_mobile")
-        var sizeMobile: String? = "",
+    @SerializedName("price_format")
+    var priceFormat: String? = "",
 
-        @SerializedName("background")
-        var background: String? = "",
+    @SerializedName("image_click_url", alternate = ["url"])
+    var imageClickUrl: String? = "",
 
-        @SerializedName("video_id")
-        val videoId: String? = "",
+    @SerializedName("size_mobile")
+    var sizeMobile: String? = "",
 
-        @SerializedName("category_rows")
-        val categoryRows: List<DataItem>? = ArrayList(),
+    @SerializedName("background")
+    var background: String? = "",
 
-        @SerializedName("type")
-        val type: String = "",
+    @SerializedName("video_id")
+    val videoId: String? = "",
 
-        @SerializedName("categoryLabel")
-        val categoryLabel: String = "",
+    @SerializedName("category_rows")
+    val categoryRows: List<DataItem>? = ArrayList(),
 
-        @SerializedName("ID")
-        val dynamicComponentId: String? = "",
+    @SerializedName("type")
+    val type: String = "",
 
-        @SerializedName("shop_id")
-        var shopId: String? = "",
+    @SerializedName("categoryLabel")
+    val categoryLabel: String = "",
 
-        @SerializedName("shop_ids")
-        var shopIds: List<Int>? = null,
+    @SerializedName("ID")
+    val dynamicComponentId: String? = "",
 
-        @SerializedName("basecode")
-        val basecode: String? = "",
+    @SerializedName("shop_id")
+    var shopId: String? = "",
 
-        @SerializedName("coupon_code")
-        val couponCode: String? = "",
+    @SerializedName("shop_ids")
+    var shopIds: List<Int>? = null,
 
-        @SerializedName("cta", alternate = ["cta_url"])
-        val cta: String? = "",
+    @SerializedName("basecode")
+    val basecode: String? = "",
 
-        @SerializedName("cta_desktop")
-        val ctaDesktop: String? = "",
+    @SerializedName("coupon_code")
+    val couponCode: String? = "",
 
-        @SerializedName("disabled_err_msg")
-        val disabledErrMsg: String? = "",
+    @SerializedName("cta", alternate = ["cta_url"])
+    val cta: String? = "",
 
-        @SerializedName("id")
-        var id: String? = "",
+    @SerializedName("cta_desktop")
+    val ctaDesktop: String? = "",
 
-        @SerializedName("image_url")
-        val imageUrl: String? = "",
+    @SerializedName("disabled_err_msg")
+    val disabledErrMsg: String? = "",
 
-        @SerializedName("is_disabled")
-        val isDisabled: Boolean? = false,
+    @SerializedName("id")
+    var id: String? = "",
 
-        @SerializedName("is_disabled_btn")
-        val isDisabledBtn: Boolean? = false,
+    @SerializedName("image_url")
+    val imageUrl: String? = "",
 
-        @SerializedName("min_usage")
-        val minUsage: String? = "",
+    @SerializedName("is_disabled")
+    val isDisabled: Boolean? = false,
 
-        @SerializedName("min_usage_label")
-        val minUsageLabel: String? = "",
+    @SerializedName("is_disabled_btn")
+    val isDisabledBtn: Boolean? = false,
 
-        @SerializedName("subtitle")
-        val subtitle: String? = "",
+    @SerializedName("min_usage")
+    val minUsage: String? = "",
 
-        @SerializedName("subtitle_1")
-        val subtitle_1: String? = "",
+    @SerializedName("min_usage_label")
+    val minUsageLabel: String? = "",
 
-        @SerializedName("thumbnail_url")
-        val thumbnailUrl: String? = "",
+    @SerializedName("subtitle")
+    val subtitle: String? = "",
 
-        @SerializedName("upper_text_desc")
-        val upperTextDesc: List<String?>? = null,
+    @SerializedName("subtitle_1")
+    val subtitle_1: String? = "",
 
-        @SerializedName("small_image_url_mobile")
-        var smallImageUrlMobile: String? = "",
+    @SerializedName("thumbnail_url")
+    val thumbnailUrl: String? = "",
 
-        @SerializedName("ongoing_campaign_start_time")
-        val ongoingCampaignStartTime: String? = "",
+    @SerializedName("upper_text_desc")
+    val upperTextDesc: List<String?>? = null,
 
-        @SerializedName("ongoing_campaign_end_time")
-        val ongoingCampaignEndTime: String? = "",
+    @SerializedName("small_image_url_mobile")
+    var smallImageUrlMobile: String? = "",
 
-        @SerializedName("upcoming_campaign_start_time")
-        val upcomingCampaignStartTime: String? = "",
+    @SerializedName("ongoing_campaign_start_time")
+    val ongoingCampaignStartTime: String? = "",
 
-        @SerializedName("upcoming_campaign_end_time")
-        val upcomingCampaignEndTime: String? = "",
+    @SerializedName("ongoing_campaign_end_time")
+    val ongoingCampaignEndTime: String? = "",
 
-        @SerializedName("timer_font_color")
-        val timerFontColor: String? = "",
+    @SerializedName("upcoming_campaign_start_time")
+    val upcomingCampaignStartTime: String? = "",
 
-        @SerializedName("timer_box_color")
-        val timerBoxColor: String? = "",
+    @SerializedName("upcoming_campaign_end_time")
+    val upcomingCampaignEndTime: String? = "",
 
-        @SerializedName("cashback")
-        val cashback: String? = "",
+    @SerializedName("timer_font_color")
+    val timerFontColor: String? = "",
 
-        @SerializedName("is_topads")
-        var isTopads: Boolean? = false,
+    @SerializedName("timer_box_color")
+    val timerBoxColor: String? = "",
 
-        @SerializedName("discounted_price")
-        var discountedPrice: String? = "",
+    @SerializedName("cashback")
+    val cashback: String? = "",
 
-        @SerializedName("gold_merchant")
-        var goldMerchant: Boolean? = false,
+    @SerializedName("is_topads")
+    var isTopads: Boolean? = false,
 
-        @SerializedName("price")
-        var price: String? = "",
+    @SerializedName("discounted_price", alternate = ["slashed_price"])
+    var discountedPrice: String? = "",
 
-        @SerializedName("shop_name")
-        var shopName: String? = "",
+    @SerializedName("gold_merchant")
+    var goldMerchant: Boolean? = false,
 
-        @SerializedName("shop_location")
-        var shopLocation: String? = "",
+    @SerializedName("price")
+    var price: String? = "",
 
-        @SerializedName("shop_url_desktop")
-        var shopURLDesktop: String? = "",
+    @SerializedName("shop_name")
+    var shopName: String? = "",
 
-        @SerializedName("url_desktop")
-        var productURLDesktop: String? = "",
+    @SerializedName("shop_location")
+    var shopLocation: String? = "",
 
-        @SerializedName("discount_percentage")
-        var discountPercentage: String? = "",
+    @SerializedName("shop_url_desktop")
+    var shopURLDesktop: String? = "",
 
-        @SerializedName("shop_applink")
-        val shopApplink: String? = "",
+    @SerializedName("url_desktop")
+    var productURLDesktop: String? = "",
 
-        @SerializedName("preorder")
-        val preorder: String? = "",
+    @SerializedName("discount_percentage")
+    var discountPercentage: String? = "",
 
-        @SerializedName("topads_view_url")
-        var topadsViewUrl: String? = "",
+    @SerializedName("shop_applink")
+    val shopApplink: String? = "",
 
-        @SerializedName("product_id")
-        var productId: String? = "",
+    @SerializedName("preorder")
+    val preorder: String? = "",
 
-        @SerializedName("count_review")
-        var countReview: String? = "",
+    @SerializedName("topads_view_url")
+    var topadsViewUrl: String? = "",
 
-        @SerializedName("rating")
-        var rating: String? = "",
+    @SerializedName("product_id")
+    var productId: String? = "",
 
-        @SerializedName("rating_average")
-        var averageRating: String = "",
+    @SerializedName("count_review")
+    var countReview: String? = "",
 
-        @SerializedName("shop_logo")
-        val shopLogo: String? = "",
+    @SerializedName("rating")
+    var rating: String? = "",
 
-        @SerializedName("official_store")
-        var officialStore: Boolean? = false,
+    @SerializedName("rating_average")
+    var averageRating: String = "",
 
-        @SerializedName("stock")
-        val stock: String? = "",
+    @SerializedName("shop_logo")
+    val shopLogo: String? = "",
 
-        @SerializedName("stock_sold_percentage")
-        val stockSoldPercentage: Double? = null,
+    @SerializedName("official_store")
+    var officialStore: Boolean? = false,
 
-        @SerializedName("topads_click_url")
-        var topadsClickUrl: String? = "",
+    @SerializedName("stock")
+    val stock: String? = "",
 
-        @SerializedName("free_ongkir")
-        var freeOngkir: FreeOngkir? = null,
+    @SerializedName("stock_sold_percentage")
+    val stockSoldPercentage: Double? = null,
 
-        @SerializedName("pdp_view")
-        val pdpView: String = "0",
+    @SerializedName("topads_click_url")
+    var topadsClickUrl: String? = "",
 
-        @SerializedName("campaign_sold_count")
-        val campaignSoldCount: String? = null,
+    @SerializedName("free_ongkir")
+    var freeOngkir: FreeOngkir? = null,
 
-        @SerializedName("threshold")
-        val threshold: String? = null,
+    @SerializedName("pdp_view")
+    val pdpView: String = "0",
 
-        @SerializedName("custom_stock")
-        val customStock: String? = null,
+    @SerializedName("campaign_sold_count")
+    val campaignSoldCount: String? = null,
 
-        @SerializedName("stock_wording")
-        var stockWording: StockWording? = null,
+    @SerializedName("threshold")
+    val threshold: String? = null,
 
-        @SerializedName("total_interest_notify_me")
-        val notifyMeCount: String = "0",
+    @SerializedName("custom_stock")
+    val customStock: String? = null,
 
-        @SerializedName("threshold_interest")
-        val thresholdInterest: String? = null,
+    @SerializedName("stock_wording")
+    var stockWording: StockWording? = null,
 
-        @SerializedName("notify_me")
-        var notifyMe: Boolean? = null,
+    @SerializedName("total_interest_notify_me")
+    val notifyMeCount: String = "0",
 
-        @SerializedName("campaign_id")
-        val campaignId: String = "",
+    @SerializedName("threshold_interest")
+    val thresholdInterest: String? = null,
 
-        @SerializedName("image")
-        val image: String = "",
+    @SerializedName("notify_me")
+    var notifyMe: Boolean? = null,
 
-        @SerializedName("tracking_fields")
-        val trackingFields: TrackingFields? = null,
+    @SerializedName("campaign_id")
+    val campaignId: String = "",
 
-        @SerializedName("body")
-        val body: String = "",
+    @SerializedName("image")
+    val image: String = "",
 
-        @SerializedName("buttonStr")
-        val claimButtonStr: String? = null,
+    @SerializedName("tracking_fields")
+    val trackingFields: TrackingFields? = null,
 
-        @SerializedName("labels")
-        var labelsGroupList: List<LabelsGroup>? = null,
+    @SerializedName("body")
+    val body: String = "",
 
-        @SerializedName("active_product_card")
-        var isActiveProductCard: Boolean? = null,
+    @SerializedName("buttonStr")
+    val claimButtonStr: String? = null,
 
-        @SerializedName("carousel_component_id")
-        var flashTimerTargetComponent: String = "",
+    @SerializedName("labels")
+    var labelsGroupList: List<LabelsGroup>? = null,
 
-        @SerializedName("play_id")
-        var playWidgetPlayID: String? = null,
+    @SerializedName("active_product_card")
+    var isActiveProductCard: Boolean? = null,
 
-        @SerializedName("campaign_code")
-        var campaignCode: String? = null,
+    @SerializedName("carousel_component_id")
+    var flashTimerTargetComponent: String = "",
 
-        @SerializedName("badges")
-        var badges: List<Badges?>? = null,
+    @SerializedName("play_id")
+    var playWidgetPlayID: String? = null,
 
-        @SerializedName("text_date")
-        var textDate: String? = null,
+    @SerializedName("campaign_code")
+    var campaignCode: String? = null,
 
-        @SerializedName("title_logo_url")
-        var titleLogoUrl: String? = null,
+    @SerializedName("badges")
+    var badges: List<Badges?>? = null,
 
-        @SerializedName("notify_campaign_id")
-        var notifyCampaignId: Int = 0,
+    @SerializedName("text_date")
+    var textDate: String? = null,
 
-        @SerializedName("hasAddToCartButton")
-        var hasATC: Boolean = false,
+    @SerializedName("title_logo_url")
+    var titleLogoUrl: String? = null,
 
-        @SerializedName("parent_id")
-        var parentProductId: String? = "",
+    @SerializedName("notify_campaign_id")
+    var notifyCampaignId: String = "",
 
-        @SerializedName("max_order")
-        var maxQuantity: Int = 0,
+    @SerializedName("hasAddToCartButton")
+    var hasATC: Boolean = false,
 
-        @SerializedName("min_order")
-        var minQuantity: Int = 0,
+    @SerializedName("parent_id")
+    var parentProductId: String? = "",
 
-        @SerializedName("shop_type")
-        val shopType: String? = null,
+    @SerializedName("max_order")
+    var maxQuantity: Int = 0,
 
-        @SerializedName("shop_badge_image_url")
-        val shopBadgeImageUrl: String? = null,
+    @SerializedName("min_order")
+    var minQuantity: Int = 0,
 
-        @SerializedName("benefit_title")
-        val benefitTitle: String? = null,
+    @SerializedName("shop_type")
+    val shopType: String? = null,
 
-        @SerializedName("benefit_amount")
-        val benefitAmount: String? = null,
+    @SerializedName("shop_badge_image_url")
+    val shopBadgeImageUrl: String? = null,
 
-        @SerializedName("benefit_symbol")
-        val benefitSymbol: String? = null,
+    @SerializedName("benefit_title")
+    val benefitTitle: String? = null,
 
-        @SerializedName("benefit_symbol_image_url")
-        val benefitSymbolImageUrl: String? = null,
+    @SerializedName("benefit_amount")
+    val benefitAmount: String? = null,
 
-        @SerializedName("show_benefit_currency")
-        var showBenefitCurrency: Boolean? = null,
+    @SerializedName("benefit_symbol")
+    val benefitSymbol: String? = null,
 
-        @SerializedName("show_timer")
-        var showTimer: Boolean? = null,
+    @SerializedName("benefit_symbol_image_url")
+    val benefitSymbolImageUrl: String? = null,
 
-        @SerializedName("show_three_dots_button")
-        var show3Dots: Boolean? = null,
+    @SerializedName("show_benefit_currency")
+    var showBenefitCurrency: Boolean? = null,
 
-        @SerializedName("atc_button_cta")
-        var atcButtonCTA: String? = null,
+    @SerializedName("benefit")
+    var benefit: String? = null,
 
-        @SerializedName("time_description")
-        val timeDescription: String? = null,
+    @SerializedName("landing_page")
+    var landingPage: LandingPage? = null,
 
-        @SerializedName("template_name")
-        var templateName: String? = "",
+    @SerializedName("product")
+    var product: Product? = null,
 
-        var quantity: Int = 0,
+    @SerializedName("total_item")
+    var totalItem: TotalItem? = null,
 
-        @SerializedName("backgroud_image_url")
-        var backgroundImageUrl : String? = "",
+    @SerializedName("show_timer")
+    var showTimer: Boolean? = null,
 
-        @SerializedName("catalog_slugs")
-        var catalogSlug : List<String?>? = null,
+    @SerializedName("show_three_dots_button")
+    var show3Dots: Boolean? = null,
 
-        @field:SerializedName("products")
-        val products: List<ProductsItem?>? = null,
+    @SerializedName("atc_button_cta")
+    var atcButtonCTA: String? = null,
 
-        @field:SerializedName("maximumBenefitAmountStr")
-        val maximumBenefitAmountStr: String? = null,
+    @SerializedName("time_description")
+    val timeDescription: String? = null,
 
-        @field:SerializedName("shopInfo")
-        val shopInfo: ShopInfo? = null,
+    @SerializedName("template_name")
+    var templateName: String? = "",
 
-        @field:SerializedName("target_section_id")
-        val targetSectionID: String? = null,
+    var quantity: Int = 0,
 
-        var shopAdsClickURL: String? = "",
+    @SerializedName("backgroud_image_url")
+    var backgroundImageUrl: String? = "",
 
-        var shopAdsViewURL: String? = "",
+    @SerializedName("catalog_slugs")
+    var catalogSlug: List<String?>? = null,
 
-        var status: String? = null,
+    @SerializedName("bundle_details")
+    var bundleDetails: List<BundleDetails?>? = null,
 
-        var parentComponentName: String? = "",
+    @SerializedName("bundle_group_id")
+    var bundleGroupId: Long? = null,
 
-        var positionForParentItem: Int = 0,
+    @SerializedName("bundle_name")
+    var bundleName: String? = "",
 
-        var typeProductCard: String? = "",
+    @SerializedName("bundle_products")
+    var bundleProducts: List<BundleProducts?>? = null,
 
-        var tabName: String? = "",
+    @SerializedName("bundle_type")
+    var bundleType: String? = "",
 
-        var componentPromoName: String? = "",
+    @SerializedName("widget_home_banner")
+    val widgetHomeBanner: String? = "",
 
-        var hasNotifyMe: Boolean = false,
+    @SerializedName("gtm_item_name")
+    var gtmItemName: String? = "",
 
-        var departmentID: Int = 0,
+    @SerializedName("department_id")
+    var categoryDeptId: String? = "",
 
-        var hasThreeDots: Boolean = false,
+    @SerializedName("limit")
+    var limit: Int? = 0,
 
-        var hasThreeDotsWishlist: Boolean = false,
+    @SerializedName("is_active")
+    var isActive: Boolean? = null,
 
-        var hasATCWishlist: Boolean = false,
+    @field:SerializedName("products")
+    val products: List<ProductsItem?>? = null,
 
-        var hasSimilarProductWishlist: Boolean? = null,
+    @field:SerializedName("maximumBenefitAmountStr")
+    val maximumBenefitAmountStr: String? = null,
 
-        var isWishList: Boolean = false,
+    @field:SerializedName("shopInfo")
+    val shopInfo: ShopInfo? = null,
 
-        var maxHeight : Int = 0,
+    @field:SerializedName("target_section_id")
+    val targetSectionID: String? = null,
 
-        var wishlistUrl: String? = "",
+    var shopAdsClickURL: String? = "",
 
-        var itemWeight: Float? = 1.0f
+    var shopAdsViewURL: String? = "",
+
+    var status: String? = null,
+
+    var parentComponentName: String? = "",
+
+    var positionForParentItem: Int = 0,
+
+    var typeProductCard: String? = "",
+
+    var tabName: String? = "",
+
+    var componentPromoName: String? = "",
+
+    var hasNotifyMe: Boolean = false,
+
+    var departmentID: Int = 0,
+
+    var hasThreeDots: Boolean = false,
+
+    var hasThreeDotsWishlist: Boolean = false,
+
+    var hasATCWishlist: Boolean = false,
+
+    var hasSimilarProductWishlist: Boolean? = null,
+
+    var isWishList: Boolean = false,
+
+    var maxHeight: Int = 0,
+
+    var wishlistUrl: String? = "",
+
+    var itemWeight: Float? = 1.0f,
+
+    var typeProductHighlightComponentCard: String? = "",
 ) {
     val leftMargin: Int
         get() {
@@ -537,5 +590,4 @@ data class DataItem(
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }
     }
-
 }

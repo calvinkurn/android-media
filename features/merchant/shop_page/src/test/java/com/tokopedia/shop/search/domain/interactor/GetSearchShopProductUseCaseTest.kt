@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
+import com.tokopedia.util.UnitTestFileUtils
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
@@ -14,8 +15,6 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Matchers.anyString
-import java.io.File
 import java.lang.reflect.Type
 
 class GetSearchShopProductUseCaseTest {
@@ -57,8 +56,8 @@ class GetSearchShopProductUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(UNIVERSE_SEARCH_RESPONSE_JSON_FILE_PATH),
-                JsonObject::class.java
+            getJsonFromFile(UNIVERSE_SEARCH_RESPONSE_JSON_FILE_PATH),
+            JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
         val objectType = UniverseSearchResponse::class.java
@@ -68,8 +67,6 @@ class GetSearchShopProductUseCaseTest {
     }
 
     private fun getJsonFromFile(path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(path)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        return UnitTestFileUtils.getJsonFromAsset(path)
     }
 }

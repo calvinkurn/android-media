@@ -2,16 +2,15 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OnStickySingleHeaderListener
-import kotlin.math.roundToInt
 
 /**
  * Created by tlh on 2017/1/21 :)
@@ -24,7 +23,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var mRecyclerView: RecyclerView? = null
     private var mHeaderHeight = -1
     private var adapter: OnStickySingleHeaderAdapter? = null
-    private var gridLayoutManager: StaggeredGridLayoutManager? = null
+    private var gridLayoutManager: GridLayoutManager? = null
     private var stickyPosition: Int? = null
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
@@ -49,13 +48,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         hasInit = true
         clipToPadding = false
         clipChildren = false
-        val view = getRecyclerView()
-        mRecyclerView = view
-
-        if (mRecyclerView == null) {
-            return
-        }
-
+        mRecyclerView = getRecyclerView()
         recyclerViewPaddingTop = mRecyclerView?.paddingTop ?: 0
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer?.let {
@@ -77,14 +70,14 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
                     stickyPosition = this@StickySingleHeaderView.adapter?.stickyHeaderPosition ?: 0
-                    gridLayoutManager = mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+                    gridLayoutManager = mRecyclerView?.layoutManager as? GridLayoutManager
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScroll = recyclerView.computeVerticalScrollOffset()
-                this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
+                this@StickySingleHeaderView.onScrolled()
             }
         }
         mRecyclerView?.addOnScrollListener(onScrollListener)
@@ -105,21 +98,15 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         return null
     }
 
-    private fun convertPixelsToDp(px: Int, context: Context): Int {
-        val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
-        return result.roundToInt()
-    }
-
-    private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+    private fun onScrolled() {
         if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0)
-        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPositions(null)?.getOrNull(0)
+        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition()
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
-                var _stickyPosition = stickyPosition
-                if (_stickyPosition != null) {
-                    _stickyPosition += 1
-                    if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) {
+                var position = stickyPosition
+                if (position != null) {
+                    position += 1
+                    if (firstCompletelyVisiblePosition >= position && currentScroll >= recyclerViewPaddingTop) {
                         if (!isStickyShowed || refreshSticky) {
                             showSticky()
                             mHeaderContainer?.visibility = View.VISIBLE
@@ -140,33 +127,27 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     override val isStickyShowed: Boolean
         get() = mHeaderContainer?.let { it.childCount > 0 } ?: false
 
-    private fun showSticky() {
-        clearHeaderView()
-        val viewHolder = adapter?.createStickyViewHolder(mHeaderContainer)
-        mHeaderContainer?.addView(viewHolder?.itemView)
-        mHeaderHeight = mHeaderContainer?.height ?: 0
-        adapter?.bindSticky(viewHolder)
-    }
-
     override fun refreshSticky() {
         refreshSticky = true
-        onScrolled(mRecyclerView, 0, 0)
-    }
-
-    // Remove the Header View
-    fun clearHeaderView() {
-        mHeaderContainer?.removeAllViews()
-    }
-
-    fun scrollToTop() {
-        mRecyclerView?.scrollToPosition(0)
+        onScrolled()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         initView()
         try {
             super.onLayout(changed, left, top, right, bottom)
-        } catch (e: IndexOutOfBoundsException) {
-        }
+        } catch (e: IndexOutOfBoundsException) { /* nothing to do */ }
+    }
+
+    private fun showSticky() {
+        clearHeaderView()
+        val viewHolder = adapter?.createStickyViewHolder(mHeaderContainer)
+        mHeaderContainer?.addView(viewHolder?.itemView)
+        mHeaderHeight = mHeaderContainer?.height.orZero()
+        adapter?.bindSticky(viewHolder)
+    }
+
+    private fun clearHeaderView() {
+        mHeaderContainer?.removeAllViews()
     }
 }

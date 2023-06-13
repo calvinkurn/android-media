@@ -154,7 +154,7 @@ object WebsocketResponses {
                     "create_time": "11 Nov 2021",
                     "href_url": "https://www.tokopedia.com/invoice?id=INV%2F20211111%2FMPL%2F1753681791&source=som",
                     "id": 994263470,
-                    "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/11/9/550b485e-6f0d-4e8f-8616-5e5fb125513b.jpg",
+                    "image_url": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/11/9/550b485e-6f0d-4e8f-8616-5e5fb125513b.jpg",
                     "status": "Pesanan Dibatalkan",
                     "status_id": 0,
                     "title": "g4m134r g4m134r",

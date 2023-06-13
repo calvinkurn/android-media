@@ -30,9 +30,9 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
 class AddToCartDoneRecommendationCarouselViewHolder(
-        itemView: View,
-        private val recommendationListener: RecommendationListener,
-        private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener
+    itemView: View,
+    private val recommendationListener: RecommendationListener,
+    private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener
 ) : AbstractViewHolder<AddToCartDoneRecommendationCarouselDataModel>(itemView) {
 
     private val viewPager = itemView.findViewById<ViewPager2>(R.id.view_pager_image)
@@ -59,13 +59,13 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private lateinit var animationListener: Animator.AnimatorListener
     private var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback? = null
     private val itemDecoration = HorizontalMarginItemDecoration(
-            itemView.context,
-            com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin
+        itemView.context,
+        com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin
     )
 
     private var previousPosition = -1
     private var currentPosition = 0
-    private var model: AddToCartDoneRecommendationCarouselDataModel ?= null
+    private var model: AddToCartDoneRecommendationCarouselDataModel ? = null
 
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
@@ -84,7 +84,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     @SuppressLint("WrongConstant")
     override fun bind(element: AddToCartDoneRecommendationCarouselDataModel) {
-        try{
+        try {
             with(itemView) {
                 model = element
                 titleWidget.text = element.recommendationWidget.title
@@ -98,7 +98,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                     clipChildren = false
                     offscreenPageLimit = PAGE_LIMIT
                 }
-                if(viewPager2PageChangeCallback == null){
+                if (viewPager2PageChangeCallback == null) {
                     viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
                         override fun onPageSelected(position: Int) {
                             configDetailRecommendation(position)
@@ -110,12 +110,12 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 viewPager.setPageTransformer(ViewPager2PageTransformation())
                 visible()
             }
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
             exception.printStackTrace()
         }
     }
 
-    private fun configViewVisibility(dataModel: AddToCartDoneRecommendationItemDataModel){
+    private fun configViewVisibility(dataModel: AddToCartDoneRecommendationItemDataModel) {
         productName.show()
         shopLocation.show()
         reviewCount.show()
@@ -125,7 +125,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         ticker.visibility = if (model?.shopId != -1) View.VISIBLE else View.GONE
     }
 
-    private fun configDetailRecommendation(position: Int){
+    private fun configDetailRecommendation(position: Int) {
         model?.let { model ->
             currentPosition = position
             val recommendation = model.recommendationWidget.recommendationItemList[position]
@@ -145,7 +145,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
-    private fun configAnimation(){
+    private fun configAnimation() {
         slideLeftOut.duration = ANIMATION_DURATION_200
         slideLeftOut.interpolator = FastOutLinearInInterpolator()
         slideLeftIn.duration = ANIMATION_DURATION_200
@@ -166,20 +166,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         animationListener = object : Animator.AnimatorListener{
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
             @SuppressLint("SyntheticAccessor")
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 val recommendation = model?.recommendationWidget?.recommendationItemList?.get(currentPosition)
                 recommendation?.let {
                     setRecommendationItemToView(it)
                 }
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
             }
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
             }
         }
 
@@ -187,19 +187,19 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         slideRightOut.addListener(animationListener)
     }
 
-    private fun setRecommendationItemToView(dataModel: AddToCartDoneRecommendationItemDataModel){
+    private fun setRecommendationItemToView(dataModel: AddToCartDoneRecommendationItemDataModel) {
         productName.text = dataModel.recommendationItem.name
         shopLocation.text = dataModel.recommendationItem.location
         reviewCount.text = "(${dataModel.recommendationItem.countReview})"
         ratingCount.text = dataModel.recommendationItem.rating.toString()
         shopBadges.loadIcon(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
         freeOngkirImage.loadIcon(dataModel.recommendationItem.freeOngkirImageUrl)
-        ticker.tickerType = if(dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
-        ticker.setTextDescription(getString(if(dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
+        ticker.tickerType = if (dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
+        ticker.setTextDescription(getString(if (dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
         addToCartDoneAddedProductListener.onRecommendationItemSelected(dataModel, dataModel.recommendationItem.position)
     }
 
-    inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>(){
+    inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>() {
         private var list: List<AddToCartDoneRecommendationItemDataModel> = listOf()
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselImageViewHolder {
             return RecommendationCarouselImageViewHolder(parent)
@@ -213,46 +213,51 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             holder.bind(list[position])
         }
 
-        fun setItem(list: List<AddToCartDoneRecommendationItemDataModel>){
+        fun setItem(list: List<AddToCartDoneRecommendationItemDataModel>) {
             this.list = list
             notifyDataSetChanged()
         }
     }
 
-    inner class RecommendationCarouselImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class RecommendationCarouselImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_done_recommendation_carousel_image_item, parent, false))
-        fun bind(dataModel: AddToCartDoneRecommendationItemDataModel){
+        fun bind(dataModel: AddToCartDoneRecommendationItemDataModel) {
             val recommendation = dataModel.recommendationItem
             itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(recommendation.imageUrl)
-            if(!itemView.hasOnClickListeners()){
+            if (!itemView.hasOnClickListeners()) {
                 itemView.setOnClickListener {
                     recommendationListener.onProductClick(
-                            recommendation,
-                            null,
-                            adapterPosition
+                        recommendation,
+                        null,
+                        adapterPosition
                     )
                 }
             }
-            itemView.findViewById<ImageView>(R.id.carousel_image).addOnImpressionListener(recommendation, object : ViewHintListener {
-                override fun onViewHint() {
-                    recommendationListener.onProductImpression(recommendation)
+            itemView.findViewById<ImageView>(R.id.carousel_image).addOnImpressionListener(
+                recommendation,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        recommendationListener.onProductImpression(recommendation)
+                    }
                 }
-            })
+            )
         }
     }
 
     inner class HorizontalMarginItemDecoration(context: Context, @DimenRes horizontalMarginInDp: Int) : RecyclerView.ItemDecoration() {
 
         private val horizontalMarginInPx: Int =
-                context.resources.getDimension(horizontalMarginInDp).toInt()
+            context.resources.getDimension(horizontalMarginInDp).toInt()
 
         override fun getItemOffsets(
-                outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
         ) {
             outRect.right = horizontalMarginInPx
             outRect.left = horizontalMarginInPx
         }
-
     }
 
     inner class ViewPager2PageTransformation : ViewPager2.PageTransformer {

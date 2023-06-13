@@ -14,19 +14,19 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withTotalItem
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
 import org.junit.Test
 
 @UiTest
 class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
 
-    private val expectedIntent = Matchers.allOf(
+    private val expectedIntent = CoreMatchers.allOf(
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "Seller Testing"),
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "66961")
     )
 
-    private val expectedIntentSeller = Matchers.allOf(
+    private val expectedIntentSeller = CoreMatchers.allOf(
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "Buyer Testing"),
         IntentMatchers.hasExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "66961")
     )
@@ -146,7 +146,7 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
                 "sendal jepit 999^^\u0026%#^%#$%$%*\u0026^%")
             intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, "22 Apr 2021")
             intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL,
-                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/16/61e5d2f7-f411-4b14-94fe-c5c401636952.jpg")
+                "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/16/61e5d2f7-f411-4b14-94fe-c5c401636952.jpg")
             intent.putExtra(ApplinkConst.Chat.INVOICE_URL,
                 "https://www.tokopedia.com/invoice.pl?id\u003d770851031\u0026pdf\u003dInvoice-136513670-10825582-20210422132008-eHh4eHh4eHg3")
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, "700")

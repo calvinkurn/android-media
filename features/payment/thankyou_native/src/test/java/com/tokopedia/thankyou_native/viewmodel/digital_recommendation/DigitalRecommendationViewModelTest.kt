@@ -13,7 +13,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,29 +34,38 @@ class DigitalRecommendationViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        digitalRecommendationViewModel = DigitalRecommendationViewModel(digitalRecommendationUseCase, dispatcher)
+        digitalRecommendationViewModel =
+            DigitalRecommendationViewModel(digitalRecommendationUseCase, dispatcher)
     }
 
     @Test
     fun getDigitalRecommendationData_SuccessGetRecomData() {
         // given
         val mockResponse = RechargeRecommendationDigiPersoItem(
-                appLink = "",
-                bannerAppLink = "",
-                bannerWebLink = "",
-                recommendationItems = listOf(),
-                mediaURL = "",
-                option1 = "",
-                option2 = "",
-                option3 = "",
-                textLink = "",
-                title = "Doner Kebab",
-                tracking = listOf(),
-                webLink = ""
+            appLink = "",
+            bannerAppLink = "",
+            bannerWebLink = "",
+            recommendationItems = listOf(),
+            mediaURL = "",
+            option1 = "",
+            option2 = "",
+            option3 = "",
+            textLink = "",
+            title = "Doner Kebab",
+            tracking = listOf(),
+            webLink = ""
         )
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any(), any()) } answers {
+        every {
+            digitalRecommendationUseCase.getDigitalRecommendationData(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             firstArg<(RechargeRecommendationDigiPersoItem) -> Unit>().invoke(mockResponse)
         }
 
@@ -77,7 +86,15 @@ class DigitalRecommendationViewModelTest {
         val mockResponse = MessageErrorException("Recommendation Error Dummy")
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any(), any()) } answers {
+        every {
+            digitalRecommendationUseCase.getDigitalRecommendationData(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockResponse)
         }
 

@@ -3,7 +3,7 @@ package com.tokopedia.feed_shop.presenter
 import android.content.Context
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.createpost.common.domain.usecase.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -25,6 +25,7 @@ import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -669,14 +670,14 @@ class FeedShopPresenterTest: KolPostLikeListener {
             likeKolPostUseCase.execute(any(), any())
         } answers {}
 
-        presenter.likeKol(anyInt(), anyInt(), this)
+        presenter.likeKol(anyLong(), anyInt(), this)
 
         verify {
             likeKolPostUseCase.execute(any(), any())
         }
 
         presenter.attachView(null)
-        presenter.likeKol(anyInt(), anyInt(), this)
+        presenter.likeKol(anyLong(), anyInt(), this)
     }
 
     @Test
@@ -685,14 +686,14 @@ class FeedShopPresenterTest: KolPostLikeListener {
             likeKolPostUseCase.execute(any(), any())
         } answers {}
 
-        presenter.unlikeKol(anyInt(), anyInt(), this)
+        presenter.unlikeKol(anyLong(), anyInt(), this)
 
         verify {
             likeKolPostUseCase.execute(any(), any())
         }
 
         presenter.attachView(null)
-        presenter.unlikeKol(anyInt(), anyInt(), this)
+        presenter.unlikeKol(anyLong(), anyInt(), this)
     }
 
     @Test
@@ -704,7 +705,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(true)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -721,7 +722,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(false)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -740,7 +741,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(null)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -759,7 +760,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         }
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns true
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())
@@ -767,7 +768,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())
@@ -784,7 +785,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns false
         presenter.detachView()
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
         }
@@ -802,7 +803,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         }
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns true
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())
@@ -888,12 +889,13 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
     @Test
     fun `add post tag item success should call onAddToCartSuccess`() {
+        val mockCartData = DataModel(success = 1, productId = "12345")
         every {
             atcUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
             secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel(
-                    data = DataModel(success = 1)
+                    data = mockCartData
             ))
         }
 
@@ -912,7 +914,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         presenter.addPostTagItemToCart(postTagItem)
 
         verify {
-            view.onAddToCartSuccess()
+            view.onAddToCartSuccess(mockCartData.productId.toString())
         }
     }
 
