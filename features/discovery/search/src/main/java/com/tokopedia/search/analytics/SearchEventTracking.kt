@@ -77,6 +77,7 @@ interface SearchEventTracking {
 
     interface ECommerce {
         companion object {
+            const val ECOMMERCE = "ecommerce"
             const val CURRENCY_CODE = "currencyCode"
             const val IDR = "IDR"
             const val ADD = "add"

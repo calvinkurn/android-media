@@ -582,6 +582,7 @@ public interface ApplinkConst {
         String SELLER_TOKOPEDIA_FLASH_SALE_ONGOING = "sellerapp://tokopedia-flash-sale/ongoing";
         String SELLER_TOKOPEDIA_FLASH_SALE_FINISHED = "sellerapp://tokopedia-flash-sale/finished";
         String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
+        String SELLER_SHOP_NIB = "sellerapp://shop-nib";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
         String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
