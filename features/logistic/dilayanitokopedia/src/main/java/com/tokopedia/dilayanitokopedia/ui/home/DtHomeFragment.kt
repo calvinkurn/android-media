@@ -524,7 +524,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun createLeftCarouselCallback(): MixLeftComponentListener {
-        return DtLeftCarouselCallback.createLeftCarouselCallback {
+        return DtLeftCarouselCallback.createLeftCarouselCallback(userSession) {
             onActionLinkClicked(it)
         }
     }
@@ -642,7 +642,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun createTopCarouselCallback(): MixTopComponentListener? {
-        return DtTopCarouselCallback().createTopCarouselCallback {
+        return DtTopCarouselCallback().createTopCarouselCallback(userSession) {
             onActionLinkClicked(actionLink = it)
         }
     }

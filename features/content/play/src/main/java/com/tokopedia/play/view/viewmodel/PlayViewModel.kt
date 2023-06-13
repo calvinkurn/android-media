@@ -54,7 +54,6 @@ import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.widget.ui.model.PartnerType
@@ -65,7 +64,6 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -80,7 +78,6 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -198,9 +195,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
     private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
-    private val _selectedVariant = MutableStateFlow<NetworkResult<VariantUiModel>>(
-        NetworkResult.Loading
-    )
     private val _combinedState = MutableStateFlow(PlayCombinedState.Empty)
     private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
@@ -371,7 +365,6 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems,
         _status,
         _quickReply,
-        _selectedVariant,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
         _engagementUiState,
@@ -380,7 +373,7 @@ class PlayViewModel @AssistedInject constructor(
         _combinedState
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, selectedVariant, address,
+        status, quickReply, address,
         featuredProducts, engagement, followPopUp, explore, combinedState ->
         PlayViewerNewUiState(
             channel = channelDetail,
@@ -395,7 +388,6 @@ class PlayViewModel @AssistedInject constructor(
             tagItems = tagItems,
             status = status,
             quickReply = quickReply,
-            selectedVariant = selectedVariant,
             address = address,
             featuredProducts = featuredProducts,
             engagement = engagement,
@@ -762,29 +754,6 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
-
-        insetsMap[BottomInsetsType.VariantSheet] =
-            BottomInsetsState.Shown(
-                estimatedInsetsHeight = estimatedProductSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isShown == true
-            )
-
-        _observableBottomInsetsState.value = insetsMap
-    }
-
-    fun onHideVariantSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
-
-        insetsMap[BottomInsetsType.VariantSheet] =
-            BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isHidden == true
-            )
-
-        _observableBottomInsetsState.value = insetsMap
-    }
-
     private fun showLeaderboardSheet(estimatedHeight: Int) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
@@ -957,13 +926,11 @@ class PlayViewModel @AssistedInject constructor(
         val currentBottomInsetsMap = _observableBottomInsetsState.value
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
         val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
-        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
         return mapOf(
             BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
             BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
-            BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
             BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
             BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState)
         )
@@ -1062,7 +1029,6 @@ class PlayViewModel @AssistedInject constructor(
                 ProductAction.Buy,
                 isProductFeatured = false
             )
-            is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
             is AtcProductAction -> handleBuyProduct(
                 action.sectionInfo,
                 action.product,
@@ -1075,9 +1041,6 @@ class PlayViewModel @AssistedInject constructor(
                 ProductAction.OCC,
                 isProductFeatured = false
             )
-            is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
-            is OCCProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.OCC)
-            is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
@@ -1110,6 +1073,7 @@ class PlayViewModel @AssistedInject constructor(
                 if(!action.isOpen) return
                 updateCommentConfig()
             }
+            is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
         }
     }
 
@@ -1416,7 +1380,6 @@ class PlayViewModel @AssistedInject constructor(
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
-            BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
             else -> {}
@@ -2527,82 +2490,16 @@ class PlayViewModel @AssistedInject constructor(
         action: ProductAction,
         isProductFeatured: Boolean
     ) {
-        if (product.isVariantAvailable) {
-            openVariantDetail(product, sectionInfo, isProductFeatured)
-        } else {
-            needLogin {
-                addProductToCart(product, action) { cartId ->
-                    _uiEvent.emit(
-                        when (action) {
-                            ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                            ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                            else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    /**
-     * Handle buying product variant
-     * @param productId the id of the product
-     */
-    private fun handleBuyProductVariant(productId: String, action: ProductAction) = needLogin {
-        val selectedVariant = _selectedVariant.value
-        if (selectedVariant !is NetworkResult.Success ||
-            selectedVariant.data.variantDetail.id != productId
-        ) {
-            return@needLogin
-        }
-
-        addProductToCart(selectedVariant.data.variantDetail, action) { cartId ->
-            _uiEvent.emit(
-                when (action) {
-                    ProductAction.Buy -> BuySuccessEvent(
-                        selectedVariant.data.variantDetail,
-                        true,
-                        cartId,
-                        selectedVariant.data.sectionInfo,
-                        selectedVariant.data.isFeatured
-                    )
-                    ProductAction.OCC -> OCCSuccessEvent(
-                        selectedVariant.data.variantDetail,
-                        true,
-                        cartId,
-                        selectedVariant.data.sectionInfo,
-                        selectedVariant.data.isFeatured
-                    )
-                    else ->
-                        AtcSuccessEvent(
-                            selectedVariant.data.variantDetail,
-                            true,
-                            cartId,
-                            selectedVariant.data.sectionInfo,
-                            selectedVariant.data.isFeatured
-                        )
-                }
-            )
-        }
-    }
-
-    /**
-     * Handle selecting variant option from available variant
-     */
-    private fun handleSelectVariantOption(option: VariantOptionWithAttribute) {
-        val selectedVariant = _selectedVariant.value
-        if (selectedVariant !is NetworkResult.Success) return
-
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            _selectedVariant.value = NetworkResult.Success(
-                repo.selectVariantOption(
-                    variant = selectedVariant.data,
-                    selectedOption = option
+        needLogin {
+            addProductToCart(product, action) { cartId ->
+                _uiEvent.emit(
+                    when (action) {
+                        ProductAction.Buy -> BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        ProductAction.OCC -> OCCSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        else -> AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                    }
                 )
-            )
-        }) {
-            // Ignore for now since there shouldn't be any error (no network call)
-            // and since there was never error handling for this
+            }
         }
     }
 
@@ -2648,6 +2545,14 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _uiEvent.emit(ShowErrorEvent(err))
             _combinedState.update { it.copy(isLoadingBuy = false) }
+        }
+    }
+
+    private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
+        needLogin {
+            viewModelScope.launch {
+                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
+            }
         }
     }
 
@@ -2811,29 +2716,6 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
     }
 
-    /**
-     * Variant Util
-     */
-    private fun openVariantDetail(
-        product: PlayProductUiModel.Product,
-        sectionUiModel: ProductSectionUiModel.Section,
-        isProductFeatured: Boolean
-    ) {
-        _selectedVariant.value = NetworkResult.Loading
-        viewModelScope.launchCatchError(block = {
-            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product, isProductFeatured))
-            _selectedVariant.update {
-                if (it is NetworkResult.Success) {
-                    it.copy(data = it.data.copy(sectionInfo = sectionUiModel))
-                } else {
-                    it
-                }
-            }
-        }) {
-            _selectedVariant.value = NetworkResult.Fail(it)
-        }
-    }
-
     private fun handleWarehouse(id: String, isOOC: Boolean) {
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _warehouseInfo.value = WarehouseInfoUiModel(id, isOOC)
@@ -2940,6 +2822,8 @@ class PlayViewModel @AssistedInject constructor(
         authenticated {
             viewModelScope.launchCatchError(block = {
                 val result = repo.updateReminder(channelId, reminderType)
+                val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
+                _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
                     _exploreWidget.update {
                         it.copy(

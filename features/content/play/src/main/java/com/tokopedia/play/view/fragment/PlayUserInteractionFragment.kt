@@ -560,6 +560,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * ImmersiveBox View Component Listener
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
+        if (playViewModel.hasNoMedia) return
+
         analytic.clickWatchArea(
             screenOrientation = orientation.orientation
         )
@@ -965,6 +967,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowInfoEvent -> {
+                        if (PlayExploreWidgetFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
@@ -1563,7 +1569,6 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (channelType.isLive &&
             bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-            bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
             bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false
         ) {
@@ -1904,30 +1909,26 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun onProductCarouselEvent(event: ProductCarouselUiComponent.Event) {
         when (event) {
             is ProductCarouselUiComponent.Event.OnTransactionClicked -> {
-                // TODO("Temporary, maybe best to combine bottom sheet into this fragment")
                 if (event.product.isVariantAvailable) {
-                    playFragment.openVariantBottomSheet(
-                        event.action,
-                        event.product
+                    playViewModel.submitAction(ShowVariantAction(event.product, true))
+                } else {
+                    playViewModel.submitAction(
+                        when (event.action) {
+                            ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                            ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
+                                event.product,
+                                isProductFeatured = true
+                            )
+                        }
                     )
                 }
-
-                playViewModel.submitAction(
-                    when (event.action) {
-                        ProductAction.Buy -> PlayViewerNewAction.BuyProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.AddToCart -> PlayViewerNewAction.AtcProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                        ProductAction.OCC -> PlayViewerNewAction.OCCProduct(
-                            event.product,
-                            isProductFeatured = true
-                        )
-                    }
-                )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
                 if (event.product.applink == null) return
