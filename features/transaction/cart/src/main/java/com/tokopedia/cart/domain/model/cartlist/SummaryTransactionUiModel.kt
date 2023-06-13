@@ -15,9 +15,10 @@ data class SummaryTransactionUiModel(
     var listSummaryAddOns: List<SummaryAddOns> = emptyList()
 ) {
     data class SummaryAddOns(
-            var wording: String = "",
-            var type: Int = -1,
-            var priceLabel: String = "",
-            var priceValue: Double = 0.0
+        var wording: String = "",
+        var type: Int = -1,
+        var qty: Int = -1,
+        var priceLabel: String = "",
+        var priceValue: Double = 0.0
     )
 }

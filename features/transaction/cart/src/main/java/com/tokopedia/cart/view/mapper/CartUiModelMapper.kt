@@ -608,20 +608,20 @@ object CartUiModelMapper {
         val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
         addOn.addOnData.forEach {
             val cartAddOnProductData = CartAddOnProductData(
-                    id = it.addonId,
-                    uniqueId = it.uniqueId,
-                    status = it.status,
-                    type = it.type,
-                    price = it.price
+                id = it.addonId,
+                uniqueId = it.uniqueId,
+                status = it.status,
+                type = it.type,
+                price = it.price
             )
             arrayListAddOnProduct.add(cartAddOnProductData)
         }
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
             widget = CartAddOnWidgetData(
-                    wording = addOn.addOnWidget.wording,
-                    leftIconUrl = addOn.addOnWidget.leftIconUrl,
-                    rightIconUrl = addOn.addOnWidget.rightIconUrl
+                wording = addOn.addOnWidget.wording,
+                leftIconUrl = addOn.addOnWidget.leftIconUrl,
+                rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
         }
     }
@@ -812,10 +812,11 @@ object CartUiModelMapper {
             val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                    wording = addOnWording,
-                    type = entry.key,
-                    priceLabel = addOnPrice,
-                    priceValue = entry.value.first
+                wording = addOnWording,
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
             )
             summaryAddOnList.add(summaryAddOn)
         }

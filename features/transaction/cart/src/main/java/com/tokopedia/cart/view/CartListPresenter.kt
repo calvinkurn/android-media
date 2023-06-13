@@ -14,9 +14,7 @@ import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
@@ -651,17 +649,6 @@ class CartListPresenter @Inject constructor(
             subtotalCashback
         )
 
-        cartItemDataList.forEach {
-            it.addOnsProduct.listData.forEach {
-                println("++ id: ${it.id}")
-                println("++ price: ${it.price}")
-                println("++ type: ${it.type}")
-                println("++ status: ${it.status}")
-            }
-            println("++ wording: "+it.addOnsProduct.widget.wording)
-        }
-
-        // summaryTransactionUiModel?.listSummaryAddOns = updateSummariesAddOn(cartItemDataList)
         view?.updateCashback(subtotalCashback)
         view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, dataList.isEmpty())
     }
@@ -672,57 +659,33 @@ class CartListPresenter @Inject constructor(
         totalItemQty: Int,
         subtotalCashback: Double
     ) {
-        println("++ totalItemQty = "+totalItemQty+", totalQtyWithAddon = "+totalQtyWithAddon)
+        // update summary addons
+        var totalAddonPrice = 0.0
         for ((key, value) in summariesAddOnUiModel) {
-            println("++ $key = $value")
+            summaryTransactionUiModel?.listSummaryAddOns?.forEach {
+                if (it.type == key) {
+                    it.qty = totalQtyWithAddon
+                    it.wording = value.replace(QTY_ADDON_REPLACE, totalQtyWithAddon.toString())
+
+                    totalAddonPrice = totalQtyWithAddon * it.priceValue
+                    it.priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAddonPrice, false).removeDecimalSuffix()
+                }
+            }
         }
+
+        val priceAfterAddon = subtotalPrice + totalAddonPrice
+        val priceAfterAddonBeforeSlashedPrice = subtotalBeforeSlashedPrice + totalAddonPrice
+
         summaryTransactionUiModel?.qty = totalItemQty.toString()
-        if (subtotalBeforeSlashedPrice == 0.0) {
+        if (priceAfterAddonBeforeSlashedPrice == 0.0) {
             summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
         } else {
             summaryTransactionUiModel?.totalValue = subtotalBeforeSlashedPrice.toLong()
         }
         summaryTransactionUiModel?.discountValue =
-            (subtotalBeforeSlashedPrice - subtotalPrice).toLong()
-        summaryTransactionUiModel?.paymentTotal = subtotalPrice.toLong()
+            (priceAfterAddonBeforeSlashedPrice - priceAfterAddon).toLong()
+        summaryTransactionUiModel?.paymentTotal = priceAfterAddon.toLong()
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
-        summaryTransactionUiModel?.listSummaryAddOns?.forEach {
-            // if (it.type == summariesAddOnUiModel)
-            println("++ "+it.wording)
-        }
-    }
-
-    fun updateSummariesAddOn(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
-        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
-        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
-        shopLoop@ for (groupShop in availableGroupGroups) {
-            groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
-                cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
-                    productLoop@ for (product in cartDetail.products) {
-                        addOnLoop@ for (addon in product.addOn.addOnData) {
-                            qtyAddOn += totalQtyWithAddon
-                            totalPriceAddOn = qtyAddOn * addon.price
-                            countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
-                        }
-                    }
-                }
-            }
-        }
-
-        val mapSummary = CartUiModelMapper.getShoppingSummaryAddOns(summariesItemList)
-        for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
-            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
-            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                    wording = addOnWording,
-                    type = entry.key,
-                    priceLabel = addOnPrice
-            )
-            summaryAddOnList.add(summaryAddOn)
-        }
-        return summaryAddOnList
     }
 
     fun getAvailableCartItemDataListAndShopTotalWeight(cartGroupHolderData: CartGroupHolderData): Pair<ArrayList<CartItemHolderData>, Double> {
@@ -842,14 +805,7 @@ class CartListPresenter @Inject constructor(
                 tmpSubtotalBeforeSlashedPrice += itemPrice
             }
 
-            var addonProductPrice = 0.0
-            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
-                cartItemHolderData.addOnsProduct.listData.forEach {
-                    addonProductPrice += it.price
-                }
-            }
-
-            tmpSubTotalPrice += itemPrice + addonProductPrice
+            tmpSubTotalPrice += itemPrice
             cartItemHolderData.wholesalePriceFormatted = null
             cartItemParentIdMap[parentIdPriceIndex] = cartItemHolderData
         }
@@ -934,6 +890,9 @@ class CartListPresenter @Inject constructor(
 
             if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
                 totalQtyWithAddon = totalItemQty
+                cartItemHolderData.addOnsProduct.listData.forEach {
+                    subtotalPrice += (totalQtyWithAddon * it.price)
+                }
             }
         }
 
