@@ -2195,11 +2195,13 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
                 shipmentAdapter.updateShipmentCostModel();
                 shipmentAdapter.updateItemAndTotalCost(position);
                 shipmentAdapter.updateInsuranceTncVisibility();
+                onNeedUpdateRequestData();
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
+            onNeedUpdateRequestData();
         }
     }
 
@@ -2259,9 +2261,13 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     @Override
     public void onDonationChecked(boolean checked) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateDonation(checked));
+            rvShipment.post(() -> {
+                shipmentAdapter.updateDonation(checked);
+                onNeedUpdateRequestData();
+            });
         } else {
             shipmentAdapter.updateDonation(checked);
+            onNeedUpdateRequestData();
         }
         if (checked) sendAnalyticsOnClickTopDonation();
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
@@ -2282,9 +2288,13 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     @Override
     public void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateCrossSell(checked, crossSellModel));
+            rvShipment.post(() -> {
+                shipmentAdapter.updateCrossSell(checked, crossSellModel);
+                onNeedUpdateRequestData();
+            });
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel);
+            onNeedUpdateRequestData();
         }
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
@@ -2299,6 +2309,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
+        onNeedUpdateRequestData();
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked);
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
@@ -3538,6 +3549,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
             resetPromoBenefit();
             setPromoBenefit(summariesUiModels);
             shipmentAdapter.updateShipmentCostModel();
+            onNeedUpdateRequestData();
         }
         return hasSetAllCourier;
     }
@@ -4218,6 +4230,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        onNeedUpdateRequestData();
     }
 
     @Override
