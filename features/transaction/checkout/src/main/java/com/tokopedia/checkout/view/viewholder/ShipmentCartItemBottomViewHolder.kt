@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Editable
@@ -373,7 +372,6 @@ class ShipmentCartItemBottomViewHolder(
                             actionListener?.onInsuranceCheckedForTrackingAnalytics()
                         }
                         actionListener?.onInsuranceChecked(bindingAdapterPosition)
-                        actionListener?.onNeedUpdateRequestData()
                         saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
                     }
                 }
@@ -567,33 +565,33 @@ class ShipmentCartItemBottomViewHolder(
                     }
                 }
                 textInputLayoutShipperName.textFieldInput.addTextChangedListener(object :
-                    TextWatcher {
-                    override fun beforeTextChanged(
-                        charSequence: CharSequence,
-                        i: Int,
-                        i1: Int,
-                        i2: Int
-                    ) {
-                    }
+                        TextWatcher {
+                        override fun beforeTextChanged(
+                            charSequence: CharSequence,
+                            i: Int,
+                            i1: Int,
+                            i2: Int
+                        ) {
+                        }
 
-                    override fun onTextChanged(
-                        charSequence: CharSequence,
-                        i: Int,
-                        i1: Int,
-                        i2: Int
-                    ) {
-                        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                            if (!TextUtils.isEmpty(charSequence)) {
-                                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperName =
-                                    charSequence.toString()
-                                validateDropshipperName(shipmentCartItemModel, charSequence, true)
-                                saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
+                        override fun onTextChanged(
+                            charSequence: CharSequence,
+                            i: Int,
+                            i1: Int,
+                            i2: Int
+                        ) {
+                            if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+                                if (!TextUtils.isEmpty(charSequence)) {
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperName =
+                                        charSequence.toString()
+                                    validateDropshipperName(shipmentCartItemModel, charSequence, true)
+                                    saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
+                                }
                             }
                         }
-                    }
 
-                    override fun afterTextChanged(editable: Editable) {}
-                })
+                        override fun afterTextChanged(editable: Editable) {}
+                    })
                 if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperName) ||
                     !TextUtils.isEmpty(shipmentCartItemModel.dropshiperName)
                 ) {
@@ -618,33 +616,33 @@ class ShipmentCartItemBottomViewHolder(
                     textInputLayoutShipperName.textFieldInput.length()
                 )
                 textInputLayoutShipperPhone.textFieldInput.addTextChangedListener(object :
-                    TextWatcher {
-                    override fun beforeTextChanged(
-                        charSequence: CharSequence,
-                        i: Int,
-                        i1: Int,
-                        i2: Int
-                    ) {
-                    }
+                        TextWatcher {
+                        override fun beforeTextChanged(
+                            charSequence: CharSequence,
+                            i: Int,
+                            i1: Int,
+                            i2: Int
+                        ) {
+                        }
 
-                    override fun onTextChanged(
-                        charSequence: CharSequence,
-                        i: Int,
-                        i1: Int,
-                        i2: Int
-                    ) {
-                        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                            if (!TextUtils.isEmpty(charSequence)) {
-                                shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperPhone =
-                                    charSequence.toString()
-                                validateDropshipperPhone(shipmentCartItemModel, charSequence, true)
-                                saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
+                        override fun onTextChanged(
+                            charSequence: CharSequence,
+                            i: Int,
+                            i1: Int,
+                            i2: Int
+                        ) {
+                            if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+                                if (!TextUtils.isEmpty(charSequence)) {
+                                    shipmentCartItemModel.selectedShipmentDetailData!!.dropshipperPhone =
+                                        charSequence.toString()
+                                    validateDropshipperPhone(shipmentCartItemModel, charSequence, true)
+                                    saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
+                                }
                             }
                         }
-                    }
 
-                    override fun afterTextChanged(editable: Editable) {}
-                })
+                        override fun afterTextChanged(editable: Editable) {}
+                    })
                 if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperPhone) ||
                     !TextUtils.isEmpty(shipmentCartItemModel.dropshiperPhone)
                 ) {
@@ -695,7 +693,7 @@ class ShipmentCartItemBottomViewHolder(
     private fun checkDropshipperState(shipmentCartItemModel: ShipmentCartItemModel) {
         binding.containerShippingOptions.cbDropshipper.isChecked =
             !TextUtils.isEmpty(shipmentCartItemModel.dropshiperName) ||
-                !TextUtils.isEmpty(shipmentCartItemModel.dropshiperPhone)
+            !TextUtils.isEmpty(shipmentCartItemModel.dropshiperPhone)
     }
 
     private fun validateDropshipperPhone(

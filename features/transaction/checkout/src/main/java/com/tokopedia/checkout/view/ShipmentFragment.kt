@@ -2331,11 +2331,13 @@ class ShipmentFragment :
                 shipmentAdapter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
+                onNeedUpdateRequestData()
             }
         } else {
             shipmentAdapter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
+            onNeedUpdateRequestData()
         }
     }
 
@@ -2392,9 +2394,13 @@ class ShipmentFragment :
 
     override fun onDonationChecked(checked: Boolean) {
         if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post { shipmentAdapter.updateDonation(checked) }
+            rvShipment?.post {
+                shipmentAdapter.updateDonation(checked)
+                onNeedUpdateRequestData()
+            }
         } else {
             shipmentAdapter.updateDonation(checked)
+            onNeedUpdateRequestData()
         }
         if (checked) sendAnalyticsOnClickTopDonation()
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
@@ -2417,9 +2423,13 @@ class ShipmentFragment :
         index: Int
     ) {
         if (rvShipment?.isComputingLayout == true) {
-            rvShipment?.post { shipmentAdapter.updateCrossSell(checked, crossSellModel) }
+            rvShipment?.post {
+                shipmentAdapter.updateCrossSell(checked, crossSellModel)
+                onNeedUpdateRequestData()
+            }
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel)
+            onNeedUpdateRequestData()
         }
         val digitalCategoryName = crossSellModel!!.orderSummary.title
         val digitalProductId = crossSellModel.id
@@ -2438,6 +2448,7 @@ class ShipmentFragment :
 
     override fun onEgoldChecked(checked: Boolean) {
         shipmentAdapter.updateEgold(checked)
+        onNeedUpdateRequestData()
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff, checked)
@@ -3892,6 +3903,7 @@ class ShipmentFragment :
             resetPromoBenefit()
             setPromoBenefit(summariesUiModels)
             shipmentAdapter.updateShipmentCostModel()
+            onNeedUpdateRequestData()
         }
         return hasSetAllCourier
     }
@@ -4688,6 +4700,7 @@ class ShipmentFragment :
         }
         shipmentAdapter.updateShipmentCostModel()
         onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+        onNeedUpdateRequestData()
     }
 
     override fun updateAddOnsDynamicDataPassing(
