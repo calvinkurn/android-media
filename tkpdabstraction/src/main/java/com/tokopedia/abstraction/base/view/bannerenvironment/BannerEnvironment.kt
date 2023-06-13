@@ -19,6 +19,9 @@ class BannerEnvironment {
         private const val IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED"
     }
 
+    private var bannerEnvironmentView: BannerEnvironmentView? = null
+    private var decorView: ViewGroup? = null
+
     fun initializeBannerEnvironment(activity: Activity) {
         val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
         if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
@@ -39,9 +42,6 @@ class BannerEnvironment {
             .putBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, isDevOptOnNotifEnabled)
             .apply()
     }
-
-    private var bannerEnvironmentView: BannerEnvironmentView? = null
-    private var decorView: ViewGroup? = null
 
     private fun addBanner(activity: Activity, liveStatus: String) {
         decorView = activity.window.decorView as ViewGroup
