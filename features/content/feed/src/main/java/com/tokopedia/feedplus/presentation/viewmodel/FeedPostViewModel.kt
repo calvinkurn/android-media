@@ -133,7 +133,7 @@ class FeedPostViewModel @Inject constructor(
     private val _selectedReport = MutableLiveData<PlayUserReportReasoningUiModel.Reasoning>()
     val selectedReport get() = _selectedReport.value
     private val _isReported = MutableLiveData<Result<Unit>>()
-    val isReported get() = _isReported.value
+    val isReported : LiveData<Result<Unit>> get() = _isReported
 
     fun fetchFeedPosts(
         source: String, isNewData: Boolean = false, postId: String? = null
@@ -793,9 +793,10 @@ class FeedPostViewModel @Inject constructor(
     fun submitReport(desc: String, timestamp: Long, item: FeedCardVideoContentModel) {
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                postReportUseCase.createParam(
+                val request = postReportUseCase.createParam(
                     channelId = item.playChannelId.toLongOrZero(), mediaUrl = item.media.firstOrNull()?.mediaUrl.orEmpty(), reasonId = selectedReport?.reasoningId.orZero(), timestamp = timestamp, reportDesc = desc, partnerId = item.author.id.toLongOrZero(), partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type.value), reporterId = userSession.userId.toLongOrZero()
                 )
+                postReportUseCase.setRequestParams(request.parameters)
                 postReportUseCase.executeOnBackground()
             }
             val isSuccess = response.submissionReport.status == "success"

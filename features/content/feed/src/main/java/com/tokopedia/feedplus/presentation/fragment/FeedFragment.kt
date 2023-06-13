@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.R as commonR
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
@@ -371,7 +372,45 @@ class FeedFragment :
         val currentIndex = binding.rvFeedPost.currentItem
         val item = adapter?.list?.get(currentIndex)
         if (item !is FeedCardVideoContentModel) return
-        feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
+
+
+        showDialog(
+            title = getString(commonR.string.play_user_report_verification_dialog_title),
+            description = getString(commonR.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
+            secondaryCTAText = getString(feedR.string.feed_cancel),
+            primaryAction = {
+                feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
+            }
+        )
+    }
+
+    private fun showDialog(
+        title: String,
+        description: String,
+        primaryCTAText: String,
+        secondaryCTAText: String,
+        primaryAction: () -> Unit,
+        secondaryAction: () -> Unit = {}
+    ) {
+        activity?.let {
+            val dialog =
+                DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.apply {
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCTAText)
+                setPrimaryCTAClickListener {
+                    primaryAction()
+                    dismiss()
+                }
+                setSecondaryCTAText(secondaryCTAText)
+                setSecondaryCTAClickListener {
+                    secondaryAction()
+                    dismiss()
+                }
+            }.show()
+        }
     }
 
     private fun getVideoTimeStamp(): Long {
@@ -738,6 +777,20 @@ class FeedFragment :
                     }
                 }
                 is Fail -> {}
+            }
+        }
+
+        feedPostViewModel.isReported.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    ContentThreeDotsMenuBottomSheet.get(childFragmentManager)?.dismiss()
+                }
+                is Fail -> {
+                    showToast(
+                        ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                        Toaster.TYPE_ERROR
+                    )
+                }
             }
         }
     }

@@ -149,5 +149,6 @@ dari Feed.</string>
     <string name="feed_video_time_less_than_hour">%d:%02d</string>
     <string name="feed_video_time_hours">%d:%02d:%02d</string>
     <string name="feed_campaign_start_from_label">Dimulai dalam</string>
+    <string name="feed_cancel">Batal</string>
 
 </resources>

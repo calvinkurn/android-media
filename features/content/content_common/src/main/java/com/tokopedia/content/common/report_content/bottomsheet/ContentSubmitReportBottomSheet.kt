@@ -123,7 +123,6 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
                 val desc = etDetailReport.editText.text.toString()
                 mListener?.onSubmitReport(desc)
-                dismiss()
             }
         }
     }

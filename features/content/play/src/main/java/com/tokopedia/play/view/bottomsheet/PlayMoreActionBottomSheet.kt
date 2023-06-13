@@ -578,9 +578,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
         analytic.clickUserReportSubmissionBtnSubmit(isUse)
 
         showDialog(
-            title = getString(R.string.play_user_report_verification_dialog_title),
-            description = getString(R.string.play_user_report_verification_dialog_desc),
-            primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok),
+            title = getString(commonR.string.play_user_report_verification_dialog_title),
+            description = getString(commonR.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(commonR.string.play_user_report_verification_dialog_btn_ok),
             secondaryCTAText = getString(R.string.play_pip_cancel),
             primaryAction = {
                 onSubmitUserReport(reasonId, description)
