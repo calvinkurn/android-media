@@ -5,14 +5,14 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
 open class PgRecommendationViewHolder(
     itemView: View,
     private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener
-) :
-    AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
+) : AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
     RecomCarouselWidgetBasicListener {
 
     companion object {

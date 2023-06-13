@@ -57,8 +57,8 @@
     <ConstraintSet android:id="@+id/error_state_loading_intermediary">
         <Constraint
             android:id="@+id/globalErrorBuyerOrderDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:alpha="0"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +68,8 @@
     <ConstraintSet android:id="@+id/error_state">
         <Constraint
             android:id="@+id/globalErrorBuyerOrderDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:alpha="1"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"

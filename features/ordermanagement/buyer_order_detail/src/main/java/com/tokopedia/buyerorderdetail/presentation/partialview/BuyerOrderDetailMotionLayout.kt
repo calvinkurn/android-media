@@ -3,7 +3,9 @@ package com.tokopedia.buyerorderdetail.presentation.partialview
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify

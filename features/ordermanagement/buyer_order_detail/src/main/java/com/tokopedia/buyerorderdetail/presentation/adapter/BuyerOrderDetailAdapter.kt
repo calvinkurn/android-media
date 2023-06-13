@@ -53,8 +53,10 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(
         pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel
     ) {
-        add(ThickDividerUiModel())
-        add(pgRecommendationWidgetUiModel)
+        if (pgRecommendationWidgetUiModel.pageName.isNotBlank()) {
+            add(ThickDividerUiModel())
+            add(pgRecommendationWidgetUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(

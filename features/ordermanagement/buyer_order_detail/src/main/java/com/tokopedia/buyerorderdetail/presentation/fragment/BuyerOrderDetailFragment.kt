@@ -70,6 +70,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -538,7 +539,7 @@ open class BuyerOrderDetailFragment :
         }
 
         if (errorType == null) {
-            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
+            globalErrorBuyerOrderDetail?.showMessageExceptionError(throwable)
         } else {
             globalErrorBuyerOrderDetail?.apply {
                 setType(errorType)
@@ -564,14 +565,19 @@ open class BuyerOrderDetailFragment :
         updateStickyButtons(uiState)
     }
 
-    private fun EmptyStateUnify.showMessageExceptionError(
+    private fun GlobalError.showMessageExceptionError(
         throwable: Throwable?
     ) {
-        val errorMessage = context?.let {
-            ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
-        setDescription(errorMessage)
-        contentVisibilityAnimator.animateToEmptyStateError()
+        this.apply {
+            setType(GlobalError.SERVER_ERROR)
+            val errorMessage = context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
+                    .orEmpty()
+            errorDescription.show()
+            errorDescription.text = errorMessage
+            contentVisibilityAnimator.animateToErrorState()
+        }
     }
 
     private fun setupToolbarMenuIcon() {
