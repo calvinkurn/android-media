@@ -150,7 +150,11 @@ fun ReviewSettingsToggle(
 fun ProfileSettingsScreenPreview() {
     NestTheme {
         ProfileSettingsScreen(
-            reviewSettings = ProfileSettingsUiModel.Empty,
+            reviewSettings = ProfileSettingsUiModel(
+                settingID = ProfileSettingsUiModel.SETTING_ID_REVIEW,
+                title = "Show / hide review",
+                isEnabled = true,
+            ),
             onBackPressed = {},
             onCheckedChanged = {},
         )
