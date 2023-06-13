@@ -364,11 +364,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun showOosStateRadioSelected(oosState: Boolean) {
         val binding = binding ?: return
         if (oosState) {
-            binding.radioOosOptionCanTransact .isSelected = true
-            binding.radioOosOptionCanNotTransact.isSelected = false
+            binding.radioOosOptionCanTransact.isChecked = true
         } else {
-            binding.radioOosOptionCanTransact.isSelected = false
-            binding.radioOosOptionCanNotTransact.isSelected = true
+            binding.radioOosOptionCanNotTransact.isChecked = true
         }
     }
 
