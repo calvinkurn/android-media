@@ -2,15 +2,7 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone
 
 import android.text.InputType
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clearText
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnButtonDialog
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnText
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnView
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.inputText
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.isDisplayed
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.isEnable
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.isInputTypeEnable
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.isTextDisplayed
+import com.tokopedia.loginregister.redefineregisteremail.stub.common.*
 
 private const val inputTypePhone = InputType.TYPE_CLASS_PHONE
 private const val validPhoneNumber = "081234567890"
@@ -61,6 +53,7 @@ fun clickSubmit() {
 }
 
 fun clickLewati() {
+    Thread.sleep(1000)
     clickOnText("Lewati")
 }
 

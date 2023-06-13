@@ -5,9 +5,11 @@ import com.tokopedia.content.common.comment.CommentAction
 import com.tokopedia.content.common.comment.CommentEvent
 import com.tokopedia.content.common.comment.CommentException
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
+import com.tokopedia.content.common.comment.uimodel.CommentParam
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -16,6 +18,7 @@ import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 
@@ -228,8 +231,9 @@ class CommentViewModelTest {
     @Test
     fun `permanent remove delete comment is error from gql, undo from list`() {
         val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item)
         coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
-            list = listOf(helper.buildItemComment(), item)
+            list = listOfComment
         )
         coEvery { mockRepo.deleteComment(any()) } throws MessageErrorException()
 
@@ -249,14 +253,50 @@ class CommentViewModelTest {
                 it.contains(item).assertTrue()
             }
             coVerify { mockRepo.deleteComment(any()) }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
+        }
+    }
+
+    @Test
+    fun `delete comment from list then undo from list`() {
+        val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(
+            list = listOfComment
+        )
+
+        val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
+            setLogin(true)
+        }
+        robot.use {
+            val comment = it.recordComments {
+                submitAction(
+                    CommentAction.SelectComment(item)
+                )
+                submitAction(
+                    CommentAction.DeleteComment(isFromToaster = true)
+                )
+            }
+            comment.list.assertType<List<CommentUiModel>> {
+                it.contains(item).assertTrue()
+            }
+            coVerify { mockRepo.deleteComment(any()) wasNot called }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
     @Test
     fun `delete comment, make sure it doesnt include in list - not from undo`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget()
+        val item = helper.buildItemComment(id = "1111")
+        val listOfComment = listOf(helper.buildItemComment(), item, helper.buildItemComment(id = "1"))
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
 
-        val item = helper.buildItemComment()
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
             setLogin(true)
         }
@@ -273,12 +313,17 @@ class CommentViewModelTest {
                 it.contains(item).assertFalse()
             }
             coVerify { mockRepo.deleteComment(any()) wasNot called }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
     @Test
-    fun `delete comment, show success toaster- not from undo`() {
-        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget()
+    fun `delete comment, show success toaster - not from undo`() {
+        val listOfComment = listOf(helper.buildItemComment(), helper.buildItemComment(id = "44"), helper.buildItemComment(id = "1"))
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(list = listOfComment)
 
         val item = helper.buildItemComment()
         val robot = createCommentRobot(repository = mockRepo, dispatchers = testDispatcher) {
@@ -295,6 +340,10 @@ class CommentViewModelTest {
             }
             event.last().assertEqualTo(CommentEvent.ShowSuccessToaster())
             coVerify { mockRepo.deleteComment(any()) wasNot called }
+            val selected = it.vm
+                .getPrivateField<MutableStateFlow<Pair<CommentUiModel.Item, Int>>>("_selectedComment")
+            selected.value.first.assertEqualTo(item)
+            selected.value.second.assertEqualTo(listOfComment.indexOf(item))
         }
     }
 
@@ -389,6 +438,24 @@ class CommentViewModelTest {
     }
 
     @Test
+    fun `send reply in login state, failed from gql`() {
+        val exception = MessageErrorException()
+
+        coEvery { mockRepo.replyComment(any(), any(), any(), any()) } throws  exception
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+        robot.use {
+            val event = it.recordEvent {
+                submitAction(CommentAction.ReplyComment("www.tokopedia.com beli disni aj", CommentType.Child("2")))
+            }
+            event.first().assertType<CommentEvent.HideKeyboard> {  }
+            event.last().assertType<CommentEvent.ShowErrorToaster> {  }
+        }
+    }
+
+    @Test
     fun `if commenter type from gql return shop, then its creator`() {
         coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget(commenterType = UserType.Shop)
         val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
@@ -407,6 +474,195 @@ class CommentViewModelTest {
         }
         robot.use {
             it.vm.isCreator.assertFalse()
+        }
+    }
+
+    @Test
+    fun `init view model - change query based on return, if there's any cursor`() {
+        val expected = helper.buildCommentWidget(cursor = "2773ubehb")
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val q = it.recordQueries {}
+            q.size.assertEqualTo(1) //only called once
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.cursor)
+            q.last().needToRefresh.assertFalse() // after getting data make sure not to refresh unless we force to refresh / want to fetch
+        }
+    }
+
+    @Test
+    fun `init view model - change query based on return, if there's no cursor`() {
+        val expected = helper.buildCommentWidget()
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val q = it.recordQueries {}
+            q.size.assertEqualTo(1) //only called once
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.cursor)
+            q.last().needToRefresh.assertFalse()
+        }
+    }
+
+    @Test
+    fun `dismiss bottom sheet - reset query`() {
+        val initialParam = helper.buildCommentWidget(
+            cursor = "uBgdk",
+            commentType = CommentType.Child("1")
+        )
+        val expected = CommentParam() //resetting to default
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns initialParam
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val q = it.recordQueries {
+                submitAction(CommentAction.DismissComment)
+            }
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
+            q.last().lastChildCursor.assertEqualTo(expected.lastChildCursor)
+            q.last().needToRefresh.assertFalse() //dont refresh
+
+            q.assertNotEqualTo(initialParam)
+        }
+    }
+
+    @Test
+    fun `refresh bottom sheet - reset query`() {
+        val expected = CommentParam() //resetting to default
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns helper.buildCommentWidget()
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val q = it.recordQueries {
+                submitAction(CommentAction.RefreshComment)
+            }
+            q.last().commentType.assertEqualTo(expected.commentType)
+            q.last().lastParentCursor.assertEqualTo(expected.lastParentCursor)
+            q.last().lastChildCursor.assertEqualTo(expected.lastChildCursor)
+            q.last().needToRefresh.assertFalse() //after get comments
+        }
+    }
+
+    @Test
+    fun `load next page from parent - success` () {
+        val expected = helper.buildCommentWidget(cursor = "KgBDVYB8", commentType = CommentType.Parent)
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.lastParentCursor.assertEqualTo(expected.cursor)
+            result.first.lastChildCursor.assertNotEqualTo(expected.cursor)
+            result.first.needToRefresh.assertFalse()
+            result.first.commentType.assertEqualTo(expected.commentType)
+
+            result.second.assertEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `load next page from parent - failed` () {
+        val exception = MessageErrorException()
+        coEvery { mockRepo.getComments(any(), any(), any()) } throws exception
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Fail(exception))
+        }
+    }
+
+    @Test
+    fun `load next page from parent - content same with prev - use current list` () {
+        val expected = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                )
+            )
+        )
+
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Success)
+            result.second.list.size.assertEqualTo(expected.list.size)
+            result.second.list.assertEqualTo(expected.list)
+        }
+    }
+
+    @Test
+    fun `load next page from parent - content not same with prev - merge two list` () {
+        val expected = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "1"), helper.buildItemComment(id = "2"), helper.buildItemComment(id = "3")
+                )
+            )
+        )
+
+        val new = helper.buildCommentWidget(
+            list = helper.buildCommentList(
+                listOf(
+                    helper.buildItemComment(id = "11"), helper.buildItemComment(id = "12"), helper.buildItemComment(id = "13")
+                )
+            )
+        )
+
+        coEvery { mockRepo.getComments(any(), any(), any()) } returns expected
+
+        val robot = createCommentRobot(dispatchers = testDispatcher, repository = mockRepo) {
+            setLogin(true)
+        }
+
+        robot.use {
+            val result = it.recordQueryAndComment {
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+                coEvery { mockRepo.getComments(any(), any(), any()) } returns new
+                submitAction(CommentAction.LoadNextPage(CommentType.Parent))
+            }
+            result.first.needToRefresh.assertFalse()
+
+            result.second.state.assertEqualTo(ResultState.Success)
+            result.second.list.size.assertEqualTo(expected.list.size + new.list.size)
+            result.second.list.assertEqualTo(expected.list + new.list)
         }
     }
 }

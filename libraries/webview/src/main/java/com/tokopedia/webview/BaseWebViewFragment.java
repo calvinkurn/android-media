@@ -549,7 +549,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent[] intentArray = new Intent[0];
             if(getContext() != null){
                 intentArray = new Intent[1];
-                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
+                    getContext(),
+                    hasVideo(fileChooserParams)
+                );
                 intentArray[0] = mediaPickerIntent;
             }
 
@@ -560,6 +563,22 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
             return true;
 
+        }
+
+        private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
+            String[] acceptTypes = fileChooserParams.getAcceptTypes();
+            boolean hasVideo = false;
+
+            if (acceptTypes != null) {
+                for (String type : acceptTypes) {
+                    if (type != null && type.contains("video")) {
+                        hasVideo = true;
+                        break;
+                    }
+                }
+            }
+
+            return hasVideo;
         }
 
         @Override
@@ -711,7 +730,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -819,6 +838,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+
+        if(webView != null && isHelpUrl(url)){
+            launchWebviewForNewUrl(url);
+            return true;
+        }
+
         if (isBriIntent(uri)) {
             return handlingBriIntent(url);
         }
@@ -1158,6 +1183,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
+        }
+        if(isHelpUrl(url)){
+            launchWebviewForNewUrl(url);
+            return;
         }
         webView.reload();
     }

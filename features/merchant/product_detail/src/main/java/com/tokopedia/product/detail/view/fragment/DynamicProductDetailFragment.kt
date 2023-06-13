@@ -266,11 +266,14 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
+import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -668,7 +671,7 @@ open class DynamicProductDetailFragment :
         observeAddToCart()
         observeSingleVariantData()
         observeOnThumbnailVariantSelected()
-        observeATCTokonowData()
+        observeATCRecomData()
         observeATCTokonowResetCard()
         observeATCRecomTokonowNonLogin()
         observeATCRecomSendTracker()
@@ -1215,11 +1218,11 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        val purchaseProtectionUrl = when(componentTrackDataModel.componentName) {
+        val purchaseProtectionUrl = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
             else -> ""
         }
-        val promoId = when(componentTrackDataModel.componentName) {
+        val promoId = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.SHIPMENT_V2 -> getShipmentPlusText()
             else -> ""
         }
@@ -1661,6 +1664,17 @@ open class DynamicProductDetailFragment :
             )
         )
         goToApplink(appLink)
+    }
+
+    override fun onRecomAddToCartClick(
+        recommendationWidget: RecommendationWidget,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    ) {
+        doActionOrLogin({
+            viewModel.atcRecomNonVariant(recomItem, recomItem.minOrder)
+        })
     }
 
     override fun onRecomAddToCartNonVariantQuantityChangedClick(
@@ -2559,8 +2573,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeATCTokonowData() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
+    private fun observeATCRecomData() {
+        viewLifecycleOwner.observe(viewModel.atcRecom) { data ->
             data.doSuccessOrFail({
                 if (it.data.isNotEmpty()) {
                     view?.showToasterSuccess(it.data)
@@ -2576,13 +2590,21 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeATCRecomSendTracker() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
+        viewLifecycleOwner.observe(viewModel.atcRecomTracker) { data ->
             data.doSuccessOrFail({
-                DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
-                    it.data,
-                    viewModel.userId,
-                    it.data.minOrder
-                )
+                if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow.orFalse()) {
+                    DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder
+                    )
+                } else {
+                    RecommendationCarouselTracking.sendEventAtcClick(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1)
+                    )
+                }
             }, {})
         }
     }
@@ -2981,12 +3003,19 @@ open class DynamicProductDetailFragment :
                         true
                     )
                     if (enableComparisonWidget) {
-                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                            pdpUiUpdater?.updateComparisonDataModel(it.data)
-                            updateUi()
-                        } else {
-                            pdpUiUpdater?.updateRecommendationData(it.data)
-                            updateUi()
+                        when (it.data.layoutType) {
+                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonBpcDataModel(it.data)
+                                updateUi()
+                            }
+                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonDataModel(it.data)
+                                updateUi()
+                            }
+                            else -> {
+                                pdpUiUpdater?.updateRecommendationData(it.data)
+                                updateUi()
+                            }
                         }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
@@ -3087,7 +3116,7 @@ open class DynamicProductDetailFragment :
         removeEndlessScrollListener()
     }
 
-    private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
+    private fun showAtcSuccessToaster(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull().orEmpty(),
             ctaText = getString(R.string.label_oke_pdp)
@@ -3099,7 +3128,7 @@ open class DynamicProductDetailFragment :
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            onSuccessAtcTokoNow(result)
+            showAtcSuccessToaster(result)
             return
         }
 
@@ -5806,12 +5835,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
+        ViewToViewTracker.eventImpressViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId,
             trackingQueue
         )
@@ -5823,12 +5852,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventClickViewToView(
+        ViewToViewTracker.eventClickViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId
         )
         val activity = activity ?: return

@@ -41,7 +41,7 @@ class ShareExperienceViewComponent(
     private val source: Source = Source.PlayRoom,
 ) : ViewComponent(container, idRes) {
 
-    private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+    private val ivShareLink = rootView as IconUnify
 
     private var imgSaveFilePath = ""
     private var bitmap: Bitmap? = null

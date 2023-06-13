@@ -7,15 +7,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status--> |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) |
-| Product Manager | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence) |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | 19 Mar 2021 / <!--start status:GREY-->MA-3.199<!--end status--> <!--start status:GREY-->SA-2.49<!--end status--> |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit#heading=h.2msbh42vwwqv>  |
-| Module Location | `features/logistic/editshipping` |
+| **Status**               | <!--start status:GREEN-->RELEASED<!--end status-->                                                               |
+|--------------------------|------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor**  | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)            |
+| Product Manager          | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)      |
+| Team                     | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                   |
+| Release date             | 19 Mar 2021 / <!--start status:GREY-->MA-3.199<!--end status--> <!--start status:GREY-->SA-2.49<!--end status--> |
+| Module type              | <!--start status:YELLOW-->FEATURE<!--end status-->                                                               |
+| Product PRD              | <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit#heading=h.2msbh42vwwqv>    |
+| Module Location          | `features/logistic/editshipping`                                                                                 |
 
 <!--toc-->
 

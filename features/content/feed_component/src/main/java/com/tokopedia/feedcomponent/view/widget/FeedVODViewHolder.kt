@@ -30,6 +30,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
+import com.tokopedia.content.common.R as contentCommonR
 
 class FeedVODViewHolder @JvmOverloads constructor(
     context: Context,
@@ -93,6 +94,8 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodFrozenView = findViewById(R.id.vod_frozen_view)
         vodLoader = findViewById(R.id.vod_loader)
         vodTimerView = findViewById(R.id.vod_timer_view)
+
+        vodPlayIcon.setImageResource(R.drawable.bg_circle_play_button)
     }
 
     fun setData(
@@ -298,7 +301,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     vodLihatProdukBtn.showWithCondition(mProducts.isNotEmpty())
 
                 }
-                override fun onVideoReadyToPlay() {
+                override fun onVideoReadyToPlay(isPlaying: Boolean) {
                     hideVODLoading()
 
                     if (!isPaused) {
@@ -342,7 +345,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     if (view.count != 0) {
                         val viewText = MethodChecker.fromHtml(
                             context.getString(
-                                R.string.feed_component_viewed_count_text,
+                                contentCommonR.string.feed_component_viewed_count_text,
                                 it.productThousandFormatted(1)
                             )
                         )

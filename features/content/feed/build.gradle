@@ -13,6 +13,7 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+
     defaultConfig {
         multiDexEnabled true
         if (project.hasProperty("benchmark")) {
@@ -20,6 +21,19 @@ android {
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -36,6 +50,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.gradlePlugin.crashlytics
     }
 }
 
@@ -127,9 +142,14 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk

@@ -19,9 +19,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockkStatic
 import io.mockk.verify
 import org.junit.runner.RunWith
@@ -205,16 +203,13 @@ class EditorViewModelTest {
         dataList[3].editList.clear()
 
         // When
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             dataList,
-            onFinish = { _, _ -> }
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+            }
         )
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -237,13 +232,10 @@ class EditorViewModelTest {
 
         // When
         every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        viewModel.finishPage(dataList) { finalUrlList ->
+            // Then
+            assertNotNull(finalUrlList)
         }
-        viewModel.saveToGallery(dataList) { _, _ -> }
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -256,16 +248,13 @@ class EditorViewModelTest {
         // When
         mockkStatic(FileUtil::class)
         every { getTokopediaCacheDir() } returns tokopediaCacheDir
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             dataList,
-            onFinish = { _, _ -> }
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+            }
         )
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Test

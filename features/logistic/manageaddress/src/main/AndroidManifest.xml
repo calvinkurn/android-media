@@ -24,25 +24,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity"
-            android:label="@string/checkout_module_title_activity_shipping_address"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_checkout_address_selection"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".ui.shoplocation.ShopLocationActivity"
             android:label="@string/shop_settings_manage_address"
             android:screenOrientation="portrait"

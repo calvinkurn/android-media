@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Periode sebelumnya" />
 </LinearLayout>

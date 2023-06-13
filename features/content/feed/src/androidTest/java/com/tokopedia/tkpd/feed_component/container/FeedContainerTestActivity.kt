@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.feed_component.container
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.feedplus.test.R
-import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 
 /**

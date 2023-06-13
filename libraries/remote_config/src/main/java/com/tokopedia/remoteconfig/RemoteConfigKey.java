@@ -232,9 +232,13 @@ public class RemoteConfigKey {
 
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
+    public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
+
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
 
     public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
+
+    public static final String IS_USING_NEW_FEED = "android_main_app_show_unified_feed";
 
     public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
 

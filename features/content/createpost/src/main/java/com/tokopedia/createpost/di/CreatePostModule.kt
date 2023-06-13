@@ -25,18 +25,12 @@ import dagger.Provides
  * @author by milhamj on 9/26/18.
  */
 @Module(includes = [CreatePostCommonModule::class, ShopCommonModule::class])
-class CreatePostModule(private val context: Context) {
+class CreatePostModule {
 
     @Provides
     @CreatePostScope
     fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
         return createPostPresenter
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @Provides

@@ -17,7 +17,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -32,6 +34,8 @@ import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -121,6 +125,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getQuestWidgetListUseCase: GetQuestWidgetListUseCase
 
     @RelaxedMockK
+    lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
+    @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
     @RelaxedMockK
@@ -175,7 +181,8 @@ abstract class TokoNowHomeViewModelTestFixture {
             getHomeReferralUseCase,
             referralEvaluateJoinUseCase,
             getCatalogCouponListUseCase,
-            redeemCouponUseCase, playWidgetTools,
+            redeemCouponUseCase, getProductBundleRecomUseCase,
+            playWidgetTools,
             userSession,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
@@ -355,6 +362,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { redeemCouponUseCase.execute(any(), any(), any(), any(), any()) }
     }
 
+    protected fun verifyGetProductBundleRecomUseCaseCalled() {
+        coVerify { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) }
+    }
+
     protected fun verifyGetMiniCartUseCaseCalled() {
         verify { getMiniCartUseCase.setParams(any(), MiniCartSource.TokonowHome) }
         verify { getMiniCartUseCase.execute(any(), any()) }
@@ -453,6 +464,14 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
         coEvery { getCategoryListUseCase.execute(any(), 1) } returns categoryListResponse
+    }
+
+    protected fun onGetProductBundleRecom_thenReturn(productBundleRecomResponse: ProductBundleRecomResponse) {
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } returns productBundleRecomResponse
+    }
+
+    protected fun onGetProductBundleRecom_thenReturn(errorThrowable: Throwable) {
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws  errorThrowable
     }
 
     protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {
@@ -617,6 +636,13 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery {
             referralEvaluateJoinUseCase.execute(any())
         } throws error
+    }
+
+    protected fun getOldRepurchaseProduct(): List<TokoNowProductCardUiModel> {
+        val items = (viewModel.homeLayoutList.value as? Success<HomeLayoutListUiModel>)?.data?.items.orEmpty()
+        val item = items.firstOrNull { it is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
+        val repurchase = item as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
+        return repurchase?.productList.orEmpty()
     }
 
     object UnknownHomeLayout : HomeLayoutUiModel("1") {
