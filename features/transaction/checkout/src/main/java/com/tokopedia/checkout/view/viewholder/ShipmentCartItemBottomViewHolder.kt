@@ -284,7 +284,6 @@ class ShipmentCartItemBottomViewHolder(
                             actionListener?.onInsuranceCheckedForTrackingAnalytics()
                         }
                         actionListener?.onInsuranceChecked(bindingAdapterPosition)
-                        actionListener?.onNeedUpdateRequestData()
                         saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
                     }
                 }
