@@ -41,7 +41,7 @@ TokoFood is a new service that will provide the optimal experience for hungry an
 ###### Chat with DriverPR: <https://github.com/tokopedia/android-tokopedia-core/pull/29924>
 <!--end expand-->
 
-<!--start expand:MA-3.198 & MA-3.200-->
+<!--start expand:MA-3.198 and MA-3.200-->
 ###### Promo in Merchant ListPR: <https://github.com/tokopedia/android-tokopedia-core/pull/29774> Promo in Merchant PagePR: <https://github.com/tokopedia/android-tokopedia-core/pull/29869>
 <!--end expand-->
 
@@ -82,9 +82,9 @@ STATUS
 
 ## **Pages**
 
-- [Home & Category](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989382558/Home+Category)
+- [Home and Category](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989382558/Home+Category)
 - [Merchant](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Decide)
-- [Promo & Purchase](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo)
+- [Promo and Purchase](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo)
 - [Post Purchase](/wiki/spaces/PA/pages/1990198460/Post+Purchase)
 - [Search](https://tokopedia.atlassian.net/l/cp/EV1ajmEu)
 - [Single Activity Navigation](https://tokopedia.atlassian.net/l/cp/UMF9DJkj)

@@ -27,8 +27,8 @@ title: "Purchase & Promo"
 
 
 | ![](../res/purchase_and_promo/purchase_page_above_the_fold.png)<br/> | ![](../res/purchase_and_promo/purchase_page_scrolled.png)<br/> | ![](../res/purchase_and_promo/purchase_promo_page.png)<br/> |
-|-------------------------------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------|
-| Purchase Page (Above the Fold)                                    | Purchase Page (Scrolled)                                    | Promo Page                                               |
+|----------------------------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
+| Purchase Page (Above the Fold)                                       | Purchase Page (Scrolled)                                       | Promo Page                                                  |
 
 ## Flowchart
 
