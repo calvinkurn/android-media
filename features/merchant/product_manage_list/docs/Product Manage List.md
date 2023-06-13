@@ -47,9 +47,9 @@ Product manage list is module for product manage feature. This module consists o
 | ![](res/Navigation%20MPP%20SA.gif)<br/> | ![](res/Navigation%20MPP%20MA.gif)<br/> |
 
 <!--left header table-->
-| Applink Development<br/> | Main Page<br/>`tokopedia-android-internal://marketplace/product-manage-list`<br/>`tokopedia-android-internal://marketplace/product-manage-list?search=[value]`<br/>`tokopedia-android-internal://marketplace/product-manage-list?filter=[id_filter]<br/>`Stock Reminder:`tokopedia-android-internal://marketplace/stock-reminder/{productId}/{title}/{isVariant}` |
+| Applink Development<br/> | Main Page<br/>`tokopedia-android-internal://marketplace/product-manage-list`<br/>`tokopedia-android-internal://marketplace/product-manage-list?search=[value]`<br/>`tokopedia-android-internal://marketplace/product-manage-list?filter=[id_filter]`<br/>Stock Reminder:<br/>`tokopedia-android-internal://marketplace/stock-reminder/{productId}/{title}/{isVariant}` |
 | --- | --- |
-| Applink Production<br/> | Main Page Product Manage SellerApp:`sellerapp://product/manage` `sellerapp://product/manage?search=[value]``sellerapp://product/manage?filter=[id_filter]`Main Page Product Manage MainApp :`tokopedia://seller/product/manage``tokopedia://seller/product/manage?search=[value]``tokopedia://seller/product/manage?filter=[id_filter]`Stock Reminder Page Seller App:`sellerapp://stock-reminder/{productId}/{title}/{isVariant}` |
+| Applink Production<br/> | Main Page Product Manage SellerApp:<br/>`sellerapp://product/manage`<br/>`sellerapp://product/manage?search=[value]`<br/>`sellerapp://product/manage?filter=[id_filter]`<br/>Main Page Product Manage MainApp :<br/>`tokopedia://seller/product/manage`<br/>`tokopedia://seller/product/manage?search=[value]`<br/>`tokopedia://seller/product/manage?filter=[id_filter]`<br/>Stock Reminder Page Seller App:<br/>`sellerapp://stock-reminder/{productId}/{title}/{isVariant}` |
 
 ## Additional Information
 
