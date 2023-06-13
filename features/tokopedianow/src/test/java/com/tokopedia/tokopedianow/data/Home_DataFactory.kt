@@ -16,16 +16,19 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.Data
@@ -71,6 +74,14 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
+                    )
+            ),
+            HomeLayoutResponse(
+                    id = "222332",
+                    layout = "bundling_widget",
+                    header = Header(
+                        name = "Product Bundling",
+                        serverTimeUnix = 0
                     )
             )
     )
@@ -512,4 +523,19 @@ fun createLocalCacheModel(
         warehouses = warehouses,
         service_type = serviceType
     )
+}
+
+fun createHomeProductCardUiModel(
+    channelId: String = "",
+    productId: String = "",
+    shopId: String = "",
+    quantity: Int = 0,
+    stock: Int = 0,
+    parentId: String = "",
+    product: ProductCardModel = ProductCardModel(),
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
+): TokoNowProductCardUiModel {
+    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
 }
