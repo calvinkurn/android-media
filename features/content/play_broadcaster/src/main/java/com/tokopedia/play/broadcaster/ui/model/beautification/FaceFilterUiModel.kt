@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.model.beautification
 import android.os.Parcelable
 import com.tokopedia.content.common.util.toFuzzyPercent
 import com.tokopedia.content.common.util.toPercent
+import com.tokopedia.content.common.util.toUnitInterval
 import com.tokopedia.iconunify.IconUnify
 import kotlinx.android.parcel.Parcelize
 
@@ -42,7 +43,7 @@ data class FaceFilterUiModel(
     fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
         return copy(
             active = newValueFromSlider > 0,
-            value = newValueFromSlider.toFuzzyPercent(),
+            value = newValueFromSlider.toUnitInterval(),
         )
     }
 

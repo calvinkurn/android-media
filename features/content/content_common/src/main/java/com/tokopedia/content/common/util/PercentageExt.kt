@@ -5,16 +5,10 @@ package com.tokopedia.content.common.util
  */
 
 fun Double.toPercent(): Int {
-    /**
-     * result : range from 0 - 100
-     */
     return (this * PERCENTAGE_MULTIPLIER).toInt()
 }
 
-fun Int.toFuzzyPercent(): Double {
-    /**
-     * result : range from 0.0 - 1.0
-     */
+fun Int.toUnitInterval(): Double {
     return this / PERCENTAGE_MULTIPLIER.toDouble()
 }
 
