@@ -2943,19 +2943,12 @@ open class ProductManageFragment :
                 it,
                 getString(R.string.product_manage_confirm_inactive_dt_product_desc)
             )
-
-            htmlText.urlList.getOrNull(Int.ZERO)?.apply {
-                setOnClickListener {
-                    RouteManager.route(it, this.linkUrl)
-                }
-            }
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
                         R.string.product_manage_confirm_inactive_dt_product_title
                     )
                 )
-
                 setDescription(htmlText.spannedString ?: String.EMPTY)
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
