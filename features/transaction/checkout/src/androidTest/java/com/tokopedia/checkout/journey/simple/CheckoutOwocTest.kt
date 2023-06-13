@@ -25,6 +25,7 @@ class CheckoutOwocTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    // still need mock gql response using interceptor because use ratesV3 usecase which recreate GraphqlUseCase for every hit
     private fun setup(safResponse: Int = R.raw.saf_bundle_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)

@@ -5,11 +5,13 @@ import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.view.DataProvider
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.verifyOrder
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
@@ -91,6 +93,23 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
         verifyOrder {
             view.showPaymentFeeData(platformFee.response)
         }
+    }
+
+    @Test
+    fun setDynamicPlatformFeeReturnsSuccess() {
+        // Given
+        val paymentFee = ShipmentPaymentFeeModel(
+            title = "testing",
+            fee = 10_000.0,
+            minRange = 1.0,
+            maxRange = 1_000_000.0
+        )
+
+        // When
+        presenter.setPlatformFeeData(paymentFee)
+
+        // Then
+        assertEquals(paymentFee, presenter.shipmentCostModel.value.dynamicPlatformFee)
     }
 
     @Test
