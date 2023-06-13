@@ -89,6 +89,7 @@ import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
