@@ -25,9 +25,7 @@ labels:
 
 ## Overview
 
-Product manage list is module for product manage feature. This module consists of several sub features. they are stock reminder, bulk edit, filter, edit stock, edit price, product preview, delete product, duplicate product, advertise products, broadcast chat and make superior products. You can also see about the feature, GQL Call and etc in this 
-
-[link](https://docs.google.com/spreadsheets/d/1Xcq_gQXHVNynz37eFuOIWLv8x21jN6bhztQOcMOjwdc/edit?usp=sharing)
+Product manage list is module for product manage feature. This module consists of several sub features. they are stock reminder, bulk edit, filter, edit stock, edit price, product preview, delete product, duplicate product, advertise products, broadcast chat and make superior products. You can also see about the feature, GQL Call and etc in this [link](https://docs.google.com/spreadsheets/d/1Xcq_gQXHVNynz37eFuOIWLv8x21jN6bhztQOcMOjwdc/edit?usp=sharing)
 
 
 
