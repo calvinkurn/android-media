@@ -98,7 +98,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
                 return compressedPath
             } else {
-                logCompressionError(compression.failureMessage)
+                logCompressionError(cache, compression.failureMessage)
 
                 return originalPath
             }

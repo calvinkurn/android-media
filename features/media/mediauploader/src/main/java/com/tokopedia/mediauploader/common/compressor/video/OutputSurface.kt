@@ -63,13 +63,12 @@ class OutputSurface : OnFrameAvailableListener {
      * data is available.
      */
     fun awaitNewImage() {
-        val timeOutMS = 100
         synchronized(mFrameSyncObject) {
             while (!mFrameAvailable) {
                 try {
                     // Wait for onFrameAvailable() to signal us.  Use a timeout to avoid
                     // stalling the test if it doesn't arrive.
-                    mFrameSyncObject.wait(timeOutMS.toLong())
+                    mFrameSyncObject.wait(STALLING_TIMEOUT.toLong())
                     if (!mFrameAvailable) {
                         throw RuntimeException("Surface frame wait timed out")
                     }
@@ -98,5 +97,9 @@ class OutputSurface : OnFrameAvailableListener {
             mFrameAvailable = true
             mFrameSyncObject.notifyAll()
         }
+    }
+
+    companion object {
+        private const val STALLING_TIMEOUT = 100
     }
 }

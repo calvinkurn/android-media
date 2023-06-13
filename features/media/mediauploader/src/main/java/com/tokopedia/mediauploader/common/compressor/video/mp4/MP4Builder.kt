@@ -64,8 +64,8 @@ class MP4Builder {
                 getBox(fc)
                 setDataOffset(dataOffset)
             }
-            dataOffset += 16
-            wroteSinceLastMdat += 16
+            dataOffset += DATA_OFFSET
+            wroteSinceLastMdat += DATA_OFFSET
             writeNewMdat = false
         }
 
@@ -73,7 +73,7 @@ class MP4Builder {
         wroteSinceLastMdat += bufferInfo.size.toLong()
 
         var flush = false
-        if (wroteSinceLastMdat >= 32 * 1024) {
+        if (wroteSinceLastMdat >= MDAT_OFFSET) {
             flushCurrentMdat()
             writeNewMdat = true
             flush = true
@@ -83,11 +83,11 @@ class MP4Builder {
         currentMp4Movie.addSample(trackIndex, dataOffset, bufferInfo)
 
         if (!isAudio) {
-            byteBuf.position(bufferInfo.offset + 4)
+            byteBuf.position(bufferInfo.offset + BUFFER_OFFSET)
             byteBuf.limit(bufferInfo.offset + bufferInfo.size)
 
             sizeBuffer.position(0)
-            sizeBuffer.putInt(bufferInfo.size - 4)
+            sizeBuffer.putInt(bufferInfo.size - BUFFER_OFFSET)
             sizeBuffer.position(0)
             fc.write(sizeBuffer)
         } else {
@@ -131,10 +131,7 @@ class MP4Builder {
 
     private fun createFileTypeBox(): FileTypeBox {
         // completed list can be found at https://www.ftyps.com/
-        val minorBrands = listOf(
-            "isom", "iso2", "mp41"
-        )
-
+        val minorBrands = listOf("isom", "iso2", "mp41")
         return FileTypeBox("isom", 0, minorBrands)
     }
 
@@ -229,29 +226,29 @@ class MP4Builder {
 
         val hdlr = HandlerBox()
         hdlr.apply {
-            name = if (track.isAudio()) "SoundHandle" else "VideoHandle"
-            handlerType = track.getHandler()
+            name = if (track.isAudio()) SoundHandle else VideoHandle
+            handlerType = track.getHandler().name
         }
         mdia.addBox(hdlr)
 
         val minf = MediaInformationBox()
         when {
-            track.getHandler() == "vide" -> {
+            track.getHandler() == Mp4Handler.Vide -> {
                 minf.addBox(VideoMediaHeaderBox())
             }
-            track.getHandler() == "soun" -> {
+            track.getHandler() == Mp4Handler.Soun -> {
                 minf.addBox(SoundMediaHeaderBox())
             }
-            track.getHandler() == "text" -> {
+            track.getHandler() == Mp4Handler.Text -> {
                 minf.addBox(NullMediaHeaderBox())
             }
-            track.getHandler() == "subt" -> {
+            track.getHandler() == Mp4Handler.Subt -> {
                 minf.addBox(SubtitleMediaHeaderBox())
             }
-            track.getHandler() == "hint" -> {
+            track.getHandler() == Mp4Handler.Hint -> {
                 minf.addBox(HintMediaHeaderBox())
             }
-            track.getHandler() == "sbtl" -> {
+            track.getHandler() == Mp4Handler.Sbtl -> {
                 minf.addBox(NullMediaHeaderBox())
             }
         }
@@ -384,5 +381,11 @@ class MP4Builder {
         val stco = StaticChunkOffsetBox()
         stco.chunkOffsets = chunkOffsetsLong
         stbl.addBox(stco)
+    }
+
+    companion object {
+        private const val DATA_OFFSET = 16
+        private const val MDAT_OFFSET = 32 * 1024
+        private const val BUFFER_OFFSET = 4
     }
 }

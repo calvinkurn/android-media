@@ -19,7 +19,7 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
     private var trackId: Long = 0
     private val samples = ArrayList<Sample>()
     private var duration: Long = 0
-    private var handler: String
+    private var handler: Mp4Handler
     private var sampleDescriptionBox: SampleDescriptionBox
     private var syncSamples: LinkedList<Int>? = null
     private var timeScale = 0
@@ -50,18 +50,19 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
         )
 
         trackId = id.toLong()
+
         if (!isAudio) {
-            sampleDurations.add(3015.toLong())
-            duration = 3015
+            sampleDurations.add(SAMPLE_DURATION)
+            duration = SAMPLE_DURATION
             width = format.getInteger(MediaFormat.KEY_WIDTH)
             height = format.getInteger(MediaFormat.KEY_HEIGHT)
-            timeScale = 90000
+            timeScale = TIME_SCALE
             syncSamples = LinkedList()
-            handler = "vide"
+            handler = Mp4Handler.Vide
 
             sampleDescriptionBox = SampleDescriptionBox()
             val mime = format.getString(MediaFormat.KEY_MIME)
-            if (mime == "video/avc") {
+            if (mime == DEFAULT_MIME_TYPE) {
                 val visualSampleEntry =
                     VisualSampleEntry(VisualSampleEntry.TYPE3).setup(width, height)
 
@@ -192,17 +193,19 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
                 visualSampleEntry.addBox(avcConfigurationBox)
                 sampleDescriptionBox.addBox(visualSampleEntry)
 
-            } else if (mime == "video/mp4v") {
-                val visualSampleEntry =
-                    VisualSampleEntry(VisualSampleEntry.TYPE1).setup(width, height)
+            } else if (mime == MP4V_MIME_TYPE) {
+                val visualSampleEntry = VisualSampleEntry(
+                    VisualSampleEntry.TYPE1
+                ).setup(width, height)
+
                 sampleDescriptionBox.addBox(visualSampleEntry)
             }
         } else {
-            sampleDurations.add(1024.toLong())
-            duration = 1024
+            sampleDurations.add(DEFAULT_DURATION.toLong())
+            duration = DEFAULT_DURATION.toLong()
             volume = 1f
             timeScale = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-            handler = "soun"
+            handler = Mp4Handler.Soun
             sampleDescriptionBox = SampleDescriptionBox()
 
             val audioSampleEntry = AudioSampleEntry(AudioSampleEntry.TYPE3).setup(format)
@@ -259,7 +262,7 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
 
     fun getDuration(): Long = duration
 
-    fun getHandler(): String = handler
+    fun getHandler() = handler
 
     fun getSampleDescriptionBox(): SampleDescriptionBox = sampleDescriptionBox
 
@@ -291,20 +294,20 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
     private fun DecoderConfigDescriptor.setup(): DecoderConfigDescriptor = apply {
         objectTypeIndication = 0x40
         streamType = 5
-        bufferSizeDB = 1536
-        maxBitRate = 96000
-        avgBitRate = 96000
+        bufferSizeDB = BUFFER_SIZE
+        maxBitRate = DEFAULT_BITRATE
+        avgBitRate = DEFAULT_BITRATE
     }
 
     private fun VisualSampleEntry.setup(w: Int, h: Int): VisualSampleEntry = apply {
         dataReferenceIndex = 1
-        depth = 24
         frameCount = 1
-        horizresolution = 72.0
-        vertresolution = 72.0
+        depth = DEFAULT_VISUAL_ENTRY_DEPTH
+        horizresolution = DEFAULT_HORIZONTAL_RES
+        vertresolution = DEFAULT_HORIZONTAL_RES
         width = w
         height = h
-        compressorname = "AVC Coding"
+        compressorname = COMPRESSOR_NAME
     }
 
     private fun AudioSampleEntry.setup(format: MediaFormat): AudioSampleEntry = apply {
@@ -315,5 +318,22 @@ class Track(id: Int, format: MediaFormat, audio: Boolean) {
         sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE).toLong()
         dataReferenceIndex = 1
         sampleSize = 16
+    }
+
+    companion object {
+        private const val COMPRESSOR_NAME = "AVC Coding"
+
+        private const val SAMPLE_DURATION = 3015L
+        private const val DEFAULT_DURATION = 1024
+        private const val TIME_SCALE = 90000
+
+        private const val BUFFER_SIZE = 1536
+        private const val DEFAULT_BITRATE = 96000L
+
+        private const val DEFAULT_HORIZONTAL_RES = 72.0
+        private const val DEFAULT_VISUAL_ENTRY_DEPTH = 24
+
+        private const val DEFAULT_MIME_TYPE = "video/avc"
+        private const val MP4V_MIME_TYPE = "video/mp4v"
     }
 }

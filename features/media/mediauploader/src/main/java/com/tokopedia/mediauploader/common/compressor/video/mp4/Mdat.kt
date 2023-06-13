@@ -39,10 +39,10 @@ class Mdat : Box {
 
     override fun getType(): String = "mdat"
 
-    private fun isSmallBox(contentSize: Long): Boolean = contentSize + 8 < 4294967296L
+    private fun isSmallBox(contentSize: Long) = contentSize + 8 < MDAT_SMALL_BOX_THRESHOLD
 
     override fun getBox(writableByteChannel: WritableByteChannel) {
-        val bb = ByteBuffer.allocate(16)
+        val bb = ByteBuffer.allocate(MDAT_BOX_ALLOCATION_CAPACITY)
         val size = size
         if (isSmallBox(size)) {
             if (size >= 0 && size <= 1L shl 32) {
@@ -72,4 +72,9 @@ class Mdat : Box {
         contentSize: Long,
         boxParser: BoxParser?
     ) = Unit
+
+    companion object {
+        private const val MDAT_SMALL_BOX_THRESHOLD = 4294967296L // 32 bit
+        private const val MDAT_BOX_ALLOCATION_CAPACITY = 16
+    }
 }

@@ -18,20 +18,12 @@ class Mp4Movie {
         cacheFile = file
     }
 
-    fun setRotation(angle: Int) {
-        when (angle) {
-            0 -> {
-                matrix = Matrix.ROTATE_0
-            }
-            90 -> {
-                matrix = Matrix.ROTATE_90
-            }
-            180 -> {
-                matrix = Matrix.ROTATE_180
-            }
-            270 -> {
-                matrix = Matrix.ROTATE_270
-            }
+    fun setRotation(rotation: Rotation?) {
+        matrix = when (rotation) {
+            Rotation.R90 -> Matrix.ROTATE_90
+            Rotation.R180 -> Matrix.ROTATE_180
+            Rotation.R270 -> Matrix.ROTATE_270
+            else -> Matrix.ROTATE_0
         }
     }
 

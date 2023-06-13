@@ -132,13 +132,13 @@ object Compressor {
                 val bufferInfo = MediaCodec.BufferInfo()
 
                 // Setup mp4 movie
-                val movie = Utils.setUpMP4Movie(info.rotation, cacheFile)
+                val movie = CompressionUtils.setUpMP4Movie(info.rotation, cacheFile)
 
                 // MediaMuxer outputs MP4 in this app
                 val mediaMuxer = MP4Builder().createMovie(movie)
 
                 // Start with video track
-                val videoIndex = Utils.findTrack(extractor, VIDEO_MIME_TYPE_PREFIX)
+                val videoIndex = CompressionUtils.findTrack(extractor, VIDEO_MIME_TYPE_PREFIX)
 
                 extractor.selectTrack(videoIndex)
                 extractor.seekTo(0, MediaExtractor.SEEK_TO_PREVIOUS_SYNC)
@@ -152,10 +152,10 @@ object Compressor {
                 )
 
                 // Set output format
-                Utils.setOutputFileParameters(inputFormat, outputFormat, info.newBitrate)
+                CompressionUtils.setOutputFileParameters(inputFormat, outputFormat, info.newBitrate)
 
                 val decoder: MediaCodec
-                val encoder = prepareEncoder(outputFormat, Utils.hasQTI())
+                val encoder = prepareEncoder(outputFormat, CompressionUtils.hasQTI())
 
                 val inputSurface: InputSurface
                 val outputSurface: OutputSurface
@@ -386,7 +386,7 @@ object Compressor {
     }
 
     private fun processAudio(muxer: MP4Builder, bufferInfo: MediaCodec.BufferInfo, extractor: MediaExtractor) {
-        val audioIndex = Utils.findTrack(extractor, AUDIO_MIME_TYPE_PREFIX)
+        val audioIndex = CompressionUtils.findTrack(extractor, AUDIO_MIME_TYPE_PREFIX)
 
         if (audioIndex >= 0) {
             extractor.selectTrack(audioIndex)

@@ -7,9 +7,10 @@ import android.media.MediaFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.tokopedia.mediauploader.common.compressor.video.mp4.Mp4Movie
+import com.tokopedia.mediauploader.common.compressor.video.mp4.Rotation
 import java.io.File
 
-object Utils {
+object CompressionUtils {
 
     // 1 second between I-frames
     private const val I_FRAME_INTERVAL = 1
@@ -25,7 +26,7 @@ object Utils {
 
         movie.apply {
             setCacheFile(cacheFile)
-            setRotation(rotation)
+            setRotation(Rotation.map(rotation))
         }
 
         return movie
