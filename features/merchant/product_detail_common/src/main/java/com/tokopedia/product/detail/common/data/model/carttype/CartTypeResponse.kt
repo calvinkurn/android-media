@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common.data.model.carttype
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ifNullOrEmpty
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 data class CartRedirection(
@@ -48,7 +49,12 @@ data class CartTypeData(
     @SerializedName("override_buttons")
     @Expose
     var overrideButtons: List<AvailableButton> = listOf()
-)
+) {
+
+    // especially PDP, VBS as is
+    val availableButtonsPriority: List<AvailableButton>
+        get() = overrideButtons.ifNullOrEmpty { availableButtons }
+}
 
 data class AvailableButton(
     @SerializedName("cart_type")

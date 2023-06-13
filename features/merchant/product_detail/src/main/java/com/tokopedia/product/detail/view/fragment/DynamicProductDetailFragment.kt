@@ -2724,7 +2724,7 @@ open class DynamicProductDetailFragment :
         viewModel.getDynamicProductInfoP1?.let {
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
-                if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
+                if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
                     ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
@@ -2736,7 +2736,7 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                cartTypeData?.availableButtons?.firstOrNull()
+                cartTypeData?.availableButtonsPriority?.firstOrNull()
                 ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
