@@ -3,11 +3,19 @@ package com.tokopedia.people.views.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.header.compose.NestHeaderVariant
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.viewmodels.UserProfileSettingsViewModel
@@ -44,12 +52,29 @@ class ProfileSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-        binding = ActivityUserProfileSettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        binding = ActivityUserProfileSettingsBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+        setContent {
+            NestTheme {
+                Surface {
+                    Column {
+                        NestHeader(
+                            variant = NestHeaderVariant.Default,
+                            type = NestHeaderType.SingleLine(
+                                onBackClicked = {
+                                    onBackPressedDispatcher.onBackPressed()
+                                },
+                                title = getString(R.string.up_profile_settings_title)
+                            )
+                        )
+                    }
+                }
+            }
+        }
 
-        setupView()
-        setupListener()
-        setupObserver()
+//        setupView()
+//        setupListener()
+//        setupObserver()
     }
 
     private fun inject() {
