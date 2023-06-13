@@ -608,12 +608,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                             it.startActivityForResult(mIntent, REQ_CODE_MILESTONE_WIDGET)
                         }
                     }
+
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
                         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
                         setupShopSharing()
                     }
                 }
             }
+
             is MilestoneFinishMissionUiModel -> {
                 activity?.let {
                     val mIntent = RouteManager.getIntent(it, mission.getWebViewAppLink())
@@ -765,21 +767,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showUnificationWidgetCoachMark(anchor: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.unificationCoachMarkStatus
-        if (isEligibleCoachMark) {
-            if (this.unificationWidgetTitleView == null) {
-                this.unificationWidgetTitleView = anchor
+        val isEligibleCoachMark = !coachMarkPrefHelper.hasUnificationCoachMarkBeenShown
+        if (this.unificationWidgetTitleView == null && isEligibleCoachMark) {
+            this.unificationWidgetTitleView = anchor
 
-                context?.let {
-                    unificationWidgetCoachMark = CoachMark2(it).apply {
-                        simpleCloseIcon?.setOnClickListener {
-                            coachMarkPrefHelper.saveUnificationMarkFlag()
-                            unificationWidgetCoachMark = null
-                            dismissCoachMark()
-                        }
+            context?.let {
+                unificationWidgetCoachMark = CoachMark2(it).apply {
+                    simpleCloseIcon?.setOnClickListener {
+                        coachMarkPrefHelper.saveUnificationMarkFlag()
+                        unificationWidgetCoachMark = null
+                        dismissCoachMark()
                     }
-                    showUnificationCoachMarkWhenVisible()
                 }
+                showUnificationCoachMarkWhenVisible()
             }
         }
     }
@@ -1062,6 +1062,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     ), filterType = filterType
                 )
             }
+
             else -> {
                 filter.copy(
                     perWeek = CalendarFilterDataKeyUiModel.DateRange(
@@ -1383,9 +1384,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             is ShareModel.CopyLink -> {
                 SellerHomeConst.SHOP_SHARE_DEFAULT_CHANNEL
             }
+
             is ShareModel.Others -> {
                 SellerHomeConst.SHOP_SHARE_OTHERS_CHANNEL
             }
+
             else -> shareModel.socialMediaName.orEmpty()
         }
         SellerHomeTracking.sendMilestoneMissionShareClickEvent(socialMediaName)
@@ -1440,6 +1443,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setupShopState(result.data.shopState)
                     handlePersonaStatus(result.data.personaStatus)
                 }
+
                 is Fail -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE, true
@@ -1460,6 +1464,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shouldVisible = false
                 )
             }
+
             STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
                 showPersonaBottomSheet(personaStatus)
                 sharedPref.setPersonaEntryPointVisibility(
@@ -1467,6 +1472,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shouldVisible = true
                 )
             }
+
             STATUS_PERSONA_SHOW_POPUP -> {
                 sharedPref.setPersonaEntryPointVisibility(
                     userId = userSession.userId,
@@ -1729,6 +1735,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 sahGlobalError.gone()
                 emptyState?.showMessageExceptionError(throwable)
             }
+
             GlobalError.PAGE_NOT_FOUND -> showEmptyState()
             else -> {
                 sahGlobalError.run {
@@ -1822,6 +1829,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     )
                     onSuccessGetTickers(it.data)
                 }
+
                 is Fail -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, false
@@ -1859,6 +1867,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     shopShareData = it.data
                 }
+
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
@@ -1980,9 +1989,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             isOfficialStore -> {
                 showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
+
             isPowerMerchant -> {
                 showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
+
             else -> {
                 viewBgShopStatus.gone()
             }
@@ -2042,10 +2053,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             WidgetType.MULTI_LINE_GRAPH -> stopCustomMetric(
                 SELLER_HOME_MULTI_LINE_GRAPH_TRACE, isFromCache
             )
+
             WidgetType.ANNOUNCEMENT -> stopCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE, isFromCache)
             WidgetType.RECOMMENDATION -> stopCustomMetric(
                 SELLER_HOME_RECOMMENDATION_TRACE, isFromCache
             )
+
             WidgetType.MILESTONE -> stopCustomMetric(
                 SELLER_HOME_MILESTONE_TRACE, isFromCache
             )
@@ -2397,6 +2410,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         widget
                     }
                 }
+
                 else -> widget
             }
         }
@@ -2477,8 +2491,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showUnificationCoachMarkWhenVisible() {
-        val isNotEligibleCoachMark = coachMarkPrefHelper.unificationCoachMarkStatus
-        if (unificationWidgetTitleView == null || isNotEligibleCoachMark) {
+        val hasUnificationCoachMarkBeenShown = coachMarkPrefHelper.hasUnificationCoachMarkBeenShown
+        if (unificationWidgetTitleView == null || hasUnificationCoachMarkBeenShown) {
             return
         }
 
@@ -2582,6 +2596,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
                 String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey)
             }
+
             is PostListWidgetUiModel -> {
                 dismissObjectIDs =
                     element.data?.postPagers?.flatMap { it.postList }?.filter { it.isChecked }
@@ -2594,6 +2609,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
                 String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
             }
+
             else -> {
                 dismissObjectIDs = emptyList()
                 dismissSign = String.EMPTY
@@ -2624,10 +2640,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shouldUpdateWidget = true
                     getDismissalAnnouncementWidget(it, result)
                 }
+
                 it.id == result.widgetId && it is PostListWidgetUiModel -> {
                     shouldUpdateWidget = true
                     getDismissalPostListWidget(it, result)
                 }
+
                 else -> it
             }
         }
@@ -2686,6 +2704,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             is AnnouncementWidgetUiModel -> {
                 SellerHomeTracking.sendClickWidgetAnnouncementCancelDismissalEvent(element.dataKey)
             }
+
             is PostListWidgetUiModel -> {
                 val numberOfPosts =
                     element.data?.postPagers?.flatMap { it.postList }?.count { it.isChecked }

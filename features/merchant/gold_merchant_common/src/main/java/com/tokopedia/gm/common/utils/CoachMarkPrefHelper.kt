@@ -16,7 +16,7 @@ class CoachMarkPrefHelper @Inject constructor(
         const val KEY_UNIFICATION_WIDGET_COACH_MARK = "unification_widget_coach_mark_key"
     }
 
-    val unificationCoachMarkStatus: Boolean
+    val hasUnificationCoachMarkBeenShown: Boolean
         get() = getBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, false)
 
     fun saveUnificationMarkFlag() {
