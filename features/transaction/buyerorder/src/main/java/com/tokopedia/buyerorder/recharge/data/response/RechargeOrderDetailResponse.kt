@@ -1,7 +1,10 @@
 package com.tokopedia.buyerorder.recharge.data.response
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by furqan on 26/10/2021
@@ -46,7 +49,9 @@ class RechargeOrderDetail(
         @field:SerializedName("additionalTickerInfo")
         val additionalTickerInfo: List<AdditionalTickerInfo> = emptyList(),
         @field:SerializedName("purchasedItems")
-        val purchasedItems: List<PurchasedItem> = emptyList()
+        val purchasedItems: List<PurchasedItem> = emptyList(),
+        @field:SerializedName("digitalPaymentInfoMessage")
+        val digitalPaymentInfoMessage: DigitalPaymentInfoMessage = DigitalPaymentInfoMessage()
 ) {
     class Response(
             @field:SerializedName("orderDetails")
@@ -222,3 +227,15 @@ class AdditionalTickerInfo(
         @field:SerializedName("urlText")
         val urlText: String = ""
 )
+
+@Parcelize
+data class DigitalPaymentInfoMessage(
+    @field:SerializedName("message")
+    val message: String = "",
+    @field:SerializedName("urlText")
+    val urlText: String = "",
+    @field:SerializedName("appLink")
+    val appLink: String = "",
+    @field:SerializedName("webLink")
+    val webLink: String = "",
+): Parcelable

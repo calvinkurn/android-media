@@ -127,4 +127,6 @@
     <string name="dialog_void_emoney_description"><![CDATA[Proses pembatalan membutuhkan waktu <strong>paling lambat 2x24 jam</strong>. Dana akan dikembalikan ke metode pembayaran yang kamu pilih.]]></string>
     <string name="dialog_void_emoney_primary_cta_label">Ya, Batalkan</string>
     <string name="dialog_void_emoney_secondary_cta_label">Kembali</string>
+
+    <string name="payment_info_string_combine">%s %s</string>
 </resources>

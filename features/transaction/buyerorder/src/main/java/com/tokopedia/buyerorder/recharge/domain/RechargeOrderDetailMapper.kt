@@ -73,6 +73,7 @@ class RechargeOrderDetailMapper {
                             }.toList(),
                             totalPriceLabel = orderDetails.paymentData.label,
                             totalPrice = orderDetails.paymentData.value,
+                            digitalPaymentInfoMessage = orderDetails.digitalPaymentInfoMessage,
                             additionalTicker = additionalTickerInfo
                     ),
                     helpUrl = orderDetails.contactUs.helpUrl,

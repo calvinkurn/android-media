@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.recharge.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorder.recharge.data.response.DigitalPaymentInfoMessage
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.parcel.Parcelize
@@ -15,6 +16,7 @@ data class RechargeOrderDetailPaymentModel(
         val paymentDetails: List<RechargeOrderDetailSimpleModel>,
         val totalPriceLabel: String,
         val totalPrice: String,
+        val digitalPaymentInfoMessage: DigitalPaymentInfoMessage?,
         val additionalTicker: RechargeOrderDetailTickerModel?
 ) : Parcelable, Visitable<RechargeOrderDetailTypeFactory> {
     override fun type(typeFactory: RechargeOrderDetailTypeFactory?): Int =
