@@ -457,11 +457,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.NOT_STARTED -> {
                     btnUbahKupon.apply {
                         visible()
-                        if (data.isEditable) {
-                            enable()
-                        } else {
-                            disable()
-                        }
+                        if (data.isSubsidy == FALSE) return
+                        isEnabled = data.isEditable
                     }
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -735,9 +732,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             if (data.isSubsidy == FALSE) return
             val wording =
                 if (data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toLong() == data.voucherQuota) {
-                    "(Semua quota disubsidi)"
+                    getString(R.string.smvc_all_quota_subsidized_label)
                 } else {
-                    "(${data.subsidyDetail.quotaSubsidized.bookedGlobalQuota} quota disubsidi)"
+                    getString(
+                        R.string.smvc_some_quota_subsidized_placeholder,
+                        data.subsidyDetail.quotaSubsidized.bookedGlobalQuota,
+                        data.voucherQuota
+                    )
                 }
             tpgVoucherQuotaSubsidyLabel.text = wording
         }

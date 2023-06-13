@@ -255,6 +255,8 @@
     <string name="smvc_placeholder_recap_voucher_name">Kupon %s telah berakhir!</string>
     <string name="smvc_recap_sub_text">Yuk, cek performa kuponmu di bawah ini</string>
     <string name="smvc_total_voucher_performance_label">Total Performa Kupon</string>
+    <string name="smvc_all_quota_subsidized_label">(Semua quota disubsidi)</string>
+    <string name="smvc_some_quota_subsidized_placeholder">(%d dari %2d quota disubsidi)</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
