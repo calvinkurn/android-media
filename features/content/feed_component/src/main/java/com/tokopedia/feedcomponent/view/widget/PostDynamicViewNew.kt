@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -87,12 +88,12 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -210,6 +211,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val gridList: RecyclerView = findViewById(R.id.gridList)
     private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
+    private val layoutVideo: PlayerView = findViewById(R.id.layout_video)
+    private val layoutIconVolume: ImageView = findViewById(R.id.volume_icon)
+    private val layoutTimerView: Typography = findViewById(R.id.timer_view)
+    private val layoutLoaderView: LoaderUnify = findViewById(R.id.loader)
+    private val layoutIcPlay: ImageUnify = findViewById(R.id.ic_play)
+    private val videoPreviewImage: ImageUnify = findViewById(R.id.videoPreviewImage)
+
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
@@ -1226,15 +1234,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
             productVideoJob = scope.launch {
                 if (videoPlayer == null)
                     videoPlayer = FeedExoPlayer(context)
-                layout_video?.player = videoPlayer?.getExoPlayer()
-                layout_video?.videoSurfaceView?.setOnClickListener {
-                    changeMuteStateVideo(volume_icon)
-                    setMuteUnmuteSgcVideo(volume_icon, true, feedMedia.type)
+                layoutVideo.player = videoPlayer?.getExoPlayer()
+                layoutVideo.videoSurfaceView?.setOnClickListener {
+                    changeMuteStateVideo(layoutIconVolume)
+                    setMuteUnmuteSgcVideo(layoutIconVolume, true, feedMedia.type)
 
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                volume_icon?.setImageResource(
+                layoutIconVolume.setImageResource(
                     if (!GridPostAdapter.isMute) com.tokopedia.iconunify.R.drawable.iconunify_volume_up
                     else com.tokopedia.iconunify.R.drawable.iconunify_volume_mute
                 )
@@ -1245,12 +1253,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoReadyToPlay(isPlaying: Boolean) {
                         hideVideoLoading()
-                        timer_view?.visible()
+                        layoutTimerView.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
                         object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
-                                timer_view?.text =
+                                layoutTimerView.text =
                                     String.format(
                                         "%02d:%02d",
                                         (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
@@ -1259,8 +1267,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
 
                             override fun onFinish() {
-                                timer_view?.gone()
-                                volume_icon?.gone()
+                                layoutTimerView.gone()
+                                layoutIconVolume.gone()
                             }
                         }.start()
                     }
@@ -1415,24 +1423,24 @@ class PostDynamicViewNew @JvmOverloads constructor(
         GridPostAdapter.isMute = !GridPostAdapter.isMute
         toggleVolume(GridPostAdapter.isMute)
         if (GridPostAdapter.isMute) {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute_large)
+            volumeIcon.setImageResource(R.drawable.ic_feed_volume_mute_large)
         } else {
-            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up_large)
+            volumeIcon.setImageResource(R.drawable.ic_feed_volume_up_large)
         }
     }
 
 
     private fun hideVideoLoading() {
-        loader?.gone()
-        ic_play?.gone()
-        timer_view?.visible()
-        videoPreviewImage?.gone()
+        layoutLoaderView.gone()
+        layoutIcPlay.gone()
+        layoutTimerView.visible()
+        videoPreviewImage.gone()
     }
 
     private fun showVideoLoading() {
-        loader?.animate()
-        loader?.visible()
-        ic_play?.visible()
+        layoutLoaderView.animate()
+        layoutLoaderView.visible()
+        layoutIcPlay.visible()
     }
 
     private fun toggleVolume(isMute: Boolean) {
@@ -1734,7 +1742,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null
-            layout_video?.player = null
+            layoutVideo?.player = null
         }
 
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
