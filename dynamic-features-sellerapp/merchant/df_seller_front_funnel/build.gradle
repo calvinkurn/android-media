@@ -58,5 +58,6 @@ dependencies {
     implementation project(rootProject.ext.app.sellerapp)
     implementation projectOrAar(rootProject.ext.features.sellerPersona)
     implementation projectOrAar(rootProject.ext.features.statistic)
+    implementation projectOrAar(rootProject.ext.features.shopScore)
 
 }
