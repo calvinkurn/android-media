@@ -12,8 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
-import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.partnerkyc.presentation.utils.PartnerWebAppInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
@@ -22,7 +21,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 
-class PartnerKycFragment: BaseWebViewFragment() {
+class PartnerKycFragment : BaseWebViewFragment() {
 
     override fun getUrl(): String {
         return arguments?.getString(KEY_URL) ?: ""
@@ -69,14 +68,14 @@ class PartnerKycFragment: BaseWebViewFragment() {
     }
 
     private fun takePictureFromCamera(docType: String?, lang: String?) {
-        val applink = if (docType == HomeCreditCameraV2Fragment.TYPE_KTP) {
+        val applink = if (docType == ApplinkConstInternalFintech.TYPE_KTP) {
             ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE
         } else {
             ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE
         }
 
         val intent = RouteManager.getIntent(context, applink)
-        intent.putExtra(HomeCreditRegisterActivity.isV2, true)
+        intent.putExtra(ApplinkConstInternalFintech.isV2, true)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
@@ -124,8 +123,8 @@ class PartnerKycFragment: BaseWebViewFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK) {
-            val imageFilePath = data?.getStringExtra(HomeCreditCameraV2Fragment.FILE_PATH)
-            val type = data?.getStringExtra(HomeCreditCameraV2Fragment.TYPE)
+            val imageFilePath = data?.getStringExtra(ApplinkConstInternalFintech.FILE_PATH)
+            val type = data?.getStringExtra(ApplinkConstInternalFintech.TYPE)
 
             val imageBase64 = getBase64FromImagePath(imageFilePath ?: "")?.replace("\n", "")
 

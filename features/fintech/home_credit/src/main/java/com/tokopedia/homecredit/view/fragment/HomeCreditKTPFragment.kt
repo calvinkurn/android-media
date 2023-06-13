@@ -15,6 +15,7 @@ import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.applink.Constants
 import com.tokopedia.homecredit.utils.Utils.isFrontCameraAvailable
@@ -96,7 +97,7 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
                 finalCameraResultFilePath
             )
             intent.putExtra(
-                HomeCreditRegisterActivity.HCI_TYPE,
+                ApplinkConstInternalFintech.HCI_TYPE,
                 TYPE
             )
             if (activity != null) {

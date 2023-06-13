@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresPermission
-import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +19,7 @@ import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.databinding.FragmentHomeCreditV2Binding
 import com.tokopedia.homecredit.di.component.HomeCreditComponent
@@ -38,14 +38,14 @@ import javax.inject.Inject
 
 class HomeCreditCameraV2Fragment(
     private val cameraDetail: CameraDetail
-): BaseDaggerFragment() {
+) : BaseDaggerFragment() {
 
     private var binding: FragmentHomeCreditV2Binding? by viewBinding()
     private var cameraListener: CameraListener? = null
     private var isCameraOpen = false
     private var mCapturingPicture = false
     private var mCaptureNativeSize: Size? = null
-    private var loaderDialog : LoaderDialog? = null
+    private var loaderDialog: LoaderDialog? = null
     private var finalCameraResultFilePath: String? = null
 
     @Inject
@@ -96,11 +96,11 @@ class HomeCreditCameraV2Fragment(
         binding?.cameraContinueButton?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(
-                FILE_PATH,
+                ApplinkConstInternalFintech.FILE_PATH,
                 finalCameraResultFilePath
             )
             intent.putExtra(
-                TYPE,
+                ApplinkConstInternalFintech.TYPE,
                 cameraDetail.type
             )
             if (activity != null) {
@@ -132,16 +132,18 @@ class HomeCreditCameraV2Fragment(
     }
 
     private fun onVisible() {
-        if (requireActivity().isFinishing)
+        if (requireActivity().isFinishing) {
             return
+        }
         val permission = Manifest.permission.CAMERA
         if (ActivityCompat.checkSelfPermission(requireContext(), permission)
-            == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             startCamera()
         }
     }
 
-    private fun initCameraListener(){
+    private fun initCameraListener() {
         cameraListener = object : CameraListener() {
             override fun onCameraOpened(options: CameraOptions) {
                 isCameraOpen = true
@@ -163,7 +165,8 @@ class HomeCreditCameraV2Fragment(
     }
 
     private fun observeViewModel() {
-        homeCreditViewModel?.imageDetailLiveData?.observe(viewLifecycleOwner
+        homeCreditViewModel?.imageDetailLiveData?.observe(
+            viewLifecycleOwner
         ) { imageDetail: Result<ImageDetail>? ->
             when (imageDetail) {
                 is Success -> {
@@ -205,7 +208,7 @@ class HomeCreditCameraV2Fragment(
     }
 
     private fun showLoading() {
-        if (isAdded && context!= null) {
+        if (isAdded && context != null) {
             loaderDialog = LoaderDialog(requireContext()).apply {
                 setLoadingText(getString(R.string.title_loading))
             }
@@ -243,7 +246,7 @@ class HomeCreditCameraV2Fragment(
 
     private fun loadImagePreview(data: ImageDetail) {
         binding?.cameraPreview?.show()
-        context?.let {context ->
+        context?.let { context ->
             binding?.cameraPreview?.let { imageView ->
                 Glide.with(context).load(data.imagePath).centerCrop().into(imageView)
             }
@@ -289,11 +292,5 @@ class HomeCreditCameraV2Fragment(
         ): HomeCreditCameraV2Fragment {
             return HomeCreditCameraV2Fragment(cameraDetail)
         }
-
-        const val FILE_PATH = "file_path"
-        const val TYPE = "type"
-        const val TYPE_KTP = "ktp"
-        const val TYPE_SELFIE = "selfie"
     }
-
 }

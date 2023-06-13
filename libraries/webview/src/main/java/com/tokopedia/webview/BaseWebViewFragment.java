@@ -66,6 +66,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -128,6 +129,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int REQUEST_CODE_LIVENESS = 1235;
+    private static final int REQUEST_CODE_PARTNER_KYC = 1236;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -459,9 +461,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
 
-        if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-            String imageFilePath = intent.getStringExtra("file_path");
-            String type = intent.getStringExtra("type");
+        if (requestCode == REQUEST_CODE_PARTNER_KYC && resultCode == Activity.RESULT_OK) {
+            String imageFilePath = intent.getStringExtra(ApplinkConstInternalFintech.FILE_PATH);
+            String type = intent.getStringExtra(ApplinkConstInternalFintech.TYPE);
 
             if (!TextUtils.isEmpty(imageFilePath)) {
                 String imageBase64 = WebViewHelper.INSTANCE.getBase64FromImagePath(imageFilePath);
@@ -1218,15 +1220,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void takePictureForPartnerKyc(String docType, String lang) {
         String applink = "";
-        if (docType.equalsIgnoreCase("ktp")) {
+        if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.KTP)) {
             applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
         } else {
             applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
         }
 
         Intent intent = RouteManager.getIntent(getActivity(), applink);
-        intent.putExtra("isV2", true);
-        startActivityForResult(intent, 123);
+        intent.putExtra(ApplinkConstInternalFintech.isV2, true);
+        startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
     }
 
 
