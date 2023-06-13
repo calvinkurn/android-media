@@ -51,63 +51,76 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private fun setUpViews() {
         rejectReasonFeedbackForm?.feedbackForm?.let { data ->
             binding?.apply {
-                setTitle(data.title)
-                senderIcon.urlSrc = data.iconTanya
-                reasonTitleText.text = data.reasonTitle
-                charCount = data.reasonMinimumCharacter.toLongOrZero()
-                reasonText.apply {
-                    setPlaceholder(data.textBoxPlaceHolder)
-                    minLine = MINIMUM_LINES
-                    labelText.hide()
-                    editText.setHintTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                        )
-                    )
-                    context?.resources?.apply {
-                        setMessage(
-                            getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_min) +
-                                data.reasonMinimumCharacter +
-                                getString(
-                                    com.tokopedia.chatbot.R.string.chatbot_reject_reasons_character
-                                )
-                        )
-                    }
-                }
-                reasonsAdapter = ChatbotRejectReasonsAdapter(chipSelectedListener)
-                reasonsList.apply {
-                    layoutManager = getMyLayoutManager()
-                    reasonsAdapter?.setList(data.reasonChipList)
-                    adapter = reasonsAdapter
-                }
-
-                btnSubmit.setOnClickListener {
-                    listener?.submitRejectReasonsViaSocket(
-                        reasonsAdapter?.selectedList ?: emptyList(),
-                        reasonText.editText.text?.toString() ?: "",
-                        rejectReasonFeedbackForm?.helpfulQuestion
-                    )
-                    dismiss()
-                }
+                setUpText(data)
+                renderReasonText(data)
+                initializeAdapter(data)
+                setUpClickListener()
                 setUpTextWatcher()
             }
             handleButtonState()
         }
     }
 
+    private fun BottomSheetChatbotReasonsBinding.setUpText(data: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm) {
+        setTitle(data.title)
+        senderIcon.urlSrc = data.iconTanya
+        reasonTitleText.text = data.reasonTitle
+        charCount = data.reasonMinimumCharacter.toLongOrZero()
+    }
+    private fun BottomSheetChatbotReasonsBinding.renderReasonText(data: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm) {
+        reasonText.apply {
+            setPlaceholder(data.textBoxPlaceHolder)
+            minLine = MINIMUM_LINES
+            labelText.hide()
+            editText.setHintTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                )
+            )
+            context?.resources?.apply {
+                setMessage(
+                    getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_min) +
+                        data.reasonMinimumCharacter +
+                        getString(
+                            com.tokopedia.chatbot.R.string.chatbot_reject_reasons_character
+                        )
+                )
+            }
+        }
+    }
+
+    private fun BottomSheetChatbotReasonsBinding.initializeAdapter(data: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm) {
+        reasonsAdapter = ChatbotRejectReasonsAdapter(chipSelectedListener)
+        reasonsList.apply {
+            layoutManager = getMyLayoutManager()
+            reasonsAdapter?.setList(data.reasonChipList)
+            adapter = reasonsAdapter
+        }
+    }
+
+    private fun BottomSheetChatbotReasonsBinding.setUpClickListener() {
+        btnSubmit.setOnClickListener {
+            listener?.submitRejectReasonsViaSocket(
+                reasonsAdapter?.selectedList ?: emptyList(),
+                reasonText.editText.text?.toString() ?: "",
+                rejectReasonFeedbackForm?.helpfulQuestion
+            )
+            dismiss()
+        }
+    }
     private fun getMyLayoutManager(): RecyclerView.LayoutManager {
-        val gridLayoutManager = GridLayoutManager(context, 2)
+        val gridLayoutManager = GridLayoutManager(context, GRID_SPAN_2)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (position < 2) 1 else 2
+                return if (position < GRID_SPAN_2) GRID_SPAN_1 else GRID_SPAN_2
             }
         }
         return gridLayoutManager
     }
 
     fun checkChipCounter(count: Int) {
-        isChipSelected = count > 0
+        isChipSelected = count > ZERO
         handleButtonState()
     }
 
@@ -167,6 +180,9 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
         const val MINIMUM_LINES = 3
         const val MINIMUM_CHAR = 30
+        const val ZERO = 0
+        const val GRID_SPAN_1 = 1
+        const val GRID_SPAN_2 = 2
     }
 
     interface ChatbotRejectReasonsListener {
