@@ -14,6 +14,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 /**
@@ -38,7 +39,7 @@ class UserProfileSettingsViewModel @AssistedInject constructor(
 
     private val _oldReviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
     private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
-    val reviewSettings: Flow<ProfileSettingsUiModel>
+    val reviewSettings: StateFlow<ProfileSettingsUiModel>
         get() = _reviewSettings
 
     init {

@@ -6,14 +6,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.header.compose.NestHeader
-import com.tokopedia.header.compose.NestHeaderType
-import com.tokopedia.header.compose.NestHeaderVariant
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.people.di.DaggerUserProfileComponent
@@ -24,10 +25,9 @@ import com.tokopedia.people.views.uimodel.action.UserProfileSettingsAction
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
-import com.tokopedia.people.databinding.ActivityUserProfileSettingsBinding
 import com.tokopedia.people.utils.showErrorToast
+import com.tokopedia.people.views.screen.ProfileSettingsScreen
 import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
-import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Created By : Jonathan Darwin on May 10, 2023
@@ -40,8 +40,6 @@ class ProfileSettingsActivity : AppCompatActivity() {
     @Inject
     lateinit var userProfileTracker: UserProfileTracker
 
-    private lateinit var binding: ActivityUserProfileSettingsBinding
-
     private val viewModel: UserProfileSettingsViewModel by viewModels {
         viewModelFactoryCreator.create(
             this,
@@ -52,29 +50,41 @@ class ProfileSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-//        binding = ActivityUserProfileSettingsBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
+
         setContent {
+            val reviewSettings by viewModel.reviewSettings.collectAsState()
+
             NestTheme {
-                Surface {
-                    Column {
-                        NestHeader(
-                            variant = NestHeaderVariant.Default,
-                            type = NestHeaderType.SingleLine(
-                                onBackClicked = {
-                                    onBackPressedDispatcher.onBackPressed()
-                                },
-                                title = getString(R.string.up_profile_settings_title)
-                            )
-                        )
+
+                val view = LocalView.current
+
+                LaunchedEffect(Unit) {
+                    setupListener()
+
+                    lifecycleScope.launchWhenStarted {
+                        viewModel.uiEvent.collect { event ->
+                            when (event) {
+                                is UserProfileSettingsEvent.ErrorSetShowReview -> {
+
+                                    view.showErrorToast(event.throwable.message ?: getString(R.string.up_error_unknown))
+                                }
+                            }
+                        }
                     }
                 }
+
+                ProfileSettingsScreen(
+                    reviewSettings = reviewSettings,
+                    onBackPressed = {
+                        onBackPressedDispatcher.onBackPressed()
+                    },
+                    onCheckedChanged = { isChecked ->
+                        userProfileTracker.clickReviewSettingsToggle(viewModel.userID, isChecked)
+                        viewModel.submitAction(UserProfileSettingsAction.SetShowReview(isChecked))
+                    }
+                )
             }
         }
-
-//        setupView()
-//        setupListener()
-//        setupObserver()
     }
 
     private fun inject() {
@@ -87,20 +97,7 @@ class ProfileSettingsActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun setupView() {
-        binding.headerUnify.title = getString(R.string.up_profile_settings_title)
-    }
-
     private fun setupListener() {
-        binding.headerUnify.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-
-        binding.switchReview.setOnCheckedChangeListener { compoundButton, isChecked ->
-            userProfileTracker.clickReviewSettingsToggle(viewModel.userID, isChecked)
-            viewModel.submitAction(UserProfileSettingsAction.SetShowReview(isChecked))
-        }
-
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
@@ -113,25 +110,6 @@ class ProfileSettingsActivity : AppCompatActivity() {
                 }
             }
         )
-    }
-
-    private fun setupObserver() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.reviewSettings.collectLatest {
-                binding.tvReview.text = it.title
-                binding.switchReview.isChecked = it.isEnabled
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event ->
-                when (event) {
-                    is UserProfileSettingsEvent.ErrorSetShowReview -> {
-                        binding.root.showErrorToast(event.throwable.message ?: getString(R.string.up_error_unknown))
-                    }
-                }
-            }
-        }
     }
 
     companion object {
