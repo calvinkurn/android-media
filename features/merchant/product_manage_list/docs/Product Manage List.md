@@ -72,7 +72,7 @@ Product manage list is module for product manage feature. This module consists o
 
 | **Name** | **Icon** | **Jira Task** | **Field GQL** |
 | --- | --- | --- | --- |
-| Stock Available | <img src="res/selalu_tersedia_filled.png" alt="Image Description" style="width:20%;"/> | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-43888> |  |
+| Stock Available | <img src="res/selalu_tersedia_filled.png" style="width:20%;display:block; margin:auto;"/> | <https://tokopedia.atlassian.net/jira/software/c/projects/AN/issues/AN-43888> |  |
 
 - **Ticker**
 
