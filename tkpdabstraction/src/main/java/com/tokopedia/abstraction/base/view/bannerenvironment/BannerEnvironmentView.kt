@@ -54,10 +54,6 @@ internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = nu
         if (textView.x == 0f) {
             textView.x = -bannerHeight / 4
             textView.y = -bannerHeight / 4
-            if (bannerGravity == BannerEnvironmentGravity.END) {
-                rotation = 90f
-                translationX = context.getScreenWidth() - measuredHeight
-            }
         }
     }
 

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
 import com.tokopedia.abstraction.R
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.interceptor.BannerDebugInterceptor.Companion.isBeta
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -20,10 +19,12 @@ class BannerEnvironment {
         private const val IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED"
     }
 
-    fun setupBannerEnvironment(activity: Activity) {
+    fun initializeBannerEnvironment(activity: Activity) {
         val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
-        if (enableBannerEnv && isBannerEnvironmentEnabled(activity) && GlobalConfig.isAllowDebuggingTools()) {
-            initView((activity), getLiveStatus(activity))
+        if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+            addBanner((activity), getLiveStatus(activity))
+        } else {
+            removeBanner()
         }
     }
 
@@ -39,19 +40,26 @@ class BannerEnvironment {
             .apply()
     }
 
-    private fun initView(activity: Activity, liveStatus: String) {
+    private var bannerEnvironmentView: BannerEnvironmentView? = null
+    private var decorView: ViewGroup? = null
+
+    private fun addBanner(activity: Activity, liveStatus: String) {
+        decorView = activity.window.decorView as ViewGroup
+        bannerEnvironmentView = BannerEnvironmentView(activity).apply {
+            updateText(liveStatus, R.color.Unify_NN0)
+            updateBannerColor(R.color.Unify_G500)
+            bannerGravity = BannerEnvironmentGravity.END
+        }
         if (liveStatus.isNotEmpty()) {
-            val decorView = activity.window.decorView as ViewGroup
-
-            val bannerEnvironmentView = BannerEnvironmentView(activity).apply {
-                updateText(liveStatus, R.color.Unify_NN0)
-                updateBannerColor(R.color.Unify_G500)
-                bannerGravity = BannerEnvironmentGravity.START
-            }
-
             val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
             val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
-            decorView.addView(bannerEnvironmentView, params)
+            decorView?.addView(bannerEnvironmentView, params)
+        }
+    }
+
+    private fun removeBanner() {
+        if (bannerEnvironmentView != null && decorView != null) {
+            decorView?.removeView(bannerEnvironmentView)
         }
     }
 

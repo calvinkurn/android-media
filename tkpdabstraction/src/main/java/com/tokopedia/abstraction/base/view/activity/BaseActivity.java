@@ -56,6 +56,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String INAPP_UPDATE = "inappupdate";
     private static final long DISMISS_TIME = 10000;
 
+    BannerEnvironment bannerEnv = null;
+
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
 
@@ -92,7 +94,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-         new BannerEnvironment().setupBannerEnvironment(this);
+        if(GlobalConfig.isAllowDebuggingTools()){
+            bannerEnv = new BannerEnvironment();
+        }
     }
 
     @Override
@@ -143,6 +147,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
         registerInAppReceiver();
         registerForceLogoutV2Receiver();
         checkIfForceLogoutMustShow();
+
+        bannerEnvironmentVisibility();
     }
 
     protected void sendScreenAnalytics() {
@@ -339,5 +345,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         super.onBackPressed();
+    }
+
+    private void bannerEnvironmentVisibility(){
+        if(bannerEnv!=null){
+            bannerEnv.initializeBannerEnvironment(this);
+        }
     }
 }
