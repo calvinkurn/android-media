@@ -1425,6 +1425,7 @@ class ShipmentFragment :
             resetPromoBenefit()
             shipmentPresenter.setPromoBenefit(summariesUiModels)
             shipmentPresenter.updateShipmentCostModel()
+            checkPlatformFee()
         }
         return hasSetAllCourier
     }
@@ -3252,11 +3253,13 @@ class ShipmentFragment :
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
+                checkPlatformFee()
             }
         } else {
             shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
+            checkPlatformFee()
         }
     }
 
@@ -3654,6 +3657,7 @@ class ShipmentFragment :
             onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
         }
         shipmentPresenter.updateShipmentCostModel()
+        checkPlatformFee()
     }
 
     fun updateAddOnsDynamicDataPassing(
@@ -3702,11 +3706,13 @@ class ShipmentFragment :
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
+                checkPlatformFee()
             }
         } else {
             shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
+            checkPlatformFee()
         }
     }
 
@@ -3746,9 +3752,13 @@ class ShipmentFragment :
 
     override fun onDonationChecked(checked: Boolean) {
         if (binding?.rvShipment?.isComputingLayout == true) {
-            binding?.rvShipment?.post { shipmentAdapter.updateDonation(checked) }
+            binding?.rvShipment?.post {
+                shipmentAdapter.updateDonation(checked)
+                checkPlatformFee()
+            }
         } else {
             shipmentAdapter.updateDonation(checked)
+            checkPlatformFee()
         }
         if (checked) sendAnalyticsOnClickTopDonation()
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
@@ -3771,9 +3781,13 @@ class ShipmentFragment :
         index: Int
     ) {
         if (binding?.rvShipment?.isComputingLayout == true) {
-            binding?.rvShipment?.post { shipmentAdapter.updateCrossSell(checked, crossSellModel) }
+            binding?.rvShipment?.post {
+                shipmentAdapter.updateCrossSell(checked, crossSellModel)
+                checkPlatformFee()
+            }
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel)
+            checkPlatformFee()
         }
         val digitalCategoryName = crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.id
@@ -3792,6 +3806,7 @@ class ShipmentFragment :
 
     override fun onEgoldChecked(checked: Boolean) {
         shipmentAdapter.updateEgold(checked)
+        checkPlatformFee()
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff, checked)
