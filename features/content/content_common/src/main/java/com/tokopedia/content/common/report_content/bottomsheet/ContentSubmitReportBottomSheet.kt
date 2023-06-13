@@ -34,7 +34,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     private lateinit var item: PlayUserReportReasoningUiModel.Reasoning
 
     private val maxSheetHeight by lazyThreadSafetyNone {
-        (getScreenHeight() * ContentThreeDotsMenuBottomSheet.HEIGHT_PERCENTAGE).roundToInt()
+        (getScreenHeight() * HEIGHT_PERCENTAGE).roundToInt()
     }
 
     private val textWatcher by lazyThreadSafetyNone {
@@ -159,6 +159,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
     companion object {
         private val TAG = "ContentSubmitReportBottomSheet"
+        private const val HEIGHT_PERCENTAGE = 0.75
 
         fun get(fragmentManager: FragmentManager): ContentSubmitReportBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ContentSubmitReportBottomSheet

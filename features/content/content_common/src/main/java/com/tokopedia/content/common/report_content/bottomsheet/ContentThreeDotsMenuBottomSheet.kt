@@ -201,7 +201,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     companion object {
         private const val TAG = "FeedAccountTypeBottomSheet"
 
-        const val HEIGHT_PERCENTAGE = 0.4
+        private const val HEIGHT_PERCENTAGE = 0.4
 
         fun get(fragmentManager: FragmentManager): ContentThreeDotsMenuBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
