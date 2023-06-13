@@ -8,6 +8,7 @@ import android.text.format.DateUtils
 import android.text.format.Time
 import android.text.style.AbsoluteSizeSpan
 import android.util.TypedValue
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import org.json.JSONException
@@ -214,7 +215,7 @@ class Utils {
                 reviewPhotos?.put(imageUpload.imageId.orEmpty(), imageUpload.picObj)
             }
         } catch (e: JSONException) {
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
         return reviewPhotos?.toString() ?: ""
     }

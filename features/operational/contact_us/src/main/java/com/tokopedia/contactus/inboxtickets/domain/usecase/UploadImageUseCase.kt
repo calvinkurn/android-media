@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxtickets.domain.usecase
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -120,6 +121,7 @@ class ContactUsUploadImageUseCase @Inject constructor(
                 try {
                     s.absolutePath
                 } catch (e: IOException) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     throw IOException(context.getString(R.string.contact_us_error_upload_image))
                 }
             )

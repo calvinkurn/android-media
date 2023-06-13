@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseWebViewFragment
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.home.ContactUsConstant
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsActivity
@@ -30,6 +31,7 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
                     finish()
                 }
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 finish()
             }
         }
