@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -231,7 +230,7 @@ class ShippingEditorFragment :
                 }
 
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -273,7 +272,7 @@ class ShippingEditorFragment :
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            getString(R.string.save_edit_shop_success),
+                            getString(R.string.success_save_shipping),
                             Toaster.LENGTH_SHORT,
                             type = Toaster.TYPE_NORMAL
                         ).show()
