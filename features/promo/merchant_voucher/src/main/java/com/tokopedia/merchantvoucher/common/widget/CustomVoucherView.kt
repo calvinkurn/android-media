@@ -124,9 +124,9 @@ open class CustomVoucherView : FrameLayout {
     @ColorInt
     protected open fun getShadowColor(): Int {
         @ColorRes val colorRes = if (context.isDarkMode()) {
-            R.color.voucher_shadow_dark
+            R.color.merchantvoucher_dms_shadow_dark
         } else {
-            R.color.voucher_shadow_light
+            R.color.merchantvoucher_dms_shadow_light
         }
         return androidx.core.content.ContextCompat.getColor(context,colorRes)
     }
