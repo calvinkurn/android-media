@@ -2,12 +2,13 @@ package com.tokopedia.product.detail.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
@@ -86,8 +87,9 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.youtube.com/watch?v=" + videoUrls[selectedIndex])))
+            val videoUrl  = videoUrls.getOrNull(selectedIndex) ?: ""
+            val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoUrl)
+            RouteManager.route(this, webviewUrl)
             finish()
         } catch (e: Throwable) {
             Timber.d(e)

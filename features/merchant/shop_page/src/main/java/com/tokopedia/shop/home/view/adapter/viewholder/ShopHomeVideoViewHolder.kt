@@ -1,26 +1,23 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
-import com.google.android.youtube.player.YouTubeApiServiceUtil
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
-import com.tokopedia.shop.home.HomeConstant
-import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import timber.log.Timber
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -127,19 +124,12 @@ class ShopHomeVideoViewHolder(
                     listener.onDisplayItemClicked(youTubeVideoModel, this, adapterPosition, 0)
                 }
             }
-            val uri = Uri.parse(youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: "")
-            val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                == YouTubeInitializationResult.SUCCESS
-            ) {
-                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, youTubeVideoId))
-            } else {
-                it.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + youTubeVideoId)
-                    )
-                )
+            try {
+                val videoUrl  = youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: ""
+                val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoUrl)
+                RouteManager.route(it, webviewUrl)
+            } catch (e: Exception) {
+                Timber.d(e)
             }
         }
     }
