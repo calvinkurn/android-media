@@ -3,12 +3,12 @@ title: "Single Activity Navigation"
 ---
 
 
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
-| --- | --- |
-| **PIC** | [REIVIN OKTAVIANUS](https://tokopedia.atlassian.net/wiki/people/5dae89dab86cd40c2da5ad2f?ref=confluence) [Rizqi Aryansa](https://tokopedia.atlassian.net/wiki/people/5e25ee87006fae0ca232e1ac?ref=confluence) [Yehezkiel .](https://tokopedia.atlassian.net/wiki/people/5c94aa7a7792242c8613ad14?ref=confluence) [Hendry Setiadi](https://tokopedia.atlassian.net/wiki/people/5c94ae68999a3f2d4cae9b85?ref=confluence)  |
-| Team | Minion Stuart |
-| Release date | 30 Jan 2023 / <!--start status:GREY-->MA-3.205<!--end status-->  |
-| Module Location | `tkpdabstraction`  |
+| **Status**      | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **PIC**         | [REIVIN OKTAVIANUS](https://tokopedia.atlassian.net/wiki/people/5dae89dab86cd40c2da5ad2f?ref=confluence) [Rizqi Aryansa](https://tokopedia.atlassian.net/wiki/people/5e25ee87006fae0ca232e1ac?ref=confluence) [Yehezkiel .](https://tokopedia.atlassian.net/wiki/people/5c94aa7a7792242c8613ad14?ref=confluence) [Hendry Setiadi](https://tokopedia.atlassian.net/wiki/people/5c94ae68999a3f2d4cae9b85?ref=confluence) |
+| Team            | Minion Stuart                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Release date    | 30 Jan 2023 / <!--start status:GREY-->MA-3.205<!--end status-->                                                                                                                                                                                                                                                                                                                                                        |
+| Module Location | `tkpdabstraction`                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Table of Contents
 
