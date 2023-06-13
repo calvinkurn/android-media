@@ -4,15 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
+import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +28,8 @@ import javax.inject.Inject
 class PinpointNewPageViewModel @Inject constructor(
     private val repo: KeroRepository,
     private val getDistrictMapper: GetDistrictMapper,
-    private val districtBoundaryMapper: DistrictBoundaryMapper
+    private val districtBoundaryMapper: DistrictBoundaryMapper,
+    private val mapsGeocodeUseCase: MapsGeocodeUseCase,
 ) : ViewModel() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
@@ -43,6 +49,9 @@ class PinpointNewPageViewModel @Inject constructor(
     val isEditOrGetPinPointOnly: Boolean
         get() = isEdit || isGetPinPointOnly
 
+    val hasDistrictAndCityName: Boolean
+        get() = saveAddressDataModel.districtName.isNotBlank() && saveAddressDataModel.cityName.isNotBlank()
+
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
         get() = _autofillDistrictData
@@ -59,6 +68,10 @@ class PinpointNewPageViewModel @Inject constructor(
     val districtCenter: LiveData<Result<DistrictCenterUiModel>>
         get() = _districtCenter
 
+    private val _mapsGeocodeState = MutableLiveData<MapsGeocodeState>()
+    val mapsGeocodeState: LiveData<MapsGeocodeState>
+        get() = _mapsGeocodeState
+
     fun setDataFromArguments(
         currentPlaceId: String?,
         latitude: Double,
@@ -70,6 +83,8 @@ class PinpointNewPageViewModel @Inject constructor(
         isEdit: Boolean,
         source: String,
         isGetPinPointOnly: Boolean,
+        districtName: String?,
+        cityName: String?,
     ) {
         this.currentPlaceId = currentPlaceId
         setLatLong(latitude, longitude)
@@ -82,6 +97,17 @@ class PinpointNewPageViewModel @Inject constructor(
         this.isEdit = isEdit
         this.source = source
         this.isGetPinPointOnly = isGetPinPointOnly
+        setDistrictAndCityName(districtName, cityName)
+    }
+
+    private fun setDistrictAndCityName(
+        districtName: String?,
+        cityName: String?
+    ) {
+        if (districtName?.isNotBlank() == true && cityName?.isNotBlank() == true) {
+            saveAddressDataModel.districtName = districtName
+            saveAddressDataModel.cityName = cityName
+        }
     }
 
     fun getDistrictData(lat: Double, long: Double) {
@@ -159,6 +185,33 @@ class PinpointNewPageViewModel @Inject constructor(
         getDistrictData(
             saveAddressDataModel.latitude.toDoubleOrZero(),
             saveAddressDataModel.longitude.toDoubleOrZero()
+        )
+    }
+
+    fun getGeocodeByDistrictAndCityName() {
+        viewModelScope.launchCatchError(
+            block = {
+                val response = mapsGeocodeUseCase(
+                    MapsGeocodeParam(
+                        input = MapsGeocodeParam.MapsGeocodeDataParam(
+                            address = "${saveAddressDataModel.districtName}, ${saveAddressDataModel.cityName}"
+                        )
+                    )
+                )
+
+                response.firstLocation?.apply {
+                    setLatLong(
+                        lat = lat,
+                        long = lng
+                    )
+
+                    _mapsGeocodeState.value = MapsGeocodeState.Success(this)
+                } ?: kotlin.run {
+                    _mapsGeocodeState.value = MapsGeocodeState.Fail(LOCATION_NOT_FOUND_MESSAGE)
+                }
+            }, onError = {
+                _mapsGeocodeState.value = MapsGeocodeState.Fail(it.message.orEmpty())
+            }
         )
     }
 }

@@ -498,45 +498,56 @@ class DynamicProductDetailViewModel @Inject constructor(
         urlQuery: String = "",
         extParam: String = ""
     ) {
-        launchCatchError(dispatcher.io, block = {
-            alreadyHitRecom = mutableListOf()
-            shopDomain = productParams.shopDomain
-            forceRefresh = refreshPage
-            userLocationCache = userLocationLocal
-            getPdpLayout(
-                productParams.productId ?: "",
-                productParams.shopDomain
-                    ?: "",
-                productParams.productName ?: "",
-                productParams.warehouseId
-                    ?: "",
-                layoutId,
-                extParam
-            ).also {
-                getDynamicProductInfoP1 = it.layoutData.also {
-                    listOfParentMedia = it.data.media.toMutableList()
+        launch(context = dispatcher.io) {
+            runCatching {
+                alreadyHitRecom = mutableListOf()
+                shopDomain = productParams.shopDomain
+                forceRefresh = refreshPage
+                userLocationCache = userLocationLocal
+                getPdpLayout(
+                    productId = productParams.productId.orEmpty(),
+                    shopDomain = productParams.shopDomain.orEmpty(),
+                    productKey = productParams.productName.orEmpty(),
+                    whId = productParams.warehouseId.orEmpty(),
+                    layoutId = layoutId,
+                    extParam = extParam
+                ).also { pdpLayout ->
+                    /**
+                     * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
+                     * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
+                     * so then, for keep wishlist value didn't replace from p1, so using previous value
+                     */
+                    val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+                    val isWishlist = p1.data.isWishlist.orFalse()
+                    getDynamicProductInfoP1 = pdpLayout.layoutData.run {
+                        listOfParentMedia = data.media.toMutableList()
+                        copy(data = data.copy(isWishlist = isWishlist))
+                    }
+
+                    variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
+                        null
+                    } else {
+                        pdpLayout.variantData
+                    }
+                    parentProductId = pdpLayout.layoutData.parentProductId
+
+                    // Remove all component that can be remove by using p1 data
+                    // So we don't have to inflate to UI
+                    val processedList = DynamicProductDetailMapper.removeUnusedComponent(
+                        getDynamicProductInfoP1,
+                        variantData,
+                        isShopOwner(),
+                        pdpLayout.listOfLayout
+                    )
+
+                    // Render initial data
+                    _productLayout.postValue(processedList.asSuccess())
                 }
-
-                variantData =
-                    if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
-                parentProductId = it.layoutData.parentProductId
-
-                // Remove all component that can be remove by using p1 data
-                // So we don't have to inflate to UI
-                val processedList = DynamicProductDetailMapper.removeUnusedComponent(
-                    getDynamicProductInfoP1,
-                    variantData,
-                    isShopOwner(),
-                    it.listOfLayout
-                )
-
-                // Render initial data
-                _productLayout.postValue(processedList.asSuccess())
+                // Then update the following, it will not throw anything when error
+                getProductP2(urlQuery)
+            }.onFailure {
+                _productLayout.postValue(it.asFail())
             }
-            // Then update the following, it will not throw anything when error
-            getProductP2(urlQuery)
-        }) {
-            _productLayout.postValue(it.asFail())
         }
     }
 
@@ -730,6 +741,9 @@ class DynamicProductDetailViewModel @Inject constructor(
             val result =
                 withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
+                getDynamicProductInfoP1?.let {
+                    getDynamicProductInfoP1 = it.copy(data = it.data.copy(isWishlist = true))
+                }
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorAddWishList(result.throwable, productId)

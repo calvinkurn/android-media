@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
@@ -89,6 +90,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -113,6 +115,9 @@ open class ChatListInboxFragment :
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
@@ -335,7 +340,7 @@ open class ChatListInboxFragment :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -574,12 +579,12 @@ open class ChatListInboxFragment :
                                 result.data as IncomingTypingWebSocketModel
                             )
                             else -> {
-                                //no-op
+                                // no-op
                             }
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1097,6 +1102,15 @@ open class ChatListInboxFragment :
         super.onResume()
         if (!isFromTopChatRoom()) {
             adapter?.resetActiveChatIndicator()
+        }
+    }
+
+    override fun getRollenceValue(key: String): Boolean {
+        return try {
+            abTestPlatform.getString(key, "").isNotEmpty()
+        } catch (t: Throwable) {
+            Timber.d(t)
+            false
         }
     }
 

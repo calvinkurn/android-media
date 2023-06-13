@@ -18,16 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.*
-import com.tokopedia.common_compose.components.ticker.NestTicker
-import com.tokopedia.common_compose.components.ticker.TickerType
-import com.tokopedia.common_compose.extensions.clickableWithoutRipple
-import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.common_compose.utils.toAnnotatedString
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
@@ -35,6 +27,19 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottom
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.NestBottomSheetShape
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestTextField
+import com.tokopedia.nest.components.NestTips
+import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.clickableWithoutRipple
+import com.tokopedia.nest.principles.utils.tag
+import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.coroutines.launch
 
@@ -361,12 +366,16 @@ private fun ReschedulePickupSummary(summary: String) {
         exit = ExitTransition.None
     ) {
         NestTicker(
-            title = "",
-            type = TickerType.ANNOUNCEMENT,
-            description = HtmlLinkHelper(
-                LocalContext.current,
-                summary
-            ).spannedString?.toAnnotatedString() ?: "",
+            ticker = listOf(
+                NestTickerData(
+                    tickerTitle = "",
+                    tickerType = TickerType.ANNOUNCEMENT,
+                    tickerDescription = HtmlLinkHelper(
+                        LocalContext.current,
+                        summary
+                    ).spannedString?.toAnnotatedString() ?: ""
+                )
+            ),
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             closeButtonVisibility = false

@@ -57,6 +57,10 @@ class TokoNowRepurchaseProductListener(
         }
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return viewModel.createAffiliateLink(url)
+    }
+
     private fun trackRepurchaseImpression(position: Int, data: TokoNowRepurchaseProductUiModel) {
         analytics.onImpressRepurchase(position, data)
     }

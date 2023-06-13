@@ -19,6 +19,7 @@ const val CHIP_TOP_BOT_STATUS_QUERY = """
       message_id
       welcome_message
 	  unread_notif
+      is_chatbot_active
     }
     message_error
   }
