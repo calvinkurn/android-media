@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -357,19 +358,17 @@ class AffiliateAdpViewModel @Inject constructor(
     }
 
     fun fetchUnreadNotificationCount() {
-        viewModelScope.launch {
-            try {
-                _unreadNotificationCount.value =
-                    affiliateUnreadNotificationUseCase.getUnreadNotifications()
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e -> Timber.e(e) }
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+            _unreadNotificationCount.value =
+                affiliateUnreadNotificationUseCase.getUnreadNotifications()
         }
     }
 
     fun resetNotificationCount() {
         _unreadNotificationCount.value = Int.ZERO
     }
+
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
