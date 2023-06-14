@@ -1,7 +1,7 @@
 package com.tokopedia.network.utils
 
 import android.content.Context
-import android.content.res.Configuration
+import android.preference.PreferenceManager
 
 /**
  * Created by yovi.putra on 14/06/23"
@@ -11,9 +11,8 @@ import android.content.res.Configuration
 object ThemeUtils {
 
     @JvmStatic
-    fun getHeader(context: Context) : String = try {
-        val mode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isDarkMode = mode == Configuration.UI_MODE_NIGHT_YES
+    fun getHeader(context: Context): String = try {
+        val isDarkMode = isHomeAccountUserDarkModelEnable(context)
 
         if (isDarkMode) {
             "dark"
@@ -31,6 +30,9 @@ object ThemeUtils {
     } catch (ignored: Exception) {
         "default"
     }
+
+    private fun isHomeAccountUserDarkModelEnable(context: Context): Boolean {
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        return pref.getBoolean("KEY_DARK_MODE", false)
+    }
 }
-
-
