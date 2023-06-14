@@ -32,9 +32,8 @@ object ShopPageWidgetMapper {
     private fun mapToBannerItemWidget(
         data: ShopLayoutWidget.Widget.Data?,
     ): ShopWidgetDisplayBannerTimerUiModel.Data {
-        val statusCampaign = data?.statusCampaign.orEmpty()
-        val isUpcomingCampaign =
-            statusCampaign.lowercase() == StatusCampaign.UPCOMING.statusCampaign.lowercase()
+        val statusCampaign = data?.timeInfo?.status?.mapToStatusCampaign()
+        val isUpcomingCampaign = statusCampaign == StatusCampaign.UPCOMING
         val isRemindMe = if (isUpcomingCampaign) {
             false
         } else {
