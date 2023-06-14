@@ -51,7 +51,7 @@ class RechargeOrderDetailPaymentViewHolder(
                 tickerRechargeOrderDetailPayment.show()
             }
 
-            element.digitalPaymentInfoMessage?.let { paymentInfo ->
+            element.paymentInfoMessage?.let { paymentInfo ->
                 tgRechargePaymentInfo.text = String.format(getString(R.string.payment_info_string_combine), paymentInfo.message, paymentInfo.urlText)
                 tgRechargePaymentInfo.makeLinks(Pair(paymentInfo.urlText, View.OnClickListener {
                     listener.onClickTnC(paymentInfo.appLink)

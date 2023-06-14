@@ -227,8 +227,6 @@ class AdditionalTickerInfo(
         @field:SerializedName("urlText")
         val urlText: String = ""
 )
-
-@Parcelize
 data class DigitalPaymentInfoMessage(
     @field:SerializedName("message")
     val message: String = "",
@@ -238,4 +236,4 @@ data class DigitalPaymentInfoMessage(
     val appLink: String = "",
     @field:SerializedName("webLink")
     val webLink: String = "",
-): Parcelable
+)

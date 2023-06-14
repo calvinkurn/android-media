@@ -298,11 +298,10 @@ class RechargeOrderDetailViewModelTest {
                 totalPriceLabel = "",
                 totalPrice = "",
                 additionalTicker = null,
-                digitalPaymentInfoMessage = DigitalPaymentInfoMessage(
+                paymentInfoMessage = RechargePaymentInfoMessage(
                     "Belum termasuk biaya layanan, jasa aplikasi dan biaya lainnya.",
                     "Lihat SK",
                     "tokopedia://mybills",
-                    "tokopedia://mybills"
                 )
             ),
             helpUrl = "",
