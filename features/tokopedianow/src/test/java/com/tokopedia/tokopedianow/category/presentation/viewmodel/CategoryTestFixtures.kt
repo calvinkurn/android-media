@@ -117,7 +117,6 @@ open class CategoryTestFixtures {
         SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
         SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
         SearchApiConst.SRP_PAGE_ID to defaultCategoryL1,
-        SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
         SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
         SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
         SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,

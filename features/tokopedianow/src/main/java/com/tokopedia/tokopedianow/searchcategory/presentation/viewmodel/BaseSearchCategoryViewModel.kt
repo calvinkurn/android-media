@@ -428,9 +428,6 @@ abstract class BaseSearchCategoryViewModel(
         if (chooseAddressData.postal_code.isNotEmpty()) {
             tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
         }
-        if (chooseAddressData.warehouse_id.isNotEmpty()) {
-            tokonowQueryParam[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
-        }
         if (chooseAddressData.warehouses.isNotEmpty()) {
             tokonowQueryParam[WAREHOUSES] = mapToWarehouses(chooseAddressData)
         }
