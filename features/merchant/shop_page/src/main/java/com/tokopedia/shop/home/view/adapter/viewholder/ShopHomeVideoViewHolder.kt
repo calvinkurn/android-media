@@ -125,8 +125,13 @@ class ShopHomeVideoViewHolder(
                 }
             }
             try {
-                val videoUrl  = youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: ""
-                val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoUrl)
+                val videoUrl = youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: ""
+                val webviewUrl = String.format(
+                    Locale.getDefault(),
+                    "%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    videoUrl
+                )
                 RouteManager.route(it, webviewUrl)
             } catch (e: Exception) {
                 Timber.d(e)

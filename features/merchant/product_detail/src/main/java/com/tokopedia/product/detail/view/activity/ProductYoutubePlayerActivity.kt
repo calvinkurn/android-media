@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.databinding.ActivityProductYoutubePlayerBinding
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import timber.log.Timber
+import java.util.*
 
 class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
     YouTubePlayer.PlayerStateChangeListener{
@@ -88,8 +89,13 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
         try {
-            val videoUrl  = URL_YOUTUBE_WATCH + (videoUrls.getOrNull(selectedIndex) ?: "")
-            val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoUrl)
+            val videoUrl = URL_YOUTUBE_WATCH + (videoUrls.getOrNull(selectedIndex) ?: "")
+            val webviewUrl = String.format(
+                Locale.getDefault(),
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                videoUrl
+            )
             RouteManager.route(this, webviewUrl)
             finish()
         } catch (e: Throwable) {
