@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -22,15 +21,12 @@ import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_CENTER
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_LEFT
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_POSITION_BOTTOM
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_REGULAR
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.widget.AddTextColorItemView
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
+import com.tokopedia.media.editor.utils.AddTextAlignment
+import com.tokopedia.media.editor.utils.AddTextPosition
+import com.tokopedia.media.editor.utils.AddTextStyle
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
@@ -56,7 +52,7 @@ class AddTextFragment @Inject constructor(
      * 2 -> italic
      */
     private val textStyleItemRef: Array<AddTextStyleItem?> = Array(3) { null }
-    private var activeStyleIndex = TEXT_STYLE_REGULAR
+    private var activeStyleIndex = AddTextStyle.REGULAR.value
         set(value) {
             field = value
             viewModel.textData.textStyle = value
@@ -67,7 +63,7 @@ class AddTextFragment @Inject constructor(
      * 1 -> left
      * 2 -> right
      */
-    private var alignmentIndex = TEXT_ALIGNMENT_CENTER
+    private var alignmentIndex = AddTextAlignment.CENTER.value
         set(value) {
             field = value
             viewModel.textData.textAlignment = value
@@ -82,7 +78,7 @@ class AddTextFragment @Inject constructor(
 
     private var isColorState = false
 
-    private var positionIndex = TEXT_POSITION_BOTTOM
+    private var positionIndex = AddTextPosition.BOTTOM.value
         set(value) {
             field = value
             viewModel.textData.textPosition = value
@@ -223,9 +219,9 @@ class AddTextFragment @Inject constructor(
 
         viewBinding?.addTextInput?.apply {
             when (styleIndex) {
-                TEXT_STYLE_REGULAR -> setTypeface(null, Typeface.NORMAL)
-                TEXT_STYLE_BOLD -> setTypeface(null, Typeface.BOLD)
-                TEXT_STYLE_ITALIC -> setTypeface(null, Typeface.ITALIC)
+                AddTextStyle.REGULAR.value -> setTypeface(null, Typeface.NORMAL)
+                AddTextStyle.BOLD.value -> setTypeface(null, Typeface.BOLD)
+                AddTextStyle.ITALIC.value -> setTypeface(null, Typeface.ITALIC)
             }
         }
 
@@ -243,15 +239,15 @@ class AddTextFragment @Inject constructor(
     // alignment click listener
     private fun setAlignment(icon: IconUnify) {
         alignmentIndex++
-        if (alignmentIndex > TEXT_ALIGNMENT_LEFT) alignmentIndex = 0
+        if (alignmentIndex > AddTextAlignment.LEFT.value) alignmentIndex = 0
 
         val gravity: Int
         val iconRef = when (alignmentIndex) {
-            TEXT_ALIGNMENT_CENTER -> {
+            AddTextAlignment.CENTER.value -> {
                 gravity = Gravity.CENTER
                 IconUnify.FORMAT_CENTER
             }
-            TEXT_ALIGNMENT_LEFT -> {
+            AddTextAlignment.LEFT.value -> {
                 gravity = Gravity.START
                 IconUnify.FORMAT_ALIGN_LEFT
             }
@@ -284,15 +280,15 @@ class AddTextFragment @Inject constructor(
 
     private fun initFontSelection() {
         viewBinding?.fontSelectionContainer?.let { it ->
-            for (styleIndex in TEXT_STYLE_REGULAR..TEXT_STYLE_ITALIC) {
+            for (styleIndex in AddTextStyle.REGULAR.value..AddTextStyle.ITALIC.value) {
                 val view = View.inflate(context, editorR.layout.add_text_font_selection_item, null)
 
                 viewToFontCard(view)?.let { styleItem ->
                     when (styleIndex) {
-                        TEXT_STYLE_BOLD -> {
+                        AddTextStyle.BOLD.value -> {
                             styleItem.setStyleBold()
                         }
-                        TEXT_STYLE_ITALIC -> {
+                        AddTextStyle.ITALIC.value -> {
                             styleItem.setStyleItalic()
                         }
                     }

@@ -5,6 +5,8 @@ import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.AddTextPosition
+import com.tokopedia.media.editor.utils.AddTextToolId
 import com.tokopedia.picker.common.types.EditorToolType
 
 // for analytics purpose
@@ -58,7 +60,7 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
         var text = ""
 
         text += when (textValue.textTemplate) {
-            EditorAddTextUiModel.TEXT_TEMPLATE_FREE -> ADD_TEXT_BEBAS
+            AddTextToolId.FREE_TEXT_INDEX.value -> ADD_TEXT_BEBAS
             else -> ADD_TEXT_TEMPLATE
         }
 
@@ -69,9 +71,9 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
         }
 
         text += when (textValue.textPosition) {
-            EditorAddTextUiModel.TEXT_POSITION_TOP -> ADD_TEXT_POSITION_TOP
-            EditorAddTextUiModel.TEXT_POSITION_RIGHT -> ADD_TEXT_POSITION_RIGHT
-            EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> ADD_TEXT_POSITION_BOTTOM
+            AddTextPosition.TOP.value -> ADD_TEXT_POSITION_TOP
+            AddTextPosition.RIGHT.value -> ADD_TEXT_POSITION_RIGHT
+            AddTextPosition.BOTTOM.value -> ADD_TEXT_POSITION_BOTTOM
             else -> ADD_TEXT_POSITION_LEFT
         }
 

@@ -173,9 +173,13 @@ class AddTextBackgroundBottomSheet(
             templateModelRef.forEachIndexed { index, item ->
                 item.setImage(imgUrlReady)
 
-                // please refer index with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_FULL
-                // please refer color with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_BLACK
-                item.setBackgroundModel(index, colorSelectionIndex, addTextColorProvider)
+                val colorIntRes = backgroundColorCollection.toList()[colorSelectionIndex].first
+
+                item.setBackgroundModel(
+                    index,
+                    colorIntRes,
+                    addTextColorProvider
+                )
             }
         }
     }

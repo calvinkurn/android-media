@@ -14,10 +14,9 @@ import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_FULL
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_FLOATING
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_SIDE_CUT
 import com.tokopedia.media.editor.ui.uimodel.BackgroundTemplateDetail
+import com.tokopedia.media.editor.utils.AddTextBackgroundTemplate
+import com.tokopedia.media.editor.utils.AddTextPosition
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -52,7 +51,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             paddingHorizontal = PADDING_HORIZONTAL_PERCENTAGE * value
             adjustmentPadding = ADJUSTMENT_PADDING_PERCENTAGE * value
 
-            if (backgroundModel == TEXT_BACKGROUND_TEMPLATE_FLOATING) {
+            if (backgroundModel == AddTextBackgroundTemplate.FLOATING.value) {
                 // when using template floating need extra space
                 paddingFloating = PADDING_FLOATING_ENABLE * value
 
@@ -92,7 +91,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             var backgroundWidth = originalImageWidth
 
             when (data.textPosition) {
-                EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
+                AddTextPosition.RIGHT.value -> {
                     // update font size according to image width since text on side
                     fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
                     mTextPaint.textSize = fontSize
@@ -107,7 +106,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     canvas.rotate(ROTATE_90_DEGREE_COUNTER_CLOCKWISE)
                     canvas.translate(-(canvas.height.toFloat() - paddingHorizontal), yOffset)
                 }
-                EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
+                AddTextPosition.LEFT.value -> {
                     // update font size according to image width since text on side
                     fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
                     mTextPaint.textSize = fontSize
@@ -119,13 +118,13 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     canvas.rotate(ROTATE_90_DEGREE_CLOCKWISE)
                     canvas.translate(paddingHorizontal, yOffset)
                 }
-                EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
+                AddTextPosition.BOTTOM.value -> {
                     mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
 
                     val yOffset = (canvas.height - mTextLayout.height).toFloat() - (paddingVertical + paddingFloating)
                     canvas.translate(paddingHorizontal, yOffset)
                 }
-                EditorAddTextUiModel.TEXT_POSITION_TOP -> {
+                AddTextPosition.TOP.value -> {
                     mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
 
                     canvas.translate(paddingHorizontal, paddingVertical)
@@ -153,9 +152,9 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         if (backgroundDetail == null) return null
 
         when (backgroundDetail.addTextBackgroundModel) {
-            TEXT_BACKGROUND_TEMPLATE_FULL -> editorR.drawable.add_text_background_full
-            TEXT_BACKGROUND_TEMPLATE_FLOATING -> editorR.drawable.add_text_background_floating
-            TEXT_BACKGROUND_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_background_cut
+            AddTextBackgroundTemplate.FULL.value -> editorR.drawable.add_text_background_full
+            AddTextBackgroundTemplate.FLOATING.value -> editorR.drawable.add_text_background_floating
+            AddTextBackgroundTemplate.SIDE_CUT.value -> editorR.drawable.add_text_background_cut
             else -> null
         }.apply {
             this?.let {

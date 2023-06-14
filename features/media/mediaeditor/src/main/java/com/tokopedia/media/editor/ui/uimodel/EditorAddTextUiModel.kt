@@ -3,16 +3,19 @@ package com.tokopedia.media.editor.ui.uimodel
 import android.graphics.Typeface
 import android.os.Parcelable
 import android.text.Layout
-import com.tokopedia.media.editor.ui.adapter.addtext.AddTextToolAdapter
+import com.tokopedia.media.editor.utils.AddTextAlignment
+import com.tokopedia.media.editor.utils.AddTextPosition
+import com.tokopedia.media.editor.utils.AddTextStyle
+import com.tokopedia.media.editor.utils.AddTextToolId
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class EditorAddTextUiModel(
     var textValue: String,
-    var textStyle: Int = TEXT_STYLE_REGULAR,
+    var textStyle: Int = AddTextStyle.REGULAR.value,
     var textColor: Int = 0,
-    var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
-    var textPosition: Int = TEXT_POSITION_BOTTOM,
+    var textAlignment: Int = AddTextAlignment.CENTER.value,
+    var textPosition: Int = AddTextPosition.BOTTOM.value,
     var textTemplate: Int = TEXT_TEMPLATE_FREE,
     private var textTemplateBackgroundDetail: BackgroundTemplateDetail? = null,
     var textImagePath: String? = null
@@ -31,16 +34,16 @@ class EditorAddTextUiModel(
         textTemplateBackgroundDetail = backgroundTemplate
         if (textTemplate == TEXT_TEMPLATE_BACKGROUND) {
             // if using background, text can be only on bottom or right
-            if (textPosition == TEXT_POSITION_TOP || textPosition == TEXT_POSITION_LEFT) {
-                textPosition = TEXT_POSITION_BOTTOM
+            if (textPosition == AddTextPosition.TOP.value || textPosition == AddTextPosition.LEFT.value) {
+                textPosition = AddTextPosition.BOTTOM.value
             }
         }
     }
 
     fun getLayoutAlignment(): Layout.Alignment {
         return when (textAlignment) {
-            TEXT_ALIGNMENT_CENTER -> Layout.Alignment.ALIGN_CENTER
-            TEXT_ALIGNMENT_LEFT -> Layout.Alignment.ALIGN_NORMAL
+            AddTextAlignment.CENTER.value -> Layout.Alignment.ALIGN_CENTER
+            AddTextAlignment.LEFT.value -> Layout.Alignment.ALIGN_NORMAL
             else -> Layout.Alignment.ALIGN_OPPOSITE
         }
     }
@@ -50,37 +53,15 @@ class EditorAddTextUiModel(
      */
     fun getTypeFaceStyle(): Int {
         return when (textStyle) {
-            TEXT_STYLE_BOLD -> Typeface.BOLD
-            TEXT_STYLE_ITALIC -> Typeface.ITALIC
+            AddTextStyle.BOLD.value -> Typeface.BOLD
+            AddTextStyle.ITALIC.value -> Typeface.ITALIC
             else -> Typeface.NORMAL
         }
     }
 
     companion object {
-        const val TEXT_ALIGNMENT_CENTER = 0
-        const val TEXT_ALIGNMENT_RIGHT = 1
-        const val TEXT_ALIGNMENT_LEFT = 2
-
-        const val TEXT_STYLE_REGULAR = 0
-        const val TEXT_STYLE_BOLD = 1
-        const val TEXT_STYLE_ITALIC = 2
-
-        const val TEXT_POSITION_LEFT = 0
-        const val TEXT_POSITION_RIGHT = 1
-        const val TEXT_POSITION_TOP = 2
-        const val TEXT_POSITION_BOTTOM = 3
-
-        const val TEXT_TEMPLATE_FREE = AddTextToolAdapter.FREE_TEXT_INDEX
-        const val TEXT_TEMPLATE_BACKGROUND = AddTextToolAdapter.BACKGROUND_TEXT_INDEX
-
-        // --- if edit this line please check AddTextBackgroundBottomSheet
-        const val TEXT_BACKGROUND_TEMPLATE_FULL = 0
-        const val TEXT_BACKGROUND_TEMPLATE_SIDE_CUT = 1
-        const val TEXT_BACKGROUND_TEMPLATE_FLOATING = 2
-
-        const val TEXT_BACKGROUND_TEMPLATE_BLACK = 0
-        const val TEXT_BACKGROUND_TEMPLATE_WHITE = 1
-        // ---
+        val TEXT_TEMPLATE_FREE = AddTextToolId.FREE_TEXT_INDEX.value
+        val TEXT_TEMPLATE_BACKGROUND = AddTextToolId.BACKGROUND_TEXT_INDEX.value
     }
 }
 

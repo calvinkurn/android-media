@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.editor.ui.component.AddTextToolUiComponent
+import com.tokopedia.media.editor.utils.AddTextToolId
 import com.tokopedia.media.editor.R as editorR
 
 class AddTextToolAdapter(
@@ -11,16 +12,11 @@ class AddTextToolAdapter(
     private var isLocalTemplateReady: Boolean
 ): RecyclerView.Adapter<AddTextViewHolder>() {
     // icon ref will be replace by unify icon later
-    private val mAddTextMenu = listOf(
-        AddTextAction(editorR.string.add_text_change_position, iconRef = editorR.drawable.editor_icon_expand),
-        AddTextAction(editorR.string.add_text_save_template, iconRef = editorR.drawable.editor_icon_template),
-        AddTextAction(0, 0, true),
-        AddTextAction(editorR.string.add_text_free_text, IconUnify.TEXT),
-        AddTextAction(editorR.string.add_text_single_background_text,
-            iconRef = editorR.drawable.editor_icon_text_background,
-            isIconFull = true
-        )
-    )
+    private val mAddTextMenu = MutableList<AddTextAction?>(0) { null }
+
+    init {
+        initToolList()
+    }
 
     override fun getItemCount(): Int {
         return mAddTextMenu.size
@@ -29,12 +25,14 @@ class AddTextToolAdapter(
     override fun onBindViewHolder(holder: AddTextViewHolder, position: Int) {
         updateTemplateText()
 
-        holder.bind(mAddTextMenu[position]){
-            when (position) {
-                CHANGE_POSITION_INDEX -> listener.onChangePosition()
-                SAVE_TEMPLATE_INDEX -> listener.onTemplateSave(!isLocalTemplateReady)
-                FREE_TEXT_INDEX -> listener.onAddFreeText()
-                BACKGROUND_TEXT_INDEX -> listener.onAddSingleBackgroundText()
+        mAddTextMenu[position]?.let {
+            holder.bind(it){
+                when (position) {
+                    AddTextToolId.CHANGE_POSITION_INDEX.value -> listener.onChangePosition()
+                    AddTextToolId.SAVE_TEMPLATE_INDEX.value -> listener.onTemplateSave(!isLocalTemplateReady)
+                    AddTextToolId.FREE_TEXT_INDEX.value -> listener.onAddFreeText()
+                    AddTextToolId.BACKGROUND_TEXT_INDEX.value -> listener.onAddSingleBackgroundText()
+                }
             }
         }
     }
@@ -48,7 +46,7 @@ class AddTextToolAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mAddTextMenu[position].isDivider) {
+        return if (mAddTextMenu[position]?.isDivider == true) {
             TYPE_DIVIDER
         } else {
             TYPE_ITEM
@@ -59,7 +57,7 @@ class AddTextToolAdapter(
     fun updateTemplateText(isTemplateReady: Boolean = isLocalTemplateReady, needRefresh: Boolean = false) {
         if (isTemplateReady){
             mAddTextMenu.find {
-                it.textRef == editorR.string.add_text_save_template
+                it?.textRef == editorR.string.add_text_save_template
             }?.apply {
                 this.textRef = editorR.string.add_text_apply_template
                 if (needRefresh) notifyItemChanged(mAddTextMenu.indexOf(this))
@@ -68,15 +66,45 @@ class AddTextToolAdapter(
         }
     }
 
+    private fun initToolList() {
+        mAddTextMenu.add(
+            AddTextToolId.CHANGE_POSITION_INDEX.value,
+            AddTextAction(
+                editorR.string.add_text_change_position,
+                iconRef = editorR.drawable.editor_icon_expand
+            )
+        )
+
+        mAddTextMenu.add(
+            AddTextToolId.SAVE_TEMPLATE_INDEX.value,
+            AddTextAction(
+                editorR.string.add_text_save_template,
+                iconRef = editorR.drawable.editor_icon_template
+            )
+        )
+
+        mAddTextMenu.add(
+            AddTextToolId.DIVIDER.value,
+            AddTextAction(0, 0, true)
+        )
+
+        mAddTextMenu.add(
+            AddTextToolId.FREE_TEXT_INDEX.value,
+            AddTextAction(editorR.string.add_text_free_text, IconUnify.TEXT)
+        )
+
+        mAddTextMenu.add(
+            AddTextToolId.BACKGROUND_TEXT_INDEX.value,
+            AddTextAction(
+                editorR.string.add_text_single_background_text,
+                iconRef = editorR.drawable.editor_icon_text_background,
+                isIconFull = true
+            )
+        )
+    }
+
     companion object {
         private const val TYPE_ITEM = 0
         private const val TYPE_DIVIDER = 1
-
-        // index is refer to mAddTextMenu
-        // if edit free & background text please check AddTextUiModel
-        private const val CHANGE_POSITION_INDEX = 0
-        private const val SAVE_TEMPLATE_INDEX = 1
-        const val FREE_TEXT_INDEX = 3
-        const val BACKGROUND_TEXT_INDEX = 4
     }
 }
