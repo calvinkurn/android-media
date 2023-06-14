@@ -1229,8 +1229,9 @@ class AddEditProductVariantFragment :
                     )
                 }
                 titleLayoutVariantType.setActionButtonOnClickListener { view ->
-                    DTDialogUtil.showDTVariantDialog(view.context)
-                }
+                    DTDialogUtil.showDTStockDialog(view.context,
+                        DTDialogUtil.UserAction.EDIT_VARIANT_TYPE
+                    )                }
             } else {
                 buttonAddVariantType.setOnDisabledClickListener {
                     showToaster(getString(R.string.label_cvt_message_variant_cannot_add))
