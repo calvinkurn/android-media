@@ -183,7 +183,7 @@ class FeedFragment :
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == SCROLL_STATE_IDLE &&
-                layoutManager.findFirstVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL) &&
+                layoutManager.findFirstVisibleItemPosition() >= (adapter?.itemCount.orZero() - MINIMUM_ENDLESS_CALL) &&
                 !feedPostViewModel.shouldShowNoMoreContent
             ) {
                 adapter?.showLoading()
@@ -202,7 +202,7 @@ class FeedFragment :
                 if (position > ZERO) {
                     notifyItemNotSelected(position - ONE)
                 }
-                if (position < (adapter?.list?.size ?: 0)) {
+                if (position < (adapter?.list?.size.orZero())) {
                     notifyItemNotSelected(position + ONE)
                 }
 
