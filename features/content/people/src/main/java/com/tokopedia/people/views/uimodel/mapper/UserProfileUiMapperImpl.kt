@@ -31,8 +31,6 @@ import com.tokopedia.people.model.ExtraStats
 import com.tokopedia.people.model.GetUserReviewListResponse
 import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.model.GetProfileSettingsResponse
-import com.tokopedia.people.model.GetUserReviewListResponse
-import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
