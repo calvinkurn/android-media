@@ -45,6 +45,8 @@ data class SomListOrderListResponse(
                 @SerializedName("deadline_text")
                 @Expose
                 val deadlineText: String = "",
+                @SerializedName("deadline_style")
+                val deadlineStyle: Int = 0,
                 @SerializedName("order_id")
                 @Expose
                 val orderId: String = "",

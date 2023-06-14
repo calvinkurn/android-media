@@ -18,7 +18,9 @@ class SomListGetOrderListUseCase @Inject constructor(
 
     suspend fun executeOnBackground(params: RequestParams): Pair<String, List<SomListOrderUiModel>> {
         val gqlRequest = GraphqlRequest(
-            QUERY, SomListOrderListResponse.Data::class.java, params.parameters
+            QUERY,
+            SomListOrderListResponse.Data::class.java,
+            params.parameters
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val searchKeyword = getSearchKeyword(params)
@@ -66,6 +68,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                   order_resi
                   deadline_text
                   deadline_color
+                  deadline_style
                   cancel_request
                   cancel_request_note
                   cancel_request_time

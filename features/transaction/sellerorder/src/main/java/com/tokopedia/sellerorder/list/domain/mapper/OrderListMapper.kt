@@ -20,6 +20,7 @@ class OrderListMapper @Inject constructor() {
                 cancelRequestStatus = it.cancelRequestStatus,
                 deadlineColor = it.deadlineColor,
                 deadlineText = it.deadlineText,
+                deadlineStyle = it.deadlineStyle,
                 orderId = it.orderId,
                 orderProduct = if (it.haveProductBundle) {
                     val bundleDetail = it.bundleDetail
