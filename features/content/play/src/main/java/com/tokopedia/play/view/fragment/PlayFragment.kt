@@ -127,7 +127,7 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private val offset16 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
+    private val offset24 by lazyThreadSafetyNone { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) ?: 0 }
 
     /**
      * Global Variant Bottom Sheet
@@ -150,7 +150,7 @@ class PlayFragment @Inject constructor(
                 val rootView = variantSheet.view?.findViewById<View>(com.tkpd.atcvariant.R.id.cl_atc_variant)
 
                 bottomSheetWrapper?.layoutParams = bottomSheetWrapper?.layoutParams?.apply {
-                    height = sheetMaxHeight - offset16 //adjust bottom sheet wrapper height
+                    height = sheetMaxHeight - offset24 //adjust bottom sheet wrapper height
                 }
 
                 rootView?.layoutParams = rootView?.layoutParams?.apply {
@@ -321,12 +321,12 @@ class PlayFragment @Inject constructor(
 
         val orientation = playViewModel.videoOrientation
         val height = if (orientation is VideoOrientation.Horizontal) {
-            val dstStart = ivClose.right + offset16
+            val dstStart = ivClose.right + offset24
             val dstEnd = requireView().right - dstStart
             val dstWidth = dstEnd - dstStart
             (1 / (orientation.widthRatio / orientation.heightRatio.toFloat()) * dstWidth)
         } else {
-            requireView().height - sheetMaxHeight - offset16 - ivClose.top
+            requireView().height - sheetMaxHeight - offset24 - ivClose.top
         }.toInt()
 
         onBottomInsetsViewShown(height)
