@@ -1229,7 +1229,9 @@ class AddEditProductVariantFragment :
                     )
                 }
                 titleLayoutVariantType.setActionButtonOnClickListener { view ->
-                    DTDialogUtil.showDTVariantDialog(view.context)
+                    DTDialogUtil.showDTStockDialog(view.context,
+                        DTDialogUtil.UserAction.EDIT_VARIANT_TYPE
+                    )                
                 }
             } else {
                 buttonAddVariantType.setOnDisabledClickListener {
