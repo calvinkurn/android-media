@@ -4721,7 +4721,7 @@ open class ShopPageHomeFragment :
         showTncBottomSheet(
             uiModel.data?.campaignId.orEmpty(),
             uiModel.data?.status?.statusCampaign.orEmpty(),
-            listOf()
+            uiModel.data?.dynamicRule?.listDynamicRoleData?.map { it.ruleID }.orEmpty()
         )
     }
 

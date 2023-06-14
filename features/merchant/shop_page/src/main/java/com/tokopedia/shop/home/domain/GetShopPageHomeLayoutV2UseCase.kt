@@ -94,6 +94,15 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       campaignID
                       totalNotify
                       totalNotifyWording
+                      dynamicRule {
+                        dynamicRoleData {
+                          ruleName
+                          ruleID
+                          isActive
+                          ruleAdditionalData
+                        }
+                        descriptionHeader
+                      }
                     }
                     ... on EtalaseWidget {
                       imageUrl

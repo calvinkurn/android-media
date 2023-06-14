@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
@@ -44,7 +45,8 @@ object ShopPageWidgetMapper {
             textColor = data?.timeInfo?.textColor.orEmpty(),
             status = data?.timeInfo?.status.mapToStatusCampaign(),
             totalNotify = data?.totalNotify.orZero(),
-            totalNotifyWording = data?.totalNotifyWording.orEmpty()
+            totalNotifyWording = data?.totalNotifyWording.orEmpty(),
+            dynamicRule = mapToDynamicRule(data?.dynamicRule),
         )
     }
 
@@ -123,6 +125,18 @@ object ShopPageWidgetMapper {
                 )
             )
         }
+    }
+
+    fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule?): DynamicRule {
+        return DynamicRule(
+            dynamicRule?.descriptionHeader.orEmpty(),
+            dynamicRule?.dynamicRoleData?.map {
+                DynamicRule.DynamicRoleData(
+                    ruleID = it.ruleID,
+                    isActive = it.isActive
+                )
+            }.orEmpty()
+        )
     }
 
     private fun Int?.mapToStatusCampaign(): StatusCampaign {

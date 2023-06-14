@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.model
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
+import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
@@ -31,6 +32,7 @@ data class ShopWidgetDisplayBannerTimerUiModel(
         val status: StatusCampaign = StatusCampaign.UPCOMING,
         var totalNotify: Int = 0,
         val totalNotifyWording: String = "",
+        val dynamicRule: DynamicRule = DynamicRule(),
         var isRemindMe: Boolean? = null,
         var showRemindMeLoading : Boolean = false,
         var isHideRemindMeTextAfterXSeconds: Boolean = false
