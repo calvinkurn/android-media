@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.statistic">
+    package="com.tokopedia.df.seller.frontfunnel">
 
-    <dist:module dist:title="@string/title_statistic">
+    <dist:module dist:title="@string/title_module_seller_front_funnel">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
