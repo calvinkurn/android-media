@@ -12,12 +12,4 @@ object Utility {
     fun formatToRupiahFormat(value: Int): String {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value))
     }
-
-    fun logToFirebase(throwable: Throwable) {
-        try {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        } catch (e: IllegalStateException) {
-            // no-op
-        }
-    }
 }
