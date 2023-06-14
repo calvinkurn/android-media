@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 data class TaskProgress(
     val title: String? = null,
     val progress: Int? = 0,
-    val tasks: List<Task>? = emptyList(),
+    val tasks: List<Task> = emptyList(),
 )
 
 data class Task(

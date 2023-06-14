@@ -14,14 +14,15 @@ import com.tokopedia.scp_rewards_widgets.model.RewardsErrorModel
 class MedalRewardsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr:Int = 0
-): FrameLayout(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
 
-    companion object{
+    companion object {
         private const val ITEM_VERTICAL_SPACING = 16
     }
+
     private var rewardsRv: RecyclerView? = null
-    private val rewardsAdapter:BaseAdapter<RewardsViewTypeFactory> by lazy {
+    private val rewardsAdapter: BaseAdapter<RewardsViewTypeFactory> by lazy {
         BaseAdapter(RewardsViewTypeFactory())
     }
 
@@ -42,14 +43,14 @@ class MedalRewardsView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        if(heightMode == MeasureSpec.UNSPECIFIED){
+        if (heightMode == MeasureSpec.UNSPECIFIED) {
             rewardsRv?.isNestedScrollingEnabled = false
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
 
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         rewardsRv?.apply {
             adapter = rewardsAdapter
             layoutManager = LinearLayoutManager(context)
@@ -57,22 +58,23 @@ class MedalRewardsView @JvmOverloads constructor(
         }
     }
 
-    fun renderCoupons(data:List<MedalRewardsModel>){
-        if(data.size==1 && data.last().status == CouponState.ERROR){
-            setErrorState(RewardsErrorModel(
+    fun renderCoupons(data: List<MedalRewardsModel>, onErrorAction: () -> Unit) {
+        if (data.size == 1 && data.last().status == CouponState.ERROR) {
+            setErrorState(
+                RewardsErrorModel(
                     imageUrl = data.last().imageUrl,
                     status = data.last().status,
                     statusDescription = data.last().statusDescription,
                     isActive = data.last().isActive
                 )
             )
-        }
-        else{
+            onErrorAction()
+        } else {
             rewardsAdapter.setVisitables(data)
         }
     }
 
-    private fun setErrorState(error:RewardsErrorModel){
+    private fun setErrorState(error: RewardsErrorModel) {
         rewardsAdapter.setVisitables(
             listOf(
                 error

@@ -49,7 +49,7 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
             binding.progressBar.gone()
         }
 
-        taskProgress.tasks?.let {
+        taskProgress.tasks.let {
             taskAdapter.setVisitables(it)
         }
     }

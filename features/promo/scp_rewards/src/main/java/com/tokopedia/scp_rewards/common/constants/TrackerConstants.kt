@@ -17,6 +17,13 @@ object TrackerConstants {
         const val POWERED_BY = "powered_by_text"
         const val MEDAL_TITLE = "medali_title"
         const val MEDAL_DESCRIPTION = "medali_desc"
+        const val MEDAL_PROGRESS_PERCENTAGE = "progress_pct"
+        const val MEDAL_PROGRESS_TASK_COMPLETED = "progress_task_completed"
+        const val MEDAL_COUPON_PROMO_CODE = "coupon_promo_code"
+        const val MEDAL_COUPON_STATUS = "bonus_status"
+        const val MEDAL_COUPON_NOTES = "coupon_notes"
+        const val MEDAL_TICKER_STATUS = "ticker_status"
+        const val MEDAL_CTA_TEXT = "cta_text"
     }
 
     object General {
@@ -24,5 +31,22 @@ object TrackerConstants {
         const val SOURCE_OTHER_PAGE = "medali_other_page"
         const val MDP_EVENT_ACTION = "medali detail page"
         const val BACK_BUTTON_CLICK = "click back"
+    }
+
+    object Tracker {
+        const val MDP_VIEW_PAGE = "44004"
+        const val MDP_CLICK_BACK = "44005"
+        const val MDP_CLICK_TNC = "44006"
+        const val MDP_VIEW_MEDAL = "44007"
+        const val MDP_CLICK_MEDAL = "44008"
+        const val MDP_VIEW_MEDAL_PROGRESS = "44012"
+        const val MDP_VIEW_MEDAL_BONUS = "44013"
+        const val MDP_VIEW_SEE_CABINET_CTA = "44015"
+        const val MDP_CLICK_SEE_CABINET_CTA = "44016"
+        const val MDP_VIEW_PRIMARY_CTA = "44017"
+        const val MDP_CLICK_PRIMARY_CTA = "44018"
+        const val MDP_VIEW_COUPON_SUCCESS_TOASTER = "44021"
+        const val MDP_VIEW_COUPON_LOAD_ERROR = "44023"
+        const val MDP_VIEW_PAGE_SHIMMER = "44024"
     }
 }

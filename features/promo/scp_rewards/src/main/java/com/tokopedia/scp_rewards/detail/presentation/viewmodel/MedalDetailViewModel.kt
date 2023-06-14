@@ -24,6 +24,13 @@ class MedalDetailViewModel @Inject constructor(
         private const val SUCCESS_CODE = "200"
     }
 
+    var couponCode: String = ""
+        private set
+    var couponStatus: String = ""
+        private set
+    var couponNotes: String = ""
+        private set
+
     private val _badgeLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
     val badgeLiveData: LiveData<ScpResult> = _badgeLiveData
 
@@ -40,6 +47,13 @@ class MedalDetailViewModel @Inject constructor(
                 )
                 if (response.detail?.resultStatus?.code == SUCCESS_CODE) {
                     _badgeLiveData.postValue(Success(response))
+
+                    couponCode = response.detail.medaliDetailPage?.benefitButtons
+                        ?.firstOrNull { it.couponCode.isNullOrEmpty().not() }?.couponCode.orEmpty()
+                    couponStatus =
+                        response.detail.medaliDetailPage?.benefits?.first()?.status.orEmpty()
+                    couponNotes =
+                        response.detail.medaliDetailPage?.benefits?.first()?.statusDescription.orEmpty()
                 } else {
                     throw Throwable()
                 }
