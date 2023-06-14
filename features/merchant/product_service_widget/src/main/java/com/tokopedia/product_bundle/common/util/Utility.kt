@@ -17,7 +17,7 @@ object Utility {
         try {
             FirebaseCrashlytics.getInstance().recordException(throwable)
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            // no-op
         }
     }
 }
