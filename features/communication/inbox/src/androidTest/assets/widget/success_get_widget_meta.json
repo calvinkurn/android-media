@@ -6,14 +6,16 @@
         "title": "Chat Driver",
         "subtext": "{order_counter} pesanan",
         "applink": "tokopedia://tokochat/chatlist",
-        "type": 101
+        "type": 101,
+        "is_dynamic": true
       },
       {
         "icon": "81",
         "title": "Tokopedia Care",
         "subtext": "Cek pesan bantuan",
         "applink": "",
-        "type": 1
+        "type": 1,
+        "is_dynamic": true
       }
     ]
   }

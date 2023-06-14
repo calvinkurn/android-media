@@ -11,7 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.inbox.fake.common.CoroutineAndroidTestDispatchersProvider
-import com.tokopedia.inbox.universalinbox.stub.repository.GraphqlRepositoryStub
+import com.tokopedia.inbox.universalinbox.stub.data.repository.GraphqlRepositoryStub
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import dagger.Module

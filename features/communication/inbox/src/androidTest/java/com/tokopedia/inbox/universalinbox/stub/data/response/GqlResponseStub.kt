@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.universalinbox.stub.domain.response
+package com.tokopedia.inbox.universalinbox.stub.data.response
 
 import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxCounterWrapperResponse
 import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetWrapperResponse

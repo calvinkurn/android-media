@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.universalinbox.test
 
-import com.tokopedia.inbox.universalinbox.stub.domain.response.GqlResponseStub
+import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounterGone

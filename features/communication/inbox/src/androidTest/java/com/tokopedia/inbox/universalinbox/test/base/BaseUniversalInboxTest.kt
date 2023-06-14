@@ -9,8 +9,8 @@ import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFact
 import com.tokopedia.inbox.universalinbox.stub.common.ActivityScenarioTestRule
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
+import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.stub.di.UniversalInboxFakeActivityComponentFactory
-import com.tokopedia.inbox.universalinbox.stub.domain.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
 import com.tokopedia.user.session.UserSessionInterface

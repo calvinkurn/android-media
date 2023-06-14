@@ -1,11 +1,11 @@
-package com.tokopedia.inbox.universalinbox.stub.repository
+package com.tokopedia.inbox.universalinbox.stub.data.repository
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.inbox.universalinbox.stub.domain.response.GqlResponseStub
-import com.tokopedia.inbox.universalinbox.stub.domain.response.ResponseStub
+import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
+import com.tokopedia.inbox.universalinbox.stub.data.response.ResponseStub
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                 )
             }
             query.contains(GqlResponseStub.widgetMetaResponse.query) -> {
-                shouldThrow(GqlResponseStub.counterResponse)
+                shouldThrow(GqlResponseStub.widgetMetaResponse)
                 GqlMockUtil.createSuccessResponse(
                     GqlResponseStub.widgetMetaResponse.responseObject
                 )
