@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">product_detail</string>
 
-    <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail produk</string>
     <string name="merchant_product_detail_shipping">Detail pengiriman</string>
@@ -33,7 +32,6 @@
     <string name="label_favorited">Following</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
-    <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_other_toppers">Toppers lain juga lihat ini, lho!</string>
