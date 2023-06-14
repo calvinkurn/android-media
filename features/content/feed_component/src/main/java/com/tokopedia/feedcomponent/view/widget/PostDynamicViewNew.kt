@@ -211,12 +211,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val gridList: RecyclerView = findViewById(R.id.gridList)
     private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
-    private val layoutVideo: PlayerView = findViewById(R.id.layout_video)
-    private val layoutIconVolume: ImageView = findViewById(R.id.volume_icon)
-    private val layoutTimerView: Typography = findViewById(R.id.timer_view)
-    private val layoutLoaderView: LoaderUnify = findViewById(R.id.loader)
-    private val layoutIcPlay: ImageUnify = findViewById(R.id.ic_play)
-    private val videoPreviewImage: ImageUnify = findViewById(R.id.videoPreviewImage)
 
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
@@ -1210,6 +1204,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<LinearLayout>(R.id.ll_lihat_product)
+            val layoutVideo: PlayerView = findViewById(R.id.layout_video)
+            val layoutIconVolume: ImageView = findViewById(R.id.volume_icon)
+            val layoutTimerView: Typography = findViewById(R.id.timer_view)
+            val layoutLoaderView: LoaderUnify = findViewById(R.id.loader)
+            val layoutIcPlay: ImageUnify = findViewById(R.id.ic_play)
+            val videoPreviewImage: ImageUnify = findViewById(R.id.videoPreviewImage)
+
             if (tagProducts.isEmpty()) {
                 layoutLihatProdukParent?.gone()
             } else {
@@ -1248,11 +1249,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
-                        showVideoLoading()
+                        showVideoLoading(
+                            viewLoader = layoutLoaderView,
+                            viewIcPlay = layoutIcPlay,
+                        )
                     }
 
                     override fun onVideoReadyToPlay(isPlaying: Boolean) {
-                        hideVideoLoading()
+                        hideVideoLoading(
+                            viewLoader = layoutLoaderView,
+                            viewIcPlay = layoutIcPlay,
+                            viewTimer = layoutTimerView,
+                            viewVideoPreview = videoPreviewImage,
+                        )
                         layoutTimerView.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
                         object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
@@ -1430,17 +1439,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
 
-    private fun hideVideoLoading() {
-        layoutLoaderView.gone()
-        layoutIcPlay.gone()
-        layoutTimerView.visible()
-        videoPreviewImage.gone()
+    private fun hideVideoLoading(
+        viewLoader: View,
+        viewIcPlay: View,
+        viewTimer: View,
+        viewVideoPreview: View,
+    ) {
+        viewLoader.gone()
+        viewIcPlay.gone()
+        viewTimer.visible()
+        viewVideoPreview.gone()
     }
 
-    private fun showVideoLoading() {
-        layoutLoaderView.animate()
-        layoutLoaderView.visible()
-        layoutIcPlay.visible()
+    private fun showVideoLoading(
+        viewLoader: View,
+        viewIcPlay: View,
+    ) {
+        viewLoader.animate()
+        viewLoader.visible()
+        viewIcPlay.visible()
     }
 
     private fun toggleVolume(isMute: Boolean) {
@@ -1742,7 +1759,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null
-            layoutVideo?.player = null
         }
 
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
