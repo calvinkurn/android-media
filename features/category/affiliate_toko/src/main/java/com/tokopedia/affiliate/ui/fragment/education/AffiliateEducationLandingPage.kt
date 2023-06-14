@@ -40,6 +40,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -65,6 +66,10 @@ class AffiliateEducationLandingPage :
     @Inject
     var userSessionInterface: UserSessionInterface? = null
 
+    @Inject
+    @JvmField
+    var remoteConfig: RemoteConfigInstance? = null
+
     private var binding by autoClearedNullable<AffiliateEducationLandingPageBinding>()
 
     override fun getViewModelType(): Class<AffiliateEducationLandingViewModel> {
@@ -87,7 +92,7 @@ class AffiliateEducationLandingPage :
     }
 
     private fun isAffiliateNCEnabled() =
-        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+        remoteConfig?.abTestPlatform?.getString(
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
@@ -107,7 +112,7 @@ class AffiliateEducationLandingPage :
             )
         }
 
-        private val kamusSlug = if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+        private val kamusSlug = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             "imagetest"
         } else {
             "kamus-affiliate"
@@ -283,7 +288,7 @@ class AffiliateEducationLandingPage :
             "%s?title=%s&url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
             title.replace(" ", "+"),
-            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
                 EDUCATION_ARTICLE_DETAIL_STAGING_URL
             } else {
                 EDUCATION_ARTICLE_DETAIL_PROD_URL

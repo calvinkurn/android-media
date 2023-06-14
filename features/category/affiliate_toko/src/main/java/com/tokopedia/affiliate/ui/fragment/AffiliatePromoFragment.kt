@@ -81,6 +81,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -100,6 +101,10 @@ class AffiliatePromoFragment :
     @Inject
     @JvmField
     var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var affiliatePromoViewModel: AffiliatePromoViewModel? = null
 
@@ -125,13 +130,13 @@ class AffiliatePromoFragment :
         }
 
     private fun isAffiliateNCEnabled() =
-        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+        remoteConfigInstance?.abTestPlatform?.getString(
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
 
     private fun isAffiliatePromoteHomeEnabled() =
-        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+        remoteConfigInstance?.abTestPlatform?.getString(
             AFFILIATE_PROMOTE_HOME,
             ""
         ) == AFFILIATE_PROMOTE_HOME
@@ -155,7 +160,7 @@ class AffiliatePromoFragment :
         remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
 
     private fun isAffiliateSSAShopEnabled() =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        remoteConfigInstance?.abTestPlatform?.getString(
             AFFILIATE_SSA_SHOP,
             ""
         ) == AFFILIATE_SSA_SHOP
@@ -238,7 +243,7 @@ class AffiliatePromoFragment :
             affiliatePromoViewModel?.fetchSSAShopList()
         }
 
-        if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        if (remoteConfigInstance?.abTestPlatform?.getString(
                 AFFILIATE_TOKONOW_BANNER,
                 ""
             ) == AFFILIATE_TOKONOW_BANNER
@@ -269,7 +274,7 @@ class AffiliatePromoFragment :
         } else {
             affiliatePromoViewModel?.getAffiliateValidateUser()
         }
-        if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        if (remoteConfigInstance?.abTestPlatform?.getString(
                 AFFILIATE_DISCO_PROMO,
                 ""
             ) == AFFILIATE_DISCO_PROMO
@@ -282,7 +287,7 @@ class AffiliatePromoFragment :
     }
 
     private fun getTokoNowPageId(): String? {
-        val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
+        val isStaging = TokopediaUrl.getInstance().TYPE == Env.STAGING
         return if (isStaging) tokoNowData?.tokonowIdStaging else tokoNowData?.tokonowId
     }
 

@@ -102,6 +102,11 @@ class AffiliateAdpFragment :
     @Inject
     @JvmField
     var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var remoteConfig: RemoteConfigInstance? = null
+
     var binding by autoClearedNullable<AffiliateAdpFragmentLayoutBinding>()
 
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
@@ -137,13 +142,13 @@ class AffiliateAdpFragment :
         }
 
     private fun isAffiliateNCEnabled() =
-        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+        remoteConfig?.abTestPlatform?.getString(
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
 
     private fun isAffiliatePromoteHomeEnabled() =
-        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+        remoteConfig?.abTestPlatform?.getString(
             AFFILIATE_PROMOTE_HOME,
             ""
         ) == AFFILIATE_PROMOTE_HOME
