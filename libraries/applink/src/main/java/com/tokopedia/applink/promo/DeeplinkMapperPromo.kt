@@ -127,6 +127,15 @@ fun getRegisteredNavigationPromoFromHttp(deeplink:Uri) : String{
     return ""
 }
 
+fun getInternalDeeplinkForScpMedalCabinet(deeplink: Uri) : String{
+    val segments = deeplink.pathSegments
+    if(segments.last()!=""){
+        val medaliSlug = segments.last()
+        return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_CABINET,medaliSlug)
+    }
+    return ""
+}
+
 fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri) : String{
     val segments = deeplink.pathSegments
     if(segments.last()!=""){

@@ -513,6 +513,10 @@ public interface ApplinkConst {
         String CELEBRATION = "tokopedia://medali/celebration/{medali_slug}";
         String MEDAL_DETAIL_BASE = "tokopedia://medali/detail";
         String MEDAL_DETAIL = "tokopedia://medali/detail/{medali_slug}";
+
+        String MEDAL_CABINET_BASE = "tokopedia://medali/cabinet";
+
+        String MEDAL_CABINET = "tokopedia://medali/cabinet/{medali_slug}";
     }
 
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
