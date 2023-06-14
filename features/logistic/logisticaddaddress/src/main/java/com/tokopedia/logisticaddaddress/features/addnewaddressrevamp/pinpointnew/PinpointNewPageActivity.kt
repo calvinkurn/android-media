@@ -35,7 +35,7 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
         var fragment: PinpointNewPageFragment? = null
         if (bundle != null) {
             isEdit = bundle.getBoolean(EXTRA_IS_EDIT)
-            isEdit = bundle.getBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY)
+            isGetPinPointOnly = bundle.getBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY)
             fragment = PinpointNewPageFragment.newInstance(bundle)
         }
         return fragment
