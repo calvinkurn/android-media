@@ -41,10 +41,10 @@ class PlayExploreWidget @Inject constructor(
 
     private val fgExplore by lazyThreadSafetyNone {
         PlayExploreWidgetFragment(router, trackingQueue, analyticFactory)
-    } // TODO() setup apply here only passed router
+    }
 
     private val fgCategory by lazyThreadSafetyNone {
-        PlayCategoryWidgetFragment(router) //TODO() dont pass via constructor use lateint
+        PlayCategoryWidgetFragment(router)
     }
 
     private val tabs = mutableMapOf<String, Fragment>()
@@ -123,7 +123,7 @@ class PlayExploreWidget @Inject constructor(
             binding.tabPlayExploreWidget,
             binding.vpPlayExploreWidget
         ) { tab, position ->
-            tab.setCustomText(tabs.keys.elementAt(position)) //TODO(): handle null or else
+            tab.setCustomText(tabs.keys.elementAtOrNull(position).orEmpty())
         }
         binding.tabPlayExploreWidget.showWithCondition(tabs.size > 1)
         val sheetBehavior = SideSheetBehavior.from(binding.clSheetExploreWidget)

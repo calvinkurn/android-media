@@ -50,7 +50,6 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * @author by astidhiyaa on 24/11/22
  */
-@Suppress("LateinitUsage")
 class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
     private val trackingQueue: TrackingQueue,
