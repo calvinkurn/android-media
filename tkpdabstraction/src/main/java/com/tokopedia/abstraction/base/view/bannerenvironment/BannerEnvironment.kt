@@ -23,11 +23,13 @@ class BannerEnvironment {
     private var decorView: ViewGroup? = null
 
     fun initializeBannerEnvironment(activity: Activity) {
-        val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
-        if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
-            addBanner((activity), getLiveStatus(activity))
-        } else {
-            removeBanner()
+        if (!disableBannerSpecialCase(activity)) {
+            val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
+            if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+                addBanner((activity), getLiveStatus(activity))
+            } else {
+                removeBanner()
+            }
         }
     }
 
@@ -45,16 +47,23 @@ class BannerEnvironment {
 
     private fun addBanner(activity: Activity, liveStatus: String) {
         decorView = activity.window.decorView as ViewGroup
+
         bannerEnvironmentView = BannerEnvironmentView(activity).apply {
             updateText(liveStatus, R.color.Unify_NN0)
             updateBannerColor(R.color.Unify_G500)
             bannerGravity = BannerEnvironmentGravity.END
         }
-        if (liveStatus.isNotEmpty()) {
-            val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
-            val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
-            decorView?.addView(bannerEnvironmentView, params)
-        }
+        val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+        val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
+        decorView?.addView(bannerEnvironmentView, params)
+    }
+
+    /**
+     * special condition when need to remove banner
+     * ex: bottomsheet with dim 0 activity
+     */
+    private fun disableBannerSpecialCase(activity: Activity): Boolean {
+        return activity.window.attributes.dimAmount == 0.0f
     }
 
     private fun removeBanner() {
