@@ -467,7 +467,11 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun goToYoutubePage(videoId: String) {
         context?.let {
             try {
-                val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoId)
+                val webviewUrl = String.format(
+                    "%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    "https://www.youtube.com/watch?v=" + videoId
+                )
                 RouteManager.route(it, webviewUrl)
             } catch (e: Exception) {
                 Timber.d(e)
