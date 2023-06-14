@@ -15,6 +15,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariant
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
@@ -30,13 +31,12 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class UniversalInboxMenuMapper @Inject constructor(
     private val resourceProvider: UniversalInboxResourceProvider,
-    private val abTestPlatform: AbTestPlatform
+    private val abTestPlatform: UniversalInboxAbPlatform
 ) {
     fun getStaticMenu(userSession: UserSessionInterface): List<Any> {
         val chatSectionList = getChatSectionList(userSession)

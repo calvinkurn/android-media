@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.universalinbox.util
 
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -30,7 +30,7 @@ object UniversalInboxValueUtil {
     const val ROLLENCE_TYPE_B = "inbox_varB"
     private const val VAR_A = "var_a"
     private const val VAR_B = "var_b"
-    fun getVariant(abTestPlatform: AbTestPlatform): UniversalInboxMenuMapper.VariantType {
+    fun getVariant(abTestPlatform: UniversalInboxAbPlatform): UniversalInboxMenuMapper.VariantType {
         return try {
             val variantAB = abTestPlatform.getString(ROLLENCE_KEY, ROLLENCE_TYPE_B)
             if (variantAB == ROLLENCE_TYPE_A) {
@@ -42,7 +42,7 @@ object UniversalInboxValueUtil {
             UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
         }
     }
-    fun getVariantTracker(abTestPlatform: AbTestPlatform): String {
+    fun getVariantTracker(abTestPlatform: UniversalInboxAbPlatform): String {
         return when (getVariant(abTestPlatform).type) {
             ROLLENCE_TYPE_A -> VAR_A
             ROLLENCE_TYPE_B -> VAR_B

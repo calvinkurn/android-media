@@ -1,24 +1,24 @@
-package com.tokopedia.inbox.universalinbox.di
+package com.tokopedia.inbox.universalinbox.stub.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
+import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProviderImpl
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatformImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 @Module
-object UniversalInboxModule {
-    @ActivityScope
+object UniversalInboxModuleStub {
+
     @Provides
+    @ActivityScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ActivityScope
@@ -32,8 +32,6 @@ object UniversalInboxModule {
     @ActivityScope
     @Provides
     fun provideAbTestPlatform(): UniversalInboxAbPlatform {
-        return UniversalInboxAbPlatformImpl(
-            RemoteConfigInstance.getInstance().abTestPlatform
-        )
+        return FakeAbTestPlatformImpl()
     }
 }

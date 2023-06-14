@@ -1,0 +1,20 @@
+{
+  "chatInboxWidgetMeta": {
+    "metadata": [
+      {
+        "icon": "330",
+        "title": "Chat Driver",
+        "subtext": "{order_counter} pesanan",
+        "applink": "tokopedia://tokochat/chatlist",
+        "type": 101
+      },
+      {
+        "icon": "81",
+        "title": "Tokopedia Care",
+        "subtext": "Cek pesan bantuan",
+        "applink": "",
+        "type": 1
+      }
+    ]
+  }
+}

@@ -38,6 +38,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
@@ -58,7 +59,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -106,7 +106,7 @@ class UniversalInboxFragment :
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var abTestPlatform: AbTestPlatform
+    lateinit var abTestPlatform: UniversalInboxAbPlatform
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
     private lateinit var adapter: UniversalInboxAdapter
