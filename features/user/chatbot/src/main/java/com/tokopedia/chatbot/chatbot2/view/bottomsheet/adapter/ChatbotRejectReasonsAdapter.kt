@@ -16,13 +16,18 @@ class ChatbotRejectReasonsAdapter(
 ) : RecyclerView.Adapter<ChatbotRejectReasonsAdapter.ChatbotRejectReasonsViewHolder>() {
 
     val list = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
-    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    var selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     var chipListener: ChatbotRejectReasonsChipListener? = null
 
     inner class ChatbotRejectReasonsViewHolder(itemView: ItemChatbotRejectReasonsBinding) : RecyclerView.ViewHolder(itemView.root) {
         var item: ChipsUnify = itemView.chip
         fun bind(item: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip, position: Int) {
             this.item.chipText = item.text
+            selectedList.forEach {
+                if (it.code == item.code) {
+                    this.item.chipType = TYPE_SELECTED
+                }
+            }
             this.item.setOnClickListener {
                 if (selectedList.contains(item)) {
                     selectedList.remove(item)
@@ -54,9 +59,13 @@ class ChatbotRejectReasonsAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(list: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>) {
+    fun setList(
+        list: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
+        selectedReasonList: MutableList<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>
+    ) {
         this.list.clear()
         this.list.addAll(list)
+        selectedList = selectedReasonList
         notifyDataSetChanged()
     }
 }

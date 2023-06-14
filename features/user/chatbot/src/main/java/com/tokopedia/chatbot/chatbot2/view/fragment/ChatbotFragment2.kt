@@ -337,6 +337,8 @@ class ChatbotFragment2 :
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
     private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
     private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
+
+    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
@@ -1007,6 +1009,7 @@ class ChatbotFragment2 :
                 is ChatbotRejectReasonsState.ChatbotRejectReasonData -> {
                     getViewState()?.handleQuickReplyFromDynamicAttachment(true, it.rejectReasons)
                     dynamicAttachmentRejectReasons = it.rejectReasons
+                    hideKeyboard()
                 }
             }
         }
@@ -1534,7 +1537,8 @@ class ChatbotFragment2 :
         dynamicAttachmentRejectReasons?.let {
             if (reasonsBottomSheet == null) {
                 reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
-                    it
+                    it,
+                    selectedList
                 )
             }
         }
@@ -2875,6 +2879,8 @@ class ChatbotFragment2 :
         helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
     ) {
         getViewState()?.hideQuickReplyOnClick()
+        hideKeyboard()
+        selectedList.clear()
         val list = mutableListOf<Long>()
         selectedReasons.forEach {
             list.add(it.code)

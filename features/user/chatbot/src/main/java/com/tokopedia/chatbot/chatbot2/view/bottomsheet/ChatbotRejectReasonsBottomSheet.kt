@@ -28,6 +28,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var isChipSelected: Boolean = false
     private var isEnabledFromText: Boolean = false
     private var charCount: Long = 0
+    private var selectedReasonList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
 
     init {
         isFullpage = false
@@ -94,7 +95,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         reasonsAdapter = ChatbotRejectReasonsAdapter(chipSelectedListener)
         reasonsList.apply {
             layoutManager = getMyLayoutManager()
-            reasonsAdapter?.setList(data.reasonChipList)
+            reasonsAdapter?.setList(data.reasonChipList, selectedReasonList)
             adapter = reasonsAdapter
         }
     }
@@ -106,6 +107,8 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                 reasonText.editText.text?.toString() ?: "",
                 rejectReasonFeedbackForm?.helpfulQuestion
             )
+            reasonText.editText.setText("")
+
             dismiss()
         }
     }
@@ -171,10 +174,12 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     companion object {
 
         fun newInstance(
-            rejectReasonFeedbackForm: DynamicAttachmentRejectReasons? = null
+            rejectReasonFeedbackForm: DynamicAttachmentRejectReasons? = null,
+            reasonList: MutableList<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>
         ): ChatbotRejectReasonsBottomSheet {
             return ChatbotRejectReasonsBottomSheet().apply {
                 this.rejectReasonFeedbackForm = rejectReasonFeedbackForm
+                this.selectedReasonList = reasonList
             }
         }
 
