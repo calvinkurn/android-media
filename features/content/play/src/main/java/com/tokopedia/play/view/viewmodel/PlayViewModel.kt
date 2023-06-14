@@ -2790,7 +2790,7 @@ class PlayViewModel @AssistedInject constructor(
             when {
                 param.group == _channelDetail.value.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
-                } // initial state - check
+                }
                 _exploreWidget.value.widgets.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
