@@ -23,7 +23,6 @@ class EditorToolAdapter constructor(
 ) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
     private var stateList: List<EditorDetailUiModel>? = null
-    private var isAutoCropped: Boolean = false
 
     @SuppressLint("NotifyDataSetChanged")
     fun addItem(items: List<ToolUiModel>) {
@@ -35,7 +34,6 @@ class EditorToolAdapter constructor(
     @SuppressLint("NotifyDataSetChanged")
     fun setupActiveTools(editorUiModel: EditorUiModel) {
         stateList = editorUiModel.getFilteredStateList().toMutableList()
-        isAutoCropped = editorUiModel.isAutoCropped
         notifyDataSetChanged()
     }
 
@@ -48,7 +46,7 @@ class EditorToolAdapter constructor(
         var isActive = false
 
         stateList?.let {
-            it.forEachIndexed { index, editorDetailUiModel ->
+            it.forEach { editorDetailUiModel ->
                 isActive = when (toolModel.id) {
                     EditorToolType.BRIGHTNESS -> editorDetailUiModel.brightnessValue != null
                     EditorToolType.CONTRAST -> editorDetailUiModel.contrastValue != null
@@ -57,10 +55,11 @@ class EditorToolAdapter constructor(
                     EditorToolType.REMOVE_BACKGROUND -> editorDetailUiModel.removeBackgroundUrl != null
                     EditorToolType.ADD_LOGO -> editorDetailUiModel.addLogoValue.overlayLogoUrl.isNotEmpty()
                     EditorToolType.CROP -> {
-                        if (isAutoCropped && index == 0 && (editorDetailUiModel.originalRatio != editorDetailUiModel.cropRotateValue.getRatio()))
+                        if (editorDetailUiModel.cropRotateValue.isAutoCrop) {
                             false
-                        else
+                        } else {
                             editorDetailUiModel.cropRotateValue.isCrop
+                        }
                     }
                     else -> false
                 }
