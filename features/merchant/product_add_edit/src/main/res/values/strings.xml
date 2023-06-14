@@ -550,8 +550,8 @@
     <string name="product_add_edit_text_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
     <string name="product_add_edit_title_disabled_variant_deactivate_dialog">Tidak bisa ubah untuk produk Dilayani Tokopedia</string>
     <string name="product_add_edit_text_disabled_variant_deactivate_dialog">Jika mau tambah varian, tarik semua stok produk ini di gudang Dilayani Tokopedia &amp; buat Surat Penarikan lewat desktop.</string>
-    <string name="product_add_edit_text_description_variant_dt_can_not_delete">Varian produk Dilayani Tokopedia belum bisa dihapus</string>
-    <string name="product_add_edit_text_title_variant_dt_can_not_delete">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
+    <string name="product_add_edit_text_title_variant_dt_can_not_delete">Varian produk Dilayani Tokopedia belum bisa dihapus</string>
+    <string name="product_add_edit_text_description_variant_dt_can_not_delete">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
     <string name="action_oke_got_it">Oke, Mengerti</string>
     <string name="product_add_edit_dt_action_remove">hapus</string>
     <string name="product_add_edit_dt_action_add">tambah</string>
