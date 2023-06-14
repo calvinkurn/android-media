@@ -62,7 +62,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
-                onChipClick,
+                onChipsClick,
                 onInsightItemClick,
                 ::onInsightTypeChipClick,
                 onAccordianItemClick
@@ -180,13 +180,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun setUpChipsRecyclerView() {
-        groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onChipsClick)
+        groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onStickyChipsClick)
         groupDetailChipsRv?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         groupDetailChipsRv?.adapter = groupDetailsChipsAdapter
     }
 
-    private val onChipsClick: (Int) -> Unit = { position ->
+    private val onStickyChipsClick: (Int) -> Unit = { position ->
         groupDetailChipsRv?.layoutManager?.startSmoothScroll(
             object :
                 LinearSmoothScroller(context) {
@@ -209,7 +209,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { _, item ->
             viewModel.loadDetailPageOnAction(
-                if (item.adGroupType == PRODUCT_KEY) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                utils.convertAdTypeToInt(item.adGroupType),
                 item.adGroupID,
                 item.insightType
             )
@@ -250,7 +250,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         detailPageEmptyState = view?.findViewById(R.id.detailPageEmptyState)
     }
 
-    private val onChipClick: (Int) -> Unit = {
+    private val onChipsClick: (Int) -> Unit = {
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedItem = TYPE_PRODUCT_VALUE
