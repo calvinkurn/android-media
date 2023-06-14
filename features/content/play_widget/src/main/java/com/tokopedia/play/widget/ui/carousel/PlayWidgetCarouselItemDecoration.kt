@@ -18,9 +18,10 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Created by kenny.hadisaputra on 04/05/23
  */
 class PlayWidgetCarouselItemDecoration(
-    context: Context,
+    context: Context
 ) : RecyclerView.ItemDecoration() {
 
+    private val offset6 = context.resources.getDimensionPixelOffset(R.dimen.play_widget_dp_6)
     private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12)
 
     private val distanceBeforeScale = context.resources.getDimension(
@@ -31,8 +32,8 @@ class PlayWidgetCarouselItemDecoration(
 
     private val whiteColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
 
-    fun getOffset(): Int {
-        return offset12
+    fun getHorizontalOffset(): Int {
+        return 2 * offset6
     }
     override fun getItemOffsets(
         outRect: Rect,
@@ -40,7 +41,8 @@ class PlayWidgetCarouselItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = offset12
+        outRect.left = offset6
+        outRect.right = offset6
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

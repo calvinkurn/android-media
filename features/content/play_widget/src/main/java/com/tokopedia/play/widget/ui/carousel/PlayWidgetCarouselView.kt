@@ -302,7 +302,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val substractBy = if (modulus == 0) realItemSize else modulus
                     val stepToCorrectIndex = stepToOriginalStart + realItemSize - substractBy
 
-                    recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
+                    recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getHorizontalOffset()), 0)
                     onWidgetSelected(snappedPosition + stepToCorrectIndex)
                 } else if (snappedPosition >= FAKE_COUNT_PER_SIDE + realItemSize) {
                     val stepToOriginalEnd = snappedPosition - FAKE_COUNT_PER_SIDE - realItemSize + 1 // e.g pos 14
@@ -310,7 +310,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     val addBy = if (modulus == 0) realItemSize else modulus
                     val stepToCorrectIndex = (-1 * stepToOriginalEnd) - realItemSize + addBy
 
-                    recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
+                    recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getHorizontalOffset()), 0)
                     onWidgetSelected(snappedPosition + stepToCorrectIndex)
                 } else {
                     onWidgetSelected(snappedPosition)
@@ -425,7 +425,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             val view = binding.rvChannels.findViewHolderForAdapterPosition(firstItem)?.itemView ?: return@post
             val scrollBy = ((2 * view.x + view.width) / 2 - binding.rvChannels.width / 2).toInt()
 
-            binding.rvChannels.scrollBy(scrollBy - 15, 0)
+            binding.rvChannels.scrollBy(scrollBy, 0)
 
             onScrolled()
         }
