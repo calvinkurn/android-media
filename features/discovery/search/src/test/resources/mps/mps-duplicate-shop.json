@@ -2,12 +2,12 @@
   "ace_search_shop_mps": {
     "data": [
       {
-        "id": 6550479,
-        "name": "KirinStar OS 2",
+        "id": 6550478,
+        "name": "KirinStarOS",
         "location": "Senen",
         "applink": "tokopedia://shop/6550478",
         "image_url": "https://images.tokopedia.net/img/cache/215-square/default_v3-shopnophoto.png",
-        "component_id": "03.45.03.00",
+        "component_id": "03.45.02.00",
         "tracking_option": 3,
         "badges": [],
         "products": [
