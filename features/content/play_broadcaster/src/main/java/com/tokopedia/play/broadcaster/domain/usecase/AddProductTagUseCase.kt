@@ -49,17 +49,8 @@ class AddProductTagUseCase @Inject constructor(
     }
 
     companion object {
-
         private const val PARAMS_CHANNEL_ID = "channelId"
         private const val PARAMS_PRODUCT_ID = "productIds"
-
-        fun createParams(
-            channelId: String,
-            productIds: List<String>
-        ): Map<String, Any> = mapOf(
-            PARAMS_CHANNEL_ID to channelId,
-            PARAMS_PRODUCT_ID to productIds
-        )
     }
 
 }
