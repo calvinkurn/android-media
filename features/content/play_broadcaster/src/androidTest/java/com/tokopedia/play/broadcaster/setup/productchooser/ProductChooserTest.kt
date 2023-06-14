@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
@@ -25,7 +26,7 @@ class ProductChooserTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockSection = List(1) {
         ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
-            ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+            ProductUiModel(it.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
         })
     }
     private val mockProduct = mockSection.flatMap { it.products }
