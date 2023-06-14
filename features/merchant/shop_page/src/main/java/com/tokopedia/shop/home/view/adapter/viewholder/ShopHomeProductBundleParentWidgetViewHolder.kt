@@ -73,7 +73,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
-        productBundleWidgetView?.setTitleAndWidgetMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
+        productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
         checkFestivity(element)
     }
 
