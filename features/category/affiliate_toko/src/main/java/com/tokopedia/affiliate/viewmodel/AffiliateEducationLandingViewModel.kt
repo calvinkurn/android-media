@@ -31,6 +31,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
@@ -51,7 +52,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
     }
 
     companion object {
-        private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
+        private val isStaging = TokopediaUrl.getInstance().TYPE == Env.STAGING
         private val TYPE_ARTICLE = if (isStaging) 1222 else 381
         private val TYPE_EVENT = if (isStaging) 1223 else 382
         private val TYPE_TUTORIAL = if (isStaging) 1224 else 383
