@@ -261,6 +261,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         uniquePositionId: Int
     ) {
         val images = _prescriptionImages.value ?: arrayListOf()
+        if (uniquePositionId >= images.size) return
         images[uniquePositionId]?.apply {
             result?.data?.firstOrNull()?.let { uploadResult ->
                 if (uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE) {
