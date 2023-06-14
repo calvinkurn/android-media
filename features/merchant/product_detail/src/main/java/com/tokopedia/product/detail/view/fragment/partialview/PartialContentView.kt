@@ -81,18 +81,10 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) { hide() } else {
-            if (wishlisted) {
-                hide()
-                isActivated = true
-                setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_filled))
-                show()
-            } else {
-                hide()
-                isActivated = false
-                setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_unfilled))
-                show()
-            }
+        if (!shouldShowWishlist) {
+            hide()
+        } else if (activeState != wishlisted) {
+            activeState = wishlisted
         }
     }
 

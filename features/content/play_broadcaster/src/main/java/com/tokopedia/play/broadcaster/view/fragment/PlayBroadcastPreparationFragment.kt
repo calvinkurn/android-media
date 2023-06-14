@@ -261,6 +261,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun getPageSource(): PlayBroPageSource {
                         return PlayBroPageSource.Live
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
@@ -894,8 +898,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         curr: List<PlayBroadcastPreparationBannerModel>
     ) {
         if (prev == null || prev == curr) return
+
         adapterBanner.setItemsAndAnimateChanges(curr)
         if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
+
         curr.forEachIndexed { index, model ->
             if (model.type == TYPE_DASHBOARD) {
                 analytic.onViewPerformanceDashboardEntryPointPrepPage(

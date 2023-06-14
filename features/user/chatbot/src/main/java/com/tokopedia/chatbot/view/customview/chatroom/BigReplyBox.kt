@@ -46,7 +46,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
         replyBox?.setOnClickListener {
-            replyBoxClickListener?.goToBigReplyBoxBottomSheet()
+            replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = false)
         }
     }
 

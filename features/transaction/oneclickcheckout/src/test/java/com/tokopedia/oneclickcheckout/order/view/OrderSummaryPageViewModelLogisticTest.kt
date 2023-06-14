@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.akamai_bot_lib.ERROR_MESSAGE_AKAMAI
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -201,6 +202,22 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Get Rates Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val response = AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
+
+        every { ratesUseCase.execute(any()) } throws response
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 

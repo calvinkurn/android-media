@@ -3,7 +3,11 @@ package com.tokopedia.campaignlist.page.presentation.activity
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,18 +36,24 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
-import com.tokopedia.common_compose.components.*
-import com.tokopedia.common_compose.components.ticker.NestTicker
-import com.tokopedia.common_compose.components.ticker.TickerType
-import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.sort_filter.NestSortFilter
-import com.tokopedia.common_compose.sort_filter.SortFilter
-import com.tokopedia.common_compose.ui.NestNN
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestLabel
+import com.tokopedia.nest.components.NestLabelType
+import com.tokopedia.nest.components.NestSearchBar
+import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestNN
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
+import com.tokopedia.sortfilter.compose.NestSortFilter
+import com.tokopedia.sortfilter.compose.SortFilter
 
 @Composable
 fun CampaignListScreen(
@@ -185,9 +195,13 @@ private fun Filter(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
-        title = "",
-        type = TickerType.ANNOUNCEMENT,
-        description = stringResource(id = R.string.cl_another_campaign_type_wording),
+        ticker = listOf(
+            NestTickerData(
+                tickerTitle = "",
+                tickerType = TickerType.ANNOUNCEMENT,
+                tickerDescription = stringResource(id = R.string.cl_another_campaign_type_wording)
+            )
+        ),
         modifier = modifier.fillMaxWidth(),
         onDismissed = onDismissed
     )
@@ -287,11 +301,17 @@ fun CampaignItem(
                         top.linkTo(campaignImage.top)
                         start.linkTo(campaignImage.end, margin = 12.dp)
                     },
-                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = NestTheme.colors.NN._950)
+                    textStyle = NestTheme.typography.display2.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = NestTheme.colors.NN._950
+                    )
                 )
 
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_list_product_quantity_label, campaign.productQty),
+                    text = stringResource(
+                        id = R.string.cl_campaign_list_product_quantity_label,
+                        campaign.productQty
+                    ),
                     modifier = Modifier.constrainAs(productQty) {
                         top.linkTo(campaignName.bottom, margin = 12.dp)
                         start.linkTo(campaignName.start)
@@ -309,7 +329,10 @@ fun CampaignItem(
                 )
 
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
+                    text = stringResource(
+                        id = R.string.cl_campaign_time_template,
+                        campaign.startTime
+                    ),
                     modifier = Modifier.constrainAs(campaignStartTime) {
                         top.linkTo(campaignStartDate.bottom)
                         start.linkTo(campaignStartDate.start)
@@ -338,7 +361,10 @@ fun CampaignItem(
                 )
 
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.endTime),
+                    text = stringResource(
+                        id = R.string.cl_campaign_time_template,
+                        campaign.endTime
+                    ),
                     modifier = Modifier.constrainAs(campaignEndTime) {
                         top.linkTo(campaignStartTime.top)
                         bottom.linkTo(campaignStartTime.bottom)

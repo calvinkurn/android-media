@@ -164,7 +164,7 @@ class AffiliatePromoFragment :
             }
         }
 
-        binding?.iconMore?.setOnClickListener {
+        binding?.promotionInfoCard?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
 
@@ -188,7 +188,7 @@ class AffiliatePromoFragment :
 
         binding?.gamificationContainer?.isVisible = isAffiliateGamificationEnabled()
 
-        binding?.buttonGamification?.setOnClickListener {
+        binding?.gamificationEntryCardBanner?.setOnClickListener {
             val urlRedirectionAppLink = affiliateRedirection()
             if (urlRedirectionAppLink?.isNotEmpty() == true) {
                 RouteManager.route(context, urlRedirectionAppLink)
@@ -242,13 +242,13 @@ class AffiliatePromoFragment :
         activity?.let {
             tabFragments.add(
                 AffiliateRecommendedProductFragment.getFragmentInstance(
-                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,
+                    AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER,
                     this
                 )
             )
             tabFragments.add(
                 AffiliateRecommendedProductFragment.getFragmentInstance(
-                    AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER,
+                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,
                     this
                 )
             )
@@ -279,7 +279,7 @@ class AffiliatePromoFragment :
                 }
             )
         }
-        setCustomTabText(requireContext(), binding?.tabLayoutRecommended)
+        setCustomTabText(context, binding?.tabLayoutRecommended)
     }
 
     private fun sendTabSelectedEvent(position: Int?) {
@@ -468,7 +468,7 @@ class AffiliatePromoFragment :
         if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
             tabOne.apply {
-                text = context.getString(R.string.affiliate_pernah_dibeli)
+                text = context.getString(R.string.affiliate_terakhir_dilihat)
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
                 gravity = Gravity.CENTER
@@ -482,7 +482,7 @@ class AffiliatePromoFragment :
 
             val tabTwo = Typography(context)
             tabTwo.apply {
-                text = context.getString(R.string.affiliate_terakhir_dilihat)
+                text = context.getString(R.string.affiliate_pernah_dibeli)
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
                 gravity = Gravity.CENTER

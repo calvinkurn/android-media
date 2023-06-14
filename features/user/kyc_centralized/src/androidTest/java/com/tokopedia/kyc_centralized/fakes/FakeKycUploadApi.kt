@@ -8,6 +8,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.internal.http2.ErrorCode
 import okhttp3.internal.http2.StreamResetException
+import okio.Buffer
+import timber.log.Timber
 
 class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
 
@@ -17,8 +19,10 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
         projectId: RequestBody,
         params: RequestBody,
         ktpImage: MultipartBody.Part,
-        faceImage: MultipartBody.Part
+        faceImage: MultipartBody.Part,
+        selfieMode: RequestBody
     ): KycResponse {
+        Timber.d("uploadFaceImage=${convertRequestBodyToString(selfieMode)}")
         return when (case) {
             Case.Success -> KycResponse(data = KycData(true))
             Case.NetworkFailed -> {
@@ -58,9 +62,18 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
         projectId: RequestBody,
         params: RequestBody,
         ktpImage: MultipartBody.Part,
-        faceImage: MultipartBody.Part
+        faceImage: MultipartBody.Part,
+        selfieMode: RequestBody
     ): KycResponse {
-        return uploadImages(projectId, params, ktpImage, faceImage)
+        Timber.d("uploadFaceImage=${convertRequestBodyToString(selfieMode)}")
+        return uploadImages(projectId, params, ktpImage, faceImage, selfieMode)
+    }
+
+    private fun convertRequestBodyToString(requestBody: RequestBody): String {
+        return Buffer().let {
+            requestBody.writeTo(it)
+            it.readUtf8()
+        }
     }
 
     sealed class Case {

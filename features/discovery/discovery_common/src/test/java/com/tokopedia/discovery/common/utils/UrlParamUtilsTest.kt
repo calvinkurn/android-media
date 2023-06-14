@@ -1,6 +1,8 @@
 package com.tokopedia.discovery.common.utils
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.core.Is.`is` as shouldBe
@@ -116,5 +118,32 @@ internal class UrlParamUtilsTest {
         )
 
         assert(!UrlParamUtils.isTokoNow(inputMap))
+    }
+
+    @Test
+    fun `multiple keywords from param`() {
+        assertEquals(
+            "samsung",
+            mapOf(
+                SearchApiConst.Q1 to "samsung",
+            ).keywords(),
+        )
+
+        assertEquals(
+            "samsung ^ iphone",
+            mapOf(
+                SearchApiConst.Q1 to "samsung",
+                SearchApiConst.Q2 to "iphone",
+            ).keywords(),
+        )
+
+        assertEquals(
+            "samsung ^ iphone ^ xiaomi",
+            mapOf(
+                SearchApiConst.Q1 to "samsung",
+                SearchApiConst.Q2 to "iphone",
+                SearchApiConst.Q3 to "xiaomi",
+            ).keywords(),
+        )
     }
 }
