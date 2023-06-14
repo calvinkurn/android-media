@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxMenuMapper @Inject constructor(
@@ -195,6 +196,7 @@ class UniversalInboxMenuMapper @Inject constructor(
                 VariantType.INBOX_VAR_B
             }
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             VariantType.INBOX_VAR_B
         }
     }
