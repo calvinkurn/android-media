@@ -71,4 +71,8 @@ object ShopPageConstant {
         const val OFFICIAL_STORE = 2
         const val POWER_MERCHANT_PRO = 3
     }
+
+    object RequestParamValue{
+        const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
+    }
 }
