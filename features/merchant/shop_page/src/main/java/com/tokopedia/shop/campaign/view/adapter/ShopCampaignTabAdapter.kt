@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.adapter
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -67,6 +68,7 @@ class ShopCampaignTabAdapter(
     fun getNewVisitableItems() = visitables.toMutableList()
 
     fun submitList(newList: List<Visitable<*>>) {
+        val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = ShopPageCampaignDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
@@ -77,6 +79,9 @@ class ShopCampaignTabAdapter(
         }
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+        currentRecyclerViewState?.let {
+            recyclerView?.layoutManager?.onRestoreInstanceState(it)
+        }
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
