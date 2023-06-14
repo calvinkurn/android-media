@@ -51,7 +51,17 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -354,7 +364,10 @@ class FeedFragment :
             feature = "share"
         )
         shareBottomSheet.setMetaData(
-            tnTitle = String.format(requireContext().getString(feedR.string.feed_share_title), data.author.name),
+            tnTitle = String.format(
+                requireContext().getString(feedR.string.feed_share_title),
+                data.author.name
+            ),
             tnImage = data.mediaUrl
         )
         if (!shareBottomSheet.isVisible) {
@@ -654,7 +667,11 @@ class FeedFragment :
                 }
                 author?.let {
                     if (userSession.isLoggedIn) {
-                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.type.isShop)
+                        feedPostViewModel.doFollow(
+                            author.id,
+                            author.encryptedUserId,
+                            author.type.isShop
+                        )
                     } else {
                         feedPostViewModel.suspendFollow(
                             author.id,
@@ -997,6 +1014,7 @@ class FeedFragment :
     ) {
         trackerModel?.let {
             currentTrackerData = trackerModel
+            feedAnalytics.eventClickComment(it)
             commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
                 override fun getPageSource(): PageSource = PageSource.Feed(it.activityId)
                 override fun onCommentDismissed() {
@@ -1274,7 +1292,10 @@ class FeedFragment :
     ) = object : ShareBottomsheetListener {
         override fun onShareOptionClicked(shareModel: ShareModel) {
             dismissShareBottomSheet()
-            feedAnalytics.sendClickSharingChannelEvent(shareModel.socialMediaName.orEmpty(), trackerModel)
+            feedAnalytics.sendClickSharingChannelEvent(
+                shareModel.socialMediaName.orEmpty(),
+                trackerModel
+            )
             generateShareLinkUrl(data, shareModel, trackerModel)
         }
 
@@ -1318,7 +1339,10 @@ class FeedFragment :
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString =
                             if (shareData.description.contains("%s")) {
-                                String.format(shareData.description, linkerShareData?.shareUri.orEmpty())
+                                String.format(
+                                    shareData.description,
+                                    linkerShareData?.shareUri.orEmpty()
+                                )
                             } else {
                                 "${shareData.description}\n${linkerShareData?.shareUri.orEmpty()}"
                             }
@@ -1342,7 +1366,7 @@ class FeedFragment :
                         dismissShareBottomSheet()
                     }
 
-                    override fun onError(linkerError: LinkerError?) { }
+                    override fun onError(linkerError: LinkerError?) {}
                 }
             )
         )

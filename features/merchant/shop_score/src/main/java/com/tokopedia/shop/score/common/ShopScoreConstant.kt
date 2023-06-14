@@ -113,6 +113,7 @@ object ShopScoreConstant {
 
     const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
+    const val PRODUCT_PENALTY_URL = "https://seller.tokopedia.com/edu/penalti-produk-terlarang/"
 
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"

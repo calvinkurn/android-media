@@ -111,7 +111,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+    <com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
         android:id="@+id/scroll_host_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
             tools:listitem="@layout/item_post_video_new"
             />
 
-    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+    </com.tokopedia.feedcomponent.util.FeedNestedScrollableHost>
 
     <com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
         android:id="@+id/feed_vod_viewholder"
