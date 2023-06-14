@@ -60,7 +60,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
         paramMap[PARAM_KEY_IS_PLUS_SELECTED] = params.isPlusSelected
 
         val request = GraphqlRequest(
-            graphqlQuery(),
+            ShipmentAddressFormQuery(),
             ShipmentAddressFormGqlResponse::class.java,
             mapOf(
                 "params" to paramMap
