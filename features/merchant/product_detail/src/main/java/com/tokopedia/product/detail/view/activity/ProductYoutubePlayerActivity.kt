@@ -28,6 +28,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_DATA = "EXTRA_YOUTUBE_VIDEO_DATA"
         private const val EXTRA_YOUTUBE_VIDEO_INDEX = "EXTRA_YOUTUBE_VIDEO_INDEX"
+        private const val URL_YOUTUBE_WATCH = "https://www.youtube.com/watch?v="
 
         fun createIntent(context: Context, videoUrls: List<String>, selectedIndex: Int)
                 = Intent(context, ProductYoutubePlayerActivity::class.java).apply {
@@ -87,7 +88,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
         try {
-            val videoUrl  = videoUrls.getOrNull(selectedIndex) ?: ""
+            val videoUrl  = URL_YOUTUBE_WATCH + (videoUrls.getOrNull(selectedIndex) ?: "")
             val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoUrl)
             RouteManager.route(this, webviewUrl)
             finish()
