@@ -1,18 +1,19 @@
 package com.tokopedia.favorite.data.source.apis.interceptor
 
 import android.content.Context
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_AUTHORIZATION
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TopAdsAuthInterceptor(
-        context: Context?,
+        val context: Context?,
         networkRouter: NetworkRouter?,
         userSessionInterface: UserSessionInterface?
 ) : TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
@@ -38,7 +39,9 @@ class TopAdsAuthInterceptor(
                 contentType,
                 authKey,
                 "dd MMM yy HH:mm ZZZ",
-                userSession)
+                userSession,
+                ThemeUtils.getHeader(context)
+        )
 
         val dateFormat = SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH)
         val date = dateFormat.format(Date())

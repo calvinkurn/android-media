@@ -10,25 +10,34 @@ import android.preference.PreferenceManager
 
 object ThemeUtils {
 
-    @JvmStatic
-    fun getHeader(context: Context): String = try {
-        val isDarkMode = isHomeAccountUserDarkModelEnable(context)
+    /**
+     * When tokopedia has supported for color blind theme, please add this
+     * Light -> default
+     * Dark -> dark
+     * TODO Deu & Prota -> prota
+     * TODO Trita -> trita
+     * ref: https://tokopedia.slack.com/archives/C0328MUFV6D/p1683094397706009?thread_ts=1683090166.400889&cid=C0328MUFV6D
+     */
+    private enum class Theme(val value: String) {
+        LIGHT("default"),
+        DARK("dark")
+    }
 
-        if (isDarkMode) {
-            "dark"
-        } else {
-            /**
-             * When tokopedia has supported for color blind theme, please add this
-             * Light -> default
-             * Dark -> dark
-             * TODO Deu & Prota -> prota
-             * TODO Trita -> trita
-             * ref: https://tokopedia.slack.com/archives/C0328MUFV6D/p1683094397706009?thread_ts=1683090166.400889&cid=C0328MUFV6D
-             */
-            "default"
+    @JvmStatic
+    fun getHeader(context: Context?): String {
+        val mContext = context ?: return Theme.LIGHT.value
+
+        return try {
+            val isDarkMode = isHomeAccountUserDarkModelEnable(mContext)
+
+            if (isDarkMode) {
+                Theme.DARK.value
+            } else {
+                Theme.LIGHT.value
+            }
+        } catch (ignored: Exception) {
+            Theme.LIGHT.value
         }
-    } catch (ignored: Exception) {
-        "default"
     }
 
     private fun isHomeAccountUserDarkModelEnable(context: Context): Boolean {
