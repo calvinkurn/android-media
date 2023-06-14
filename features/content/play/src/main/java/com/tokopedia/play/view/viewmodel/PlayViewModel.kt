@@ -2548,10 +2548,8 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
-        needLogin {
-            viewModelScope.launch {
-                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
-            }
+        viewModelScope.launch {
+            _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
         }
     }
 
