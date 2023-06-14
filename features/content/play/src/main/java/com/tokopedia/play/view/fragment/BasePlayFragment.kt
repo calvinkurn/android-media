@@ -10,12 +10,11 @@ import java.net.UnknownHostException
 /**
  * @author by astidhiyaa on 22/05/23
  */
-open class BasePlayFragment : Fragment() { //Dialog?
+open class BasePlayFragment : Fragment() {
 
     protected lateinit var viewModel: PlayViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO(): wrap with try catch to check use when to check each
         val parentFragment = requireParentFragment()
         val grandParent = parentFragment.requireParentFragment()
         val child = grandParent.requireParentFragment()
@@ -25,7 +24,7 @@ open class BasePlayFragment : Fragment() { //Dialog?
         super.onCreate(savedInstanceState)
     }
 
-    fun generateErrorMessage(throwable: Throwable) : String {
+    fun generateErrorMessage(throwable: Throwable): String {
         return if (throwable is UnknownHostException) {
             getString(R.string.play_explore_widget_noconn_errmessage)
         } else {

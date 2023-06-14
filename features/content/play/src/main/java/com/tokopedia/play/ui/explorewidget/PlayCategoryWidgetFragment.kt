@@ -162,10 +162,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
-                    ExploreWidgetNextTab -> {
-                        goToNextPage()
-                    }
-
+                    ExploreWidgetNextTab -> goToNextPage()
                     else -> {}
                 }
             }
@@ -193,7 +190,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
                         analytic?.clickRetryToaster()
-                        //onRetry
+                        run { result.state.onRetry() }
                     }
                 )
             }

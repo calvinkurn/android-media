@@ -1921,11 +1921,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    if (ExploreWidgetType.Default == it.key) {
-                        it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
-                    } else {
-                        it.value
-                    }
+                    it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
                 }
             }
         }
@@ -2797,7 +2793,7 @@ class PlayViewModel @AssistedInject constructor(
             when {
                 param.group == _channelDetail.value.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
-                } // initial state - check
+                }
                 _exploreWidget.value.widgets.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
@@ -2834,14 +2830,22 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
             }
-        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception){ refreshWidget(ExploreWidgetType.Default) }) } }
+        }) { exception ->
+            _exploreWidget.update {
+                it.copy(
+                    state = ExploreWidgetState.Fail(
+                        error = exception,
+                        onRetry = { updateDefaultWidget(param) })
+                )
+            }
+        }
     }
 
     private fun updateCategoryWidget(param: WidgetParamUiModel) {
         if (!param.isRefresh) return
 
         viewModelScope.launchCatchError(block = {
-            if(_categoryWidget.value.data.isEmpty())
+            if (_categoryWidget.value.data.isEmpty())
                 _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
 
             val cursor = when {
@@ -2866,7 +2870,15 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
             }
-        }) { exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception) {refreshWidget(ExploreWidgetType.Category)}) } }
+        }) { exception ->
+            _categoryWidget.update {
+                it.copy(
+                    state = ExploreWidgetState.Fail(
+                        error = exception,
+                        onRetry = { updateCategoryWidget(param) })
+                )
+            }
+        }
     }
 
     private fun onChipAction(element: ChipWidgetUiModel) {

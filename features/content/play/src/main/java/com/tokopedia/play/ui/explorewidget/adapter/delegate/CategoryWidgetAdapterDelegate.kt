@@ -15,7 +15,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 /**
  * @author by astidhiyaa on 23/05/23
  */
-class CategoryWidgetAdapterDelegate private constructor(){
+class CategoryWidgetAdapterDelegate private constructor() {
     internal class Card(private val listener: CategoryWidgetViewHolder.Item.Listener) :
         TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, CategoryWidgetViewHolder.Item>(
             R.layout.item_play_explore_category_card
@@ -42,7 +42,7 @@ class CategoryWidgetAdapterDelegate private constructor(){
 
     internal object Shimmer :
         TypedAdapterDelegate<PlayWidgetShimmerUiModel, PlayWidgetItemUiModel, CategoryWidgetViewHolder.Shimmer>(
-            R.layout.item_play_explore_category_card //TODO() = temp layout
+            R.layout.item_play_explore_category_shimmer
         ) {
         override fun onBindViewHolder(
             item: PlayWidgetShimmerUiModel,

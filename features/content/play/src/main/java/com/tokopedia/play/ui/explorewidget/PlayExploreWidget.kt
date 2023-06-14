@@ -17,7 +17,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.sidesheet.SideSheetBehavior
 import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
@@ -29,7 +28,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
 
 /**
@@ -103,13 +101,13 @@ class PlayExploreWidget @Inject constructor(
         binding.vpPlayExploreWidget.setCurrentItem(position, true)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            (getScreenWidth() * 0.75).roundToInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -125,7 +123,7 @@ class PlayExploreWidget @Inject constructor(
             binding.tabPlayExploreWidget,
             binding.vpPlayExploreWidget
         ) { tab, position ->
-            tab.setCustomText(tabs.keys.elementAt(position)) //TODO(): handle null or else
+            tab.setCustomText(tabs.keys.elementAtOrNull(position).orEmpty())
         }
         binding.tabPlayExploreWidget.showWithCondition(tabs.size > 1)
         val sheetBehavior = SideSheetBehavior.from(binding.clSheetExploreWidget)
