@@ -122,7 +122,7 @@ open class TokoChatFragment :
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
 
-    private lateinit var tokoChatAnalytics: TokoChatAnalytics
+    private var tokoChatAnalytics: TokoChatAnalytics? = null
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -175,7 +175,7 @@ open class TokoChatFragment :
 
     override fun trackClickComposeArea() {
         if (viewModel.channelId.isNotBlank()) {
-            tokoChatAnalytics.clickTextField(
+            tokoChatAnalytics?.clickTextField(
                 viewModel.tkpdOrderId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
@@ -207,7 +207,7 @@ open class TokoChatFragment :
 
         return if (shouldShowBubblesAwarenessBottomSheet) {
             showBubblesAwarenessBottomSheet()
-            tokoChatAnalytics.viewOnboardingBottomsheet(
+            tokoChatAnalytics?.viewOnboardingBottomsheet(
                 orderId = viewModel.tkpdOrderId,
                 source = viewModel.source,
                 role = TokoChatAnalyticsConstants.BUYER
@@ -457,7 +457,7 @@ open class TokoChatFragment :
                 )
                 clearReplyBoxMessage()
             } else {
-                tokoChatAnalytics.clickSendMessage(
+                tokoChatAnalytics?.clickSendMessage(
                     viewModel.tkpdOrderId,
                     TokoChatAnalyticsConstants.BUYER,
                     viewModel.source
@@ -560,7 +560,7 @@ open class TokoChatFragment :
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
-                    tokoChatAnalytics.sendPendingImpressionOnImageAttachment(
+                    tokoChatAnalytics?.sendPendingImpressionOnImageAttachment(
                         it.data.tokochatOrderProgress.state
                     )
                 }
@@ -868,7 +868,7 @@ open class TokoChatFragment :
 
                     setOnClickListener {
                         if (headerUiModel.phoneNumber.isNotEmpty()) {
-                            tokoChatAnalytics.clickCallButtonFromChatRoom(
+                            tokoChatAnalytics?.clickCallButtonFromChatRoom(
                                 getOrderState(),
                                 viewModel.tkpdOrderId,
                                 viewModel.source,
@@ -923,7 +923,7 @@ open class TokoChatFragment :
             }
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
-            tokoChatAnalytics.impressOnClosedChatroomTicker(
+            tokoChatAnalytics?.impressOnClosedChatroomTicker(
                 viewModel.tkpdOrderId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
@@ -990,7 +990,7 @@ open class TokoChatFragment :
 
     private fun trackFromPushNotif() {
         if (viewModel.pushNotifTemplateKey.isNotBlank()) {
-            tokoChatAnalytics.clickChatFromPushNotif(
+            tokoChatAnalytics?.clickChatFromPushNotif(
                 viewModel.tkpdOrderId,
                 viewModel.pushNotifTemplateKey,
                 TokoChatAnalyticsConstants.BUYER,
@@ -1058,7 +1058,7 @@ open class TokoChatFragment :
     }
 
     override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
-        tokoChatAnalytics.impressOnTicker(
+        tokoChatAnalytics?.impressOnTicker(
             viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
@@ -1086,7 +1086,7 @@ open class TokoChatFragment :
     }
 
     override fun onTransactionWidgetClosed() {
-        tokoChatAnalytics.clickCloseOrderWidget(
+        tokoChatAnalytics?.clickCloseOrderWidget(
             viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
@@ -1098,7 +1098,7 @@ open class TokoChatFragment :
         linkUrl: String
     ) {
         if (element.tag == BUBBLES_NOTIF) {
-            tokoChatAnalytics.clickCheckHereOnBoardingTicker(
+            tokoChatAnalytics?.clickCheckHereOnBoardingTicker(
                 orderId = viewModel.tkpdOrderId,
                 source = viewModel.source,
                 role = TokoChatAnalyticsConstants.BUYER
@@ -1119,7 +1119,7 @@ open class TokoChatFragment :
         if (element.tag == BUBBLES_NOTIF) {
             mapper.setBubbleTicker(null)
             viewModel.setBubblesPref(hasShownTicker = true)
-            tokoChatAnalytics.clickCloseOnBoardingTicker(
+            tokoChatAnalytics?.clickCloseOnBoardingTicker(
                 orderId = viewModel.tkpdOrderId,
                 source = viewModel.source,
                 role = TokoChatAnalyticsConstants.BUYER
@@ -1153,10 +1153,10 @@ open class TokoChatFragment :
             isFromRetry = isFromRetry
         )
         if (isFromRetry) {
-            tokoChatAnalytics.clickRetryImage(
+            tokoChatAnalytics?.clickRetryImage(
                 attachmentId = element.imageId,
                 orderId = viewModel.tkpdOrderId,
-                role = tokoChatAnalytics.getStringRole(element.isSender),
+                role = tokoChatAnalytics?.getStringRole(element.isSender) ?: "",
                 source = viewModel.source
             )
         }
@@ -1184,7 +1184,7 @@ open class TokoChatFragment :
 
     override fun onCloseMaskingPhoneNumberBottomSheet() {
         val state = getOrderState()
-        tokoChatAnalytics.clickCloseBottomSheetCallDriver(
+        tokoChatAnalytics?.clickCloseBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
             viewModel.source,
@@ -1194,7 +1194,7 @@ open class TokoChatFragment :
 
     override fun onConfirmCallOnBottomSheetCallDriver() {
         val state = getOrderState()
-        tokoChatAnalytics.clickConfirmCallOnBottomSheetCallDriver(
+        tokoChatAnalytics?.clickConfirmCallOnBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
             viewModel.source,
@@ -1274,19 +1274,19 @@ open class TokoChatFragment :
         imageView.addOnImpressionListener(element.impressHolder) {
             val state = getOrderState()
             if (state.isNotEmpty()) {
-                tokoChatAnalytics.impressOnImageAttachment(
+                tokoChatAnalytics?.impressOnImageAttachment(
                     attachmentId = element.imageId,
                     orderStatus = state,
                     orderId = viewModel.tkpdOrderId,
-                    role = tokoChatAnalytics.getStringRole(element.isSender),
+                    role = tokoChatAnalytics?.getStringRole(element.isSender) ?: "",
                     source = viewModel.source
                 )
             } else {
-                tokoChatAnalytics.saveImpressionOnImageAttachment(
+                tokoChatAnalytics?.saveImpressionOnImageAttachment(
                     attachmentId = element.imageId,
                     orderStatus = state,
                     orderId = viewModel.tkpdOrderId,
-                    role = tokoChatAnalytics.getStringRole(element.isSender),
+                    role = tokoChatAnalytics?.getStringRole(element.isSender) ?: "",
                     source = viewModel.source
                 )
             }
@@ -1294,11 +1294,11 @@ open class TokoChatFragment :
     }
 
     override fun onClickImage(element: TokoChatImageBubbleUiModel) {
-        tokoChatAnalytics.clickImageAttachment(
+        tokoChatAnalytics?.clickImageAttachment(
             element.imageId,
             getOrderState(),
             viewModel.tkpdOrderId,
-            tokoChatAnalytics.getStringRole(element.isSender),
+            tokoChatAnalytics?.getStringRole(element.isSender) ?: "",
             viewModel.source
         )
         context?.let {
@@ -1307,11 +1307,11 @@ open class TokoChatFragment :
                 arrayListOf(element.imagePath)
             )
             startActivity(intent)
-            tokoChatAnalytics.impressOnImagePreview(
+            tokoChatAnalytics?.impressOnImagePreview(
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                tokoChatAnalytics.getStringRole(element.isSender),
+                tokoChatAnalytics?.getStringRole(element.isSender) ?: "",
                 viewModel.source
             )
         }
@@ -1361,7 +1361,7 @@ open class TokoChatFragment :
                 loadChatRoomData()
             },
             dismissAction = {
-                tokoChatAnalytics.clickDismissConsent(
+                tokoChatAnalytics?.clickDismissConsent(
                     role = TokoChatAnalyticsConstants.BUYER,
                     source = viewModel.source
                 )
@@ -1403,7 +1403,7 @@ open class TokoChatFragment :
 
     override fun onClickImageAttachment() {
         context?.let {
-            tokoChatAnalytics.clickAddImageAttachment(
+            tokoChatAnalytics?.clickAddImageAttachment(
                 orderId = viewModel.tkpdOrderId,
                 role = TokoChatAnalyticsConstants.BUYER,
                 source = viewModel.source
@@ -1432,7 +1432,7 @@ open class TokoChatFragment :
         imagePathList.firstOrNull()?.let { imagePath ->
             if (imagePath.isNotEmpty()) {
                 viewModel.uploadImage(filePath = imagePath) {
-                    tokoChatAnalytics.clickUploadButton(
+                    tokoChatAnalytics?.clickUploadButton(
                         attachmentId = it,
                         orderId = viewModel.tkpdOrderId,
                         role = TokoChatAnalyticsConstants.BUYER,
@@ -1472,7 +1472,7 @@ open class TokoChatFragment :
     }
 
     override fun onClickContinue() {
-        tokoChatAnalytics.clickContinueOnboardingBottomSheet(
+        tokoChatAnalytics?.clickContinueOnboardingBottomSheet(
             orderId = viewModel.tkpdOrderId,
             source = viewModel.source,
             role = TokoChatAnalyticsConstants.BUYER
@@ -1480,7 +1480,7 @@ open class TokoChatFragment :
     }
 
     override fun onSwipeNext() {
-        tokoChatAnalytics.swipeNextOnboardingBottomsheet(
+        tokoChatAnalytics?.swipeNextOnboardingBottomsheet(
             orderId = viewModel.tkpdOrderId,
             source = viewModel.source,
             role = TokoChatAnalyticsConstants.BUYER
@@ -1488,7 +1488,7 @@ open class TokoChatFragment :
     }
 
     override fun onClickEdu() {
-        tokoChatAnalytics.clickSelengkapnyaOnboardingBottomSheet(
+        tokoChatAnalytics?.clickSelengkapnyaOnboardingBottomSheet(
             orderId = viewModel.tkpdOrderId,
             source = viewModel.source,
             role = TokoChatAnalyticsConstants.BUYER
@@ -1496,7 +1496,7 @@ open class TokoChatFragment :
     }
 
     override fun onClickSettingActivation() {
-        tokoChatAnalytics.clickActivateFromOnboardingBottomSheet(
+        tokoChatAnalytics?.clickActivateFromOnboardingBottomSheet(
             orderId = viewModel.tkpdOrderId,
             source = viewModel.source,
             role = TokoChatAnalyticsConstants.BUYER
