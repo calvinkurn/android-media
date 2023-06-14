@@ -383,7 +383,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}_${denomData.itemType}"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -473,7 +473,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}_${denomData.itemType}"
             )
             putParcelableArrayList(
                 ITEMS,
