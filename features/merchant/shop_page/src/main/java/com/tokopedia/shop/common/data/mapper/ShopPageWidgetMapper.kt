@@ -32,6 +32,14 @@ object ShopPageWidgetMapper {
     private fun mapToBannerItemWidget(
         data: ShopLayoutWidget.Widget.Data?,
     ): ShopWidgetDisplayBannerTimerUiModel.Data {
+        val statusCampaign = data?.statusCampaign.orEmpty()
+        val isUpcomingCampaign =
+            statusCampaign.lowercase() == StatusCampaign.UPCOMING.statusCampaign.lowercase()
+        val isRemindMe = if (isUpcomingCampaign) {
+            false
+        } else {
+            null
+        }
         return ShopWidgetDisplayBannerTimerUiModel.Data(
             appLink =  data?.appLink.orEmpty(),
             imageUrl =  data?.imageUrl.orEmpty(),
@@ -47,6 +55,7 @@ object ShopPageWidgetMapper {
             totalNotify = data?.totalNotify.orZero(),
             totalNotifyWording = data?.totalNotifyWording.orEmpty(),
             dynamicRule = mapToDynamicRule(data?.dynamicRule),
+            isRemindMe = isRemindMe
         )
     }
 

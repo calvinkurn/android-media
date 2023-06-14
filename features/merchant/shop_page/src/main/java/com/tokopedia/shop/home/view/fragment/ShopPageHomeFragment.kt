@@ -835,7 +835,9 @@ open class ShopPageHomeFragment :
             listWidgetContentData
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
-                    viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget?.data?.campaignId.orEmpty())
+                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                    }
                 }
         }
     }
@@ -1435,7 +1437,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+    protected open fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
         shopHomeAdapter?.updateBannerTimerWidgetData(data.isAvailable)
     }
 

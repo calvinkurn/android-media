@@ -73,12 +73,14 @@ import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
@@ -388,9 +390,21 @@ class ShopPageCampaignFragment :
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         shopCampaignTabAdapter.updateShopCampaignWidgetContentData(mapWidgetContentData)
+        checkBannerTimerWidgetRemindMeStatus(mapWidgetContentData.values.toList())
     }
 
-    // region mvc widget listener
+    private fun checkBannerTimerWidgetRemindMeStatus(listWidgetContentData: List<Visitable<*>?>) {
+        if (isLogin) {
+            listWidgetContentData
+                .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .firstOrNull().let { bannerTimerWidget ->
+                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                    }
+                }
+        }
+    }
+
     override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
         shopCampaignTabTracker.impressionShopBannerWidget(
             shopId,
@@ -1003,4 +1017,11 @@ class ShopPageCampaignFragment :
         )
     }
 
+    override fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRemindMe = data.isAvailable,
+            isClickRemindMe = false
+        )
+    }
 }
