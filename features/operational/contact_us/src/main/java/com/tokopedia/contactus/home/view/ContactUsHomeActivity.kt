@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.home.view
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +16,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.home.ContactUsConstant
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsActivity
+import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsFragment.Companion.FLAG_FROM_TOKOPEDIA_HELP
+import com.tokopedia.kotlin.extensions.orFalse
 import java.lang.Exception
 
 /**
@@ -60,13 +64,27 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.action_inbox) {
-            InboxContactUsActivity.start(this)
+            routeToInboxPage()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun routeToInboxPage(){
+        if(intent.getBooleanExtra(FLAG_FROM_TOKOPEDIA_HELP, false).orFalse()){
+            finish()
+        } else {
+            InboxContactUsActivity.start(this)
+        }
+    }
+
     companion object {
         val URL_HELP = getInstance().WEB + "help?utm_source=android"
+        @JvmStatic
+        fun start(context: Context) {
+            val intent = Intent(context, ContactUsHomeActivity::class.java)
+            intent.putExtra(FLAG_FROM_TOKOPEDIA_HELP, true)
+            context.startActivity(intent)
+        }
     }
 }

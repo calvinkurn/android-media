@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -50,7 +49,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.webview.KEY_TITLE
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -503,7 +501,7 @@ class InboxContactUsFragment :
 
     private fun raiseTicket() {
         if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
-            routeEmptyPage()
+            routeOnEmptyPage()
         } else {
             viewModel.autoPickShowAllOptionsFilter()
             viewModel.restartPageOfList()
@@ -511,7 +509,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun routeEmptyPage(){
+    private fun routeOnEmptyPage(){
         ContactUsTracking.sendGTMInboxTicket(
             "",
             InboxTicketTracking.Category.EventInboxTicket,
@@ -521,8 +519,7 @@ class InboxContactUsFragment :
         if(isFromTokopediaHelp) {
             activity?.finish()
         } else {
-            val route = "$CONTACT_US_NATIVE?$FLAG_FROM_TOKOPEDIA_HELP=true"
-            startActivity(RouteManager.getIntent(context ?: return, route))
+            ContactUsHomeActivity.start(context?:requireContext())
         }
     }
 
