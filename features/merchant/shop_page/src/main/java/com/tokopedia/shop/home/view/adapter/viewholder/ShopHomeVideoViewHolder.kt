@@ -7,7 +7,12 @@ import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
@@ -18,6 +23,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import timber.log.Timber
+import java.util.*
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
