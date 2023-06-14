@@ -28,6 +28,7 @@ import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
@@ -111,6 +112,7 @@ class UserProfileFragment @Inject constructor(
     private val coachMarkManager: ContentCoachMarkManager,
     private val userProfileSharedPref: UserProfileSharedPref,
     private val userProfileUiBridge: UserProfileUiBridge,
+    private val router: Router
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -309,7 +311,7 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun onClickOpenProfileSettingsPage() {
-                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
                     }
                 })
             }
@@ -487,7 +489,7 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             userProfileUiBridge.eventBus.subscribe().collect { event ->
                 when (event) {
-                    is UserProfileUiBridge.Event.OpenProfileSetingsPage -> {
+                    is UserProfileUiBridge.Event.OpenProfileSettingsPage -> {
                         openProfileSettingsPage()
                     }
                 }
@@ -650,7 +652,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
                 userProfileTracker.clickUserProfileSettings(viewModel.profileUserID)
-                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
@@ -993,7 +995,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun openProfileSettingsPage() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
+        val intent = router.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
         profileSettingsForActivityResult.launch(intent)
     }
 

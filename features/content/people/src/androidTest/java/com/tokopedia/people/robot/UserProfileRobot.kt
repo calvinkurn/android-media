@@ -1,5 +1,6 @@
 package com.tokopedia.people.robot
 
+import android.content.Intent
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -14,8 +15,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.util.click
+import com.tokopedia.content.test.util.clickTabLayout
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.builder.ProfileModelBuilder
 import com.tokopedia.people.data.UserProfileRepository
@@ -28,6 +33,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import com.tokopedia.people.R
+import com.tokopedia.people.activity.UserProfileEmptyActivity
 import com.tokopedia.people.helper.PeopleCassavaValidator
 import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
@@ -52,6 +58,7 @@ class UserProfileRobot {
     val mockRepo: UserProfileRepository = mockk(relaxed = true)
     val mockContentCoachMarkManager: ContentCoachMarkManager = mockk(relaxed = true)
     val mockUserProfileSharedPref: UserProfileSharedPref = mockk(relaxed = true)
+    val mockRouter: Router = mockk(relaxed = true)
 
     private val profileModelBuilder = ProfileModelBuilder()
 
@@ -76,6 +83,7 @@ class UserProfileRobot {
                         mockRepo = mockRepo,
                         mockContentCoachMarkManager = mockContentCoachMarkManager,
                         mockUserProfileSharedPref = mockUserProfileSharedPref,
+                        mockRouter = mockRouter,
                     )
                 )
                 .build()
@@ -99,6 +107,7 @@ class UserProfileRobot {
         coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
 
         coEvery { mockUserProfileSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockRouter.getIntent(any(), any(), any()) } returns Intent(context, UserProfileEmptyActivity::class.java)
     }
 
     fun launch() = chainable {
@@ -108,22 +117,15 @@ class UserProfileRobot {
     }
 
     fun clickReviewTab() = chainable {
-        onView(withId(R.id.tab_layout)).perform(
-            object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return allOf(isDisplayed(), isAssignableFrom(TabsUnify::class.java))
-                }
+        clickTabLayout(R.id.tab_layout, 2)
+    }
 
-                override fun getDescription(): String {
-                    return ""
-                }
+    fun clickProfileOptionButton() = chainable {
+        click(R.id.btn_option)
+    }
 
-                override fun perform(uiController: UiController?, view: View?) {
-                    val tabLayout = (view as TabsUnify)
-                    tabLayout.tabLayout.getTabAt(2)?.select()
-                }
-            }
-        )
+    fun clickBack() = chainable {
+        pressBack()
     }
 
     fun verifyEventAction(eventAction: String) = chainable {

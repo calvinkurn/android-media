@@ -4,13 +4,17 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -30,6 +34,24 @@ fun clickWithMatcher(
     vararg matchers: Matcher<View>
 ) {
     onView(allOf(matchers.toList())).perform(click())
+}
+
+fun clickTabLayout(@IdRes id: Int, position: Int) {
+    select(id).perform(
+        object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return allOf(isDisplayed(), isAssignableFrom(TabsUnify::class.java))
+            }
+
+            override fun getDescription(): String {
+                return "Select tab layout item on index $position"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                (view as TabsUnify).tabLayout.getTabAt(position)?.select()
+            }
+        }
+    )
 }
 
 fun type(@IdRes id: Int, text: String) {
@@ -121,6 +143,10 @@ fun <T: View> verify(
                 } ?: false
             }
         }))
+}
+
+fun pressBack() {
+    onView(isRoot()).perform(ViewActions.pressBack())
 }
 
 private fun select(@IdRes id: Int): ViewInteraction {

@@ -2,6 +2,7 @@ package com.tokopedia.people.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -25,6 +26,7 @@ class UserProfileTestModule(
     private val mockRepo: UserProfileRepository,
     private val mockContentCoachMarkManager: ContentCoachMarkManager,
     private val mockUserProfileSharedPref: UserProfileSharedPref,
+    private val mockRouter: Router,
 ) {
 
     @Provides
@@ -46,6 +48,10 @@ class UserProfileTestModule(
     @Provides
     @UserProfileScope
     fun provideUserProfileSharedPref() = mockUserProfileSharedPref
+
+    @Provides
+    @UserProfileScope
+    fun provideRouter() = mockRouter
 
     @Provides
     @UserProfileScope

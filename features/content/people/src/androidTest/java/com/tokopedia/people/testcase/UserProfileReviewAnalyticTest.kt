@@ -26,10 +26,15 @@ class UserProfileReviewAnalyticTest {
     }
 
     @Test
-    fun testAnalytic() {
+    fun testAnalytic_userProfileReview() {
         userProfileRobot
             .launch()
             .clickReviewTab()
             .verifyEventAction("click - review tab")
+
+            .clickProfileOptionButton()
+            .verifyEventAction("click - gear icon")
+
+            .clickBack()
     }
 }
