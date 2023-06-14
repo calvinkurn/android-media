@@ -1,8 +1,6 @@
 package com.tokopedia.product.info.view.bottomsheet
 
-import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -14,8 +12,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.youtube.player.YouTubeApiServiceUtil
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -32,7 +28,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.data.response.ShopNotesData
@@ -54,7 +49,6 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -116,7 +110,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
          * caused by lateinit when don't keep activity which is initialized in bottom-sheet not created
          */
         if (::viewModelFactory.isInitialized) {
-            viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+            viewModel = ViewModelProvider(
+                this,
+                viewModelFactory
+            ).get(BsProductDetailInfoViewModel::class.java)
         }
     }
 
@@ -317,21 +314,15 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToVideoPlayer(url: List<String>, index: Int) {
         context?.let {
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                == YouTubeInitializationResult.SUCCESS
-            ) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, url, index))
-            } else {
-                try {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])
-                        )
-                    )
-                } catch (e: Throwable) {
-                    Timber.d(e)
-                }
+            try {
+                val webviewUrl = String.format(
+                    "%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    "https://www.youtube.com/watch?v=" + url[index]
+                )
+                RouteManager.route(it, webviewUrl)
+            } catch (e: Throwable) {
+                Timber.d(e)
             }
         }
     }

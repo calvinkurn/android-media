@@ -5,7 +5,13 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,22 +35,39 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.plt.ShopPerformanceMonitoringContract
 import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
 import com.tokopedia.shop.score.databinding.FragmentShopPerformanceBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
-import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
-import com.tokopedia.shop.score.performance.presentation.adapter.*
-import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.*
-import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapter
+import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
+import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPopupEndTenure
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetProtectedParameter
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
+import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
+import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
@@ -54,7 +77,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 open class ShopPerformancePageFragment : BaseDaggerFragment(),
@@ -444,7 +466,12 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun goToYoutubePage(videoId: String) {
         context?.let {
-            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
+            try {
+                val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, videoId)
+                RouteManager.route(it, webviewUrl)
+            } catch (e: Exception) {
+                Timber.d(e)
+            }
         }
     }
 
@@ -812,7 +839,12 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPowerMerchantSubscribe() {
-        context?.let { RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE) }
+        context?.let {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            )
+        }
     }
 
     private fun setupAdapter() {
