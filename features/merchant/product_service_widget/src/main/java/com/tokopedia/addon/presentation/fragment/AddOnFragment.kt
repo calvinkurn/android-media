@@ -9,6 +9,7 @@ import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -44,7 +45,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     private var binding by autoClearedNullable<FragmentBottomsheetAddonBinding>()
-    private var onSaveAddonListener: (aggregatedData: AddOnPageResult.AggregatedData) -> Unit = {}
+    private var onSaveAddonListener: (aggregatedData: AddOnPageResult) -> Unit = {}
+    private var tempSelectedAddons: List<AddOnUIModel> = emptyList()
     private val productId by lazy { arguments?.getLong(AddOnExtraConstant.PRODUCT_ID) }
     private val pageSource by lazy { arguments?.getString(AddOnExtraConstant.PAGE_SOURCE) }
     private val cartId by lazy { arguments?.getLong(AddOnExtraConstant.CART_ID) }
@@ -93,13 +95,16 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {
-        println(aggregatedData.toString())
-        onSaveAddonListener(aggregatedData)
+        onSaveAddonListener(AddOnPageResult(tempSelectedAddons, aggregatedData))
     }
 
-    override fun onSaveAddonSuccess(selectedAddonIds: List<String>) {
+    override fun onSaveAddonSuccess(
+        selectedAddonIds: List<String>,
+        selectedAddons: List<AddOnUIModel>
+    ) {
         binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
+        tempSelectedAddons = selectedAddons
     }
 
     override fun onSaveAddonLoading() {
@@ -122,7 +127,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         }
     }
 
-    fun setOnSuccessSaveAddonListener(listener: (aggregatedData: AddOnPageResult.AggregatedData) -> Unit) {
+    fun setOnSuccessSaveAddonListener(listener: (result: AddOnPageResult ) -> Unit) {
         onSaveAddonListener = listener
     }
 }

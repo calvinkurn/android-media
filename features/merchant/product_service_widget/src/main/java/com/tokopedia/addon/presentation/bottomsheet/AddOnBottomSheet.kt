@@ -1,10 +1,13 @@
 package com.tokopedia.addon.presentation.bottomsheet
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.addon.presentation.fragment.AddOnFragment
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.BottomsheetAddonBinding
@@ -45,8 +48,11 @@ class AddOnBottomSheet: BottomSheetUnify() {
             .commit()
     }
 
-    private fun onSaveAddonSuccess(aggregatedData: AddOnPageResult.AggregatedData) {
-        dismiss()
+    private fun onSaveAddonSuccess(result: AddOnPageResult) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_ADDON_PAGE_RESULT, result)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     fun setPageSource(pageSource: String) {

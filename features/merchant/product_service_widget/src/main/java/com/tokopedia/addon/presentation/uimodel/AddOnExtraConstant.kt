@@ -7,4 +7,5 @@ object AddOnExtraConstant {
     const val SELECTED_ADDON_IDS = "selectedAddonIds"
     const val WAREHOUSE_ID = "warehouseId"
     const val IS_TOKOCABANG = "isTokocabang"
+    const val EXTRA_ADDON_PAGE_RESULT = "addonPageResult"
 }

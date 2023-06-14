@@ -24,7 +24,7 @@ interface AddOnComponentListener {
 
     fun onSaveAddonFailed(throwable: Throwable) {}
 
-    fun onSaveAddonSuccess(selectedAddonIds: List<String>) {}
+    fun onSaveAddonSuccess(selectedAddonIds: List<String>, selectedAddons: List<AddOnUIModel>) {}
 
     fun onSaveAddonLoading() {}
 }

@@ -69,7 +69,8 @@ class AddOnWidgetView : BaseCustomView {
                     is Fail -> { listener?.onSaveAddonFailed(it.throwable) }
                     is Success -> {
                         if (it.data) {
-                            listener?.onSaveAddonSuccess(viewModel.selectedAddonIds)
+                            listener?.onSaveAddonSuccess(viewModel.selectedAddonIds,
+                                viewModel.selectedAddon.value ?: return@observe)
                         } else {
                             listener?.onSaveAddonLoading()
                         }

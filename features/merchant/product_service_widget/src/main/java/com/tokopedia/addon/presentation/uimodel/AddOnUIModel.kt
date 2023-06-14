@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.presentation.uimodel.AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
+import java.io.Serializable
 
 data class AddOnUIModel(
     var id: String = "",
@@ -11,7 +12,7 @@ data class AddOnUIModel(
     var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
     var eduLink: String = "",
     var uniqueId: String = ""
-)
+): Serializable
 
 data class AddOnGroupUIModel(
     var title: String = "",
@@ -26,11 +27,11 @@ data class AddOnGroupUIModel(
 class AddOnPageResult(
     val selectedAddons: List<AddOnUIModel> = emptyList(),
     val aggregatedData: AggregatedData = AggregatedData()
-) {
+): Serializable {
     data class AggregatedData(
         val title: String = "",
         val price: Long = 0,
         val isGetDataSuccess: Boolean = false,
         val getDataErrorMessage: String = "",
-    )
+    ): Serializable
 }
