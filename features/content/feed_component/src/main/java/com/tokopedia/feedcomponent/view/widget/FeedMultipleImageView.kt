@@ -6,19 +6,19 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.item_multiple_media.view.*
-import kotlinx.android.synthetic.main.layout_image_grid.view.*
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by yoasfs on 2019-07-01
@@ -26,6 +26,8 @@ import kotlinx.android.synthetic.main.layout_image_grid.view.*
 class FeedMultipleImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
+
+    private val rvMedia: RecyclerView = findViewById(R.id.rv_media)
 
     private val TYPE_EMPTY_NON_FEED = ""
 
@@ -55,7 +57,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 }
             }
         }
-        rv_media.apply {
+        rvMedia.apply {
             layoutManager = gridLayoutManager
             adapter = this@FeedMultipleImageView.adapter
             isNestedScrollingEnabled = false
@@ -117,6 +119,11 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
 
         inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+            private val ivDelete: ImageView = itemView.findViewById(R.id.delete)
+            private val icPlayVid: ImageView = itemView.findViewById(R.id.ic_play_vid)
+            private val itemImageView: SquareImageView = itemView.findViewById(R.id.itemImageView)
+
             init {
                 itemView.setOnClickListener {
                     val media = itemList[adapterPosition]
@@ -127,30 +134,33 @@ class FeedMultipleImageView @JvmOverloads constructor(
                         feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
                     }
                     if (media.type == TYPE_VIDEO) {
-                        itemView.ic_play_vid.gone()
+                        icPlayVid.gone()
                     }
                 }
             }
 
             fun bind(item: MediaItem, feedType: String) {
-                with(itemView) {
-                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
-                    val layoutParams = delete.layoutParams as LayoutParams
-                    layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
-                    delete.layoutParams = layoutParams
+                val btnDeleteMargin = itemView.context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
+                val layoutParams = ivDelete.layoutParams as LayoutParams
+                layoutParams.setMargins(
+                    btnDeleteMargin,
+                    btnDeleteMargin,
+                    btnDeleteMargin,
+                    btnDeleteMargin
+                )
+                ivDelete.layoutParams = layoutParams
 
-                    itemImageView.loadImageRounded(item.thumbnail, RAD_10f)
-                    delete.setOnClickListener { removeItem(item, adapterPosition) }
-                    delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
-                    if (item.videos.isNotEmpty()) {
-                        ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO) {
-                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
-                            ic_play_vid.layoutParams.width = modLength
-                            ic_play_vid.layoutParams.height = modLength
-                        }
+                itemImageView.loadImageRounded(item.thumbnail, RAD_10f)
+                ivDelete.setOnClickListener { removeItem(item, adapterPosition) }
+                ivDelete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
+                if (item.videos.isNotEmpty()) {
+                    icPlayVid.shouldShowWithAction(item.type == TYPE_VIDEO) {
+                        val modLength =
+                            itemView.context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                        icPlayVid.layoutParams.width = modLength
+                        icPlayVid.layoutParams.height = modLength
                     }
-                    else ic_play_vid.gone()
-                }
+                } else icPlayVid.gone()
 
             }
 
@@ -191,8 +201,10 @@ class FeedMultipleImageView @JvmOverloads constructor(
     }
 
     interface FeedMultipleImageViewListener {
-        fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
-                             redirectLink: String, isSingleItem: Boolean)
+        fun onMediaGridClick(
+            positionInFeed: Int, contentPosition: Int,
+            redirectLink: String, isSingleItem: Boolean
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
