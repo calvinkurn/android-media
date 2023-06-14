@@ -9,6 +9,8 @@ import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.UserProfileTabModel
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.model.GetProfileSettingsResponse
+import com.tokopedia.people.model.GetUserReviewListResponse
+import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
