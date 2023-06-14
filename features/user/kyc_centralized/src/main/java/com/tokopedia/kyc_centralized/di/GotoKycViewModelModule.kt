@@ -9,7 +9,6 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveVi
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderViewModel
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
 import dagger.Module
@@ -17,11 +16,6 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class GotoKycViewModelModule {
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(GotoKycMainViewModel::class)
-    abstract fun gotoKycMainViewModel(viewModel: GotoKycMainViewModel): ViewModel
 
     @Binds
     @IntoMap
