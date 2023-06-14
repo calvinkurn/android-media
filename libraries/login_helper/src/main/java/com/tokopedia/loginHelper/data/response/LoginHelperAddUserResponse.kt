@@ -7,8 +7,8 @@ data class LoginHelperAddUserResponse(
     val message: String? = null,
     @SerializedName("code")
     val code: Long? = null,
-    @SerializedName("")
-    val addUserData: LoginHelperAddUserData
+    @SerializedName("data")
+    val addUserData: LoginHelperAddUserData? = null
 ) {
     data class LoginHelperAddUserData(
         @SerializedName("email")
@@ -18,6 +18,6 @@ data class LoginHelperAddUserResponse(
         @SerializedName("tribe")
         val tribe: String? = null,
         @SerializedName("id")
-        val id: String? = null,
+        val id: String? = null
     )
 }

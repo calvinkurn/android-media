@@ -76,6 +76,9 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             dispatchers.io,
             {
+                // TODO re-add this
+//                val encryptedEmail = encrypt(email)
+//                val encryptedPassword = encrypt(password)
                 val addUserResponse = addUserRestUseCase.makeApiCall(
                     email,
                     password,

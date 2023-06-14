@@ -61,7 +61,7 @@ fun LoginHelperAddUserResponse.toUiModel(): LoginHelperAddUserUiModel {
     return LoginHelperAddUserUiModel(
         this.message,
         this.code,
-        this.addUserData.toUiModel()
+        this.addUserData?.toUiModel()
     )
 }
 
