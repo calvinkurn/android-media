@@ -117,9 +117,9 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                         it?.id?.toInt().orZero()
                     }
                 val articleTopics =
-                    categoryGroup?.get(TYPE_ARTICLE)?.getOrNull(0)?.children
+                    categoryGroup?.get(TYPE_ARTICLE)?.firstOrNull()?.children
                 val tutorial =
-                    categoryGroup?.get(TYPE_TUTORIAL)?.getOrNull(0)?.children?.toMutableList()
+                    categoryGroup?.get(TYPE_TUTORIAL)?.firstOrNull()?.children?.toMutableList()
                 if (articleTopics?.isNotEmpty() == true) {
                     tempList.add(AffiliateEducationArticleTopicRVUiModel(articleTopics))
                 }
