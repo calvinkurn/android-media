@@ -1,8 +1,8 @@
 package com.tokopedia.addon.presentation.listener
 
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
-import com.tokopedia.gifting.domain.model.GetAddOnByID
 
 interface AddOnComponentListener {
 
@@ -20,7 +20,7 @@ interface AddOnComponentListener {
 
     fun onTotalPriceCalculated(price: Long) {}
 
-    fun onAggregatedDataObtained(aggregatedData: GetAddOnByID.AggregatedData) {}
+    fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {}
 
     fun onSaveAddonFailed(throwable: Throwable) {}
 

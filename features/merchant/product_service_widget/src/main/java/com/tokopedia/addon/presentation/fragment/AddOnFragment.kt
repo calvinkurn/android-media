@@ -8,10 +8,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
-import com.tokopedia.gifting.domain.model.GetAddOnByID
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product_bundle.common.util.Utility.animateExpand
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -41,6 +44,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     private var binding by autoClearedNullable<FragmentBottomsheetAddonBinding>()
+    private var onSaveAddonListener: (aggregatedData: AddOnPageResult.AggregatedData) -> Unit = {}
     private val productId by lazy { arguments?.getLong(AddOnExtraConstant.PRODUCT_ID) }
     private val pageSource by lazy { arguments?.getString(AddOnExtraConstant.PAGE_SOURCE) }
     private val cartId by lazy { arguments?.getLong(AddOnExtraConstant.CART_ID) }
@@ -73,7 +77,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAddonComponentError(throwable: Throwable) {
-
+        showErrorToaster(throwable)
     }
 
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
@@ -88,11 +92,37 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         println("empty")
     }
 
-    override fun onAggregatedDataObtained(aggregatedData: GetAddOnByID.AggregatedData) {
+    override fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {
         println(aggregatedData.toString())
+        onSaveAddonListener(aggregatedData)
     }
 
     override fun onSaveAddonSuccess(selectedAddonIds: List<String>) {
+        binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
+    }
+
+    override fun onSaveAddonLoading() {
+        binding?.btnSave?.isLoading = true
+    }
+
+    override fun onSaveAddonFailed(throwable: Throwable) {
+        binding?.btnSave?.isLoading = false
+        showErrorToaster(throwable)
+    }
+
+    private fun showErrorToaster(throwable: Throwable) {
+        binding?.apply {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            layoutError.animateExpand()
+            tfError.text = errorMessage
+            tfErrorAction.setOnClickListener {
+                layoutError.gone()
+            }
+        }
+    }
+
+    fun setOnSuccessSaveAddonListener(listener: (aggregatedData: AddOnPageResult.AggregatedData) -> Unit) {
+        onSaveAddonListener = listener
     }
 }

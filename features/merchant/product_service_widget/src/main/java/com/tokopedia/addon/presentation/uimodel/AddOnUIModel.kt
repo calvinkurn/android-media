@@ -22,3 +22,15 @@ data class AddOnGroupUIModel(
     var addOnLevel: String = "",
     var addon: List<AddOnUIModel> = emptyList()
 )
+
+class AddOnPageResult(
+    val selectedAddons: List<AddOnUIModel> = emptyList(),
+    val aggregatedData: AggregatedData = AggregatedData()
+) {
+    data class AggregatedData(
+        val title: String = "",
+        val price: Long = 0,
+        val isGetDataSuccess: Boolean = false,
+        val getDataErrorMessage: String = "",
+    )
+}

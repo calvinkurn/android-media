@@ -150,6 +150,6 @@ class AddOnWidgetView : BaseCustomView {
     }
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {
-        viewModel.getAddOnAggregatedData(addOnIds)
+        viewModel.getAddOnAggregatedData(context, addOnIds)
     }
 }

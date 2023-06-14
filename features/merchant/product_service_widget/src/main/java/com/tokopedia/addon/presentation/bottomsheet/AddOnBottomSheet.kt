@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.addon.presentation.fragment.AddOnFragment
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.BottomsheetAddonBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -31,17 +32,21 @@ class AddOnBottomSheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTitle(getString(R.string.addon_bottomsheet_title))
+        val fragment = AddOnFragment.newInstance(
+            productId,
+            pageSource,
+            cartId,
+            selectedAddonIds,
+            warehouseId,
+            isTokocabang
+        ).apply { setOnSuccessSaveAddonListener(::onSaveAddonSuccess) }
         childFragmentManager.beginTransaction()
-            .replace(R.id.parent_view,
-                AddOnFragment.newInstance(
-                    productId,
-                    pageSource,
-                    cartId,
-                    selectedAddonIds,
-                    warehouseId,
-                    isTokocabang
-                ), "")
+            .replace(R.id.parent_view, fragment, "")
             .commit()
+    }
+
+    private fun onSaveAddonSuccess(aggregatedData: AddOnPageResult.AggregatedData) {
+        dismiss()
     }
 
     fun setPageSource(pageSource: String) {

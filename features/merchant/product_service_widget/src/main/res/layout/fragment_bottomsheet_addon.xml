@@ -17,6 +17,38 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"/>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_error"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:background="@drawable/toaster_bg_error"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tfError"
+                android:text="@string/action_save"
+                android:layout_weight="1"
+                app:typographyType="display_3"
+                android:textColor="@color/Unify_NN0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tfErrorAction"
+                android:text="@string/action_oke"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_NN0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
         <com.tokopedia.unifycomponents.CardUnify2
             android:id="@+id/cardBg"
             android:layout_width="match_parent"
