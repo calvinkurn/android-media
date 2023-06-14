@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import com.tokopedia.carouselproductcard.R
-import kotlin.properties.Delegates
 import kotlin.properties.Delegates.vetoable
-import kotlin.reflect.KProperty
 
 internal class AttributesConfig {
 
@@ -14,6 +12,9 @@ internal class AttributesConfig {
         private set
 
     var showPagingIndicator: Boolean = false
+        private set
+
+    var pagingPaddingHorizontal: Int = 0
         private set
 
     fun load(context: Context, attrs: AttributeSet?) {
@@ -41,10 +42,16 @@ internal class AttributesConfig {
             R.styleable.CarouselPagingProductCardView_showPagingIndicator,
             DEFAULT_SHOW_PAGING_INDICATOR
         )
+
+        pagingPaddingHorizontal = typedArray.getDimensionPixelSize(
+            R.styleable.CarouselPagingProductCardView_pagingPaddingHorizontal,
+            DEFAULT_PAGING_PADDING_HORIZONTAL_PX
+        )
     }
 
     companion object {
         private const val DEFAULT_ITEM_PER_PAGE = 3
         private const val DEFAULT_SHOW_PAGING_INDICATOR = true
+        private const val DEFAULT_PAGING_PADDING_HORIZONTAL_PX = 0
     }
 }

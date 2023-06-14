@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.home_component.listener.BestSellerChipListener
 import com.tokopedia.home_component.viewholders.BestSellerChipViewHolder
-import com.tokopedia.home_component.visitable.BestSellerChipDataModel
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 
 internal class BestSellerChipAdapter(
     private val listener: BestSellerChipListener
-): ListAdapter<BestSellerChipDataModel, BestSellerChipViewHolder>(
+): ListAdapter<BestSellerChipProductDataModel, BestSellerChipViewHolder>(
     BestSellerChipDiffUtil()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BestSellerChipViewHolder {
@@ -22,15 +22,15 @@ internal class BestSellerChipAdapter(
         holder.bind(getItem(position))
     }
 
-    class BestSellerChipDiffUtil: DiffUtil.ItemCallback<BestSellerChipDataModel>() {
+    class BestSellerChipDiffUtil: DiffUtil.ItemCallback<BestSellerChipProductDataModel>() {
         override fun areItemsTheSame(
-            oldItem: BestSellerChipDataModel,
-            newItem: BestSellerChipDataModel
+            oldItem: BestSellerChipProductDataModel,
+            newItem: BestSellerChipProductDataModel
         ): Boolean = oldItem.title == newItem.title
 
         override fun areContentsTheSame(
-            oldItem: BestSellerChipDataModel,
-            newItem: BestSellerChipDataModel
+            oldItem: BestSellerChipProductDataModel,
+            newItem: BestSellerChipProductDataModel
         ): Boolean = oldItem.isActivated == newItem.isActivated
     }
 }

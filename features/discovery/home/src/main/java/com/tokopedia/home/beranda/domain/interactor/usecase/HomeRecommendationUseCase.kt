@@ -4,6 +4,7 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirecti
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.PREVIOUS
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
 import com.tokopedia.home_component.visitable.BestSellerChipDataModel
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import dagger.Lazy
 import java.lang.Exception
+import java.lang.Integer.min
 import javax.inject.Inject
 import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
@@ -74,13 +76,20 @@ class HomeRecommendationUseCase @Inject constructor(
 
     suspend fun onHomeBestSellerFilterClick(
         currentBestSellerDataModel: BestSellerRevampDataModel,
-        filterChip: BestSellerChipDataModel,
+        selectedFilterChip: BestSellerChipDataModel,
         scrollDirection: CarouselPagingGroupChangeDirection,
     ): BestSellerRevampDataModel =
         try {
-            tryGetBestSellerFromSelectedFilter(currentBestSellerDataModel, filterChip, scrollDirection)
+            tryGetBestSellerFromSelectedFilter(
+                currentBestSellerDataModel = currentBestSellerDataModel,
+                selectedFilterChip = selectedFilterChip,
+                scrollDirection = scrollDirection,
+            )
         } catch (e: Exception) {
-            currentBestSellerDataModel
+            errorGetBestSellerFromSelectedFilter(
+                currentBestSellerDataModel = currentBestSellerDataModel,
+                selectedFilterChip = selectedFilterChip,
+            )
         }
 
     private suspend fun tryGetBestSellerFromSelectedFilter(
@@ -99,17 +108,20 @@ class HomeRecommendationUseCase @Inject constructor(
             && recommendationData.first().recommendationItemList.isNotEmpty()
 
         return if (hasData)
-            updatedBestSellerDataModel(
-                recommendationData,
-                currentBestSellerDataModel,
-                selectedFilterChip,
-                scrollDirection
+            successBestSellerDataModel(
+                recommendationData = recommendationData,
+                currentBestSellerDataModel = currentBestSellerDataModel,
+                selectedFilterChip = selectedFilterChip,
+                scrollDirection = scrollDirection,
             )
         else
-            currentBestSellerDataModel
+            errorGetBestSellerFromSelectedFilter(
+                currentBestSellerDataModel = currentBestSellerDataModel,
+                selectedFilterChip = selectedFilterChip,
+            )
     }
 
-    private fun updatedBestSellerDataModel(
+    private fun successBestSellerDataModel(
         recommendationData: List<RecommendationWidget>,
         currentBestSellerDataModel: BestSellerRevampDataModel,
         selectedFilterChip: BestSellerChipDataModel,
@@ -122,12 +134,12 @@ class HomeRecommendationUseCase @Inject constructor(
         val chipProductList = updateBestSellerChipProductList(
             currentBestSellerDataModel,
             selectedFilterChip,
-            productList
+            recommendationWidget.seeMoreAppLink,
+            productList,
         )
 
         return currentBestSellerDataModel.copy(
             chipProductList = chipProductList,
-            title = recommendationWidget.title,
             currentPageInGroup = getCurrentPageInGroup(scrollDirection),
         )
     }
@@ -135,10 +147,15 @@ class HomeRecommendationUseCase @Inject constructor(
     private fun updateBestSellerChipProductList(
         currentBestSellerDataModel: BestSellerRevampDataModel,
         selectedFilterChip: BestSellerChipDataModel,
-        productList: List<BestSellerProductDataModel>
+        seeMoreApplink: String,
+        activeChipProductList: List<BestSellerProductDataModel>
     ) = currentBestSellerDataModel.chipProductList.map {
         if (it.title == selectedFilterChip.title)
-            it.copy(chip = it.chip.activate(), productModelList = productList)
+            it.copy(
+                chip = it.chip.activate(),
+                seeMoreApplink = seeMoreApplink,
+                productModelList = activeChipProductList,
+            )
         else
             it.copy(chip = it.chip.deactivate())
     }
@@ -148,4 +165,34 @@ class HomeRecommendationUseCase @Inject constructor(
             PREVIOUS -> CarouselPagingModel.LAST_PAGE_IN_GROUP
             else -> CarouselPagingModel.FIRST_PAGE_IN_GROUP
         }
+
+    private fun errorGetBestSellerFromSelectedFilter(
+        currentBestSellerDataModel: BestSellerRevampDataModel,
+        selectedFilterChip: BestSellerChipDataModel,
+    ) = currentBestSellerDataModel.copy(
+        chipProductList = activateNextSelectedBestSellerChip(
+            currentBestSellerDataModel,
+            selectedFilterChip,
+        ),
+        currentPageInGroup = CarouselPagingModel.FIRST_PAGE_IN_GROUP,
+    )
+
+    private fun activateNextSelectedBestSellerChip(
+        currentBestSellerDataModel: BestSellerRevampDataModel,
+        selectedFilterChip: BestSellerChipDataModel
+    ): List<BestSellerChipProductDataModel> {
+        val currentSelectedIndex = currentBestSellerDataModel.chipProductList.indexOfFirst {
+            it.chip == selectedFilterChip
+        }
+
+        val lastIndex = currentBestSellerDataModel.chipProductList.lastIndex
+        val nextIndexToActivate = min(currentSelectedIndex + 1, lastIndex)
+
+        return currentBestSellerDataModel.chipProductList.mapIndexed { index, it ->
+            if (index == nextIndexToActivate)
+                it.copy(chip = it.chip.activate())
+            else
+                it.copy(chip = it.chip.deactivate())
+        }
+    }
 }

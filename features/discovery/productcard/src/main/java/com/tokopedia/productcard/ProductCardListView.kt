@@ -3,7 +3,6 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
@@ -30,9 +29,7 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
-import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -200,7 +197,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         renderProductCardRibbon(productCardModel, false)
 
-        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+        imageProduct?.loadImageRounded(
+            productCardModel.productImageUrl,
+            productCardModel.layoutStrategy.imageCornerRadius()
+        )
         productCardModel.layoutStrategy.setImageSize(mediaAnchorProduct)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()

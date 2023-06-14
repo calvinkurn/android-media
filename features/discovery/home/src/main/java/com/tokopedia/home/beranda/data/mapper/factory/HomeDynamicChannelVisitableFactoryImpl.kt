@@ -51,6 +51,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+        private const val VALUE_EMPTY_APPLINK = "-"
 
         private const val CUE_WIDGET_MIN_SIZE = 4
         private const val VPS_WIDGET_SIZE = 4
@@ -408,7 +409,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         visitableList.add(
             BestSellerDataModel(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                    channel = channel,
+                    channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
                     verticalPosition = verticalPosition,
                 ),
             )

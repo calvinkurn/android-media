@@ -386,22 +386,27 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationWidget(
         selectedChipProduct: BestSellerChipProductDataModel,
+        currentDataModel: BestSellerRevampDataModel,
         scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
     ) {
         if (selectedChipProduct.productModelList.isNotEmpty()) return
 
-        findWidget<BestSellerRevampDataModel> { currentDataModel, index ->
-            launch {
-                updateWidget(
-                    homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
-                        currentBestSellerDataModel = currentDataModel,
-                        filterChip = selectedChipProduct.chip,
-                        scrollDirection = scrollDirection,
-                    ),
-                    index
-                )
+        findWidget<BestSellerRevampDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
+                            currentBestSellerDataModel = currentDataModel,
+                            selectedFilterChip = selectedChipProduct.chip,
+                            scrollDirection = scrollDirection,
+                        ),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                }
             }
-        }
+        )
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int) {

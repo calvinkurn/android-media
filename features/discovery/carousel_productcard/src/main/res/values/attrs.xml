@@ -7,5 +7,6 @@
     <declare-styleable name="CarouselPagingProductCardView">
         <attr name="itemPerPage" format="integer" />
         <attr name="showPagingIndicator" format="boolean" />
+        <attr name="pagingPaddingHorizontal" format="dimension" />
     </declare-styleable>
 </resources>

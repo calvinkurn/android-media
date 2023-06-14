@@ -618,7 +618,6 @@ class HomeAdapterFactory(
             com.tokopedia.home_component.viewholders.BestSellerViewHolder.LAYOUT ->
                 viewHolder = com.tokopedia.home_component.viewholders.BestSellerViewHolder(
                     view,
-                    homeComponentListener,
                     bestSellerListener,
                     parentRecycledViewPool
                 )

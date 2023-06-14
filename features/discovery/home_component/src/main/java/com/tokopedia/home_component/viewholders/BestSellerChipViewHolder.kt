@@ -8,6 +8,7 @@ import com.tokopedia.home_component.visitable.BestSellerChipDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.BestSellerChipListener
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -18,15 +19,15 @@ internal class BestSellerChipViewHolder(
 
     private var binding: HomeComponentBestSellerChipBinding? by viewBinding()
 
-    fun bind(element: BestSellerChipDataModel) {
+    fun bind(element: BestSellerChipProductDataModel) {
         binding?.homeComponentBestSellerChip?.run {
             chipText = element.title
-            chipType = getChipType(element)
-            addOnImpressionListener(element.impressHolder) {
-                listener.onChipImpressed(element, bindingAdapterPosition)
+            chipType = getChipType(element.chip)
+            addOnImpressionListener(element.chip.impressHolder) {
+                listener.onChipImpressed(element.chip)
             }
             setOnClickListener {
-                listener.onChipClicked(element, bindingAdapterPosition)
+                listener.onChipClicked(element.chip)
             }
         }
     }

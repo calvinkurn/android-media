@@ -38,5 +38,8 @@ internal class Adapter(
         holder.onViewRecycled()
     }
 
-    fun getItemAt(position: Int): Visitable<TypeFactory> = getItem(position)
+    fun getItemAt(position: Int): Visitable<TypeFactory>? {
+        if (position !in currentList.indices) return null
+        return getItem(position)
+    }
 }

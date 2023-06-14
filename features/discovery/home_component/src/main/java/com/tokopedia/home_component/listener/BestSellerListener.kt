@@ -20,14 +20,10 @@ interface BestSellerListener {
     fun onBestSellerFilterImpress(
         bestSellerChipProductDataModel: BestSellerChipDataModel,
         bestSellerDataModel: BestSellerDataModel,
-        widgetPosition: Int,
-        chipsPosition: Int,
     )
     fun onBestSellerFilterClick(
         selectedChipProduct: BestSellerChipProductDataModel,
         bestSellerDataModel: BestSellerDataModel,
-        widgetPosition: Int,
-        chipsPosition: Int,
     )
     fun onBestSellerFilterScrolled(
         selectedChipProduct: BestSellerChipProductDataModel,

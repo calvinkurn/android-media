@@ -34,9 +34,6 @@ import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
-import com.tokopedia.home_component.visitable.BestSellerChipDataModel
-import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
-import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -46,7 +43,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -588,51 +585,42 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 bestSellerDataModel.pageName,
                 bestSellerDataModel.widgetParam,
             )
-            val activatedChip = recommendationFilterList.find { it.isActivated }
-            val recommendationData = getRecommendationData(
-                activatedChip,
-                bestSellerDataModel.pageName,
-                bestSellerDataModel.widgetParam,
-            )
+            val recommendationFilterIterator = recommendationFilterList.iterator()
 
-            if (recommendationData.isNotEmpty()
-                && recommendationData.first().recommendationItemList.isNotEmpty()) {
-                val recommendationWidget = recommendationData.first().copy(
-                    recommendationFilterChips = recommendationFilterList
+            var recommendationData: List<RecommendationWidget>
+
+            while (recommendationFilterIterator.hasNext()) {
+                val activatedChip = recommendationFilterIterator.next()
+
+                recommendationData = getRecommendationData(
+                    activatedChip,
+                    bestSellerDataModel.pageName,
+                    bestSellerDataModel.widgetParam,
                 )
 
-                val productList = bestSellerRevampMapper.mapBestSellerProductList(
-                    recommendationWidget.recommendationItemList
-                )
+                if (!recommendationListIsEmpty(recommendationData)) {
+                    val updatedBestSellerDataModel = bestSellerRevampMapper.mapChipProductDataModelList(
+                        recommendationData,
+                        recommendationFilterList,
+                        bestSellerDataModel,
+                        activatedChip,
+                    )
 
-                val currentChipProductList = bestSellerDataModel.chipProductList
-                val chipProductList = if (currentChipProductList.isEmpty()) {
-                    recommendationFilterList.map { recommendationFilterChip ->
-                        bestSellerRevampMapper.mapBestSellerChipProduct(
-                            recommendationWidget,
-                            recommendationFilterChip,
-                            if (recommendationFilterChip.isActivated) productList else listOf()
-                        )
-                    }
-                } else {
-                    currentChipProductList.map {
-                        if (it.title == activatedChip?.title)
-                            it.copy(chip = it.chip.activate(), productModelList = productList)
-                        else
-                            it.copy(chip = it.chip.deactivate())
-                    }
+                    homeDataModel.updateWidgetModel(
+                        visitable = updatedBestSellerDataModel,
+                        visitableToChange = bestSellerDataModel,
+                        position = index
+                    ) {}
+
+                    break
                 }
-
-                homeDataModel.updateWidgetModel(
-                    visitable = bestSellerDataModel.copy(chipProductList = chipProductList),
-                    visitableToChange = bestSellerDataModel,
-                    position = index
-                ) {}
-            } else {
-                homeDataModel.deleteWidgetModel(bestSellerDataModel, index) {}
             }
         }
     }
+
+    private fun recommendationListIsEmpty(recommendationData: List<RecommendationWidget>): Boolean =
+        recommendationData.isEmpty()
+            || recommendationData.first().recommendationItemList.isEmpty()
 
     private suspend fun getRecommendationFilterChips(
         pageName: String,

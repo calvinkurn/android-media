@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class StartPagerSnapHelper: PagerSnapHelper() {
+class StartPagerSnapHelper(
+    private val pagingPaddingHorizontal: Int,
+    private val itemPerPage: Int,
+): PagerSnapHelper() {
 
     private var mVerticalHelper: OrientationHelper? = null
     private var mHorizontalHelper: OrientationHelper? = null
@@ -31,8 +34,7 @@ class StartPagerSnapHelper: PagerSnapHelper() {
     }
 
     private fun distanceToStart(targetView: View, helper: OrientationHelper): Int =
-        helper.getDecoratedStart(targetView) - helper.startAfterPadding
-
+        helper.getDecoratedStart(targetView) - helper.startAfterPadding - (pagingPaddingHorizontal / 2)
 
     private fun getVerticalHelper(layoutManager: RecyclerView.LayoutManager): OrientationHelper {
         if (mVerticalHelper?.layoutManager !== layoutManager)
@@ -77,7 +79,7 @@ class StartPagerSnapHelper: PagerSnapHelper() {
         ) {
             child
         } else {
-            layoutManager.findViewByPosition(firstChildPosition + 1)
+            layoutManager.findViewByPosition(firstChildPosition + itemPerPage)
         }
     }
 

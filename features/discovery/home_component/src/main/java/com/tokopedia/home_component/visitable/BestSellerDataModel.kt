@@ -7,20 +7,25 @@ import com.tokopedia.home_component.model.ChannelModel
 data class BestSellerDataModel(
     val chipProductList: List<BestSellerChipProductDataModel> = listOf(),
     val channelModel: ChannelModel,
-    val title: String = "",
     val currentPageInGroup: Int = 0,
 ): HomeComponentVisitable {
 
     private val activatedChip = chipProductList.find { it.isActivated }
 
-    val id = channelModel.id
-    val pageName = channelModel.pageName
-    val widgetParam = channelModel.widgetParam
-    val dividerType = channelModel.channelConfig.dividerType
-    val dividerSize = channelModel.channelConfig.dividerSize
-    val seeMoreApplink = activatedChip?.seeMoreApplink ?: ""
-    val willShow = chipProductList.size > MIN_CHIPS_TO_SHOW
-    val activeChipPosition = chipProductList.indexOf(activatedChip) + 1
+    val id: String
+        get() = channelModel.id
+    val pageName
+        get() = channelModel.pageName
+    val widgetParam
+        get() = channelModel.widgetParam
+    val title
+        get() = channelModel.channelHeader.name
+    val chipCount
+        get() = chipProductList.size
+    val willShow
+        get() = chipCount > MIN_CHIPS_TO_SHOW
+    val activeChipPosition
+        get() = chipProductList.indexOf(activatedChip) + 1
 
     fun findChip(title: String) = chipProductList.find { it.title == title }
 

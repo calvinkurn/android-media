@@ -15,8 +15,8 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentBestSellerBinding
 import com.tokopedia.home_component.listener.BestSellerChipListener
 import com.tokopedia.home_component.listener.BestSellerListener
-import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.BestSellerChipAdapter
 import com.tokopedia.home_component.visitable.BestSellerChipDataModel
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
@@ -24,11 +24,11 @@ import com.tokopedia.home_component.visitable.BestSellerDataModel
 import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BestSellerViewHolder(
     itemView: View,
-    private val homeComponentListener: HomeComponentListener,
     private val bestSellerListener: BestSellerListener,
     private val recycledViewPool: RecycledViewPool? = null,
 ): AbstractViewHolder<BestSellerDataModel>(itemView),
@@ -59,11 +59,14 @@ class BestSellerViewHolder(
         element.chipProductList.all { it.productModelList.isEmpty() }
 
     private fun bindBestSeller(element: BestSellerDataModel) {
+        binding?.root?.show()
+
         bestSellerDataModel = element
 
         initHeader(element)
         initFilterChip(element)
         initCarouselPaging(element)
+        setChannelDivider(element)
     }
 
     private fun initHeader(element: BestSellerDataModel){
@@ -71,19 +74,12 @@ class BestSellerViewHolder(
             element.channelModel,
             object : HeaderListener {
                 override fun onSeeAllClick(link: String) {
-                    bestSellerListener.onBestSellerSeeMoreTextClick(
-                        element,
-                        element.seeMoreApplink,
-                    )
+                    val applink = chipsAdapter.currentList.find { it.isActivated }?.seeMoreApplink ?: ""
+
+                    bestSellerListener.onBestSellerSeeMoreTextClick(element, applink)
                 }
 
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                    homeComponentListener.onChannelExpired(
-                        channelModel,
-                        element.channelModel.verticalPosition,
-                        element
-                    )
-                }
+                override fun onChannelExpired(channelModel: ChannelModel) { }
             }
         )
     }
@@ -93,14 +89,13 @@ class BestSellerViewHolder(
             binding?.homeComponentBestSellerChipsRecyclerView ?: return
 
         recyclerView.shouldShowWithAction(element.willShow) {
-            val chipDataModelList = element.chipProductList.map(BestSellerChipProductDataModel::chip)
-            chipsAdapter.submitList(chipDataModelList)
+            chipsAdapter.submitList(element.chipProductList)
 
-            scrollToActivatedChips(chipDataModelList)
+            scrollToActivatedChips(element.chipProductList)
         }
     }
 
-    private fun scrollToActivatedChips(chipDataModelList: List<BestSellerChipDataModel>) {
+    private fun scrollToActivatedChips(chipDataModelList: List<BestSellerChipProductDataModel>) {
         val activatedChipIndex = chipDataModelList.indexOfFirst { it.isActivated }
 
         binding?.homeComponentBestSellerChipsRecyclerView?.post {
@@ -200,18 +195,13 @@ class BestSellerViewHolder(
         )
     }
 
-    override fun onChipImpressed(chip: BestSellerChipDataModel, chipPosition: Int) {
+    override fun onChipImpressed(chip: BestSellerChipDataModel) {
         val bestSellerDataModel = bestSellerDataModel ?: return
 
-        bestSellerListener.onBestSellerFilterImpress(
-            chip,
-            bestSellerDataModel,
-            bindingAdapterPosition,
-            chipPosition,
-        )
+        bestSellerListener.onBestSellerFilterImpress(chip, bestSellerDataModel)
     }
 
-    override fun onChipClicked(chip: BestSellerChipDataModel, chipPosition: Int) {
+    override fun onChipClicked(chip: BestSellerChipDataModel) {
         activateSelectedChip(chip.title)
 
         val bestSellerDataModel = bestSellerDataModel ?: return
@@ -222,19 +212,14 @@ class BestSellerViewHolder(
             CarouselPagingModel.FIRST_PAGE_IN_GROUP,
         )
 
-        bestSellerListener.onBestSellerFilterClick(
-            activatedChipProduct,
-            bestSellerDataModel,
-            bindingAdapterPosition,
-            chipPosition,
-        )
+        bestSellerListener.onBestSellerFilterClick(activatedChipProduct, bestSellerDataModel)
     }
 
     private fun activateSelectedChip(title: String) {
         val bestSellerDataModel = bestSellerDataModel ?: return
         val newChipList = bestSellerDataModel.chipProductList.map {
-            if (it.title == title) it.chip.activate()
-            else it.chip.deactivate()
+            val chip = if (it.title == title) it.chip.activate() else it.chip.deactivate()
+            it.copy(chip = chip)
         }
 
         chipsAdapter.submitList(newChipList)
@@ -244,6 +229,14 @@ class BestSellerViewHolder(
 
     override fun bind(element: BestSellerDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setChannelDivider(element: BestSellerDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = binding?.homeComponentDividerBestSellerHeader,
+            dividerBottom = binding?.homeComponentDividerBestSellerFooter,
+        )
     }
 
     override fun onViewRecycled() {
