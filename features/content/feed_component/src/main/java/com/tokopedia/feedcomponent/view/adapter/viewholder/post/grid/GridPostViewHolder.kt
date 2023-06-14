@@ -2,16 +2,18 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostModel
-import kotlinx.android.synthetic.main.item_post_grid.view.*
 
 /**
  * @author by milhamj on 07/12/18
  */
 class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemListener) :
     BasePostViewHolder<GridPostModel>() {
+
+    private val gridList: RecyclerView = itemView.findViewById(R.id.gridList)
 
     companion object {
         private const val SPAN_SIZE_FULL = 6
@@ -39,19 +41,19 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
                 }
             }
         }
-        itemView.gridList.layoutManager = layoutManager
+        gridList.layoutManager = layoutManager
 
         val adapter = GridPostAdapter(pagerPosition, element, gridItemListener)
-        itemView.gridList.adapter = adapter
+        gridList.adapter = adapter
 
         setGridListPadding(element.itemList.size)
     }
 
     private fun setGridListPadding(listSize: Int) {
         if (listSize == 1) {
-            itemView.gridList.setPadding(0, 0, 0, 0)
+            gridList.setPadding(0, 0, 0, 0)
         } else {
-            itemView.gridList.setPadding(
+            gridList.setPadding(
                 itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
                 0,
                 itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt(),
