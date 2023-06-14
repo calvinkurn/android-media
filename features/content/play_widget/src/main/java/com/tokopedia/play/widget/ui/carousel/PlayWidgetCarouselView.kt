@@ -49,12 +49,6 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this
     )
 
-    private val videoContentDataSource = object : PlayWidgetCarouselViewHolder.VideoContent.DataSource {
-        override fun canAutoPlay(item: PlayWidgetChannelUiModel): Boolean {
-            return mModel.config.autoPlay
-        }
-    }
-
     private val videoContentListener = object : PlayWidgetCarouselViewHolder.VideoContent.Listener {
         override fun onChannelImpressed(
             view: PlayWidgetCardCarouselChannelView,
@@ -97,17 +91,21 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             shouldMute: Boolean,
             position: Int
         ) {
-            isPositionValid(position) {
-                mAnalyticListener?.onClickToggleMuteButton(
-                    this@PlayWidgetCarouselView,
-                    item,
-                    mModel.config,
-                    it
-                )
-            }
+            if (!mModel.config.autoPlay) {
+                onChannelClicked(view, item, position)
+            } else {
+                isPositionValid(position) {
+                    mAnalyticListener?.onClickToggleMuteButton(
+                        this@PlayWidgetCarouselView,
+                        item,
+                        mModel.config,
+                        it
+                    )
+                }
 
-            mIsMuted = shouldMute
-            updateChannels()
+                mIsMuted = shouldMute
+                updateChannels()
+            }
         }
 
         override fun onProductImpressed(
@@ -256,7 +254,6 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     private val adapter = PlayWidgetCarouselAdapter(
-        videoContentDataSource = videoContentDataSource,
         videoContentListener = videoContentListener,
         upcomingListener = upcomingListener
     )
@@ -323,8 +320,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
-        val prevModel = mModel
         mModel = data
+
+        if (!mModel.config.autoPlay) mIsMuted = true // when new config is off, default to mute
 
         val channels = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
 

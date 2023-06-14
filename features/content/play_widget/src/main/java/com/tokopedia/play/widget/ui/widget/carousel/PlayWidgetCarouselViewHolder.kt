@@ -16,7 +16,6 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
     class VideoContent private constructor(
         private val channelView: PlayWidgetCardCarouselChannelView,
-        private val dataSource: DataSource,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(channelView) {
 
@@ -65,9 +64,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 listener.onChannelImpressed(channelView, data.channel, absoluteAdapterPosition)
             }
             channelView.setModel(data.channel)
-            channelView.showMuteButton(
-                data.isSelected && dataSource.canAutoPlay(data.channel)
-            )
+            channelView.showMuteButton(data.isSelected)
             if (!data.isSelected) channelView.resetProductPosition()
             channelView.setUnClickable(!data.isSelected)
         }
@@ -83,9 +80,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                         )
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
-                        channelView.showMuteButton(
-                            data.isSelected && dataSource.canAutoPlay(data.channel)
-                        )
+                        channelView.showMuteButton(data.isSelected)
                         if (!data.isSelected) channelView.resetProductPosition()
                         channelView.setUnClickable(!data.isSelected)
                     }
@@ -103,11 +98,9 @@ class PlayWidgetCarouselViewHolder private constructor() {
         companion object {
             fun create(
                 parent: ViewGroup,
-                dataSource: DataSource,
                 listener: Listener
             ) = VideoContent(
                 PlayWidgetCardCarouselChannelView(parent.context),
-                dataSource,
                 listener
             )
         }

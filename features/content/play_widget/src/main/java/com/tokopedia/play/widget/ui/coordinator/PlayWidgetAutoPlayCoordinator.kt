@@ -35,6 +35,8 @@ class PlayWidgetAutoPlayCoordinator(
 
     private lateinit var mConfig: PlayWidgetConfigUiModel
 
+    private var mIsVisible: Boolean = false
+
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
         startAutoPlay(
@@ -64,10 +66,12 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun onResume() {
+        if (!mIsVisible) return
         videoPlayerMap.keys.forEach { it.restart() }
     }
 
     fun onVisible() {
+        mIsVisible = true
         videoPlayerMap.keys.forEach {
             if (it.getPlayer().isPlaying) return@forEach
             it.start()
@@ -75,6 +79,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun onNotVisible() {
+        mIsVisible = false
         videoPlayerMap.keys.forEach {
             it.stop()
         }
@@ -104,6 +109,7 @@ class PlayWidgetAutoPlayCoordinator(
 
         videoPlayerMap.keys.forEach {
             it.maxDurationCellularInSeconds = config.maxAutoPlayCellularDuration
+            it.maxDurationWifiInSeconds = config.maxAutoPlayWifiDuration
         }
     }
 
@@ -200,6 +206,6 @@ class PlayWidgetAutoPlayCoordinator(
 
     companion object {
         private const val DELAY_BEFORE_PAUSE = 200L
-        private const val DELAY_BEFORE_PLAY = 500L
+        private const val DELAY_BEFORE_PLAY = 1500L
     }
 }

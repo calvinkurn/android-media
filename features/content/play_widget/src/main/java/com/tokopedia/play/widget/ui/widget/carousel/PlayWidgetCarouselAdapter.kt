@@ -11,7 +11,6 @@ import com.tokopedia.play.widget.ui.model.ext.isMuted
  * Created by kenny.hadisaputra on 17/05/23
  */
 internal class PlayWidgetCarouselAdapter(
-    private val videoContentDataSource: PlayWidgetCarouselViewHolder.VideoContent.DataSource,
     private val videoContentListener: PlayWidgetCarouselViewHolder.VideoContent.Listener,
     private val upcomingListener: PlayWidgetCarouselViewHolder.UpcomingContent.Listener
 ) : ListAdapter<PlayWidgetCarouselAdapter.Model, RecyclerView.ViewHolder>(PlayWidgetCarouselDiffCallback()) {
@@ -24,7 +23,6 @@ internal class PlayWidgetCarouselAdapter(
             TYPE_UPCOMING -> PlayWidgetCarouselViewHolder.UpcomingContent.create(parent, upcomingListener)
             TYPE_VIDEO -> PlayWidgetCarouselViewHolder.VideoContent.create(
                 parent,
-                videoContentDataSource,
                 videoContentListener
             )
             else -> error("View Type $viewType is not supported")
