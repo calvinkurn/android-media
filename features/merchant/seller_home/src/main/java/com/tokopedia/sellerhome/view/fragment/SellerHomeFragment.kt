@@ -226,6 +226,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val STATUS_PERSONA_ACTIVE = 1
         private const val STATUS_PERSONA_SHOW_POPUP = 2
         private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
+        private const val TRIGGER_INITIAL_LOAD = "initial-load"
+        private const val TRIGGER_ERROR_RELOAD = "error-reload"
+        private const val TRIGGER_PULL_RELOAD = "pull-reload"
     }
 
     @Inject
@@ -316,10 +319,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initPltPerformanceMonitoring()
-        setContentBackground()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         getWidgetLayout()
+        setContentBackground()
     }
 
     override fun onCreateView(
@@ -1008,7 +1011,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
     }
 
     private fun showRebateCoachMark() {
@@ -1159,13 +1162,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            reloadPage()
+            reloadPage(TRIGGER_PULL_RELOAD)
             showNotificationBadge()
             sellerHomeListener?.getShopInfo()
         }
 
         binding?.sahGlobalError?.setActionClickListener {
-            reloadPage()
+            reloadPage(TRIGGER_ERROR_RELOAD)
         }
 
         setupEmptyState()
@@ -1193,7 +1196,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
             setPrimaryCTAClickListener {
-                reloadPage()
+                reloadPage(TRIGGER_ERROR_RELOAD)
             }
         }
     }
@@ -1222,7 +1225,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
-    private fun reloadPage() = binding?.run {
+    private fun reloadPage(trigger: String) = binding?.run {
         isReloading = true
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
@@ -1235,7 +1238,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        sellerHomeViewModel.getWidgetLayout(deviceHeight, trigger)
         sellerHomeViewModel.getTicker()
     }
 
@@ -1841,7 +1844,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun reloadPageOrLoadDataOfErrorWidget() {
         val isAnyErrorWidget = adapter.data.any { !it.data?.error.isNullOrBlank() }
         if (!isAnyErrorWidget) {
-            reloadPage()
+            reloadPage(TRIGGER_ERROR_RELOAD)
             return
         }
 

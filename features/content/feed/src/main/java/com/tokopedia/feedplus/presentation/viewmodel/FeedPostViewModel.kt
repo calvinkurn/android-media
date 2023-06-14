@@ -24,6 +24,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -210,8 +211,8 @@ class FeedPostViewModel @Inject constructor(
                             }
                         }.toList()
 
-                        _shouldShowNoMoreContent =
-                            _feedHome.value?.items.orEmpty().isNotEmpty() && items.isEmpty()
+                        _shouldShowNoMoreContent = items.isEmpty() &&
+                            source == FeedBaseFragment.TAB_TYPE_FOLLOWING
 
                         Success(
                             data = feedPosts.data.copy(
