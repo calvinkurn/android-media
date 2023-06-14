@@ -283,7 +283,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         try {
             rvBundles?.setMargin(paddingStart, margin, paddingEnd, paddingBottom)
         } catch (e: Exception) {
-            logToFirebase(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
