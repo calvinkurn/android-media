@@ -28,6 +28,8 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.model.ExtraStats
+import com.tokopedia.people.model.GetUserReviewListResponse
+import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.model.GetProfileSettingsResponse
 import com.tokopedia.people.model.GetUserReviewListResponse
 import com.tokopedia.people.model.SetLikeStatusResponse
