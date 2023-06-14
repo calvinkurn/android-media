@@ -13,8 +13,10 @@ import com.tokopedia.gifting.domain.model.GetAddOnByID
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -33,11 +35,15 @@ class AddOnViewModel @Inject constructor(
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
+    private var selectedAddonGroup: AddOnGroupUIModel? = null
     private val mSelectedAddOn = MutableLiveData<List<AddOnUIModel>>()
     val selectedAddon: LiveData<List<AddOnUIModel>> get() = mSelectedAddOn
 
     private val mAggregatedData = MutableLiveData<GetAddOnByID.AggregatedData>()
     val aggregatedData: LiveData<GetAddOnByID.AggregatedData> get() = mAggregatedData
+
+    private val mSaveSelectionResult = MutableLiveData<Result<Boolean>>()
+    val saveSelectionResult: LiveData<Result<Boolean>> get() = mSaveSelectionResult
 
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
@@ -65,20 +71,25 @@ class AddOnViewModel @Inject constructor(
         this.selectedAddonIds = selectedAddonIds
     }
 
-    fun saveAddOnState() {
-        saveAddOnStateUseCase.setParams(SaveAddOnStateRequest())
+    fun saveAddOnState(cartId: Long, source: String) {
+        mSaveSelectionResult.value = Success(false)
+        saveAddOnStateUseCase.setParams(
+            AddOnMapper.mapToSaveAddOnStateRequest(cartId, source, selectedAddonGroup, selectedAddon.value)
+        )
         saveAddOnStateUseCase.execute(
             onSuccess = {
-
+                mSaveSelectionResult.value = Success(true)
             },
             onError = {
-
+                mSaveSelectionResult.value = Fail(it)
             }
         )
     }
 
-    fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>) {
+    fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>, index: Int) {
         mSelectedAddOn.value = AddOnMapper.getSelectedAddons(addOnGroupUIModels)
+        selectedAddonGroup = addOnGroupUIModels.getOrNull(index)
+        selectedAddonIds = AddOnMapper.getSelectedAddonsIds(addOnGroupUIModels)
     }
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {

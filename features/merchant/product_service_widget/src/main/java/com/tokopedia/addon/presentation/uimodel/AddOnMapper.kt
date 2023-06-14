@@ -1,7 +1,14 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
+import com.tokopedia.addon.domain.model.Source
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 
 object AddOnMapper {
 
@@ -11,14 +18,16 @@ object AddOnMapper {
     }
 
     fun mapAddonToUiModel(response: GetAddOnByProductResponse): List<AddOnGroupUIModel> {
-        val addons = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()?.addons
-            ?.groupBy {
-                it.basic.metadata.infoURL.title
-            }
+        val addonResponse = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()
+        val addons = addonResponse?.addons?.groupBy {
+            it.basic.metadata.infoURL.title
+        }
 
         return addons?.map { addon ->
             val infoUrl = addon.value.firstOrNull()?.basic?.metadata?.infoURL
+            var warehouseId = 0L
             val addonsUi = addon.value.map {
+                warehouseId = it.basic.ownerWarehouseID.toLongOrZero()
                 AddOnUIModel(
                     id = it.basic.basicId,
                     name = it.basic.name,
@@ -33,7 +42,10 @@ object AddOnMapper {
                 title = addon.key,
                 iconUrl = infoUrl?.iconURL.orEmpty(),
                 iconDarkmodeUrl = infoUrl?.iconDarkURL.orEmpty(),
-                addon = addonsUi
+                addon = addonsUi,
+                productId = addonResponse.productID.toLongOrZero(),
+                warehouseId = warehouseId,
+                addOnLevel = addonResponse.addOnLevel
             )
         }.orEmpty()
     }
@@ -59,4 +71,45 @@ object AddOnMapper {
         }
         return resultValue
     }
+
+    fun getSelectedAddonsIds(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
+        return getSelectedAddons(addOnGroupUIModels).map { it.id }
+    }
+
+    fun mapToSaveAddOnStateRequest(
+        cartId: Long,
+        source: String,
+        addOnGroup: AddOnGroupUIModel?,
+        selectedAddons: List<AddOnUIModel>?
+    ): SaveAddOnStateRequest {
+        val addons = selectedAddons
+            .orEmpty()
+            .map {
+                AddOnDataRequest(
+                    addOnId = it.id.toLongOrZero(),
+                    addOnQty = 1,
+                    addOnUniqueId = it.uniqueId,
+                    addOnType = it.addOnType.toRequestAddonType(),
+                    addOnStatus = if (it.isSelected) 1 else 2,
+                )
+            }
+
+        val request = AddOnRequest(
+            addOnLevel = addOnGroup?.addOnLevel.orEmpty(),
+            cartProducts = listOf(
+                CartProduct(
+                    cartId = cartId,
+                    productId = addOnGroup?.productId.orZero()
+                )
+            ),
+            addOnData = addons
+        )
+
+        return SaveAddOnStateRequest(
+            addOns = listOf(request),
+            source = source,
+            featureType = 1
+        )
+    }
+
 }

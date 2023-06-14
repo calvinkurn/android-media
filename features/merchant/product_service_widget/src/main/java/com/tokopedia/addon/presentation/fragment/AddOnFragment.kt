@@ -11,6 +11,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.gifting.domain.model.GetAddOnByID
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -66,8 +67,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
             setSelectedAddons(selectedAddonIds.orEmpty())
             getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
         }
-        binding?.btnSave?.apply {
-            binding?.addonWidget?.saveAddOnState()
+        binding?.btnSave?.setOnClickListener {
+            binding?.addonWidget?.saveAddOnState(cartId.orZero(), "normal")
         }
     }
 
@@ -89,5 +90,9 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
 
     override fun onAggregatedDataObtained(aggregatedData: GetAddOnByID.AggregatedData) {
         println(aggregatedData.toString())
+    }
+
+    override fun onSaveAddonSuccess(selectedAddonIds: List<String>) {
+        binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
     }
 }

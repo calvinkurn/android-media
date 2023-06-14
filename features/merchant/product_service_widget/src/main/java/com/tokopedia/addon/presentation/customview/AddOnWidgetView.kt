@@ -20,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddOnWidgetView : BaseCustomView {
@@ -61,6 +63,18 @@ class AddOnWidgetView : BaseCustomView {
             }
             viewModel.aggregatedData.observe(this) {
                 listener?.onAggregatedDataObtained(it)
+            }
+            viewModel.saveSelectionResult.observe(this) {
+                when (it) {
+                    is Fail -> { listener?.onSaveAddonFailed(it.throwable) }
+                    is Success -> {
+                        if (it.data) {
+                            listener?.onSaveAddonSuccess(viewModel.selectedAddonIds)
+                        } else {
+                            listener?.onSaveAddonLoading()
+                        }
+                    }
+                }
             }
         }
     }
@@ -107,7 +121,7 @@ class AddOnWidgetView : BaseCustomView {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
-        viewModel.setSelectedAddons(addOnGroupUIModels)
+        viewModel.setSelectedAddons(addOnGroupUIModels, index)
     }
 
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
@@ -131,8 +145,8 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.setSelectedAddOn(selectedAddonIds)
     }
 
-    fun saveAddOnState() {
-        viewModel.saveAddOnState()
+    fun saveAddOnState(cartId: Long, source: String) {
+        viewModel.saveAddOnState(cartId, source)
     }
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {

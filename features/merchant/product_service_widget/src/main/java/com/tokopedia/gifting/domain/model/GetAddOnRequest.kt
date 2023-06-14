@@ -27,7 +27,10 @@ data class RequestData(
     val warehouseInfo: Boolean = true,
     @SerializedName("StaticInfo")
     @Expose
-    val staticInfo: Boolean = true
+    val staticInfo: Boolean = true,
+    @SerializedName("AggregatedData")
+    @Expose
+    val aggregatedData: Boolean = true
 )
 
 data class AddOnRequest(

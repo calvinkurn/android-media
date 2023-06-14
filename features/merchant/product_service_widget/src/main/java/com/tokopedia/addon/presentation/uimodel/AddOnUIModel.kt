@@ -9,12 +9,16 @@ data class AddOnUIModel(
     var price: Long = 0L,
     var isSelected: Boolean = false,
     var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
-    var eduLink: String = ""
+    var eduLink: String = "",
+    var uniqueId: String = ""
 )
 
 data class AddOnGroupUIModel(
     var title: String = "",
     var iconUrl: String = "",
     var iconDarkmodeUrl: String = "",
+    var productId: Long = 0L,
+    var warehouseId: Long = 0L,
+    var addOnLevel: String = "",
     var addon: List<AddOnUIModel> = emptyList()
 )

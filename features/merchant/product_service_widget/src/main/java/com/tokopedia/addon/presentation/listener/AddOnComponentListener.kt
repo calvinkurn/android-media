@@ -21,4 +21,10 @@ interface AddOnComponentListener {
     fun onTotalPriceCalculated(price: Long) {}
 
     fun onAggregatedDataObtained(aggregatedData: GetAddOnByID.AggregatedData) {}
+
+    fun onSaveAddonFailed(throwable: Throwable) {}
+
+    fun onSaveAddonSuccess(selectedAddonIds: List<String>) {}
+
+    fun onSaveAddonLoading() {}
 }
