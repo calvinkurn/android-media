@@ -11,13 +11,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
-import java.lang.StringBuilder
 
 class SystemNonSystemAppsViewHolder(
     itemView: View
-): AbstractViewHolder<SystemNonSystemAppsUiModel>(itemView)
-{
+) : AbstractViewHolder<SystemNonSystemAppsUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_system_and_non_system_apps
@@ -27,9 +27,11 @@ class SystemNonSystemAppsViewHolder(
         val systemBtn = itemView.findViewById<UnifyButton>(R.id.system_apps)
         val nonSystemBtn = itemView.findViewById<UnifyButton>(R.id.non_system_apps)
         systemBtn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.SYSTEM_APPS)
             showToastAndCopySystemOrNonSystemApps(true)
         }
         nonSystemBtn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.NON_SYSTEM_APPS)
             showToastAndCopySystemOrNonSystemApps(false)
         }
     }

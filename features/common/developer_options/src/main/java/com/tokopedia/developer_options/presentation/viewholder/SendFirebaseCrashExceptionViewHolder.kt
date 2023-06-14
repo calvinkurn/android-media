@@ -8,13 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class SendFirebaseCrashExceptionViewHolder(
     itemView: View
-): AbstractViewHolder<SendFirebaseCrashExceptionUiModel>(itemView)
-{
+) : AbstractViewHolder<SendFirebaseCrashExceptionUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_send_firebase_exception
@@ -28,6 +29,7 @@ class SendFirebaseCrashExceptionViewHolder(
             if (crashMessage.isBlank()) {
                 Toast.makeText(itemView.context, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
             } else {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.SEND_FIREBASE_EXCEPTION)
                 FirebaseCrashlytics.getInstance().recordException(DeveloperOptionActivity.DeveloperOptionException(crashMessage))
             }
         }

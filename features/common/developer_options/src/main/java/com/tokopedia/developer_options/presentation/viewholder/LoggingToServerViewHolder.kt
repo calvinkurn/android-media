@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.serverlogger.presentation.activity.ServerLoggerActivity
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -33,6 +35,7 @@ class LoggingToServerViewHolder(
                     Toast.makeText(this, "Timber message should not empty", Toast.LENGTH_SHORT)
                         .show()
                 } else {
+                    DevOpsTracker.trackEntryEvent(DevopsFeature.SEND_LOG_TO_SERVER)
                     manageTimberMessage(this, timberMessage)
                 }
             }
