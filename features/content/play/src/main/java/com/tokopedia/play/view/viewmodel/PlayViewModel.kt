@@ -1921,7 +1921,7 @@ class PlayViewModel @AssistedInject constructor(
                     if (ExploreWidgetType.Default == it.key) {
                         it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
                     } else {
-                        it.value
+                        it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
                     }
                 }
             }
