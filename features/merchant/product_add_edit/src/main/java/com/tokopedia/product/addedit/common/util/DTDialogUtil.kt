@@ -22,6 +22,20 @@ object DTDialogUtil {
         dialog.show()
     }
 
+    fun showDTVariantDialog(context: Context) {
+        val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(context.getString(R.string.product_add_edit_text_title_variant_dt_can_not_delete))
+            setDescription(
+                context.getString(R.string.product_add_edit_text_description_variant_dt_can_not_delete))
+            setPrimaryCTAText(context.getString(R.string.action_oke))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun getUserActionWording(context: Context, userAction: UserAction): String {
         return context.getString(
             when(userAction) {

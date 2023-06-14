@@ -703,7 +703,7 @@ class AddEditProductVariantFragment :
         } != null
 
         if (hasDTStock) {
-            DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.REMOVE)
+            DTDialogUtil.showDTVariantDialog(context ?: return)
         } else {
             val variantData = viewModel.getVariantData(layoutPosition)
             val variantId = variantData.variantID
@@ -1229,9 +1229,7 @@ class AddEditProductVariantFragment :
                     )
                 }
                 titleLayoutVariantType.setActionButtonOnClickListener { view ->
-                    DTDialogUtil.showDTStockDialog(view.context,
-                        DTDialogUtil.UserAction.EDIT_VARIANT_TYPE
-                    )
+                    DTDialogUtil.showDTVariantDialog(view.context)
                 }
             } else {
                 buttonAddVariantType.setOnDisabledClickListener {
@@ -1894,8 +1892,7 @@ class AddEditProductVariantFragment :
             actionTextView?.setOnClickListener {
                 val product = viewModel.productInputModel.value
                 if (product?.hasDTStock.orFalse()) {
-                    DTDialogUtil.showDTStockDialog(context ?: return@setOnClickListener,
-                        DTDialogUtil.UserAction.REMOVE)
+                    DTDialogUtil.showDTVariantDialog(context ?: return@setOnClickListener)
                 } else {
                     showRemoveVariantDialog()
                 }
