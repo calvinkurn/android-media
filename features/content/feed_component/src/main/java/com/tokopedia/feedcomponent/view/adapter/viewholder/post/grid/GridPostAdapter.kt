@@ -6,6 +6,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -20,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_grid.view.*
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -119,8 +120,16 @@ class GridPostAdapter(
         private val contentPosition: Int,
         private val listener: GridItemListener, private val gridPostModel: GridPostModel
     ) : RecyclerView.ViewHolder(v) {
+
+        private val productImage: ImageView = itemView.findViewById(R.id.productImage)
+        private val extraProduct: Typography = itemView.findViewById(R.id.extraProduct)
+        private val priceText: Typography = itemView.findViewById(R.id.priceText)
+        private val tagTypeText: Typography = itemView.findViewById(R.id.tagTypeText)
+        private val textSlashedPrice: Typography = itemView.findViewById(R.id.textSlashedPrice)
+        private val productLayout: ConstraintLayout = itemView.findViewById(R.id.productLayout)
+
         fun bindImage(image: String, listSize: Int) {
-            itemView.productImage.loadImageRounded(image, RAD_10f)
+            productImage.loadImageRounded(image, RAD_10f)
             setImageMargins(listSize)
         }
 
@@ -132,24 +141,24 @@ class GridPostAdapter(
             shopId: String,
             hasVoucher: Boolean
         ) {
-            itemView.extraProduct.background = null
-            itemView.extraProduct.hide()
+            extraProduct.background = null
+            extraProduct.hide()
 
-            itemView.priceText.text = item.price
+            priceText.text = item.price
 
             item.tagsList.firstOrNull()?.let {
                 when (it.type) {
                     TYPE_CASHBACK -> {
-                        setCashBackTypeTag(itemView.tagTypeText, it.text)
-                        itemView.textSlashedPrice.hide()
+                        setCashBackTypeTag(tagTypeText, it.text)
+                        textSlashedPrice.hide()
                     }
                     TYPE_DISCOUNT -> {
-                        setDiscountTypeTag(itemView.tagTypeText, it.text)
-                        setSlashedPriceText(itemView.textSlashedPrice, item.priceOriginal)
+                        setDiscountTypeTag(tagTypeText, it.text)
+                        setSlashedPriceText(textSlashedPrice, item.priceOriginal)
                     }
                     else -> {
-                        itemView.tagTypeText.hide()
-                        itemView.textSlashedPrice.hide()
+                        tagTypeText.hide()
+                        textSlashedPrice.hide()
                     }
                 }
             }
@@ -224,16 +233,16 @@ class GridPostAdapter(
             hasVoucher: Boolean
         ) {
             val extra = "+$numberOfExtraProduct $actionText"
-            itemView.extraProduct.background = ColorDrawable(
+            extraProduct.background = ColorDrawable(
                 MethodChecker.getColor(
                     itemView.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N700_32
                 )
             )
-            itemView.extraProduct.show()
-            itemView.extraProduct.text = extra
+            extraProduct.show()
+            extraProduct.text = extra
 
-            itemView.priceText.hide()
+            priceText.hide()
 
             val function: (v: View) -> Unit = {
                 listener.onGridItemClick(
@@ -257,14 +266,14 @@ class GridPostAdapter(
             if (listSize == 1) {
                 val dimens16 = itemView.getDimens(unifyR.dimen.spacing_lvl4)
 
-                itemView.productLayout.setMargin(0, 0, 0, 0)
-                itemView.tagTypeText.setPadding(
+                productLayout.setMargin(0, 0, 0, 0)
+                tagTypeText.setPadding(
                     dimens16,
                     0,
                     dimens16,
                     0
                 )
-                itemView.priceText.setPadding(
+                priceText.setPadding(
                     dimens16,
                     0,
                     dimens16,
@@ -274,19 +283,19 @@ class GridPostAdapter(
                 val dimens2 = itemView.getDimens(unifyR.dimen.spacing_lvl1)
                 val dimens4 = itemView.getDimens(unifyR.dimen.spacing_lvl2)
 
-                itemView.productLayout.setMargin(
+                productLayout.setMargin(
                     dimens2,
                     0,
                     dimens2,
                     0
                 )
-                itemView.tagTypeText.setPadding(
+                tagTypeText.setPadding(
                     dimens4,
                     0,
                     dimens4,
                     0
                 )
-                itemView.priceText.setPadding(
+                priceText.setPadding(
                     dimens4,
                     0,
                     dimens4,
