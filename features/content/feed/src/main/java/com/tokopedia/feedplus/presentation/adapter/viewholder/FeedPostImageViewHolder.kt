@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -21,17 +20,12 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.*
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -206,17 +200,12 @@ class FeedPostImageViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
-                        FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
-                        ),
+                        data.menuItems.map {
+                            it.copy(
+                                contentData = it.contentData?.copy(rowNumber = absoluteAdapterPosition)
+                            )
+                        },
                         trackerData
-
                     )
                 }
                 shareButton.setOnClickListener {
@@ -246,6 +235,10 @@ class FeedPostImageViewHolder(
 
             if (payloads.contains(FEED_POST_COMMENT_COUNT)) {
                 bindComments(it)
+            }
+
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
@@ -392,7 +385,6 @@ class FeedPostImageViewHolder(
             postType = model.typename,
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
-            hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
@@ -442,6 +434,7 @@ class FeedPostImageViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
             trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model),

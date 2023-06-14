@@ -75,6 +75,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
@@ -136,6 +137,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
@@ -349,6 +351,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
         observeWidgetData(sellerHomeViewModel.unificationWidgetData, WidgetType.UNIFICATION)
+        observeWidgetData(sellerHomeViewModel.richListWidgetData, WidgetType.RICH_LIST)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
@@ -919,6 +922,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
     }
 
+    override fun sendRichListCtaClickEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendClickRichListWidgetCtaEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendClickRichListWidgetCtaNotEligibleEvent()
+        }
+    }
+
+    override fun sendRichListImpressionEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendImpressionRichListWidgetEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendImpressionRichListWidgetNotEligibleEvent()
+        }
+    }
+
     override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
         val tabs = element.data?.tabs.orEmpty()
 
@@ -1336,6 +1355,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getUnificationWidgetData(mWidgets)
     }
 
+    private fun getRichListData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_RICH_LIST_TRACE)
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        sellerHomeViewModel.getRichListWidgetData(dataKeys)
+    }
+
     private fun setupShopSharing() {
         ImageHandler.loadImageWithTarget(
             context,
@@ -1688,6 +1714,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
         groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
         groupedWidgets[WidgetType.UNIFICATION]?.run { getUnificationData(this) }
+        groupedWidgets[WidgetType.RICH_LIST]?.run { getRichListData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()

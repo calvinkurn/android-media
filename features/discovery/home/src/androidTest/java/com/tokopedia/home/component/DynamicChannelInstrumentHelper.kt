@@ -441,12 +441,7 @@ private fun clickEmptyBannerRechargeBUWidget() {
 private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     waitForData()
     try {
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(R.id.see_all_button),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu"))
-            )
-        ).perform(ViewActions.click())
+        clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     } catch (e: PerformException) {
         e.printStackTrace()
     }

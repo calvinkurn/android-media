@@ -212,7 +212,7 @@ object AnalyticsTrackerUtil {
         itemsMap[EcommerceKeys.ITEM_NAME] = productName
         itemsMap[EcommerceKeys.ITEM_VARIANT] = productVariant
         itemsMap[EcommerceKeys.PRICE] = productPrice
-        itemsMap[EcommerceKeys.DIMENSION39] = getItemList(recommendationType, isTopads)
+        itemsMap[EcommerceKeys.DIMENSION40] = getItemList(recommendationType, isTopads)
 
         var list = ""
         if (isFreeOngkir) {
@@ -398,7 +398,7 @@ object AnalyticsTrackerUtil {
             const val NONE = "none / other"
             const val ITEM_LIST_V2 = "/rewards page - rekomendasi untuk anda - %s"
             const val VALUE_PRODUCT_TOPADS = " - product topads"
-            const val DIMENSION39 = "dimension39"
+            const val DIMENSION40 = "dimension40"
             const val DIMENSION73 = "dimension73"
             const val INDEX = "index"
             const val ITEM_BRAND = "item_brand"

@@ -145,8 +145,11 @@ data class ComponentData(
     // region Variant Thumb
     // componentType value is thumbnail or chips
     @SerializedName("componentType")
-    val componentType: String = ""
+    val componentType: String = "",
     // endregion
+
+    @SerializedName("variantCampaign")
+    val variantCampaign: VariantCampaign = VariantCampaign()
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -243,4 +246,11 @@ data class CategoryCarousel(
     val applink: String = "",
     @SerializedName("categoryID")
     val categoryId: String = ""
+)
+
+data class VariantCampaign(
+    @SerializedName("campaigns")
+    val campaigns: List<com.tokopedia.product.detail.common.data.model.variant.VariantCampaign> = emptyList(),
+    @SerializedName("thematicCampaigns")
+    val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )

@@ -34,6 +34,7 @@ import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.common_compose.components.*
 import com.tokopedia.common_compose.components.ticker.NestTicker
+import com.tokopedia.common_compose.components.ticker.NestTickerData
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.header.NestHeaderType
@@ -185,9 +186,13 @@ private fun Filter(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
-        title = "",
-        type = TickerType.ANNOUNCEMENT,
-        description = stringResource(id = R.string.cl_another_campaign_type_wording),
+        ticker = listOf(
+            NestTickerData(
+                tickerTitle = "",
+                tickerType = TickerType.ANNOUNCEMENT,
+                tickerDescription = stringResource(id = R.string.cl_another_campaign_type_wording),
+            )
+        ),
         modifier = modifier.fillMaxWidth(),
         onDismissed = onDismissed
     )

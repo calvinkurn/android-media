@@ -48,7 +48,6 @@ import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickToggleOnKr
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -83,7 +82,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     private var autoTopupStatus: AutoTopUpStatus? = null
 
     private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
-    private var showOldFlow = true
+    private var showOldFlow = false
     private var isAutoTopUpActive = false
 
     private val enableAutoAdssheet: TopAdsChooseTopUpAmountSheet? by lazy {
@@ -140,16 +139,6 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                 onSuccessGetAutoTopUp(it.data)
             }
         }
-        viewModel.isUserWhitelisted.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                showOldFlow = !it.data
-            } else if (it is Fail) {
-                showOldFlow = true
-            }
-
-            setLayoutOnToggle(isAutoTopUpActive)
-            loader?.hide()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -165,7 +154,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                         handleResponseSaving(it)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -313,7 +302,8 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         setupText()
         isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         autoTopUpCreditHistoryTriple = viewModel.getAutoTopUpCreditHistoryData(data)
-        viewModel.getWhiteListedUser()
+        setLayoutOnToggle(isAutoTopUpActive)
+        loader?.hide()
     }
 
     private fun handleResponseSaving(r: ResponseSaving?) {

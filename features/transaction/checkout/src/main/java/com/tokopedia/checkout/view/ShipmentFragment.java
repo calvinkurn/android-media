@@ -65,6 +65,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -130,6 +131,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
+import com.tokopedia.logisticCommon.data.constant.AddressConstant;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
@@ -140,6 +142,7 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
@@ -333,6 +336,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
+
+    private Snackbar toasterErrorAkamai;
+
 
     // count down component
     private View cdLayout;
@@ -950,6 +956,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
                         .show();
             }
+        }
+    }
+
+
+    @Override
+    public void showToastErrorAkamai(String message) {
+
+        if (toasterErrorAkamai == null) {
+            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+            toasterErrorAkamai = Toaster.build(
+                    getView(), message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText,
+                    view -> {
+                        //no op
+                    });
+        }
+
+        if (!toasterErrorAkamai.isShownOrQueued()) {
+            toasterErrorAkamai.show();
         }
     }
 
@@ -1594,7 +1621,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
+            LocationPass locationPass = getLocationPassFromIntent(data);
             if (locationPass != null) {
                 int index = shipmentAdapter.getLastChooseCourierItemPosition();
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
@@ -1604,6 +1631,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             shipmentAdapter.setLastServiceId(0);
         }
+    }
+
+    private LocationPass getLocationPassFromIntent(Intent data) {
+        LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
+        if (locationPass == null) {
+            SaveAddressDataModel addressData = data.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL);
+            if (addressData != null) {
+                locationPass = new LocationPass();
+                locationPass.setLatitude(addressData.getLatitude());
+                locationPass.setLongitude(addressData.getLongitude());
+                locationPass.setDistrictName(addressData.getDistrictName());
+                locationPass.setCityName(addressData.getCityName());
+            }
+        }
+        return locationPass;
     }
 
     private void onResultFromPayment(int resultCode, Intent data) {
@@ -2543,12 +2585,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void navigateToPinpointActivity(LocationPass locationPass) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (PinpointRolloutHelper.INSTANCE.eligibleForRevamp(activity, true)) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true);
+                if (locationPass.getLatitude() != null &&
+                        !locationPass.getLatitude().isEmpty() &&
+                        locationPass.getLongitude() != null &&
+                        !locationPass.getLongitude().isEmpty()) {
+                    bundle.putDouble(AddressConstant.EXTRA_LAT, Double.parseDouble(locationPass.getLatitude()));
+                    bundle.putDouble(AddressConstant.EXTRA_LONG, Double.parseDouble(locationPass.getLongitude()));
+                }
+                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass.getCityName());
+                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.getDistrictName());
+                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT);
+                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            } else {
+                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            }
+        }
     }
 
     @Override
@@ -3414,7 +3476,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             } else {
@@ -3428,7 +3491,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             }

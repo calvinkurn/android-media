@@ -7,17 +7,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** |  <!--start status:GREEN-->RELEASED<!--end status-->  |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)  |
-| Product Manager | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)  |
-| Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
-| Release date | 06 Jul 2022 / <!--start status:GREY-->MA-3.181<!--end status--> <!--start status:GREY-->SA-2.111<!--end status--> |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [Reschedule Pickup by Seller](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1746064426/Reschedule+Pickup+by+Seller)  |
-| Module Location | `features/logistic/logisticseller` |
-
-## Table of Contents
+| **Status**              | <!--start status:GREEN-->RELEASED<!--end status-->                                                                         |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)                      |
+| Product Manager         | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)                |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                             |
+| Release date            | 06 Jul 2022 / <!--start status:GREY-->MA-3.181<!--end status--> <!--start status:GREY-->SA-2.111<!--end status-->          |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                         |
+| Product PRD             | [Reschedule Pickup by Seller](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/1746064426/Reschedule+Pickup+by+Seller) |
+| Module Location         | `features/logistic/logisticseller`                                                                                         |
 
 <!--toc-->
 

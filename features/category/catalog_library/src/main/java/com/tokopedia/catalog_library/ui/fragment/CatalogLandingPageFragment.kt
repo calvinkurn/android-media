@@ -44,6 +44,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     private var catalogLandingRecyclerView: RecyclerView? = null
     private val productsTrackingSet = HashSet<String>()
     private val topCatalogsTrackingSet = HashSet<String>()
+    private var trackingSent = false
 
     @JvmField
     @Inject
@@ -166,6 +167,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
             landingPageViewModel?.categoryName?.observe(viewLifecycleOwner) { categoryName ->
                 this.categoryName = categoryName
+                sendOpenScreenEvent()
                 view?.let { v -> initHeaderTitle(v) }
             }
         }
@@ -300,5 +302,17 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
+    }
+
+    private fun sendOpenScreenEvent() {
+        if (!trackingSent) {
+            CatalogAnalyticsCategoryLandingPage.openScreenCategoryLandingPage(
+                categoryName,
+                userSessionInterface?.isLoggedIn.toString(),
+                categoryIdStr,
+                userSessionInterface?.userId ?: ""
+            )
+        }
+        trackingSent = true
     }
 }

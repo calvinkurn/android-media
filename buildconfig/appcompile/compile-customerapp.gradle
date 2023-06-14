@@ -201,8 +201,6 @@ includeIfEnabled("features:payment:pms")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
 
-includeIfEnabled("features:merchant:gallery")
-
 includeIfEnabled("features:promo:gamification")
 includeIfEnabled("features:promo:merchant_voucher")
 includeIfEnabled("features:promo:tokopoints")

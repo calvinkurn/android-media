@@ -20,6 +20,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -121,6 +124,7 @@ import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
 import com.tokopedia.chatbot.chatbot2.view.customview.floatinginvoice.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.chatbot2.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotContract
@@ -197,6 +201,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -311,7 +316,6 @@ class ChatbotFragment2 :
     var isVideoCoachMarkShowing = false
     private var recyclerView: RecyclerView? = null
     private var isArticleDataSent: Boolean = false
-    private var csatRemoteConfig: Boolean = false
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
@@ -320,6 +324,8 @@ class ChatbotFragment2 :
     private var showAddAttachmentMenu: Boolean = true
     private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
+
+    private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -350,6 +356,7 @@ class ChatbotFragment2 :
         private const val COPY_TO_CLIPBOARD_LABEL = "Tokopedia-Chatbot"
         private const val ZERO_RATIO = 0F
         private const val ZERO_POSITION = 0
+        private const val REPLY_BOX_SIZE = 150
     }
 
     override fun initInjector() {
@@ -670,7 +677,6 @@ class ChatbotFragment2 :
         bigReplyBox = getBindingView().bigReplyBox
         guideline = smallReplyBox?.getGuidelineForReplyBubble()
 
-        smallReplyBox?.bindCommentTextBackground()
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
 
         setUpBigReplyBoxListeners()
@@ -696,6 +702,8 @@ class ChatbotFragment2 :
         startObservingViewModels()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        var isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+        checkIsChatbotServerActive(isChatbotActive)
         handlingForMessageIdValidity(messageId)
         viewModel.setPageSourceValue(pageSource)
 
@@ -941,7 +949,6 @@ class ChatbotFragment2 :
             }
         }
 
-        // TODO fix the Video Upload Ui Model here
         viewModel.videoUploadFailure.observe(viewLifecycleOwner) {
             when (it) {
                 is ChatbotVideoUploadFailureState.ChatbotVideoUploadFailure -> {
@@ -991,6 +998,8 @@ class ChatbotFragment2 :
         getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
             showAddAttachmentMenu
         )
+        bigReplyBox?.handleAddAttachmentButton(toShow)
+        bigReplyBoxBottomSheet?.hideAddAttachmentButton(toShow)
         if (showAddAttachmentMenu) {
             getBindingView().smallReplyBox.getMessageView()?.apply {
                 if (!isConnectedToAgent) {
@@ -1628,7 +1637,7 @@ class ChatbotFragment2 :
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
-        bigReplyBox?.setText(text)
+        bigReplyBox?.setText(placeholder)
         bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
@@ -2257,10 +2266,28 @@ class ChatbotFragment2 :
             params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt()
                 ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
+
+            smallReplyBox?.commentEditText?.apply {
+                setMargin(
+                    top = REPLY_BOX_SIZE,
+                    left = this.marginLeft,
+                    right = this.marginRight,
+                    bottom = this.marginBottom
+                )
+            }
         } else {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
             params.guideBegin = DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
+
+            smallReplyBox?.commentEditText?.apply {
+                setMargin(
+                    top = ZERO_POSITION,
+                    left = this.marginLeft,
+                    right = this.marginRight,
+                    bottom = this.marginBottom
+                )
+            }
         }
     }
 
@@ -2596,24 +2623,28 @@ class ChatbotFragment2 :
         attachmentMenuRecyclerView?.toggle()
         createAttachmentMenus()
     }
-
-    override fun goToBigReplyBoxBottomSheet() {
+    override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
-            val bottomSheetUnify = BigReplyBoxBottomSheet
-                .newInstance(
-                    replyBoxBottomSheetPlaceHolder,
-                    replyBoxBottomSheetTitle,
-                    showAddAttachmentMenu
-                )
+            if (bigReplyBoxBottomSheet == null) {
+                bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
+                    .newInstance(
+                        replyBoxBottomSheetPlaceHolder,
+                        replyBoxBottomSheetTitle,
+                        showAddAttachmentMenu,
+                        ""
+                    )
+            }
+            bigReplyBoxBottomSheet?.setErrorStatus(isError)
             BigReplyBoxBottomSheet.replyBoxClickListener = this
-            bottomSheetUnify.clearContentPadding = true
-            bottomSheetUnify.show(childFragmentManager, "")
+            bigReplyBoxBottomSheet?.clearContentPadding = true
+            bigReplyBoxBottomSheet?.show(childFragmentManager, "")
         }
     }
 
     override fun getMessageContentFromBottomSheet(msg: String) {
         val startTime = SendableUiModel.generateStartTime()
         enableTyping()
+        hideKeyboard()
         viewModel.sendMessage(
             messageId,
             msg,
@@ -2622,8 +2653,20 @@ class ChatbotFragment2 :
             replyBubbleContainer?.referredMsg,
             onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
         )
+        bigReplyBoxBottomSheet?.clearMessageText()
+        enableSendButton()
     }
 
+    override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
+        bigReplyBox?.setText(msg)
+        if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
+            bigReplyBox?.enableSendButton()
+            enableSendButton()
+        } else {
+            bigReplyBox?.disableSendButton()
+        }
+        hideKeyboard()
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
@@ -2756,4 +2799,10 @@ class ChatbotFragment2 :
         getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
     }
+
+    private fun checkIsChatbotServerActive(isChatbotActive: Boolean) {
+        if (!isChatbotActive)
+            setErrorLayoutForServer()
+    }
+
 }

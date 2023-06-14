@@ -7,5 +7,9 @@ data class RecommendationWidgetModel(
     val trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
 
     // TEMPORARY
-    val widget: RecommendationWidget = RecommendationWidget(),
-)
+    val widget: RecommendationWidget? = null,
+) {
+
+    val id: String
+        get() = metadata.pageName
+}

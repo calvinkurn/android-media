@@ -26,8 +26,6 @@ import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -36,19 +34,20 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.*
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.resume
 
 class LoginEmailPhoneViewModel @Inject constructor(
     private val registerCheckUseCase: RegisterCheckUseCase,
@@ -142,10 +141,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-    private val mutableRegisterCheckFingerprint =
-        MutableLiveData<Result<RegisterCheckFingerprint>>()
-    val registerCheckFingerprint: LiveData<Result<RegisterCheckFingerprint>>
-        get() = mutableRegisterCheckFingerprint
 
     private val mutableLoginBiometricResponse = MutableLiveData<Result<LoginToken>>()
     val loginBiometricResponse: LiveData<Result<LoginToken>>
@@ -165,36 +160,18 @@ class LoginEmailPhoneViewModel @Inject constructor(
             val response = registerCheckUseCase.executeOnBackground()
             if (response.data.errors.isEmpty()) {
                 mutableRegisterCheckResponse.value = Success(response.data)
-            } else if (response.data.errors.isNotEmpty() && response.data.errors[0].isNotEmpty()) {
-                mutableRegisterCheckResponse.value =
-                    Fail(MessageErrorException(response.data.errors[0]))
-            } else {
-                mutableRegisterCheckResponse.value = Fail(RuntimeException())
+            } else{
+                mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors.first()))
             }
         }, {
             mutableRegisterCheckResponse.value = Fail(it)
         })
     }
 
-    fun registerCheckFingerprint() {
-        registerCheckFingerprintUseCase.checkRegisteredFingerprint(onSuccess = {
-            if (it.data.errorMessage.isEmpty()) {
-                mutableRegisterCheckFingerprint.postValue(Success(it))
-            } else {
-                mutableRegisterCheckFingerprint.postValue(Fail(MessageErrorException(it.data.errorMessage)))
-            }
-        }, onError = {
-                mutableRegisterCheckFingerprint.postValue(Fail(it))
-            })
-    }
-
     fun discoverLogin() {
         launchCatchError(block = {
             val result = discoverUseCase(PARAM_DISCOVER_LOGIN)
-
-            withContext(dispatchers.main) {
-                mutableDiscoverResponse.value = Success(result.data)
-            }
+            mutableDiscoverResponse.value = Success(result.data)
         }, onError = {
                 mutableDiscoverResponse.value = Fail(it)
             })
@@ -331,30 +308,14 @@ class LoginEmailPhoneViewModel @Inject constructor(
         loginFingerprintUseCase.loginBiometric(
             email,
             validateToken,
-            onSuccessLoginBiometric(),
+            {
+                mutableLoginBiometricResponse.value = Success(it)
+            },
             onFailedLoginBiometric(),
             { showPopup(it.popupError) },
             { onGoToActivationPage(email) },
             { onGoToSecurityQuestion(email) }
         )
-    }
-
-    private fun onSuccessLoginBiometric(): (LoginToken) -> Unit {
-        return {
-            if (it.accessToken.isNotEmpty() &&
-                it.refreshToken.isNotEmpty() &&
-                it.tokenType.isNotEmpty()
-            ) {
-                mutableLoginBiometricResponse.value = Success(it)
-            } else if (it.errors.isNotEmpty() &&
-                it.errors[0].message.isNotEmpty()
-            ) {
-                mutableLoginBiometricResponse.value =
-                    Fail(MessageErrorException(it.errors[0].message))
-            } else {
-                mutableLoginBiometricResponse.value = Fail(RuntimeException())
-            }
-        }
     }
 
     private fun onFailedLoginBiometric(): (Throwable) -> Unit {
@@ -431,52 +392,46 @@ class LoginEmailPhoneViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
     }
 
-    fun checkSeamlessEligiblity() {
-        launch {
-            try {
-                val result = gotoSeamlessHelper.getGojekProfile()
-                mutableNavigateToGojekSeamless.value = result.authCode.isNotEmpty()
-            } catch (e: Exception) {
-                mutableNavigateToGojekSeamless.value = false
-            }
+
+    suspend fun isGojekProfileExist(): Boolean {
+        return try {
+            gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            false
         }
     }
 
-    fun checkLoginOption() {
-        launch {
-            try {
-                val enableSeamless = async(Dispatchers.IO) {
-                    try {
-                        gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
-                    } catch (e: Exception) {
-                        FirebaseCrashlytics.getInstance().recordException(e)
-                        false
-                    }
-                }
-
-                val resultBiometrics = async(Dispatchers.IO) {
-                    suspendCancellableCoroutine<RegisterCheckFingerprint?> { continuation ->
-                        registerCheckFingerprintUseCase.checkRegisteredFingerprint(
-                            onSuccess = { data ->
-                                continuation.resume(data)
-                            },
-                            onError = {
-                                continuation.resume(null)
-                            }
-                        )
-                    }
-                }
-                val resultBiometricsAwait = resultBiometrics.await()
-                val isEnablebiometrics = resultBiometricsAwait?.data?.errorMessage?.isEmpty() ?: false
-                mutableLoginOption.value = LoginOption(enableSeamless.await(), isEnablebiometrics, resultBiometricsAwait?.data ?: RegisterCheckFingerprintResult())
-            } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-                mutableLoginOption.value = LoginOption(isEnableSeamless = false, isEnableBiometrics = false, biometricsData = RegisterCheckFingerprintResult())
-            }
+    suspend fun isFingerprintRegistered(): Boolean {
+        return try {
+            registerCheckFingerprintUseCase(Unit)
+        } catch (ignored: Exception) {
+            false
         }
     }
 
-    override fun onCleared() {
+    fun checkLoginOption(isEnableSeamless: Boolean, isEnableFingerprint: Boolean, isEnableDirectBiometric: Boolean, isEnableOcl: Boolean) {
+        launch {
+            var enableSeamless = isEnableSeamless
+            // Access the SDK if seamless login config is enabled.
+            if (isEnableSeamless) {
+                enableSeamless = isGojekProfileExist()
+            }
+            var isBiometricRegistered = false
+            // If one of the biometrics config is enabled then we hit the api to reduce network usage.
+            if (isEnableFingerprint || isEnableDirectBiometric) {
+                isBiometricRegistered = isFingerprintRegistered()
+            }
+
+            mutableLoginOption.value = LoginOption(
+                isEnableSeamless = enableSeamless,
+                isEnableBiometrics = (isBiometricRegistered && isEnableFingerprint),
+                isEnableOcl = isEnableOcl,
+                isEnableDirectBiometric = (isBiometricRegistered && isEnableDirectBiometric)
+            )
+        }
+    }
+    public override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()
     }

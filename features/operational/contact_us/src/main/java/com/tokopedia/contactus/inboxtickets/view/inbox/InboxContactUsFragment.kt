@@ -166,7 +166,7 @@ class InboxContactUsFragment :
         if (uiState.showChatBotWidget) {
             val applinkPrefix =
                 context?.resources?.getString(R.string.contactus_chat_bot_applink).orEmpty()
-            val appLink = String.format(applinkPrefix, uiState.idMessage)
+            val appLink = String.format(applinkPrefix, uiState.idMessage, uiState.isChatbotActive)
             val welcomeMessage = MethodChecker.fromHtmlWithoutExtraSpace(uiState.welcomeMessage)
             showChatBotWidget(welcomeMessage.toString(), uiState.unReadNotification, appLink)
         } else {

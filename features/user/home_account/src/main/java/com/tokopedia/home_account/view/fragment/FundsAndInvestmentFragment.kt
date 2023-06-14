@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,7 +36,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
-
 
 open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
@@ -78,7 +76,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         initView()
 
         showLoading()
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
+        viewModel.getCentralizedUserAssetConfig(ASSET_PAGE)
     }
 
     override fun onStart() {
@@ -107,27 +105,29 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun setupObserver() {
-        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
+        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGetCentralizedAssetConfig(it.data)
                 }
+
                 is Fail -> {
                     onFailedGetCentralizedAssetConfig()
                 }
             }
-        })
+        }
 
-        viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
+        viewModel.balanceAndPoint.observe(viewLifecycleOwner) {
             when (it) {
                 is ResultBalanceAndPoint.Success -> {
                     onSuccessGetBalanceAndPoint(it.data)
                 }
+
                 is ResultBalanceAndPoint.Fail -> {
                     onFailedGetBalanceAndPoint(it.walletId)
                 }
             }
-        })
+        }
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
@@ -153,7 +153,8 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         }
 
         if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse() ||
-                adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
+            adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()
+        ) {
             adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
         }
     }
@@ -166,7 +167,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
         if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC && balanceAndPoint.isActive) {
             val wallet = UiModelMapper.getWalletUiModel(
-                    balanceAndPoint
+                balanceAndPoint
             ).apply {
                 this.isVertical = false
             }
@@ -181,14 +182,14 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             }
         } else {
             adapter?.changeItemToSuccessBySameId(
-                    UiModelMapper.getWalletUiModel(
-                            balanceAndPoint
-                    ).apply {
-                        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
-                            this.isActive = true
-                        }
-                        this.isVertical = true
+                UiModelMapper.getWalletUiModel(
+                    balanceAndPoint
+                ).apply {
+                    if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+                        this.isActive = true
                     }
+                    this.isVertical = true
+                }
             )
         }
     }
@@ -227,7 +228,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private fun onRefresh() {
         showLoading()
         adapter?.clearAllItemsAndAnimateChanges()
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE)
+        viewModel.getCentralizedUserAssetConfig(ASSET_PAGE)
     }
 
     private fun showLoading() {
@@ -266,7 +267,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
         private const val FAILED_IMG_URL =
             "https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png"
-        private const val USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE = "asset_page"
+        const val ASSET_PAGE = "asset_page"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return FundsAndInvestmentFragment().apply {
