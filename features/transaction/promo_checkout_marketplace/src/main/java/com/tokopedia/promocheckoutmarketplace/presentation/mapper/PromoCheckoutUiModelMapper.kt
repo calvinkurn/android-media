@@ -224,6 +224,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
+        promoItem.uiState.useSecondaryPromo = promoItem.uiData.currentClashingPromo.isNotEmpty() &&
+            promoItem.uiData.secondaryCoupons.isNotEmpty() &&
+            promoItem.uiData.currentClashingSecondaryPromo.isEmpty()
 
         return promoItem
     }
