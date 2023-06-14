@@ -2,11 +2,11 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid
 
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
-import android.view.View
 import android.view.ViewTreeObserver
 import android.webkit.URLUtil
 import android.widget.FrameLayout
+import android.widget.ProgressBar
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
@@ -16,57 +16,62 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_post_multimedia.view.*
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.videoplayer.view.widget.VideoPlayerView
 
 /**
  * @author by yoasfs on 2019-07-01
  */
-class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
-                               private val feedType: String)
-    : BasePostViewHolder<MultimediaGridModel>() {
+class MultimediaGridViewHolder(
+    private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
+    private val feedType: String
+) : BasePostViewHolder<MultimediaGridModel>() {
+
+    private val feedMultipleImageView: FeedMultipleImageView = itemView.findViewById(R.id.feedMultipleImageView)
+    private val layoutVideo: VideoPlayerView = itemView.findViewById(R.id.layout_video)
+    private val layoutDummy: FrameLayout = itemView.findViewById(R.id.layout_dummy)
+    private val ivImage: AppCompatImageView = itemView.findViewById(R.id.image)
+    private val loadingProgress: ProgressBar = itemView.findViewById(R.id.loading_progress)
+    private val frameVideo: FrameLayout = itemView.findViewById(R.id.frame_video)
 
     var isPlaying = false
     var TYPE_VIDEO = "video"
     override var layoutRes: Int = R.layout.item_post_multimedia
 
     override fun bind(element: MultimediaGridModel) {
-        element.mediaItemList.forEach{
+        element.mediaItemList.forEach {
             it.positionInFeed = element.positionInFeed
         }
-        itemView.feedMultipleImageView.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.feedMultipleImageView.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
+        feedMultipleImageView.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val viewTreeObserver = feedMultipleImageView.viewTreeObserver
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                        itemView.feedMultipleImageView.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                        itemView.feedMultipleImageView.requestLayout()
-                        itemView.image.visibility = View.GONE
-                    }
+                    feedMultipleImageView.layoutParams.height =
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                    feedMultipleImageView.requestLayout()
+                    ivImage.gone()
                 }
+            }
         )
 
-        itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
-        itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
+        feedMultipleImageView.bind(element.mediaItemList, feedType)
+        feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
 
         if (isSingleItemVideo(element)) {
-            itemView.layout_dummy.visibility = View.VISIBLE
+            layoutDummy.visible()
             val mediaItem = element.mediaItemList[0]
-            if (canPlayVideo(mediaItem) && ContentNetworkListener.isWifiEnabled(itemView.context) && mediaItem.videos.isNotEmpty()) {
+            if (canPlayVideo(mediaItem) && ContentNetworkListener.isWifiEnabled(context) && mediaItem.videos.isNotEmpty()) {
                 playVideo(mediaItem.videos[0].url)
             } else {
                 stopVideo()
             }
         } else {
-            itemView.layout_dummy.visibility = View.GONE
+            layoutDummy.gone()
         }
 
-        itemView.layout_dummy.setOnClickListener{
+        layoutDummy.setOnClickListener {
             if (isSingleItemVideo(element)) {
                 val mediaItem = element.mediaItemList.first()
                 if (mediaItem.videos.isNotEmpty()) playVideo(mediaItem.videos[0].url)
@@ -84,21 +89,21 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
     private fun playVideo(url: String) {
         if (!isPlaying) {
-            itemView.feedMultipleImageView.performClick()
-            itemView.loading_progress.show()
-            itemView.layout_dummy.gone()
-            itemView.frame_video.invisible()
+            feedMultipleImageView.performClick()
+            loadingProgress.show()
+            layoutDummy.gone()
+            frameVideo.invisible()
 
             if (URLUtil.isValidUrl(url)) {
-                itemView.layout_video.setVideoURI(Uri.parse(url))
-                itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
+                layoutVideo.setVideoURI(Uri.parse(url))
+                layoutVideo.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                     override fun onPrepared(mp: MediaPlayer) {
                         mp.isLooping = true
                         mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
                             override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                    itemView.loading_progress.gone()
-                                    itemView.frame_video.visibility = View.VISIBLE
+                                    loadingProgress.gone()
+                                    frameVideo.visible()
                                     return true
                                 }
                                 return false
@@ -106,7 +111,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                         })
                     }
                 })
-                itemView.layout_video.start()
+                layoutVideo.start()
                 isPlaying = true
             }
         }
@@ -114,9 +119,9 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
     private fun stopVideo() {
         if (isPlaying) {
-            itemView.layout_video.stopPlayback()
-            itemView.layout_video.gone()
-            itemView.layout_dummy.show()
+            layoutVideo.stopPlayback()
+            layoutVideo.gone()
+            layoutDummy.show()
             isPlaying = false
         }
     }
