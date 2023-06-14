@@ -15,6 +15,7 @@ import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -145,6 +146,21 @@ class PlayFragment @Inject constructor(
             @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
             fun onResume() {
                 if (::variantSheet.isInitialized.not()) return
+
+                //Need to override
+                variantSheet.setShowListener {
+                    variantSheet.isHideable = false
+                    variantSheet.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(p0: View, p1: Float) {}
+
+                        override fun onStateChanged(p0: View, p1: Int) {
+                            when (p1) {
+                                BottomSheetBehavior.STATE_HIDDEN -> variantSheet.dismiss()
+                                BottomSheetBehavior.STATE_DRAGGING -> variantSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
+                        }
+                    })
+                }
 
                 variantSheet.bottomSheetClose.setOnClickListener {
                     playViewModel.submitAction(HideBottomSheet)
