@@ -477,15 +477,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventViewInformationAndWarningTickerInCart(tickerId: String) {
-        sendGeneralEvent(
-            ConstantTransactionAnalytics.EventName.VIEW_ATC,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            ConstantTransactionAnalytics.EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART,
-            tickerId
-        )
-    }
-
     fun eventClickAddWishlistOnProductRecommendation() {
         sendGeneralEvent(
             ConstantTransactionAnalytics.EventName.CLICK_ATC,
