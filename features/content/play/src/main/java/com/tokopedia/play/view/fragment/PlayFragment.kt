@@ -57,6 +57,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.view.uimodel.action.HideBottomSheet
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -144,6 +145,11 @@ class PlayFragment @Inject constructor(
             @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
             fun onResume() {
                 if (::variantSheet.isInitialized.not()) return
+
+                variantSheet.bottomSheetClose.setOnClickListener {
+                    playViewModel.submitAction(HideBottomSheet)
+                    variantSheet.dismiss()
+                }
 
                 variantSheet.dialog?.window?.setDimAmount(0f)
                 val bottomSheetWrapper = variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
@@ -311,6 +317,7 @@ class PlayFragment @Inject constructor(
             variantSheet.lifecycle.addObserver(variantSheetObserver)
             if (forceTop) {
                 variantSheet.setOnDismissListener {
+                    playViewModel.submitAction(HideBottomSheet)
                     onBottomInsetsViewHidden()
                 }
             }
