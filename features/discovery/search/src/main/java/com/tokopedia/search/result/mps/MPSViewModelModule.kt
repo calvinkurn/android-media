@@ -5,12 +5,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.search.di.module.LocalCacheModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
+import com.tokopedia.search.result.mps.analytics.MPSTrackingModule
 import com.tokopedia.search.result.mps.domain.usecase.MPSUseCaseModule
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module(includes = [
+    MPSTrackingModule::class,
     MPSStateModule::class,
     MPSUseCaseModule::class,
     GetDynamicFilterCoroutineUseCaseModule::class,

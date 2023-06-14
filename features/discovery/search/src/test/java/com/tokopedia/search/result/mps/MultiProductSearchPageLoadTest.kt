@@ -13,6 +13,7 @@ import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
+import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
@@ -41,6 +42,7 @@ class MultiProductSearchPageLoadTest: MultiProductSearchTestFixtures() {
         `Then assert use case is executed with correct parameters`()
         `Then assert state is success`(mpsState)
         `Then assert pagination state`(mpsViewModel, 8, mpsModel.totalData)
+        `Then verify general search tracking called`()
     }
 
     private fun `When view created`() {
@@ -79,6 +81,7 @@ class MultiProductSearchPageLoadTest: MultiProductSearchTestFixtures() {
         `When view created`()
 
         `Then assert state is error`(mpsViewModel.stateValue, exception)
+        `Then verify general search tracking not called`()
     }
 
     private fun `Given MPS Use Case failed`(throwable: Throwable) {
@@ -103,6 +106,7 @@ class MultiProductSearchPageLoadTest: MultiProductSearchTestFixtures() {
 
         `Then assert load more use case is executed with correct parameters`()
         `Then assert pagination state`(mpsViewModel, 16, mpsModel.totalData)
+        `Then verify general search tracking not called`()
     }
 
     private fun `When load more`(mpsViewModel: MPSViewModel) {
@@ -176,5 +180,11 @@ class MultiProductSearchPageLoadTest: MultiProductSearchTestFixtures() {
 
     private fun `When view reload data`(mpsViewModel: MPSViewModel) {
         mpsViewModel.onViewReloadData()
+    }
+
+    private fun `Then verify general search tracking not called`() {
+        verify(exactly = 0) {
+            mpsTracking.trackGeneralSearch(any())
+        }
     }
 }
