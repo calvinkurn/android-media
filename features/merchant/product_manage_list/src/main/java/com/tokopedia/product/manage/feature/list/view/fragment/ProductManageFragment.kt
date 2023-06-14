@@ -1788,7 +1788,7 @@ open class ProductManageFragment :
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         when (result) {
             is EditByStatus -> {
-                val haveDTProducts = itemsChecked.filter { it.isDTInbound }
+                val haveDTProducts = itemsChecked.filter { it.isDTInbound && !it.isCampaign }
                 if (result.status == INACTIVE) {
                     if (haveDTProducts.isNotEmpty()) {
                         showEditDTProductsInActiveConfirmationDialog()
@@ -2928,7 +2928,7 @@ open class ProductManageFragment :
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
                     val productIds =
-                        itemsChecked.filter { !it.isDTInbound }.map { item -> item.id }
+                        itemsChecked.filter { !it.isDTInbound || it.isCampaign }.map { item -> item.id }
                     viewModel.editProductsByStatus(productIds, INACTIVE)
                     dismiss()
                 }
@@ -2953,7 +2953,7 @@ open class ProductManageFragment :
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
-                    val productIds = itemsChecked.filter { it.isDTInbound }.map { item -> item.id }
+                    val productIds = itemsChecked.filter { it.isDTInbound && !it.isCampaign }.map { item -> item.id }
                     viewModel.editProductsByStatus(productIds, INACTIVE, true)
                     dismiss()
                 }
