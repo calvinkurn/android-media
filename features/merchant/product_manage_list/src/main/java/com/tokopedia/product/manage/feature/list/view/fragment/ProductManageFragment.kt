@@ -799,7 +799,7 @@ open class ProductManageFragment :
 
     override fun editMultipleProductsInActive() {
         val totalDTProductSelected = itemsChecked.filter {
-            it.isDTInbound
+            it.isDTInbound && !it.isCampaign
         }.size
         val totalProductSelected = itemsChecked.size
         val isAllDT = (totalDTProductSelected == totalProductSelected)
