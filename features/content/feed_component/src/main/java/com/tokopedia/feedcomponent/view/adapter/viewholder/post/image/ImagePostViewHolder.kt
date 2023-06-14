@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.image
 
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -8,7 +9,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHold
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_fc_post_image.view.*
 
 /**
  * @author by milhamj on 04/12/18.
@@ -16,10 +16,12 @@ import kotlinx.android.synthetic.main.item_fc_post_image.view.*
 class ImagePostViewHolder(private val listener: ImagePostListener) :
     BasePostViewHolder<ImagePostModel>() {
 
+    private val ivImage: ImageView = itemView.findViewById(R.id.image)
+
     override var layoutRes = R.layout.item_fc_post_image
 
     override fun bind(element: ImagePostModel) {
-        itemView.image.setOnClickListener {
+        ivImage.setOnClickListener {
             listener.onImageClick(
                 element.postId,
                 element.positionInFeed,
@@ -30,18 +32,18 @@ class ImagePostViewHolder(private val listener: ImagePostListener) :
                 listener.onAffiliateTrackClicked(element.trackingList, true)
             }
         }
-        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
+        ivImage.viewTreeObserver.addOnGlobalLayoutListener(
             object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    val viewTreeObserver = itemView.image.viewTreeObserver
+                    val viewTreeObserver = ivImage.viewTreeObserver
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    itemView.image.maxHeight = itemView.image.width
-                    itemView.image.requestLayout()
+                    ivImage.maxHeight = ivImage.width
+                    ivImage.requestLayout()
                 }
             }
         )
-        itemView.image.loadImage(element.image)
+        ivImage.loadImage(element.image)
         listener.userImagePostImpression(element.positionInFeed, pagerPosition)
     }
 
