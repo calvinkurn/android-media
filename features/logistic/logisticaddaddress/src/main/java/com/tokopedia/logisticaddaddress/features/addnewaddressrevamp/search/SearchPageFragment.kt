@@ -219,15 +219,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!viewModel.isGetPinPointOnly) {
-                    if (!viewModel.isEdit) {
-                        AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
-                    }
-                    if (AddNewAddressUtils.isGpsEnabled(context)) {
-                        getLocation()
-                    } else {
-                        showBottomSheetLocUndefined(false)
-                    }
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
+                    AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+                }
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    getLocation()
+                } else {
+                    showBottomSheetLocUndefined(false)
                 }
             }
 
