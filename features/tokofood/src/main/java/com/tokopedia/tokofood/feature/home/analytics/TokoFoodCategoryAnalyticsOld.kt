@@ -40,7 +40,7 @@ class TokoFoodCategoryAnalyticsOld: BaseTrackerConst() {
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.PROMO_CLICK, eventDataLayer)
     }
 
     fun clickAtc(userId: String?, destinationId: String?, data: CheckoutTokoFoodData){
