@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
-import com.tokopedia.product_bundle.common.util.Utility.logToFirebase
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.productbundlewidget.adapter.ProductBundleWidgetAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
