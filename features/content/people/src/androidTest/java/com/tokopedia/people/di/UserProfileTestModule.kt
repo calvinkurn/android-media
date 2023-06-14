@@ -6,6 +6,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.people.data.UserProfileRepository
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -23,6 +24,7 @@ class UserProfileTestModule(
     private val mockUserSession: UserSessionInterface,
     private val mockRepo: UserProfileRepository,
     private val mockContentCoachMarkManager: ContentCoachMarkManager,
+    private val mockUserProfileSharedPref: UserProfileSharedPref,
 ) {
 
     @Provides
@@ -40,6 +42,10 @@ class UserProfileTestModule(
     @Provides
     @UserProfileScope
     fun provideContentCoachMarkManager() = mockContentCoachMarkManager
+
+    @Provides
+    @UserProfileScope
+    fun provideUserProfileSharedPref() = mockUserProfileSharedPref
 
     @Provides
     @UserProfileScope

@@ -409,16 +409,6 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.SuccessLoadTabs -> {
-                        if (event.isEmptyContent) {
-                            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
-                            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
-                        } else {
-                            mainBinding.shopRecommendation.hide()
-                            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
-                            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
-                        }
-                    }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
@@ -741,6 +731,15 @@ class UserProfileFragment @Inject constructor(
 
         val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
         setupAutoSelectTabIfAny(selectedTabKey)
+
+        if (value == ProfileTabUiModel()) {
+            if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+            mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+        } else {
+            mainBinding.shopRecommendation.hide()
+            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
+            mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
+        }
     }
 
     private fun setupAutoSelectTabIfAny(selectedTabKey: String) {

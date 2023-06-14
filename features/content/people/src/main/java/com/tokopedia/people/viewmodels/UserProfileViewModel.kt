@@ -697,7 +697,6 @@ class UserProfileViewModel @AssistedInject constructor(
                 val result = repo.getUserProfileTab(_profileInfo.value.userID)
                 val isEmpty = result == ProfileTabUiModel()
                 _profileTab.update { result }
-                _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(isEmpty))
 
                 if (isEmpty && isSelfProfile) loadShopRecom()
             },

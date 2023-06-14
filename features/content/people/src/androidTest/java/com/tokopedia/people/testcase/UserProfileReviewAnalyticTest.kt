@@ -27,6 +27,9 @@ class UserProfileReviewAnalyticTest {
 
     @Test
     fun testAnalytic() {
-        userProfileRobot.launch()
+        userProfileRobot
+            .launch()
+            .clickReviewTab()
+            .verifyEventAction("click - review tab")
     }
 }

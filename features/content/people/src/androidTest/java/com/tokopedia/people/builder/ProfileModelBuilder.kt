@@ -1,5 +1,7 @@
 package com.tokopedia.people.builder
 
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.LinkUiModel
 import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
@@ -69,7 +71,7 @@ class ProfileModelBuilder {
                 var position = 1
 
                 if (isShowFeedTab) {
-                    add(ProfileTabUiModel.Tab(title = "Feed", key = "feeds", position = position++))
+                    add(ProfileTabUiModel.Tab(title = "Feeds", key = "feeds", position = position++))
                 }
                 if (isShowVideoTab) {
                     add(ProfileTabUiModel.Tab(title = "Video", key = "video", position = position++))
@@ -78,6 +80,66 @@ class ProfileModelBuilder {
                     add(ProfileTabUiModel.Tab(title = "Review", key = "review", position = position++))
                 }
             }
+        )
+    }
+
+    fun buildProfileSettings(
+        isShowReview: Boolean = true,
+    ): List<ProfileSettingsUiModel> {
+        return listOf(
+            ProfileSettingsUiModel(
+                settingID = ProfileSettingsUiModel.SETTING_ID_REVIEW,
+                title = "Show / hide review",
+                isEnabled = isShowReview
+            )
+        )
+    }
+
+    fun buildReviewList(
+        size: Int = 5,
+        page: Int = 1,
+        hasNext: Boolean = true,
+        status: UserReviewUiModel.Status = UserReviewUiModel.Status.Success,
+    ): UserReviewUiModel {
+        return UserReviewUiModel(
+            reviewList = List(size) {
+                UserReviewUiModel.Review(
+                    feedbackID = it.toString(),
+                    product = UserReviewUiModel.Product(
+                        productID = it.toString(),
+                        productName = "Product $it",
+                        productImageURL = "",
+                        productPageURL = "",
+                        productStatus = 0,
+                        productVariant = UserReviewUiModel.ProductVariant(
+                            variantID = it.toString(),
+                            variantName = "Variant $it"
+                        )
+                    ),
+                    rating = it.coerceAtMost(5),
+                    reviewText = "review $it",
+                    reviewTime = "1 bulan lalu",
+                    attachments = listOf(
+                        UserReviewUiModel.Attachment.Image(
+                            attachmentID = it.toString(),
+                            thumbnailUrl = "",
+                            fullSizeUrl = "",
+                        ),
+                        UserReviewUiModel.Attachment.Video(
+                            attachmentID = (it + 1).toString(),
+                            mediaUrl = "",
+                        )
+                    ),
+                    likeDislike = UserReviewUiModel.LikeDislike(
+                        totalLike = 123,
+                        likeStatus = 0,
+                    ),
+                    isReviewTextExpanded = false,
+                )
+            },
+            page = page,
+            hasNext = hasNext,
+            status = status,
         )
     }
 }
