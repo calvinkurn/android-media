@@ -316,6 +316,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         context?.let {
             try {
                 val webviewUrl = String.format(
+                    Locale.getDefault(),
                     "%s?url=%s",
                     ApplinkConst.WEBVIEW,
                     "https://www.youtube.com/watch?v=" + url[index]

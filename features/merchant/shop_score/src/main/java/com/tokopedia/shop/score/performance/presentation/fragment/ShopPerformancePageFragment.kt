@@ -468,7 +468,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let {
             try {
                 val webviewUrl = String.format(
-                    Locale.getDefault()
+                    Locale.getDefault(),
                     "%s?url=%s",
                     ApplinkConst.WEBVIEW,
                     "https://www.youtube.com/watch?v=" + videoId
