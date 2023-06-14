@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 data class GetRecommendationRequestParam(
         val pageNumber: Int = 1,
@@ -36,6 +37,8 @@ data class GetRecommendationRequestParam(
             requestMap[X_DEVICE] = xDevice
         if (shopIds.isNotEmpty())
             requestMap[SHOP_IDS] = TextUtils.join(",", shopIds)
+        if (shopIds.isNotEmpty())
+            requestMap[SHOP_ID] = shopIds.first().toIntOrZero()
         return requestMap
     }
 
@@ -69,5 +72,6 @@ data class GetRecommendationRequestParam(
         private const val PARAM_TOKONOW = "tokoNow"
         private const val USER_ID = "userID"
         private const val SHOP_IDS = "shopIDs"
+        private const val SHOP_ID = "shopId"
     }
 }

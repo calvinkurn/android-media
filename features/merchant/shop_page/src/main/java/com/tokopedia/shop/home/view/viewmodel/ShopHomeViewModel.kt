@@ -1329,7 +1329,8 @@ class ShopHomeViewModel @Inject constructor(
         return getComparisonProductUseCase.get().getData(
             GetRecommendationRequestParam(
                 pageName = PAGE_NAME_SHOP_COMPARISON_WIDGET,
-                shopIds = listOf(shopId)
+                shopIds = listOf(shopId),
+                productIds = listOf("9842065204")
             )
         )
     }
