@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.databinding.ActivityFeedDetailBinding
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_FIRST_INDEX
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_TYPE_FOR_YOU
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
+import com.tokopedia.feedplus.presentation.fragment.FeedFragment.Companion.ENTRY_POINT_APPLINK
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.play_common.util.extension.commit
 
@@ -60,7 +61,7 @@ class FeedDetailActivity : BaseActivity() {
                     ),
                     extrasData,
                     intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
-                        ?: "",
+                        ?: ENTRY_POINT_APPLINK,
                     true
                 )
             )

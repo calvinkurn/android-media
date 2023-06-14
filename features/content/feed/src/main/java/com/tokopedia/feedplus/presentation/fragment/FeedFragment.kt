@@ -1399,7 +1399,8 @@ class FeedFragment :
         private const val PARAM_AUTHOR_TYPE = "author_type"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
-        private const val ENTRY_POINT_DEFAULT = "applink"
+        const val ENTRY_POINT_APPLINK = "applink"
+        private const val ENTRY_POINT_DEFAULT = ""
 
         fun createFeedFragment(
             data: FeedDataModel,
