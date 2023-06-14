@@ -85,7 +85,8 @@ class AuthHelper {
             authKey: String,
             dateFormat: String,
             userId: String,
-            session: UserSessionInterface
+            session: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -113,6 +114,7 @@ class AuthHelper {
 
             headerMap[HEADER_USER_ID] = userId
             headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_X_THEME] = theme
 
             return headerMap
         }
@@ -179,7 +181,8 @@ class AuthHelper {
             authKey: String,
             contentType: String?,
             userId: String,
-            userSessionInterface: UserSessionInterface
+            userSessionInterface: UserSessionInterface,
+            theme: String
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMapOld(
                 path,
@@ -189,7 +192,8 @@ class AuthHelper {
                 authKey,
                 DATE_FORMAT,
                 userId,
-                userSessionInterface
+                userSessionInterface,
+                theme
             ) as ArrayMap<String, String>
 
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
