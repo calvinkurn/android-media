@@ -37,7 +37,7 @@ class AddTextBackgroundBtmItemView constructor(
     fun setActive() {
         (viewBinding.btmItemConstraint.background as GradientDrawable).apply {
             mutate()
-            setStroke(2.toPx(), ContextCompat.getColor(context, principleR.color.Unify_GN500))
+            setStroke(BORDER_SIZE.toPx(), ContextCompat.getColor(context, principleR.color.Unify_GN500))
         }
 
         viewBinding.btmItemChecklist.show()
@@ -46,7 +46,7 @@ class AddTextBackgroundBtmItemView constructor(
     fun setInactive() {
         (viewBinding.btmItemConstraint.background as GradientDrawable).apply {
             mutate()
-            setStroke(2.toPx(), ContextCompat.getColor(context, principleR.color.Unify_NN300))
+            setStroke(BORDER_SIZE.toPx(), ContextCompat.getColor(context, principleR.color.Unify_NN300))
         }
 
         viewBinding.btmItemChecklist.hide()
@@ -60,7 +60,7 @@ class AddTextBackgroundBtmItemView constructor(
         when (backgroundTemplate) {
             AddTextBackgroundTemplate.FULL.value -> editorR.drawable.add_text_background_full
             AddTextBackgroundTemplate.FLOATING.value -> {
-                val margin = 4.toPx()
+                val margin = TEXT_BACKGROUND_FLOATING_PADDING.toPx()
                 viewBinding.btmItemBackground.setMargin(margin, 0, margin, margin)
                 editorR.drawable.add_text_background_floating
             }
@@ -75,5 +75,10 @@ class AddTextBackgroundBtmItemView constructor(
                 viewBinding.btmItemBackground.background = backgroundDrawable
             }
         }
+    }
+
+    companion object {
+        private const val TEXT_BACKGROUND_FLOATING_PADDING = 4
+        private const val BORDER_SIZE = 2
     }
 }
