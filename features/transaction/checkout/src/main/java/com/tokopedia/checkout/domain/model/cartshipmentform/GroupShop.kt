@@ -46,7 +46,9 @@ data class GroupShop(
     val groupType: Int = 0,
     val uiGroupType: Int = 0,
     val groupInfoName: String = "",
-    val groupInfoBadgeUrl: String = ""
+    val groupInfoBadgeUrl: String = "",
+    val groupInfoDescription: String = "",
+    val groupInfoDescriptionBadgeUrl: String = ""
 ) : Parcelable {
 
     companion object {

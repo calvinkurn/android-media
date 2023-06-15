@@ -945,11 +945,7 @@ class CartItemViewHolder constructor(
         viewHolderListener: ViewHolderListener?
     ) {
         if (data.wholesalePriceData.isNotEmpty()) {
-            if (data.isPreOrder) {
-                viewHolderListener?.onNeedToRefreshAllShop()
-            } else {
-                viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition, true)
-            }
+            viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition)
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
@@ -1098,13 +1094,11 @@ class CartItemViewHolder constructor(
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
-        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean = false)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
-
-        fun onNeedToRefreshAllShop()
     }
 
     companion object {

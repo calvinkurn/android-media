@@ -214,7 +214,9 @@ class ShipmentMapper @Inject constructor() {
                     groupType = it.groupType,
                     uiGroupType = it.uiGroupType,
                     groupInfoName = it.groupInformation.name,
-                    groupInfoBadgeUrl = it.groupInformation.badgeUrl
+                    groupInfoBadgeUrl = it.groupInformation.badgeUrl,
+                    groupInfoDescription = it.groupInformation.description,
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
                 ).apply {
                     isError = it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
@@ -239,8 +241,8 @@ class ShipmentMapper @Inject constructor() {
                     listPromoCodes = it.listPromoCodes
                     isFulfillment = it.isFulfillment
                     fulfillmentId = it.warehouse.warehouseId
-                    fulfillmentBadgeUrl = it.tokoCabangInfo.badgeUrl
-                    fulfillmentName = it.tokoCabangInfo.message
+                    fulfillmentBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    fulfillmentName = it.groupInformation.description
                     shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                     val mapGroupShopV2List = mapGroupShopV2List(
                         it,

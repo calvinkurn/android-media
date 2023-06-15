@@ -139,7 +139,8 @@
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
 
-    <string name="performance_dashboard_wording_entry_point">Pelajari Wawasan Video</string>
+    <string name="performance_see">Lihat Performa</string>
+    <string name="performance_learn_video_insight">Pelajari Wawasan Video</string>
     <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
     <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
 
@@ -165,14 +166,12 @@
     <string name="kol_action_like">Like</string>
     <string name="kol_action_comment">Comment</string>
     <string name="kol_action_follow">Follow</string>
-    <string name="kol_Action_following">"following"</string>
-    <string name="kol_badge_content_desc">Kol Badge</string>
 
     <!--Post Time-->
     <string name="post_time_just_now">Baru saja</string>
     <string name="post_time_minutes_ago">\u0020menit</string>
     <string name="post_time_hours_ago">\u0020jam</string>
-    <string name="post_time_hour">\u0020pukul\u0020</string>
+    <string name="content_common_post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 
     <!--Post Time new-->

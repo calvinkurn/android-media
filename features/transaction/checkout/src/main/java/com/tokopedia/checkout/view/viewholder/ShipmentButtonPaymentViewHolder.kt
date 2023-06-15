@@ -26,12 +26,14 @@ class ShipmentButtonPaymentViewHolder(private val binding: ItemShipmentButtonPay
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
         if (model.loading) {
-            binding.btnSelectPaymentMethod.gone()
-            binding.loaderBtnPayment.type = LoaderUnify.TYPE_RECT
-            binding.loaderBtnPayment.visible()
+            binding.tvTotalPayment.gone()
+            binding.loaderTotalPayment.type = LoaderUnify.TYPE_RECT
+            binding.loaderTotalPayment.visible()
             binding.loaderTotalPayment.visible()
             binding.tvTotalPayment.gone()
         } else {
+            binding.loaderTotalPayment.gone()
+            binding.tvTotalPayment.visible()
             binding.loaderBtnPayment.gone()
             binding.loaderTotalPayment.gone()
             binding.btnSelectPaymentMethod.visible()

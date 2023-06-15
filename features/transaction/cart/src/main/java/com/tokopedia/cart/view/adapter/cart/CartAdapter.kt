@@ -59,7 +59,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -71,7 +70,6 @@ import kotlin.math.min
 class CartAdapter constructor(
     private val actionListener: ActionListener,
     private val cartItemActionListener: CartItemAdapter.ActionListener,
-    private val tickerAnnouncementActionListener: TickerAnnouncementActionListener,
     private val sellerCashbackListener: SellerCashbackListener,
     private val userSession: UserSessionInterface
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
@@ -386,7 +384,7 @@ class CartAdapter constructor(
             TickerAnnouncementViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(TickerAnnouncementViewHolder.LAYOUT, parent, false)
-                return TickerAnnouncementViewHolder(view, tickerAnnouncementActionListener)
+                return TickerAnnouncementViewHolder(view)
             }
             DisabledItemHeaderViewHolder.LAYOUT -> {
                 val binding = ItemCartDisabledHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -1310,27 +1308,6 @@ class CartAdapter constructor(
         return null
     }
 
-    fun getFirstShopAndShopCountWithIterateFunction(func: (CartGroupHolderData) -> Unit): Pair<Int, Int> {
-        var firstIndex = 0
-        var count = 0
-        cartDataList.forEachIndexed { index, any ->
-            when (any) {
-                is CartGroupHolderData -> {
-                    count++
-                    if (firstIndex == 0) {
-                        firstIndex = index
-                    }
-                    func(any)
-                }
-                is DisabledItemHeaderHolderData, is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        return Pair(firstIndex, count)
-    }
-
     fun setLastItemAlwaysSelected(): Boolean {
         var cartItemCount = 0
         getData().forEach outer@{ any ->
@@ -1483,9 +1460,9 @@ class CartAdapter constructor(
         cartItemActionListener.onNeedToRecalculate()
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int) {
         cartItemActionListener.onNeedToRecalculate()
-        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData, itemPosition, isQuantityChanged)
+        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData, itemPosition)
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
@@ -1495,10 +1472,5 @@ class CartAdapter constructor(
 
     override fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData) {
         cartItemActionListener.onNeedToRefreshWeight(cartItemHolderData)
-    }
-
-    override fun onNeedToRefreshAllShop() {
-        cartItemActionListener.onNeedToRefreshMultipleShop()
-        cartItemActionListener.onNeedToRecalculate()
     }
 }

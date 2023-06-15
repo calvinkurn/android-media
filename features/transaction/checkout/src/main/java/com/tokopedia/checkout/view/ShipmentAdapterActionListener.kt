@@ -46,10 +46,8 @@ interface ShipmentAdapterActionListener {
 
 //    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>)
     fun onInsuranceChecked(position: Int)
-    fun onPriorityChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
     fun onInsuranceTncClicked()
-    fun onPriorityTncClicker()
     fun onOntimeDeliveryClicked(url: String)
     fun onNeedUpdateRequestData()
     fun onDropshipCheckedForTrackingAnalytics()

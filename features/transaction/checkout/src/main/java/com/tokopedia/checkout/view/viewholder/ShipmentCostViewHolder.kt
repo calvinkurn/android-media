@@ -2,6 +2,8 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -10,13 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemSummaryTransactionCrossSellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
-class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBinding, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(binding.root) {
+class ShipmentCostViewHolder(
+    private val binding: ViewItemShipmentCostDetailsBinding,
+    private val layoutInflater: LayoutInflater,
+    private val shipmentAdapterActionListener: ShipmentAdapterActionListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("StringFormatInvalid")
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
@@ -26,7 +36,6 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
         binding.tvShippingFeeLabel.text = binding.tvShippingFeeLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee)
         binding.tvShippingFee.setTextAndContentDescription(getPriceFormat(binding.tvShippingFeeLabel, binding.tvShippingFee, shipmentCost.shippingFee), R.string.content_desc_tv_shipping_fee_summary)
         binding.tvInsuranceFee.setTextAndContentDescription(getPriceFormat(binding.tvInsuranceFeeLabel, binding.tvInsuranceFee, shipmentCost.insuranceFee), R.string.content_desc_tv_insurance_fee_summary)
-        binding.tvOrderPrioritasPrice.text = getPriceFormat(binding.tvOrderPrioritasLabel, binding.tvOrderPrioritasPrice, shipmentCost.priorityFee)
         binding.tvPurchaseProtectionLabel.text = getTotalPurchaseProtectionItemLabel(binding.tvPurchaseProtectionLabel.context, shipmentCost.totalPurchaseProtectionItem)
         binding.tvPurchaseProtectionFee.text = getPriceFormat(binding.tvPurchaseProtectionLabel, binding.tvPurchaseProtectionFee, shipmentCost.purchaseProtectionFee)
         binding.tvPromo.text = String.format(
@@ -69,8 +78,10 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
         renderDiscount(shipmentCost)
         renderAddOnCost(shipmentCost)
         if (shipmentCost.totalItem > 0) {
+            Log.i("qwertyuiop", "render platform fee")
             renderPlatformFee(shipmentCost.dynamicPlatformFee)
         } else {
+            Log.i("qwertyuiop", "hide platform fee")
             hidePlatformFee()
         }
     }
@@ -139,80 +150,85 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
     }
 
     private fun hidePlatformFee() {
-//        mTickerPlatformFeeInfo.gone()
-//        mTvPlatformFeeLabel.gone()
-//        mIvPlatformFeeIconInfo.gone()
-//        mTvPlatformFeeValue.gone()
-//        mTvPlatformSlashedFeeValue.gone()
-//        mLoaderPlatformFeeLabel.gone()
-//        mLoaderPlatformFeeValue.gone()
+        binding.tickerPlatformFeeInfo.gone()
+        binding.tvPlatformFeeLabel.gone()
+        binding.icPlatformFeeInfo.gone()
+        binding.tvPlatformFeeValue.gone()
+        binding.tvPlatformSlashedFeeValue.gone()
+        binding.loaderPlatformFeeLabel.gone()
+        binding.loaderPlatformFeeValue.gone()
     }
 
     private fun renderPlatformFee(platformFeeModel: ShipmentPaymentFeeModel) {
-//        if (platformFeeModel.isLoading) {
-//            mTickerPlatformFeeInfo.gone()
-//            mTvPlatformFeeLabel.gone()
-//            mIvPlatformFeeIconInfo.gone()
-//            mTvPlatformFeeValue.gone()
-//            mTvPlatformSlashedFeeValue.gone()
-//            mLoaderPlatformFeeLabel.visible()
-//            mLoaderPlatformFeeValue.visible()
-//        } else if (platformFeeModel.isShowTicker) {
-//            mTvPlatformFeeLabel.gone()
-//            mIvPlatformFeeIconInfo.gone()
-//            mTvPlatformFeeValue.gone()
-//            mTvPlatformSlashedFeeValue.gone()
-//            mLoaderPlatformFeeLabel.gone()
-//            mLoaderPlatformFeeValue.gone()
-//            mTickerPlatformFeeInfo.visible()
-//            mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
-//            mTickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
-//                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                    shipmentAdapterActionListener.checkPlatformFee()
-//                }
-//
-//                override fun onDismiss() { }
-//            })
-//        } else {
-//            mTickerPlatformFeeInfo.gone()
-//
-//            if (platformFeeModel.title.isEmpty()) {
-//                mLoaderPlatformFeeLabel.gone()
-//                mLoaderPlatformFeeValue.gone()
-//                mTvPlatformFeeLabel.gone()
-//                mIvPlatformFeeIconInfo.gone()
-//                mTvPlatformFeeValue.gone()
-//                mTvPlatformSlashedFeeValue.gone()
-//            } else {
-//                mLoaderPlatformFeeLabel.gone()
-//                mLoaderPlatformFeeValue.gone()
-//                mTvPlatformFeeLabel.visible()
-//                mTvPlatformFeeLabel.text = platformFeeModel.title
-//                mTvPlatformFeeValue.visible()
-//
-//                if (platformFeeModel.isShowSlashed) {
-//                    mTvPlatformSlashedFeeValue.visible()
-//                    mTvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-//                    mTvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
-//
-//                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-//                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-//                } else {
-//                    mTvPlatformSlashedFeeValue.gone()
-//                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-//                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-//                }
-//
-//                if (platformFeeModel.isShowTooltip) {
-//                    mIvPlatformFeeIconInfo.visible()
-//                    mIvPlatformFeeIconInfo.setOnClickListener {
-//                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
-//                    }
-//                } else {
-//                    mIvPlatformFeeIconInfo.gone()
-//                }
-//            }
-//        }
+        if (platformFeeModel.isLoading) {
+            Log.i("qwertyuiop", "render platform fee loading")
+            binding.tickerPlatformFeeInfo.gone()
+            binding.tvPlatformFeeLabel.gone()
+            binding.icPlatformFeeInfo.gone()
+            binding.tvPlatformFeeValue.gone()
+            binding.tvPlatformSlashedFeeValue.gone()
+            binding.loaderPlatformFeeLabel.visible()
+            binding.loaderPlatformFeeValue.visible()
+        } else if (platformFeeModel.isShowTicker) {
+            Log.i("qwertyuiop", "render platform fee ticker")
+            binding.tvPlatformFeeLabel.gone()
+            binding.icPlatformFeeInfo.gone()
+            binding.tvPlatformFeeValue.gone()
+            binding.tvPlatformSlashedFeeValue.gone()
+            binding.loaderPlatformFeeLabel.gone()
+            binding.loaderPlatformFeeValue.gone()
+            binding.tickerPlatformFeeInfo.visible()
+            binding.tickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
+            binding.tickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    shipmentAdapterActionListener.checkPlatformFee()
+                }
+
+                override fun onDismiss() { }
+            })
+        } else {
+            Log.i("qwertyuiop", "render platform fee full")
+            binding.tickerPlatformFeeInfo.gone()
+
+            if (platformFeeModel.title.isEmpty()) {
+                Log.i("qwertyuiop", "render platform fee empty")
+                binding.loaderPlatformFeeLabel.gone()
+                binding.loaderPlatformFeeValue.gone()
+                binding.tvPlatformFeeLabel.gone()
+                binding.icPlatformFeeInfo.gone()
+                binding.tvPlatformFeeValue.gone()
+                binding.tvPlatformSlashedFeeValue.gone()
+            } else {
+                Log.i("qwertyuiop", "render platform fee with ${platformFeeModel.title}")
+                binding.loaderPlatformFeeLabel.gone()
+                binding.loaderPlatformFeeValue.gone()
+                binding.tvPlatformFeeLabel.visible()
+                binding.tvPlatformFeeLabel.text = platformFeeModel.title
+                binding.tvPlatformFeeValue.visible()
+
+                if (platformFeeModel.isShowSlashed) {
+                    binding.tvPlatformSlashedFeeValue.visible()
+                    binding.tvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    binding.tvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+
+                    binding.tvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                } else {
+                    binding.tvPlatformSlashedFeeValue.gone()
+                    binding.tvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                }
+
+                if (platformFeeModel.isShowTooltip) {
+                    binding.icPlatformFeeInfo.visible()
+                    binding.icPlatformFeeInfo.setOnClickListener {
+                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
+                    }
+                } else {
+                    binding.icPlatformFeeInfo.gone()
+                }
+            }
+        }
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

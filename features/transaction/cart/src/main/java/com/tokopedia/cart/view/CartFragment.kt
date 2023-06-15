@@ -153,7 +153,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
@@ -201,7 +200,6 @@ class CartFragment :
     CartItemAdapter.ActionListener,
     RefreshHandler.OnRefreshHandlerListener,
     CartToolbarListener,
-    TickerAnnouncementActionListener,
     SellerCashbackListener,
     CartBundlingBottomSheetListener {
 
@@ -603,7 +601,7 @@ class CartFragment :
             DaggerCartComponent.builder().baseAppComponent(baseMainApplication.baseAppComponent)
                 .build().inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, this, userSession)
+        cartAdapter = CartAdapter(this, this, this, userSession)
     }
 
     private fun initRemoteConfig() {
@@ -2137,10 +2135,6 @@ class CartFragment :
         }
     }
 
-    override fun onShowCartTicker(tickerId: String) {
-        cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId)
-    }
-
     override fun getDefaultCartErrorMessage(): String {
         return if (isAdded) {
             getString(R.string.cart_error_message_no_count)
@@ -2399,16 +2393,14 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int) {
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
                 onNeedToUpdateViewItem(index)
             }
-            if (isQuantityChanged) {
-                onNeedToUpdateViewItem(itemPosition)
-            }
+            onNeedToUpdateViewItem(itemPosition)
             val shopBottomData = groupData.last()
             if (shopBottomData is CartShopBottomHolderData) {
                 checkCartShopGroupTicker(shopBottomData.shopData)
@@ -2430,13 +2422,6 @@ class CartFragment :
                 onNeedToUpdateViewItem(index + groupData.lastIndex)
             }
         }
-    }
-
-    override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkCartShopGroupTicker(it)
-        }
-        onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
     override fun onNeedToRecalculate() {
@@ -2478,7 +2463,7 @@ class CartFragment :
         recommendationPage = 1
         dPresenter.processUpdateCartCounter()
         if (cartData.outOfService.isOutOfService()) {
-            renderCartOutOfService(cartData.outOfService)
+            renderCartOutOfService(cartData.outOfService, true)
             return
         }
 
@@ -2700,8 +2685,9 @@ class CartFragment :
         dPresenter.setLocalizingAddressData(lca)
     }
 
-    private fun renderCartOutOfService(outOfService: OutOfService) {
+    private fun renderCartOutOfService(outOfService: OutOfService, isLoadCart: Boolean) {
         binding?.apply {
+            var errorType = outOfService.id
             when (outOfService.id) {
                 ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
                     layoutGlobalError.setType(GlobalError.SERVER_ERROR)
@@ -2719,14 +2705,18 @@ class CartFragment :
                             }
                         }
                     }
+                    errorType = outOfService.getErrorType()
                 }
             }
 
+            var message = ""
             if (outOfService.title.isNotBlank()) {
                 layoutGlobalError.errorTitle.text = outOfService.title
+                message += "- ${outOfService.title}"
             }
             if (outOfService.description.isNotBlank()) {
                 layoutGlobalError.errorDescription.text = outOfService.description
+                message += "- ${outOfService.description}"
             }
             if (outOfService.image.isNotBlank()) {
                 layoutGlobalError.errorIllustration.setImage(outOfService.image, 0f)
@@ -2734,9 +2724,12 @@ class CartFragment :
 
             showErrorContainer()
 
+            if (isLoadCart) {
+                CartLogger.logOnErrorLoadCartPage(CartResponseErrorException("$errorType $message"))
+            }
             cartPageAnalytics.eventViewErrorPageWhenLoadCart(
                 userSession.userId,
-                outOfService.getErrorType()
+                errorType
             )
         }
     }
@@ -3316,7 +3309,7 @@ class CartFragment :
     }
 
     override fun renderErrorToShipmentForm(outOfService: OutOfService) {
-        renderCartOutOfService(outOfService)
+        renderCartOutOfService(outOfService, false)
     }
 
     private fun disableSwipeRefresh() {

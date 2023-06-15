@@ -53,7 +53,10 @@ data class ChosenAddressTokonow(
     val warehouses: List<LocalWarehouseModel> = emptyList(),
     @Expose
     @SerializedName("service_type")
-    val serviceType: String = ""
+    val serviceType: String = "",
+    @Expose
+    @SerializedName("warehouse_ids")
+    val warehouseIds: List<String> = emptyList()
 ) : Parcelable
 
 class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private val context: Context) {
@@ -80,7 +83,8 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                     shopId = it.shop_id.toZeroStringIfNullOrBlank(),
                     warehouseId = it.warehouse_id.toZeroStringIfNullOrBlank(),
                     warehouses = it.warehouses,
-                    serviceType = it.service_type
+                    serviceType = it.service_type,
+                    warehouseIds = it.warehouse_ids
                 )
             )
         }

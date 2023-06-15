@@ -87,6 +87,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   group_information {
                       name
                       badge_url
+                      description
                   }
                   add_ons {
                     status
@@ -475,7 +476,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     voucher_orders {
                       code
                       unique_id
-                      #cart_string_grouping
+                      cart_string_group
                       address_id
                       type
                       cart_id

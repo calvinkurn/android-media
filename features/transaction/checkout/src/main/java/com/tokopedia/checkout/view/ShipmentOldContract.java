@@ -19,6 +19,8 @@ public interface ShipmentOldContract {
 //
 //        void showToastError(String message);
 //
+//        void showToastErrorAkamai(String message);
+//
 //        void renderErrorPage(String message);
 //
 //        void onCacheExpired(String message);

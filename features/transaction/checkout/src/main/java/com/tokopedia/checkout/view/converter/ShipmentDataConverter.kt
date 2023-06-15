@@ -218,6 +218,8 @@ class ShipmentDataConverter @Inject constructor() {
                 uiGroupType = groupShop.uiGroupType,
                 groupInfoName = groupShop.groupInfoName,
                 groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
+                groupInfoDescription = groupShop.groupInfoDescription,
+                groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
                 isDropshipperDisable = cartShipmentAddressFormData.isDropshipperDisable,
                 isOrderPrioritasDisable = cartShipmentAddressFormData.isOrderPrioritasDisable,
                 isBlackbox = cartShipmentAddressFormData.isBlackbox,
@@ -336,7 +338,10 @@ class ShipmentDataConverter @Inject constructor() {
                     isFulfillment = shipmentCartItemModel.isFulfillment,
                     fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl,
                     uiGroupType = shipmentCartItemModel.uiGroupType,
-                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl
+                    groupInfoName = shipmentCartItemModel.groupInfoName,
+                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl,
+                    groupInfoDescription = shipmentCartItemModel.groupInfoDescription,
+                    groupInfoDescriptionBadgeUrl = shipmentCartItemModel.groupInfoDescriptionBadgeUrl
                 )
             shipmentCartItemModels.add(shipmentCartItemTopModel)
             if (shipmentCartItemModel.isStateAllItemViewExpanded) {

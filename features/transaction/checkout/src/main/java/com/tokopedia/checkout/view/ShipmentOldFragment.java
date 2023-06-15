@@ -97,6 +97,9 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
 
+    private Snackbar toasterErrorAkamai;
+
+
     // count down component
     private View cdLayout;
     private TimerUnify cdView;
@@ -713,6 +716,27 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
                 Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
                         .show();
             }
+        }
+    }
+
+
+    @Override
+    public void showToastErrorAkamai(String message) {
+
+        if (toasterErrorAkamai == null) {
+            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+            toasterErrorAkamai = Toaster.build(
+                    getView(), message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText,
+                    view -> {
+                        //no op
+                    });
+        }
+
+        if (!toasterErrorAkamai.isShownOrQueued()) {
+            toasterErrorAkamai.show();
         }
     }
 
@@ -1357,7 +1381,7 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
+            LocationPass locationPass = getLocationPassFromIntent(data);
             if (locationPass != null) {
                 int index = shipmentAdapter.getLastChooseCourierItemPosition();
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
@@ -1367,6 +1391,21 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
         } else {
             shipmentAdapter.setLastServiceId(0);
         }
+    }
+
+    private LocationPass getLocationPassFromIntent(Intent data) {
+        LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
+        if (locationPass == null) {
+            SaveAddressDataModel addressData = data.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL);
+            if (addressData != null) {
+                locationPass = new LocationPass();
+                locationPass.setLatitude(addressData.getLatitude());
+                locationPass.setLongitude(addressData.getLongitude());
+                locationPass.setDistrictName(addressData.getDistrictName());
+                locationPass.setCityName(addressData.getCityName());
+            }
+        }
+        return locationPass;
     }
 
     private void onResultFromPayment(int resultCode, Intent data) {
@@ -1913,11 +1952,13 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
                 shipmentAdapter.updateShipmentCostModel();
                 shipmentAdapter.updateItemAndTotalCost(position);
                 shipmentAdapter.updateInsuranceTncVisibility();
+                onNeedUpdateRequestData();
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
+            onNeedUpdateRequestData();
         }
     }
 
@@ -1977,9 +2018,13 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
     @Override
     public void onDonationChecked(boolean checked) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateDonation(checked));
+            rvShipment.post(() -> {
+                shipmentAdapter.updateDonation(checked);
+                onNeedUpdateRequestData();
+            });
         } else {
             shipmentAdapter.updateDonation(checked);
+            onNeedUpdateRequestData();
         }
         if (checked) sendAnalyticsOnClickTopDonation();
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
@@ -2000,9 +2045,13 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
     @Override
     public void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index) {
         if (rvShipment.isComputingLayout()) {
-            rvShipment.post(() -> shipmentAdapter.updateCrossSell(checked, crossSellModel));
+            rvShipment.post(() -> {
+                shipmentAdapter.updateCrossSell(checked, crossSellModel);
+                onNeedUpdateRequestData();
+            });
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel);
+            onNeedUpdateRequestData();
         }
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
@@ -2017,6 +2066,7 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
+        onNeedUpdateRequestData();
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked);
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
@@ -2306,12 +2356,32 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
     }
 
     private void navigateToPinpointActivity(LocationPass locationPass) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (PinpointRolloutHelper.INSTANCE.eligibleForRevamp(activity, true)) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true);
+                if (locationPass.getLatitude() != null &&
+                        !locationPass.getLatitude().isEmpty() &&
+                        locationPass.getLongitude() != null &&
+                        !locationPass.getLongitude().isEmpty()) {
+                    bundle.putDouble(AddressConstant.EXTRA_LAT, Double.parseDouble(locationPass.getLatitude()));
+                    bundle.putDouble(AddressConstant.EXTRA_LONG, Double.parseDouble(locationPass.getLongitude()));
+                }
+                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass.getCityName());
+                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.getDistrictName());
+                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT);
+                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            } else {
+                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            }
+        }
     }
 
     @Override
@@ -3176,7 +3246,8 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             } else {
@@ -3190,7 +3261,8 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             }
@@ -3233,6 +3305,7 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
             resetPromoBenefit();
             setPromoBenefit(summariesUiModels);
             shipmentAdapter.updateShipmentCostModel();
+            onNeedUpdateRequestData();
         }
         return hasSetAllCourier;
     }
@@ -3913,6 +3986,7 @@ public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements Shi
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        onNeedUpdateRequestData();
     }
 
     @Override

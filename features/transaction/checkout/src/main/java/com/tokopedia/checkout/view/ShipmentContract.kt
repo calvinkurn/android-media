@@ -46,7 +46,6 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import rx.subjects.PublishSubject
 
-
 /**
  * @author Irfan Khoirul on 24/04/18.
  */
@@ -58,6 +57,7 @@ interface ShipmentContract {
         fun hideLoading()
         fun showToastNormal(message: String)
         fun showToastError(message: String?)
+        fun showToastErrorAkamai(message: String?)
         fun renderErrorPage(message: String?)
         fun onCacheExpired(message: String?)
         fun onShipmentAddressFormEmpty()

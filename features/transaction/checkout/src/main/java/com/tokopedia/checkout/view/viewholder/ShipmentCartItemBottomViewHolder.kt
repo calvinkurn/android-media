@@ -1,13 +1,9 @@
 package com.tokopedia.checkout.view.viewholder
 
 import android.content.Context
-import android.graphics.Typeface
 import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.View
 import android.widget.CompoundButton
@@ -26,7 +22,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
@@ -68,7 +63,6 @@ class ShipmentCartItemBottomViewHolder(
 
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
-        private const val FIRST_ELEMENT = 0
         private const val DROPSHIPPER_MIN_NAME_LENGTH = 3
         private const val DROPSHIPPER_MAX_NAME_LENGTH = 100
         private const val DROPSHIPPER_MIN_PHONE_LENGTH = 6
@@ -84,7 +78,6 @@ class ShipmentCartItemBottomViewHolder(
         PlusCoachmarkPrefs(itemView.context)
     }
     private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
-    private var isPriorityChecked: Boolean = false
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
     private var scheduleDeliverySubscription: Subscription? = null
@@ -103,7 +96,6 @@ class ShipmentCartItemBottomViewHolder(
         if (recipientAddress != null) {
             renderShipping(shipmentCartItemModel, recipientAddress, ratesDataConverter)
         }
-        renderPrioritas(shipmentCartItemModel)
         renderInsurance(shipmentCartItemModel)
         val isCornerAddress = recipientAddress != null && recipientAddress.isCornerAddress
         renderDropshipper(shipmentCartItemModel, isCornerAddress)
@@ -272,87 +264,6 @@ class ShipmentCartItemBottomViewHolder(
         }
     }
 
-    private fun renderPrioritas(shipmentCartItemModel: ShipmentCartItemModel) {
-        with(binding.containerShippingOptions) {
-            val cartItemModelList = ArrayList(shipmentCartItemModel.cartItemModels)
-            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
-            var renderOrderPriority = false
-            val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
-            if (selectedShipmentDetailData != null) {
-                renderOrderPriority = if (isTradeInDropOff) {
-                    selectedShipmentDetailData.selectedCourierTradeInDropOff != null
-                } else {
-                    selectedShipmentDetailData.selectedCourier != null
-                }
-            }
-            if (bindingAdapterPosition != RecyclerView.NO_POSITION && renderOrderPriority) {
-                if (!cartItemModelList.removeAt(FIRST_ELEMENT).isPreOrder) {
-                    cbPrioritas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                            isPriorityChecked = isChecked
-                            selectedShipmentDetailData!!.isOrderPriority =
-                                isChecked
-                            actionListener?.onPriorityChecked(bindingAdapterPosition)
-                            actionListener?.onNeedUpdateRequestData()
-                        }
-                    }
-                }
-                val spanText = SpannableString(
-                    tvPrioritasTicker.resources.getString(R.string.label_hardcoded_courier_ticker)
-                )
-                spanText.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    43,
-                    52,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                val courierItemData: CourierItemData? = if (isTradeInDropOff) {
-                    selectedShipmentDetailData!!.selectedCourierTradeInDropOff
-                } else {
-                    selectedShipmentDetailData!!.selectedCourier
-                }
-                val isCourierSelected = courierItemData != null
-                if (isCourierSelected && !shipmentCartItemModel.isError) {
-                    if (isCourierInstantOrSameday(courierItemData!!.shipperId)) {
-                        if (!shipmentCartItemModel.isOrderPrioritasDisable && courierItemData.now!! && !shipmentCartItemModel.isProductIsPreorder) {
-                            tvOrderPrioritasInfo.text = courierItemData.priorityCheckboxMessage
-                            llPrioritas.visibility = View.VISIBLE
-                            llPrioritasTicker.visibility = View.VISIBLE
-                        } else {
-                            llPrioritas.visibility = View.GONE
-                            llPrioritasTicker.visibility = View.GONE
-                        }
-                    } else {
-                        hideAllTicker()
-                    }
-                } else {
-                    hideAllTicker()
-                }
-                if (courierItemData != null && isPriorityChecked) {
-                    tvPrioritasTicker.text = courierItemData.priorityWarningboxMessage
-                } else {
-                    tvPrioritasTicker.text = spanText
-                }
-            } else {
-                hideAllTicker()
-            }
-            imgPrioritasInfo.setOnClickListener { actionListener?.onPriorityTncClicker() }
-        }
-    }
-
-    private fun hideAllTicker() {
-        binding.containerShippingOptions.llPrioritas.visibility = View.GONE
-        binding.containerShippingOptions.llPrioritasTicker.visibility = View.GONE
-    }
-
-    private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
-        val ids = CourierConstant.INSTANT_SAMEDAY_COURIER
-        for (id in ids) {
-            if (shipperId == id) return true
-        }
-        return false
-    }
-
     private fun renderInsurance(shipmentCartItemModel: ShipmentCartItemModel) {
         with(binding.containerShippingOptions) {
             var renderInsurance = false
@@ -373,7 +284,6 @@ class ShipmentCartItemBottomViewHolder(
                             actionListener?.onInsuranceCheckedForTrackingAnalytics()
                         }
                         actionListener?.onInsuranceChecked(bindingAdapterPosition)
-                        actionListener?.onNeedUpdateRequestData()
                         saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
                     }
                 }
