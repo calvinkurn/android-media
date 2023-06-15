@@ -14,6 +14,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -238,7 +239,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun deleteComment() {
-        viewModelScope.launchCatchError(block = {
+        GlobalScope.launchCatchError(block = {
             repo.deleteComment(_selectedComment.value.first.id)
         }) {
             undoComment()
