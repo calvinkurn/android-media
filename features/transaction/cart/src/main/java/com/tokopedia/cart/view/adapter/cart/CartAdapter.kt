@@ -53,7 +53,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -66,7 +65,6 @@ import kotlin.math.min
 class CartAdapter @Inject constructor(
     private val actionListener: ActionListener,
     private val cartItemActionListener: CartItemAdapter.ActionListener,
-    private val tickerAnnouncementActionListener: TickerAnnouncementActionListener,
     private val sellerCashbackListener: SellerCashbackListener,
     private val userSession: UserSessionInterface
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -402,7 +400,7 @@ class CartAdapter @Inject constructor(
             TickerAnnouncementViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(TickerAnnouncementViewHolder.LAYOUT, parent, false)
-                return TickerAnnouncementViewHolder(view, tickerAnnouncementActionListener)
+                return TickerAnnouncementViewHolder(view)
             }
             DisabledItemHeaderViewHolder.LAYOUT -> {
                 val binding = ItemCartDisabledHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)

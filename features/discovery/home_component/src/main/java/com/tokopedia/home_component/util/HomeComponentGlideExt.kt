@@ -118,6 +118,19 @@ fun ImageView.loadImageNormal(url: String, placeholder: Int = -1){
     }
 }
 
+fun ImageView.loadImageWithDefault(url: String, fpmItemLabel: String = "", defaultImage: Int){
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+    this.loadImage(url) {
+        setPlaceHolder(defaultImage)
+        setErrorDrawable(defaultImage)
+        listener({ _, mediaDataSource ->
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
+        }, {
+            GlideErrorLogHelper().logError(context, it, url)
+        })
+    }
+}
+
 fun ImageView.loadGif(url: String){
     this.loadAsGif(url) {
         setRoundedRadius(10.toFloat())

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
@@ -258,9 +259,9 @@ class SellerHomeViewModel @Inject constructor(
      *
      * @param   heightDp    height of device screen in dp
      */
-    fun getWidgetLayout(heightDp: Float? = null) {
+    fun getWidgetLayout(heightDp: Float? = null, trigger: String = String.EMPTY) {
         launchCatchError(block = {
-            val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
+            val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME, trigger)
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {

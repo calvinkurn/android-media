@@ -70,6 +70,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
