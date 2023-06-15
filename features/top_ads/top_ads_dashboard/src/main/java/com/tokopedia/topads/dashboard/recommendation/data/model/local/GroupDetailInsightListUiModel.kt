@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 class GroupDetailInsightListUiModel(
@@ -10,7 +11,7 @@ class GroupDetailInsightListUiModel(
     GroupDetailDataModel {
 
     override fun type(): String {
-        return "4"
+        return TYPE_EMPTY_STATE.toString()
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

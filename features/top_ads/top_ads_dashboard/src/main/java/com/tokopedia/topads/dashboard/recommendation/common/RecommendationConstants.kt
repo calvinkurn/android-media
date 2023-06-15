@@ -62,19 +62,8 @@ object RecommendationConstants {
     }
 
     object InsightGqlInputSource {
-        // topadsGetShopInfoV2_1
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
         const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center_landing_page"
-
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
-        // topAdsBatchGetKeywordInsightByGroupIDV3
-        // topAdsBatchGetAdGroupBidInsightByGroupID
         const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center_group_detail_page"
-
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
         const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
     }
 }

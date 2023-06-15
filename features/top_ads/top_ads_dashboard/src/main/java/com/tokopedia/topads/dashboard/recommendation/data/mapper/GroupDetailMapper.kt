@@ -1,7 +1,17 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
@@ -25,6 +35,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.Empty
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.findPositionOfSelected
+import java.util.SortedMap
 import javax.inject.Inject
 
 class GroupDetailMapper @Inject constructor() {
@@ -45,41 +56,37 @@ class GroupDetailMapper @Inject constructor() {
     )
 
     fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
-        val map = mutableMapOf<Int, GroupDetailDataModel>()
         val position = chipsList.findPositionOfSelected { it.isSelected }
         return if (position == TYPE_INSIGHT || adGroupType == TYPE_SHOP_VALUE) {
-            detailPageDataMap
-            var isPresent = false
-            detailPageDataMap.values.forEach {
-                val groupInsightsUiModel = it as? GroupInsightsUiModel
-                if (groupInsightsUiModel?.isAvailable() == true) isPresent = true
-                reshuffleInsightExpansion(clickedItem, groupInsightsUiModel)
-            }
-            if (!isPresent && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
-                addDataForUnoptimisedGroup()
-            }
+            reshuffleInsightExpansionIfRequired(clickedItem)
+            checkAndPutDataForUnoptimisedGroup()
             handleChipsData(adGroupType)
             detailPageDataMap.toSortedMap()
         } else {
-            val selectedIndex = position + 2
-            for (i in TYPE_INSIGHT..TYPE_CHIPS) {
-                detailPageDataMap[i]?.let { map.put(i, it) }
-            }
-            for (i in TYPE_POSITIVE_KEYWORD until detailPageDataMap.size) {
-                if (i == selectedIndex) {
-                    detailPageDataMap[i]?.let { map.put(i, it) }
-                    if (detailPageDataMap[i]?.isAvailable() == false) {
-                        map[TYPE_EMPTY_STATE] = getEmptyStateData(position)
-                    } else {
-                        detailPageDataMap.remove(TYPE_EMPTY_STATE)
-                        map.remove(TYPE_EMPTY_STATE)
-                    }
-                } else {
-                    map[i] = GroupInsightsUiModel()
-                }
-            }
-            map.toSortedMap()
+            reSyncDataForGroupInsight(position)
         }
+    }
+
+    private fun reSyncDataForGroupInsight(position: Int): SortedMap<Int, GroupDetailDataModel> {
+        val map = mutableMapOf<Int, GroupDetailDataModel>()
+        val selectedIndex = position + CONST_2
+        for (index in TYPE_INSIGHT..TYPE_CHIPS) {
+            detailPageDataMap[index]?.let { map.put(index, it) }
+        }
+        for (index in TYPE_POSITIVE_KEYWORD until detailPageDataMap.size) {
+            if (index == selectedIndex) {
+                detailPageDataMap[index]?.let { map.put(index, it) }
+                if (detailPageDataMap[index]?.isAvailable() == false) {
+                    map[TYPE_EMPTY_STATE] = getEmptyStateData(position)
+                } else {
+                    detailPageDataMap.remove(TYPE_EMPTY_STATE)
+                    map.remove(TYPE_EMPTY_STATE)
+                }
+            } else {
+                map[index] = GroupInsightsUiModel()
+            }
+        }
+        return map.toSortedMap()
     }
 
     private fun handleChipsData(adGroupType: Int) {
@@ -90,46 +97,59 @@ class GroupDetailMapper @Inject constructor() {
         }
     }
 
-    private fun reshuffleInsightExpansion(
-        clickedItem: Int,
-        groupInsightsUiModel: GroupInsightsUiModel?
+    private fun reshuffleInsightExpansionIfRequired(
+        clickedItem: Int
     ) {
-        if (clickedItem != INVALID_INSIGHT_TYPE && groupInsightsUiModel != null) {
-            if (clickedItem != groupInsightsUiModel.type && groupInsightsUiModel.isExpanded) {
+        detailPageDataMap.values.forEach {
+            val groupInsightsUiModel = it as? GroupInsightsUiModel
+            if (clickedItem != INVALID_INSIGHT_TYPE &&
+                groupInsightsUiModel != null &&
+                clickedItem != groupInsightsUiModel.type &&
+                groupInsightsUiModel.isExpanded
+            ) {
                 detailPageDataMap[groupInsightsUiModel.type] =
                     groupInsightsUiModel.copy(isExpanded = false)
             }
         }
     }
 
-    private fun addDataForUnoptimisedGroup() {
-        detailPageDataMap.remove(TYPE_CHIPS)
-        val adGroups =
-            (detailPageDataMap[TYPE_INSIGHT] as? InsightTypeChipsUiModel)?.adGroupList
-                ?: mutableListOf()
-        if (adGroups.size > 5) {
-            detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] =
-                GroupDetailInsightListUiModel(adGroups = adGroups.subList(0, 5))
-        } else {
-            detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] = GroupDetailInsightListUiModel(adGroups = adGroups)
+    private fun checkAndPutDataForUnoptimisedGroup() {
+        var isAnyInsightAvailable = false
+        for (value in detailPageDataMap.values) {
+            if ((value as? GroupInsightsUiModel)?.isAvailable() == true) {
+                isAnyInsightAvailable = true
+                break
+            }
+        }
+        if (!isAnyInsightAvailable && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
+            detailPageDataMap.remove(TYPE_CHIPS)
+            val adGroups =
+                (detailPageDataMap[TYPE_INSIGHT] as? InsightTypeChipsUiModel)?.adGroupList
+                    ?: mutableListOf()
+            if (adGroups.size > CONST_5) {
+                detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] =
+                    GroupDetailInsightListUiModel(adGroups = adGroups.subList(Int.ZERO, CONST_5))
+            } else {
+                detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] = GroupDetailInsightListUiModel(adGroups = adGroups)
+            }
         }
     }
 
     private fun getEmptyStateData(type: Int): GroupDetailEmptyStateUiModel {
         return when (type) {
-            1, 2, 5 -> {
+            INSIGHT_TYPE_POSITIVE_KEYWORD, INSIGHT_TYPE_KEYWORD_BID, INSIGHT_TYPE_NEGATIVE_KEYWORD -> {
                 GroupDetailEmptyStateUiModel(
-                    listOf(EmptyStateData.getData()[1])
+                    listOf(EmptyStateData.getData()[CONST_1])
                 )
             }
-            3 -> {
+            INSIGHT_TYPE_GROUP_BID -> {
                 GroupDetailEmptyStateUiModel(
-                    listOf(EmptyStateData.getData()[2], EmptyStateData.getData()[3])
+                    listOf(EmptyStateData.getData()[CONST_2], EmptyStateData.getData()[CONST_3])
                 )
             }
             else -> {
                 GroupDetailEmptyStateUiModel(
-                    listOf(EmptyStateData.getData()[4])
+                    listOf(EmptyStateData.getData()[CONST_4])
                 )
             }
         }
