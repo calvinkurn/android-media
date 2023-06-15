@@ -7,6 +7,7 @@ import android.widget.RatingBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogImageReviewAdapter
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
@@ -16,7 +17,9 @@ import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
@@ -35,6 +38,10 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     private var catalogDetailListener: CatalogDetailListener? = null
+
+    private val shopReviewWidget: ShopReviewBasicInfoWidget by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.rating_review_catalog)
+    }
 
     fun bind(
         model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review,
@@ -59,13 +66,11 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
     }
 
     private fun setReviewStars(rating: Int?) {
-        view.findViewById<RatingBar>(R.id.rating_review_catalog)?.apply {
-            if (rating == 0 || rating == null) {
-                hide()
-                return
-            }
-            this.rating = rating.toFloat()
+        shopReviewWidget.apply {
             show()
+            setRating(rating ?: 0)
+            findViewById<Typography>(R.id.tv_review_item_reviewer_name)?.hide()
+            findViewById<Typography>(R.id.tv_review_item_reviewer_statistic)?.hide()
         }
     }
 

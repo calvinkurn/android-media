@@ -18,23 +18,15 @@
         android:visibility="gone"
         />
 
-    <RatingBar
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
         android:id="@+id/rating_review_catalog"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:visibility="gone"
-        android:contentDescription="@null"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/txt_date_user_catalog"
         app:layout_constraintBottom_toBottomOf="@+id/txt_date_user_catalog"
-        style="@style/RatingBar.Small"
-        android:scaleX="0.85"
-        android:scaleY="0.85"
-        android:transformPivotX="@dimen/unify_space_0"
-        android:transformPivotY="@dimen/spacing_lvl3"
-        android:numStars="5"
-        tools:visibility="visible" />
+        android:visibility="gone"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_user_name_catalog"
