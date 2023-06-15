@@ -12,6 +12,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemOnNestedRecyclerView
+import com.tokopedia.content.test.util.clickItemRecyclerView
 import com.tokopedia.content.test.util.clickTabLayout
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
@@ -26,6 +27,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import com.tokopedia.people.R
+import com.tokopedia.people.builder.UserReviewModelBuilder
 import com.tokopedia.people.helper.PeopleCassavaValidator
 import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
@@ -50,6 +52,7 @@ class UserProfileRobot {
     val mockRouter: Router = mockk(relaxed = true)
 
     private val profileModelBuilder = ProfileModelBuilder()
+    private val userReviewModelBuilder = UserReviewModelBuilder()
 
     private val mockUserId = "123"
     private val mockProfile = profileModelBuilder.buildProfile(mockUserId)
@@ -57,7 +60,8 @@ class UserProfileRobot {
     private val mockProfileCreationInfo = profileModelBuilder.buildProfileCreationInfo()
     private val mockTab = profileModelBuilder.buildProfileTab()
     private val mockProfileSettings = profileModelBuilder.buildProfileSettings()
-    private val mockReviewList = profileModelBuilder.buildReviewList()
+    private val mockReviewList = userReviewModelBuilder.buildReviewList()
+    private val mockLikeDislike = userReviewModelBuilder.buildLikeDislike()
 
     fun init() {
         UserProfileInjector.set(
@@ -94,6 +98,7 @@ class UserProfileRobot {
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockReviewList
 
         coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
+        coEvery { mockRepo.setLikeStatus(any(), any()) } returns mockLikeDislike
 
         coEvery { mockUserProfileSharedPref.hasBeenShown(any()) } returns true
     }
@@ -119,6 +124,10 @@ class UserProfileRobot {
             childRvId = R.id.rv_media,
             childPosition = mediaPosition
         )
+    }
+
+    fun clickLikeReview(reviewPosition: Int) = chainable {
+        clickItemRecyclerView(R.id.rv_review, reviewPosition, R.id.ic_like)
     }
 
     fun verifyEventAction(eventAction: String) = chainable {

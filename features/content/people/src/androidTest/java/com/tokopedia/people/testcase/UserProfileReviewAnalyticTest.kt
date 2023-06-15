@@ -37,5 +37,8 @@ class UserProfileReviewAnalyticTest {
 
             .clickReviewMedia(0, 0)
             .verifyEventAction("click - review media")
+
+            .clickLikeReview(0)
+            .verifyEventAction("click - like review")
     }
 }
