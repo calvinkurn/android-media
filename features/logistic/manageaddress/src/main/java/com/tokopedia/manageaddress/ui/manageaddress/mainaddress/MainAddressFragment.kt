@@ -964,9 +964,10 @@ class MainAddressFragment :
     override fun showToast(isError: Boolean, msg: String) {
         val type = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
         showToaster(msg, type)
-        if (!isError) {
-            activity?.finish()
-        }
+    }
+
+    override fun leavePage() {
+        activity?.finish()
     }
 
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {

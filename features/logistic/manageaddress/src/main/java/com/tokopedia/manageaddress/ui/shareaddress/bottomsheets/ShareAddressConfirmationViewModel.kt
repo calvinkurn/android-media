@@ -23,6 +23,10 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     val dismissEvent: LiveData<Unit>
         get() = _dismissEvent
 
+    private val _leavePageEvent = SingleLiveEvent<Unit>()
+    val leavePageEvent: LiveData<Unit>
+        get() = _dismissEvent
+
     private val _toastEvent = SingleLiveEvent<Toast>()
     val toastEvent: LiveData<Toast>
         get() = _toastEvent
@@ -54,17 +58,22 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 _loading.value =
                     if (param.approve) LoadingState.AgreeLoading else LoadingState.DisagreeLoading
                 val result = selectShareAddressUseCase(param)
-                if (result.isSuccess) {
-                    _toastEvent.value = Toast.Success
-                } else {
-                    if (param.approve) {
-                        _toastEvent.value = Toast.Error(result.errorMessage)
-                    }
-                }
                 if (param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
+                }
+                if (result.isSuccess) {
+                    _toastEvent.value = Toast.Success
+                    _loading.value = LoadingState.NotLoading
+                    _dismissEvent.call()
+                    _leavePageEvent.call()
+                } else {
+                    if (param.approve) {
+                        _toastEvent.value = Toast.Error(result.errorMessage)
+                    }
+                    _loading.value = LoadingState.NotLoading
+                    _dismissEvent.call()
                 }
             } catch (e: Exception) {
                 _toastEvent.value = Toast.Error(e.message.orEmpty())
@@ -73,9 +82,9 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
                 }
+                _loading.value = LoadingState.NotLoading
+                _dismissEvent.call()
             }
-            _loading.value = LoadingState.NotLoading
-            _dismissEvent.call()
         }
     }
 
