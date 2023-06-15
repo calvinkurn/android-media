@@ -3,10 +3,13 @@ package com.tokopedia.entertainment.home.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
+import com.tokopedia.entertainment.common.model.EventDppoConsentModel
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.viewmodel.LoadingHomeModel
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
+import com.tokopedia.entertainment.home.utils.MapperHomeData.mapDppoConsentToEventModel
 import com.tokopedia.entertainment.home.utils.MapperHomeData.mappingItem
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -24,12 +27,17 @@ import javax.inject.Inject
 
 class EventHomeViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
+        private val getDppoConsentUseCase: GetDppoConsentUseCase,
         private val graphqlRepository: GraphqlRepository
 ): BaseViewModel(dispatcher){
 
     private val mutableEventHomeListData = MutableLiveData<Result<List<HomeEventItem>>>()
     val eventHomeListData: LiveData<Result<List<HomeEventItem>>>
         get() = mutableEventHomeListData
+
+    private val mutableDppoConsent = MutableLiveData<Result<EventDppoConsentModel>>()
+    val dppoConsent: LiveData<Result<EventDppoConsentModel>>
+        get() = mutableDppoConsent
 
     fun getIntialList() {
         val list: List<HomeEventItem> = requestEmptyItem()
@@ -52,6 +60,16 @@ class EventHomeViewModel @Inject constructor(
             mutableEventHomeListData.postValue(Success(mappingItem(data)))
         }){
             mutableEventHomeListData.postValue(Fail(it))
+        }
+    }
+
+    fun getDppoConsent(categoryId: Int) {
+        launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(categoryId)
+            val eventModel = mapDppoConsentToEventModel(data)
+            mutableDppoConsent.postValue(Success(eventModel))
+        }) {
+            mutableDppoConsent.postValue(Fail(it))
         }
     }
 

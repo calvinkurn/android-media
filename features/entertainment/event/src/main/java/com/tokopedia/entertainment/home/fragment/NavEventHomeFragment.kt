@@ -1,6 +1,8 @@
 package com.tokopedia.entertainment.home.fragment
 
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -16,7 +18,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.EventCommonConst
 import com.tokopedia.entertainment.common.util.EventGlobalError.errorEventHandlerGlobalError
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
@@ -33,8 +37,11 @@ import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.EventHomeViewModel
 import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,6 +113,15 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
                 }
             }
         })
+
+        viewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout_home
@@ -121,6 +137,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     private fun requestData(isLoadFromCloud: Boolean = false){
         viewModel.getHomeData(isLoadFromCloud)
+        viewModel.getDppoConsent(EventCommonConst.CATEGORY_ID)
     }
 
     private fun loadAllData(){
@@ -184,16 +201,18 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu?.clear()
+        menu.clear()
+        val dppoConsentData = viewModel.dppoConsent.value
         inflater.inflate(R.menu.entertainment_menu_homepage, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_more -> actionMenuMore()
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
         }
-        return super.onOptionsItemSelected(item)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onMenuPromoClick() {
@@ -281,6 +300,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         context?.let { MenuSheet.newInstance(it, this).show() }
     }
 
+    private fun actionDppoConsent() {
+        // TODO: [Misael] DPPO consent
+        viewModel
+    }
+
     private fun openEventSearch(): Boolean {
         RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_SEARCH)
         return true
@@ -288,6 +312,57 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(ENT_HOME_PAGE_PERFORMANCE)
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    actionMenuMore()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
     }
 
     companion object {
@@ -304,5 +379,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
         const val PREFERENCES_NAME = "event_home_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
+
+        private const val TOOLBAR_ICON_SIZE = 64
     }
 }
