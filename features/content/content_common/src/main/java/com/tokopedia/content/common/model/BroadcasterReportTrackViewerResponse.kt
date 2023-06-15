@@ -1,4 +1,4 @@
-package com.tokopedia.play.data
+package com.tokopedia.content.common.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by mzennis on 07/01/21.
  */
-data class ProductTracking(
+data class BroadcasterReportTrackViewerResponse(
         @SerializedName("success")
         val success: Boolean = false,
 ) {
 
     data class Response(
             @SerializedName("broadcasterReportTrackViewer")
-            val productTracking: ProductTracking = ProductTracking()
+            val broadcasterReportTrackViewer: BroadcasterReportTrackViewerResponse = BroadcasterReportTrackViewerResponse()
     )
 }
