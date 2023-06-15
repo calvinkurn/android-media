@@ -1,5 +1,0 @@
-package com.tokopedia.scp_rewards.common.utils
-
-//Celebration page
-const val CONFETTI_URL = "https://s3-alpha-sig.figma.com/img/1dd3/5225/29bce7739df0687f47f5bc84356698a0?Expires=1683504000&Signature=brAvjuD9EB2at-Q5C5Xkxv34cApfQGZnxxTekiyXnMjzrr6HOw1VzIaCGlZyQo1gAQ-Wrlyf3LmQ5ecNlWrnMClNLg7tTYgxubO~o-YswWzyHQww103RPoNpBylpuRKekZvbIOZZnRYcyIuYJMoJA1Gc1-s9Ssi7PJexH-HWPhsJoFCf96tcdYdz3OxhPHznGRlfACL8e2G3s~5VCrXtwXH97kCpRCIiSuMQRq2qdEGLbxyvITVOiTyuopecc6yE7hHHnCMzhOJP2I7JlCIUk1FjH9NAXKKZXR4faGsrsFDMxIly9uEj1BflWMVSyZJz65Mms9TJKAW-7XJJqKp-gA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-const val BADGE_LOTTIE_URL = "https://assets.tokopedia.net/asts/Badge_Celebration.json"

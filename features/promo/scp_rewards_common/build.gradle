@@ -30,6 +30,8 @@ dependencies {
 
     //Image Dependecies
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.lottie
+
 }
 
 project.ext {

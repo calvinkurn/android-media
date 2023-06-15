@@ -5,10 +5,10 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.R
-import com.tokopedia.scp_rewards.common.utils.loadLottieFromUrl
+import com.tokopedia.scp_rewards.common.utils.downloadImage
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
+import com.tokopedia.scp_rewards_common.loadLottieFromUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

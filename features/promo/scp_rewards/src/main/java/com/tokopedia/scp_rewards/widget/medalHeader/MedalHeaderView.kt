@@ -8,8 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.utils.grayscale
 import com.tokopedia.scp_rewards.common.utils.hide
-import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
+import com.tokopedia.scp_rewards_common.parseColor
 
 class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
