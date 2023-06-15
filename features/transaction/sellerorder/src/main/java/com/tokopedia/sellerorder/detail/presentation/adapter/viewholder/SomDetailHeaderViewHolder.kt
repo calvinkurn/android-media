@@ -134,10 +134,10 @@ class SomDetailHeaderViewHolder(
 
     private fun DetailHeaderItemBinding.setupDeadlineStyle(deadlineStyle: Int) {
         when (deadlineStyle) {
-            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThen24Hours()
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThan24Hours()
             SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
             SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
-            else -> setDeadlineMoreThen24Hours()
+            else -> setDeadlineMoreThan24Hours()
         }
     }
 
@@ -157,8 +157,8 @@ class SomDetailHeaderViewHolder(
         tvSomDetailDeadline.setTextColor(textColorDeadline)
     }
 
-    private fun DetailHeaderItemBinding.setDeadlineMoreThen24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+    private fun DetailHeaderItemBinding.setDeadlineMoreThan24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
         val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         layoutSomDetailDeadline.background = bgDeadline
         icSomDetailDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
