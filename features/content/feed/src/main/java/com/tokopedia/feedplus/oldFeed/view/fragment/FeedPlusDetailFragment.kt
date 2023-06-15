@@ -9,7 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -38,6 +38,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListener
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentFeedPlusDetailNavBinding
 import com.tokopedia.feedplus.oldFeed.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.oldFeed.view.activity.FeedPlusDetailActivity.Companion.PARAM_IS_FOLLOWED
 import com.tokopedia.feedplus.oldFeed.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
@@ -63,14 +64,12 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -89,9 +88,11 @@ class FeedPlusDetailFragment :
     FeedPlusDetailListener,
     ShareCallback,
     FeedFollowersOnlyBottomSheet.Listener {
-    private lateinit var mvcWidget: MvcView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
+
+    private var _binding: FragmentFeedPlusDetailNavBinding? = null
+    private val binding: FragmentFeedPlusDetailNavBinding
+        get() = _binding!!
+
     private lateinit var recyclerviewScrollListener: EndlessScrollRecycleListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: DetailFeedAdapter
@@ -176,44 +177,44 @@ class FeedPlusDetailFragment :
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         feedViewModel.run {
-            atcResp.observe(
-                lifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> {
-                            val data = it.data
-                            when {
-                                data.isSuccess -> {
-                                    Toaster.build(
-                                        requireView(),
-                                        getString(R.string.feed_added_to_cart),
-                                        Toaster.LENGTH_LONG,
-                                        Toaster.TYPE_NORMAL,
-                                        getString(R.string.feed_go_to_cart),
-                                        View.OnClickListener {
-                                            onAddToCartSuccess()
-                                        }
-                                    ).show()
-                                }
-                                data.errorMsg.isNotEmpty() -> {
-                                    showToast(data.errorMsg, Toaster.TYPE_ERROR)
-                                }
-                                else -> {
-                                    onAddToCartFailed(data.applink)
-                                }
+            atcResp.observe(lifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        when {
+                            data.isSuccess -> {
+                                Toaster.build(
+                                    requireView(),
+                                    getString(R.string.feed_added_to_cart),
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_NORMAL,
+                                    getString(R.string.feed_go_to_cart),
+                                    View.OnClickListener {
+                                        onAddToCartSuccess()
+                                    }
+                                ).show()
+                            }
+
+                            data.errorMsg.isNotEmpty() -> {
+                                showToast(data.errorMsg, Toaster.TYPE_ERROR)
+                            }
+
+                            else -> {
+                                onAddToCartFailed(data.applink)
                             }
                         }
-                        is Fail -> {
-                            Timber.e(it.throwable)
-                            showToast(
-                                it.throwable.message
-                                    ?: getString(R.string.default_request_error_unknown),
-                                Toaster.TYPE_ERROR
-                            )
-                        }
+                    }
+
+                    is Fail -> {
+                        Timber.e(it.throwable)
+                        showToast(
+                            it.throwable.message
+                                ?: getString(R.string.default_request_error_unknown),
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
-            )
+            }
 
             followKolResp.observe(
                 lifecycleOwner,
@@ -230,6 +231,7 @@ class FeedPlusDetailFragment :
                                 onResponseAfterFollowFromBottomSheet(true)
                             }
                         }
+
                         is Fail -> {
                             onResponseAfterFollowFromBottomSheet(false)
                             val message = it.throwable.message
@@ -258,6 +260,7 @@ class FeedPlusDetailFragment :
                                 }
                             }
                         }
+
                         is Fail -> {
                             onResponseAfterFollowFromBottomSheet(false)
                             val message = it.throwable.message
@@ -352,7 +355,7 @@ class FeedPlusDetailFragment :
         }
 
         layoutManager =
-            object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
+            object : LinearLayoutManager(activity, VERTICAL, false) {
                 override fun onLayoutCompleted(state: RecyclerView.State?) {
                     super.onLayoutCompleted(state)
                     var index = layoutManager.findLastVisibleItemPosition()
@@ -395,16 +398,10 @@ class FeedPlusDetailFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_feed_plus_detail_nav, container, false)
-        view.run {
-            mvcWidget = findViewById(R.id.merchant_voucher_widget_plus_detail)
-            recyclerView = findViewById(R.id.detail_list)
-            progressBar = findViewById(R.id.progress_bar)
-        }
+    ): View {
+        _binding = FragmentFeedPlusDetailNavBinding.inflate(layoutInflater)
         prepareView()
-        return view
+        return binding.root
     }
 
     private fun onShopFollowRequestedFromBottomSheet() {
@@ -423,10 +420,10 @@ class FeedPlusDetailFragment :
     }
 
     private fun prepareView() {
-        recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = adapter
-        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+        binding.detailList.layoutManager = layoutManager
+        binding.detailList.setHasFixedSize(true)
+        binding.detailList.adapter = adapter
+        binding.detailList.addOnScrollListener(recyclerviewScrollListener)
     }
 
     override fun getScreenName(): String {
@@ -451,47 +448,39 @@ class FeedPlusDetailFragment :
 
     private fun setUpObservers() {
         presenter.run {
-            getFeedDetailLiveData().observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is FeedDetailViewState.LoadingState -> {
-                            if (it.loadingMore) {
-                                if (it.isLoading) {
-                                    showLoadingMore()
-                                } else {
-                                    dismissLoadingMore()
-                                }
+            getFeedDetailLiveData().observe(viewLifecycleOwner) {
+                when (it) {
+                    is FeedDetailViewState.LoadingState -> {
+                        if (it.loadingMore) {
+                            if (it.isLoading) {
+                                showLoadingMore()
                             } else {
-                                if (it.isLoading) {
-                                    showLoading()
-                                } else {
-                                    dismissLoading()
-                                }
+                                dismissLoadingMore()
+                            }
+                        } else {
+                            if (it.isLoading) {
+                                showLoading()
+                            } else {
+                                dismissLoading()
                             }
                         }
+                    }
 
-                        is FeedDetailViewState.SuccessWithNoData -> {
-                            onEmptyFeedDetail()
-                        }
+                    is FeedDetailViewState.SuccessWithNoData -> {
+                        onEmptyFeedDetail()
+                    }
 
-                        is FeedDetailViewState.Success -> {
-                            onSuccessGetFeedDetail(it.feedXGetActivityProductsResponse)
-                        }
+                    is FeedDetailViewState.Success -> {
+                        onSuccessGetFeedDetail(it.feedXGetActivityProductsResponse)
+                    }
 
-                        is FeedDetailViewState.Error -> {
-                            onErrorGetFeedDetail(it.error)
-                        }
+                    is FeedDetailViewState.Error -> {
+                        onErrorGetFeedDetail(it.error)
                     }
                 }
-            )
+            }
 
-            getPagingLiveData().observe(
-                viewLifecycleOwner,
-                Observer {
-                    setHasNextPage(it)
-                }
-            )
+            getPagingLiveData().observe(viewLifecycleOwner) { setHasNextPage(it) }
 
             merchantVoucherSummary.observe(viewLifecycleOwner) {
                 when (it) {
@@ -502,7 +491,7 @@ class FeedPlusDetailFragment :
                             customMvcTracker.hasVoucher = hasVoucher
                             customMvcTracker.contentScore = contentScore
 
-                            mvcWidget.setData(
+                            binding.merchantVoucherWidgetPlusDetail.setData(
                                 mvcData = MvcData(
                                     it.data.animatedInfoList
                                 ),
@@ -510,13 +499,14 @@ class FeedPlusDetailFragment :
                                 source = MvcSource.FEED_PRODUCT_DETAIL,
                                 mvcTrackerImpl = customMvcTracker
                             )
-                            mvcWidget.show()
+                            binding.merchantVoucherWidgetPlusDetail.show()
                         } else {
-                            mvcWidget.hide()
+                            binding.merchantVoucherWidgetPlusDetail.hide()
                         }
                     }
+
                     is Fail -> {
-                        mvcWidget.hide()
+                        binding.merchantVoucherWidgetPlusDetail.hide()
                     }
                 }
             }
@@ -962,7 +952,8 @@ class FeedPlusDetailFragment :
 
     private fun setUpShopDataHeader() {
         (activity as? FeedPlusDetailActivity)?.getShopInfoLayout()?.run {
-            product_detail_back_icon?.setOnClickListener {
+            val productDetailBackIcon: AppCompatImageView = findViewById(R.id.product_detail_back_icon)
+            productDetailBackIcon?.setOnClickListener {
                 (activity as? FeedPlusDetailActivity)?.onBackPressed()
             }
             show()
@@ -1186,6 +1177,7 @@ class FeedPlusDetailFragment :
 
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
+        _binding = null
         super.onDestroyView()
     }
 }
