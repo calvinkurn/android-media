@@ -133,7 +133,6 @@
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /features/merchant/seller_persona/                      @tokopedia/android-minionstuart-dev
 /features/merchant/centralized_promo/                   @tokopedia/android-minionstuart-dev
-/libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
 /features/content/play/                                 @tokopedia/android-minionlance-dev
@@ -338,7 +337,6 @@
 /libraries/instrumentation_test                         @tokopedia/android-core-dev
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
-/libraries/kotlin_extensions/							@tokopedia/android-core-dev
 /libraries/linker/										@tokopedia/android-minionkevin-dev
 /libraries/lint/										@tokopedia/android-miniondarth-dev
 /libraries/liveness_lib/								@tokopedia/android-core-dev

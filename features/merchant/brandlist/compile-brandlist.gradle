@@ -12,7 +12,8 @@ include "libraries:play_core"
 include "libraries:graphql"
 include "libraries:akamai_bot_lib"
 include "libraries:iris_session"
-include "libraries:kotlin_extensions"
+
+
 include "libraries:analytics"
 include "libraries:base_list"
 include "libraries:analytics_debugger"
