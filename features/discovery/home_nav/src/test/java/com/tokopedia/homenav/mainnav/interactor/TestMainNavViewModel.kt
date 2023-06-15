@@ -4,7 +4,6 @@ import android.accounts.NetworkErrorException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -16,14 +15,9 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -61,7 +55,6 @@ class TestMainNavViewModel {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        mockkObject(MePageRollenceController, recordPrivateCalls = true)
     }
 
     // Global
@@ -84,112 +77,6 @@ class TestMainNavViewModel {
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList
         Assert.assertNotEquals(0, visitableList?.size)
-    }
-
-    @Test
-    fun `given user not logged in when using me page variant 1 should add empty data for transaction and favorite shop`() {
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns false
-
-        viewModel = createViewModel(
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant1() } returns true
-        viewModel.setInitialState()
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value)
-
-        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
-        Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
-
-        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as? TransactionListItemDataModel?
-        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
-        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.paymentList.isEmpty())
-
-        val menuDataModel = viewModel.mainNavLiveData.value?.dataList?.filterIsInstance<HomeNavMenuDataModel>().orEmpty()
-
-        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_REVIEW && it.sectionId == MainNavConst.Section.ACTIVITY })
-        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_WISHLIST_MENU && it.sectionId == MainNavConst.Section.ACTIVITY })
-    }
-
-    @Test
-    fun `given user not logged in when using me page variant 2 should add empty data for all sections`() {
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns false
-
-        viewModel = createViewModel(
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value)
-
-        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as? WishlistDataModel
-        Assert.assertTrue(wishlistModel != null && (wishlistModel.collections.isEmpty() || wishlistModel.isEmptyState))
-
-        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
-        Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
-
-        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as? TransactionListItemDataModel?
-        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
-        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.paymentList.isEmpty())
-
-        val reviewModel = viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel } as? ReviewListDataModel
-        Assert.assertTrue(reviewModel != null && reviewModel.reviewList.isEmpty())
-    }
-
-    @Test
-    fun `given user logged in when using me page variant 1 should add shimmer for transaction and favorite shop`() {
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-
-        viewModel = createViewModel(
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant1() } returns true
-        viewModel.setInitialState()
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value)
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerFavoriteShopDataModel })
-
-        val menuDataModel = viewModel.mainNavLiveData.value?.dataList?.filterIsInstance<HomeNavMenuDataModel>().orEmpty()
-
-        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_REVIEW && it.sectionId == MainNavConst.Section.ACTIVITY })
-        Assert.assertNotNull(menuDataModel.find { it.id == ClientMenuGenerator.ID_WISHLIST_MENU && it.sectionId == MainNavConst.Section.ACTIVITY })
-    }
-
-    @Test
-    fun `given user logged in when using me page variant 2 should add shimmer for all sections`() {
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-
-        viewModel = createViewModel(
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value)
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerFavoriteShopDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerWishlistDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
     }
 
     // Back to home icon
@@ -346,7 +233,6 @@ class TestMainNavViewModel {
             .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.setPageSource()
         Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
@@ -441,7 +327,6 @@ class TestMainNavViewModel {
         val getNavNotification = mockk<GetNavNotification>()
         coEvery { getNavNotification.executeOnBackground() } throws MessageErrorException()
         viewModel = createViewModel(getNavNotification = getNavNotification)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList
@@ -484,7 +369,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when refresh data after login with control rollence then data not null`() {
+    fun `given success when refresh data after login then data not null`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val accountHeaderDataModel = AccountHeaderDataModel(
             profileDataModel = ProfileDataModel(
@@ -503,7 +388,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns accountHeaderDataModel
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         viewModel.reloadMainNavAfterLogin()
@@ -590,7 +474,6 @@ class TestMainNavViewModel {
             getShopInfoUseCase = shopInfoRefreshData,
             accountAdminInfoUseCase = accountAdminInfoUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         viewModel.refreshUserShopData()
@@ -1747,212 +1630,6 @@ class TestMainNavViewModel {
 
         Assert.assertEquals(1, wishlistDataModel?.collections?.size)
         Assert.assertTrue(wishlistDataModel?.collections?.get(0)?.fullWidth == true)
-    }
-
-    // Favorite shop section
-    @Test
-    fun `given success and not empty data when get favorite shop with me page variant should add favorite shop model to visitable list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(
-            listOf(
-                NavFavoriteShopModel(),
-                NavFavoriteShopModel()
-            ),
-            false
-        )
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel } == true)
-        assert(viewModel.allProcessFinished.value?.peekContent() == true)
-    }
-
-    @Test
-    fun `given empty data when get favorite shop with me page variant should add empty favorite shops`() {
-        val userSession = mockk<UserSessionInterface>()
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(), false)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
-        assert(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
-    }
-
-    @Test
-    fun `given error when get favorite shop with me page variant should add error state`() {
-        val userSession = mockk<UserSessionInterface>()
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws Exception()
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
-    }
-
-    @Test
-    fun `given success when refresh favorite shop after got error with me page variant should update existing list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        val favoriteShop = NavFavoriteShopModel(
-            id = "1",
-            name = "Toko A",
-            location = "Tangerang"
-        )
-
-        // Initial favorite shop
-        every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws Exception()
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
-
-        // Refresh data
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop), true)
-        viewModel.refreshFavoriteShopData()
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is FavoriteShopListDataModel &&
-                    it.favoriteShops.contains(favoriteShop)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given success when refresh favorite shop with me page variant should update existing list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        val favoriteShop1 = NavFavoriteShopModel(
-            id = "1",
-            name = "Toko A",
-            location = "Tangerang"
-        )
-        val favoriteShop2 = NavFavoriteShopModel(
-            id = "2",
-            name = "Toko B",
-            location = "Jakarta"
-        )
-
-        // Initial favorite shop
-        every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop1), true)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is FavoriteShopListDataModel &&
-                    it.favoriteShops.contains(favoriteShop1)
-            } == true
-        )
-
-        // Refresh data
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop2), true)
-        viewModel.refreshFavoriteShopData()
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is FavoriteShopListDataModel &&
-                    it.favoriteShops.contains(favoriteShop2)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given error when get favorite shop using me page variant then success after reload page should update error state to show favorite shop`() {
-        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-
-        val favoriteShop = NavFavoriteShopModel(
-            id = "1",
-            name = "Toko A",
-            location = "Tangerang"
-        )
-
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(getFavoriteShopsNavUseCase = favoriteShopsNavUseCase)
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
-
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop), true)
-
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is FavoriteShopListDataModel &&
-                    it.favoriteShops.contains(favoriteShop)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given only 1 favorite shop when get favorite shop with me page variant should show only 1 full width favorite shop`() {
-        val mockList1FavShop = Pair(listOf(NavFavoriteShopModel()), true)
-        val getFavoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
-        coEvery {
-            getFavoriteShopsNavUseCase.executeOnBackground()
-        } returns mockList1FavShop
-        viewModel = createViewModel(
-            getFavoriteShopsNavUseCase = getFavoriteShopsNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val favoriteShopListDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is FavoriteShopListDataModel
-        } as? FavoriteShopListDataModel
-
-        Assert.assertEquals(1, favoriteShopListDataModel?.favoriteShops?.size)
-        Assert.assertTrue(favoriteShopListDataModel?.favoriteShops?.get(0)?.fullWidth == true)
     }
 
     // Transaction section revamp (me page)

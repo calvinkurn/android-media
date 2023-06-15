@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
@@ -28,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -47,7 +47,6 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
@@ -356,7 +355,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         when (homeNavTitleDataModel.identifier) {
             ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> TrackingTransactionSection.getClickViewAllTransaction()
             ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
-            ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
             ClientMenuGenerator.IDENTIFIER_TITLE_REVIEW -> TrackingTransactionSection.clickOnReviewViewAll()
         }
         if (!handleClickFromPageSource(homeNavTitleDataModel.applink)) {
@@ -364,8 +362,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
+    @MePage(MePage.Widget.WISHLIST)
     override fun onErrorWishlistClicked() {
-        viewModel.refreshWishlistData()
     }
 
     override fun onWishlistCollectionClicked(wishlistModel: NavWishlistModel, position: Int) {
@@ -373,27 +371,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, wishlistModel.id)
     }
 
-    override fun onErrorFavoriteShopClicked() {
-        viewModel.refreshFavoriteShopData()
-    }
-
-    override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
-        TrackingTransactionSection.clickOnFavoriteShopItem(
-            userId = getUserId(),
-            position = position,
-            favoriteShopModel = favoriteShopModel
-        )
-        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
-        startActivity(intent)
-    }
-
     override fun showReviewProduct(uriReviewProduct: String) {
         val intent = RouteManager.getIntent(context, uriReviewProduct)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
+    @MePage(MePage.Widget.REVIEW)
     override fun onErrorReviewClicked() {
-        viewModel.refreshReviewData()
     }
 
     override fun onViewAllTransactionClicked(trackingLabel: String?) {
