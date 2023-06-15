@@ -4169,6 +4169,7 @@ class ShipmentPresenter @Inject constructor(
             shipmentStateShippingInfoData.ratesFeature = ratesFeature
             val shipmentStateShopProductData = ShipmentStateShopProductData()
             shipmentStateShopProductData.cartStringGroup = shipmentCartItemModel.cartStringGroup
+            shipmentStateShopProductData.shopId = shipmentCartItemModel.shopId
             shipmentStateShopProductData.finsurance =
                 if (shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance != null &&
                     shipmentCartItemModel.selectedShipmentDetailData!!.useInsurance!!

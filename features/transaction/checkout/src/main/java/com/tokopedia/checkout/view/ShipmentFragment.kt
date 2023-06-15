@@ -1425,7 +1425,7 @@ class ShipmentFragment :
             resetPromoBenefit()
             shipmentPresenter.setPromoBenefit(summariesUiModels)
             shipmentPresenter.updateShipmentCostModel()
-            checkPlatformFee()
+            shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         }
         return hasSetAllCourier
     }
@@ -3253,13 +3253,13 @@ class ShipmentFragment :
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
-                checkPlatformFee()
+                shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
             }
         } else {
             shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
-            checkPlatformFee()
+            shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         }
     }
 
@@ -3657,7 +3657,7 @@ class ShipmentFragment :
             onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
         }
         shipmentPresenter.updateShipmentCostModel()
-        checkPlatformFee()
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
 
     fun updateAddOnsDynamicDataPassing(
@@ -3706,13 +3706,13 @@ class ShipmentFragment :
                 shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
-                checkPlatformFee()
+                shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
             }
         } else {
             shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
-            checkPlatformFee()
+            shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         }
     }
 
@@ -3754,11 +3754,11 @@ class ShipmentFragment :
         if (binding?.rvShipment?.isComputingLayout == true) {
             binding?.rvShipment?.post {
                 shipmentAdapter.updateDonation(checked)
-                checkPlatformFee()
+                shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
             }
         } else {
             shipmentAdapter.updateDonation(checked)
-            checkPlatformFee()
+            shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         }
         if (checked) sendAnalyticsOnClickTopDonation()
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked)
@@ -3783,11 +3783,11 @@ class ShipmentFragment :
         if (binding?.rvShipment?.isComputingLayout == true) {
             binding?.rvShipment?.post {
                 shipmentAdapter.updateCrossSell(checked, crossSellModel)
-                checkPlatformFee()
+                shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
             }
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel)
-            checkPlatformFee()
+            shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         }
         val digitalCategoryName = crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.id
@@ -3806,7 +3806,7 @@ class ShipmentFragment :
 
     override fun onEgoldChecked(checked: Boolean) {
         shipmentAdapter.updateEgold(checked)
-        checkPlatformFee()
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
         checkoutEgoldAnalytics.eventClickEgoldRoundup(checked)
         if (isTradeIn) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff, checked)
@@ -4115,17 +4115,14 @@ class ShipmentFragment :
     // endregion
 
     override fun checkPlatformFee() {
-        Log.i("qwertyuiop", "check platform fee")
         if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentPresenter.shipmentCostModel.value.dynamicPlatformFee
             if (shipmentPresenter.shipmentCostModel.value.totalPrice > platformFeeModel.minRange &&
                 shipmentPresenter.shipmentCostModel.value.totalPrice < platformFeeModel.maxRange
             ) {
-                Log.i("qwertyuiop", "set platform fee")
                 shipmentPresenter.setPlatformFeeData(platformFeeModel)
                 updateCost()
             } else {
-                Log.i("qwertyuiop", "get platform fee")
                 getPaymentFee()
             }
         }
