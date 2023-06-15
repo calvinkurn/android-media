@@ -530,7 +530,7 @@ class EditorDetailViewModelTest {
         val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
 
         // When
-        every { addTextRepository.generateTextOverlay(any(), any()) } returns expectedResult
+        every { addTextRepository.generateOverlayText(any(), any()) } returns expectedResult
         overlayText = viewModel.generateAddTextOverlay(
             Pair(10, 10),
             EditorAddTextUiModel(

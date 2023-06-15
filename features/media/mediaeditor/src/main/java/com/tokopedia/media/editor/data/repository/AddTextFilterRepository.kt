@@ -22,7 +22,7 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 interface AddTextFilterRepository {
-    fun generateTextOverlay(
+    fun generateOverlayText(
         size: Pair<Int, Int>,
         data: EditorAddTextUiModel
     ): Bitmap?
@@ -60,7 +60,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun generateTextOverlay(
+    override fun generateOverlayText(
         size: Pair<Int, Int>,
         data: EditorAddTextUiModel
     ): Bitmap? {

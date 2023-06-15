@@ -98,7 +98,7 @@ class EditorAddTextViewModelTest {
         var overlayText: Bitmap? = null
 
         // When
-        every { addTextFilterRepository.generateTextOverlay(any(), any()) } returns expectedOverlay
+        every { addTextFilterRepository.generateOverlayText(any(), any()) } returns expectedOverlay
         overlayText = viewModel.getAddTextFilterOverlay()
 
         // Then
@@ -112,7 +112,7 @@ class EditorAddTextViewModelTest {
         var overlayText: Bitmap? = null
 
         // When
-        every { addTextFilterRepository.generateTextOverlay(any(), any()) } returns expectedOverlay
+        every { addTextFilterRepository.generateOverlayText(any(), any()) } returns expectedOverlay
         viewModel.setImageUrl("url")
         overlayText = viewModel.getAddTextFilterOverlay()
 

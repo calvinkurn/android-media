@@ -40,7 +40,7 @@ class AddTextViewModel @Inject constructor(
     }
 
     fun getAddTextFilterOverlay(): Bitmap? {
-        return addTextFilterRepository.generateTextOverlay(
+        return addTextFilterRepository.generateOverlayText(
             getImageSize(_imgUrl.value ?: ""),
             textData
         )
