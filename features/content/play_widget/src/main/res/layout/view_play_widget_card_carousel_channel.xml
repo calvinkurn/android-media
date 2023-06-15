@@ -152,8 +152,8 @@
     </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
     <include
-        android:id="@+id/view_play_widget_no_click"
-        layout="@layout/view_play_widget_no_click"
+        android:id="@+id/view_play_widget_overlay"
+        layout="@layout/view_play_widget_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -15,7 +15,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselUpcomingBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.play.widget.ui.model.switch
@@ -53,6 +52,10 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     init {
         preloadLottie()
         showReminderButton(false, animate = false)
+
+        binding.viewPlayWidgetOverlay.root.setOnClickListener {
+            mListener?.onOverlayClicked(this, mModel)
+        }
     }
 
     fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
@@ -84,8 +87,8 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         mListener = listener
     }
 
-    fun setUnClickable(isUnClickable: Boolean) {
-        binding.viewPlayWidgetNoClick.root.showWithCondition(isUnClickable)
+    fun setShowOverlay(isOverlayShown: Boolean) {
+        binding.viewPlayWidgetOverlay.root.showWithCondition(isOverlayShown)
     }
 
     fun showReminderButton(shouldShow: Boolean, animate: Boolean = true) {
@@ -153,6 +156,11 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         fun onPartnerClicked(
             view: PlayWidgetCardCarouselUpcomingView,
             item: PlayWidgetChannelUiModel,
+        )
+
+        fun onOverlayClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel
         )
     }
 }

@@ -170,6 +170,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 item.partner.appLink
             )
         }
+
+        override fun onOverlayClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            binding.rvChannels.smoothScrollToPosition(position)
+        }
     }
 
     private val upcomingListener = object : PlayWidgetCarouselViewHolder.UpcomingContent.Listener {
@@ -250,6 +258,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 this@PlayWidgetCarouselView,
                 item.partner.appLink
             )
+        }
+
+        override fun onOverlayClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            binding.rvChannels.smoothScrollToPosition(position)
         }
     }
 

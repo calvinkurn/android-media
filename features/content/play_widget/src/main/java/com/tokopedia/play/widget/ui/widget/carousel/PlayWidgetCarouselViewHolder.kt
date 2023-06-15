@@ -53,6 +53,13 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 ) {
                     listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
+
+                override fun onOverlayClicked(
+                    view: PlayWidgetCardCarouselChannelView,
+                    item: PlayWidgetChannelUiModel
+                ) {
+                    listener.onOverlayClicked(view, item, absoluteAdapterPosition)
+                }
             })
         }
 
@@ -66,7 +73,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
             channelView.setModel(data.channel)
             channelView.showMuteButton(data.isSelected)
             if (!data.isSelected) channelView.resetProductPosition()
-            channelView.setUnClickable(!data.isSelected)
+            channelView.setShowOverlay(!data.isSelected)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
@@ -82,7 +89,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
                         channelView.showMuteButton(data.isSelected)
                         if (!data.isSelected) channelView.resetProductPosition()
-                        channelView.setUnClickable(!data.isSelected)
+                        channelView.setShowOverlay(!data.isSelected)
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_TOTAL_VIEW_CHANGE -> {
                         channelView.updateTotalView(data.channel.totalView.totalViewFmt)
@@ -146,6 +153,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 item: PlayWidgetChannelUiModel,
                 position: Int
             )
+
+            fun onOverlayClicked(
+                view: PlayWidgetCardCarouselChannelView,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
         }
 
         interface DataSource {
@@ -179,6 +192,13 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 ) {
                     listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
+
+                override fun onOverlayClicked(
+                    view: PlayWidgetCardCarouselUpcomingView,
+                    item: PlayWidgetChannelUiModel
+                ) {
+                    listener.onOverlayClicked(view, item, absoluteAdapterPosition)
+                }
             })
         }
 
@@ -191,7 +211,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
             }
             upcomingView.setModel(data.channel)
             upcomingView.showReminderButton(data.isSelected)
-            upcomingView.setUnClickable(!data.isSelected)
+            upcomingView.setShowOverlay(!data.isSelected)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
@@ -206,7 +226,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
                         upcomingView.showReminderButton(data.isSelected)
-                        upcomingView.setUnClickable(!data.isSelected)
+                        upcomingView.setShowOverlay(!data.isSelected)
                     }
                 }
             }
@@ -243,6 +263,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
             )
 
             fun onPartnerClicked(
+                view: PlayWidgetCardCarouselUpcomingView,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onOverlayClicked(
                 view: PlayWidgetCardCarouselUpcomingView,
                 item: PlayWidgetChannelUiModel,
                 position: Int

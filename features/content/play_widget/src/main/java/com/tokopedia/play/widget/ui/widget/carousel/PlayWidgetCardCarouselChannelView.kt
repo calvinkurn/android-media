@@ -111,6 +111,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.rvProducts.addItemDecoration(
             PlayWidgetCarouselProductItemDecoration(binding.rvProducts.context)
         )
+
+        binding.viewPlayWidgetOverlay.root.setOnClickListener {
+            mListener?.onOverlayClicked(this, mModel)
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -185,8 +189,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = totalView
     }
 
-    fun setUnClickable(isUnClickable: Boolean) {
-        binding.viewPlayWidgetNoClick.root.showWithCondition(isUnClickable)
+    fun setShowOverlay(isOverlayShown: Boolean) {
+        binding.viewPlayWidgetOverlay.root.showWithCondition(isOverlayShown)
     }
 
     fun showMuteButton(shouldShow: Boolean, animate: Boolean = true) {
@@ -355,6 +359,11 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         )
 
         fun onPartnerClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel
+        )
+
+        fun onOverlayClicked(
             view: PlayWidgetCardCarouselChannelView,
             item: PlayWidgetChannelUiModel
         )
