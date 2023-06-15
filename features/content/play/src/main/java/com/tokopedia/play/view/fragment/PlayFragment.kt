@@ -149,7 +149,6 @@ class PlayFragment @Inject constructor(
 
                 //Need to override
                 variantSheet.setShowListener {
-                    variantSheet.isHideable = false
                     variantSheet.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onSlide(p0: View, p1: Float) {}
 
