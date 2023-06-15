@@ -31,6 +31,7 @@ class UserProfileReviewAnalyticTest {
             .launch()
             .clickReviewTab()
             .verifyEventAction("click - review tab")
+            .verifyEventAction("impression - review")
 
             .clickProfileOptionButton()
             .verifyEventAction("click - gear icon")
