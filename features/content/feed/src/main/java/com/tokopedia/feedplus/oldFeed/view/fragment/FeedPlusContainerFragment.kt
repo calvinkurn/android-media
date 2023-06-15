@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentFeedPlusContainerBinding
 import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
 import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.oldFeed.view.adapter.FeedPlusTabAdapter
@@ -55,6 +56,7 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -78,8 +80,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
-import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
-import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -95,6 +95,10 @@ class FeedPlusContainerFragment :
     PostProgressUpdateView.PostUpdateSwipe,
     FeedPlusContainerListener,
     FeedOnboardingCoachmark.Listener {
+    
+    private var _binding: FragmentFeedPlusContainerBinding? = null
+    private val binding: FragmentFeedPlusContainerBinding
+        get() = _binding!!
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -229,16 +233,17 @@ class FeedPlusContainerFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
+    ): View {
+        _binding = FragmentFeedPlusContainerBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isSeller = userSession.hasShop() || userSession.isAffiliate
         activity?.let {
-            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            binding.statusBarBg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            binding.statusBarBg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
         setupView(view)
         initNavRevampAbTest()
@@ -296,14 +301,14 @@ class FeedPlusContainerFragment :
     }
 
     private fun initToolbar() {
-        status_bar_bg.visibility = when {
+        binding.statusBarBg.visibility = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
             else -> View.INVISIBLE
         }
-        status_bar_bg2.visibility = View.INVISIBLE
-        toolbarParent.removeAllViews()
+        binding.statusBarBg2.invisible()
+        binding.toolbarParent.removeAllViews()
         initNewToolBar()
-        toolbarParent.addView(feedToolbar)
+        binding.toolbarParent.addView(feedToolbar)
     }
 
     private fun initNewToolBar() {
@@ -388,6 +393,11 @@ class FeedPlusContainerFragment :
         } else {
             updateVisibility(false)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {
@@ -485,7 +495,7 @@ class FeedPlusContainerFragment :
 
     private fun goToVideo() {
         if (canGoToVideo()) {
-            view_pager.currentItem = pagerAdapter.getVideoTabIndex()
+            binding.viewPager.currentItem = pagerAdapter.getVideoTabIndex()
         }
     }
 
@@ -632,7 +642,7 @@ class FeedPlusContainerFragment :
     private fun initFab() {
         fabFeed.type = FloatingButtonUnify.BASIC
         fabFeed.color = FloatingButtonUnify.COLOR_GREEN
-        fabFeed.circleMainMenu.visibility = View.INVISIBLE
+        fabFeed.circleMainMenu.invisible()
 
         feedFloatingButton.setOnClickListener {
             coachMarkManager?.hasBeenShown(feedFloatingButton)
@@ -713,38 +723,38 @@ class FeedPlusContainerFragment :
     }
 
     private fun showLoading() {
-        feed_loading.visibility = View.VISIBLE
-        feed_error.visibility = View.GONE
-        tab_layout.visibility = View.INVISIBLE
-        viewPager?.visibility = View.INVISIBLE
+        binding.feedLoading.root.visible()
+        binding.feedError.root.gone()
+        binding.tabLayout.invisible()
+        viewPager?.invisible()
     }
 
     private fun onErrorGetTab(throwable: Throwable) {
-        message_retry.text = ErrorHandler.getErrorMessage(context, throwable)
-        button_retry.setOnClickListener { requestFeedTab() }
+        binding.feedError.messageRetry.text = ErrorHandler.getErrorMessage(context, throwable)
+        binding.feedError.buttonRetry.setOnClickListener { requestFeedTab() }
 
-        feed_loading.visibility = View.GONE
-        feed_error.visibility = View.VISIBLE
-        tab_layout.visibility = View.INVISIBLE
-        viewPager?.visibility = View.INVISIBLE
+        binding.feedLoading.root.gone()
+        binding.feedError.root.visible()
+        binding.tabLayout.invisible()
+        viewPager?.invisible()
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
         val feedData =
             data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
-        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        binding.tabLayout.getUnifyTabLayout().removeAllTabs()
         feedData.forEach {
-            tab_layout?.addNewTab(it.title)
+            binding.tabLayout.addNewTab(it.title)
         }
 
         pagerAdapter.setItemList(feedData)
         viewPager?.currentItem =
             if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         viewPager?.offscreenPageLimit = pagerAdapter.count
-        feed_loading.visibility = View.GONE
-        feed_error.visibility = View.GONE
-        tab_layout.visibility = View.VISIBLE
-        viewPager?.visibility = View.VISIBLE
+        binding.feedLoading.root.gone()
+        binding.feedError.root.gone()
+        binding.tabLayout.visible()
+        viewPager?.visible()
 
         if (hasCategoryIdParam()) {
             goToExplore()
@@ -914,7 +924,7 @@ class FeedPlusContainerFragment :
 
     private fun setAdapter() {
         viewPager?.adapter = pagerAdapter
-        viewPager?.let { tab_layout.setupWithViewPager(it) }
+        viewPager?.let { binding.tabLayout.setupWithViewPager(it) }
     }
 
     private fun hasCategoryIdParam(): Boolean {
