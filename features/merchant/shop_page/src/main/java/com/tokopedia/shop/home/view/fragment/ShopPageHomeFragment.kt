@@ -252,6 +252,7 @@ open class ShopPageHomeFragment :
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val QUERY_PARAM_EXT_PARAM = "extParam"
+        private const val QUERY_PARAM_TAB = "tab"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
@@ -4714,7 +4715,8 @@ open class ShopPageHomeFragment :
     }
 
     private fun checkShouldSelectCampaignTab(appLink: String) {
-        if (Uri.parse(appLink).lastPathSegment.equals(CAMPAIGN_TAB_APP_LINK_LAST_SEGMENT, true)) {
+        val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
+        if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
             (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN)
         }
     }
