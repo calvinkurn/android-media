@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -10,40 +11,34 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.databinding.ToolSelectionItemLayoutBinding
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 
 @SuppressLint("ResourcePackage")
-class ToolSelectionItemView: ConstraintLayout {
-    private var mTextRef: Typography? = null
-    private var mImgRef: AppCompatImageView? = null
-    private var mIconRef: IconUnify? = null
-    private var mCardRef: CardUnify2? = null
-
+class ToolSelectionItemView : ConstraintLayout {
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context) : super(context)
 
+    private var viewBinding = ToolSelectionItemLayoutBinding.inflate(LayoutInflater.from(context))
+
     init {
-        View.inflate(context, R.layout.tool_selecction_item_layout, this)
-        mTextRef = findViewById(R.id.tool_selection_item_text)
-        mImgRef = findViewById(R.id.tool_selection_item_image)
-        mIconRef = findViewById(R.id.tool_selection_item_icon)
-        mCardRef = findViewById(R.id.tool_selection_item_border)
+        addView(viewBinding.root)
     }
 
     fun setTextTitle(textRef: Int) {
-        mTextRef?.setText(textRef)
+        viewBinding.toolSelectionItemText.setText(textRef)
     }
 
     fun setIcon(iconId: Int) {
-        mIconRef?.apply {
+        viewBinding.toolSelectionItemIcon.apply {
             visible()
             setImage(iconId)
         }
     }
 
     fun setImage(imageRef: Int, isFull: Boolean = false) {
-        mImgRef?.apply {
+        viewBinding.toolSelectionItemImage.apply {
             visible()
             if (isFull) {
                 val lp = layoutParams
@@ -56,20 +51,20 @@ class ToolSelectionItemView: ConstraintLayout {
     }
 
     fun setListener(listener: () -> Unit) {
-        mCardRef?.setOnClickListener {
+        viewBinding.toolSelectionItemBorder.setOnClickListener {
             listener()
         }
 
-        mTextRef?.setOnClickListener {
+        viewBinding.toolSelectionItemText.setOnClickListener {
             listener()
         }
     }
 
     fun setActive() {
-        mCardRef?.changeTypeWithTransition(CardUnify2.TYPE_BORDER_ACTIVE)
+        viewBinding.toolSelectionItemBorder.changeTypeWithTransition(CardUnify2.TYPE_BORDER_ACTIVE)
     }
 
     fun setInactive() {
-        mCardRef?.changeTypeWithTransition(CardUnify2.TYPE_BORDER)
+        viewBinding.toolSelectionItemBorder.changeTypeWithTransition(CardUnify2.TYPE_BORDER)
     }
 }
