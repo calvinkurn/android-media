@@ -70,7 +70,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var binding by autoCleared<FragmentDealsCategoryBinding>()
     private var additionalSelectedFilterCount = 0
     private var categoryID: String = ""
-    private var filterBottomSheet: DealsCategoryFilterBottomSheet? = null
     private var chips: List<ChipDataView> = listOf()
     private var categories: List<Category> = listOf()
 
@@ -363,10 +362,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
-        if (filterBottomSheet == null) {
-            filterBottomSheet = DealsCategoryFilterBottomSheet(this)
-        }
-        filterBottomSheet?.showCategories(DealsChipsDataView(chips))
+        val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
+        filterBottomSheet?.setListener(this)
         filterBottomSheet?.show(childFragmentManager, "")
     }
 
