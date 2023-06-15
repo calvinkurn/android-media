@@ -170,22 +170,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                 }
                 currentClashingPromo = tmpCurrentClashingPromoList
-                val tmpCurrentSecondaryClashingPromoList = ArrayList<String>()
-                var tmpSecondaryClashingIconUrl = ""
-                val tmpSecondaryErrorMessage = StringBuilder()
-                tmpSecondaryClashingIconUrl = clashingInfos.firstOrNull()?.icon ?: ""
-                selectedPromo.forEach { promoCode ->
-                    secondaryCoupons.forEach { secondaryCoupon ->
-                        val clashingInfo = secondaryCoupon.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
-                        if (clashingInfo != null) {
-                            tmpCurrentSecondaryClashingPromoList.add(promoCode)
-                            tmpSecondaryErrorMessage.clear()
-                            tmpSecondaryErrorMessage.append(clashingInfo.message)
-                            tmpSecondaryClashingIconUrl = clashingInfo.icon
-                        }
-                    }
-                }
-                currentClashingSecondaryPromo = tmpCurrentSecondaryClashingPromoList
+                currentClashingSecondaryPromo = mutableListOf()
 
                 if (hasClashingPromo) {
                     if (tmpErrorMessage.isEmpty()) {
@@ -224,9 +209,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
-        promoItem.uiState.useSecondaryPromo = promoItem.uiData.currentClashingPromo.isNotEmpty() &&
-            promoItem.uiData.secondaryCoupons.isNotEmpty() &&
-            promoItem.uiData.currentClashingSecondaryPromo.isEmpty()
 
         return promoItem
     }

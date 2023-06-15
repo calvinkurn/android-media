@@ -90,7 +90,6 @@ data class PromoListItemUiModel(
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
         var isBebasOngkir: Boolean = false,
-        var isLoading: Boolean = false,
-        var useSecondaryPromo: Boolean = false
+        var isLoading: Boolean = false
     )
 }

@@ -450,16 +450,7 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull { secondaryCoupon ->
-                secondaryCoupon.clashingInfos.all { clashingInfo ->
-                    !element.uiData.currentClashingPromo.contains(clashingInfo.code)
-                }
-            }
-            if (element.uiState.useSecondaryPromo && nonClashingSecondaryPromo != null) {
-                textPromoItemTitle.text = nonClashingSecondaryPromo.title
-            } else {
-                textPromoItemTitle.text = element.uiData.title
-            }
+            textPromoItemTitle.text = element.uiData.title
             val textPromoItemTitleLayoutParam =
                 textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
             val topBanner =
@@ -521,16 +512,7 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull { secondaryCoupon ->
-                secondaryCoupon.clashingInfos.all { clashingInfo ->
-                    !element.uiData.currentClashingPromo.contains(clashingInfo.code)
-                }
-            }
-            val promoInfoList = if (element.uiState.useSecondaryPromo && nonClashingSecondaryPromo != null) {
-                nonClashingSecondaryPromo.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
-            } else {
-                element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
-            }
+            val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
             if (promoInfoList.isNotEmpty()) {
                 containerPromoInfoList.removeAllViews()
                 promoInfoList.forEach {
@@ -580,20 +562,7 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull { secondaryCoupon ->
-                secondaryCoupon.clashingInfos.all { clashingInfo ->
-                    !element.uiData.currentClashingPromo.contains(clashingInfo.code)
-                }
-            }
-            val timeValidityInfo = if (element.uiState.useSecondaryPromo && nonClashingSecondaryPromo != null) {
-                nonClashingSecondaryPromo.promoInfos.firstOrNull {
-                    it.type == PromoInfo.TYPE_PROMO_VALIDITY
-                }
-            } else {
-                element.uiData.promoInfos.firstOrNull {
-                    it.type == PromoInfo.TYPE_PROMO_VALIDITY
-                }
-            }
+            val timeValidityInfo = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
             if (timeValidityInfo != null) {
                 if (timeValidityInfo.title.isNotBlank() && timeValidityInfo.icon.isNotBlank()) {
                     renderIcon(
@@ -654,16 +623,7 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull { secondaryCoupon ->
-                secondaryCoupon.clashingInfos.all { clashingInfo ->
-                    !element.uiData.currentClashingPromo.contains(clashingInfo.code)
-                }
-            }
-            val bottomBanner = if (element.uiState.useSecondaryPromo && nonClashingSecondaryPromo != null) {
-                nonClashingSecondaryPromo.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
-            } else {
-                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
-            }
+            val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
             if (bottomBanner != null) {
                 textUserValidity.text =
                     HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
@@ -692,16 +652,7 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull { secondaryCoupon ->
-                secondaryCoupon.clashingInfos.all { clashingInfo ->
-                    !element.uiData.currentClashingPromo.contains(clashingInfo.code)
-                }
-            }
-            val bottomBanner = if (element.uiState.useSecondaryPromo && nonClashingSecondaryPromo != null) {
-                nonClashingSecondaryPromo.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
-            } else {
-                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
-            }
+            val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
             if (bottomBanner != null) {
                 renderIcon(
                     iconUserValidity,
