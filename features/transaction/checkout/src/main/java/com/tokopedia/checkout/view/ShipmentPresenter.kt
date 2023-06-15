@@ -37,6 +37,7 @@ import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.PRODUCT_LEV
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_NORMAL
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.SOURCE_OCS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOnFromSAF
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -93,6 +94,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -120,11 +122,19 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_LEVEL_PRODUCT
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -194,6 +204,7 @@ class ShipmentPresenter @Inject constructor(
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
     private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
     private val checkoutGqlUseCase: CheckoutUseCase,
+    private val saveAddOnProductUseCase: SaveAddOnStateUseCase,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val stateConverter: RatesResponseStateConverter,
@@ -308,6 +319,8 @@ class ShipmentPresenter @Inject constructor(
     var isPlusSelected: Boolean = false
 
     private var isValidatingFinalPromo: Boolean = false
+
+    private var paramRequestSaveAddOnProductService: SaveAddOnStateRequest = SaveAddOnStateRequest()
 
     // region view
     fun attachView(view: ShipmentFragment) {
@@ -994,6 +1007,7 @@ class ShipmentPresenter @Inject constructor(
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
         shippingCourierViewModelsState = hashMapOf()
+        mapRequestSaveAddonProductService(cartShipmentAddressFormData)
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -5494,6 +5508,82 @@ class ShipmentPresenter @Inject constructor(
 
     fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
         return shipmentPlatformFeeData
+    }
+
+    private fun mapRequestSaveAddonProductService(cartShipmentAddressFormData: CartShipmentAddressFormData) {
+        val listAddOns: List<AddOnRequest> = emptyList()
+        val listCartProduct: ArrayList<CartProduct> = arrayListOf()
+        val listAddOnDataRequest: ArrayList<AddOnDataRequest> = arrayListOf()
+        cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
+            groupAddress.groupShop.forEach { groupShop ->
+                groupShop.groupShopData.forEach { groupShopV2 ->
+                    groupShopV2.products.forEach { product ->
+                        val cartProduct = CartProduct(
+                                cartId = product.cartId,
+                                productId = product.productId,
+                                productName = product.productName,
+                                productParentId = product.variantParentId
+                        )
+                        listCartProduct.add(cartProduct)
+                        product.addOnProduct.listAddOnProductData.forEach { addonProduct ->
+                            val addOnDataRequest = AddOnDataRequest(
+                                    addOnId = addonProduct.addOnDataId,
+                                    addOnQty = 1,
+                                    addOnUniqueId = addonProduct.addOnDataUniqueId,
+                                    addOnType = addonProduct.addOnDataType,
+                                    addOnStatus = addonProduct.addOnDataStatus
+                            )
+                            listAddOnDataRequest.add(addOnDataRequest)
+                        }
+                    }
+                }
+            }
+        }
+        paramRequestSaveAddOnProductService = SaveAddOnStateRequest(
+            addOns = listOf(
+                    AddOnRequest(
+                            addOnLevel = ADD_ON_LEVEL_PRODUCT,
+                            cartProducts = listCartProduct,
+                            addOnData = listAddOnDataRequest
+                    )
+            ),
+            source = SOURCE_NORMAL_CHECKOUT,
+            featureType = 1
+        )
+    }
+
+    private fun updateParamRequestSaveAddOns(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
+        paramRequestSaveAddOnProductService.addOns.first().cartProducts.forEach { cartProduct ->
+            if (cartProduct.cartId == cartItemModel.cartId) {
+
+            }
+        }
+    }
+
+    fun saveAddOnsProduct(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, isChecked: Boolean, position: Int, isFireAndForget: Boolean) {
+        // show loader based on cartId
+        view?.showAddOnProductSkeletonLoading(position)
+
+        // generate param based on addOnProductData
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel, isChecked)
+        saveAddOnProductUseCase.setParams(params)
+        saveAddOnProductUseCase.execute(
+                onSuccess = {
+                    // success : recalculate + show summary transaction
+                    updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
+                    view?.handleOnSuccessSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+                    if (!isFireAndForget && it.saveAddOns.status.equals(statusOK, true)) {
+                        // continue to hit update DDP
+                    }
+                },
+                onError = {
+                    if (!isFireAndForget) {
+                        // showToaster error
+                    }
+                    // failed : set latest value + uncheck
+                    view?.handleOnErrorSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+                }
+        )
     }
 
     companion object {

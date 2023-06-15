@@ -97,6 +97,14 @@
         app:typographyWeight="reguler"
         tools:text="Rp100.000" />
 
+    <LinearLayout
+        android:id="@+id/ll_summary_addon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_booking_fee_label"
+        android:orientation="vertical"
+        android:visibility="gone"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_fee_label"
         android:layout_width="wrap_content"

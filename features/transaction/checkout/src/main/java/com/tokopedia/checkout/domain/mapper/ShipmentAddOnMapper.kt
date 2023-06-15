@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
@@ -25,7 +26,7 @@ object ShipmentAddOnMapper {
         return AddOnProductData(
             bottomSheetType = addOnsDataModel.addOnsButtonModel.action,
             bottomSheetTitle = addOnsDataModel.addOnsBottomSheetModel.headerTitle,
-            source = AddOnProductData.SOURCE_NORMAL_CHECKOUT,
+            source = SOURCE_NORMAL_CHECKOUT,
             availableBottomSheetData = availableBottomSheetData,
             unavailableBottomSheetData = unavailableBottomSheetData
         )

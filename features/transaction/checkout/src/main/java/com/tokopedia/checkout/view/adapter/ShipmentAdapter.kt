@@ -1352,8 +1352,8 @@ class ShipmentAdapter @Inject constructor(
         return index
     }
 
-    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {
-        shipmentAdapterActionListener.onCheckboxAddonProductListener(addOnProductDataItemModel)
+    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        shipmentAdapterActionListener.onCheckboxAddonProductListener(addOnProductDataItemModel, isChecked, cartItemModel, bindingAdapterPosition)
     }
 
     override fun onClickAddonProductInfoIcon() {
@@ -1362,6 +1362,24 @@ class ShipmentAdapter @Inject constructor(
 
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
+        notifyItemChanged(position)
+    }
+
+    fun updateAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
+        val shipmentCartItemModel: ShipmentCartItemModel?
+        val currentShipmentData = shipmentDataList[position]
+        if (currentShipmentData is ShipmentCartItemModel) {
+            shipmentCartItemModel = currentShipmentData
+            shipmentCartItemModel.cartItemModels.forEach { item  ->
+                if (item.cartId == cartItemModel.cartId) {
+                    item.addOnProduct.listAddOnProductData.forEach { addOnData ->
+                        if (addOnData.addOnDataId == addOnProductDataItemModel.addOnDataId) {
+                            addOnData.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
+                        }
+                    }
+                }
+            }
+        }
         notifyItemChanged(position)
     }
 }

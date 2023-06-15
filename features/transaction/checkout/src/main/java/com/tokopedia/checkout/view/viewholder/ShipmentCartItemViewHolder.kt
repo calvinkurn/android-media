@@ -64,7 +64,7 @@ class ShipmentCartItemViewHolder(
         val isFirstItem = cartItem.cartItemPosition == 0
         renderBundlingInfo(cartItem, isFirstItem)
         renderAddOnGiftingProductLevel(cartItem, cartItem.addOnOrderLevelModel)
-        renderAddOnProduct(cartItem)
+        renderAddOnProductService(cartItem)
         if (cartItem.isBundlingItem) renderAddOnBundlingProduct(cartItem)
     }
 
@@ -418,6 +418,13 @@ class ShipmentCartItemViewHolder(
         }
     }
 
+    private fun renderAddOnProductService(cartItemModel: CartItemModel) {
+        if (cartItemModel.addOnProduct.isLoading) {
+            renderAddOnLoader(cartItemModel)
+        } else {
+            renderAddOnProduct(cartItemModel)
+        }
+    }
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
         binding.itemShipmentAddonProduct.apply {
             loaderIcProductAddon.gone()
@@ -454,9 +461,11 @@ class ShipmentCartItemViewHolder(
                             .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
                             .removeDecimalSuffix()
                     addOnView.apply {
-                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                            showLoaderAddOnProduct(cartItemModel)
-                            listener?.onCheckboxAddonProductListener(addon)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
+                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                listener?.onCheckboxAddonProductListener(addon, isChecked, cartItemModel, bindingAdapterPosition)
+                            }
                         }
                         icProductAddonInfo.setOnClickListener {
                             listener?.onClickAddonProductInfoIcon()
@@ -468,7 +477,7 @@ class ShipmentCartItemViewHolder(
         }
     }
 
-    private fun showLoaderAddOnProduct(cartItemModel: CartItemModel) {
+    private fun renderAddOnLoader(cartItemModel: CartItemModel) {
         binding.itemShipmentAddonProduct.apply {
             icProductAddon.gone()
             tvTitleAddonProduct.gone()
@@ -522,9 +531,9 @@ class ShipmentCartItemViewHolder(
                             .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
                             .removeDecimalSuffix()
                     addOnView.apply {
-                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                            showLoaderAddOnProduct(cartItemModel)
-                            listener?.onCheckboxAddonProductListener(addon)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
+                            listener?.onCheckboxAddonProductListener(addon, isChecked, cartItemModel, bindingAdapterPosition)
                         }
                         icProductAddonInfo.setOnClickListener {
                             listener?.onClickAddonProductInfoIcon()
@@ -546,7 +555,7 @@ class ShipmentCartItemViewHolder(
 
         fun onImpressionAddOnProductLevel(productId: String)
 
-        fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+        fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
         fun onClickAddonProductInfoIcon()
     }

@@ -138,7 +138,7 @@ interface ShipmentAdapterActionListener {
 
     fun updateShipmentCostModel()
 
-    fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+    fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
     fun onClickAddonProductInfoIcon()
 }

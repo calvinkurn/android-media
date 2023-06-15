@@ -163,6 +163,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -3796,8 +3797,10 @@ class ShipmentFragment :
         }
     }
 
-    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {
+    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        // TODO: save addons
         // TODO: adjust calculation
+        shipmentPresenter.saveAddOnsProduct(addOnProductDataItemModel, cartItemModel, isChecked, bindingAdapterPosition, true)
     }
 
     override fun onClickAddonProductInfoIcon() {
@@ -4138,13 +4141,13 @@ class ShipmentFragment :
 
     fun showLoaderTotalPayment() {
         val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
-//        shipmentButtonPaymentModel.isLoading = true
+        shipmentButtonPaymentModel.loading = true
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     fun hideLoaderTotalPayment() {
         val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
-//        shipmentButtonPaymentModel.isLoading = false
+        shipmentButtonPaymentModel.loading = false
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
@@ -4155,6 +4158,23 @@ class ShipmentFragment :
         shipmentAdapter.setPlatformFeeData(platformFeeModel)
         hideLoaderTotalPayment()
         updateCost()
+    }
+
+    fun showAddOnProductSkeletonLoading(position: Int) {
+        val addOnProductDataModel = AddOnProductDataModel()
+        addOnProductDataModel.isLoading = true
+        onNeedUpdateViewItem(position)
+        showLoaderTotalPayment()
+    }
+
+    fun handleOnSuccessSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
+        hideLoaderTotalPayment()
+        shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+    }
+
+    fun handleOnErrorSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
+        hideLoaderTotalPayment()
+        shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
     }
 
     companion object {
