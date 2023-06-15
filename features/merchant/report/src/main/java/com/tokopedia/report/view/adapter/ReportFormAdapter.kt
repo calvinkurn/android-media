@@ -1,12 +1,13 @@
 package com.tokopedia.report.view.adapter
 
 import android.graphics.Typeface
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.text.Spannable
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.view.View
@@ -15,7 +16,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
@@ -132,16 +132,17 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     val start = spannable.getSpanStart(it)
                     val end = spannable.getSpanEnd(it)
                     spannable.removeSpan(it)
-                    val urlSpan = WebViewURLSpan( it.url).apply {
-                        listener = object : WebViewURLSpan.OnClickListener {
-                            override fun onClick(url: String) {
-                                tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
-                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
-                            }
-
-                            override fun showUnderline() = false
-
+                    val urlSpan = object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                         }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.isUnderlineText = false
+                            super.updateDrawState(ds)
+                        }
+
                     }
                     spannable.setSpan(urlSpan, start, end, 0)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
