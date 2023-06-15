@@ -1,5 +1,7 @@
 package com.tokopedia.sessioncommon.network;
 
+import static com.tokopedia.network.authentication.AuthConstant.HEADER_X_THEME;
+
 import android.content.Context;
 import android.os.Build;
 import androidx.collection.ArrayMap;
@@ -10,6 +12,7 @@ import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -59,7 +62,7 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
 
         Map<String, String> finalHeader = getDefaultHeaderMap(
                 path, strParam, method, contentTypeHeader != null ? contentTypeHeader : CONTENT_TYPE,
-                authKey, DATE_FORMAT, userSession.getUserId()
+                authKey, DATE_FORMAT, userSession.getUserId(), getTheme()
         );
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
@@ -67,7 +70,8 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
 
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
                                                           String contentType, String authKey,
-                                                          String dateFormat, String userId) {
+                                                          String dateFormat, String userId,
+                                                          String theme) {
         String date = AuthHelper.generateDate(dateFormat);
         String contentMD5 = AuthHelper.getMD5Hash(strParam);
 
@@ -90,9 +94,12 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_PATH, path);
+        headerMap.put(HEADER_X_THEME, theme);
 
         return headerMap;
     }
 
-
+    protected String getTheme() {
+        return ThemeUtils.getHeader(context);
+    }
 }

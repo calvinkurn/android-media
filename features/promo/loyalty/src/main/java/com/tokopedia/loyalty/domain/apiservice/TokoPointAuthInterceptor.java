@@ -9,7 +9,6 @@ import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthHelper.generateHeadersWithPath(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession,  ThemeUtils.getHeader(context)
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession,  getTheme()
         );
     }
 }

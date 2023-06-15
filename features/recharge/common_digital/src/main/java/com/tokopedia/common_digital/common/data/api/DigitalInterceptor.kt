@@ -21,11 +21,9 @@ import java.io.IOException
 /**
  * Created by Rizky on 16/08/18.
  */
-class DigitalInterceptor(
-    @ApplicationContext context: Context,
-    networkRouter: NetworkRouter,
-    userSessionInterface: UserSessionInterface
-) : TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface) {
+class DigitalInterceptor(@ApplicationContext context: Context,
+                         networkRouter: NetworkRouter,
+                         userSessionInterface: UserSessionInterface) : TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface) {
 
     private val digitalAuthKey: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
@@ -74,21 +72,10 @@ class DigitalInterceptor(
     }
 
     override fun getHeaderMap(
-        path: String,
-        strParam: String,
-        method: String,
-        authKey: String,
-        contentTypeHeader: String
+            path: String, strParam: String, method: String, authKey: String, contentTypeHeader: String
     ): Map<String, String> {
         val header = AuthUtil.generateHeadersWithXUserId(
-            path,
-            strParam,
-            method,
-            authKey,
-            contentTypeHeader,
-            userSession.userId,
-            userSession
-        )
+            path, strParam, method, authKey, contentTypeHeader, userSession.userId, userSession, theme)
 
         // replace with Digital's auth organization key
         header[AuthUtil.HEADER_AUTHORIZATION] = header[AuthUtil.HEADER_AUTHORIZATION]?.replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, digitalAuthOrganization)

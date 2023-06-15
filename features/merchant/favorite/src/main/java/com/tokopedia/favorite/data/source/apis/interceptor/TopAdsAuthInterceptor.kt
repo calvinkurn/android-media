@@ -40,7 +40,7 @@ class TopAdsAuthInterceptor(
                 authKey,
                 "dd MMM yy HH:mm ZZZ",
                 userSession,
-                ThemeUtils.getHeader(context)
+                theme
         )
 
         val dateFormat = SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH)
