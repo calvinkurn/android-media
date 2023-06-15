@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,7 +56,8 @@ class UserProfileReviewFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileUiBridge: UserProfileUiBridge,
     private val userProfileTracker: UserProfileTracker,
-    private val userReviewImpressCoordinator: UserReviewImpressCoordinator
+    private val userReviewImpressCoordinator: UserReviewImpressCoordinator,
+    private val router: Router,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
@@ -222,7 +224,7 @@ class UserProfileReviewFragment @Inject constructor(
                             preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel(viewModel.profileUserID)
                         )
 
-                        reviewMediaGalleryForActivityResult.launch(intent)
+                        router.route(reviewMediaGalleryForActivityResult, intent)
                     }
                     else -> {}
                 }

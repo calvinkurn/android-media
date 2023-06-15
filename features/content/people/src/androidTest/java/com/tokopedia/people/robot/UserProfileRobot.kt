@@ -1,15 +1,7 @@
 package com.tokopedia.people.robot
 
-import android.content.Intent
-import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -19,6 +11,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
+import com.tokopedia.content.test.util.clickItemOnNestedRecyclerView
 import com.tokopedia.content.test.util.clickTabLayout
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
@@ -33,14 +26,10 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import com.tokopedia.people.R
-import com.tokopedia.people.activity.UserProfileEmptyActivity
 import com.tokopedia.people.helper.PeopleCassavaValidator
 import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
-import com.tokopedia.unifycomponents.TabsUnify
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matcher
 
 /**
  * Created By : Jonathan Darwin on June 14, 2023
@@ -107,7 +96,6 @@ class UserProfileRobot {
         coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
 
         coEvery { mockUserProfileSharedPref.hasBeenShown(any()) } returns true
-        coEvery { mockRouter.getIntent(any(), any(), any()) } returns Intent(context, UserProfileEmptyActivity::class.java)
     }
 
     fun launch() = chainable {
@@ -124,8 +112,13 @@ class UserProfileRobot {
         click(R.id.btn_option)
     }
 
-    fun clickBack() = chainable {
-        pressBack()
+    fun clickReviewMedia(reviewPosition: Int, mediaPosition: Int) = chainable {
+        clickItemOnNestedRecyclerView(
+            parentRvId = R.id.rv_review,
+            parentPosition = reviewPosition,
+            childRvId = R.id.rv_media,
+            childPosition = mediaPosition
+        )
     }
 
     fun verifyEventAction(eventAction: String) = chainable {
@@ -138,6 +131,10 @@ class UserProfileRobot {
 
     fun performDelay(delayInMillis: Long = 500) = chainable {
         delay(delayInMillis)
+    }
+
+    fun clickBack() = chainable {
+        pressBack()
     }
 
     private fun chainable(action: () -> Unit): UserProfileRobot {

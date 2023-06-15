@@ -95,6 +95,31 @@ fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, @IdRes id: Int) {
         )
 }
 
+fun clickItemOnNestedRecyclerView(
+    @IdRes parentRvId: Int,
+    parentPosition: Int,
+    @IdRes childRvId: Int,
+    childPosition: Int,
+) {
+    select(parentRvId)
+        .perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                parentPosition, object : ViewAction {
+                    override fun getConstraints() = null
+
+                    override fun getDescription() = "Click child on child recycler view"
+
+                    override fun perform(uiController: UiController, view: View) {
+                        val rv = view.findViewById<RecyclerView>(childRvId)
+                        val selectedView = rv.getChildAt(childPosition)
+
+                        click().perform(uiController, selectedView)
+                    }
+                }
+            )
+        )
+}
+
 fun verifyItemRecyclerView(@IdRes id: Int, position: Int, verifyBlock: (RecyclerView.ViewHolder) -> Boolean) {
     select(id)
         .check(

@@ -35,6 +35,7 @@ class UserProfileReviewAnalyticTest {
             .clickProfileOptionButton()
             .verifyEventAction("click - gear icon")
 
-            .clickBack()
+            .clickReviewMedia(0, 0)
+            .verifyEventAction("click - review media")
     }
 }

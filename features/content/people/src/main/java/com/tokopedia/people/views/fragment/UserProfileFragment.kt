@@ -995,8 +995,12 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun openProfileSettingsPage() {
-        val intent = router.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
-        profileSettingsForActivityResult.launch(intent)
+        router.route(
+            context = requireContext(),
+            activityResultLauncher = profileSettingsForActivityResult,
+            appLinkPattern = ApplinkConst.PROFILE_SETTINGS,
+            viewModel.profileUserID
+        )
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {
