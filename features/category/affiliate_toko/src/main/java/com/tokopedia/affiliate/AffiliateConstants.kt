@@ -73,8 +73,11 @@ val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_L
 
 const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
 
+const val SOURCE_AFFILIATE = "${ApplinkConstInternalUserPlatform.PARAM_SOURCE}=Affiliate"
+
 val APP_LINK_KYC =
-    "${DeeplinkMapperUser.getApplinkGotoKyc()}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalUserPlatform.PARAM_CALL_BACK}=$uri"
+    "${DeeplinkMapperUser.getApplinkGotoKyc()}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalUserPlatform.PARAM_CALL_BACK}=$uri" +
+        "&$SOURCE_AFFILIATE"
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
