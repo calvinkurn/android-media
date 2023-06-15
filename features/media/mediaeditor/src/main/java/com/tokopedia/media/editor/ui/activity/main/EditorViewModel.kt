@@ -101,10 +101,6 @@ class EditorViewModel @Inject constructor(
         dataList: List<EditorUiModel>,
         onFinish: (result: List<String>?) -> Unit
     ) {
-        // store list image of camera picker that need to be saved
-        val cameraImageList = mutableListOf<String>()
-        val pickerCameraCacheDir = getTokopediaCacheDir()
-
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 // if use 'add logo' & 'add text' feature then need to flatten image first
@@ -127,11 +123,6 @@ class EditorViewModel @Inject constructor(
 
                 flattenBitmap
             } else {
-                it.getOriginalUrl().apply {
-                    if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
-                        cameraImageList.add(it.getImageUrl())
-                    }
-                }
                 ""
             }
         }

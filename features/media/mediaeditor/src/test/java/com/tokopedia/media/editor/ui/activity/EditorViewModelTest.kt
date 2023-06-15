@@ -197,7 +197,7 @@ class EditorViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `save image to gallery`() {
+    fun `on page finish return result`() {
         // Given
         val dataList = createUiModelState(0, -1)
         dataList[2].editList.clear()
@@ -213,21 +213,61 @@ class EditorViewModelTest {
         )
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
-    fun `save captured image to gallery`() {
+    fun `on page finish with overlay logo`() {
         // Given
-        val cameraDataIndex = pathSampleList.size - 1
-        val dataList = createUiModelState(cameraDataIndex, cameraDataIndex)
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addLogoValue.overlayLogoUrl = "overlay.png"
 
         // When
-        mockkStatic(FileUtil::class)
-        every { getTokopediaCacheDir() } returns tokopediaCacheDir
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
         viewModel.finishPage(
             dataList,
             onFinish = { finalUrlList ->
                 // Then
                 assertNotNull(finalUrlList)
+                assertEquals(dataList.size, finalUrlList?.size)
+            }
+        )
+    }
+
+    @Test
+    fun `on page finish with overlay text`() {
+        // Given
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addTextValue = EditorAddTextUiModel(
+            textValue = "content",
+            textImagePath = "overlay.png"
+        )
+
+        // When
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        viewModel.finishPage(
+            dataList,
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+                assertEquals(dataList.size, finalUrlList?.size)
+            }
+        )
+    }
+
+    @Test
+    fun `on page finish with failed generate overlay text`() {
+        // Given
+        val dataList = createUiModelState(-1, -1)
+        dataList[0].editList[0].addTextValue = EditorAddTextUiModel(
+            textValue = "content"
+        )
+
+        // When
+        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        viewModel.finishPage(
+            dataList,
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+                assertEquals(dataList.size, finalUrlList?.size)
             }
         )
     }
@@ -331,11 +371,10 @@ class EditorViewModelTest {
             "/storage/sdcard/Pictures/Image1.jpg",
             "/storage/sdcard/Pictures/Image2.jpeg",
             "/storage/sdcard/Pictures/$PICKER_URL_FILE_CODE.jpeg",
-            "$tokopediaCacheDir/$PICKER_URL_FILE_CODE.png",
+            "${getTokopediaCacheDir()}/$PICKER_URL_FILE_CODE.png",
             "/storage/sdcard/Pictures/Image3.png"
         )
 
         private const val videoKey = "/storage/sdcard/Pictures/Video1.mp4"
-        private const val userShopId = "13580123"
     }
 }
