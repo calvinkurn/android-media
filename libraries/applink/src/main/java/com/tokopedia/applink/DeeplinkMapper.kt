@@ -115,6 +115,7 @@ import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
 @ExactMatcher(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY)
 @MatchPatternMatcher(ApplinkConst.SHOP_OPERATIONAL_HOUR, ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET)
 @MatchPatternMatcher(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT)
+@MatchPatternMatcher(ApplinkConst.YOUTUBE_PLAYER, ApplinkConstInternalGlobal.YOUTUBE_PLAYER)
 @StartMatcher(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER)
 object DeeplinkMapper {
 

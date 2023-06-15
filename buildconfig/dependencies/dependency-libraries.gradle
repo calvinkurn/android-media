@@ -112,6 +112,7 @@ ext {
             websocket               : ":libraries:websocket",
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
+            youtubePlayer            : ":libraries:youtube_player",
             youtubeutil             : ":libraries:youtubeutil",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
