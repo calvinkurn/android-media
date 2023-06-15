@@ -68,8 +68,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var warehouseModel: Warehouse? = null
     private var zipCodes: List<String> = ArrayList()
-    private var currentLat: Double = 0.0
-    private var currentLong: Double = 0.0
+    private var currentLat: Double = MONAS_LAT
+    private var currentLong: Double = MONAS_LONG
     private var detailAddressHelper: String = ""
 
     private var getSavedInstanceState: Bundle? = null
@@ -108,8 +108,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         arguments?.let {
             warehouseModel = it.getParcelable(EXTRA_WAREHOUSE_DATA)
-            currentLat = it.getDouble(EXTRA_LAT)
-            currentLong = it.getDouble(EXTRA_LONG)
+            currentLat = it.getDouble(EXTRA_LAT, MONAS_LAT)
+            currentLong = it.getDouble(EXTRA_LONG, MONAS_LONG)
         }
     }
 
@@ -238,9 +238,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.districtLocation.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    val lat = it.data.latitude.toDouble()
-                    val long = it.data.longitude.toDouble()
-                    adjustMap(lat, long)
                     detailAddressHelper = it.data.formattedAddress
                 }
                 is Fail -> Timber.d(it.throwable)
@@ -567,12 +564,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     companion object {
         private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
-        private const val OPEN_MAP_REQUEST_CODE = 200
         private const val MAP_ZOOM = 15f
         private const val MAP_BEARING = 0f
         private const val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
         private const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
-        const val EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL"
+        private const val MONAS_LAT = -6.175794
+        private const val MONAS_LONG = 106.826457
 
         fun newInstance(extra: Bundle): ShopEditAddressFragment {
             return ShopEditAddressFragment().apply {
