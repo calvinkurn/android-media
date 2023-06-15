@@ -48,6 +48,7 @@ internal object CategoryPageMapper {
     )
 
     fun mapToShowcaseProductCard(
+        totalData: Int,
         productList: List<AceSearchProductModel.Product> = listOf(),
         categoryIdL2: String,
         title: String,
@@ -69,7 +70,7 @@ internal object CategoryPageMapper {
             )
         },
         title = title,
-        seeAllAppLink = if (productList.count() > MAX_SHOWCASE_PRODUCT) seeAllAppLink else String.EMPTY,
+        seeAllAppLink = if (totalData > MAX_SHOWCASE_PRODUCT) seeAllAppLink else String.EMPTY,
         state = state
     )
 }

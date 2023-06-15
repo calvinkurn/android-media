@@ -166,6 +166,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         if (hasAdded) {
             layout.mapCategoryShowcase(
+                totalData = categoryPage.searchProduct.header.totalData,
                 productList = productList,
                 categoryIdL2 = categoryL2Model.id,
                 title = categoryL2Model.title,
@@ -175,6 +176,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             )
         } else {
             layout.addCategoryShowcase(
+                totalData = categoryPage.searchProduct.header.totalData,
                 productList = productList,
                 categoryIdL2 = categoryL2Model.id,
                 title = categoryL2Model.title,

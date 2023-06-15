@@ -11,6 +11,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -354,6 +355,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
                     if (expectedCategoryIdL2Failed != itemUiModel.id) {
                         resultList.add(
                             mapToShowcaseProductCard(
+                                totalData = searchProduct.header.totalData,
                                 productList = productList,
                                 categoryIdL2 = itemUiModel.id,
                                 title = itemUiModel.title,
@@ -368,6 +370,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
                 } else {
                     resultList.add(
                         mapToShowcaseProductCard(
+                            totalData = Int.ZERO,
                             categoryIdL2 = itemUiModel.id,
                             title = String.EMPTY,
                             state = TokoNowLayoutState.LOADING,
