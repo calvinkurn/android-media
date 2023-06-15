@@ -9,9 +9,8 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as principleR
-import com.tokopedia.media.editor.R as editorR
 
-class AddTextStyleItem(
+class AddTextStyleItemView(
     val card: CardUnify2,
     val typography: Typography
 ) {

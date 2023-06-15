@@ -23,7 +23,7 @@ import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.widget.AddTextColorItemView
-import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
+import com.tokopedia.media.editor.ui.widget.AddTextStyleItemView
 import com.tokopedia.media.editor.data.entity.AddTextAlignment
 import com.tokopedia.media.editor.data.entity.AddTextPosition
 import com.tokopedia.media.editor.data.entity.AddTextStyle
@@ -51,7 +51,7 @@ class AddTextFragment @Inject constructor(
      * 1 -> bold
      * 2 -> italic
      */
-    private val textStyleItemRef: Array<AddTextStyleItem?> = Array(3) { null }
+    private val textStyleItemRef: Array<AddTextStyleItemView?> = Array(3) { null }
     private var activeStyleIndex = AddTextStyle.REGULAR.value
         set(value) {
             field = value
@@ -337,11 +337,11 @@ class AddTextFragment @Inject constructor(
         }
     }
 
-    private fun viewToFontCard(view: View): AddTextStyleItem? {
+    private fun viewToFontCard(view: View): AddTextStyleItemView? {
         return try {
             val card = (view as CardUnify2)
             val typo = card.findViewById<Typography>(editorR.id.font_selection_item)
-            AddTextStyleItem(card, typo)
+            AddTextStyleItemView(card, typo)
         } catch (_: Exception) {
             null
         }
