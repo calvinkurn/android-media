@@ -12,6 +12,7 @@ import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.users.LocalUsersDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.AddUserRestUseCase
+import com.tokopedia.loginHelper.domain.usecase.EditUserRestUseCase
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountUiState
@@ -29,6 +30,7 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
     private val aesEncryptorCBC: AESEncryptorCBC,
     private val gson: Gson,
     private val addUserRestUseCase: AddUserRestUseCase,
+    private val editUserRestCaseUse: EditUserRestUseCase,
     val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -51,6 +53,9 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
             }
             is LoginHelperAddEditAccountEvent.ChangeEnvType -> {
                 changeEnvType(event.envType)
+            }
+            is LoginHelperAddEditAccountEvent.EditUserDetailsFromRemote -> {
+                editUserFromRemote(event.email, event.password, event.tribe, event.id)
             }
         }
     }
@@ -95,6 +100,19 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
                 _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
             }
         )
+    }
+
+    private fun editUserFromRemote(email: String, password: String, tribe: String, id: Long) {
+        viewModelScope.launchCatchError(dispatchers.io, {
+            val editResponse = editUserRestCaseUse.makeApiCall(email, password, tribe, _uiState.value.envType.toEnvString(), id)
+            if (editResponse?.code == OK_STATUS) {
+                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnSuccessEditUserData)
+            } else {
+                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureEditUserData)
+            }
+        }, {
+            _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureEditUserData)
+        })
     }
 
     private fun getLocalData(cacheManager: PersistentCacheManager): LocalUsersDataUiModel? {
@@ -143,5 +161,6 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
 
     companion object {
         const val SUCCESS_STATUS = 201L
+        const val OK_STATUS = 200L
     }
 }

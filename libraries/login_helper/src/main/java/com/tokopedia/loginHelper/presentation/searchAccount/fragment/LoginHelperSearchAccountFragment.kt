@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -175,7 +176,9 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
             }
         }
         val loginUserDetails = Gson().fromJson(jsonString, LoginDataResponse::class.java)
-        viewModel.processEvent(LoginHelperSearchAccountEvent.SaveUserDetailsFromAssets(loginUserDetails))
+        viewModel.processEvent(
+            LoginHelperSearchAccountEvent.SaveUserDetailsFromAssets(loginUserDetails)
+        )
     }
 
     private fun initRecyclerView(loginDataList: LoginDataUiModel) {
@@ -242,7 +245,16 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     }
 
     override fun onEditAccount(user: UserDataUiModel) {
-        context?.let { LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(it, user.email, user.password, user.tribe) }
+        Log.d("FATAL", "onEditAccount: $user")
+        context?.let {
+            LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(
+                it,
+                user.email,
+                user.password,
+                user.tribe,
+                user.id ?: 0
+            )
+        }
     }
 
     override fun onDeleteAccount(user: UserDataUiModel) {
@@ -250,9 +262,16 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
             viewContext.resources.let {
                 DialogUnify(viewContext, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(it.getString(R.string.login_helper_account_removal))
-                    setDescription(String.format(it.getString(R.string.login_helper_confirm_removal), user.email))
+                    setDescription(
+                        String.format(
+                            it.getString(R.string.login_helper_confirm_removal),
+                            user.email
+                        )
+                    )
                     setPrimaryCTAText(it.getString(R.string.login_helper_btn_remove_account))
-                    setSecondaryCTAText(it.getString(R.string.login_helper_btn_remove_account_cancel))
+                    setSecondaryCTAText(
+                        it.getString(R.string.login_helper_btn_remove_account_cancel)
+                    )
                     setPrimaryCTAClickListener {
                         //    viewModel.removeDatabase(databaseDescriptor)
                         dismiss()

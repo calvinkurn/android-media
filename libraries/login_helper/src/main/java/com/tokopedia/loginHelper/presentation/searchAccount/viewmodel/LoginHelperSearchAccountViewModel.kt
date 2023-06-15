@@ -3,15 +3,15 @@ package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.AESEncryptorCBC
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginHelper.data.mapper.toEnvString
+import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
-import com.tokopedia.loginHelper.data.response.LoginDataResponse
-import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
+import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountAction
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountEvent
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountUiState
@@ -27,9 +27,10 @@ import javax.crypto.SecretKey
 import javax.inject.Inject
 
 class LoginHelperSearchAccountViewModel @Inject constructor(
+    private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
     private val aesEncryptorCBC: AESEncryptorCBC,
     private val secretKey: SecretKey,
-    dispatchers: CoroutineDispatchers
+    val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperSearchAccountUiState())
@@ -44,7 +45,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
                 setEnvType(event.envType)
             }
             is LoginHelperSearchAccountEvent.SaveUserDetailsFromAssets -> {
-                storeUserDetailsInState(event.userDetails)
+                getLoginData()
             }
             is LoginHelperSearchAccountEvent.QueryEmail -> {
                 queryForGivenEmail(event.email)
@@ -63,29 +64,25 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
         }
     }
 
-    private fun storeUserDetailsInState(loginData: LoginDataResponse) {
-        val decryptedUserDetails = mutableListOf<UserDataResponse>()
-        loginData.users?.forEach {
-            decryptedUserDetails.add(
-                UserDataResponse(
-                    decrypt(it.email.toBlankOrString()),
-                    decrypt(it.password.toBlankOrString()),
-                    it.tribe
+    private fun getLoginData() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
+                val loginData = userDetails.body()
+
+                val userList = LoginDataUiModel(
+                    loginData?.count?.toRemoteUserHeaderUiModel(),
+                    loginData?.users?.toUserDataUiModel()
                 )
-            )
-        }
-        val sortedUserList = decryptedUserDetails.sortedBy {
-            it.email
-        }
 
-        val userList =
-            LoginDataUiModel(
-                sortedUserList.size.toLocalUserHeaderUiModel(),
-                sortedUserList.toUserDataUiModel()
-            )
-        updateUserDataList(Success(userList))
+                updateUserDataList(Success(userList))
+            },
+            onError = {
+                updateUserDataList(Fail(it))
+            }
+        )
     }
-
     private fun updateUserDataList(userDataList: Result<LoginDataUiModel>) {
         _uiState.update {
             it.copy(

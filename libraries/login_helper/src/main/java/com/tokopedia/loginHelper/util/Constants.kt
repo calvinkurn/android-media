@@ -8,6 +8,7 @@ object BundleConstants {
     const val LOGIN_HELPER_EMAIL = "edit_email"
     const val LOGIN_HELPER_PASSWORD = "edit_password"
     const val LOGIN_HELPER_TRIBE = "edit_tribe"
+    const val LOGIN_HELPER_USER_ID = "edit_user_id"
 }
 
 object CacheConstants {

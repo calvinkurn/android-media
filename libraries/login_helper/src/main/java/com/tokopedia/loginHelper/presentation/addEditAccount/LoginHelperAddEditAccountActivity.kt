@@ -15,7 +15,8 @@ class LoginHelperAddEditAccountActivity : BaseSimpleActivity() {
         pageMode ?: PageMode.ADD,
         email?.toBlankOrString(),
         password?.toBlankOrString(),
-        tribe?.toBlankOrString()
+        tribe?.toBlankOrString(),
+        userId ?: 0
     )
     override fun getLayoutRes() = R.layout.activity_login_helper
     override fun getParentViewResourceID() = R.id.container
@@ -39,13 +40,15 @@ class LoginHelperAddEditAccountActivity : BaseSimpleActivity() {
             context: Context,
             email: String?,
             password: String?,
-            tribe: String?
+            tribe: String?,
+            id: Long = 0
         ) {
             val bundle = Bundle().apply {
                 putParcelable(BundleConstants.LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE, PageMode.EDIT)
                 putString(BundleConstants.LOGIN_HELPER_EMAIL, email)
                 putString(BundleConstants.LOGIN_HELPER_PASSWORD, password)
                 putString(BundleConstants.LOGIN_HELPER_TRIBE, tribe)
+                putLong(BundleConstants.LOGIN_HELPER_USER_ID, id)
             }
 
             val intent = Intent(context, LoginHelperAddEditAccountActivity::class.java)
@@ -69,6 +72,10 @@ class LoginHelperAddEditAccountActivity : BaseSimpleActivity() {
 
     private val tribe by lazy {
         intent?.extras?.getString(BundleConstants.LOGIN_HELPER_TRIBE)
+    }
+
+    private val userId by lazy {
+        intent?.extras?.getLong(BundleConstants.LOGIN_HELPER_USER_ID)
     }
 
 }

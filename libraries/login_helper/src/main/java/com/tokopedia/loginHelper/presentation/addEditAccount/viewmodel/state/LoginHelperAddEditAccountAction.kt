@@ -7,4 +7,6 @@ sealed class LoginHelperAddEditAccountAction {
     object OnSuccessAddDataToRest : LoginHelperAddEditAccountAction()
 
     object OnFailureAddDataToRest : LoginHelperAddEditAccountAction()
+    object OnSuccessEditUserData: LoginHelperAddEditAccountAction()
+    object OnFailureEditUserData: LoginHelperAddEditAccountAction()
 }

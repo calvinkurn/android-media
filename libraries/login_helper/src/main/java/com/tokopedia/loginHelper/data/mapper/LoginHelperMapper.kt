@@ -20,7 +20,7 @@ fun LoginDataResponse.toLoginUiModel(): LoginDataUiModel {
 
 fun List<UserDataResponse>.toUserDataUiModel(): List<UserDataUiModel> {
     return this.map {
-        UserDataUiModel(it.email, it.password, it.tribe)
+        UserDataUiModel(it.email, it.password, it.tribe, it.id)
     }
 }
 

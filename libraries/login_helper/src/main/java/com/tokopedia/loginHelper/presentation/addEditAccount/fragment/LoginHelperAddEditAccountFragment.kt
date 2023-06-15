@@ -66,6 +66,10 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         arguments?.getString(BundleConstants.LOGIN_HELPER_TRIBE, "")
     }
 
+    private val userId by lazy {
+        arguments?.getLong(BundleConstants.LOGIN_HELPER_USER_ID, 0)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,6 +94,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                     btnSaveToDb.isEnabled = false
                     setUpCheckBoxListener()
                     saveToLocalCoachmark.showReplyBubbleOnBoarding(btnSaveToLocal, context)
+                    setUpButtonClickListeners()
                 }
                 PageMode.EDIT -> {
                     header.setUpHeader(
@@ -99,11 +104,11 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                     btnSaveToLocal.hide()
                     btnSaveToDb.show()
                     addGroup.hide()
+                    setUpButtonClickListenerForEditAccount()
                     setUpTextFields()
                 }
             }
         }
-        binding?.setUpButtonClickListeners()
         observeUiAction()
     }
 
@@ -146,6 +151,12 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 showErrorOnFailure()
                 setSaveToDbBtnLoadingState(false)
             }
+            is LoginHelperAddEditAccountAction.OnSuccessEditUserData -> {
+                showEditAccountSuccessAndGoToHomePage()
+            }
+            is LoginHelperAddEditAccountAction.OnFailureEditUserData -> {
+                showErrorOnFailure()
+            }
         }
     }
 
@@ -158,7 +169,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    private fun showSuccessAndGoToHomePage(isRemote : Boolean = false) {
+    private fun showSuccessAndGoToHomePage(isRemote: Boolean = false) {
         if (isRemote) {
             context?.resources?.let {
                 binding?.footer?.showToaster(
@@ -176,6 +187,17 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                 ) {
                     RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
                 }
+            }
+        }
+    }
+
+    private fun showEditAccountSuccessAndGoToHomePage() {
+        context?.resources?.let {
+            binding?.footer?.showToaster(
+                it.getString(R.string.login_helper_save_to_remote_successful),
+                it.getString(R.string.login_helper_save_to_local_go_to_home)
+            ) {
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
             }
         }
     }
@@ -201,6 +223,25 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     private fun FragmentLoginHelperAddEditAccountBinding.setUpCheckBoxListener() {
         consentCheckbox.setOnCheckedChangeListener { _, state ->
             btnSaveToDb.isEnabled = state
+        }
+    }
+
+    private fun FragmentLoginHelperAddEditAccountBinding.setUpButtonClickListenerForEditAccount() {
+        userId?.let { currUserId ->
+            btnSaveToDb.setOnClickListener {
+                val email = binding?.etUsername?.editText?.text.toString()
+                val password = binding?.etPassword?.editText?.text.toString()
+                val tribe = binding?.etTribe?.editText?.text.toString()
+                viewModel.processEvent(
+                    LoginHelperAddEditAccountEvent.EditUserDetailsFromRemote(
+                        email,
+                        password,
+                        tribe,
+                        currUserId
+                    )
+                )
+                binding?.btnSaveToDb?.isLoading = true
+            }
         }
     }
 
@@ -261,13 +302,20 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(pageMode: PageMode, email: String?, password: String?, tribe: String?): LoginHelperAddEditAccountFragment {
+        fun newInstance(
+            pageMode: PageMode,
+            email: String?,
+            password: String?,
+            tribe: String?,
+            editUserId: Long
+        ): LoginHelperAddEditAccountFragment {
             return LoginHelperAddEditAccountFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstants.LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE, pageMode)
                     putString(BundleConstants.LOGIN_HELPER_EMAIL, email)
                     putString(BundleConstants.LOGIN_HELPER_PASSWORD, password)
                     putString(BundleConstants.LOGIN_HELPER_TRIBE, tribe)
+                    putLong(BundleConstants.LOGIN_HELPER_USER_ID, editUserId)
                 }
             }
         }
