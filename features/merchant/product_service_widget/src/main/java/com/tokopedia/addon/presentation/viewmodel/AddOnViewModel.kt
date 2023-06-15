@@ -46,6 +46,9 @@ class AddOnViewModel @Inject constructor(
     private val mSaveSelectionResult = MutableLiveData<Result<Boolean>>()
     val saveSelectionResult: LiveData<Result<Boolean>> get() = mSaveSelectionResult
 
+    private val mAutoSave = MutableLiveData<AutoSaveAddonModel>()
+    val autoSave: LiveData<AutoSaveAddonModel> get() = mAutoSave
+
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
     }
@@ -91,6 +94,14 @@ class AddOnViewModel @Inject constructor(
         mSelectedAddOn.value = AddOnMapper.getSelectedAddons(addOnGroupUIModels)
         selectedAddonGroup = addOnGroupUIModels.getOrNull(index)
         selectedAddonIds = AddOnMapper.getSelectedAddonsIds(addOnGroupUIModels)
+
+        autoSave.value?.let {
+            if (autoSave.value?.isActive == true) {
+                mAutoSave.value = it.copy(
+                    addOnGroupUIModels = addOnGroupUIModels
+                )
+            }
+        }
     }
 
     fun getAddOnAggregatedData(context: Context, addOnIds: List<String>) {
@@ -110,4 +121,19 @@ class AddOnViewModel @Inject constructor(
                 getDataErrorMessage = ErrorHandler.getErrorMessage(context, it))
         })
     }
+
+    fun setAutosave(cartId: Long, atcSource: String) {
+        mAutoSave.value = AutoSaveAddonModel(
+            isActive = true,
+            cartId = cartId,
+            atcSource = atcSource
+        )
+    }
+
+    data class AutoSaveAddonModel (
+        val isActive: Boolean = false,
+        val cartId: Long = 0,
+        val atcSource: String = "",
+        val addOnGroupUIModels: List<AddOnGroupUIModel> = emptyList()
+    )
 }

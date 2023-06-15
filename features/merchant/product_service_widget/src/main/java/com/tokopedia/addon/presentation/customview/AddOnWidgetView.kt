@@ -77,6 +77,10 @@ class AddOnWidgetView : BaseCustomView {
                     }
                 }
             }
+            viewModel.autoSave.observe(this) {
+                if (it.addOnGroupUIModels.isNotEmpty())
+                    viewModel.saveAddOnState(it.cartId, it.atcSource)
+            }
         }
     }
 
@@ -152,5 +156,9 @@ class AddOnWidgetView : BaseCustomView {
 
     fun getAddOnAggregatedData(addOnIds: List<String>) {
         viewModel.getAddOnAggregatedData(context, addOnIds)
+    }
+
+    fun setAutosaveAddon(cartId: Long, atcSource: String) {
+        viewModel.setAutosave(cartId, atcSource)
     }
 }

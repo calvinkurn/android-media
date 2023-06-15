@@ -75,6 +75,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
             setListener(this@AddOnFragment)
             setSelectedAddons(selectedAddonIds.orEmpty())
             getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
+            setAutosaveAddon(cartId.orZero(), atcSource)
         }
         binding?.btnSave?.setOnClickListener {
             binding?.addonWidget?.saveAddOnState(cartId.orZero(), atcSource)
