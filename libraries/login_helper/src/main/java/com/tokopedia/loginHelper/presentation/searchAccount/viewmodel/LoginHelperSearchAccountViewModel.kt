@@ -1,5 +1,6 @@
 package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.AESEncryptorCBC
@@ -11,6 +12,7 @@ import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
+import com.tokopedia.loginHelper.domain.usecase.DeleteUserRestUseCase
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountAction
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountEvent
@@ -28,6 +30,7 @@ import javax.inject.Inject
 
 class LoginHelperSearchAccountViewModel @Inject constructor(
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
+    private val deleteUserRestUseCase: DeleteUserRestUseCase,
     private val aesEncryptorCBC: AESEncryptorCBC,
     private val secretKey: SecretKey,
     val dispatchers: CoroutineDispatchers
@@ -53,6 +56,9 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             is LoginHelperSearchAccountEvent.TapBackButton -> {
                 handleBackButtonTap()
             }
+            is LoginHelperSearchAccountEvent.DeleteUserDetailsFromRemote -> {
+                deleteUser(event.id)
+            }
         }
     }
 
@@ -68,6 +74,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
+                handleLoading(true)
                 val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
                 val loginData = userDetails.body()
 
@@ -83,10 +90,28 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             }
         )
     }
+
+    private fun deleteUser(id: Long) {
+        viewModelScope.launchCatchError(dispatchers.io, {
+            handleLoading(true)
+            val response = deleteUserRestUseCase.makeApiCall(_uiState.value.envType.toEnvString(), id)
+            if (response?.code == SUCCESS_RESPONSE) {
+                _uiAction.tryEmit(LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction)
+            } else {
+                _uiAction.tryEmit(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
+            }
+            handleLoading(false)
+        }, {
+            _uiAction.tryEmit(LoginHelperSearchAccountAction.OnFailureDeleteAccountAction)
+            handleLoading(false)
+        })
+    }
+
     private fun updateUserDataList(userDataList: Result<LoginDataUiModel>) {
         _uiState.update {
             it.copy(
-                loginDataList = userDataList
+                loginDataList = userDataList,
+                isLoading = false
             )
         }
     }
@@ -98,6 +123,14 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             )
         }
         searchForFilteredUser()
+    }
+
+    private fun handleLoading(isLoading: Boolean) {
+        _uiState.update {
+            it.copy(
+                isLoading = isLoading
+            )
+        }
     }
 
     private fun searchForFilteredUser() {
@@ -137,5 +170,9 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
 
     private fun handleBackButtonTap() {
         _uiAction.tryEmit(LoginHelperSearchAccountAction.TapBackSearchAccountAction)
+    }
+
+    companion object {
+        const val SUCCESS_RESPONSE = 200L
     }
 }

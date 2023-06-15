@@ -11,4 +11,6 @@ sealed class LoginHelperSearchAccountEvent {
     object GetUserInfo : LoginHelperSearchAccountEvent()
     object GoToLoginPageSearchAccount : LoginHelperSearchAccountEvent()
     data class SaveUserDetailsFromAssets(val userDetails: LoginDataResponse) : LoginHelperSearchAccountEvent()
+
+    data class DeleteUserDetailsFromRemote(val id: Long): LoginHelperSearchAccountEvent()
 }

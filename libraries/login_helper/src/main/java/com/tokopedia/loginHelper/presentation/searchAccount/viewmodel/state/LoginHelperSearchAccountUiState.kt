@@ -7,5 +7,6 @@ data class LoginHelperSearchAccountUiState(
     val envType: LoginHelperEnvType = LoginHelperEnvType.STAGING,
     val loginDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
     val searchText: String = "",
-    val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
+    val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
+    val isLoading: Boolean = false
 )

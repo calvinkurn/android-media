@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
@@ -112,11 +113,29 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
             is LoginHelperSearchAccountAction.TapBackSearchAccountAction -> {
                 handleBackButtonPress()
             }
+            is LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
+            }
+            is LoginHelperSearchAccountAction.OnFailureDeleteAccountAction -> {
+                showErrorOnFailure()
+            }
+        }
+    }
+
+    private fun showErrorOnFailure() {
+        context?.resources?.let {
+            binding?.footer?.showToasterError(
+                it.getString(R.string.login_helper_delete_from_remote_failure),
+                it.getString(R.string.login_helper_save_to_local_go_to_home)
+            ) {
+                RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
+            }
         }
     }
 
     private fun handleUiState(state: LoginHelperSearchAccountUiState) {
         handleLoginUserDataList(state)
+        handleLoader(state.isLoading)
     }
 
     private fun handleLoginUserDataList(state: LoginHelperSearchAccountUiState) {
@@ -245,7 +264,6 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     }
 
     override fun onEditAccount(user: UserDataUiModel) {
-        Log.d("FATAL", "onEditAccount: $user")
         context?.let {
             LoginHelperAddEditAccountActivity.buildEditAccountModeIntent(
                 it,
@@ -273,7 +291,13 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
                         it.getString(R.string.login_helper_btn_remove_account_cancel)
                     )
                     setPrimaryCTAClickListener {
-                        //    viewModel.removeDatabase(databaseDescriptor)
+                        user.id?.let {
+                            viewModel.processEvent(
+                                LoginHelperSearchAccountEvent.DeleteUserDetailsFromRemote(
+                                    user.id
+                                )
+                            )
+                        }
                         dismiss()
                     }
                     setSecondaryCTAClickListener {

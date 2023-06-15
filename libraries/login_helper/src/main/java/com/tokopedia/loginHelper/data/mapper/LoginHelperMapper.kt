@@ -3,10 +3,12 @@ package com.tokopedia.loginHelper.data.mapper
 import com.tokopedia.loginHelper.data.body.LoginHelperAddUserBody
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.LoginHelperAddUserResponse
+import com.tokopedia.loginHelper.data.response.LoginHelperDeleteUserResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.pojo.LoginHelperAddUserPojo
 import com.tokopedia.loginHelper.domain.uiModel.addedit.LoginHelperAddUserUiModel
+import com.tokopedia.loginHelper.domain.uiModel.deleteUser.LoginHelperDeleteUserUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
@@ -71,5 +73,12 @@ fun LoginHelperAddUserResponse.LoginHelperAddUserData.toUiModel(): LoginHelperAd
         this.password,
         this.tribe,
         this.id
+    )
+}
+
+fun LoginHelperDeleteUserResponse.toLoginHelperDeleteUserUiModel(): LoginHelperDeleteUserUiModel {
+    return LoginHelperDeleteUserUiModel(
+        this.message,
+        this.code
     )
 }
