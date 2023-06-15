@@ -260,6 +260,7 @@
     <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
     <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">e-KTP di GoPay</string>
+    <string name="goto_kyc_bridging_progressive_item_title">Nama e-KTP</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
     <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
