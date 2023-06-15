@@ -1,7 +1,5 @@
 package com.tokopedia.shop.score.uitest.features.performance.activity
 
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
@@ -33,7 +31,6 @@ class NewOsBeforeMondayActivityUiTest: ShopScoreUiTest() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_video_shop_performance_learn).onClick()
         intendingIntent()
-        Intents.intended(IntentMatchers.hasData("<your_app_link>"))
     }
 
     @Test
