@@ -33,8 +33,8 @@ data class MPSState(
     val bottomSheetFilterState: BottomSheetFilterState = BottomSheetFilterState(),
 ): SearchUiState {
 
-    private val shopIdSet: Set<String> =
-        (result.data?.filterIsInstance<MPSShopWidgetDataView>() ?: emptyList())
+    private val shopIdSet: Set<String>
+        get() = (result.data?.filterIsInstance<MPSShopWidgetDataView>() ?: emptyList())
             .map { it.id }
             .toSet()
 
