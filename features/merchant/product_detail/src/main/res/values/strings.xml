@@ -148,6 +148,8 @@
 
     <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
     <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
+    <string name="pdp_tradein_allow">Beri Akses</string>
+    <string name="pdp_tradein_back">Kembali</string>
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
@@ -200,5 +202,4 @@
     <string name="pdp_selly_time_format">&#160;• %s</string>
     <string name="pdp_selly_button_expand">Jadwal Lainnya</string>
     <string name="pdp_selly_button_collapse">Tampilkan lebih sedikit</string>
-
 </resources>

@@ -331,7 +331,6 @@ open class DynamicProductDetailFragment :
     BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
     DynamicProductDetailListener,
     AtcVariantListener,
-    ProductAccessRequestDialogFragment.Listener,
     PartialButtonActionListener,
     ProductDetailBottomSheetListener,
     PartialButtonShopFollowersListener,
@@ -534,8 +533,20 @@ open class DynamicProductDetailFragment :
     private var buttonActionType: Int = 0
     private var isTopadsDynamicsSlottingAlreadyCharged = false
 
-    private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
-        setupTradeinDialog()
+    private val tradeInDialog: DialogUnify by lazy {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.pdp_tradein_text_request_access))
+            setDescription(getString(R.string.pdp_tradein_text_permission_description))
+            setPrimaryCTAText(getString(R.string.pdp_tradein_allow))
+            setSecondaryCTAText(getString(R.string.pdp_tradein_back))
+            setPrimaryCTAClickListener {
+                viewModel.clearCacheP2Data()
+                goToTradeInHome()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
     }
 
     private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
@@ -605,7 +616,6 @@ open class DynamicProductDetailFragment :
         }
 
         setPDPDebugMode()
-        showAlertCampaignEnded()
     }
 
     private fun setPDPDebugMode() {
@@ -1562,7 +1572,7 @@ open class DynamicProductDetailFragment :
             componentTrackDataModel
         )
 
-        goToTradein()
+        tradeInDialog.show()
     }
 
     private fun generateCommonTracker(): CommonTracker? {
@@ -2218,13 +2228,6 @@ open class DynamicProductDetailFragment :
         )
         scrollToPosition(getComponentPosition(pdpUiUpdater?.productTradeinMap))
     }
-
-    override fun onAccept() {
-        viewModel.clearCacheP2Data()
-        goToTradeInHome()
-    }
-
-    override fun onDecline() {}
 
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
@@ -3479,14 +3482,6 @@ open class DynamicProductDetailFragment :
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
         } else {
             t.printStackTrace()
-        }
-    }
-
-    private fun goToTradein() {
-        tradeinDialog?.let { dialog ->
-            showImmediately(getProductFragmentManager(), "ACCESS REQUEST") {
-                dialog
-            }
         }
     }
 
@@ -5066,15 +5061,6 @@ open class DynamicProductDetailFragment :
 
     private fun hasTopAds() =
         topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
-
-    private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
-        val accessDialog = ProductAccessRequestDialogFragment()
-        accessDialog.setBodyText(getString(R.string.pdp_tradein_text_permission_description))
-        accessDialog.setTitle(getString(R.string.pdp_tradein_text_request_access))
-        accessDialog.setNegativeButton("")
-        accessDialog.setListener(this)
-        return accessDialog
-    }
 
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
