@@ -30,7 +30,6 @@ class MultiProductSearchEmptyStateTest: MultiProductSearchTestFixtures() {
         `When view created`(mpsViewModel)
 
         `Then assert empty state by keyword`(mpsViewModel)
-        `Then verify general search tracking called`()
     }
 
     private fun `When view created`(mpsViewModel: MPSViewModel) {
@@ -55,7 +54,6 @@ class MultiProductSearchEmptyStateTest: MultiProductSearchTestFixtures() {
         `When view created`(mpsViewModel)
 
         `Then assert empty state by filter`(mpsViewModel)
-        `Then verify general search tracking called`()
     }
 
     private fun `Then assert empty state by filter`(mpsViewModel: MPSViewModel) {

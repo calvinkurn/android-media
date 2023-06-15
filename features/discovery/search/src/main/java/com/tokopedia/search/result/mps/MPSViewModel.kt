@@ -13,8 +13,8 @@ import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.result.mps.addtocart.AddToCartViewModel
+import com.tokopedia.search.result.mps.analytics.GeneralSearchTrackingMPS
 import com.tokopedia.search.result.mps.analytics.MPSTracking
-import com.tokopedia.search.result.mps.analytics.MPSTrackingDataMapper
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterViewModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
@@ -90,10 +90,8 @@ class MPSViewModel @Inject constructor(
         mpsFirstPageUseCase.execute(
             onSuccess = { mpsModel ->
                 trackGeneralSearchAttempt(mpsModel)
-                updateState {
-                    markFirstMpsSuccess(mpsModel)
-                    it.success(mpsModel)
-                }
+                markFirstMpsSuccess(mpsModel)
+                updateState { it.success(mpsModel) }
             },
             onError = { throwable -> updateState { it.error(throwable) } },
             useCaseRequestParams = mpsUseCaseRequestParams(),
@@ -113,8 +111,10 @@ class MPSViewModel @Inject constructor(
         putString(ROWS, DEFAULT_VALUE_OF_PARAMETER_ROWS)
     }
 
-    private fun mandatoryParams(): Map<String, String> =
-        mpsState.parameter + chooseAddressParams() + uniqueIdParams() + deviceParams()
+    private fun mandatoryParams(): Map<String, String> = mpsState.parameter +
+        chooseAddressParams() +
+        uniqueIdParams() +
+        deviceParams()
 
     private fun uniqueIdParams() = mapOf(
         SearchApiConst.UNIQUE_ID to getUniqueId(),
@@ -227,7 +227,7 @@ class MPSViewModel @Inject constructor(
     }
 
     private fun trackGeneralSearchAttempt(mpsModel: MPSModel) {
-        val generalSearchTracking = MPSTrackingDataMapper.createGeneralSearchTrackingMPS(
+        val generalSearchTracking = GeneralSearchTrackingMPS.create(
             mpsModel,
             mpsState.parameter,
             userSession.userId,

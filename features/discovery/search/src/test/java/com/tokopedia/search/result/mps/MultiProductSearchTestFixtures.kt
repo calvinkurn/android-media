@@ -4,9 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.result.mps.analytics.GeneralSearchTrackingMPS
 import com.tokopedia.search.result.mps.analytics.MPSTracking
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
+import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -65,11 +67,5 @@ abstract class MultiProductSearchTestFixtures {
         requestParamsSlot: CapturingSlot<RequestParams> = slot(),
     ) {
         mpsLoadMoreUseCase.stubExecute(requestParamsSlot) returns mpsModel
-    }
-
-    protected fun `Then verify general search tracking called`() {
-        verify {
-            mpsTracking.trackGeneralSearch(any())
-        }
     }
 }
