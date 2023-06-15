@@ -41,7 +41,13 @@ object MapperProductsToXProducts {
                     price = product.price
                 )
             },
-            campaign = newCampaign
+            campaign = newCampaign,
+            affiliate = product.affiliate.let {
+                FeedTaggedProductUiModel.Affiliate(
+                    it.id,
+                    it.channel
+                )
+            }
         )
     }
 
