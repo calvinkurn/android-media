@@ -13,7 +13,6 @@ import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
-import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf

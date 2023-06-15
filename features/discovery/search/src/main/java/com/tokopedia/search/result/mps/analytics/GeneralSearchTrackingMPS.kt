@@ -24,7 +24,7 @@ data class GeneralSearchTrackingMPS(
         ): GeneralSearchTrackingMPS {
             val dimension90 = Dimension90Utils.getDimension90(parameter)
             return GeneralSearchTrackingMPS(
-                eventLabel = createGeneralSearchTrackingEventLabel(mpsModel, parameter),
+                eventLabel = createEventLabel(mpsModel, parameter),
                 pageSource = dimension90,
                 isResultFound = mpsModel.searchShopMPS.shopList.isNotEmpty().toString(),
                 userId = userId,
@@ -35,7 +35,7 @@ data class GeneralSearchTrackingMPS(
             )
         }
 
-        private fun createGeneralSearchTrackingEventLabel(
+        private fun createEventLabel(
             mpsModel: MPSModel,
             parameter: Map<String, String>,
         ): String {
