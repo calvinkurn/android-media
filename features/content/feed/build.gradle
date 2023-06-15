@@ -1,7 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-instrument-test.gradle"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 android {
     testOptions {
@@ -146,6 +153,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
