@@ -25,7 +25,6 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeDiscountInputSe
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.R
@@ -21,7 +22,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
