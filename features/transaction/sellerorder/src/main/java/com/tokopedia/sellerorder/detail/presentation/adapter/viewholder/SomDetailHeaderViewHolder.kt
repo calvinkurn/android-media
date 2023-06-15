@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
@@ -65,9 +66,11 @@ class SomDetailHeaderViewHolder(
                 }
 
                 headerSeeHistory.setOnClickListener {
-                    binding?.root?.context?.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
+                    binding?.root?.context?.startActivity(
+                        RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                             .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
-                            .putExtra(EXTRA_USER_MODE, 2))
+                            .putExtra(EXTRA_USER_MODE, 2)
+                    )
                 }
 
                 if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
@@ -93,18 +96,13 @@ class SomDetailHeaderViewHolder(
                 headerDateValue.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
-                    val deadlineBackground = Utils.getColoredDeadlineBackground(
-                        context = root.context,
-                        colorHex = item.dataObject.deadlineColor,
-                        defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
-                    )
                     if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
                         headerDeadlineLabel.text = root.context.getString(R.string.som_deadline_done)
                     } else {
                         headerDeadlineLabel.text = root.context.getString(R.string.som_deadline)
                     }
                     tvSomDetailDeadline.text = item.dataObject.deadlineText
-                    layoutSomDetailDeadline.background = deadlineBackground
+                    setupDeadlineStyle(item.dataObject.deadlineStyle)
                     headerDeadlineLabel.show()
                     layoutSomDetailDeadline.show()
                 } else {
@@ -134,12 +132,46 @@ class SomDetailHeaderViewHolder(
         }
     }
 
+    private fun DetailHeaderItemBinding.setupDeadlineStyle(deadlineStyle: Int) {
+        when (deadlineStyle) {
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThen24Hours()
+            SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
+            SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
+            else -> setDeadlineMoreThen24Hours()
+        }
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineLowerThan12Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        tvSomDetailDeadline.setTextColor(textColorDeadline)
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineBetween12To24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
+        val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        tvSomDetailDeadline.setTextColor(textColorDeadline)
+    }
+
+    private fun DetailHeaderItemBinding.setDeadlineMoreThen24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomDetailDeadline.background = bgDeadline
+        icSomDetailDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        tvSomDetailDeadline.setTextColor(textColorDeadline)
+    }
+
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
         binding?.headerTitle?.run {
             text = statusText
             val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
-                statusCode == STATUS_CODE_ORDER_REJECTED) {
+                statusCode == STATUS_CODE_ORDER_REJECTED
+            ) {
                 com.tokopedia.unifyprinciples.R.color.Unify_R600
             } else {
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_96

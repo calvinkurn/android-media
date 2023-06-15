@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Spanned
 import android.view.HapticFeedbackConstants
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -83,6 +85,14 @@ object Utils {
         return drawable
     }
 
+    fun getDeadlineDrawable(context: Context, @ColorRes colorRes: Int): GradientDrawable? {
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val bgColor = MethodChecker.getColor(context, colorRes)
+        val gradientDrawable = (drawable as? GradientDrawable)
+        gradientDrawable?.setColor(bgColor)
+        return gradientDrawable
+    }
+
     fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
         val color = parseUnifyColorHex(context, colorHex, defaultColor)
         val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
@@ -149,7 +159,7 @@ object Utils {
         return this.mapNotNull { it.copyParcelable() }
     }
 
-    fun <T: Parcelable> T.copyParcelable(): T? {
+    fun <T : Parcelable> T.copyParcelable(): T? {
         var parcel: Parcel? = null
 
         return try {
@@ -157,7 +167,7 @@ object Utils {
             parcel.writeParcelable(this, 0)
             parcel.setDataPosition(0)
             parcel.readParcelable(this::class.java.classLoader)
-        } catch(throwable: Throwable) {
+        } catch (throwable: Throwable) {
             null
         } finally {
             parcel?.recycle()

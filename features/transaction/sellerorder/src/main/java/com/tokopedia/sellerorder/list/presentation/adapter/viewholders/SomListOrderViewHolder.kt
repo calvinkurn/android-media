@@ -2,15 +2,12 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.ColorRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -54,10 +51,6 @@ open class SomListOrderViewHolder(
         const val CARD_MARGIN_TOP_ORDER_PLUS = 13
         const val CARD_ALPHA_SELECTABLE = 1f
         const val CARD_ALPHA_NOT_SELECTABLE = 0.5f
-
-        private const val DEADLINE_MORE_THAN_24_HOURS = 2
-        private const val DEADLINE_BETWEEN_12_TO_24_HOURS = 1
-        private const val DEADLINE_LOWER_THAN_12_HOURS = 0
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -259,15 +252,15 @@ open class SomListOrderViewHolder(
 
     private fun ItemSomListOrderBinding.setupDeadlineStyle(deadlineStyle: Int) {
         when (deadlineStyle) {
-            DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThen24Hours()
-            DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
-            DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThen24Hours()
+            SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
+            SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
             else -> setDeadlineMoreThen24Hours()
         }
     }
 
     private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
-        val bgDeadline = getDeadlineBackground(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
         val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
@@ -275,7 +268,7 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineBetween12To24Hours() {
-        val bgDeadline = getDeadlineBackground(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
         val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_RN600)
@@ -283,19 +276,11 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineMoreThen24Hours() {
-        val bgDeadline = getDeadlineBackground(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         tvSomListDeadline.setTextColor(textColorDeadline)
-    }
-
-    private fun getDeadlineBackground(context: Context, @ColorRes colorRes: Int): GradientDrawable? {
-        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
-        val bgColor = MethodChecker.getColor(context, colorRes)
-        val gradientDrawable = (drawable as? GradientDrawable)
-        gradientDrawable?.setColor(bgColor)
-        return gradientDrawable
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {

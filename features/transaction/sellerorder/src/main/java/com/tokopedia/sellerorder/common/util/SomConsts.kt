@@ -157,4 +157,8 @@ object SomConsts {
     const val DEFAULT_INVALID_ORDER_ID = "0"
 
     const val ENCODING_UTF_8 = "UTF-8"
+
+    const val DEADLINE_MORE_THAN_24_HOURS = 2
+    const val DEADLINE_BETWEEN_12_TO_24_HOURS = 1
+    const val DEADLINE_LOWER_THAN_12_HOURS = 0
 }
