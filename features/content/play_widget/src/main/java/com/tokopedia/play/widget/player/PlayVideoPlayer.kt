@@ -143,7 +143,11 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
         } else {
             ClippingMediaSource(
                 mediaSourceFactory.createMediaSource(uri),
-                TimeUnit.NANOSECONDS.toMicros(durationToPlay.toNanos())
+                0,
+                TimeUnit.NANOSECONDS.toMicros(durationToPlay.toNanos()),
+                true,
+                true,
+                true,
             )
         }
     }
