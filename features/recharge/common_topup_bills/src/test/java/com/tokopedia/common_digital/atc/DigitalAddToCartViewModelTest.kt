@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getDummyCartDataWithErrors
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getRawErrors
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel.Companion.MESSAGE_ERROR_NON_LOGIN
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
@@ -47,7 +46,10 @@ class DigitalAddToCartViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         digitalAddToCartViewModel = DigitalAddToCartViewModel(
-            digitalAddToCartUseCase, userSession, dispatcher, rechargeAnalytics
+            digitalAddToCartUseCase,
+            userSession,
+            dispatcher,
+            rechargeAnalytics
         )
     }
 
@@ -59,9 +61,7 @@ class DigitalAddToCartViewModelTest {
         // When
         digitalAddToCartViewModel.addToCart(
             DigitalCheckoutPassData(),
-            RequestBodyIdentifier(),
-            DigitalSubscriptionParams(),
-            false
+            RequestBodyIdentifier()
         )
 
         // Then
@@ -92,7 +92,7 @@ class DigitalAddToCartViewModelTest {
         )
 
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any())
         } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -102,9 +102,7 @@ class DigitalAddToCartViewModelTest {
         digitalCheckoutPassData.categoryId = "1"
         digitalAddToCartViewModel.addToCart(
             digitalCheckoutPassData,
-            RequestBodyIdentifier(),
-            DigitalSubscriptionParams(),
-            false
+            RequestBodyIdentifier()
         )
 
         // Then
@@ -114,11 +112,11 @@ class DigitalAddToCartViewModelTest {
     }
 
     @Test
-    fun addToCart_loggedIn_returnsErrorAtc(){
-        //Given
+    fun addToCart_loggedIn_returnsErrorAtc() {
+        // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
-        } throws  DigitalAtcErrorException(getRawErrors())
+            digitalAddToCartUseCase.execute(any(), any(), any())
+        } throws DigitalAtcErrorException(getRawErrors())
 
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -128,9 +126,7 @@ class DigitalAddToCartViewModelTest {
         digitalCheckoutPassData.categoryId = "1"
         digitalAddToCartViewModel.addToCart(
             digitalCheckoutPassData,
-            RequestBodyIdentifier(),
-            DigitalSubscriptionParams(),
-            false
+            RequestBodyIdentifier()
         )
 
         // Then
@@ -143,7 +139,7 @@ class DigitalAddToCartViewModelTest {
     fun addToCart_loggedInNullId_returnsNoConnectionError() {
         // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any())
         } returns null
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -153,9 +149,7 @@ class DigitalAddToCartViewModelTest {
         digitalCheckoutPassData.categoryId = "1"
         digitalAddToCartViewModel.addToCart(
             digitalCheckoutPassData,
-            RequestBodyIdentifier(),
-            DigitalSubscriptionParams(),
-            false
+            RequestBodyIdentifier()
         )
 
         // Then
@@ -173,7 +167,7 @@ class DigitalAddToCartViewModelTest {
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any())
         } throws throwable
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -183,9 +177,7 @@ class DigitalAddToCartViewModelTest {
         digitalCheckoutPassData.categoryId = "1"
         digitalAddToCartViewModel.addToCart(
             digitalCheckoutPassData,
-            RequestBodyIdentifier(),
-            DigitalSubscriptionParams(),
-            false
+            RequestBodyIdentifier()
         )
 
         // Then

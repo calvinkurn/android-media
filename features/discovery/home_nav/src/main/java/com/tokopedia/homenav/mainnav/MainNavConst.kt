@@ -16,7 +16,6 @@ object MainNavConst {
 
     object ImageUrl {
         const val CDN_URL = "https://images.tokopedia.net"
-        const val KEY_IMAGE_HOST = "image_host"
         const val OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png"
         const val TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
         const val SALDO_IMG = "/img/android/saldo_tokopedia/drawable-xxxhdpi/saldo_tokopedia.png";

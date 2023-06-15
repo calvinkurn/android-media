@@ -42,9 +42,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -75,6 +75,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
@@ -136,6 +137,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
@@ -199,8 +201,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
-        val SEARCH_MENU_ID = R.id.menu_sah_search
+        private val SEARCH_MENU_ID = R.id.sah_search_action_menu
+        private val NOTIFICATION_MENU_ID = R.id.sah_notification_action_menu
 
         private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
@@ -224,6 +226,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val STATUS_PERSONA_ACTIVE = 1
         private const val STATUS_PERSONA_SHOW_POPUP = 2
         private const val STATUS_PERSONA_NOT_ROLLED_OUT = 3
+        private const val TRIGGER_INITIAL_LOAD = "initial-load"
+        private const val TRIGGER_ERROR_RELOAD = "error-reload"
+        private const val TRIGGER_PULL_RELOAD = "pull-reload"
     }
 
     @Inject
@@ -268,8 +273,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
-    private val notificationDotBadge: NotificationDotBadge? by lazy {
-        NotificationDotBadge(context ?: return@lazy null)
+    private val notificationDotBadge by lazy {
+        NotificationDotBadge()
     }
     private val isNewLazyLoad by lazy {
         Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
@@ -313,11 +318,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         getWidgetLayout()
+        setContentBackground()
     }
 
     override fun onCreateView(
@@ -349,6 +354,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
         observeWidgetData(sellerHomeViewModel.unificationWidgetData, WidgetType.UNIFICATION)
+        observeWidgetData(sellerHomeViewModel.richListWidgetData, WidgetType.RICH_LIST)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
@@ -402,20 +408,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
+        context?.let {
+            menu.clear()
+            inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
 
-        for (i in Int.ZERO until menu.size()) {
-            menu.getItem(i)?.let { menuItem ->
-                menuItem.actionView?.setOnClickListener {
-                    onOptionsItemSelected(menuItem)
+            for (i in Int.ZERO until menu.size()) {
+                menu.getItem(i)?.let { menuItem ->
+                    menuItem.actionView?.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
                 }
             }
-        }
 
-        this.menu = menu
-        showNotificationBadge()
+            this.menu = menu
+            showNotificationBadge()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -917,6 +925,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
     }
 
+    override fun sendRichListCtaClickEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendClickRichListWidgetCtaEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendClickRichListWidgetCtaNotEligibleEvent()
+        }
+    }
+
+    override fun sendRichListImpressionEvent(eventLabel: String) {
+        if (eventLabel.isNotBlank()) {
+            SellerHomeTracking.sendImpressionRichListWidgetEligibleEvent(eventLabel)
+        } else {
+            SellerHomeTracking.sendImpressionRichListWidgetNotEligibleEvent()
+        }
+    }
+
     override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
         val tabs = element.data?.tabs.orEmpty()
 
@@ -961,12 +985,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             context?.let {
                 val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                    notificationDotBadge.showBadge(menuItem ?: return@let)
                 } else {
-                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                    notificationDotBadge.removeBadge(menuItem ?: return@let)
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    private fun setContentBackground() {
+        activity?.let {
+            val background = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            it.window.decorView.setBackgroundColor(background)
+        }
     }
 
     fun setNotifCenterCounter(count: Int) {
@@ -980,7 +1011,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
     }
 
     private fun showRebateCoachMark() {
@@ -1131,20 +1162,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            reloadPage()
+            reloadPage(TRIGGER_PULL_RELOAD)
             showNotificationBadge()
             sellerHomeListener?.getShopInfo()
         }
 
         binding?.sahGlobalError?.setActionClickListener {
-            reloadPage()
+            reloadPage(TRIGGER_ERROR_RELOAD)
         }
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
 
-        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
-        setViewBackground(isNewSellerState)
+        setViewBackground()
     }
 
     private fun setupEmptyState() {
@@ -1166,7 +1196,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
             setPrimaryCTAClickListener {
-                reloadPage()
+                reloadPage(TRIGGER_ERROR_RELOAD)
             }
         }
     }
@@ -1195,7 +1225,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
-    private fun reloadPage() = binding?.run {
+    private fun reloadPage(trigger: String) = binding?.run {
         isReloading = true
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
@@ -1208,7 +1238,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        sellerHomeViewModel.getWidgetLayout(deviceHeight, trigger)
         sellerHomeViewModel.getTicker()
     }
 
@@ -1328,6 +1358,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getUnificationWidgetData(mWidgets)
     }
 
+    private fun getRichListData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_RICH_LIST_TRACE)
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        sellerHomeViewModel.getRichListWidgetData(dataKeys)
+    }
+
     private fun setupShopSharing() {
         ImageHandler.loadImageWithTarget(
             context,
@@ -1368,8 +1405,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(
-                        it,
+                    shopShareHelper.onShareOptionClicked(it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -1472,19 +1508,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         when (personaStatus) {
             STATUS_PERSONA_NOT_ROLLED_OUT -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
+                    userId = userSession.userId,
                     shouldVisible = false
                 )
             }
             STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
                 showPersonaBottomSheet(personaStatus)
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId, shouldVisible = true
+                    userId = userSession.userId,
+                    shouldVisible = true
                 )
             }
             STATUS_PERSONA_SHOW_POPUP -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
+                    userId = userSession.userId,
                     shouldVisible = true
                 )
             }
@@ -1520,11 +1557,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val message = context.getString(R.string.sah_activate_persona_entry_point_info)
                 val cta = context.getString(R.string.saldo_btn_oke)
                 Toaster.build(
-                    rootView,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    cta
+                    rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, cta
                 ).show()
             }
         }
@@ -1684,6 +1717,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
         groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
         groupedWidgets[WidgetType.UNIFICATION]?.run { getUnificationData(this) }
+        groupedWidgets[WidgetType.RICH_LIST]?.run { getRichListData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
@@ -1810,7 +1844,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun reloadPageOrLoadDataOfErrorWidget() {
         val isAnyErrorWidget = adapter.data.any { !it.data?.error.isNullOrBlank() }
         if (!isAnyErrorWidget) {
-            reloadPage()
+            reloadPage(TRIGGER_ERROR_RELOAD)
             return
         }
 
@@ -1960,7 +1994,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground(isNewSellerState)
+                setViewBackground()
             }
             setSectionWidgetTextColor()
         }
@@ -1992,70 +2026,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
+    private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
             isPowerMerchant -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
             else -> {
-                if (isNewSeller) {
-                    viewBgShopStatus.gone()
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
-                }
+                viewBgShopStatus.gone()
             }
         }
     }
 
-    private fun showRegularHomeBackground(imageUrl: String) {
+    private fun showRegularHomeBackground(backgroundResource: Int) {
         binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.loadImage(imageUrl) {
-                    listener(onSuccess = { _, _ ->
-                        viewBgShopStatus.visible()
-                        setHomeBackgroundRatio()
-                    })
-                }
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
-        }
-    }
-
-    private fun setHomeBackgroundRatio() {
-        binding?.run {
-            viewBgShopStatus.layoutParams.height =
-                (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
+            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+            viewBgShopStatus.layoutParams.height = height
+            viewBgShopStatus.visible()
+            viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
-        }
-    }
-
-    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
-        binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.setImageResource(imageResourceId)
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
         }
     }
 

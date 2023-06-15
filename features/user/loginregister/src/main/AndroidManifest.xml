@@ -216,6 +216,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.loginregister.forbidden.ForbiddenActivity"
+            android:label="@string/title_activity_forbidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <service
             android:name=".seamlesslogin.RemoteService"

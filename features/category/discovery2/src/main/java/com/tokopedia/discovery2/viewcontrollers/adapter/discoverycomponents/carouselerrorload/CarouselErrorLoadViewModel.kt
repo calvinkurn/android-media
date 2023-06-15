@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
+import com.tokopedia.discovery2.usecase.productbundlingusecase.ProductBundlingUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -32,6 +33,10 @@ class CarouselErrorLoadViewModel(application: Application,
     @Inject
     lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
 
+    @JvmField
+    @Inject
+    var productBundlingUseCase: ProductBundlingUseCase? = null
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -51,6 +56,11 @@ class CarouselErrorLoadViewModel(application: Application,
                         )
                     ComponentNames.MerchantVoucherCarousel.componentName ->
                         merchantVoucherUseCase.getCarouselPaginatedData(
+                            components.parentComponentId,
+                            components.pageEndPoint
+                        )
+                    ComponentNames.ProductBundling.componentName ->
+                        productBundlingUseCase?.getProductBundlingPaginatedData(
                             components.parentComponentId,
                             components.pageEndPoint
                         )

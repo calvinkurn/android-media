@@ -121,8 +121,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
     fun isShownEmptyState(): Boolean {
         val layoutList = categoryLayoutItemList.toMutableList()
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-        return isError
+        return layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
     }
 
     fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {

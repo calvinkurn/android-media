@@ -2,21 +2,23 @@ package com.tokopedia.play.broadcaster.util.extension
 
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.network.R as networkR
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import com.tokopedia.network.R as networkR
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by jegul on 16/07/20
@@ -103,14 +105,24 @@ internal fun View.showToaster(
             }
 }
 
-internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestListener<Drawable>) {
+internal fun ImageUnify.loadImageFromUrl(
+    token: String?,
+    url: String,
+    requestListener: RequestListener<Drawable>
+) {
+    val glideUrl: Any = if (token != null) {
+        GlideUrl(
+            url,
+            LazyHeaders.Builder()
+                .addHeader("Authorization", "Bearer $token")
+                .build()
+        )
+    } else url
+
     Glide.with(context)
-            .load(url)
-            .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-            .dontAnimate()
-            .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-            .addListener(requestListener)
-            .into(this)
+        .load(glideUrl)
+        .addListener(requestListener)
+        .into(this)
 }
 
 internal fun Long.millisToHours() = TimeUnit.MILLISECONDS.toHours(this)

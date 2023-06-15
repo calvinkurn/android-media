@@ -99,9 +99,9 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     override fun getComponent(): TalkTemplateComponent? {
         return activity?.run {
             DaggerTalkTemplateComponent
-                    .builder()
-                    .talkComponent(TalkInstance.getComponent(application))
-                    .build()
+                .builder()
+                .talkComponent(TalkInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -128,54 +128,67 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun observeTemplateMutation() {
-        viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                TalkTemplateMutationResults.TemplateActivateSuccess -> {
-                    showToaster(getString(R.string.template_list_success_activate_template), false)
-                    updateAddTemplateButton()
-                }
-                TalkTemplateMutationResults.TemplateDeactivateSuccess -> {
-                    showToaster(getString(R.string.template_list_success_deactivate_template), false)
-                    hideButton()
-                }
-                TalkTemplateMutationResults.TemplateMutationSuccess -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                is TalkTemplateMutationResults.RearrangeTemplateFailed -> {
-                    logException(it.throwable)
-                    showToaster(getString(R.string.template_list_rearrange_toaster_fail), true)
-                }
-                is TalkTemplateMutationResults.MutationFailed -> {
-                    logException(it.throwable)
-                    showToaster(getString(R.string.template_list_toaster_fail), true)
+        viewModel.templateMutation.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    TalkTemplateMutationResults.TemplateActivateSuccess -> {
+                        showToaster(getString(R.string.template_list_success_activate_template), false)
+                        updateAddTemplateButton()
+                    }
+                    TalkTemplateMutationResults.TemplateDeactivateSuccess -> {
+                        showToaster(getString(R.string.template_list_success_deactivate_template), false)
+                        hideButton()
+                    }
+                    TalkTemplateMutationResults.TemplateMutationSuccess -> {
+                        showToaster(getString(R.string.template_list_success_add_template), false)
+                    }
+                    is TalkTemplateMutationResults.RearrangeTemplateFailed -> {
+                        logException(it.throwable)
+                        showToaster(getString(R.string.template_list_rearrange_toaster_fail), true)
+                    }
+                    is TalkTemplateMutationResults.MutationFailed -> {
+                        logException(it.throwable)
+                        showToaster(getString(R.string.template_list_toaster_fail), true)
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeTemplateList() {
-        viewModel.templateList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    hideLoading()
-                    if (isSeller) {
-                        renderList(it.data.sellerTemplate.templates, it.data.sellerTemplate.isEnable)
-                        return@Observer
+        viewModel.templateList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        hideLoading()
+                        if (isSeller) {
+                            renderList(it.data.sellerTemplate.templates, it.data.sellerTemplate.isEnable)
+                            return@Observer
+                        }
+                        renderList(it.data.buyerTemplate.templates, it.data.buyerTemplate.isEnable)
                     }
-                    renderList(it.data.buyerTemplate.templates, it.data.buyerTemplate.isEnable)
-                }
-                is Fail -> {
-                    showToasterWithAction(getString(R.string.template_list_fail_load_template_list), true, View.OnClickListener {
-                        getTemplateList()
-                    })
-                    hideButton()
+                    is Fail -> {
+                        showToasterWithAction(
+                            getString(R.string.template_list_fail_load_template_list),
+                            true,
+                            View.OnClickListener {
+                                getTemplateList()
+                            }
+                        )
+                        hideButton()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun renderList(templates: List<String>, isEnabled: Boolean) {
-        if(!isEnabled) {
+        if (!isEnabled) {
             talkTemplateListRecyclerView?.hide()
         } else {
             talkTemplateListAddButton?.isEnabled = templates.shouldEnableButton()
@@ -187,7 +200,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun updateAddTemplateButton() {
-        if(adapter?.shouldShowAddTemplateButton() == true) showButton() else hideButton()
+        if (adapter?.shouldShowAddTemplateButton() == true) showButton() else hideButton()
     }
 
     private fun initRecyclerView() {
@@ -214,11 +227,14 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
             }
-        })
+        )
     }
 
     private fun setToolbarTitle() {
@@ -265,7 +281,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun goToEdit(template: String, index: Int) {
         activity?.let {
-            if(editBottomsheet == null) {
+            if (editBottomsheet == null) {
                 editBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(getString(R.string.title_edit_template_page)) }
             }
             editBottomsheet?.apply {
@@ -278,7 +294,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun goToAdd() {
         activity?.let {
-            if(addBottomsheet == null) {
+            if (addBottomsheet == null) {
                 addBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(getString(R.string.title_add_template_page)) }
             }
             addBottomsheet?.apply {

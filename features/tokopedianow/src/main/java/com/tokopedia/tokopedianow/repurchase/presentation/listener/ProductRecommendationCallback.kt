@@ -7,8 +7,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.RequestCode
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
@@ -50,15 +50,17 @@ class ProductRecommendationCallback(
 
     override fun productCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
-        RouteManager.route(activity, product.appLink)
+        val appLink = tokoNowRepurchaseViewModel
+            .createAffiliateLink(product.appLink)
+        RouteManager.route(activity, appLink)
     }
 
     override fun seeMoreClicked(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         RouteManager.route(activity, seeMoreUiModel.appLink)
     }
@@ -69,9 +71,11 @@ class ProductRecommendationCallback(
         RouteManager.route(activity, appLink)
     }
 
+    override fun productCardAddToCartBlocked() {}
+
     override fun productCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) { /* nothing to do */ }

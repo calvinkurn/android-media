@@ -5,8 +5,8 @@ import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
-import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
@@ -35,7 +35,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID: String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackPromoBannerClick(banner: DataItem, bannerPosition: Int) {}
-    open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
     open fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
@@ -45,7 +44,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackPlayWidgetOverLayImpression(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetReminderClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean) {}
     open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
-    open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
     open fun trackShareClick() {}
@@ -53,8 +51,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackGlobalNavBarClick(buttonName: String, userID: String?) {}
     open fun trackLihatSemuaClick(dataItem: DataItem?) {}
     open fun trackPromoLihat(componentsItems: ComponentsItem) {}
-    open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
-    open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}
     open fun trackClickSeeAllBanner() {}
     open fun trackClickCustomTopChat() {}
     open fun trackClickChipsFilter(filterName: String) {}
@@ -67,7 +63,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
     open fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {}
-    open fun trackEventClickCoupon(coupon: CatalogWithCouponList?, position: Int, isDouble: Boolean) {}
+    open fun trackEventClickCoupon(componentsItems: ComponentsItem, position: Int, isDouble: Boolean) {}
     open fun trackQuickCouponImpression(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponClick(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponApply(clickCouponData: ClickCouponData) {}
@@ -165,9 +161,12 @@ open class BaseDiscoveryAnalytics(
     open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
     open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
     open fun trackEventClickProductBundlingChipSelection(componentsItems: ComponentsItem, selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel) {}
+    open fun trackEventBundleProductClicked(componentsItems: ComponentsItem, bundleType: BundleTypes, bundle: BundleUiModel, selectedMultipleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, productItemPosition: Int) {}
     open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}
     open fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>, totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {}
     open fun trackContentCardImpression(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>,components: ComponentsItem?) {}
+    open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {}
 }

@@ -77,6 +77,7 @@
     <dimen name="product_card_text_view_shipping_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_shipping_height">18dp</dimen>
 
+    <dimen name="product_card_text_view_inline_eta_margin_start">4dp</dimen>
     <dimen name="product_card_text_view_eta_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_eta_height">14dp</dimen>
 
@@ -159,4 +160,9 @@
     <dimen name="product_card_button_primary_margin">8dp</dimen>
 
     <dimen name="product_card_sales_rating_margin_top">3dp</dimen>
+
+    <dimen name="product_card_button_see_other_product_margin_top">4dp</dimen>
+    <dimen name="product_card_button_see_other_product_height">32dp</dimen>
+
+    <dimen name="product_card_top_stock_bar_background_height">30dp</dimen>
 </resources>

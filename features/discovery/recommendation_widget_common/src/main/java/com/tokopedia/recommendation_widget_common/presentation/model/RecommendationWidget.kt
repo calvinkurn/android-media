@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import java.util.UUID
 
 data class RecommendationWidget(
     var recommendationItemList: List<RecommendationItem> = listOf(),
@@ -31,6 +32,9 @@ data class RecommendationWidget(
     var isTokonow: Boolean = false,
     val channelId: String = ""
 ) {
+
+    val affiliateTrackerId: String = UUID.randomUUID().toString()
+
     fun copyRecomItemList(): List<RecommendationItem> {
         val newList = mutableListOf<RecommendationItem>()
         recommendationItemList.forEach { newList.add(it.copy()) }

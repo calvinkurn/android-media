@@ -67,7 +67,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get PM active state with PM Pro data should set result success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val data = PMGradeBenefitInfoUiModel()
             val pmProTire = 1
 
@@ -88,7 +88,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get PM active state with PM data should set result success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val data = PMGradeBenefitInfoUiModel()
             val pmProTire = 0
 
@@ -109,7 +109,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get PM active state data should set result failed`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val error = Throwable()
             coEvery {
                 getPMGradeBenefitInfoUseCase.executeOnBackground()
@@ -128,7 +128,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when submit PM activation should set result success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val result = PMActivationStatusUiModel()
             val source = anyString()
 
@@ -151,7 +151,7 @@ class PowerMerchantSubscriptionViewModelTest {
         }
 
     @Test
-    fun `when submit PM activation should set result failed`() = coroutineTestRule.runBlockingTest {
+    fun `when submit PM activation should set result failed`() = coroutineTestRule.runTest {
         val error = Throwable()
         val source = anyString()
 
@@ -175,7 +175,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when submit cancel PM deactivation should set result success`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val result = PMActivationStatusUiModel()
 
             coEvery {
@@ -195,7 +195,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when submit cancel PM deactivation should set result failed`() =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val error = Throwable()
 
             coEvery {
@@ -215,7 +215,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get shop level info widget then should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val mock = ShopLevelUiModel()
 
             coEvery {
@@ -235,7 +235,7 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get shop level info widget then should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val error = Throwable()
             coEvery {
                 getShopLevelUseCase.execute(any())

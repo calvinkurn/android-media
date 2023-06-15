@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pdp_shipment_plus"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border"
+    app:layout_constraintTop_toBottomOf="@id/pdp_shipment_rates_error">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/pdp_shipment_plus_background"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0"
+            app:unify_image_disable_shimmering_placeholder="false" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/pdp_shipment_plus_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_disable_shimmering_placeholder="false" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_shipment_plus_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/pdp_shipment_plus_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            tools:text="Produk ini bisa dikirim lebih cepat! Cek" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

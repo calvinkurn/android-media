@@ -6,16 +6,11 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import rx.Observable
 
 /**
  * Created by naveengoyal on 5/7/18.
  */
 interface FavoriteShopApi {
-
-    @POST("./")
-    @Headers("Content-Type: application/json")
-    fun getFavoritShopsData(@Body requestBody: String): Observable<Response<GraphqlResponse<FavoritShopResponseData>>>
 
     @POST("./")
     @Headers("Content-Type: application/json")

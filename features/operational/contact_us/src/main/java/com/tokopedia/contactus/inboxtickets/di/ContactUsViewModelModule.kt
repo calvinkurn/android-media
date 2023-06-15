@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsViewModel
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel
@@ -15,11 +16,10 @@ import dagger.multibindings.IntoMap
 abstract class ContactUsViewModelModule {
 
     @Binds
-    @InboxScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory // ktlint-disable max-line-length
 
     @Binds
-    @InboxScope
     @IntoMap
     @ViewModelKey(ContactUsRatingViewModel::class)
     internal abstract fun bindContactUsViewModel(viewModel: ContactUsRatingViewModel): ViewModel

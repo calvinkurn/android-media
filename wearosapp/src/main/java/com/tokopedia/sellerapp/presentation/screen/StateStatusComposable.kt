@@ -69,6 +69,9 @@ fun STATE.getTextColorBasedOnState(): Color {
         STATE.COMPANION_NOT_INSTALLED -> {
             color = colorResource(id = R.color.Unify_RN500)
         }
+        STATE.CONNECTED -> {
+            color = colorResource(id = R.color.Unify_GN500)
+        }
     }
     return color
 }

@@ -83,7 +83,7 @@ data class EtaModel(
 data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
-    var statusSubtitle: String = "",
+    var statusSubtitle: String = ""
 ) : Parcelable
 
 @Parcelize

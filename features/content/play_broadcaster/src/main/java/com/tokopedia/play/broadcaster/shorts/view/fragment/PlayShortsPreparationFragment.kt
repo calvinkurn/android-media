@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -17,19 +19,19 @@ import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
-import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.animateGone
@@ -38,22 +40,25 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
-import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateSuccessBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateTnCBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -66,7 +71,10 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val idleManager: PlayShortsIdleManager,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
     private val analytic: PlayShortsAnalytic,
-) : PlayShortsBaseFragment() {
+) : PlayShortsBaseFragment(),
+    PlayBroadcastSetupTitleBottomSheet.Listener,
+    PlayBroadcastSetupCoverBottomSheet.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
 
@@ -75,14 +83,33 @@ class PlayShortsPreparationFragment @Inject constructor(
     private var _binding: FragmentPlayShortsPreparationBinding? = null
     private val binding: FragmentPlayShortsPreparationBinding get() = _binding!!
 
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter(this)
+    }
+    private var mLayoutManager: LinearLayoutManager? = null
+    private val snapHelper = PagerSnapHelper()
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
+    private var productSetupPendingToaster: String? = null
     private var exitConfirmationDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
+    private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
+
+    private val scrollListener by lazyThreadSafetyNone {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager?.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position.orZero())
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,12 +142,12 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupView()
         setupListener()
         setupObserver()
-        setupCoachMark()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
         coachMark = null
 
@@ -146,7 +173,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                        // TODO("Use uiState directly when uiState already return StateFlow")
                         return viewModel.productSectionList
                     }
 
@@ -163,26 +189,46 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return viewModel.maxProduct
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Shorts
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return viewModel.isSelectedAccountAffiliate
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
                     override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
                         viewModel.submitAction(PlayShortsAction.SetProduct(productTagSectionList))
                     }
-                })
-            }
-            is PlayBroadcastSetupBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
-                    override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        viewModel.submitAction(PlayShortsAction.SetCover(cover.croppedCover))
-                    }
-                })
-                childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
-                    override fun getProductList(): List<ProductUiModel> {
-                        return viewModel.productSectionList.flatMap { it.products }
+                    override fun onProductSetupDismissed() {
+                        if (productSetupPendingToaster == null) return
+                        viewModel.submitAction(
+                            PlayShortsAction.ResetUploadState
+                        )
+                        toaster.showToaster(productSetupPendingToaster.orEmpty())
+                        productSetupPendingToaster = null
                     }
 
-                    override fun getSelectedAccount(): ContentAccountUiModel {
+                    override fun onProductSummaryCommissionShown() {
+                        analytic.sendImpressionTagProductCommissionEvent(viewModel.selectedAccount.id)
+                    }
+                })
+            }
+            is PlayBroadcastSetupTitleBottomSheet -> {
+                childFragment.setupListener(this)
+                childFragment.setupData(viewModel.title, viewModel.maxTitleCharacter)
+            }
+            is PlayBroadcastSetupCoverBottomSheet -> {
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
+                    }
+
+                    override fun getContentAccount(): ContentAccountUiModel {
                         return viewModel.selectedAccount
                     }
 
@@ -190,10 +236,19 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.shortsId
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Shorts
+                    override fun getChannelTitle(): String {
+                        return viewModel.title
                     }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return viewModel.mDataStore
+                    }
+
                 })
+
+                val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
+                childFragment.needToShowCoachMark(isShowCoachMark)
+                if (isShowCoachMark) viewModel.submitAction(PlayShortsAction.SetShowSetupCoverCoachMark)
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(viewModel.accountList)
@@ -219,31 +274,85 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayShortsAffiliateTnCBottomSheet -> {
+                childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
+                    override fun onCheckBoxChecked() {
+                        analytic.sendClickAcceptTcAffiliateEvent(viewModel.selectedAccount.id)
+                    }
+                    override fun onSubmitTnc() {
+                        analytic.sendClickNextRegisterAffiliateEvent(viewModel.selectedAccount.id)
+                        viewModel.submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
+                    }
+                })
+            }
+            is PlayShortsAffiliateSuccessBottomSheet -> {
+                childFragment.setupData(viewModel.selectedAccount.name)
+                childFragment.setListener(object: PlayShortsAffiliateSuccessBottomSheet.Listener{
+                    override fun onClickNext() {
+                        analytic.sendClickNextCreateContentEvent(viewModel.selectedAccount.id)
+                    }
+                })
+            }
         }
     }
 
     override fun onBackPressed(): Boolean {
-        return when {
-            binding.formTitle.visibility == View.VISIBLE -> {
-                hideKeyboard()
-                viewModel.submitAction(PlayShortsAction.CloseTitleForm)
-                true
+        showExitConfirmationDialog()
+        return true
+    }
+
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS_AFFILIATE -> {
+                analytic.sendClickRegisterAffiliateCardEvent(viewModel.selectedAccount.id)
+                openShortsAffiliateTncBottomSheet()
             }
-            binding.formCover.visibility == View.VISIBLE -> {
-                viewModel.submitAction(PlayShortsAction.CloseCoverForm)
-                true
-            }
-            else -> {
-                showExitConfirmationDialog()
-                true
-            }
+            else -> return
         }
     }
 
     private fun setupView() {
+        mLayoutManager = LinearLayoutManager(requireContext())
         binding.toolbar.apply {
             navIcon = IconUnify.ARROW_BACK
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
+        }
+        binding.rvBannerPreparation.apply {
+            layoutManager = mLayoutManager
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
+            addOnScrollListener(scrollListener)
+        }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
+
+        if (!coachMarkSharedPref.hasBeenShown(Key.PlayShortsPreparation, userSession.userId)) {
+            setupCoachMark(
+                CoachMark2Item(
+                    anchorView = binding.preparationMenu,
+                    title = getString(R.string.play_shorts_preparation_coachmark_title),
+                    description = getString(R.string.play_shorts_preparation_coachmark_description),
+                    position = CoachMark2.POSITION_TOP
+                )
+            )
+            coachMarkSharedPref.setHasBeenShown(Key.PlayShortsPreparation, userSession.userId)
+        }
+
+        if (viewModel.isAllowChangeAccount && !coachMarkSharedPref.hasBeenShown(
+                Key.SwitchAccount,
+                userSession.userId
+            )
+        ) {
+            setupCoachMark(
+                CoachMark2Item(
+                    anchorView = binding.toolbar,
+                    title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
+                    description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
+            coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
         }
     }
 
@@ -272,56 +381,24 @@ class PlayShortsPreparationFragment @Inject constructor(
             preparationMenu.setOnMenuClickListener {
                 coachMark?.dismissCoachMark()
 
-                when (it.menuId) {
-                    DynamicPreparationMenu.TITLE -> {
-                        analytic.clickMenuTitle(viewModel.selectedAccount)
+                when (it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
+                        analytic.clickMenuTitle(viewModel.selectedAccount)
+                        openSetupTitleBottomSheet()
                     }
-                    DynamicPreparationMenu.PRODUCT -> {
+                    DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
-                    DynamicPreparationMenu.COVER -> {
-                        analytic.clickMenuCover(viewModel.selectedAccount)
+                    DynamicPreparationMenu.Menu.Cover -> {
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
+                        analytic.clickMenuCover(viewModel.selectedAccount)
+                        openSetupCoverBottomSheet()
                     }
+                    else -> {}
                 }
             }
-
-            formTitle.setListener(object : TitleFormView.Listener {
-                override fun onClearTitle() {
-                    analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
-                }
-
-                override fun onClickTextField() {
-                    analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
-                }
-
-                override fun onCloseTitleForm(view: TitleFormView) {
-                    analytic.clickBackOnTitleForm(viewModel.selectedAccount)
-                    hideKeyboard()
-                    viewModel.submitAction(PlayShortsAction.CloseTitleForm)
-                }
-
-                override fun onTitleSaved(view: TitleFormView, title: String) {
-                    analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
-                    viewModel.submitAction(PlayShortsAction.UploadTitle(title))
-                }
-            })
-
-            formCover.setListener(object : CoverFormView.Listener {
-                override fun onCloseCoverForm() {
-                    analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
-
-                    viewModel.submitAction(PlayShortsAction.CloseCoverForm)
-                }
-
-                override fun onClickCoverPreview(isEditCover: Boolean) {
-                    analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
-
-                    openCoverSetupFragment()
-                }
-            })
 
             btnNext.setOnClickListener {
                 analytic.clickNextOnPreparationPage(viewModel.selectedAccount)
@@ -334,12 +411,13 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderTitleForm(it.prevValue, it.value)
                 renderMedia(it.prevValue, it.value)
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
-                renderTitleForm(it.prevValue, it.value)
-                renderCoverForm(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
+                renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
+                renderCoachMarkProductCommission(it.prevValue?.isAffiliate, it.value.isAffiliate)
             }
         }
 
@@ -347,14 +425,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayShortsUiEvent.ErrorUploadTitle -> {
-                        toaster.showError(
-                            event.throwable,
-                            duration = Toaster.LENGTH_LONG,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = {
-                                event.onRetry()
-                            }
-                        )
+                        getSetupTitleBottomSheet().failSubmit(event.throwable.message)
                     }
                     is PlayShortsUiEvent.ErrorSwitchAccount -> {
                         toaster.showError(
@@ -364,6 +435,27 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                     is PlayShortsUiEvent.SwitchAccount -> {
                         showSwitchAccountBottomSheet()
+                    }
+                    is PlayShortsUiEvent.ErrorOnboardAffiliate -> {
+                        if (event.error == null) return@collect
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.showErrorToast(event.error)
+                    }
+                    is PlayShortsUiEvent.SuccessOnboardAffiliate -> {
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.dismiss()
+                        openShortsAffiliateSuccessBottomSheet()
+                    }
+                    is PlayShortsUiEvent.AutoGeneratedCoverToaster -> {
+                        productSetupPendingToaster = if (event.isToasterUpdate) {
+                            getString(R.string.play_setup_cover_auto_generated_toaster_update_cover_from_product)
+                        } else {
+                            getString(R.string.play_setup_cover_auto_generated_toaster_delete_cover_from_product)
+                        }
+                    }
+                    is PlayShortsUiEvent.ResetForm -> {
+                        coachMark = null
+                        coachMarkItems.clear()
                     }
                     else -> {}
                 }
@@ -375,64 +467,76 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                    else -> return@collectLatest
                 }
             }
         }
     }
 
-    private fun setupCoachMark() {
+    private fun renderTitleForm(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.titleForm == curr.titleForm) return
 
-        fun onCloseCoachMark() {
+        if (curr.titleForm.state == PlayShortsTitleFormUiState.State.Unknown
+            && getSetupTitleBottomSheet().isAdded && getSetupTitleBottomSheet().isVisible) {
+            getSetupTitleBottomSheet().dismiss()
+        }
+    }
+
+    private fun renderBannerPreparationPage(
+        prev: List<PlayBroadcastPreparationBannerModel>?,
+        curr: List<PlayBroadcastPreparationBannerModel>
+    ) {
+        if (prev == curr) return
+
+        adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
+    }
+
+    private fun renderCoachMarkProductCommission(prev: Boolean?, curr: Boolean) {
+        if (prev == curr || !curr || coachMarkSharedPref.hasBeenShown(Key.ProductCommission)) return
+
+        analytic.sendImpressionCekProductCommissionEvent(viewModel.selectedAccount.id)
+        binding.preparationMenu.getMenuView(
+            menu = DynamicPreparationMenu.Menu.Product,
+            menuView = { menuView ->
+                setupCoachMark(
+                    CoachMark2Item(
+                        menuView,
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_title),
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_subtitle),
+                        CoachMark2.POSITION_TOP,
+                    )
+                )
+            }
+        )
+        coachMarkSharedPref.setHasBeenShown(Key.ProductCommission)
+    }
+
+    private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
+        fun onDismissCoachMark() {
             analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMarkItems.contains(coachMarkItem)) return
 
-        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.preparationMenu,
-                        title = getString(R.string.play_shorts_preparation_coachmark_title),
-                        description = getString(R.string.play_shorts_preparation_coachmark_description),
-                        position = CoachMark2.POSITION_TOP
-                    )
-                )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
-            }
+        coachMarkItems.add(coachMarkItem)
 
-            if(viewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.toolbar,
-                        title = requireContext().getString(contentCommonR.string.sa_coach_mark_title),
-                        description = requireContext().getString(contentCommonR.string.sa_shorts_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM
-                    )
-                )
-                viewModel.submitAction(PlayShortsAction.SetNotFirstSwitchAccount)
-            }
-        }
+        if (coachMark == null) coachMark = CoachMark2(requireContext())
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
-        if(coachMarkItems.isNotEmpty()) {
-            if(coachMark == null) {
-                coachMark = CoachMark2(requireContext())
-            }
-
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-            if(coachMarkItems.size == 1) {
-                coachMark?.simpleCloseIcon?.setOnClickListener { onCloseCoachMark() }
-            }
-            else {
-                coachMark?.stepCloseIcon?.setOnClickListener { onCloseCoachMark() }
-            }
+        if (coachMarkItems.size == 1) {
+            coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+        } else {
+            coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
     }
 
     private fun setupUiStandby() {
-        Log.d("<LOG>", "Standby")
         binding.preparationMenu.showMenuText(true)
         binding.flBottomBackground.animateShow()
         binding.flTopBackground.animateShow()
@@ -440,7 +544,6 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun setupUiIdle() {
-        Log.d("<LOG>", "Idle")
         binding.preparationMenu.showMenuText(false)
         binding.flBottomBackground.animateGone()
         binding.flTopBackground.animateGone()
@@ -482,61 +585,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.preparationMenu.submitMenu(curr.menuList)
     }
 
-    private fun renderTitleForm(
-        prev: PlayShortsUiState?,
-        curr: PlayShortsUiState
-    ) {
-        if (prev?.titleForm == curr.titleForm) return
-
-        when (curr.titleForm.state) {
-            PlayShortsTitleFormUiState.State.Unknown -> {
-                showTitleForm(false)
-
-                binding.formTitle.setLoading(false)
-            }
-            PlayShortsTitleFormUiState.State.Editing -> {
-                showTitleForm(true)
-
-                if (prev?.titleForm?.state == PlayShortsTitleFormUiState.State.Unknown) {
-                    binding.formTitle.setTitle(viewModel.title)
-                }
-                binding.formTitle.setLoading(false)
-                binding.formTitle.setMaxCharacter(viewModel.maxTitleCharacter)
-                binding.formTitle.setPlaceholder(getString(R.string.play_shorts_title_form_hint))
-            }
-            PlayShortsTitleFormUiState.State.Loading -> {
-                hideKeyboard()
-                binding.formTitle.setLoading(true)
-            }
-        }
-    }
-
-    private fun renderCoverForm(
-        prev: PlayShortsUiState?,
-        curr: PlayShortsUiState
-    ) {
-        if (prev?.coverForm == curr.coverForm) return
-
-        when (curr.coverForm.state) {
-            PlayShortsCoverFormUiState.State.Unknown -> {
-                showCoverForm(false)
-            }
-            PlayShortsCoverFormUiState.State.Editing -> {
-                showCoverForm(true)
-
-                binding.formCover.setTitle(viewModel.title)
-                binding.formCover.setAuthorName(viewModel.selectedAccount.name)
-
-                val coverUri = curr.coverForm.coverUri
-                if (coverUri.isNotEmpty()) {
-                    binding.formCover.setCover(coverUri)
-                } else {
-                    binding.formCover.setInitialCover()
-                }
-            }
-        }
-    }
-
     private fun renderNextButton(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
@@ -544,34 +592,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (prev?.menuList == curr.menuList) return
 
         binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
-    }
-
-    private fun showMainComponent(isShow: Boolean) {
-        binding.groupPreparationMain.showWithCondition(isShow)
-
-        if (isShow) {
-            idleManager.startIdleTimer(viewLifecycleOwner.lifecycleScope)
-        } else {
-            idleManager.forceStandByMode()
-        }
-    }
-
-    private fun showTitleForm(isShow: Boolean) {
-        showMainComponent(!isShow)
-        binding.formTitle.showWithCondition(isShow)
-
-        if(isShow) {
-            analytic.openScreenTitleForm(viewModel.selectedAccount)
-        }
-    }
-
-    private fun showCoverForm(isShow: Boolean) {
-        showMainComponent(!isShow)
-        binding.formCover.showWithCondition(isShow)
-
-        if(isShow) {
-            analytic.openScreenCoverForm(viewModel.selectedAccount)
-        }
     }
 
     private fun showExitConfirmationDialog() {
@@ -668,27 +688,108 @@ class PlayShortsPreparationFragment @Inject constructor(
             .show(childFragmentManager)
     }
 
+    private fun getShortsAffiliateTncBottomSheet() = PlayShortsAffiliateTnCBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    private fun openShortsAffiliateTncBottomSheet() {
+        getShortsAffiliateTncBottomSheet().show(childFragmentManager)
+    }
+
+    private fun openShortsAffiliateSuccessBottomSheet() {
+        PlayShortsAffiliateSuccessBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
     private fun openProductPicker() {
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()
     }
 
-    private fun openCoverSetupFragment() {
-        val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
-        setupFragment.show(childFragmentManager)
+    private fun openSetupTitleBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment =
+            childFragmentManager.findFragmentByTag(PlayBroadcastSetupTitleBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupTitleBottomSheet && existingFragment.isVisible) return
+        getSetupTitleBottomSheet().show(childFragmentManager)
+    }
+
+    private fun getSetupTitleBottomSheet() = PlayBroadcastSetupTitleBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    private fun openSetupCoverBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(
+            PlayBroadcastSetupCoverBottomSheet.TAG)
+        if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
+        getSetupCoverBottomSheet()?.show(childFragmentManager)
+    }
+
+    private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    override fun submitTitle(title: String) {
+        analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
+        viewModel.submitAction(PlayShortsAction.UploadTitle(title))
+    }
+
+    override fun onTitleFormOpen() {
+        analytic.openScreenTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onBackPressedTitleForm() {
+        analytic.clickBackOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormClicked() {
+        analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormCleared() {
+        analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onUploadCoverSuccess() {
+        viewModel.submitAction(PlayShortsAction.UpdateCover)
+    }
+
+    override fun onOpenCoverForm() {
+        analytic.openScreenCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onCloseCoverForm() {
+        analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onClickSelectCoverOnCoverForm() {
+        analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun dismissSetupCover(source: Int) {
+        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+
+        if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED && source != PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED) {
+            toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))
+        } else if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE && source != PlayBroadcastSetupCoverBottomSheet.TAB_UPLOAD_IMAGE) {
+            toaster.showToaster(getString(R.string.play_setup_cover_auto_generated_toaster))
+        }
+        viewModel.submitAction(PlayShortsAction.SetCoverUploadedSource(source))
+    }
+
+    override fun onDeleteAutoGeneratedCover() {
+        viewModel.submitAction(PlayShortsAction.UpdateCover)
     }
 
     companion object {
         private const val TAG = "PlayShortsPreparationFragment"
+        private const val PAGE_NAME = "shorts"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): PlayShortsPreparationFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(PlayShortsPreparationFragment.TAG) as? PlayShortsPreparationFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayShortsPreparationFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayShortsPreparationFragment::class.java.name

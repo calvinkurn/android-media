@@ -4,7 +4,13 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import java.util.*
 
 /**
@@ -74,6 +80,7 @@ val channelResponse = GetChannelResponse.Channel(
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
     shortVideoAllowed: Boolean = false,
+    hasContent: Boolean = false,
     channelId: String = "12345",
     channelStatus: ChannelStatus = ChannelStatus.Draft,
     durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -93,6 +100,7 @@ fun buildConfigurationUiModel(
     countDown = countDown,
     scheduleConfig = scheduleConfig,
     tnc = tnc,
+    hasContent = hasContent,
 )
 
 private fun buildDurationConfigUiModel(
@@ -134,3 +142,16 @@ private fun buildBroadcastScheduleConfigUiModel(
     maximum = maximum,
     default = default,
 )
+
+fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+    return BroadcastingConfigUiModel(
+        audioRate = "123",
+        bitrateMode = "123",
+        fps = "123",
+        maxRetry = 1,
+        reconnectDelay = 1,
+        videoBitrate = "123",
+        videoWidth = "123",
+        videoHeight = "123",
+    )
+}

@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
+import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorBundleBottomSheet
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorData
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorGqlResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
@@ -674,6 +675,9 @@ class CartShopGroupTickerTest : BaseCartTest() {
                     minTransaction = 0L,
                     ticker = CartShopGroupTickerAggregatorTicker(
                         text = tickerText
+                    ),
+                    bundleBottomSheet = CartShopGroupTickerAggregatorBundleBottomSheet(
+                        bundleIds = listOf("123", "234")
                     )
                 )
             )
@@ -692,7 +696,7 @@ class CartShopGroupTickerTest : BaseCartTest() {
                 state = CartShopGroupTickerState.SUCCESS_AFFORD,
                 tickerText = tickerText,
                 cartBundlingBottomSheetData = CartBundlingBottomSheetData(
-                    bundleIds = listOf("356", "467")
+                    bundleIds = listOf("123", "234")
                 )
             )
             view.updateCartShopGroupTicker(expectedCartShopHolderData)

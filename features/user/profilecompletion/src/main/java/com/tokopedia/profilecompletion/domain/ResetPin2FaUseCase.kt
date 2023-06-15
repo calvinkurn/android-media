@@ -15,12 +15,23 @@ class ResetPin2FaUseCase @Inject constructor(
 ) : CoroutineUseCase<ResetPin2FAParam, ResetPin2FaPojo>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-          mutation resetPin(${'$'}validate_token: String!){
-              reset_pin(input:{validate_token: ${'$'}validate_token}) {
-                  success
-                  errors {
-                      message
-                  }
+          query resetUserPin(
+              ${'$'}user_id: Int!,
+              ${'$'}validate_token: String!,
+              ${'$'}grant_type: String!
+          ){
+              resetUserPin(
+                  user_id: ${'$'}user_id,
+                  validate_token: ${'$'}validate_token,
+                  grant_type: ${'$'}grant_type
+              ) {
+                  is_success
+                  user_id 
+                  access_token
+                  sid
+                  refresh_token
+                  expires_in
+                  error
               }
           }
         """.trimIndent()

@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
@@ -19,7 +18,6 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -38,7 +36,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by misael on 05/01/22
@@ -93,6 +90,12 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
 
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
+                        removeTextChangedListener(this)
+                        s?.let {
+                            val formattedText = customInputNumberFormatter?.invoke(it.toString()) ?: it.toString()
+                            it.replace(0, it.length, formattedText)
+                        }
+                        addTextChangedListener(this)
                     }
 
                     override fun beforeTextChanged(
@@ -172,7 +175,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                )
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)
                 }
@@ -248,8 +252,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setInputNumber(inputNumber: String) {
-        val number = customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(number)
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(inputNumber)
     }
 
     fun getInputNumber(): String {
@@ -415,5 +418,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         private const val FADE_DURATION = 200L
         private const val ALPHA_0_5 = 0.5f
         private const val ALPHA_1_0 = 1.0f
+
+        private const val DEFAULT_EMPTY_STRING = ""
     }
 }

@@ -18,8 +18,19 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import java.util.*
 
 object DtUniversalShareUtil {
+    const val SHARE_LINK_TITLE = "Dilayani Tokopedia | Tokopedia"
+    const val SHARE_LINK_URL = "https://www.tokopedia.com/dilayani-tokopedia"
+    const val SHARE_LINK_THUMBNAIL_IMAGE =
+        "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
+    const val SHARE_LINK_OG_IMAGE =
+        "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
+    const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
 
-    private const val SHARE_LINK_DESCRIPTION = "Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
+    const val SHARE_LINK_LINKER_TYPE = "Dilayani-tokopedia"
+    const val SHARE_LINK_PAGE_ID = "home"
+    const val SHARE_LINK_DESCRIPTION = "Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
+
+    const val SHARE = "share"
 
     private fun linkerDataMapper(shareData: DtShareUniversalUiModel?): LinkerShareData {
         val linkerData = LinkerData()
@@ -98,8 +109,12 @@ object DtUniversalShareUtil {
                 linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString =
-                            String.format(Locale.getDefault(), "%s %s", SHARE_LINK_DESCRIPTION, linkerShareData?.shareUri.orEmpty())
+                        val shareString = String.format(
+                            Locale.getDefault(),
+                            "%s %s",
+                            SHARE_LINK_DESCRIPTION,
+                            linkerShareData?.shareUri.orEmpty()
+                        )
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                         onSuccess.invoke()
                     }

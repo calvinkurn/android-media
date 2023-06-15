@@ -15,9 +15,6 @@ import com.tokopedia.buyerorder.detail.view.activity.OrderListDetailActivity
 import com.tokopedia.buyerorder.recharge.di.DaggerRechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.fragment.RechargeOrderDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -30,16 +27,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
     private var category: String? = null
     private var upstream: String? = null
 
-    private lateinit var remoteConfig: RemoteConfig
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        remoteConfig = FirebaseRemoteConfigImpl(this)
-
-        if (!remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_NEW_ORDER_DETAIL, true)) {
-            startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
-            finish()
-        }
-
         intent?.let { mIntent ->
             mIntent.data?.let { mData ->
                 category = mData.toString()

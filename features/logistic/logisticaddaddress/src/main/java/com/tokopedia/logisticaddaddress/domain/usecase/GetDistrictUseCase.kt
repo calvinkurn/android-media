@@ -13,30 +13,35 @@ import javax.inject.Inject
 
 class GetDistrictUseCase
 @Inject constructor(
-        private val gql: GraphqlUseCase,
-        private val scheduler: SchedulerProvider,
-        private val mapper: GetDistrictMapper
+    private val gql: GraphqlUseCase,
+    private val scheduler: SchedulerProvider,
+    private val mapper: GetDistrictMapper
 ) {
 
     fun execute(placeId: String): Observable<GetDistrictDataUiModel> {
         val param = mapOf(
-                "param" to placeId,
-                "err" to true
+            "param" to placeId,
+            "err" to true,
+            "is_manage_address_flow" to false
         )
-        val gqlRequest = GraphqlRequest(KeroLogisticQuery.placesGetDistrict,
-                GetDistrictResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(
+            KeroLogisticQuery.placesGetDistrict,
+            GetDistrictResponse::class.java,
+            param
+        )
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
-                .map { gqlResponse ->
-                    val response: GetDistrictResponse? =
-                            gqlResponse.getData(GetDistrictResponse::class.java)
-                    response ?: throw MessageErrorException(
-                            gqlResponse.getError(GetDistrictResponse::class.java)[0].message)
-                }
-                .map { response -> mapper.map(response) }
-                .subscribeOn(scheduler.io())
-                .observeOn(scheduler.ui())
+            .map { gqlResponse ->
+                val response: GetDistrictResponse? =
+                    gqlResponse.getData(GetDistrictResponse::class.java)
+                response ?: throw MessageErrorException(
+                    gqlResponse.getError(GetDistrictResponse::class.java)[0].message
+                )
+            }
+            .map { response -> mapper.map(response) }
+            .subscribeOn(scheduler.io())
+            .observeOn(scheduler.ui())
     }
 
     fun unsubscribe() {

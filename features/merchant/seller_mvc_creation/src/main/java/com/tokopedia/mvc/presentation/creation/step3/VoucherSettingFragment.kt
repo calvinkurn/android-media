@@ -261,6 +261,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 )
                 renderFreeShippingQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -305,6 +308,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderCashbackQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -351,6 +357,9 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.minimumBuyErrorMsg
                 )
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -987,6 +996,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.tfDiscountPercentage?.invisible()
         discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.gone()
         discountInputSectionBinding?.tfDiscountMaxDeduction?.gone()
+
+        viewModel.handleVoucherInputValidation()
     }
 
     private fun setupDiscountNominalSection() {
@@ -1015,9 +1026,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
     private fun setDiscountPercentageInput() {
         discountInputSectionBinding?.tfDiscountPercentage?.visible()
         discountInputSectionBinding?.tfDiscountNominal?.invisible()
-
         discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.visible()
         discountInputSectionBinding?.tfDiscountMaxDeduction?.visible()
+
+        viewModel.handleVoucherInputValidation()
     }
 
     private fun setupDiscountPercentageSection() {

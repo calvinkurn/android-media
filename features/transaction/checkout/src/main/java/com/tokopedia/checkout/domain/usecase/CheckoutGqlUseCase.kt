@@ -36,6 +36,7 @@ class CheckoutGqlUseCase @Inject constructor(
         const val PARAM_IS_TRADE_IN = "is_trade_in"
         const val PARAM_IS_TRADE_IN_DROP_OFF = "is_trade_in_drop_off"
         const val PARAM_DEV_ID = "dev_id"
+        const val PARAM_DYNAMIC_DATA = "dynamic_data"
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<CheckoutData> {

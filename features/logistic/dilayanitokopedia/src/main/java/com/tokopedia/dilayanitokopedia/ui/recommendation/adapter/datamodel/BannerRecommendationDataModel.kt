@@ -44,19 +44,31 @@ data class BannerRecommendationDataModel(
 
         other as BannerRecommendationDataModel
 
-        if (id != other.id) return false
-        else if (name != other.name) return false
-        else if (imageUrl != other.imageUrl) return false
-        else if (url != other.url) return false
-        else if (applink != other.applink) return false
-        else if (buAttribution != other.buAttribution) return false
-        else if (creativeName != other.creativeName) return false
-        else if (target != other.target) return false
-        else if (position != other.position) return false
-        else if (galaxyAttribution != other.galaxyAttribution) return false
-        else if (affinityLabel != other.affinityLabel) return false
-        else if (shopId != other.shopId) return false
-        else if (categoryPersona != other.categoryPersona) return false
+        if (id != other.id) {
+            return false
+        } else if (name != other.name) {
+            return false
+        } else if (imageUrl != other.imageUrl) {
+            return false
+        } else if (url != other.url) {
+            return false
+        } else if (applink != other.applink) {
+            return false
+        } else if (buAttribution != other.buAttribution) {
+            return false
+        } else if (creativeName != other.creativeName) {
+            return false
+        } else if (target != other.target) {
+            return false
+        } else if (position != other.position) {
+            return false
+        } else if (galaxyAttribution != other.galaxyAttribution) {
+            return false
+        } else if (affinityLabel != other.affinityLabel) {
+            return false
+        } else if (shopId != other.shopId) {
+            return false
+        } else if (categoryPersona != other.categoryPersona) return false
 
         return true
     }

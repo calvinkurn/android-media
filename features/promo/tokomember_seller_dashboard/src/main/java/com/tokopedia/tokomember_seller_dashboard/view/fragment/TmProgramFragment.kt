@@ -177,6 +177,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
                 TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorOnDataError()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 
@@ -226,6 +229,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
                             Toaster.TYPE_ERROR
                         ).show()
                     }
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

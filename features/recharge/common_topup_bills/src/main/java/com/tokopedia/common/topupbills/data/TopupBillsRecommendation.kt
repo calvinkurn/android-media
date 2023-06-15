@@ -47,5 +47,11 @@ class TopupBillsRecommendation(
         @SerializedName("description")
         @Expose
         val description: String = "",
+        @SerializedName("label")
+        @Expose
+        val label: String = "",
+        @SerializedName("token")
+        @Expose
+        val token: String = "",
         var position: Int = 0
 ) : Parcelable

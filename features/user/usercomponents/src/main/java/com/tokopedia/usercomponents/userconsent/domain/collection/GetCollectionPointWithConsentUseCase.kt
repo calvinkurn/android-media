@@ -36,6 +36,7 @@ class GetCollectionPointWithConsentUseCase @Inject constructor(
                     purposeType
                     attributes {
                       uiName
+                      dataElementType
                     }
                   }
                   notices {

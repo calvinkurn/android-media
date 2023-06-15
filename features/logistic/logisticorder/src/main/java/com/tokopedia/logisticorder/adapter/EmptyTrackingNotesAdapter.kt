@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.adapter
 
-import android.view.ViewGroup
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.EmptyAdapterLayoutBinding
@@ -23,7 +23,8 @@ class EmptyTrackingNotesAdapter : RecyclerView.Adapter<EmptyTrackingNotesAdapter
         return DEFAULT_SIZE
     }
 
-    inner class EmptyTrackingNotesViewHolder(private val binding: EmptyAdapterLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class EmptyTrackingNotesViewHolder(private val binding: EmptyAdapterLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(position: Int) {
             when (position) {
@@ -32,7 +33,6 @@ class EmptyTrackingNotesAdapter : RecyclerView.Adapter<EmptyTrackingNotesAdapter
                 2 -> binding.emptyTrackingNotes.setText(R.string.empty_notes_3)
             }
         }
-
     }
 
     companion object {

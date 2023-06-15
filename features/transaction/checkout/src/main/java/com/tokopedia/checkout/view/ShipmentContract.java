@@ -11,9 +11,12 @@ import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -36,8 +39,10 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -75,6 +80,8 @@ public interface ShipmentContract {
         void showToastNormal(String message);
 
         void showToastError(String message);
+
+        void showToastErrorAkamai(String message);
 
         void renderErrorPage(String message);
 
@@ -186,6 +193,10 @@ public interface ShipmentContract {
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier, String cartString);
 
+        void doCheckout();
+
+        void updateAddOnsDynamicDataPassing(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString, Long cartId);
+
         void onNeedUpdateViewItem(int position);
 
         void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
@@ -203,6 +214,14 @@ public interface ShipmentContract {
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
+
+        void setShipmentNewUpsellLoading(boolean isLoading);
+
+        void showPaymentFeeSkeletonLoading();
+
+        void showPaymentFeeTickerFailedToLoad(String ticker);
+
+        void showPaymentFeeData(PaymentFeeGqlResponse platformFeeData);
     }
 
     interface AnalyticsActionListener {
@@ -449,6 +468,20 @@ public interface ShipmentContract {
         void clearAllBoOnTemporaryUpsell();
 
         boolean validatePrescriptionOnBackPressed();
+
+        void setDynamicDataParam(DynamicDataPassingParamRequest dynamicDataPassingParam);
+
+        DynamicDataPassingParamRequest getDynamicDataParam();
+
+        void validateDynamicData();
+
+        boolean isUsingDynamicDataPassing();
+
+        void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
+
+        void getDynamicPaymentFee(PaymentFeeCheckoutRequest paymentFeeCheckoutRequest);
+
+        ShipmentPlatformFeeData getShipmentPlatformFeeData();
     }
 
 }

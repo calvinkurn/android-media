@@ -157,6 +157,29 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             reviewText
             reviewImageUrl
             reviewId
+            productUrl
+          }
+        }
+        ... on CatalogLibraryEntrypointResponse {
+          category_name
+          category_identifier
+          catalog_count
+          catalogs {
+            id
+            name
+            brand
+            brand_id
+            categoryID
+            imageUrl
+            url
+            mobileUrl
+            applink
+            marketPrice {
+              min
+              max
+              minFmt
+              maxFmt
+            }
           }
         }
       }

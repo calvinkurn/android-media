@@ -7,4 +7,5 @@
     <dimen name="smart_bills_divider_left_padding">84dp</dimen>
     <dimen name="smart_bills_image_height_tooltip">240dp</dimen>
     <dimen name="smart_bills_view_separator">180dp</dimen>
+    <dimen name="smart_bills_view_separator_ticker">150dp</dimen>
 </resources>

@@ -14,5 +14,18 @@ data class TokoNowParam(
 
     @Expose
     @SerializedName("serviceType")
-    val serviceType: String = ""
+    val serviceType: String = "",
+
+    @SerializedName("warehouses")
+    @Expose
+    val warehouses: List<WarehouseData> = listOf(),
+)
+
+data class WarehouseData(
+    @SerializedName("warehouseID")
+    @Expose
+    val warehouseId: String = "",
+    @SerializedName("serviceType")
+    @Expose
+    val addressName: String = "",
 )

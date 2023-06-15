@@ -29,9 +29,6 @@ import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -254,10 +251,6 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     abstract fun processTagIntent(intent: Intent)
-
-    protected fun isDigitalSmartcardEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
-    }
 
     protected fun navigateToNFCSettings() {
         val intent = Intent(Settings.ACTION_NFC_SETTINGS)

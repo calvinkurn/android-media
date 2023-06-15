@@ -9,14 +9,15 @@ import kotlinx.parcelize.Parcelize
 open class MediaUiModel(
     val id: Long = 0L,
     val file: PickerFile? = null,
-    var videoLength: Int = 0,
+    var duration: Int = 0,
     val uri: Uri? = null,
 
     /*
     * this data come from camera tab,
-    * the media file is deletable.
+    * the media file is removable.
     * */
-    var isFromPickerCamera: Boolean = false,
+    var isCacheFile: Boolean = false,
+    var sourcePath: String? = file?.absolutePath
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -25,14 +26,16 @@ open class MediaUiModel(
                 id == other.id &&
                 file == other.file &&
                 uri == other.uri &&
-                isFromPickerCamera == other.isFromPickerCamera
+                isCacheFile == other.isCacheFile &&
+                sourcePath == other.sourcePath
     }
 
     override fun hashCode(): Int {
         var hashCode = id.hashCode()
         hashCode = 5 * hashCode + file.hashCode()
         hashCode = 5 * hashCode + uri.hashCode()
-        hashCode = 5 * hashCode + isFromPickerCamera.hashCode()
+        hashCode = 5 * hashCode + isCacheFile.hashCode()
+        hashCode = 5 * hashCode + sourcePath.hashCode()
         return hashCode
     }
 
@@ -51,9 +54,8 @@ open class MediaUiModel(
             file = this,
         )
 
-        fun PickerFile.cameraToUiModel() = toUiModel().also {
-            it.isFromPickerCamera = true
+        fun PickerFile.toRemovableUiModel() = toUiModel().also {
+            it.isCacheFile = true
         }
     }
-
 }

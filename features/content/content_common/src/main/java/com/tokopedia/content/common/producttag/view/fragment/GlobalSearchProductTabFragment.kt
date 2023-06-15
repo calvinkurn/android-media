@@ -203,6 +203,9 @@ class GlobalSearchProductTabFragment @Inject constructor(
 
                         sortFilterBottomSheet.setResultCountText(text)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

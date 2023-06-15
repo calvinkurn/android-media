@@ -1,9 +1,0 @@
-{
-  "KeroAddrShareAddressToUser": {
-    "number_of_request": 1,
-    "kero_addr_error": {
-      "code": 0,
-      "detail": ""
-    }
-  }
-}

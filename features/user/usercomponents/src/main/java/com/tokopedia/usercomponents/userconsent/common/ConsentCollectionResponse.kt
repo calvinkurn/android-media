@@ -62,11 +62,16 @@ data class PurposeDataModel(
 
     @SerializedName("attributes")
     var attribute: Attributes = Attributes(),
+
+    var transactionType: String = "OPT_OUT"
 )
 
 data class Attributes(
     @SerializedName("uiName")
-    var uiName: String = ""
+    var uiName: String = "",
+
+    @SerializedName("dataElementType")
+    val dataElementType: String = ""
 )
 
 data class NoticeDataModel(

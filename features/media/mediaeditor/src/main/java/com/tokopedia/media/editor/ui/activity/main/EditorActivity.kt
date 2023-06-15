@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -118,43 +117,18 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
-            )
-        } else {
-            saveImageToGallery()
-        }
+        finishPage()
     }
 
     override fun onBackClicked() {
         editorHomeAnalytics.clickBackButton()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
-            if (
-                requestCode == PERMISSION_REQUEST_CODE &&
-                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
-                grantResults.first() != -1) {
-                saveImageToGallery()
-            }
-        }
-    }
-
-    private fun saveImageToGallery() {
+    private fun finishPage() {
         val listImageEditState = viewModel.editStateList.values.toList()
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             listImageEditState
-        ) { imageResultList, exception ->
+        ) { imageResultList ->
             imageResultList?.let {
                 val result = EditorResult(
                     originalPaths = listImageEditState.map { it.getOriginalUrl() },
@@ -166,19 +140,6 @@ class EditorActivity : BaseEditorActivity() {
                 val intent = Intent()
                 intent.putExtra(RESULT_INTENT_EDITOR, result)
                 setResult(Activity.RESULT_OK, intent)
-            }
-
-            exception?.let {
-                Toast.makeText(
-                    this,
-                    resources.getString(editorR.string.editor_activity_general_error),
-                    Toast.LENGTH_LONG
-                ).show()
-                newRelicLog(
-                    mapOf(
-                        FAILED_SAVE_FIELD to "${it.message}"
-                    )
-                )
             }
 
             finish()

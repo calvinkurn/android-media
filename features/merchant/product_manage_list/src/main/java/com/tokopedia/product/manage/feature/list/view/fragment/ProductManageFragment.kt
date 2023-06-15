@@ -45,13 +45,13 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.centralizedpromo.CentralizedPromoApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
-import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -272,6 +272,9 @@ open class ProductManageFragment :
                             productId = product.id,
                             isCarousel = true
                         )
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -784,18 +787,18 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsEtalase() {
-            goToEtalasePicker()
-            ProductManageTracking.eventBulkSettingsMoveEtalase()
+        goToEtalasePicker()
+        ProductManageTracking.eventBulkSettingsMoveEtalase()
     }
 
     override fun editMultipleProductsInActive() {
-            showEditProductsInActiveConfirmationDialog()
-            ProductManageTracking.eventBulkSettingsDeactive()
+        showEditProductsInActiveConfirmationDialog()
+        ProductManageTracking.eventBulkSettingsDeactive()
     }
 
     override fun deleteMultipleProducts() {
-            viewModel.onDeleteMultipleProducts()
-            ProductManageTracking.eventBulkSettingsDeleteBulk()
+        viewModel.onDeleteMultipleProducts()
+        ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
 
     override fun onFinish(selectedData: FilterOptionWrapper) {
@@ -933,16 +936,16 @@ open class ProductManageFragment :
                 Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME)
                     .buildUpon()
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.PROMO_TYPE,
-                        SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT
+                        CentralizedPromoApplinkConst.PROMO_TYPE,
+                        CentralizedPromoApplinkConst.TYPE_VOUCHER_PRODUCT
                     )
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.PRODUCT_ID,
+                        CentralizedPromoApplinkConst.PRODUCT_ID,
                         product?.id.orEmpty()
                     )
                     .build().toString()
             } else {
-                "${ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT}/${product?.id.orEmpty()}"
+                ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER
             }
         context?.let {
             RouteManager.route(it, firstTimeLink)
@@ -1217,13 +1220,13 @@ open class ProductManageFragment :
                 !it.isTobacco
             }.isNotEmpty()
 
-            if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)){
+            if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)) {
                 if (isNotAllTobacco) {
                     viewModel.toggleMultiSelect()
                 } else {
                     showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
                 }
-            }else{
+            } else {
                 viewModel.toggleMultiSelect()
             }
             ProductManageTracking.eventMultipleSelect()
@@ -1253,7 +1256,7 @@ open class ProductManageFragment :
                 if (isChecked) {
                     productManageListAdapter.checkAllProducts(itemsChecked) {
                         itemsChecked = it.filter { !it.isTobacco }.toMutableList()
-                        if (itemsChecked.isEmpty()){
+                        if (itemsChecked.isEmpty()) {
                             viewModel.toggleMultiSelect()
                             showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
                         }
@@ -1785,6 +1788,9 @@ open class ProductManageFragment :
 
                 getFiltersTab(withDelay = true)
             }
+            else -> {
+                // no op
+            }
         }
 
         if (result.failed.isEmpty()) {
@@ -2270,18 +2276,17 @@ open class ProductManageFragment :
             context,
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productManageUiModel.id,
-            productManageUiModel.title,
             productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
     private fun onPromoTopAdsClicked(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION,productId)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION, productId)
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
-        goToPDP(productId = productId, showTopAdsSheet = true)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
     }
 
     private fun goToDuplicateProduct(productId: String) {
@@ -2826,6 +2831,9 @@ open class ProductManageFragment :
                     }
                     renderCheckedView()
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -2836,10 +2844,10 @@ open class ProductManageFragment :
             String.EMPTY
         )
         val tabs = data.tabs.map { tab ->
-            return@map if (tabName.equals(tab.status?.name, true) &&
-                tab is FilterTabUiModel.Violation
+            return@map if (tabName.equals(tab.status?.name, true)
             ) {
-                tab.copy(isSelected = true)
+                tab.isSelected = true
+                tab
             } else {
                 tab
             }
@@ -2851,6 +2859,9 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
                 is Success -> productListFeaturedOnlySize = it.data
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -3508,6 +3519,8 @@ open class ProductManageFragment :
         private const val TICKER_MARGIN_TOP = 8
         private const val TEXT_LINK_LENGTH_START = 0
         private const val TEXT_LINK_LENGTH_END = 5
+
+        private const val TOPADS_PERFORMANCE_CURRENT_SITE = "tokopediaseller"
 
         const val SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK = "productMoreMenu"
         const val SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK = "flagStockAlert"

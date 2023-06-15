@@ -1118,12 +1118,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.01.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "S",
-              "value": "24"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "S",
+                "value": "24"
+              }
+            ]
           },
           {
             "text": "M",
@@ -1132,12 +1134,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.02.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "M",
-              "value": "25"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "M",
+                "value": "25"
+              }
+            ]
           },
           {
             "text": "L",
@@ -1146,12 +1150,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.03.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "L",
-              "value": "26"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "L",
+                "value": "26"
+              }
+            ]
           },
           {
             "text": "XL",
@@ -1160,12 +1166,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.04.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "XL",
-              "value": "27"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XL",
+                "value": "27"
+              }
+            ]
           },
           {
             "text": "XXL",
@@ -1174,12 +1182,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.05.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "XXL",
-              "value": "28"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XXL",
+                "value": "28"
+              }
+            ]
           }
         ],
         "tracking_option": "3"
@@ -1199,12 +1209,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.01.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "S",
-              "value": "24"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "S",
+                "value": "24"
+              }
+            ]
           },
           {
             "text": "M",
@@ -1213,12 +1225,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.02.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "M",
-              "value": "25"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "M",
+                "value": "25"
+              }
+            ]
           },
           {
             "text": "L",
@@ -1227,12 +1241,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.03.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "L",
-              "value": "26"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "L",
+                "value": "26"
+              }
+            ]
           },
           {
             "text": "XL",
@@ -1241,12 +1257,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.04.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "XL",
-              "value": "27"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XL",
+                "value": "27"
+              }
+            ]
           },
           {
             "text": "XXL",
@@ -1255,12 +1273,14 @@
             "color": "",
             "applink": "",
             "component_id": "03.20.05.00",
-            "filters": {
-              "title": "",
-              "key": "variants",
-              "name": "XXL",
-              "value": "28"
-            }
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XXL",
+                "value": "28"
+              }
+            ]
           }
         ],
         "tracking_option": "3"

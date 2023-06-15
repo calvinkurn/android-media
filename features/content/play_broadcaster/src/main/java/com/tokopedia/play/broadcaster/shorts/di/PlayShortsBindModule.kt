@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
@@ -20,11 +22,52 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
-import com.tokopedia.play.broadcaster.data.config.*
-import com.tokopedia.play.broadcaster.data.repository.*
-import com.tokopedia.play.broadcaster.domain.repository.*
+import com.tokopedia.play.broadcaster.data.config.AccountConfigStore
+import com.tokopedia.play.broadcaster.data.config.AccountConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStore
+import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStore
+import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
+import com.tokopedia.play.broadcaster.data.config.ProductConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
+import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStore
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.CoverDataStore
+import com.tokopedia.play.broadcaster.data.datastore.CoverDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStore
+import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.ProductTagDataStore
+import com.tokopedia.play.broadcaster.data.datastore.ProductTagDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.TagsDataStore
+import com.tokopedia.play.broadcaster.data.datastore.TagsDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.TitleDataStore
+import com.tokopedia.play.broadcaster.data.datastore.TitleDataStoreImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroProductRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastChannelRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastInteractiveRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastPinnedMessageRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastRepositoryImpl
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
@@ -70,11 +113,23 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
+    abstract fun bindPlayShortsGeneralAnalytic(analytic: PlayShortsGeneralAnalyticImpl): PlayShortsGeneralAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAffiliateAnalytic(analytic: PlayShortsAffiliateAnalyticImpl): PlayShortsAffiliateAnalytic
+
+    @Binds
+    @PlayShortsScope
     abstract fun bindPlayShortsProductPickerUGCAnalytic(analytic: PlayShortsProductPickerUGCAnalytic): ContentProductTagAnalytic
 
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalyticSender(analyticSender: PlayShortsAnalyticSenderImpl): PlayShortsAnalyticSender
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayPerformanceDashboardAnalytic(analytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
 
     /** Broadcaster Repository */
     @Binds
@@ -181,4 +236,37 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindSetupDataStore(dataStore: PlayBroadcastSetupDataStoreImpl): PlayBroadcastSetupDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindDataStore(dataStore: PlayBroadcastDataStoreImpl): PlayBroadcastDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindCoverDataStore(dataStore: CoverDataStoreImpl): CoverDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindTitleDataStore(dataStore: TitleDataStoreImpl): TitleDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindTagsDataStore(dataStore: TagsDataStoreImpl): TagsDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindInteractiveDataStore(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindProductTagDataStore(dataStore: ProductTagDataStoreImpl): ProductTagDataStore
+
 }

@@ -58,6 +58,7 @@ class RecommendationViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
+        listener.onImpressRecommendationItem(recomItem)
     }
 
     override fun onRecomProductCardClicked(
@@ -67,7 +68,7 @@ class RecommendationViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener.goToProduct(recomItem.productId.toString())
+        listener.onClickRecommendationItem(recomItem)
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {

@@ -15,14 +15,14 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.item.
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.*
 import org.junit.*
 
 @ExperimentalCoroutinesApi
@@ -59,7 +59,7 @@ class FlashSaleManageProductListViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     private lateinit var viewModel: FlashSaleManageProductListViewModel
     private val mockCampaignId = "123"
@@ -90,7 +90,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When ui event does not matched anything, then ui effect should be null`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             viewModel.processEvent(mockk())
             var emittedValue: FlashSaleManageProductListUiEffect? = null
             val job = launch {
@@ -103,7 +103,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When get reserved product list success, then product list shouldn't empty`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getFlashSaleReservedProductListUseCase.execute(any())
             } returns getMockedReservedProductData()
@@ -113,14 +113,14 @@ class FlashSaleManageProductListViewModelTest {
                     mockPage
                 )
             )
-            advanceTimeBy(1000)
+            advanceUntilIdle()
             assert(viewModel.uiState.first().listDelegateItem.isNotEmpty())
         }
     }
 
     @Test
     fun `When get reserved product list error, then products should be empty and should show error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val mockError = Exception()
             coEvery {
                 getFlashSaleReservedProductListUseCase.execute(any())
@@ -135,7 +135,7 @@ class FlashSaleManageProductListViewModelTest {
                     mockPage
                 )
             )
-            advanceTimeBy(1000)
+            advanceUntilIdle()
             assert(viewModel.uiState.first().listDelegateItem.isEmpty())
             Assert.assertEquals(viewModel.uiEffect.first(), expectedUiEffect)
         }
@@ -143,7 +143,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When get campaign detail bottom sheet data success, then ui effect should emit AddIconCampaignDetailBottomSheet`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val expectedUiEffect =
                 FlashSaleManageProductListUiEffect.AddIconCampaignDetailBottomSheet(
                     DummyDataHelper.generateDummyGeneralBottomSheetModel()
@@ -162,7 +162,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When get campaign detail bottom sheet data error, then ui effect should emit nothing`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 getFlashSaleDetailForSellerUseCase.execute(mockCampaignId.toLongOrZero())
             } throws Exception()
@@ -182,9 +182,9 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When delete product from reservation success with current product not empty and deleted product matched, then product list size should be updated`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockCurrentReservedProductData = getMockedReservedProductData()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             coEvery {
                 doFlashSaleProductDeleteUseCase.execute(any())
             } returns ProductDeleteResult(true, "")
@@ -204,9 +204,9 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When delete product from reservation success with current product list is not empty and deleted product not matched, then product list should be the same`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockCurrentReservedProductData = getMockedReservedProductData()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             coEvery {
                 doFlashSaleProductDeleteUseCase.execute(any())
             } returns ProductDeleteResult(true, "")
@@ -223,7 +223,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When delete product from reservation success with current product list empty, then product list should be empty`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 doFlashSaleProductDeleteUseCase.execute(any())
             } returns ProductDeleteResult(true, "message")
@@ -240,7 +240,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When delete product from reservation not success, then should emit ShowToasterErrorDelete`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockErrorMessage = "errorMessage"
             coEvery {
                 doFlashSaleProductDeleteUseCase.execute(any())
@@ -261,7 +261,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When check enable button submit with existing product empty, then should emit ConfigSubmitButton with false value`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             viewModel.processEvent(FlashSaleManageProductListUiEvent.CheckShouldEnableButtonSubmit)
             val emittedValue = viewModel.uiEffect.first()
             Assert.assertEquals(
@@ -273,9 +273,9 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When check enable button submit with existing product not empty and not all product discounted, then should emit ConfigSubmitButton with false value`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockCurrentReservedProductData = getMockedReservedProductData()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             viewModel.processEvent(FlashSaleManageProductListUiEvent.CheckShouldEnableButtonSubmit)
             val emittedValue = viewModel.uiEffect.first()
             Assert.assertEquals(
@@ -287,9 +287,9 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When check enable button submit with existing product not empty and all product discounted, then should emit ConfigSubmitButton with true value`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockCurrentReservedProductData = getMockedAllDiscountedReservedProductData()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             viewModel.processEvent(FlashSaleManageProductListUiEvent.CheckShouldEnableButtonSubmit)
             val emittedValue = viewModel.uiEffect.first()
             Assert.assertEquals(
@@ -301,7 +301,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When loadNextReservedProductList success, then product list should not empty`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockReservationId = "12"
             coEvery {
                 getFlashSaleReservedProductListUseCase.execute(any())
@@ -319,7 +319,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When loadNextReservedProductList error, then should emit ShowErrorLoadNextReservedProductList`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockReservationId = "12"
             val mockException = Exception("error")
             coEvery {
@@ -343,9 +343,9 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When submitDiscountedProduct non sse success, then should emit OnProductSubmitted`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             val mockProductSubmissionResult = ProductSubmissionResult(
                 true,
                 "",
@@ -362,7 +362,7 @@ class FlashSaleManageProductListViewModelTest {
                     ""
                 )
             )
-            advanceTimeBy(1000)
+            advanceUntilIdle()
             val emittedValue = viewModel.uiEffect.first()
             Assert.assertEquals(
                 emittedValue,
@@ -373,7 +373,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When submitDiscountedProduct non sse error, then should emit ShowErrorSubmitDiscountedProduct`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockException = Exception("error")
             coEvery {
                 doFlashSaleProductSubmissionUseCase.execute(any())
@@ -394,7 +394,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When submitDiscountedProduct sse success, then sse should call listen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockProductSubmissionResult = ProductSubmissionResult(
                 true,
                 "",
@@ -418,7 +418,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When UpdateProductData with empty current product list, then current product list should be empty`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             viewModel.processEvent(
                 FlashSaleManageProductListUiEvent.UpdateProductData(
                     ReservedProduct.Product()
@@ -431,13 +431,13 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When UpdateProductData and matched with current product list, then current product list should be updated`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 12352,
                 name = "test",
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList( mockCurrentReservedProductData)
             viewModel.processEvent(
                 FlashSaleManageProductListUiEvent.UpdateProductData(
                     mockUpdatedProductData
@@ -451,13 +451,13 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When UpdateProductData and not matched with current product list, then current product list should not be updated`() {
-        testCoroutineRule.runBlockingTest {
+        runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 5,
                 name = "test",
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
-            getReservedProductList(this, mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             viewModel.processEvent(
                 FlashSaleManageProductListUiEvent.UpdateProductData(
                     mockUpdatedProductData
@@ -471,7 +471,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When listenToExistingSse called and success, then sse should call listen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             viewModel.listenToExistingSse(mockCampaignId)
             verify { flashSaleTkpdProductSubmissionMonitoringSse.listen() }
         }
@@ -479,7 +479,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When listenToExistingSse called and error when connect, then sse should not call listen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             every { flashSaleTkpdProductSubmissionMonitoringSse.connect(any()) } throws Exception()
             viewModel.listenToExistingSse(mockCampaignId)
             verify(exactly = 0) { flashSaleTkpdProductSubmissionMonitoringSse.listen() }
@@ -488,7 +488,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When setSharedPrefCoachMarkAlreadyShown called, then sharedPref should call putBoolean with expected parameter`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             viewModel.setSharedPrefCoachMarkAlreadyShown()
             verify { sharedPreferences.edit().putBoolean(SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK, true).apply() }
         }
@@ -496,7 +496,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When acknowledgeProductSubmissionSse called and success, then should emit OnSuccessAcknowledgeProductSubmissionSse`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockTotalSubmittedProduct = 1
             coEvery {
                 doFlashSaleProductSubmitAcknowledgeUseCase.execute(any())
@@ -509,7 +509,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When acknowledgeProductSubmissionSse called and success but return false, then should not emit OnSuccessAcknowledgeProductSubmissionSse`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             val mockTotalSubmittedProduct = 1
             coEvery {
                 doFlashSaleProductSubmitAcknowledgeUseCase.execute(any())
@@ -526,7 +526,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When acknowledgeProductSubmissionSse called and error, then should not emit OnSuccessAcknowledgeProductSubmissionSse`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 doFlashSaleProductSubmitAcknowledgeUseCase.execute(any())
             } throws Exception()
@@ -542,7 +542,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When getFlashSaleSubmissionProgress called and success and sse is opened, then should emit OnSseOpen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 getFlashSaleProductSubmissionProgressUseCase.execute(any())
             } returns FlashSaleProductSubmissionProgress(
@@ -556,7 +556,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When getFlashSaleSubmissionProgress called and success and sse is not opened, then should not emit OnSseOpen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 getFlashSaleProductSubmissionProgressUseCase.execute(any())
             } returns FlashSaleProductSubmissionProgress(
@@ -574,7 +574,7 @@ class FlashSaleManageProductListViewModelTest {
 
     @Test
     fun `When getFlashSaleSubmissionProgress called and error, then should not emit OnSseOpen`() {
-        testCoroutineRule.runBlockingTest {
+        testCoroutineRule.runTest {
             coEvery {
                 getFlashSaleProductSubmissionProgressUseCase.execute(any())
             } throws Exception()
@@ -746,21 +746,18 @@ class FlashSaleManageProductListViewModelTest {
     }
 
     private fun getReservedProductList(
-        coroutineScope: TestCoroutineScope,
         mockCurrentReservedProductData: ReservedProduct
-    ) {
-        coroutineScope.runBlockingTest {
-            coEvery {
-                getFlashSaleReservedProductListUseCase.execute(any())
-            } returns mockCurrentReservedProductData
-            viewModel.processEvent(
-                FlashSaleManageProductListUiEvent.GetReservedProductList(
-                    mockCampaignId,
-                    mockPage
-                )
+    ) = runTest {
+        coEvery {
+            getFlashSaleReservedProductListUseCase.execute(any())
+        } returns mockCurrentReservedProductData
+        viewModel.processEvent(
+            FlashSaleManageProductListUiEvent.GetReservedProductList(
+                mockCampaignId,
+                mockPage
             )
-            advanceTimeBy(1000)
-        }
+        )
+        advanceUntilIdle()
     }
 
 }

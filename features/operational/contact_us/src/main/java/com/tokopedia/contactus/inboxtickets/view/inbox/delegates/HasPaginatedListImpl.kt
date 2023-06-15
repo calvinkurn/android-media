@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox.delegates
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.contactus.inboxtickets.view.utils.EndlessRecyclerViewScrollListener
 
 class HasPaginatedListImpl : HasPaginatedList {
 
@@ -23,7 +23,8 @@ class HasPaginatedListImpl : HasPaginatedList {
         config: HasPaginatedList.Config,
         loadNextPage: (Int, Int) -> Unit
     ) {
-        scrollListener = object : EndlessRecyclerViewScrollListener(recyclerView.layoutManager) {
+        val layoutManager = recyclerView.layoutManager ?: return
+        scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 config.onLoadNextPage()
                 loadNextPage(page, totalItemsCount)

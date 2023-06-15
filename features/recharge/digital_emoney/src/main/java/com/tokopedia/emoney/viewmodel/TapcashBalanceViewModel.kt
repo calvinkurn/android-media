@@ -8,20 +8,17 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogResponse
 import com.tokopedia.common_electronic_money.domain.usecase.RechargeEmoneyInquiryLogUseCase
-import com.tokopedia.common_electronic_money.util.KeyLogEmoney.LOG_TYPE
-import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArrayRadix
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.data.BalanceTapcash
 import com.tokopedia.emoney.domain.EmoneyParamMapper
+import com.tokopedia.emoney.domain.EmoneyParamMapper.mapParamLogErrorNetwork
 import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -42,8 +39,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val errorCardMessage: LiveData<Throwable>
         get() = errorCardMessageMutable
 
-    private var errorInquiryMutable = SingleLiveEvent<Throwable>()
-    val errorInquiry: LiveData<Throwable>
+    private var errorInquiryMutable = SingleLiveEvent<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>()
+    val errorInquiry: LiveData<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>
         get() = errorInquiryMutable
 
     private var errorWriteMutable = SingleLiveEvent<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>()
@@ -93,8 +90,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                         } else {
                             val secureResultString = NFCUtils.toHex(secureResult)
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
+                            val cardNumber = getCardNumber(secureResultString)
                             if (!cardData.isNullOrEmpty()) {
-                                updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
+                                updateBalance(cardData, terminalRandomNumber, balanceRawQuery, cardNumber)
                             } else {
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                             }
@@ -112,7 +110,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
     private fun updateBalance(cardData: String,
                               terminalRandomNumber: ByteArray,
-                              balanceRawQuery: String) {
+                              balanceRawQuery: String,
+                              cardNumber: String
+    ) {
         launchCatchError(block = {
             val mapParam = HashMap<String, Any>()
             mapParam.put(CARD_DATA, cardData)
@@ -134,18 +134,14 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 }
             } else {
                 val firstError = errors.firstOrNull()
-                if (firstError?.extensions?.developerMessage?.contains(ERROR_GRPC) ?: false){
-                    val map = HashMap<String, String>()
-                    map.put(ERROR, ERROR_GRPC_MESSAGE)
-                    map.put(LOG_TYPE, TAPCASH_GRPC_LOGGER)
-                    ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
-                }
-
                 throw(MessageErrorException(firstError?.message))
 
             }
         }) {
-            errorInquiryMutable.postValue(it)
+            errorInquiryMutable.postValue(Pair(it, mapParamLogErrorNetwork(
+                cardNumber,
+                String.format(ERROR_MESSAGE_NETWORK_LOGGER, it.message)
+            )))
         }
     }
 
@@ -232,6 +228,19 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     private fun secureReadPurse(terminalRandomNumber: ByteArray): ByteArray {
         return COMMAND_SECURE_PURSE.plus(0x12.toByte()).plus(0x01.toByte()).plus(terminalRandomNumber) //Data Field
                 .plus(0x00.toByte()) // LE Data Field https://stackoverflow.com/questions/51331045/how-to-send-a-command-apdu-to-a-hce-device
+    }
+
+    /**
+     * @param securePurse should comes from securePurse response result
+     * @return should return 16 char string that represent card number
+     */
+
+    fun getCardNumber(securePurse: String): String {
+        return if (securePurse.isNotEmpty() && securePurse.length == MAX_SECURE_PURSE_LENGTH) {
+            getStringFromPosition(securePurse, positionCANStart, positionCANEnd)
+        } else {
+            ""
+        }
     }
 
     /**
@@ -390,15 +399,12 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         )
 
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
-        private const val TAPCASH_GRPC_LOGGER = "TAPCASH_GRPC_LOGGER"
-        private const val ERROR_GRPC = "GRPC timeout"
-        private const val ERROR = "err"
-        private const val ERROR_GRPC_MESSAGE = "Error GRPC Tapcash"
 
         private const val ERROR_MESSAGE_APDU = "APDU Error: %s"
         private const val ERROR_MESSAGE_EXCEPTION = "Exception: %s"
         private const val ERROR_MESSAGE_IOEXCEPTION = "IOException: %s"
         private const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
+        private const val ERROR_MESSAGE_NETWORK_LOGGER = "Message Network Logger: %s"
     }
 
 }

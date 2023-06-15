@@ -1,0 +1,19 @@
+{
+  "chipGetInboxDetail": {
+    "data": {
+      "isSuccess": 0
+    },
+    "messageError": [
+      {
+        "message": "Failed to get Detail",
+        "path": [
+          "chipGetInboxDetail"
+        ],
+        "extensions": {
+          "developerMessage": "your session has expired, please login again",
+          "timestamp": "2023-03-13 09:50:50.245896409 +0700 WIB m=+217716.477701321"
+        }
+      }
+    ]
+  }
+}

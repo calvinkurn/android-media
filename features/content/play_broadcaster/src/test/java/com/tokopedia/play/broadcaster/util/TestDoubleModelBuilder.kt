@@ -28,13 +28,15 @@ class TestDoubleModelBuilder {
         scheduleDataStore: BroadcastScheduleDataStore = buildBroadcastScheduleDataStore(dispatcher),
         titleDataStore: TitleDataStore = buildTitleDataStore(dispatcher),
         tagsDataStore: TagsDataStore = buildTagsDataStore(dispatcher),
-        interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore()
+        interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore(),
+        productTagDataStore: ProductTagDataStore = buildProductTagDataStore(),
     ) = MockSetupDataStore(
         mCoverDataStore = coverDataStore,
         mScheduleDataStore = scheduleDataStore,
         mTitleDataStore = titleDataStore,
         mTagsDataStore = tagsDataStore,
-        mInteractiveDataStore = interactiveDataStore
+        mInteractiveDataStore = interactiveDataStore,
+        mProductTagDataStore = productTagDataStore,
     )
 
     fun buildCoverDataStore(
@@ -66,6 +68,8 @@ class TestDoubleModelBuilder {
     )
 
     fun buildInteractiveDataStore() = InteractiveDataStoreImpl()
+
+    fun buildProductTagDataStore() = ProductTagDataStoreImpl()
 
     /**
      * Config Store

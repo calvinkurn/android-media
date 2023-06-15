@@ -4,6 +4,7 @@ import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnTextBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
@@ -27,7 +28,7 @@ class TableColumnTextViewHolder(
 
     override fun bind(element: TableRowsUiModel.RowColumnText) {
         with(binding) {
-            tvTableColumnText.text = element.valueStr
+            tvTableColumnText.text = element.valueStr.parseAsHtml()
             if (element.isLeftAlign) {
                 tvTableColumnText.gravity = Gravity.START
             } else {

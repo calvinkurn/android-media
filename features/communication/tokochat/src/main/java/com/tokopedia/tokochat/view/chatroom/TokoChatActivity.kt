@@ -2,11 +2,9 @@ package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.di.DaggerTokoChatComponent
+import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
@@ -40,10 +38,9 @@ open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     private fun initializeTokoChatComponent(): TokoChatComponent {
-        return DaggerTokoChatComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
-            .build().also {
+        return TokoChatActivityComponentFactory
+            .instance
+            .createTokoChatComponent(application).also {
                 tokoChatComponent = it
             }
     }

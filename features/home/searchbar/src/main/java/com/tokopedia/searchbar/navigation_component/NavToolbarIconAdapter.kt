@@ -30,9 +30,11 @@ import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentList
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
-internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
-                                     private val topNavComponentListener: TopNavComponentListener)
-    : RecyclerView.Adapter<IconHolder>() {
+internal class NavToolbarIconAdapter(
+    private var iconConfig: IconConfig,
+    private val topNavComponentListener: TopNavComponentListener
+) :
+    RecyclerView.Adapter<IconHolder>() {
     companion object {
         const val STATE_THEME_DARK = 0
         const val STATE_THEME_LIGHT = 1
@@ -181,14 +183,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
                         DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
                     } else {
                         val unifyColor = getDarkIconColor()
                         unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
                     }
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
                         DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, getLightIconColor()))
                     } else {
                         val unifyColor = getLightIconColor()
@@ -200,16 +202,16 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         } else {
             if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
                 val drawable = getIconUnifyDrawable(
-                        context = context,
-                        iconId = iconToolbar.id,
-                        assetColor = getDarkIconColor()
+                    context = context,
+                    iconId = iconToolbar.id,
+                    assetColor = getDarkIconColor()
                 )
                 iconImage.imageDrawable = drawable
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
                 val drawable = getIconUnifyDrawable(
-                        context = context,
-                        iconId = iconToolbar.id,
-                        assetColor = getLightIconColor()
+                    context = context,
+                    iconId = iconToolbar.id,
+                    assetColor = getLightIconColor()
                 )
                 iconImage.imageDrawable = drawable
             }
@@ -218,10 +220,10 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         iconImageContainer.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
-                        pageName = topNavComponentListener.getPageName(),
-                        componentName = iconToolbar.name,
-                        userId = topNavComponentListener.getUserId(),
-                        counter = iconToolbar.badgeCounter
+                    pageName = topNavComponentListener.getPageName(),
+                    componentName = iconToolbar.name,
+                    userId = topNavComponentListener.getUserId(),
+                    counter = iconToolbar.badgeCounter
                 )
             }
             iconToolbar.onIconClicked.invoke()
@@ -236,7 +238,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         (iconImage.notificationRef.parent as? ViewGroup)?.layoutTransition = LayoutTransition()
         iconImage.notificationRef.tag =
             String.format(
-                context.getString(R.string.tag_counter_id), iconToolbar.name
+                context.getString(R.string.tag_counter_id),
+                iconToolbar.name
             )
 
         when {
@@ -246,9 +249,9 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
                 iconImage.setNotifXY(ICON_NONE_COUNTER_PERCENTAGE_X_POSITION, ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
-                        notif = iconToolbar.badgeCounter.toString(),
-                        notificationType = NotificationUnify.NONE_TYPE,
-                        colorType = NotificationUnify.COLOR_PRIMARY
+                    notif = iconToolbar.badgeCounter.toString(),
+                    notificationType = NotificationUnify.NONE_TYPE,
+                    colorType = NotificationUnify.COLOR_PRIMARY
                 )
                 iconImage.notificationGravity = Gravity.TOP or Gravity.END
                 iconImage.notificationRef.visible()
@@ -256,9 +259,9 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             else -> {
                 iconImage.setNotifXY(ICON_DEFAULT_PERCENTAGE_X_POSITION, ICON_DEFAULT_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
-                        notif = iconToolbar.badgeCounter.toString(),
-                        notificationType = NotificationUnify.COUNTER_TYPE,
-                        colorType = NotificationUnify.COLOR_PRIMARY
+                    notif = iconToolbar.badgeCounter.toString(),
+                    notificationType = NotificationUnify.COUNTER_TYPE,
+                    colorType = NotificationUnify.COLOR_PRIMARY
                 )
                 iconImage.notificationGravity = Gravity.TOP or Gravity.END
                 iconImage.notificationRef.visible()
@@ -286,7 +289,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
     }
 
     private fun constructCounterTagById(id: Int) =
-            context.getString(R.string.tag_counter_id) + id
+        context.getString(R.string.tag_counter_id) + id
 }
 
 internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
@@ -307,9 +310,9 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         iconImage.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
-                        pageName = topNavComponentListener.getPageName(),
-                        componentName = iconToolbar.name,
-                        userId = topNavComponentListener.getUserId()
+                    pageName = topNavComponentListener.getPageName(),
+                    componentName = iconToolbar.name,
+                    userId = topNavComponentListener.getUserId()
                 )
             }
             iconToolbar.onIconClicked.invoke()
@@ -334,7 +337,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
     }
 
     private fun constructCounterTagById(id: String) =
-            context.getString(R.string.tag_counter_id) + id
+        context.getString(R.string.tag_counter_id) + id
 }
 
 internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
@@ -354,16 +357,16 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
 
         if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
             val drawable = getIconUnifyDrawable(
-                    context = context,
-                    iconId = iconToolbar.id,
-                    assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                context = context,
+                iconId = iconToolbar.id,
+                assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             )
             iconImage.imageDrawable = drawable
         } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
             val drawable = getIconUnifyDrawable(
-                    context = context,
-                    iconId = iconToolbar.id,
-                    assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+                context = context,
+                iconId = iconToolbar.id,
+                assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
             )
             iconImage.imageDrawable = drawable
         }
@@ -384,9 +387,9 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             iconImage.notificationRef.gone()
         } else {
             iconImage.notificationRef.setNotification(
-                    notif = iconToolbar.badgeCounter.toString(),
-                    notificationType = NotificationUnify.COUNTER_TYPE,
-                    colorType = NotificationUnify.COLOR_PRIMARY
+                notif = iconToolbar.badgeCounter.toString(),
+                notificationType = NotificationUnify.COUNTER_TYPE,
+                colorType = NotificationUnify.COLOR_PRIMARY
             )
             iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
             iconImage.notificationRef.visible()
@@ -404,9 +407,9 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
     private fun onClickAnimatedImage(iconToolbar: IconToolbar) {
         if (!iconToolbar.disableDefaultGtmTracker) {
             NavToolbarTracking.clickNavToolbarComponent(
-                    pageName = topNavComponentListener.getPageName(),
-                    componentName = iconToolbar.name,
-                    userId = topNavComponentListener.getUserId()
+                pageName = topNavComponentListener.getPageName(),
+                componentName = iconToolbar.name,
+                userId = topNavComponentListener.getUserId()
             )
         }
         iconToolbar.onIconClicked.invoke()

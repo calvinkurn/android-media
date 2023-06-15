@@ -6,6 +6,7 @@ import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMen
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogProductInputMultiTabRepository
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeMCCMProductsRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeRecommendationRepository
 import javax.inject.Inject
 
@@ -15,11 +16,13 @@ class DigitalPDPTelcoRepositoryImpl @Inject constructor(
     private val rechargeCatalogMenuDetailRepo: RechargeCatalogMenuDetailRepository,
     private val rechargeAddToCardRepo: RechargeAddToCartRepository,
     private val rechargeCatalogProductInputMultiTabRepository: RechargeCatalogProductInputMultiTabRepository,
-    private val rechargeRecommendationRepo: RechargeRecommendationRepository
+    private val rechargeRecommendationRepo: RechargeRecommendationRepository,
+    private val rechargeMCCMProductRepo: RechargeMCCMProductsRepository,
 ): DigitalPDPTelcoRepository,
         RechargeFavoriteNumberRepository by rechargeFavoriteNumberRepo,
         RechargeCatalogPrefixSelectRepository by rechargeCatalogPrefixSelectRepo,
         RechargeCatalogMenuDetailRepository by rechargeCatalogMenuDetailRepo,
         RechargeAddToCartRepository by rechargeAddToCardRepo,
         RechargeCatalogProductInputMultiTabRepository by rechargeCatalogProductInputMultiTabRepository,
-        RechargeRecommendationRepository by rechargeRecommendationRepo
+        RechargeRecommendationRepository by rechargeRecommendationRepo,
+        RechargeMCCMProductsRepository by rechargeMCCMProductRepo

@@ -20,7 +20,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
-import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -101,7 +100,6 @@ class SharingUtil {
                     it.printStackTrace()
                 })
         }
-
 
         fun triggerSS(view: View?, imageSaved: (savedImgPath: String) -> Unit) {
             val bitmap = takeScreenshot(view)
@@ -265,7 +263,14 @@ class SharingUtil {
             }
         }
 
-        fun executeShareIntent(shareModel: ShareModel, linkerShareData: LinkerShareResult?, activity: Activity?, view: View?, shareStringContainer: String) {
+        fun executeShareIntent(
+            shareModel: ShareModel,
+            linkerShareData: LinkerShareResult?,
+            activity: Activity?,
+            view: View?,
+            shareStringContainer: String,
+            onSuccessCopyLink: (() -> Unit)? = null
+        ) {
             try {
                 var shareImageFileUri: Uri? = null
                 if (!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
@@ -280,18 +285,16 @@ class SharingUtil {
                     is ShareModel.CopyLink -> {
                         linkerShareData?.url?.let {
                             if (activity != null) {
-                                if (shareModel.pageType == PageType.PDP) {
-                                    ClipboardHandler().copyToClipboard(activity, shareString)
-                                } else {
-                                    ClipboardHandler().copyToClipboard(activity, it)
+                                ClipboardHandler().copyToClipboard(activity, it)
+                            }
+                        }
+                        if (onSuccessCopyLink == null) {
+                            view.let {
+                                if (it != null) {
+                                    Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
                                 }
                             }
-                        }
-                        view.let {
-                            if (it != null) {
-                                Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
-                            }
-                        }
+                        } else onSuccessCopyLink.invoke()
                     }
                     is ShareModel.Instagram, is ShareModel.Facebook -> {
                         if (shareModel.shareOnlyLink) {
@@ -325,7 +328,7 @@ class SharingUtil {
                     is ShareModel.Whatsapp -> {
                         activity?.startActivity(
                             shareModel.appIntent?.apply {
-                                if (shareImageFileUri != null) {
+                                if (shareImageFileUri != null && shareModel.shareOnlyLink) {
                                     putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                                 }
                                 type = UniversalShareBottomSheet.MimeType.TEXT.type

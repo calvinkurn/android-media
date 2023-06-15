@@ -18,6 +18,7 @@ import com.tokopedia.product_ar.usecase.GetProductArUseCase
 import com.tokopedia.product_ar.util.ProductArAssertAssistant
 import com.tokopedia.product_ar.util.TestUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,6 +55,9 @@ class ProductArViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
 
     private val gson = Gson()
     private val assertAssistant = ProductArAssertAssistant()

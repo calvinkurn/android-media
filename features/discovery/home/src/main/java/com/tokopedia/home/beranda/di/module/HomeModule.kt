@@ -29,7 +29,8 @@ import dagger.Provides
         HomeDataSourceModule::class,
         HomeDatabaseModule::class,
         HomeMapperModule::class,
-        HomeUseCaseModule::class
+        HomeUseCaseModule::class,
+        HomeRateLimiterModule::class
     ]
 )
 class HomeModule {

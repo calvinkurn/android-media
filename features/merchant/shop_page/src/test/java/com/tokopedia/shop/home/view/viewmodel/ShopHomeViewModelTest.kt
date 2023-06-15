@@ -35,7 +35,18 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -44,7 +55,12 @@ import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
 import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
-import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
@@ -64,8 +80,15 @@ import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
+import com.tokopedia.shop.home.view.model.GetShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -80,8 +103,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -1298,7 +1327,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         PlayWidgetReminderType.NotReminded,
-                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
@@ -1307,7 +1336,8 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         false,
-                        PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming)
+                        channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming),
+                        shouldShowPerformanceDashboard = false,
                     )
                 )
             ),
@@ -1390,7 +1420,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         true,
@@ -1399,7 +1429,8 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         false,
-                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming)
+                        channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                        shouldShowPerformanceDashboard = false,
                     )
                 )
             )
@@ -1460,7 +1491,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
@@ -1469,7 +1500,8 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         false,
-                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming)
+                        channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                        shouldShowPerformanceDashboard = false,
                     )
                 )
             ),
@@ -2134,7 +2166,7 @@ class ShopHomeViewModelTest {
             shopPageGetDynamicTab = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
                 tabData = listOf(
                     ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
-                        name = ShopPageTabName.HOME,
+                        name = ShopPageHeaderTabName.HOME,
                         data = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData.Data(
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(

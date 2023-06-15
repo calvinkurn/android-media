@@ -14,7 +14,7 @@
             android:exported="false"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".pageheader.presentation.activity.ShopPageActivity"
+            android:name=".pageheader.presentation.activity.ShopPageHeaderActivity"
             android:exported="false"
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"

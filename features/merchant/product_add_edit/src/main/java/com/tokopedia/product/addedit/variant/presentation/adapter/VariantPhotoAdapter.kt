@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantPhotoViewHolder
+import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 
 class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener) :
-        RecyclerView.Adapter<VariantPhotoViewHolder>(), VariantPhotoViewHolder.OnItemClickListener {
+    RecyclerView.Adapter<VariantPhotoViewHolder>(), VariantPhotoViewHolder.OnItemClickListener {
 
     private var items: MutableList<VariantPhoto> = mutableListOf()
 
@@ -66,18 +66,18 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     }
 
     fun getAddOrEditPickerState(position: Int): PageSource {
-        return if (isPictIdIsEmpty(position))
+        return if (isPictIdIsEmpty(position)) {
             PageSource.AddVariant
-        else PageSource.EditVariant
+        } else {
+            PageSource.EditVariant
+        }
     }
 
-    fun isPictIdIsEmpty(position: Int): Boolean{
+    fun isPictIdIsEmpty(position: Int): Boolean {
         return this.items[position].picID.isEmpty()
     }
 
     override fun onItemClicked(position: Int) {
         onItemClickedListener.onItemClicked(position)
     }
-
-
 }

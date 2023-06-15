@@ -10,18 +10,23 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
-import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -100,6 +105,7 @@ class UiModelBuilder {
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
         shortVideoAllowed: Boolean = false,
+        hasContent: Boolean = false,
         channelId: String = "",
         channelStatus: ChannelStatus = ChannelStatus.Draft,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -119,6 +125,7 @@ class UiModelBuilder {
         countDown = countDown,
         scheduleConfig = scheduleConfig,
         tnc = tnc,
+        hasContent = hasContent,
     )
 
     fun buildDurationConfigUiModel(
@@ -259,13 +266,6 @@ class UiModelBuilder {
         }
     }
 
-    fun buildPinnedProduct(isPinned: Boolean = false) =
-        ProductUiModel(
-            "Product 1", "Product 1", "", 1,
-            price = OriginalPrice("Rp1000.00", 1000.0),
-            pinStatus = PinProductUiModel(isPinned = isPinned, canPin = true, isLoading = false),
-        )
-
     fun buildCoverSetupStateUploaded(
         localImage: Uri? = mockk(relaxed = true),
         coverImage: Uri = mockk(relaxed = true),
@@ -300,6 +300,7 @@ class UiModelBuilder {
     fun buildShortsConfig(
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
+        hasContent: Boolean = true,
         isBanned: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
@@ -313,5 +314,6 @@ class UiModelBuilder {
         maxTitleCharacter = maxTitleCharacter,
         maxTaggedProduct = maxTaggedProduct,
         shortsVideoSourceId = shortsVideoSourceId,
+        hasContent = hasContent,
     )
 }

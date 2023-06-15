@@ -117,10 +117,9 @@ class Utils {
         dateFormat.timeZone = TimeZone.getDefault()
         return try {
             val date = inputFormat.parse(isoTime)
-            date.let { dateFormat.format(date) }
+            date?.let { dateFormat.format(it) }?:""
         } catch (e: ParseException) {
-            e.printStackTrace()
-            e.localizedMessage ?: ""
+            ""
         }
     }
 
@@ -138,6 +137,9 @@ class Utils {
     }
 
     fun getDateTimeYear(isoTime: String?): String {
+        if(isoTime.isNullOrEmpty()){
+            return ""
+        }
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale)
         val dateFormat = SimpleDateFormat("d MMMM yyyy", locale)
         val timeFormat = SimpleDateFormat("HH:mm 'WIB'", locale)
@@ -145,17 +147,18 @@ class Utils {
         timeFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
         return try {
             val date = inputFormat.parse(isoTime)
-            if (DateUtils.isToday(date.time)) timeFormat.format(date) else if (isYesterday(
-                    date.time
-                )
-            ) {
-                "Kemarin"
-            } else {
-                dateFormat.format(date)
-            }
+            date?.let {
+                if (DateUtils.isToday(date.time)) timeFormat.format(date) else if (isYesterday(
+                        date.time
+                    )
+                ) {
+                    "Kemarin"
+                } else {
+                    dateFormat.format(date)
+                }
+            }.orEmpty()
         } catch (e: ParseException) {
-            e.printStackTrace()
-            e.localizedMessage
+            ""
         }
     }
 
@@ -208,7 +211,7 @@ class Utils {
                 if (index == 0) {
                     reviewPhotos = JSONObject()
                 }
-                reviewPhotos?.put(imageUpload.imageId, imageUpload.picObj)
+                reviewPhotos?.put(imageUpload.imageId.orEmpty(), imageUpload.picObj)
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -226,6 +229,7 @@ class Utils {
 
     private val locale: Locale by lazy { Locale("in", "ID", "") }
 
+    @Suppress("DEPRECATION")
     private fun isYesterday(time: Long): Boolean {
         val mTime = Time()
         mTime.set(time)

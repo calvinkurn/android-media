@@ -39,6 +39,10 @@ object NetworkManager {
         }
     }
 
+    fun isHighQualitySettings(context: Context?): Boolean {
+        return state(context) == HIGH_QUALITY
+    }
+
     private fun networkState(context: Context): NetworkState {
         val connectionType = getConnectionType(context)
         return if (connectionType == CONN_2G || connectionType == CONN_3G) {

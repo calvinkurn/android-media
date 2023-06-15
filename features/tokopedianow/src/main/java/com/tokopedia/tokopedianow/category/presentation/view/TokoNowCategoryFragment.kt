@@ -179,7 +179,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(true),
+            productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
@@ -192,7 +192,8 @@ class TokoNowCategoryFragment:
                 cdListName = getCDListName(),
                 categoryIdTracking = getViewModel().categoryIdTracking
             ),
-            feedbackWidgetListener = this
+            feedbackWidgetListener = this,
+            productCardCompactListener = createProductCardCompactCallback()
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

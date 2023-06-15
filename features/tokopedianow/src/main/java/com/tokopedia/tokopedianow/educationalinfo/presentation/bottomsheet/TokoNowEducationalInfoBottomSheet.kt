@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.educationalinfo.presentation.bottomsheet
 
 import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod

@@ -244,7 +244,9 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         if (cartItemModel.isShowTicker && !TextUtils.isEmpty(cartItemModel.tickerMessage)) {
             productTicker.visibility = View.VISIBLE
             productTicker.setTextDescription(cartItemModel.tickerMessage)
-        } else productTicker.visibility = View.GONE
+        } else {
+            productTicker.visibility = View.GONE
+        }
     }
 
     private fun showShipmentWarning(cartItemModel: CartItemModel) {

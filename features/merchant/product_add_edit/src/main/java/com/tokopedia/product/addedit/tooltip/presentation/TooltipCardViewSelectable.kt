@@ -1,29 +1,25 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.animateCollapse
 import com.tokopedia.product.addedit.common.util.animateExpand
 import com.tokopedia.product.addedit.common.util.animateRotateCcw
 import com.tokopedia.product.addedit.common.util.animateRotateCw
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
-import android.os.Handler
-import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class TooltipCardViewSelectable : BaseCustomView {
 
@@ -78,13 +74,6 @@ class TooltipCardViewSelectable : BaseCustomView {
         init(attrs)
     }
 
-    fun setButtonToBlack() {
-        findViewById<UnifyButton>(R.id.btn_price)?.apply {
-            gravity = Gravity.CENTER_VERTICAL or Gravity.START
-            setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        }
-    }
-
     fun collapse() {
         if (!rotated) {
             iconExpand?.animateRotateCw()
@@ -106,48 +95,6 @@ class TooltipCardViewSelectable : BaseCustomView {
         loaderApply?.hide()
         iconCheck?.show()
         collapse()
-    }
-
-    fun setOnButtonNextClicked(onClicked: () -> Unit) {
-        onButtonNextClicked = onClicked
-    }
-
-    fun setOnSuggestedPriceSelected(onSelected: (price: String) -> Unit) {
-        onSuggestedPriceSelected = onSelected
-    }
-
-    fun displaySuggestedPriceSelected() {
-        val checkIcon = getIconUnifyDrawable(context,
-                IconUnify.CHECK_CIRCLE,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-        text = context.getString(R.string.title_price_recommendation_applied)
-        titleIcon?.setImageDrawable(checkIcon)
-        tvApply?.hide()
-        collapse()
-    }
-
-    fun displaySuggestedPriceDeselected() {
-        val bulbIcon = MethodChecker.getDrawable(context, R.drawable.product_add_edit_ic_tips_bulb)
-        text = context.getString(R.string.title_price_recommendation)
-        titleIcon?.setImageDrawable(bulbIcon)
-        tvApply?.show()
-        expand()
-    }
-
-    fun setPriceDescriptionVisibility(isVisible: Boolean) {
-        tvPriceDescription?.isVisible = isVisible
-        dividerPriceDescription?.isVisible = isVisible
-    }
-
-    fun setShimmerVisibility(isVisible: Boolean) {
-        layoutTooltipContent?.isVisible = !isVisible
-        iconExpand?.isVisible = !isVisible
-        layoutTooltipShimmer?.isVisible = isVisible
-    }
-
-    fun hideIconCheck() {
-        iconCheck?.hide()
-        iconCheck = null
     }
 
     private fun init(attrs: AttributeSet?) {
@@ -214,8 +161,11 @@ class TooltipCardViewSelectable : BaseCustomView {
 
     private fun setupHideExpandButton() {
         iconExpand?.setOnClickListener {
-            if (rotated) expand()
-            else collapse()
+            if (rotated) {
+                expand()
+            } else {
+                collapse()
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.robot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -27,9 +28,13 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -52,6 +57,7 @@ internal class PlayBroadcastViewModelRobot(
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
+    playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = PlayBroadcastViewModel(
@@ -71,6 +77,7 @@ internal class PlayBroadcastViewModelRobot(
         channelRepo,
         logger,
         broadcastTimer,
+        playShortsEntryPointRemoteConfig,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {

@@ -30,15 +30,16 @@ import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetF
 import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
 import com.tokopedia.search.result.product.safesearch.SafeSearchView
@@ -147,6 +148,7 @@ internal open class ProductListPresenterTestFixtures {
 
     @Before
     open fun setUp() {
+        val responseCodeImpl = ResponseCodeImpl()
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -195,6 +197,7 @@ internal open class ProductListPresenterTestFixtures {
             viewUpdater,
             requestParamsGenerator,
             chooseAddressPresenterDelegate,
+            responseCodeImpl,
         )
 
         val visitableFactory = VisitableFactory(
@@ -246,6 +249,8 @@ internal open class ProductListPresenterTestFixtures {
             inspirationCarouselPresenterDelegate,
             RecommendationPresenterDelegate(viewUpdater, recommendationUseCase),
             adsLowOrganic,
+            abTestRemoteConfig,
+            responseCodeImpl,
         )
         productListPresenter.attachView(productListView)
     }

@@ -1,7 +1,10 @@
 package com.tokopedia.linker.helper;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -38,6 +42,9 @@ public class BranchHelper {
     static Gson gson = new Gson();
     static Type type = new TypeToken<HashMap<String, Object>>() {
     }.getType();
+
+    private static BranchHelperValidation branchHelperValidation = new BranchHelperValidation();
+    private static final String UNSAFE_TOKOPEDIA_HOST = "tokopedia.com";
 
     //Set userId to Branch.io sdk, userId, 127 chars or less
     public static void sendIdentityEvent(String userId) {
@@ -62,6 +69,11 @@ public class BranchHelper {
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_TITLE, LinkerUtils.getOgTitle(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_IMAGE_URL, LinkerUtils.getOgImage(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_DESC, LinkerUtils.getOgDesc(data));
+
+        // if uri host equals UNSAFE_TOKOPEDIA_HOST it will fail to generate the branch link
+        if (isUnsafeDesktopUrl(data.renderShareUri())) {
+            logErrorDesktopUrl(data.renderShareUri(), data.getUri());
+        }
         linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
     }
 
@@ -306,4 +318,25 @@ public class BranchHelper {
         }
     }
 
+    /**
+     *
+     * @param desktopUrl is url with the utm
+     * @param cleanUrl is url without the utm
+     */
+    private static void logErrorDesktopUrl(String desktopUrl, String cleanUrl) {
+        String errorMessage = String.format("Desktop Url: %s  is not allowed to generate branch link", desktopUrl);
+        branchHelperValidation.sendGenerateBranchErrorLogs(errorMessage, cleanUrl);
+    }
+
+    /**
+     * @param desktopUrl is url for web tokopedia ex:`https:www.tokopedia.com`
+     * @return true if desktopUrl contains `www`
+     */
+    private static boolean isUnsafeDesktopUrl(@NonNull String desktopUrl) {
+        try {
+            return Objects.equals(Uri.parse(desktopUrl).getHost(), UNSAFE_TOKOPEDIA_HOST);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

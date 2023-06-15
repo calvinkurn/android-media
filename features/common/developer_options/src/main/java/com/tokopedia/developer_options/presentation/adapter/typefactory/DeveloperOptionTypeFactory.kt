@@ -57,4 +57,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ConvertResourceIdUiModel): Int
     fun type(uiModel: ViewHanselPatchUiModel): Int
     fun type(uiModel: TopchatWebSocketLoggingUiModel): Int
+    fun type(uiModel: LoginHelperUiModel): Int
+    fun type(uiModel: DevOptsAuthorizationUiModel): Int
+    fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
 }

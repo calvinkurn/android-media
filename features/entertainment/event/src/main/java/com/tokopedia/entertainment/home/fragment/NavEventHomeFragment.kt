@@ -89,12 +89,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         super.onViewCreated(view, savedInstanceState)
         analytics.openHomeEvent()
         requestData()
-        renderToolbar()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        renderToolbar()
         viewModel.eventHomeListData.observe(viewLifecycleOwner, Observer {
             clearAllData()
             when(it){

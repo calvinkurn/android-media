@@ -23,7 +23,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -314,13 +314,19 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
                         binding?.atcButton?.isLoading = false
-                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        val bottomSheetData = it.data as? CartListBusinessDataBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
                                 val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
                                 bottomSheet.setClickListener(this@OrderCustomizationFragment)
                                 bottomSheet.show(childFragmentManager)
                             }
+                        }
+                    }
+                    UiEvent.EVENT_FAILED_ADD_TO_CART, UiEvent.EVENT_FAILED_UPDATE_CART -> {
+                        binding?.atcButton?.isLoading = false
+                        it.throwable?.message?.let { errorMessage ->
+                            showErrorToaster(errorMessage)
                         }
                     }
                 }
@@ -360,12 +366,24 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     private fun showErrorMessage() {
+        val message =  getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
-                text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                text = message,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = errorMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
             ).show()
         }
     }

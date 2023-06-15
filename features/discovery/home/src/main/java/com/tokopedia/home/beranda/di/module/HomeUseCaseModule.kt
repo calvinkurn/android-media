@@ -66,6 +66,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendatio
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -139,7 +140,8 @@ class HomeUseCaseModule {
         homeChooseAddressRepository: HomeChooseAddressRepository,
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         userSession: UserSessionInterface,
-        homeMissionWidgetRepository: HomeMissionWidgetRepository
+        homeMissionWidgetRepository: HomeMissionWidgetRepository,
+        homeTodoWidgetRepository: HomeTodoWidgetRepository
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
@@ -168,7 +170,8 @@ class HomeUseCaseModule {
         homeChooseAddressRepository = homeChooseAddressRepository,
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         userSessionInterface = userSession,
-        homeMissionWidgetRepository = homeMissionWidgetRepository
+        homeMissionWidgetRepository = homeMissionWidgetRepository,
+        homeTodoWidgetRepository = homeTodoWidgetRepository
     )
 
     @Provides

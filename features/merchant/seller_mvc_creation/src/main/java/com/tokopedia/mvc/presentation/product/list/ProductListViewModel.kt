@@ -60,7 +60,7 @@ class ProductListViewModel @Inject constructor(
             is ProductListEvent.TapRemoveProduct -> _uiEffect.tryEmit(ProductListEffect.ShowDeleteProductConfirmationDialog(event.productId))
             is ProductListEvent.ApplyRemoveProduct -> handleRemoveProduct(event.productId)
             ProductListEvent.TapBulkDeleteProduct -> {
-                val productToDeleteCount = currentState.products.count { it.isSelected }
+                val productToDeleteCount = currentState.products.filter { it.isSelected }.size
                 _uiEffect.tryEmit(ProductListEffect.ShowBulkDeleteProductConfirmationDialog(productToDeleteCount))
             }
             ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()
@@ -153,9 +153,11 @@ class ProductListViewModel @Inject constructor(
         selectedProducts: List<SelectedProduct>
     ): List<Product.Variant> {
         val matchedProduct = selectedProducts.find { it.parentProductId == parentProductId }
-        return matchedProduct?.variantProductIds?.map { variantId ->
+            ?: return emptyList()
+
+        return matchedProduct.variantProductIds.map { variantId ->
             Product.Variant(variantId, isEligible = true, reason = "", isSelected = true)
-        }.orEmpty()
+        }
     }
 
 
@@ -163,8 +165,8 @@ class ProductListViewModel @Inject constructor(
         parentProductId: Long,
         selectedProducts: List<SelectedProduct>
     ): Set<Long> {
-        val matchedProduct = selectedProducts.find { it.parentProductId == parentProductId }
-        return matchedProduct?.variantProductIds?.toSet().orEmpty()
+        val matchedProduct = selectedProducts.find { it.parentProductId == parentProductId } ?: return emptySet()
+        return matchedProduct.variantProductIds.toSet()
     }
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {

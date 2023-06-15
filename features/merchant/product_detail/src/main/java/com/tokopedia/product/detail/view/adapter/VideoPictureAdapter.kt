@@ -32,6 +32,11 @@ class VideoPictureAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun isFirstPicture(position: Int): Boolean {
+        val item = currentList.getOrNull(position)
+        return item != null && !item.isVideoType() && position == getFirstPicturePosition()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -65,6 +70,10 @@ class VideoPictureAdapter(
         } else {
             MEDIA_PICTURE_VIEW_TYPE
         }
+    }
+
+    private fun getFirstPicturePosition(): Int {
+        return currentList.indexOfFirst { !it.isVideoType() }
     }
 
     companion object {

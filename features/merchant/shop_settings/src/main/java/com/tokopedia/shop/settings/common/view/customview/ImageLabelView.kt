@@ -2,8 +2,6 @@ package com.tokopedia.shop.settings.common.view.customview
 
 import android.content.Context
 import android.graphics.Typeface
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,7 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import com.tokopedia.shop.settings.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -20,6 +19,7 @@ class ImageLabelView : FrameLayout {
     private var titleTextSize: Float = 0.toFloat()
     private var titleTextStyleValue: Int = 0
     private var titleTextView: Typography? = null
+
     @ColorInt
     private var titleColorValue: Int = 0
 
@@ -42,8 +42,11 @@ class ImageLabelView : FrameLayout {
 
     private fun init(attrs: AttributeSet?) {
         applyAttrs(attrs)
-        val view = LayoutInflater.from(context).inflate(R.layout.widget_label_view_image,
-                this, true)
+        val view = LayoutInflater.from(context).inflate(
+            R.layout.widget_label_view_image,
+            this,
+            true
+        )
         titleTextView = view.findViewById(R.id.tvTitle)
         titleTextView?.text = titleText
         titleTextView?.setTypeface(null, titleTextStyleValue)
@@ -60,8 +63,10 @@ class ImageLabelView : FrameLayout {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImageLabelView)
         try {
             titleText = styledAttributes.getString(R.styleable.ImageLabelView_ilv_title)
-            titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            titleColorValue = styledAttributes.getColor(
+                R.styleable.ImageLabelView_ilv_title_color,
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+            )
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ImageLabelView_ilv_title_text_style, Typeface.NORMAL)
             titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, resources.getDimension(R.dimen.sp_12))
             drawableRes = styledAttributes.getResourceId(R.styleable.ImageLabelView_ilv_drawable, 0)

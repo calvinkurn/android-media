@@ -1,14 +1,15 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 object RepurchaseProductMapper {
     private fun mapRepurchaseProductToProductCard(
         product: RepurchaseProduct
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
         imageUrl = product.imageUrl,
         minOrder = product.minOrder,
@@ -25,7 +26,7 @@ object RepurchaseProductMapper {
         isVariant = product.parentProductId.isNotBlank() && product.parentProductId != "0",
         needToShowQuantityEditor = true,
         labelGroupList = product.labelGroup.map {
-            TokoNowProductCardViewUiModel.LabelGroup(
+            LabelGroup(
                 position = it.position,
                 type = it.type,
                 title = it.title,

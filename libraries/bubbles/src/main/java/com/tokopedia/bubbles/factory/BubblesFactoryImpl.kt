@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -31,9 +32,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
     override fun setupBubble(
         builder: NotificationCompat.Builder,
-        model: BubbleNotificationModel
+        model: BubbleNotificationModel,
+        bubbleBitmap: Bitmap?
     ) {
-        val icon = createBubbleIcon(model.avatarUrl)
+        val icon = createBubbleIcon(model.avatarUrl, bubbleBitmap)
         if (icon != null) {
             val pendingIntentBundle =
                 getPendingIntentBundle(model.notificationType, model.notificationId)
@@ -60,8 +62,8 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel) {
-        var shortcuts = createShortcuts(historyModels)
+    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel, bubbleBitmap: Bitmap?) {
+        var shortcuts = createShortcuts(historyModels, bubbleBitmap)
 
         shortcuts = shortcuts.sortedByDescending { it.id == bubbleModel.shortcutId }
 
@@ -153,8 +155,8 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             .build()
     }
 
-    private fun createBubbleIcon(avatarUrl: String): IconCompat? {
-        val bitmap = BubblesUtils.getBitmap(context, avatarUrl, getBitmapWidth(), getBitmapHeight())
+    private fun createBubbleIcon(avatarUrl: String, bubbleBitmap: Bitmap?): IconCompat? {
+        val bitmap = bubbleBitmap ?: BubblesUtils.getBitmap(context, avatarUrl, getBitmapWidth(), getBitmapHeight())
         return bitmap?.let {
             IconCompat.createWithAdaptiveBitmap(it)
         }
@@ -187,7 +189,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             .build()
     }
 
-    private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>): List<ShortcutInfoCompat> {
+    private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>, bubbleBitmap: Bitmap?): List<ShortcutInfoCompat> {
         return historyModels.map {
             ShortcutInfoCompat.Builder(context, it.messageId)
                 .setLocusId(LocusIdCompat(it.messageId))
@@ -198,10 +200,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
                     )
                 )
                 .setShortLabel(it.senderName)
-                .setIcon(createBubbleIcon(it.avatarUrl))
+                .setIcon(createBubbleIcon(it.avatarUrl, bubbleBitmap))
                 .setLongLived(true)
                 .setIntent(createBubbleChatIntent(it.applink))
-                .setPerson(getBubblePerson(createBubbleIcon(it.avatarUrl), it.senderName))
+                .setPerson(getBubblePerson(createBubbleIcon(it.avatarUrl, bubbleBitmap), it.senderName))
                 .build()
         }
     }

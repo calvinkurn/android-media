@@ -2,10 +2,16 @@ package com.tokopedia.content.common.util
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.SpannedString
 
 /**
  * Created By : Jonathan Darwin on July 05, 2022
  */
+inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
+    val builder = SpannableStringBuilder()
+    builder.builderAction()
+    return SpannedString(builder)
+}
 
 fun SpannableStringBuilder.setSpanOnText(
     text: String,

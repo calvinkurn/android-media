@@ -5,17 +5,24 @@ import com.tokopedia.play.model.tagitem.TagItemBuilder
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoConfigUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
+import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 
 /**
@@ -54,6 +61,28 @@ class ChannelBuilderImpl(
         upcomingInfo = upcomingInfo,
         tagItems = tagItems,
         status = status,
+    )
+
+    override fun buildChannelDetail(
+        shareInfo: PlayShareInfoUiModel,
+        channelInfo: PlayChannelInfoUiModel,
+        rtnConfigInfo: PlayRealTimeNotificationConfig,
+        videoInfo: PlayVideoConfigUiModel,
+        emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel,
+        bottomSheetTitle: String,
+        popupConfig: PlayPopUpConfigUiModel,
+        exploreWidgetConfig: ExploreWidgetConfig,
+        showCart: Boolean
+    ) = PlayChannelDetailUiModel(
+        shareInfo = shareInfo,
+        channelInfo = channelInfo,
+        rtnConfigInfo = rtnConfigInfo,
+        videoInfo = videoInfo,
+        emptyBottomSheetInfo = emptyBottomSheetInfo,
+        bottomSheetTitle = bottomSheetTitle,
+        popupConfig = popupConfig,
+        exploreWidgetConfig = exploreWidgetConfig,
+        showCart = showCart,
     )
 
     override fun buildPinnedMessage(

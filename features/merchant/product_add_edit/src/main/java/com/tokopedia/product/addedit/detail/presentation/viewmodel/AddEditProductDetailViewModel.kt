@@ -17,8 +17,21 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEM
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.model.*
-import com.tokopedia.product.addedit.detail.domain.usecase.*
+import com.tokopedia.product.addedit.detail.domain.model.CommissionRule
+import com.tokopedia.product.addedit.detail.domain.model.GetDefaultCommissionRulesResponse
+import com.tokopedia.product.addedit.detail.domain.model.GetShopInfoResponse
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionByKeyword
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
+import com.tokopedia.product.addedit.detail.domain.model.ProductMigrateStatus
+import com.tokopedia.product.addedit.detail.domain.usecase.GetAddProductPriceSuggestionUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetDefaultCommissionRulesUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetProductAutoMigratedStatusUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
@@ -965,8 +978,8 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun clearProductPhotoUrl(
         imagePickerResult: MutableList<String>,
-        originalImageUrl: MutableList<String>,
-    ): ArrayList<String>{
+        originalImageUrl: MutableList<String>
+    ): ArrayList<String> {
         val resultCleaner = arrayListOf<String>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
             when {

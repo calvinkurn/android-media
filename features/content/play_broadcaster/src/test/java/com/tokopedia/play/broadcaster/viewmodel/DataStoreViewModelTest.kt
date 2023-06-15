@@ -26,6 +26,7 @@ class DataStoreViewModelTest {
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var interactiveDataStore: InteractiveDataStore
     private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var productTagDataStore: ProductTagDataStore
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var viewModel: DataStoreViewModel
@@ -37,7 +38,15 @@ class DataStoreViewModelTest {
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        productTagDataStore = ProductTagDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(
+            coverDataStore,
+            broadcastScheduleDataStore,
+            titleDataStore,
+            tagsDataStore,
+            interactiveDataStore,
+            productTagDataStore,
+        )
         viewModel = DataStoreViewModel(mockSetupDataStore)
     }
 

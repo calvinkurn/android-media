@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view"
         app:layout_constraintVertical_bias="1.0"
         tools:itemCount="10"
-        tools:listitem="@layout/item_tokopedianow_product_card_carousel"
+        tools:listitem="@layout/item_productcard_compact_product_card_carousel"
         tools:orientation="horizontal"
         tools:spanCount="3"
         tools:ignore="RtlSymmetry" />

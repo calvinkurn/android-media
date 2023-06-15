@@ -10,8 +10,12 @@ import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendati
 import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendationResponse
 import com.tokopedia.product.addedit.util.UnitTestFileUtils
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -19,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.io.File
 import java.lang.reflect.Type
 
 @ExperimentalCoroutinesApi
@@ -52,8 +55,10 @@ class GetCategoryRecommendationUseCaseTest {
     fun `should success on get category recommendation`() = runBlocking {
         usecase.params = params
         val successResponse = createSuccessResponse<GetCategoryRecommendationResponse>(SUCCESS_RESPONSE)
-        val mappedResponse = mapRemoteModelToUiModel(successResponse.getData<GetCategoryRecommendationResponse>(GetCategoryRecommendationResponse::class.java)
-                .categoryRecommendationDataModel)
+        val mappedResponse = mapRemoteModelToUiModel(
+            successResponse.getData<GetCategoryRecommendationResponse>(GetCategoryRecommendationResponse::class.java)
+                .categoryRecommendationDataModel
+        )
 
         coEvery {
             gqlRepository.response(any(), any())
@@ -73,9 +78,9 @@ class GetCategoryRecommendationUseCaseTest {
     }
 
     private fun mapRemoteModelToUiModel(categoryRecommendationData: GetCategoryRecommendationDataModel?): List<ListItemUnify> =
-            categoryRecommendationData?.categories?.map {
-                mockk<ListItemUnify>()
-            }.orEmpty()
+        categoryRecommendationData?.categories?.map {
+            mockk<ListItemUnify>()
+        }.orEmpty()
 
     fun getJsonFromFile(path: String): String {
         return UnitTestFileUtils.getJsonFromAsset(path)

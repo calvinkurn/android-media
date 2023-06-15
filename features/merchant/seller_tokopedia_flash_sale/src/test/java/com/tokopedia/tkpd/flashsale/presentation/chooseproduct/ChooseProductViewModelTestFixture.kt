@@ -25,6 +25,8 @@ import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseP
 import com.tokopedia.tkpd.flashsale.util.tracker.AddChooseProductTracker
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.MockKMatcherScope
@@ -38,7 +40,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -49,6 +51,9 @@ open class ChooseProductViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = UnconfinedTestRule()
 
     @RelaxedMockK
     internal lateinit var getFlashSaleProductListToReserveUseCase: GetFlashSaleProductListToReserveUseCase

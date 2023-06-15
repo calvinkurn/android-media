@@ -32,9 +32,6 @@ class ProductChooserAnalyticManager @Inject constructor(
         scope.launch(dispatchers.computation) {
             event.subscribe().collect {
                 when (it) {
-                    is ProductChooserBottomSheet.Event.SetSelectedAccount -> {
-                        analytic.setSelectedAccount(it.account)
-                    }
                     is ProductChooserBottomSheet.Event.ViewBottomSheet -> {
                         analytic.viewProductChooser()
                     }

@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.media.gallery.base.di.component
 
+import android.graphics.Bitmap
+import android.util.LruCache
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.review.feature.media.gallery.base.di.module.ReviewMediaGalleryModule
@@ -26,6 +28,9 @@ interface ReviewMediaGalleryComponent {
     fun inject(fragment: ReviewMediaGalleryFragment)
 
     fun reviewVideoPlayer(): ReviewVideoPlayer
+
     @ReviewMediaGalleryViewModelFactory
     fun viewModelFactory(): ViewModelProvider.Factory
+
+    fun bitmapCache(): LruCache<String, Bitmap>
 }

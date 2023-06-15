@@ -1,14 +1,9 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
@@ -39,7 +34,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.playWidget)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -56,9 +50,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
-    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
-    implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
@@ -144,6 +136,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation project(rootProject.ext.libraries.foldable)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)

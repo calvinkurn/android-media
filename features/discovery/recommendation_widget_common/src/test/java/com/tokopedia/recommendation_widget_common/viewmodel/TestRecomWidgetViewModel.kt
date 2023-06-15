@@ -25,6 +25,7 @@ import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGENAME_PDP_3
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -33,7 +34,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -45,6 +46,9 @@ class TestRecomWidgetViewModel {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
@@ -222,7 +226,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test add to cart non variant then return success cart data`() = runBlockingTest {
+    fun `test add to cart non variant then return success cart data`() = runTest {
         val atcResponseSuccess = AddToCartDataModel(
             data = DataModel(
                 success = 1,
@@ -244,7 +248,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given time out add to cart return error when add to cart non variant then mini cart error available livedata `() = runBlockingTest {
+    fun `test given time out add to cart return error when add to cart non variant then mini cart error available livedata `() = runTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
@@ -265,7 +269,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given specific product id return success when update data mini cart with page then mini cart item available in livedata`() = runBlockingTest {
+    fun `test given specific product id return success when update data mini cart with page then mini cart item available in livedata`() = runTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
@@ -279,7 +283,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given mini cart simplified with non logged in user return success when load atc non variant then recommendation item available in livedata atc tokonow `() = runBlockingTest {
+    fun `test given mini cart simplified with non logged in user return success when load atc non variant then recommendation item available in livedata atc tokonow `() = runTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
@@ -299,7 +303,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given mini cart simplified return success when get data mini cart then set value for refresh tokonow`() = runBlockingTest {
+    fun `test given mini cart simplified return success when get data mini cart then set value for refresh tokonow`() = runTest {
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
         } returns miniCartSimplifiedDataMock
@@ -310,7 +314,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given atc non variant with the same quantity return success when add to cart non variant then does not changed data atc tokonow `() = runBlockingTest {
+    fun `test given atc non variant with the same quantity return success when add to cart non variant then does not changed data atc tokonow `() = runTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
@@ -331,7 +335,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test add to cart non variant then return failed with message`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with message`() = runTest {
         val atcResponseError = AddToCartDataModel(
             data = DataModel(success = 0),
             status = "",
@@ -351,7 +355,7 @@ class TestRecomWidgetViewModel {
 
     @Test
     fun `test given atc with error empty message return success when add to cart non variant then atc recom tokonow available in livedata`() =
-        runBlockingTest {
+        runTest {
             coEvery {
                 addToCartUseCase.executeOnBackground()
             } returns mockAtcRecomErrorWithEmptyErrorMessage
@@ -363,7 +367,7 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test add to cart non variant then return failed with throwable`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with throwable`() = runTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } throws Throwable()
@@ -376,7 +380,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return success cart data`() = runBlockingTest {
+    fun `test update cart non variant then return success cart data`() = runTest {
         val response = UpdateCartV2Data(data = Data(message = "sukses update cart"))
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -388,7 +392,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return failed with message`() = runBlockingTest {
+    fun `test update cart non variant then return failed with message`() = runTest {
         val response = UpdateCartV2Data(error = listOf("error nih gan"))
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -401,7 +405,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test update cart non variant then return error throwable`() = runBlockingTest {
+    fun `test update cart non variant then return error throwable`() = runTest {
         coEvery {
             updateCartUseCase.executeOnBackground()
         } throws Throwable()
@@ -414,7 +418,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return success cart data`() = runBlockingTest {
+    fun `test delete cart non variant then return success cart data`() = runTest {
         val response = RemoveFromCartData(
             status = "OK",
             data = com.tokopedia.cartcommon.data.response.deletecart.Data(
@@ -433,7 +437,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return failed with message`() = runBlockingTest {
+    fun `test delete cart non variant then return failed with message`() = runTest {
         val response = RemoveFromCartData(
             status = "ERROR",
             data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 0)
@@ -450,7 +454,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test delete cart non variant then return error throwable`() = runBlockingTest {
+    fun `test delete cart non variant then return error throwable`() = runTest {
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } throws Throwable()

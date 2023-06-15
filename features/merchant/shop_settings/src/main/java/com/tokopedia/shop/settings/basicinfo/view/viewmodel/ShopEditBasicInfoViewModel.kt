@@ -4,15 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
@@ -25,23 +24,31 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.Exception
 import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class ShopEditBasicInfoViewModel @Inject constructor(
-        private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
-        private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
-        private val uploaderUseCase: UploaderUseCase,
-        private val getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges,
-        private val getShopDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
-        private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
-        private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+    private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
+    private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
+    private val uploaderUseCase: UploaderUseCase,
+    private val getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges,
+    private val getShopDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
+    private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
+    private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
@@ -97,11 +104,11 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun uploadShopImage(
-            imagePath: String,
-            name: String,
-            domain: String,
-            tagLine: String,
-            description: String
+        imagePath: String,
+        name: String,
+        domain: String,
+        tagLine: String,
+        description: String
     ) {
         launchCatchError(block = {
             val requestParams = uploaderUseCase.createParams(
@@ -125,17 +132,22 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun updateShopBasicData(
-            name: String,
-            domain: String,
-            tagLine: String,
-            description: String,
-            imgId: String? = null
+        name: String,
+        domain: String,
+        tagLine: String,
+        description: String,
+        imgId: String? = null
     ) {
         val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
 
         val requestParams = UpdateShopBasicDataUseCase.createRequestParam(
-                shopName, shopDomain, tagLine, description, imgId)
+            shopName,
+            shopDomain,
+            tagLine,
+            description,
+            imgId
+        )
 
         updateShopBasicData(requestParams)
     }
@@ -145,8 +157,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             val allowChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground().data
             _allowShopNameDomainChanges.postValue(Success(allowChanges))
         }, onError = {
-            _allowShopNameDomainChanges.postValue(Fail(it))
-        })
+                _allowShopNameDomainChanges.postValue(Fail(it))
+            })
     }
 
     fun getShopBasicData() {
@@ -176,73 +188,73 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun initShopNameValidation() = launch {
         shopNameValidation
-                .asFlow()
-                .debounce(INPUT_DELAY)
-                .map {
-                    validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(it)
-                    validateDomainShopNameUseCase.executeOnBackground()
+            .asFlow()
+            .debounce(INPUT_DELAY)
+            .map {
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(it)
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+            .flowOn(dispatchers.io)
+            .retryWhen { cause, _ ->
+                if (cause is Exception) {
+                    _validateShopName.value = Fail(cause)
+                    true
+                } else {
+                    false
                 }
-                .flowOn(dispatchers.io)
-                .retryWhen { cause, _ ->
-                    if (cause is Exception) {
-                        _validateShopName.value = Fail(cause)
-                        true
-                    } else {
-                        false
-                    }
-                }.catch {
-                    _validateShopName.value = Fail(it)
-                }.collectLatest {
-                    _validateShopName.value = Success(it)
-                }
+            }.catch {
+                _validateShopName.value = Fail(it)
+            }.collectLatest {
+                _validateShopName.value = Success(it)
+            }
     }
 
     private fun initShopDomainValidation() = launch {
         shopDomainValidation
-                .asFlow()
-                .debounce(INPUT_DELAY)
-                .map {
-                    validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(it)
-                    validateDomainShopNameUseCase.executeOnBackground()
+            .asFlow()
+            .debounce(INPUT_DELAY)
+            .map {
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(it)
+                validateDomainShopNameUseCase.executeOnBackground()
+            }
+            .flowOn(dispatchers.io)
+            .retryWhen { cause, _ ->
+                if (cause is Exception) {
+                    _validateShopDomain.value = Fail(cause)
+                    true
+                } else {
+                    false
                 }
-                .flowOn(dispatchers.io)
-                .retryWhen { cause, _ ->
-                    if (cause is Exception) {
-                        _validateShopDomain.value = Fail(cause)
-                        true
-                    } else {
-                        false
+            }.catch {
+                _validateShopDomain.value = Fail(it)
+            }.collectLatest {
+                if (!it.validateDomainShopName.isValid) {
+                    currentShopName?.let { shopName ->
+                        getShopDomainSuggestion(shopName)
                     }
-                }.catch {
-                    _validateShopDomain.value = Fail(it)
-                }.collectLatest {
-                    if(!it.validateDomainShopName.isValid) {
-                        currentShopName?.let { shopName ->
-                            getShopDomainSuggestion(shopName)
-                        }
-                    }
-                    _validateShopDomain.value = Success(it)
                 }
+                _validateShopDomain.value = Success(it)
+            }
     }
 
     private fun initGetShopDomainNameSuggestion() = launch {
         getShopDomainNameSuggestionParams
-                .asFlow()
-                .map {
-                    getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(it)
-                    getShopDomainNameSuggestionUseCase.executeOnBackground()
-                }
-                .flowOn(dispatchers.io)
-                .conflate()
-                .catch {
-                    _shopDomainSuggestion.value = Fail(it)
-                }.collectLatest {
-                    _shopDomainSuggestion.value = Success(it)
-                }
+            .asFlow()
+            .map {
+                getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(it)
+                getShopDomainNameSuggestionUseCase.executeOnBackground()
+            }
+            .flowOn(dispatchers.io)
+            .conflate()
+            .catch {
+                _shopDomainSuggestion.value = Fail(it)
+            }.collectLatest {
+                _shopDomainSuggestion.value = Success(it)
+            }
     }
 
     private fun String.nullIfNotChanged(previousValue: String?): String? {
         val currentValue = this
-        return if(currentValue == previousValue) null else currentValue
+        return if (currentValue == previousValue) null else currentValue
     }
 }

@@ -31,6 +31,7 @@ object SomNavigator {
     const val REQUEST_CHANGE_COURIER = 995
     const val REQUEST_RESCHEDULE_PICKUP = 994
     const val REQUEST_RETURN_TO_SHIPPER = 993
+    const val REQUEST_FIND_NEW_DRIVER = 992
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -97,6 +98,19 @@ object SomNavigator {
         fragment.run {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RETURN_TO_SHIPPER, orderId)
             startActivityForResult(intent, REQUEST_RETURN_TO_SHIPPER)
+        }
+    }
+
+    fun goToFindNewDriver(fragment: Fragment, orderId: String, invoice: String?) {
+        fragment.run {
+            startActivityForResult(RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalLogistic.FIND_NEW_DRIVER
+            ).apply {
+                    putExtra(SomConsts.PARAM_ORDER_ID, orderId)
+                    putExtra(SomConsts.PARAM_INVOICE, invoice.orEmpty())
+                }, REQUEST_FIND_NEW_DRIVER
+            )
         }
     }
 

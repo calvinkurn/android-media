@@ -13,7 +13,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 
 class ToggleTemplateUseCaseTest {
     @get:Rule
@@ -127,48 +126,43 @@ class ToggleTemplateUseCaseTest {
         Assert.assertEquals(expectedResponse, result)
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_error_when_set_availability_template_buyer() {
         // Given
         val isSeller = false
 
-        // Then
-        assertThrows<Throwable> {
-            runBlocking {
-                // When
-                repository.stubRepositoryAsThrow(
-                    throwable = testException
-                )
+        runBlocking {
+            // When
+            repository.stubRepositoryAsThrow(
+                throwable = testException
+            )
 
-                // Then
-                templateUseCase(
-                    ToggleTemplateUseCase.Param(
-                        isSeller
-                    )
+            // Then
+            templateUseCase(
+                ToggleTemplateUseCase.Param(
+                    isSeller
                 )
-            }
+            )
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_error_when_set_availability_template_seller() {
         // Given
         val isSeller = true
 
-        assertThrows<Throwable> {
-            runBlocking {
-                // When
-                repository.stubRepositoryAsThrow(
-                    throwable = testException
-                )
+        runBlocking {
+            // When
+            repository.stubRepositoryAsThrow(
+                throwable = testException
+            )
 
-                // Then
-                templateUseCase(
-                    ToggleTemplateUseCase.Param(
-                        isSeller
-                    )
+            // Then
+            templateUseCase(
+                ToggleTemplateUseCase.Param(
+                    isSeller
                 )
-            }
+            )
         }
     }
 }

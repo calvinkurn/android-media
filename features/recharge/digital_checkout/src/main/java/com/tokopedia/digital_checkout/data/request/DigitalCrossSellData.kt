@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DigitalCrossSellData(
     val product: FintechProduct,
-    val isSubscription: Boolean
+    val isSubscription: Boolean,
+    var additionalMetadata: String = ""
 ) : Parcelable

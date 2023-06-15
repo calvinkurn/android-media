@@ -12,7 +12,6 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
 import com.tokopedia.play.broadcaster.shorts.helper.*
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -70,6 +69,7 @@ class PlayShortsSwitchAccountAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
+                        mockDataStore = mockk(relaxed = true),
                     )
                 )
                 .build()

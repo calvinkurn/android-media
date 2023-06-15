@@ -25,7 +25,7 @@
     <string name="cb_bot_string_hint_invoice_search">Cari invoice atau nama produk</string>
     <string name="cb_bot_title_no_result">Transaksi tidak ditemukan  Periksa kembali kata kunci Anda</string>
     <string name="title_chat_bot">Chat Sekarang</string>
-    <string name="cb_bot_reply_text">Ketik pesan singkat dan jelas</string>
+    <string name="cb_bot_reply_text">Ketik detail kendalamu di sini, ya</string>
     <string name="cb_bot_three_dots">\u2026</string>
     <string name="cb_bot_toolbar_title">Tanya</string>
     <string name="cb_dot">●</string>
@@ -77,8 +77,11 @@
     <string name="chatbot_csat_opsional"> (Opsional)</string>
     <string name="chatbot_bottomsheet_copy">Salin</string>
     <string name="chatbot_bottomsheet_copy_success_toaster">Pesan berhasil disalin</string>
+    <string name="chatbot_edit_text_hint">Klik + untuk upload media</string>
     <string name="chatbot_back_to_tokopedia_care">Kembali ke Tokopedia Care</string>
     <string name="chatbot_retry_get_data">Coba lagi</string>
     <string name="chatbot_to_wifi_setting">Ke Pengaturan</string>
-
+    <string name="chatbot_remaining_words">Minimal %1$d kata</string>
+    <string name="chatbot_remaining_words_while_typing">Butuh minimal %1$d kata lagi</string>
+    <string name="chatbot_big_reply_word_error">Ceritakan lebih detail lagi, ya</string>
 </resources>

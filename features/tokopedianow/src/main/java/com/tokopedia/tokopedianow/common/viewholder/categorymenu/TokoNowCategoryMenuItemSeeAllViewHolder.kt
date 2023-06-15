@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
 import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

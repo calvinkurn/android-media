@@ -75,9 +75,6 @@ class PlayBroadcastSetupBottomSheet :
     private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
 
-    private val currentFragment: Fragment?
-        get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
-
     private val pageNavigator: FragmentPageNavigator by lifecycleBound(
         creator = {
             FragmentPageNavigator(

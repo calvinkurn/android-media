@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
@@ -28,6 +31,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Pr
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 interface DynamicProductDetailListener {
     fun refreshPage()
@@ -37,6 +41,9 @@ interface DynamicProductDetailListener {
     fun getParentViewModelStoreOwner(): ViewModelStore
     fun getParentLifeCyclerOwner(): LifecycleOwner
     fun getRemoteConfigInstance(): RemoteConfig?
+    fun getProductInfo(): DynamicProductInfoP1?
+    fun getTrackingQueueInstance(): TrackingQueue
+    fun getUserSession(): UserSessionInterface
 
     /**
      * ProductMediaViewHolder
@@ -59,6 +66,7 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
     fun showThumbnailImage(): Boolean
+    fun onShowProductMediaRecommendationClicked()
 
     /**
      * ProductSnapshotViewHolder
@@ -228,7 +236,6 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
-    fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(
@@ -253,7 +260,15 @@ interface DynamicProductDetailListener {
         templateNameType: String
     )
 
+    fun onRecomAddToCartClick(
+        recommendationWidget: RecommendationWidget,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    )
+
     fun onRecomAddToCartNonVariantQuantityChangedClick(
+        recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,
         quantity: Int,
         adapterPosition: Int,
@@ -352,6 +367,13 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel
     )
 
+    fun onAnnotationOpenProductInfoSheet(
+        extParam: String,
+        trackData: ProductDetailInfoAnnotationTrackData
+    )
+
+    fun onAnnotationGenericImpression(trackData: ProductDetailInfoAnnotationTrackData)
+
     /**
      * ProductReportViewHolder
      */
@@ -388,6 +410,12 @@ interface DynamicProductDetailListener {
     fun onImpressScheduledDelivery(
         labels: List<String>,
         componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
     )
 
     /**
@@ -498,4 +526,9 @@ interface DynamicProductDetailListener {
     fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
 
     fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
+
+    /**
+     * Product Media Recom BottomSheet
+     */
+    fun onProductMediaRecomBottomSheetDismissed()
 }

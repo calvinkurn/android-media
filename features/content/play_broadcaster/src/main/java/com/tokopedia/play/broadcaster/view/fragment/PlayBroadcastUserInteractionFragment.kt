@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
@@ -257,15 +258,35 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     override fun isEligibleForPin(): Boolean = true
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.uiState.value.selectedContentAccount
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.uiState.value.selectedContentAccount
+                        } else {
+                            ContentAccountUiModel.Empty
+                        }
                     }
 
                     override fun creationId(): String {
-                        return parentViewModel.channelId
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.channelId
+                        } else {
+                            ""
+                        }
                     }
 
                     override fun maxProduct(): Int {
-                        return parentViewModel.maxProduct
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.maxProduct
+                        } else {
+                            0
+                        }
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
                     }
                 })
 
@@ -1052,6 +1073,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             GameUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
+            }
+            else -> {
+                //no-op
             }
         }
     }

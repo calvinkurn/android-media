@@ -25,6 +25,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,11 +35,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
+import com.tokopedia.analytics.performance.perf.PerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -143,7 +146,9 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendat
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -174,6 +179,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
@@ -319,6 +325,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
+        private const val PERFORMANCE_TRACE_HOME = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -381,6 +388,7 @@ open class HomeRevampFragment :
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
+    private var homeCoachmarkListener: HomeCoachmarkListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
@@ -407,7 +415,6 @@ open class HomeRevampFragment :
     private var serverOffsetTime: Long = 0L
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
-    private var coachmark: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
     private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
@@ -428,11 +435,14 @@ open class HomeRevampFragment :
 
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
+    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME)
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
+        homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
         requestStatusBarDark()
     }
 
@@ -560,6 +570,9 @@ open class HomeRevampFragment :
             null
         }
     }
+
+    private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
+        if (context is HomeCoachmarkListener) context else null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
@@ -712,6 +725,8 @@ open class HomeRevampFragment :
                 showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark)
             } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
+            } else {
+                homeCoachmarkListener?.onHomeCoachMarkFinished()
             }
         }
     }
@@ -749,13 +764,17 @@ open class HomeRevampFragment :
                     if (coachMarkItemTokonow.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
                         coachmarkTokonow.onDismissListener = {
                             setHomeTokonowCoachmarkShown(it)
+                            homeCoachmarkListener?.onHomeCoachMarkFinished()
                         }
                         coachmarkTokonow.showCoachMark(step = coachMarkItemTokonow, index = COACHMARK_FIRST_INDEX)
                         tokonowCoachmarkIsShowing = true
+                    } else {
+                        homeCoachmarkListener?.onHomeCoachMarkFinished()
                     }
                 } catch (e: Exception) {
                     tokonowCoachmarkIsShowing = false
                     e.printStackTrace()
+                    homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
             }
         }
@@ -1178,22 +1197,26 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
+                        performanceTrace.cancelPerformanceTrace(PerformanceTrace.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1295,15 +1318,18 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        performanceTrace.init(
+            v = view.rootView,
+            scope = this.lifecycleScope,
+            touchListenerActivity = activity as? TouchListenerActivity
+        )
         observeSearchHint()
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-                setOnRecyclerViewLayoutReady(isCache)
+                finishPageLoadTime(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
@@ -1315,8 +1341,15 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
+            performanceTrace.setLoadableComponentList(data)
             adapter?.submitList(data)
         }
+    }
+
+    private fun finishPageLoadTime(isCache: Boolean) {
+        getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+        getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        setOnRecyclerViewLayoutReady(isCache)
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -1405,6 +1438,9 @@ open class HomeRevampFragment :
             }
 
     private fun initAdapter() {
+        if (!this::homePrefController.isInitialized) {
+            initInjectorHome()
+        }
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
@@ -1444,7 +1480,9 @@ open class HomeRevampFragment :
             VpsWidgetComponentCallback(this),
             CategoryWidgetV2Callback(context, this),
             MissionWidgetComponentCallback(this, getHomeViewModel()),
-            LegoProductCallback(this)
+            LegoProductCallback(this),
+            TodoWidgetComponentCallback(this, getHomeViewModel()),
+            FlashSaleWidgetCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1721,7 +1759,6 @@ open class HomeRevampFragment :
 
     override fun onRefresh() {
         refreshQuestWidget()
-        coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
@@ -2158,6 +2195,9 @@ open class HomeRevampFragment :
                     subscriptionCoachmarkIsShowing = false
                     coachmarkSubscription?.hideCoachMark()
                 }
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -2775,7 +2815,15 @@ open class HomeRevampFragment :
         getHomeViewModel().getBalanceWidgetData()
     }
 
-    override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
+    override fun showHomeCoachmark(
+        isShowBalanceWidgetCoachmark: Boolean,
+        homeBalanceModel: HomeBalanceModel,
+    ) {
+        if (isShowBalanceWidgetCoachmark) showBalanceWidgetCoachMark(homeBalanceModel)
+        else showTokonowCoachmark()
+    }
+
+    private fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
         val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
         if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true) {
             coachmarkSubscription?.hideCoachMark()

@@ -59,18 +59,18 @@ class ImagePreview(
                 detector.let {
                     mScaleFactor *= it.scaleFactor
 
-                    mScaleFactor = when {
-                        mScaleFactor < zoomOutLimit -> zoomOutLimit
-                        mScaleFactor > zoomInLimit -> zoomInLimit
-                        else -> mScaleFactor
-                    }
-
-                    mImageViewRef.scaleX = mScaleFactor
-                    mImageViewRef.scaleY = mScaleFactor
+                mScaleFactor = when {
+                    mScaleFactor < zoomOutLimit -> zoomOutLimit
+                    mScaleFactor > zoomInLimit -> zoomInLimit
+                    else -> mScaleFactor
                 }
-                return true
+
+                mImageViewRef.scaleX = mScaleFactor
+                mImageViewRef.scaleY = mScaleFactor
             }
+            return true
         }
+    }
 
     private fun touchListener() = View.OnTouchListener { v, event ->
         v.performClick()

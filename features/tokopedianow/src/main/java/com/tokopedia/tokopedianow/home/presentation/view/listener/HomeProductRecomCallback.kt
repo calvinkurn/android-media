@@ -7,7 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -18,15 +18,18 @@ class HomeProductRecomCallback(
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeProductRecomListener {
 
     override fun onProductRecomClicked(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         channelId: String,
         headerName: String,
         position: Int
     ) {
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -34,11 +37,11 @@ class HomeProductRecomCallback(
             position = position
         )
 
-        openAppLink(product.appLink)
+        openAppLink(appLink)
     }
 
     override fun onProductRecomImpressed(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         channelId: String,
         headerName: String,
         position: Int
@@ -74,7 +77,7 @@ class HomeProductRecomCallback(
     }
 
     override fun onProductRecomQuantityChanged(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
         channelId: String
     ) {
@@ -84,6 +87,8 @@ class HomeProductRecomCallback(
                 productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {
@@ -92,7 +97,7 @@ class HomeProductRecomCallback(
     }
 
     override fun onProductCardAddVariantClicked(
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         position: Int
     ) {
         context?.apply {
@@ -106,6 +111,8 @@ class HomeProductRecomCallback(
             )
         }
     }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun openAppLink(appLink: String) {
         if (appLink.isNotEmpty()) {

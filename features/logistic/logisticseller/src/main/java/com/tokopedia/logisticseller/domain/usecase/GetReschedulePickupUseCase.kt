@@ -23,7 +23,6 @@ class GetReschedulePickupUseCase @Inject constructor(
         return MP_LOGISTIC_GET_RESCHEDULE_PICKUP
     }
 
-
     override suspend fun execute(params: GetReschedulePickupParam): GetReschedulePickupResponse.Data {
         return repository.request(GetReschedulePickupQuery(), params)
     }

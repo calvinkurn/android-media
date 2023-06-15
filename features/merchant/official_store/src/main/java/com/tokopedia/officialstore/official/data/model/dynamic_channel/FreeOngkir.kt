@@ -6,13 +6,17 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FreeOngkir(
-        @Expose @SerializedName("isActive") val isActive: Boolean,
-        @Expose @SerializedName("imageUrl") val imageUrl: String
+    @Expose
+    @SerializedName("isActive")
+    val isActive: Boolean,
+    @Expose
+    @SerializedName("imageUrl")
+    val imageUrl: String
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
-            isActive = parcel.readByte() > 0,
-            imageUrl = parcel.readString() ?: ""
+        isActive = parcel.readByte() > 0,
+        imageUrl = parcel.readString() ?: ""
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

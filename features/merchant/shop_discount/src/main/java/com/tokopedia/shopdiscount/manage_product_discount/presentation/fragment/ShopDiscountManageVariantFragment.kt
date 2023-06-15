@@ -30,8 +30,8 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountMultiLocEduActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageVariantActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountMultiLocEduActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountAdapter
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.viewholder.ShopDiscountManageProductVariantItemViewHolder
@@ -49,8 +49,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ShopDiscountManageVariantFragment
-    : BaseDaggerFragment(),
+class ShopDiscountManageVariantFragment :
+    BaseDaggerFragment(),
     ShopDiscountManageProductVariantItemViewHolder.Listener,
     ShopDiscountManageVariantFragmentListener {
 
@@ -60,7 +60,7 @@ class ShopDiscountManageVariantFragment
 
         fun createInstance(
             mode: String,
-            productData: ShopDiscountSetupProductUiModel.SetupProductData,
+            productData: ShopDiscountSetupProductUiModel.SetupProductData
         ) = ShopDiscountManageVariantFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
@@ -87,7 +87,6 @@ class ShopDiscountManageVariantFragment
     private var headerUnify: HeaderUnify? = null
     private var rvContent: RecyclerView? = null
     private var buttonApply: UnifyButton? = null
-
 
     private var loadingSpinner: View? = null
     private var containerProductDataLayout: View? = null
@@ -117,7 +116,6 @@ class ShopDiscountManageVariantFragment
             .build()
             .inject(this)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -156,8 +154,9 @@ class ShopDiscountManageVariantFragment
             R.drawable.shop_discount_manage_discount_bg_line_separator
         )
         val dividerItemDecoration = ShopDiscountDividerItemDecoration(dividerDrawable)
-        if (itemDecorationCount > 0)
+        if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
+        }
         addItemDecoration(dividerItemDecoration)
     }
 
@@ -189,13 +188,13 @@ class ShopDiscountManageVariantFragment
     }
 
     private fun observeBulkApplyListVariantItemUiModel() {
-        viewModel.bulkApplyListVariantItemUiModel.observe(viewLifecycleOwner, {  updatedListVariantProductData ->
-            updatedListVariantProductData?.let{
+        viewModel.bulkApplyListVariantItemUiModel.observe(viewLifecycleOwner) { updatedListVariantProductData ->
+            updatedListVariantProductData?.let {
                 clearListVariantProductData()
                 adapter.updateListVariantProductData(it)
                 checkShouldEnableButtonSubmit()
             }
-        })
+        }
     }
 
     private fun clearListVariantProductData() {
@@ -203,21 +202,21 @@ class ShopDiscountManageVariantFragment
     }
 
     private fun observeIsEnableBulkApplyVariant() {
-        viewModel.totalEnableBulkApplyVariant.observe(viewLifecycleOwner, { totalEnabledVariant ->
+        viewModel.totalEnableBulkApplyVariant.observe(viewLifecycleOwner) { totalEnabledVariant ->
             totalEnabledVariant?.let {
                 setLabelBulkApply(it)
             }
-        })
+        }
     }
 
     private fun observeIsEnableSubmitButton() {
-        viewModel.isEnableSubmitButton.observe(viewLifecycleOwner, {
+        viewModel.isEnableSubmitButton.observe(viewLifecycleOwner) {
             buttonApply?.isEnabled = it
-        })
+        }
     }
 
     private fun observeSellerBenefitLiveData() {
-        viewModel.slashPriceBenefitLiveData.observe(viewLifecycleOwner, {
+        viewModel.slashPriceBenefitLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -231,7 +230,7 @@ class ShopDiscountManageVariantFragment
                     showErrorState(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun checkShouldShowLabelBulkApply(productData: ShopDiscountSetupProductUiModel.SetupProductData) {
@@ -280,7 +279,6 @@ class ShopDiscountManageVariantFragment
 
                     override fun onDismiss() {
                     }
-
                 })
             } else {
                 hide()
@@ -320,14 +318,15 @@ class ShopDiscountManageVariantFragment
             isEnabled = isLabelEnabled
             setTitle(title)
             setOnClickListener {
-                if(isEnabled)
+                if (isEnabled) {
                     openBottomSheetBulkApply()
+                }
             }
         }
     }
 
     private fun getLabelBulkApplyTitleDisabled(mode: String): String {
-        return when(mode){
+        return when (mode) {
             ShopDiscountManageDiscountMode.CREATE -> {
                 getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_manage)
             }
@@ -339,7 +338,7 @@ class ShopDiscountManageVariantFragment
     }
 
     private fun getLabelBulkApplyTitleFormat(mode: String): String {
-        return when(mode){
+        return when (mode) {
             ShopDiscountManageDiscountMode.CREATE -> {
                 getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_manage)
             }
@@ -542,5 +541,4 @@ class ShopDiscountManageVariantFragment
     override fun getFragmentChildManager(): FragmentManager {
         return childFragmentManager
     }
-
 }

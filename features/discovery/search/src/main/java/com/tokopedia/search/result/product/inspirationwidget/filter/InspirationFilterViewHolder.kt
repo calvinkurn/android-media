@@ -16,11 +16,6 @@ internal class InspirationFilterViewHolder(
     itemView: View,
     private val inspirationFilterListener: InspirationFilterListener
 ): AbstractViewHolder<InspirationFilterDataView>(itemView) {
-    companion object {
-        @JvmField
-        @LayoutRes
-        val LAYOUT = R.layout.search_result_product_size_layout
-    }
 
     private var binding: SearchResultProductSizeLayoutBinding? by viewBinding()
     private var inspirationFilterOptionAdapter: InspirationFilterOptionAdapter? = null
@@ -62,19 +57,25 @@ internal class InspirationFilterViewHolder(
     }
 
     private fun createAdapter(element: InspirationFilterDataView) {
-        val adapter = InspirationFilterOptionAdapter(inspirationFilterListener)
-        val sortedSizeData = getSortedSizeData(element.optionSizeData)
-        adapter.setItemList(sortedSizeData)
+        val adapter = InspirationFilterOptionAdapter(element, inspirationFilterListener)
+        val sortedFilterData = getSortedFilterData(element.optionFilterData)
+        adapter.setItemList(sortedFilterData)
 
         inspirationFilterOptionAdapter = adapter
     }
 
-    private fun getSortedSizeData(
-        optionSizeData: List<InspirationFilterOptionDataView>
-    ) : List<InspirationFilterOptionDataView> {
-        val selectedSizeData = optionSizeData
-            .filter { inspirationFilterListener.isFilterSelected(it.option) }
-        val nonSelectedSizeData = optionSizeData - selectedSizeData.toSet()
+    private fun getSortedFilterData(
+        optionFilterData: List<InspirationFilterOptionDataView>,
+    ): List<InspirationFilterOptionDataView> {
+        val selectedSizeData = optionFilterData
+            .filter { inspirationFilterListener.isFilterSelected(it.optionList) }
+        val nonSelectedSizeData = (optionFilterData - selectedSizeData.toSet())
         return selectedSizeData + nonSelectedSizeData
+    }
+
+    companion object {
+        @JvmField
+        @LayoutRes
+        val LAYOUT = R.layout.search_result_product_size_layout
     }
 }

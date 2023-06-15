@@ -1,21 +1,20 @@
 package com.tokopedia.product.addedit.detail.domain.model
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetCategoryRecommendationResponse(
-        @SerializedName("getJarvisRecommendation")
-        val categoryRecommendationDataModel: GetCategoryRecommendationDataModel?
+    @SerializedName("getJarvisRecommendation")
+    val categoryRecommendationDataModel: GetCategoryRecommendationDataModel?
 )
 
 data class GetCategoryRecommendationDataModel(
-        @SerializedName("categories")
-        val categories: List<CategoryItemModel>?
+    @SerializedName("categories")
+    val categories: List<CategoryItemModel>?
 )
 
 data class CategoryItemModel(
-        @SerializedName("id")
-        var id: String?,
-        @SerializedName("name")
-        var name: String?
+    @SerializedName("id")
+    var id: String?,
+    @SerializedName("name")
+    var name: String?
 )

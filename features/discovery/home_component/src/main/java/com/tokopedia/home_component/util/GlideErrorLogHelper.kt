@@ -53,7 +53,7 @@ class GlideErrorLogHelper : CoroutineScope {
                         "message" to e?.message.orEmpty()
                     )
                 )
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
             }
         }
     }

@@ -11,7 +11,10 @@ import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockkObject
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,8 +34,8 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val shopBasicData = ShopBasicDataModel()
             val pmOsStatus = PMStatusUiModel()
             val shopInfo = ShopInfo(
-                    goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue),
-                    closedInfo = ShopInfo.ClosedInfo(closeDetail = ShopInfo.CloseDetail(status = sampleShopStatusClose))
+                goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue),
+                closedInfo = ShopInfo.ClosedInfo(closeDetail = ShopInfo.CloseDetail(status = sampleShopStatusClose))
             )
             coEvery {
                 getShopInfoUseCase.executeOnBackground()
@@ -53,15 +56,15 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
             assertTrue(shopSettingsInfoViewModel.shopInfoData.value is Success)
             shopSettingsInfoViewModel.shopInfoData
-                    .verifySuccessEquals(expectedResultShopInfo)
+                .verifySuccessEquals(expectedResultShopInfo)
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
             shopSettingsInfoViewModel.shopBasicData
-                    .verifySuccessEquals(expectedResultShopBasicData)
+                .verifySuccessEquals(expectedResultShopBasicData)
 
             assertTrue(shopSettingsInfoViewModel.shopStatusData.value is Success)
             shopSettingsInfoViewModel.shopStatusData
-                    .verifySuccessEquals(expectedResultGoldGetPmOsStatus)
+                .verifySuccessEquals(expectedResultGoldGetPmOsStatus)
         }
     }
 
@@ -114,8 +117,8 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             }
             assertTrue(shopSettingsInfoViewModel.shopOperationalHourList.value is Success)
             assertEquals(
-                    shopSettingsInfoViewModel.shopOperationalHourList.value,
-                    Success(ShopOperationalHoursListResponse())
+                shopSettingsInfoViewModel.shopOperationalHourList.value,
+                Success(ShopOperationalHoursListResponse())
             )
         }
     }
@@ -226,7 +229,5 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
         assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
         assertTrue(shopSettingsInfoViewModel.shopInfoData.value == null)
-
     }
-
 }

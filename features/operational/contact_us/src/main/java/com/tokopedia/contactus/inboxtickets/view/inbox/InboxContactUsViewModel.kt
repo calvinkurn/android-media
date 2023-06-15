@@ -1,22 +1,23 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.GetTicketListUseCase
-import com.tokopedia.contactus.inboxtickets.view.inbox.InboxConstanta.SUCCESS_HIT_API
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.GetTicketListParam
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
-import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InboxContactUsViewModel @Inject constructor(
@@ -31,8 +32,8 @@ class InboxContactUsViewModel @Inject constructor(
         const val IN_PROGRESS = 1
         const val NEED_RATING = 2
         const val CLOSED = 3
-        const val TICKET_ON_GIVE_RATE = 1
-        const val TICKET_ON_CLOSE = 2
+        const val TICKET_ON_GIVE_RATE = 1L
+        const val TICKET_ON_CLOSE = 2L
         const val ALL_OPTION_POSITION = 0
         private const val FIRST_PAGE = 1
     }
@@ -76,11 +77,12 @@ class InboxContactUsViewModel @Inject constructor(
     }
 
     fun getTopBotStatus() {
-        launchCatchError(
-            block = {
-                val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
-                if (topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isActive
+        launch {
+            try {
+                val topBotStatusResponse = topBotStatusUseCase(Unit)
+                val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
+                if (topBotStatusInbox.getTopBotStatusData().isActive &&
+                    topBotStatusResponse.isStatusTopBotNotError()
                 ) {
                     val messageId =
                         topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData()
@@ -91,27 +93,29 @@ class InboxContactUsViewModel @Inject constructor(
                     val isHasUnreadNotif =
                         topBotStatusResponse.getTopBotStatusInbox()
                             .getTopBotStatusData().unreadNotif
+                    val isChatbotActive = topBotStatusResponse.getTopBotStatusInbox().getTopBotStatusData().isChatbotActive
                     _uiState.update {
                         it.copy(
                             idMessage = messageId,
                             welcomeMessage = welcomeMessage,
                             unReadNotification = isHasUnreadNotif,
-                            showChatBotWidget = true
+                            showChatBotWidget = true,
+                            isChatbotActive = isChatbotActive ?: false
                         )
                     }
                 } else {
-                    InboxUiState(
-                        showChatBotWidget = false
+                    _uiState.value = InboxUiState(
+                        showChatBotWidget = false,
+                        errorMessageChatBotWidget = topBotStatusResponse.getErrorMessage()
                     )
                 }
-            },
-            onError = {
-                InboxUiState(
+            } catch (e: Exception) {
+                _uiState.value = InboxUiState(
                     showChatBotWidget = false
                 )
-                it.printStackTrace()
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
-        )
+        }
     }
 
     fun restartPageOfList() {
@@ -160,10 +164,10 @@ class InboxContactUsViewModel @Inject constructor(
         }
     }
 
-    private fun getTicketList(requestParams: RequestParams) {
+    private fun getTicketList(requestParams: GetTicketListParam) {
         launchCatchError(
             block = {
-                val ticketListResponse = getTickets.getTicketListResponse(requestParams)
+                val ticketListResponse = getTickets(requestParams)
                 val ticketData = ticketListResponse.getTicketOnInbox().getTicket()
                 when {
                     ticketData.getTicketList().isNotEmpty() -> {

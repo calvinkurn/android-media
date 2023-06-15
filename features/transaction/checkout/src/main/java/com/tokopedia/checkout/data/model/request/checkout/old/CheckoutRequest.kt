@@ -49,7 +49,7 @@ data class CheckoutRequest(
                                         "${productData.protectionPricePerProduct} - " +
                                         "${productData.cartId}"
                                 )
-                            } else
+                            } else {
                                 pppLabelList.add(
                                     "${productData.protectionTitle} - " +
                                         "${ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP} - " +
@@ -57,6 +57,7 @@ data class CheckoutRequest(
                                         "${productData.protectionPricePerProduct} - " +
                                         "${productData.cartId}"
                                 )
+                            }
                         }
                     }
                 }

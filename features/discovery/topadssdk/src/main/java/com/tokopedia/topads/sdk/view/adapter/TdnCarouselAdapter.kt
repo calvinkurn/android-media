@@ -1,11 +1,13 @@
 package com.tokopedia.topads.sdk.view.adapter
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -15,7 +17,10 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -122,11 +127,11 @@ class TdnCarouselAdapter(
                 } else {
                     widthHorizontalCarousel(width)
                 }
-                getRequestBuilder(imageData.imageUrl, cornerRadius).override(
+                getRequestBuilder(imageData.imageUrl, cornerRadius)?.override(
                     calculatedWidth,
                     getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
                 )
-                    .addListener(object : RequestListener<Drawable> {
+                    ?.addListener(object : RequestListener<Drawable> {
 
                         override fun onLoadFailed(
                             e: GlideException?,
@@ -157,7 +162,7 @@ class TdnCarouselAdapter(
                             return false
                         }
                     })
-                    .into(tdnBanner)
+                    ?.into(tdnBanner)
             } else {
                 tdnBanner.hide()
             }
@@ -202,15 +207,19 @@ class TdnCarouselAdapter(
             }
         }
 
-        private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable> {
-            return if (radius > Int.ZERO) {
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .transform(FitCenter(), RoundedCorners(radius))
+        private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable>? {
+            return if (itemView.context.isAvailable()) {
+                if (radius > Int.ZERO) {
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .transform(FitCenter(), RoundedCorners(radius))
+                } else {
+                    Glide.with(itemView.context)
+                        .load(imageUrl)
+                        .fitCenter()
+                }
             } else {
-                Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .fitCenter()
+                null
             }
         }
 
@@ -223,5 +232,14 @@ class TdnCarouselAdapter(
 
     private fun widthVerticalCarousel(width: Int): Int {
         return (width / 2.8).toInt()
+    }
+
+    fun Context?.isAvailable(): Boolean {
+        if (this == null) {
+            return false
+        } else if (this is FragmentActivity) {
+            return !this.isDestroyed
+        }
+        return true
     }
 }

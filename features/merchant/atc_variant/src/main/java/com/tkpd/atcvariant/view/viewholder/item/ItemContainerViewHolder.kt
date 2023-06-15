@@ -4,12 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.databinding.ItemAtcVariantContainerViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -85,6 +87,12 @@ class ItemContainerViewHolder(
                     renderChipUI(element = element)
                     setState(element = element, position = position)
                 }
+
+                it.findViewById<ImageView>(
+                    com.tokopedia.product.detail.common.R.id.atc_variant_chip_promo_icon
+                ).apply {
+                    renderFlashSale(element = element)
+                }
             }
     }
 
@@ -105,7 +113,6 @@ class ItemContainerViewHolder(
             state = VariantConstant.IGNORE_STATE,
             position = position
         )
-        renderFlashSale(element = element)
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
@@ -128,16 +135,12 @@ class ItemContainerViewHolder(
         }
     }
 
-    private fun ChipsUnify.renderFlashSale(element: VariantOptionWithAttribute) {
+    private fun ImageView.renderFlashSale(element: VariantOptionWithAttribute) {
         val isCampaignActive = element.flashSale
         val shouldRender = element.currentState != VariantConstant.STATE_EMPTY
             && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
 
-        chip_new_notification.showIfWithBlock(shouldRender && isCampaignActive) {
-            text = resources.getString(
-                com.tokopedia.product.detail.common.R.string.atc_variant_promo
-            )
-        }
+        showWithCondition(shouldRender && isCampaignActive)
     }
 
     private fun ChipsUnify.setViewListener(

@@ -9,9 +9,9 @@ import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeR
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationLoadMore
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationLoading
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationVisitable
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.factory.HomeRecommendationTypeFactory
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.factory.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationVisitable
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.smart_recycler_helper.SmartListener

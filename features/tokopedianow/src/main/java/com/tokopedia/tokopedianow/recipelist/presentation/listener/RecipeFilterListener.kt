@@ -18,7 +18,7 @@ class RecipeFilterListener(
     override fun onClickMoreFilter() {
         val selectedFilters = ArrayList(view.viewModel().selectedFilters)
         val intent = Intent(view.context(), TokoNowRecipeFilterActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, selectedFilters)
         intent.putExtra(EXTRA_PAGE_NAME, pageName)
         view.fragment().startActivityForResult(intent, REQUEST_CODE_FILTER)

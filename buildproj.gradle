@@ -5,6 +5,8 @@ if (rootProject.file("local.properties").exists()) {
 
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
+    // https://github.com/robolectric/robolectric-gradle-plugin/issues/144
+    tasks.withType(Test) { jvmArgs += "-noverify" }
     repositories {
         maven {
             url = "$rootDir/localMavenRepository"
@@ -31,6 +33,14 @@ allprojects {
         maven {
             name = "courier-client"
             url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
+
+            credentials {
+                username = properties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
+        }
+        maven {
+            url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/GoTo-Android-Lib")
 
             credentials {
                 username = properties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
@@ -88,6 +98,7 @@ subprojects {
             dependencySubstitution {
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
                 force("org.objenesis:objenesis:2.6")
+                substitute module('androidx.appcompat:appcompat-resources') with module(rootProject.ext.supportLibDependencies.appCompactResource)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")
                 substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:2.6.0')

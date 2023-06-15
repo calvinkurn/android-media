@@ -131,8 +131,8 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
         }, onError = { throwable ->
-                logError(TITLE_ERROR_SAVING_DRAFT, throwable)
-            })
+            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+        })
     }
 
     override fun onUploadProductImagesSuccess(

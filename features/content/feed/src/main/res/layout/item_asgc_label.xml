@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/feed_tag_product_background"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ty_feed_asgc_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="small"
+        tools:text="Flash Sale" />
+
+</LinearLayout>

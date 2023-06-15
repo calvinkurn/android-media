@@ -12,9 +12,9 @@ import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitRespons
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
@@ -24,7 +24,8 @@ import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -131,12 +132,13 @@ class ShopDiscountManageVariantViewModel @Inject constructor(
         val isEnabledButtonSubmit = listVariantItemUiModel.filter {
             it.isEnabled
         }.let { filteredListVariantItem ->
-            if (filteredListVariantItem.isNotEmpty())
+            if (filteredListVariantItem.isNotEmpty()) {
                 filteredListVariantItem.allCheckEmptyList {
                     it.valueErrorType == NONE && !it.discountedPrice.isZero()
                 }
-            else
+            } else {
                 false
+            }
         }
         _isEnableSubmitButton.postValue(isEnabledButtonSubmit)
     }
@@ -230,5 +232,4 @@ class ShopDiscountManageVariantViewModel @Inject constructor(
             this.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
         }
     }
-
 }

@@ -2,9 +2,9 @@ package com.tokopedia.shopdiscount.utils.extension
 
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
-fun String.digitsOnly() : Int {
+fun String.digitsOnly(): Int {
     return try {
         this.filter { it.isDigit() }.toInt()
     } catch (e: Exception) {
@@ -12,7 +12,7 @@ fun String.digitsOnly() : Int {
     }
 }
 
-fun String.toDate(inputFormat : String) : Date{
+fun String.toDate(inputFormat: String): Date {
     return try {
         val format = SimpleDateFormat(inputFormat, DateUtil.DEFAULT_LOCALE)
         format.parse(this) ?: Date()

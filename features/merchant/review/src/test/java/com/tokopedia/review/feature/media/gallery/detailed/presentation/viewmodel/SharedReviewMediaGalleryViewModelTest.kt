@@ -19,13 +19,12 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
 
 class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTestFixture() {
     @Test
-    fun `retryGetReviewMedia should call getReviewMedia and return success`() = runBlockingTest {
+    fun `retryGetReviewMedia should call getReviewMedia and return success`() = rule.runTest {
         val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(any(), any())
@@ -58,7 +57,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `retryGetReviewMedia should not call getReviewMedia when already loaded`() = runBlockingTest {
+    fun `retryGetReviewMedia should not call getReviewMedia when already loaded`() = rule.runTest {
         val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(any(), any())
@@ -84,7 +83,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `retryGetReviewMedia should call getReviewMedia when not yet loaded`() = runBlockingTest {
+    fun `retryGetReviewMedia should call getReviewMedia when not yet loaded`() = rule.runTest {
         val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(any(), any())
@@ -159,7 +158,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `restoreState should restore latest states`() = runBlockingTest {
+    fun `restoreState should restore latest states`() = rule.runTest {
         val latestGetDetailedReviewMediaResult = mockk<ProductrevGetReviewMedia>(relaxed = true)
         val latestProductID = "123456"
         val latestShowSeeMore = true
@@ -203,7 +202,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `tryGetPreloadedData should get all given data from cache manager`() = runBlockingTest {
+    fun `tryGetPreloadedData should get all given data from cache manager`() = rule.runTest {
         val preloadedTargetMediaNumber = 1
         val preloadedShowSeeMore = true
         val preloadedDetailedReviewMediaResult = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia
@@ -242,21 +241,21 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `updateCurrentMediaItem should update _currentMediaItem`() = runBlockingTest {
+    fun `updateCurrentMediaItem should update _currentMediaItem`() = rule.runTest {
         val currentMediaItem = LoadingStateItemUiModel(mediaNumber = 1)
         viewModel.updateCurrentMediaItem(currentMediaItem)
         Assert.assertEquals(currentMediaItem, viewModel.currentMediaItem.first())
     }
 
     @Test
-    fun `updateReviewDetailItem should update _currentReviewDetail`() = runBlockingTest {
+    fun `updateReviewDetailItem should update _currentReviewDetail`() = rule.runTest {
         val currentReviewDetailItem = mockk<ReviewDetailUiModel>(relaxed = true)
         viewModel.updateReviewDetailItem(currentReviewDetailItem)
         Assert.assertEquals(currentReviewDetailItem, viewModel.currentReviewDetail.first())
     }
 
     @Test
-    fun `requestToggleLike should send toggle like review request and update like count when success`() = runBlockingTest {
+    fun `requestToggleLike should send toggle like review request and update like count when success`() = rule.runTest {
         val currentReviewDetailData = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.reviewDetail.first()
         val currentTotalLike = currentReviewDetailData.totalLike
         val feedbackID = currentReviewDetailData.feedbackId
@@ -281,7 +280,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `requestToggleLike should send toggle like review request and not update like count when failed`() = runBlockingTest {
+    fun `requestToggleLike should send toggle like review request and not update like count when failed`() = rule.runTest {
         val currentReviewDetailData = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.reviewDetail.first()
         val currentTotalLike = currentReviewDetailData.totalLike
         val feedbackID = currentReviewDetailData.feedbackId
@@ -299,19 +298,19 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `requestPortraitMode should change _orientationUiState to OrientationUiState#Portrait`() = runBlockingTest {
+    fun `requestPortraitMode should change _orientationUiState to OrientationUiState#Portrait`() = rule.runTest {
         viewModel.requestPortraitMode()
         Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.PORTRAIT), viewModel.orientationUiState.first())
     }
 
     @Test
-    fun `requestLandscapeMode should change _orientationUiState to OrientationUiState#Landscape`() = runBlockingTest {
+    fun `requestLandscapeMode should change _orientationUiState to OrientationUiState#Landscape`() = rule.runTest {
         viewModel.requestLandscapeMode()
         Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE), viewModel.orientationUiState.first())
     }
 
     @Test
-    fun `toggleOverlayVisibility should change _overlayVisibility from true to false vice versa`() = runBlockingTest {
+    fun `toggleOverlayVisibility should change _overlayVisibility from true to false vice versa`() = rule.runTest {
         viewModel.toggleOverlayVisibility()
         Assert.assertEquals(false, viewModel.overlayVisibility.first())
         viewModel.toggleOverlayVisibility()
@@ -343,20 +342,20 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `showActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#Showing if _currentReviewDetail is not null`() = runBlockingTest {
+    fun `showActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#Showing if _currentReviewDetail is not null`() = rule.runTest {
         viewModel.updateReviewDetailItem(mockk(relaxed = true))
         viewModel.showActionMenuBottomSheet()
         Assert.assertTrue(viewModel.actionMenuBottomSheetUiState.first() is ActionMenuBottomSheetUiState.Showing)
     }
 
     @Test
-    fun `showActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#hidden if _currentReviewDetail is null`() = runBlockingTest {
+    fun `showActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#hidden if _currentReviewDetail is null`() = rule.runTest {
         viewModel.showActionMenuBottomSheet()
         Assert.assertTrue(viewModel.actionMenuBottomSheetUiState.first() is ActionMenuBottomSheetUiState.Hidden)
     }
 
     @Test
-    fun `dismissActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#Hidden`() = runBlockingTest {
+    fun `dismissActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#Hidden`() = rule.runTest {
         `showActionMenuBottomSheet should change actionMenuBottomSheetUiState to ActionMenuBottomSheetUiState#Showing if _currentReviewDetail is not null`()
         viewModel.dismissActionMenuBottomSheet()
         Assert.assertTrue(viewModel.actionMenuBottomSheetUiState.first() is ActionMenuBottomSheetUiState.Hidden)
@@ -366,7 +365,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     fun `enqueueToaster should notify collectors`() {
         val mockToasterData = mockk<ToasterUiModel>()
         var latestToasterData: ToasterUiModel? = null
-        runBlockingTest {
+        rule.runTest {
             val collectorJob = launch {
                 viewModel.toasterQueue.collectLatest {
                     latestToasterData = it
@@ -381,7 +380,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     @Test
     fun `toasterEventActionClicked should notify collectors`() {
         var latestToasterEventActionClickQueue: String? = null
-        runBlockingTest {
+        rule.runTest {
             val collectorJob = launch {
                 viewModel.toasterEventActionClickQueue.collectLatest {
                     latestToasterEventActionClickQueue = it
@@ -405,7 +404,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `updateWifiConnectivityStatus should update wifi connectivity status`() = runBlockingTest {
+    fun `updateWifiConnectivityStatus should update wifi connectivity status`() = rule.runTest {
         viewModel.updateWifiConnectivityStatus(true)
         Assert.assertTrue(viewModel.connectedToWifi.first())
     }
@@ -423,14 +422,14 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `updateVideoDurationMillis should update videoDurationMillis value`() = runBlockingTest {
+    fun `updateVideoDurationMillis should update videoDurationMillis value`() = rule.runTest {
         val newVideoDurationMillis = 10000L
         viewModel.updateVideoDurationMillis(newVideoDurationMillis)
         Assert.assertEquals(newVideoDurationMillis, viewModel.videoDurationMillis.first())
     }
 
     @Test
-    fun `getReviewMedia should merge old result with new result when load more next`() = runBlockingTest {
+    fun `getReviewMedia should merge old result with new result when load more next`() = rule.runTest {
         val mockCacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(ReviewMediaGalleryRouter.EXTRAS_PRODUCT_ID, viewModel.getProductId())
@@ -474,7 +473,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `getReviewMedia should merge old result with new result when load more previous`() = runBlockingTest {
+    fun `getReviewMedia should merge old result with new result when load more previous`() = rule.runTest {
         val mockCacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(ReviewMediaGalleryRouter.EXTRAS_PRODUCT_ID, viewModel.getProductId())
@@ -518,7 +517,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `getReviewMedia should not be called when media is already loaded`() = runBlockingTest {
+    fun `getReviewMedia should not be called when media is already loaded`() = rule.runTest {
         val mockCacheManager = mockk<CacheManager>(relaxed = true) {
             every {
                 getString(ReviewMediaGalleryRouter.EXTRAS_PRODUCT_ID, viewModel.getProductId())
