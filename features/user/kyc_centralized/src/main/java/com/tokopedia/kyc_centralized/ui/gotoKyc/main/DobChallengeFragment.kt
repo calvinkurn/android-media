@@ -79,7 +79,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
     private fun initListener() {
         binding?.unifyToolbar?.setNavigationOnClickListener {
             GotoKycAnalytics.sendClickOnButtonBackFromDobPage(args.parameter.projectId)
-            activity?.finish()
+            activity?.onBackPressedDispatcher?.onBackPressed()
         }
 
         binding?.fieldDob?.editText?.setOnClickListener {

@@ -18,7 +18,6 @@ import com.gojek.kyc.sdk.core.extensions.isKtpExist
 import com.gojek.kyc.sdk.core.extensions.isSelfieExist
 import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -48,7 +47,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var projectId = ""
     private var source = ""
     private var isAccountLinked = false
-    private var isWaitingApprovalGopay = false
+    private var isReload = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
 
@@ -61,16 +60,12 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
                 kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
                 activity?.finish()
             }
-            KYCConstant.ActivityResult.AWAITING_APPROVAL_GOPAY -> {
-                isWaitingApprovalGopay = true
+            KYCConstant.ActivityResult.RELOAD -> {
+                isReload = true
                 dismiss()
-            }
-            KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED -> {}
-            else -> {
-                binding?.layoutAccountLinking?.root?.hide()
             }
         }
     }
@@ -293,7 +288,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(isWaitingApprovalGopay)
+        dismissDialogWithDataListener(isReload)
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -301,8 +296,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         )
     }
 
-    fun setOnDismissWithDataListener(isAwaitingApprovalGopay: (Boolean) -> Unit) {
-        dismissDialogWithDataListener = isAwaitingApprovalGopay
+    fun setOnDismissWithDataListener(isReload: (Boolean) -> Unit) {
+        dismissDialogWithDataListener = isReload
     }
 
     companion object {

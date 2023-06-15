@@ -15,5 +15,6 @@ data class GotoKycMainParam (
     val sourcePage: String = "",
     val rejectionReason: String = "",
     val challengeId: String = "",
-    val waitMessage: String = ""
+    val waitMessage: String = "",
+    val directShowBottomSheet: Boolean = false
 ): Parcelable

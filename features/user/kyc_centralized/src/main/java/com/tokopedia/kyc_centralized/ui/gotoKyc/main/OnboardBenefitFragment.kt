@@ -36,9 +36,16 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         loadInitImage()
         initListener()
+        handleDirectShowBottomSheet()
     }
 
     override fun getScreenName(): String = ""
+
+    private fun handleDirectShowBottomSheet() {
+        if (args.parameter.directShowBottomSheet) {
+            showBottomSheet()
+        }
+    }
 
     private fun loadInitImage() {
         binding?.ivOnboardBenefit?.loadImageWithoutPlaceholder(
@@ -103,9 +110,10 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
-        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isWaitingApprovalGopay ->
-            if (isWaitingApprovalGopay) {
-                showAwaitingApprovalBottomSheet()
+        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
+            if (isReload) {
+                activity?.setResult(KYCConstant.ActivityResult.RELOAD)
+                activity?.finish()
             }
         }
     }
