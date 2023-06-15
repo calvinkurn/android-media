@@ -5,8 +5,8 @@ import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.AddTextPosition
-import com.tokopedia.media.editor.utils.AddTextToolId
+import com.tokopedia.media.editor.data.entity.AddTextPosition
+import com.tokopedia.media.editor.data.entity.AddTextToolId
 import com.tokopedia.picker.common.types.EditorToolType
 
 // for analytics purpose

@@ -19,6 +19,7 @@ import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -30,19 +31,17 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
-import com.tokopedia.picker.common.EDITOR_ADD_TEXT_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class EditorFragment @Inject constructor(
-    private val editorHomeAnalytics: EditorHomeAnalytics
+    private val editorHomeAnalytics: EditorHomeAnalytics,
+    private val featureToggleManager: FeatureToggleManager
 ) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
@@ -350,16 +349,8 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            var isAddLogoEnable = false
-            var isAddTextEnable = false
-
-            RemoteConfigInstance.getInstance().abTestPlatform.let { remoteConfig ->
-                isAddLogoEnable = remoteConfig.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
-                isAddTextEnable = remoteConfig.getString(EDITOR_ADD_TEXT_TOOL) == EDITOR_ADD_TEXT_TOOL
-            }
-
             // show/hide add logo base on rollence
-            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
+            if (!featureToggleManager.isAddLogoEnable() || !viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
                     remove(removeIndex)
@@ -367,7 +358,7 @@ class EditorFragment @Inject constructor(
             }
 
             // show/hide add text base on rollence
-            if (!isAddTextEnable) {
+            if (!featureToggleManager.isAddTextEnable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
                     remove(removeIndex)
@@ -455,7 +446,6 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
-        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }

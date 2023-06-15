@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.utils
+package com.tokopedia.media.editor.data.entity
 
 enum class AddTextToolId(val value: Int) {
     CHANGE_POSITION_INDEX(0),

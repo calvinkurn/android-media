@@ -10,13 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.utils.AddTextColorProvider
+import com.tokopedia.media.editor.data.AddTextColorProvider
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.BackgroundTemplateDetail
-import com.tokopedia.media.editor.utils.AddTextBackgroundTemplate
-import com.tokopedia.media.editor.utils.AddTextPosition
+import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
+import com.tokopedia.media.editor.data.entity.AddTextPosition
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 import kotlin.math.ceil

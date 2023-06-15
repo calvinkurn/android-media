@@ -3,10 +3,10 @@ package com.tokopedia.media.editor.ui.uimodel
 import android.graphics.Typeface
 import android.os.Parcelable
 import android.text.Layout
-import com.tokopedia.media.editor.utils.AddTextAlignment
-import com.tokopedia.media.editor.utils.AddTextPosition
-import com.tokopedia.media.editor.utils.AddTextStyle
-import com.tokopedia.media.editor.utils.AddTextToolId
+import com.tokopedia.media.editor.data.entity.AddTextAlignment
+import com.tokopedia.media.editor.data.entity.AddTextPosition
+import com.tokopedia.media.editor.data.entity.AddTextStyle
+import com.tokopedia.media.editor.data.entity.AddTextToolId
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

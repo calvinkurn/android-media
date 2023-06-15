@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.editor.databinding.AddTextBackgroundBottomsheetLayoutBinding
-import com.tokopedia.media.editor.utils.AddTextColorProvider
+import com.tokopedia.media.editor.data.AddTextColorProvider
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
 import com.tokopedia.media.editor.R as editorR

@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.utils
+package com.tokopedia.media.editor.data
 
 import android.content.Context
 import android.graphics.BlendMode

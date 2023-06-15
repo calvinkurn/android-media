@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.databinding.AddTextBackgroundBtmItemLayoutBinding
-import com.tokopedia.media.editor.utils.AddTextBackgroundTemplate
-import com.tokopedia.media.editor.utils.AddTextColorProvider
+import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
+import com.tokopedia.media.editor.data.AddTextColorProvider
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR

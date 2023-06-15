@@ -16,7 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.utils.AddTextColorProvider
+import com.tokopedia.media.editor.data.AddTextColorProvider
 import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
@@ -24,9 +24,9 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.widget.AddTextColorItemView
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
-import com.tokopedia.media.editor.utils.AddTextAlignment
-import com.tokopedia.media.editor.utils.AddTextPosition
-import com.tokopedia.media.editor.utils.AddTextStyle
+import com.tokopedia.media.editor.data.entity.AddTextAlignment
+import com.tokopedia.media.editor.data.entity.AddTextPosition
+import com.tokopedia.media.editor.data.entity.AddTextStyle
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography

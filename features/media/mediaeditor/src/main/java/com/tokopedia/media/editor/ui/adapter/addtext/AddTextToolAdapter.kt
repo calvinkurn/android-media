@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.editor.ui.component.AddTextToolUiComponent
-import com.tokopedia.media.editor.utils.AddTextToolId
+import com.tokopedia.media.editor.data.entity.AddTextToolId
 import com.tokopedia.media.editor.R as editorR
 
 class AddTextToolAdapter(
