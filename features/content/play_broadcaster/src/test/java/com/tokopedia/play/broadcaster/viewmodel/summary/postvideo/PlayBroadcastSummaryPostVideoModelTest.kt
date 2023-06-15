@@ -12,7 +12,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
-import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
@@ -53,14 +52,12 @@ class PlayBroadcastSummaryPostVideoModelTest {
     private val mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
-    private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
 
     private val mockException = modelBuilder.buildException()
     private val mockSetChannelTagResponse = SetChannelTagsResponse(SetChannelTagsResponse.SetTags(true))
     private val mockSetChannelTagsResponseFail = SetChannelTagsResponse(SetChannelTagsResponse.SetTags(false))
     private val mockUpdateChannelStatusResponse = ChannelId("")
     private val mockShopName = "Jonathan's Shop"
-    private val mockProductSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     private val mockLocalUri = mockk<Uri>(relaxed = true)
     private val mockCoverUri = mockk<Uri>(relaxed = true)
@@ -207,7 +204,6 @@ class PlayBroadcastSummaryPostVideoModelTest {
     @Test
     fun `given cover cropped uploaded, it should emit the new coverUrl`() {
         val robot = PlayBroadcastSummaryViewModelRobot(
-            productSectionList = mockProductSectionList,
             dispatcher = testDispatcher,
             updateChannelUseCase = mockUpdateChannelUseCase,
             setChannelTagsUseCase =  mockSetChannelTagUseCase,
@@ -244,7 +240,6 @@ class PlayBroadcastSummaryPostVideoModelTest {
         coEvery { mockCoverUri.toString() } returns "coverUri"
 
         val robot = PlayBroadcastSummaryViewModelRobot(
-            productSectionList = mockProductSectionList,
             dispatcher = testDispatcher,
             updateChannelUseCase = mockUpdateChannelUseCase,
             setChannelTagsUseCase =  mockSetChannelTagUseCase,
@@ -282,7 +277,6 @@ class PlayBroadcastSummaryPostVideoModelTest {
         coEvery { mockLocalUri.toString() } returns ""
 
         val robot = PlayBroadcastSummaryViewModelRobot(
-            productSectionList = mockProductSectionList,
             dispatcher = testDispatcher,
             updateChannelUseCase = mockUpdateChannelUseCase,
             setChannelTagsUseCase =  mockSetChannelTagUseCase,
@@ -317,7 +311,6 @@ class PlayBroadcastSummaryPostVideoModelTest {
     fun `given generated cover, it should emit the new coverUrl`() {
 
         val robot = PlayBroadcastSummaryViewModelRobot(
-            productSectionList = mockProductSectionList,
             dispatcher = testDispatcher,
             updateChannelUseCase = mockUpdateChannelUseCase,
             setChannelTagsUseCase =  mockSetChannelTagUseCase,
@@ -350,7 +343,6 @@ class PlayBroadcastSummaryPostVideoModelTest {
     fun `given generated cover but the url is empty, it should retain the old coverUrl`() {
 
         val robot = PlayBroadcastSummaryViewModelRobot(
-            productSectionList = mockProductSectionList,
             dispatcher = testDispatcher,
             updateChannelUseCase = mockUpdateChannelUseCase,
             setChannelTagsUseCase =  mockSetChannelTagUseCase,
