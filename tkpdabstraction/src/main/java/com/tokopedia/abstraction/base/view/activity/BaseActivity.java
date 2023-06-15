@@ -56,7 +56,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String INAPP_UPDATE = "inappupdate";
     private static final long DISMISS_TIME = 10000;
 
-    BannerEnvironment bannerEnv = null;
+    public BannerEnvironment bannerEnv = null;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;

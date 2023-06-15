@@ -13,10 +13,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.abstraction.R
 
 internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.RED }
+    private val paint = Paint().apply { color = context.resources.getColor(R.color.Unify_G500) }
     private val path: Path = Path()
     private val textView: TextView by lazy { TextView(context) }
     private val bannerHeight: Float by lazy { dip(30).toFloat() }

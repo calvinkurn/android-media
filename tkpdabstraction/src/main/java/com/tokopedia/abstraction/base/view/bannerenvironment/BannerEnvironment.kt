@@ -28,9 +28,13 @@ class BannerEnvironment {
             if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
                 addBanner((activity), getLiveStatus(activity))
             } else {
-                removeBanner()
+                removeBannerIfVisible()
             }
         }
+    }
+
+    fun disable() {
+        removeBannerIfVisible()
     }
 
     fun isBannerEnvironmentEnabled(context: Context): Boolean {
@@ -50,7 +54,7 @@ class BannerEnvironment {
 
         bannerEnvironmentView = BannerEnvironmentView(activity).apply {
             updateText(liveStatus, R.color.Unify_NN0)
-            updateBannerColor(R.color.Unify_G500)
+            updateBannerColor(R.color.Unify_GN500)
             bannerGravity = BannerEnvironmentGravity.END
         }
         val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
@@ -66,7 +70,7 @@ class BannerEnvironment {
         return activity.window.attributes.dimAmount == 0.0f
     }
 
-    private fun removeBanner() {
+    private fun removeBannerIfVisible() {
         if (bannerEnvironmentView != null && decorView != null) {
             decorView?.removeView(bannerEnvironmentView)
         }
@@ -78,7 +82,7 @@ class BannerEnvironment {
         } else if (isBeta(context)) {
             "BETA"
         } else {
-            "LIVE"
+            ""
         }
     }
 }
