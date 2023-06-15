@@ -50,9 +50,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_PRODUCT_DESC
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_OLD_MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_SHOW_MORE_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_BOTTOM_SHEET_PRODUCT_DESC
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_OLD_MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_PROMO_CLUSTER_PRODUCT
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -389,6 +391,7 @@ class DigitalPDPAnalytics {
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
             )
+            putString(TRACKER_ID, IMPRESS_OLD_MCCM)
         }
 
         eventDataLayer.viewItemList(userId)
@@ -479,6 +482,7 @@ class DigitalPDPAnalytics {
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
             )
+            putString(TRACKER_ID, CLICK_OLD_MCCM)
         }
 
         eventDataLayer.clickGeneralItemList(userId)
