@@ -51,6 +51,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     private var mListener: Listener? = null
 
     init {
+        preloadLottie()
         showReminderButton(false, animate = false)
     }
 
@@ -130,6 +131,15 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
                 mModel,
                 mModel.reminderType.switch(),
             )
+        }
+    }
+
+    private fun preloadLottie() {
+        listOf(
+            R.string.lottie_reminder_off_on,
+            R.string.lottie_reminder_on_off
+        ).forEach {
+            LottieCompositionFactory.fromUrl(context, context.getString(it))
         }
     }
 

@@ -103,6 +103,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     init {
+        preloadLottie()
         showMuteButton(false, animate = false)
         setMuted(true)
 
@@ -320,6 +321,16 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
                 binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
             }
+    }
+
+    private fun preloadLottie() {
+        listOf(
+            R.string.lottie_sound_on_off,
+            R.string.lottie_sound_off_on,
+            R.string.lottie_sound_on_loop
+        ).forEach {
+            LottieCompositionFactory.fromUrl(context, context.getString(it))
+        }
     }
 
     interface Listener {
