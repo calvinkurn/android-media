@@ -8,7 +8,6 @@
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
-    <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_price">%1$s%2$s</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
@@ -70,8 +69,6 @@
         <item>@string/ft_label_with_credit_card</item>
     </string-array>
 
-    <string name="image_preview_add_wishlist">Tambahkan ke Wishlist</string>
-    <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
     <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | %2$s</string>
@@ -153,7 +150,6 @@
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
-    <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
     <string name="content_desc_txt_main_price">text harga %1f</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
     <string name="content_desc_product_name">text nama produk %1s</string>

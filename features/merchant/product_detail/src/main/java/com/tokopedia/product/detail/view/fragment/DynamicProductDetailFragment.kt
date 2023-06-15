@@ -204,7 +204,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -964,16 +963,6 @@ open class DynamicProductDetailFragment :
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.showToasterSuccess(getString(R.string.success_to_report))
-                }
-            }
-            ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW -> {
-                if (data != null) {
-                    val isWishlisted = data.getBooleanExtra(
-                        ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW,
-                        false
-                    )
-                    pdpUiUpdater?.updateWishlistData(isWishlisted)
-                    updateUi()
                 }
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
