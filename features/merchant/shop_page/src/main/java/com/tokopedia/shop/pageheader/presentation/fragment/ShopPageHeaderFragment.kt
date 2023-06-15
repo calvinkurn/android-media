@@ -164,7 +164,6 @@ import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -2152,7 +2151,8 @@ class ShopPageHeaderFragment :
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
         return ShopPageCampaignFragment.createInstance(shopId).apply {
-            setCampaignTabBackgroundColor(tabData.listBackgroundColor.firstOrNull().orEmpty())
+            setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
+            setIsDarkTheme(tabData.isDark)
         }
     }
 

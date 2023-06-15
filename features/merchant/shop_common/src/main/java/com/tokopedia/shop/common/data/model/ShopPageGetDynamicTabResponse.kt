@@ -40,6 +40,12 @@ data class ShopPageGetDynamicTabResponse(
             var backgroundImage: String = "",
             @SerializedName("imgLottie")
             var lottieUrl: String = "",
+            @SerializedName("isDark")
+            var isDark: Boolean = false,
+            @SerializedName("widgetHeaderStyle")
+            var widgetHeaderStyle: String = "",
+            @SerializedName("widgetHeaderBgColors")
+            var widgetHeaderBgColors: List<String> = listOf(),
             @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")

@@ -38,7 +38,6 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="#5A5E57"
         android:visibility="gone"
         android:focusable="false"
         android:focusableInTouchMode="false"

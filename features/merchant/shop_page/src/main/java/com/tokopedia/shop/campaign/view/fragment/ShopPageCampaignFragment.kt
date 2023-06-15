@@ -111,6 +111,7 @@ class ShopPageCampaignFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
+        private const val QUERY_PARAM_TAB = "tab"
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -122,14 +123,14 @@ class ShopPageCampaignFragment :
     }
 
     private val viewBindingCampaignTab: FragmentShopPageCampaignBinding? by viewBinding()
-    private var campaignTabBackgroundColor: String = ""
-    private var campaignTabBackgroundPatternImage: String = ""
+    private var listCampaignTabBackgroundColor: List<String> = listOf()
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
     private var textColor: String = ""
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var viewModelCampaign: ShopCampaignViewModel? = null
+    private var isDarkTheme: Boolean = false
 
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
@@ -558,24 +559,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun renderCampaignTabBackgroundColor() {
-//        if (listBackgroundColor.isNotEmpty()) {
-//            topView?.show()
-//            centerView?.show()
-//            bottomView?.show()
-//            val colors = IntArray(listBackgroundColor.size)
-//            for (i in listBackgroundColor.indices) {
-//                colors[i] = parseColor(listBackgroundColor.getOrNull(i).orEmpty())
-//            }
-//            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-//            gradient.cornerRadius = 0f
-//            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
-//            centerView?.background = gradient
-//            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
-//        } else {
-//            topView?.hide()
-//            centerView?.hide()
-//            bottomView?.hide()
-//        }
+        if (listCampaignTabBackgroundColor.isNotEmpty()) {
+            getRecyclerView(view)?.apply {
+                setBackgroundColor(parseColor(listCampaignTabBackgroundColor.firstOrNull().orEmpty()))
+            }
+        }
     }
 
     private fun parseColor(colorHex: String): Int {
@@ -795,16 +783,12 @@ class ShopPageCampaignFragment :
         (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
-    fun setCampaignTabBackgroundColor(backgroundColor: String) {
-        this.campaignTabBackgroundColor = backgroundColor
-    }
-
-    fun setCampaignTabBackgroundPatternImage(backgroundPatternImage: String) {
-        this.campaignTabBackgroundPatternImage = backgroundPatternImage
+    fun setCampaignTabListBackgroundColor(listBackgroundColor: List<String>) {
+        this.listCampaignTabBackgroundColor = listBackgroundColor
     }
 
     override fun isCampaignTabDarkMode(): Boolean {
-        return true
+        return isDarkTheme
     }
 
     override fun resumeSliderBannerAutoScroll() {
@@ -833,7 +817,8 @@ class ShopPageCampaignFragment :
     }
 
     private fun checkShouldSelectHomeTab(appLink: String) {
-        if (Uri.parse(appLink).lastPathSegment.equals(HOME_TAB_APP_LINK_LAST_SEGMENT, true)) {
+        val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
+        if (tabValue == ShopPageHeaderTabName.HOME) {
             (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
         }
     }
@@ -1023,5 +1008,13 @@ class ShopPageCampaignFragment :
             isRemindMe = data.isAvailable,
             isClickRemindMe = false
         )
+    }
+
+    fun setIsDarkTheme(isDarkTheme: Boolean) {
+        this.isDarkTheme = isDarkTheme
+    }
+
+    override fun getListBackgroundColor(): List<String> {
+        return listCampaignTabBackgroundColor
     }
 }

@@ -10,7 +10,6 @@
     android:paddingHorizontal="8dp"
     android:clipToPadding="false"
     android:paddingTop="50dp"
-    android:background="@drawable/slider_banner_highlight_gradient_drawable"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography

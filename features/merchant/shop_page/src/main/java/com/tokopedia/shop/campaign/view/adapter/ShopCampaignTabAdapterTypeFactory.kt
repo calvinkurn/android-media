@@ -234,7 +234,8 @@ class ShopCampaignTabAdapterTypeFactory(
 
             ShopCampaignDisplaySliderBannerHighlightViewHolder.LAYOUT -> ShopCampaignDisplaySliderBannerHighlightViewHolder(
                 parent,
-                sliderBannerHighlightListener
+                sliderBannerHighlightListener,
+                shopCampaignInterface
             )
 
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {

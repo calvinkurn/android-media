@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignDisplaySliderBannerHighlightAdapter
 import com.tokopedia.shop.campaign.view.adapter.SliderBannerHighlightLayoutManager
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignSliderBannerHighlightBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -21,7 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val shopCampaignInterface: ShopCampaignInterface
 ) : AbstractViewHolder<ShopWidgetDisplaySliderBannerHighlightUiModel>(itemView),
     SliderBannerHighlightLayoutManager.Listener {
 
@@ -59,8 +63,20 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
         setTitle(uiModel)
         setProductImageCarousel(uiModel)
         setButtonCta(uiModel)
+        setBackgroundGradient()
         setWidgetImpression(uiModel)
         setCtaClickedListener(uiModel)
+    }
+
+    private fun setBackgroundGradient() {
+        val listBackgroundColor = shopCampaignInterface.getListBackgroundColor()
+        val colors = IntArray(listBackgroundColor.size)
+        for (i in listBackgroundColor.indices) {
+            colors[i] = ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+        }
+        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+        gradient.cornerRadius = 0f
+        itemView.background = gradient
     }
 
     private fun setCtaClickedListener(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
