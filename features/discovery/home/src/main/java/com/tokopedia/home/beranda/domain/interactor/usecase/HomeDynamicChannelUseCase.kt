@@ -16,7 +16,6 @@ import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
@@ -58,9 +57,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
     private val homeDataMapper: HomeDataMapper,
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-    private val homeDataRepository: HomeDataRepository,
     private val atfDataRepository: HomeAtfRepository,
-    private val homeFlagRepository: HomeFlagRepository,
+    private val homeUserStatusRepository: HomeUserStatusRepository,
     private val homePageBannerRepository: HomePageBannerRepository,
     private val homeIconRepository: HomeIconRepository,
     private val homeTickerRepository: HomeTickerRepository,
@@ -111,12 +109,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         homeDataModel: HomeDynamicChannelModel
     ) {
         findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
-            if (model.needToShowUserWallet) {
-                homeDataModel.updateWidgetModel(
-                    visitable = homeHeaderDataModel,
-                    position = index
-                ) {}
-            }
+            homeDataModel.updateWidgetModel(
+                visitable = homeHeaderDataModel,
+                position = index
+            ) {}
         }
     }
 
@@ -128,8 +124,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
-                    val defaultFlag = HomeFlag()
-                    defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
                     val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
                         HomeData(
                             atfData = HomeAtfData(
@@ -147,7 +141,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 isProcessingAtf = true
                             ),
                             isProcessingDynamicChannel = true,
-                            homeFlag = defaultFlag
                         ),
                         isCache = true,
                         addShimmeringChannel = true,
@@ -793,7 +786,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
-     *    2.1 Get home flag response
+     *    2.1 Hit home user status query
      * 3. Get above the fold content
      * 4. Get dynamic channel data
      *    4.1. If remote config pagination enabled, proceed with pagination
@@ -859,17 +852,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 2.1 Get home flag response
+             * 2.1 Hit home user status (fire and forget)
              */
-            try {
-                launch {
-                    val homeFlagResponse = homeFlagRepository.getCachedData()
-                    homeFlagResponse.homeFlag.let {
-                        homeData.homeFlag = homeFlagResponse.homeFlag
-                    }
-                }
-            } catch (e: Exception) {
-            }
+            launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             /**
              * 3. Get above the fold content
