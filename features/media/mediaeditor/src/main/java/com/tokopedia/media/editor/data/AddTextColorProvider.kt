@@ -29,8 +29,8 @@ class AddTextColorProviderImpl @Inject constructor(
     private val black2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_black)
     private val white2 = ContextCompat.getColor(context, editorR.color.dms_editor_add_text_white)
 
-    private val blackText2 = context.resources.getString(editorR.string.add_text_color_name_black)
-    private val whiteText2 = context.resources.getString(editorR.string.add_text_color_name_white)
+    private val blackText2 = context.getString(editorR.string.add_text_color_name_black)
+    private val whiteText2 = context.getString(editorR.string.add_text_color_name_white)
 
     private val listOfTextColor = listOf(
         black2,

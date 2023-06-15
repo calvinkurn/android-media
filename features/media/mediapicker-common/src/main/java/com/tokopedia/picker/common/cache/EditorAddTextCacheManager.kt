@@ -14,27 +14,25 @@ interface EditorAddTextCacheManager {
 
 class EditorAddTextCacheManagerImpl @Inject constructor(
     @ApplicationContext context: Context
-) : EditorAddTextCacheManager {
-
-    private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_TEXT)
-
+) : EditorAddTextCacheManager,
+    LocalCacheHandler(context, PREF_NAME_CACHE_ADD_TEXT) {
     override fun get(): String {
-        return localCacheHandler.getString(KEY_LOCAL_TEXT, "")
+        return getString(KEY_LOCAL_TEXT, "")
     }
 
     override fun set(textDetail: String) {
-        localCacheHandler.putString(KEY_LOCAL_TEXT, textDetail)
-        localCacheHandler.applyEditor()
+        putString(KEY_LOCAL_TEXT, textDetail)
+        applyEditor()
     }
 
     override fun setTipsState() {
-        localCacheHandler.putBoolean(KEY_LOCAL_TEXT_TIPS, true)
-        localCacheHandler.applyEditor()
+        putBoolean(KEY_LOCAL_TEXT_TIPS, true)
+        applyEditor()
     }
 
     // true = tips already showed, no need to show it again
     override fun getTipsState(): Boolean {
-        return localCacheHandler.getBoolean(KEY_LOCAL_TEXT_TIPS, false)
+        return getBoolean(KEY_LOCAL_TEXT_TIPS, false)
     }
 
     companion object {
