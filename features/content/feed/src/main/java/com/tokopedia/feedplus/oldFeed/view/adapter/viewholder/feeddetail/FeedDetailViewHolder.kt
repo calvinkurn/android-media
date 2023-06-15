@@ -24,6 +24,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
@@ -123,7 +124,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", feedDetailProductModel.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(feedComponentR.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
+            val soldInfoText = getString(contentCommonR.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
 
             soldInfo.text = soldInfoText
             star.showWithCondition(feedDetailProductModel.rating != 0)
@@ -140,7 +141,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                 btnAddToCart.apply {
                     isEnabled = false
                     text =
-                        getString(feedComponentR.string.btn_add_to_cart_text_disabled)
+                        getString(contentCommonR.string.btn_add_to_cart_text_disabled)
                 }
             }
             btnAddToCart.setOnClickListener {

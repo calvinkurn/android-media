@@ -3,23 +3,23 @@ package com.tokopedia.autocompletecomponent.initialstate.domain
 import com.google.gson.annotations.SerializedName
 
 data class InitialStateData(
-        @SerializedName("id")
-        val id: String = "",
+    @SerializedName("id")
+    val id: String = "",
 
-        @SerializedName("feature_id")
-        val featureId: String = "",
+    @SerializedName("feature_id")
+    val featureId: String = "",
 
-        @SerializedName("header")
-        val header: String = "",
+    @SerializedName("header")
+    val header: String = "",
 
-        @SerializedName("label_action")
-        val labelAction: String = "",
+    @SerializedName("label_action")
+    val labelAction: String = "",
 
-        @SerializedName("tracking_option")
-        val trackingOption: Int = 0,
+    @SerializedName("tracking_option")
+    val trackingOption: Int = 0,
 
-        @SerializedName("items")
-        val items: List<InitialStateItem> = listOf()
+    @SerializedName("items")
+    val items: List<InitialStateItem> = listOf()
 ) {
 
     companion object {
@@ -30,5 +30,6 @@ data class InitialStateData(
         const val INITIAL_STATE_LIST_PRODUCT_LINE = "list_product_line"
         const val INITIAL_STATE_LIST_CHIPS = "popular_category"
         const val INITIAL_STATE_SEARCHBAR_EDUCATION = "searchbar_education"
+        const val INITIAL_STATE_MPS = "mpsk2k"
     }
 }

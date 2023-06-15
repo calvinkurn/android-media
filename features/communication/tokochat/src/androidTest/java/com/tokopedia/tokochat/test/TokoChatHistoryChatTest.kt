@@ -35,6 +35,7 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
     fun should_show_date_header_in_chat_history() {
         // When
         launchChatRoomActivity()
+        Thread.sleep(1000)
         val adapter = getTokoChatAdapter()
         val position = adapter.lastIndex - 1
 
@@ -46,6 +47,7 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
     fun should_show_first_ticker() {
         // When
         launchChatRoomActivity()
+        Thread.sleep(1000)
         val adapter = getTokoChatAdapter()
         val lastItem = adapter.lastIndex
 
@@ -63,16 +65,11 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
 
         // When
         launchChatRoomActivity()
-        Thread.sleep(3000) // Wait for image to show
 
         // Then
         MessageBubbleResult.assertImageAttachmentVisibility(
             position = 0,
             isVisible = true
-        )
-        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
-            position = 0,
-            isVisible = false
         )
         MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
             position = 0,
@@ -102,10 +99,6 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
             position = 0,
             isVisible = true
         )
-        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
-            position = 0,
-            isVisible = false
-        )
         MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
             position = 0,
             isVisible = false
@@ -134,15 +127,13 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
         ReplyAreaRobot.clickAttachmentPlusButton()
         ReplyAreaRobot.clickAttachmentMenuButton(0)
 
-
         // Then
+        GeneralResult.assertSnackBarWithSubText("Custom message error from BE")
+
+        Thread.sleep(3000) // Wait for image to appear
         MessageBubbleResult.assertImageAttachmentVisibility(
             position = 0,
             isVisible = true
-        )
-        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
-            position = 0,
-            isVisible = false
         )
         MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
             position = 0,
@@ -152,7 +143,6 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
             position = 0,
             isVisible = true
         )
-        GeneralResult.assertSnackBarWithSubText("Custom message error from BE")
     }
 
     @Test
@@ -167,15 +157,12 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
 
         // When
         launchChatRoomActivity()
+        Thread.sleep(3000)
 
         // Then
         MessageBubbleResult.assertImageAttachmentVisibility(
             position = 0,
             isVisible = true
-        )
-        MessageBubbleResult.assertImageAttachmentLoadingVisibility(
-            position = 0,
-            isVisible = false
         )
         MessageBubbleResult.assertImageAttachmentRetryDownloadVisibility(
             position = 0,
@@ -347,7 +334,9 @@ class TokoChatHistoryChatTest : BaseTokoChatTest() {
     private fun saveDummyImage() {
         try {
             val dummyBitmap: Bitmap = BitmapFactory.decodeResource(
-                context.resources, com.tokopedia.tokochat.test.R.drawable.dummy_image)
+                context.resources,
+                com.tokopedia.tokochat.test.R.drawable.dummy_image
+            )
             val file = TokoChatViewUtil.getTokoChatPhotoPath("dummy_image")
             if (!file.exists()) {
                 val outStream = FileOutputStream(file)

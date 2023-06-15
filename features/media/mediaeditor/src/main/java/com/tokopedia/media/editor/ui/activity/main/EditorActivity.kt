@@ -117,43 +117,18 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
-            )
-        } else {
-            saveImageToGallery()
-        }
+        finishPage()
     }
 
     override fun onBackClicked() {
         editorHomeAnalytics.clickBackButton()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
-            if (
-                requestCode == PERMISSION_REQUEST_CODE &&
-                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
-                grantResults.first() != -1) {
-                saveImageToGallery()
-            }
-        }
-    }
-
-    private fun saveImageToGallery() {
+    private fun finishPage() {
         val listImageEditState = viewModel.editStateList.values.toList()
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             listImageEditState
-        ) { imageResultList, exception ->
+        ) { imageResultList ->
             imageResultList?.let {
                 val result = EditorResult(
                     originalPaths = listImageEditState.map { it.getOriginalUrl() },
@@ -165,15 +140,6 @@ class EditorActivity : BaseEditorActivity() {
                 val intent = Intent()
                 intent.putExtra(RESULT_INTENT_EDITOR, result)
                 setResult(Activity.RESULT_OK, intent)
-            }
-
-            exception?.let {
-                showErrorGeneralToaster(this)
-                newRelicLog(
-                    mapOf(
-                        FAILED_SAVE_FIELD to "${it.message}"
-                    )
-                )
             }
 
             finish()

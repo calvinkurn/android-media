@@ -75,7 +75,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 ImageRatioType.RATIO_1_1 -> autoCrop1to1()
                                 ImageRatioType.RATIO_3_4 -> autoCrop3to4()
                                 ImageRatioType.RATIO_2_1 -> autoCrop2to1()
-                                else -> null
+                                else -> {}
                             }
                         }
                     }
@@ -136,16 +136,14 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val pickerConfigJson = gson.toJson(PickerParam().apply {
-            withEditor()
-            pageType(PageType.GALLERY)
-        })
-        val editorConfigJson = gson.toJson(EditorParam().apply {
-            withRemoveBackground()
-            withWatermark()
-            withAddLogo()
-            withAddText()
-        })
+        val pickerConfigJson = gson.toJson(PickerParam().apply { })
+        val editorConfigJson = gson.toJson(
+            EditorParam().apply {
+                withRemoveBackground()
+                withWatermark()
+                autoCrop1to1()
+            }
+        )
 
         binding?.pickerConfig?.setText(pickerConfigJson)
         binding?.editorConfig?.setText(editorConfigJson)

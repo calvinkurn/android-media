@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dilayanitokopedia.R
+import com.tokopedia.dilayanitokopedia.data.analytics.DtHomepageAnalytics
+import com.tokopedia.dilayanitokopedia.data.analytics.ProductCardAnalyticsMapper
 import com.tokopedia.dilayanitokopedia.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeRecommendationFeedViewHolder
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeFeedEndlessScrollListener
@@ -40,6 +42,7 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
@@ -63,6 +66,9 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
     var appExecutors: SmartExecutors
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModel: DtHomeRecommendationViewModel
 
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
@@ -73,7 +79,7 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
 
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this) }
     private val adapter by lazy {
-        HomeRecommendationForYouAdapter(appExecutors, adapterFactory, provideListener())
+        HomeRecommendationForYouAdapter(appExecutors, adapterFactory, provideListener(userSession))
     }
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
@@ -182,13 +188,20 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
         }
     }
 
-    private fun provideListener(): HomeRecommendationListener {
+    private fun provideListener(userSession: UserSessionInterface): HomeRecommendationListener {
         return object : HomeRecommendationListener {
             override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
-                // no-op
+                DtHomepageAnalytics.sendImpressionProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromRecommendation(position, homeRecommendationItemDataModel)
+                )
             }
 
             override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
+                DtHomepageAnalytics.sendClickProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromRecommendation(position, homeRecommendationItemDataModel)
+                )
                 goToProductDetail(homeRecommendationItemDataModel.product.id, position)
             }
 

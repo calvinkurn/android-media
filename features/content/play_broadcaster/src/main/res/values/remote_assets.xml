@@ -5,4 +5,6 @@
     <string name="img_play_tag_not_found">https://images.tokopedia.net/img/android/content/play_broadcaster/play_tag_not_found.png</string>
     <string name="img_setup_cover_empty_product">https://images.tokopedia.net/img/android/content/play_broadcaster/setup_cover_empty_product.png</string>
     <string name="img_shorts_account_not_eligible">https://images.tokopedia.net/img/android/content/play_shorts/img_shorts_account_not_eligible.png</string>
+    <string name="play_shorts_affiliate_tnc">https://images.tokopedia.net/img/content/play_broadcaster/shorts_x_affiliate_registration_image.png</string>
+    <string name="play_shorts_affiliate_success">https://images.tokopedia.net/img/content/play_broadcaster/play_shorts_x_affiliate_succes.png</string>
 </resources>
