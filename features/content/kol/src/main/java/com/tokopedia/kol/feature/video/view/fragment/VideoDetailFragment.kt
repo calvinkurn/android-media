@@ -31,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.util.resize
+import com.tokopedia.kol.databinding.LayoutSingleVideoFragmentBinding
 import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity.Companion.getCallingIntent
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
@@ -48,7 +49,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
 /**
@@ -73,6 +73,11 @@ class VideoDetailFragment :
     KolPostLikeListener,
     MediaPlayer.OnPreparedListener {
 
+    private var _binding: LayoutSingleVideoFragmentBinding? = null
+    private val binding: LayoutSingleVideoFragmentBinding
+        get() = _binding!!
+
+
     override val androidContext: Context
         get() = requireContext()
 
@@ -80,7 +85,6 @@ class VideoDetailFragment :
     lateinit var presenter: VideoDetailContract.Presenter
 
     lateinit var dynamicPostViewModel: DynamicPostUiModel
-
 
     @Inject
     override lateinit var userSession: UserSessionInterface
@@ -117,8 +121,9 @@ class VideoDetailFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.layout_single_video_fragment, container, false)
+    ): View {
+        _binding = LayoutSingleVideoFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -136,13 +141,13 @@ class VideoDetailFragment :
             activity?.let { it ->
                 //video player resize
                 val videoSize = resize(it, player.videoWidth, player.videoHeight)
-                videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
-                videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
+                binding.videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                binding.videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
 
                 //showing media controller
                 val mediaController = MediaController(it)
-                videoView.setMediaController(mediaController)
-                mediaController.setAnchorView(videoView)
+                binding.videoView.setMediaController(mediaController)
+                mediaController.setAnchorView(binding.videoView)
             }
             player.seekTo((videoSeekTime.toString()).toIntOrZero())
             player.start()
@@ -151,6 +156,7 @@ class VideoDetailFragment :
 
     override fun onDestroy() {
         super.onDestroy()
+        _binding = null
         presenter.detachView()
     }
 
@@ -259,9 +265,8 @@ class VideoDetailFragment :
     }
 
     private fun initPlayer(url: String) {
-        if (URLUtil.isValidUrl(url))
-            videoView.setVideoURI(Uri.parse(url))
-        videoView.setOnErrorListener { _, p1, p2 ->
+        if (URLUtil.isValidUrl(url)) binding.videoView.setVideoURI(Uri.parse(url))
+        binding.videoView.setOnErrorListener { _, p1, p2 ->
             try {
                 FirebaseCrashlytics.getInstance().recordException(
                     Throwable(
@@ -307,11 +312,11 @@ class VideoDetailFragment :
                 }
             }
         }
-        videoView.setOnPreparedListener(this)
+        binding.videoView.setOnPreparedListener(this)
     }
 
     private fun initViewListener() {
-        ivClose.setOnClickListener {
+        binding.ivClose.setOnClickListener {
             val intent = Intent()
             intent.putExtra(POST_POSITION, arguments?.getInt(POST_POSITION))
             if (::dynamicPostViewModel.isInitialized) {
@@ -322,11 +327,11 @@ class VideoDetailFragment :
             activity?.finish()
         }
 
-        likeIcon.setOnClickListener(onLikeSectionClicked())
-        likeText.setOnClickListener(onLikeSectionClicked())
+        binding.likeIcon.setOnClickListener(onLikeSectionClicked())
+        binding.likeText.setOnClickListener(onLikeSectionClicked())
 
-        commentIcon.setOnClickListener(onCommentSectionClicked())
-        commentText.setOnClickListener(onCommentSectionClicked())
+        binding.commentIcon.setOnClickListener(onCommentSectionClicked())
+        binding.commentText.setOnClickListener(onCommentSectionClicked())
     }
 
     private fun onLikeSectionClicked(): View.OnClickListener {
@@ -379,11 +384,11 @@ class VideoDetailFragment :
     private fun bindHeader(feedXCard: FeedXCard) {
         val author = feedXCard.author
         author.let {
-            headerLayout.visibility = View.VISIBLE
+            binding.headerLayout.visibility = View.VISIBLE
             if (!TextUtils.isEmpty(it.logoURL)) {
-                authorImage.loadImageCircle(it.logoURL)
+                binding.authorImage.loadImageCircle(it.logoURL)
             } else {
-                authorImage.setImageDrawable(
+                binding.authorImage.setImageDrawable(
                     MethodChecker.getDrawable(
                         requireActivity(),
                         com.tokopedia.design.R.drawable.error_drawable
@@ -391,75 +396,74 @@ class VideoDetailFragment :
                 )
             }
             if (it.badgeURL.isNotBlank()) {
-                authorBadge.show()
-                authorBadge.loadImage(it.badgeURL)
-                authorTitle.setMargin(
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                binding.authorBadge.show()
+                binding.authorBadge.loadImage(it.badgeURL)
+                binding.authorTitle.setMargin(
+                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
                     0,
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                     0
                 )
             } else {
-                authorBadge.hide()
-                authorTitle.setMargin(
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                binding.authorBadge.hide()
+                binding.authorTitle.setMargin(
+                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                     0,
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    binding.authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                     0
                 )
             }
 
-            authorTitle.text = MethodChecker.fromHtml(it.name)
+            binding.authorTitle.text = MethodChecker.fromHtml(it.name)
         }
 
-        authorSubtitile.text = TimeConverter.generateTime(requireActivity(), feedXCard.publishedAt)
+        binding.authorSubtitile.text = TimeConverter.generateTime(requireActivity(), feedXCard.publishedAt)
     }
 
     private fun bindCaption(feedXCard: FeedXCard) {
         feedXCard.let {
             if (it.text.isEmpty()) {
-                captionLayout.visibility = View.GONE
+                binding.captionLayout.visibility = View.GONE
             } else {
-                caption.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                binding.caption.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
             }
         }
     }
 
     private fun bindFooter(feedXCard: FeedXCard) {
         feedXCard.let {
-            bottomLayout.visibility = View.VISIBLE
+            binding.bottomLayout.visibility = View.VISIBLE
             val like = feedXCard.like
             if (like.likedBy.isNotEmpty() || like.count != 0) {
-                likeIcon.show()
-                likeText.show()
+                binding.likeIcon.show()
+                binding.likeText.show()
                 bindLike(it.like)
             } else {
-                likeIcon.hide()
-                likeText.hide()
+                binding.likeIcon.hide()
+                binding.likeText.hide()
             }
             val comments = feedXCard.comments
 
             if (comments.count != 0) {
-                commentIcon.show()
-                commentText.show()
+                binding.commentIcon.show()
+                binding.commentText.show()
                 bindComment(it.comments)
             } else {
-                commentIcon.hide()
-                commentText.hide()
+                binding.commentIcon.hide()
+                binding.commentText.hide()
             }
 
-
-            shareIcon.show()
-            shareText.show()
+            binding.shareIcon.show()
+            binding.shareText.show()
             val desc = requireContext().getString(
                 com.tokopedia.content.common.R.string.feed_share_default_text,
                 feedXCard.author.name
             )
 
-            shareIcon.setOnClickListener {
+            binding.shareIcon.setOnClickListener {
                 doShare(desc, "${feedXCard.author.name} post")
             }
-            shareText.setOnClickListener {
+            binding.shareText.setOnClickListener {
                 doShare(desc, "${feedXCard.author.name} post")
             }
 
@@ -479,33 +483,33 @@ class VideoDetailFragment :
     private fun bindLike(like: FeedXLike) {
         when {
             like.isLiked -> {
-                likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
-                likeText.text = like.countFmt
-                likeText.setTextColor(
+                binding.likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
+                binding.likeText.text = like.countFmt
+                binding.likeText.setTextColor(
                     MethodChecker.getColor(
-                        likeText.context,
+                        binding.likeText.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
             }
 
             like.count > 0 -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.text = like.countFmt
-                likeText.setTextColor(
+                binding.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                binding.likeText.text = like.countFmt
+                binding.likeText.setTextColor(
                     MethodChecker.getColor(
-                        likeText.context,
+                        binding.likeText.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
             }
 
             else -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
-                likeText.setTextColor(
+                binding.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                binding.likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
+                binding.likeText.setTextColor(
                     MethodChecker.getColor(
-                        likeIcon.context,
+                        binding.likeIcon.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
@@ -514,7 +518,7 @@ class VideoDetailFragment :
     }
 
     private fun bindComment(comments: FeedXComments) {
-        commentText.text =
+        binding.commentText.text =
             if (comments.count == 0) getString(com.tokopedia.content.common.R.string.kol_action_comment)
             else comments.countFmt
     }
@@ -528,7 +532,7 @@ class VideoDetailFragment :
         }
 
         comment.count = comment.count + totalNewComment
-        commentText.text = comment.countFmt
+        binding.commentText.text = comment.countFmt
     }
 
     private fun goToLogin() {
