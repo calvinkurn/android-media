@@ -87,6 +87,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   group_information {
                       name
                       badge_url
+                      description
                   }
                   add_ons {
                     status
