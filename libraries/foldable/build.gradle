@@ -15,7 +15,7 @@ buildscript {
 
 dependencies {
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     api rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModel
