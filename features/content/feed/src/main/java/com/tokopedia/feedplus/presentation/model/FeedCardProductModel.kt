@@ -9,6 +9,7 @@ data class FeedCardProductModel(
     val coverUrl: String = "",
     val weblink: String = "",
     val applink: String = "",
+    val affiliate: FeedCardProductAffiliate = FeedCardProductAffiliate(),
     val star: Double = 0.0,
     val price: Double = 0.0,
     val priceFmt: String = "",
@@ -32,4 +33,9 @@ data class FeedCardProductModel(
     val cartable: Boolean = false,
     val isCashback: Boolean = false,
     val cashbackFmt: String = ""
+)
+
+data class FeedCardProductAffiliate(
+    val id: String = "",
+    val channel: String = ""
 )
