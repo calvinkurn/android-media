@@ -13,7 +13,7 @@
         "icon": "81",
         "title": "Tokopedia Care",
         "subtext": "Cek pesan bantuan",
-        "applink": "",
+        "applink": "tokopedia://customercare",
         "type": 1,
         "is_dynamic": true
       }

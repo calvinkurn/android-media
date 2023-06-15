@@ -2,6 +2,8 @@ package com.tokopedia.inbox.universalinbox.test.robot.recommendation
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -35,5 +37,13 @@ object RecommendationResult {
             withRecyclerView(R.id.inbox_rv)
                 .atPositionOnView(position, R.id.inbox_recommendation_widget)
         ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+
+    fun assertApplinkPDP() {
+        Intents.intended(
+            IntentMatchers.hasData(
+                "tokopedia-android-internal://marketplace/product-detail/2455862417/"
+            )
+        )
     }
 }

@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.universalinbox.test.base
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
@@ -78,5 +81,10 @@ abstract class BaseUniversalInboxTest {
 
     protected fun setABValue(key: String, value: String) {
         (abTestPlatform as FakeAbTestPlatformImpl).editValue(key, value)
+    }
+
+    protected fun stubAllIntents() {
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 }
