@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.creation.step3
 
 import android.content.SharedPreferences
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.mapper.VoucherValidationPartialMapper
