@@ -3,6 +3,7 @@ package com.tokopedia.people.robot
 import android.text.SpannableString
 import android.text.style.ClickableSpan
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.getSpans
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -136,10 +137,17 @@ class UserProfileRobot {
 
     fun clickReviewSeeMore() = chainable {
         clickItemRecyclerView(R.id.rv_review, 0) { view ->
-            val textView = view.findViewById<TextView>(R.id.tv_review)
-            val spans = (textView.text as SpannableString).getSpans<ClickableSpan>()
+            val tvReview = view.findViewById<TextView>(R.id.tv_review)
+            val spans = (tvReview.text as SpannableString).getSpans<ClickableSpan>()
 
-            spans[0].onClick(textView)
+            spans[0].onClick(tvReview)
+        }
+    }
+
+    fun clickProductInfo() = chainable {
+        clickItemRecyclerView(R.id.rv_review, 0) { view ->
+            val clProductInfo = view.findViewById<ConstraintLayout>(R.id.cl_product_info)
+            clProductInfo.performClick()
         }
     }
 

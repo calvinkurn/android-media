@@ -208,7 +208,7 @@ class UserProfileReviewFragment @Inject constructor(
                         showError(event.throwable)
                     }
                     is UserProfileUiEvent.OpenProductDetailPage -> {
-                        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)
+                        router.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)
                     }
                     is UserProfileUiEvent.OpenReviewMediaGalleryPage -> {
                         val intent = ReviewMediaGalleryRouter.routeToReviewMediaGallery(
