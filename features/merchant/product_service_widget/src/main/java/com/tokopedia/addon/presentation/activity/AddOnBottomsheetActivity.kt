@@ -27,6 +27,7 @@ class AddOnBottomsheetActivity: BaseActivity() {
             val selectedAddonIds = AddOnApplinkMapper.getSelectedAddonIdsFromUri(dataUri)
             val warehouseId = AddOnApplinkMapper.getWarehouseIdFromUri(dataUri)
             val isTokocabang = AddOnApplinkMapper.getIsTokocabangFromUri(dataUri)
+            val atcSource = AddOnApplinkMapper.getAtcSourceFromUri(dataUri)
 
             val bottomSheet = AddOnBottomSheet().apply {
                 setOnDismissListener {
@@ -39,6 +40,7 @@ class AddOnBottomsheetActivity: BaseActivity() {
                 setSelectedAddonIds(selectedAddonIds)
                 setWarehouseId(warehouseId)
                 setIsTokocabang(isTokocabang)
+                setAtcSource(atcSource)
             }
             bottomSheet.show(supportFragmentManager, "")
         }

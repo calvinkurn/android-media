@@ -10,6 +10,7 @@ object AddOnApplinkMapper {
     private const val CART_ID = "cartId"
     private const val WAREHOUSE_ID = "warehouseId"
     private const val IS_TOKOCABANG = "isTokocabang"
+    private const val ATC_SOURCE = "atcSource"
     private const val PRODUCT_ID_SEGMENT_INDEX = 1
     private const val APPLINK_ARRAY_DELIMITER = ","
 
@@ -41,5 +42,9 @@ object AddOnApplinkMapper {
 
     fun getIsTokocabangFromUri(uri: Uri): Boolean {
         return uri.getQueryParameter(IS_TOKOCABANG).toBoolean()
+    }
+
+    fun getAtcSourceFromUri(uri: Uri): String {
+        return uri.getQueryParameter(ATC_SOURCE).orEmpty()
     }
 }

@@ -28,7 +28,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
             cartId: Long,
             selectedAddonIds: List<String>,
             warehouseId: Long,
-            isTokocabang: Boolean
+            isTokocabang: Boolean,
+            atcSource: String
         ): AddOnFragment {
             val fragment = AddOnFragment()
             val bundle = Bundle().apply {
@@ -38,6 +39,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
                 putLong(AddOnExtraConstant.CART_ID, cartId)
                 putLong(AddOnExtraConstant.WAREHOUSE_ID, warehouseId)
                 putBoolean(AddOnExtraConstant.IS_TOKOCABANG, isTokocabang)
+                putString(AddOnExtraConstant.ATC_SOURCE, atcSource)
             }
             fragment.arguments = bundle
             return fragment
@@ -53,6 +55,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     private val selectedAddonIds by lazy { arguments?.getStringArrayList(AddOnExtraConstant.SELECTED_ADDON_IDS) }
     private val warehouseId by lazy { arguments?.getLong(AddOnExtraConstant.WAREHOUSE_ID) }
     private val isTokocabang by lazy { arguments?.getBoolean(AddOnExtraConstant.IS_TOKOCABANG).orFalse() }
+    private val atcSource by lazy { arguments?.getString(AddOnExtraConstant.ATC_SOURCE).orEmpty() }
 
     override fun getScreenName(): String = AddOnFragment::class.java.canonicalName.orEmpty()
 
@@ -74,7 +77,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
             getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
         }
         binding?.btnSave?.setOnClickListener {
-            binding?.addonWidget?.saveAddOnState(cartId.orZero(), "normal")
+            binding?.addonWidget?.saveAddOnState(cartId.orZero(), atcSource)
         }
     }
 
