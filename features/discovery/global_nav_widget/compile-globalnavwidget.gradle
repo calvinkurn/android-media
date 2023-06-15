@@ -1,9 +1,4 @@
 include "libraries:inappupdate"
-
 include "features:discovery:global_nav_widget"
-
-
-
-
 include "tkpdabstraction"
 include "tkpddesign"
