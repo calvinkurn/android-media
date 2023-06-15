@@ -46,7 +46,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("account") val account: ContentAccountUiModel,
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
-    @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
@@ -66,7 +65,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             @Assisted("account") account: ContentAccountUiModel,
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
-            productSectionList: List<ProductTagSectionUiModel>
         ): PlayBroadcastSummaryViewModel
     }
 
