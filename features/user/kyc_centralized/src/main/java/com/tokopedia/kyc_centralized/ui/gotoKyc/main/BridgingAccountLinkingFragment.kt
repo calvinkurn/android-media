@@ -68,11 +68,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            val parameter = CaptureKycDocumentsParam(
-                projectId = args.parameter.projectId,
-                source = args.parameter.source
-            )
-            gotoCaptureKycDocuments(parameter)
+            gotoCaptureKycDocuments()
         } else {
             showPermissionRejected()
         }
@@ -284,11 +280,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissionLocation.launch(Manifest.permission.CAMERA)
                     } else {
-                        val parameter = CaptureKycDocumentsParam(
-                            projectId = args.parameter.projectId,
-                            source = args.parameter.source
-                        )
-                        gotoCaptureKycDocuments(parameter)
+                        gotoCaptureKycDocuments()
                     }
                 }
             }
@@ -346,7 +338,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
-    private fun gotoCaptureKycDocuments(parameter: CaptureKycDocumentsParam) {
+    private fun gotoCaptureKycDocuments() {
+        val parameter = CaptureKycDocumentsParam(
+            projectId = args.parameter.projectId,
+            source = args.parameter.source
+        )
         val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
         view?.findNavController()?.navigate(toCaptureKycDocuments)
     }

@@ -60,11 +60,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
             }
             else -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(result.resultCode)
-                activity?.finish()
+                finishWithResult(result.resultCode)
             }
         }
+    }
+
+    private fun finishWithResult(result: Int) {
+        kycSharedPreference.removeProjectId()
+        activity?.setResult(result)
+        activity?.finish()
     }
 
     override fun onCreateView(
@@ -133,9 +137,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(it.throwable)
-                    kycSharedPreference.removeProjectId()
-                    activity?.setResult(Activity.RESULT_CANCELED)
-                    activity?.finish()
+                    finishWithResult(Activity.RESULT_CANCELED)
                 }
             }
         }
@@ -153,9 +155,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(it.throwable)
-                    kycSharedPreference.removeProjectId()
-                    activity?.setResult(Activity.RESULT_CANCELED)
-                    activity?.finish()
+                    finishWithResult(Activity.RESULT_CANCELED)
                 }
             }
         }
@@ -249,9 +249,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         )
 
         onBoardProgressiveBottomSheet.setOnDismissListener {
-            kycSharedPreference.removeProjectId()
-            activity?.setResult(Activity.RESULT_CANCELED)
-            activity?.finish()
+            finishWithResult(Activity.RESULT_CANCELED)
         }
     }
 

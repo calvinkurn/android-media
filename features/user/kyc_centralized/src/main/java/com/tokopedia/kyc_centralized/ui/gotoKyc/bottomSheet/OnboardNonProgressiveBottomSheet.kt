@@ -54,20 +54,22 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_OK)
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
-                activity?.finish()
+                finishWithResult(KYCConstant.ActivityResult.RESULT_FINISH)
             }
             KYCConstant.ActivityResult.RELOAD -> {
                 isReload = true
                 dismiss()
             }
         }
+    }
+
+    private fun finishWithResult(result: Int) {
+        kycSharedPreference.removeProjectId()
+        activity?.setResult(result)
+        activity?.finish()
     }
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
