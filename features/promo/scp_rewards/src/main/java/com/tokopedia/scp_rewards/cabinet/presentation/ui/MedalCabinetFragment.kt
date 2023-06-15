@@ -11,12 +11,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
@@ -25,6 +27,8 @@ import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class MedalCabinetFragment : BaseDaggerFragment() {
@@ -126,7 +130,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         false, 23,
                         isEarned = true,
                     ),
-                )),
+                )
+            ),
             MedalData(
                 "InProgress medal",
                 "",
@@ -165,9 +170,14 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         false, 23,
                         isEarned = false,
                     ),
-                ))
+                )
+            )
         )
-        binding.viewCabinet.bindData(CabinetHeader("hi", "asdas", ""), data)
+
+        binding.viewCabinet.postDelayed(1500) {
+            binding.mainFlipper.displayedChild = 1
+            binding.viewCabinet.bindData(CabinetHeader("hi", "asdas", "https://images.tokopedia.net/img/HThbdi/scp/2023/06/05/medali_homepage_header.png"), data)
+        }
     }
 
 
@@ -235,6 +245,20 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             binding.toolbar.navigationIcon?.setTint(
                 ContextCompat.getColor(it, color)
             )
+        }
+    }
+
+    private fun handleError(error: Throwable) {
+        setWhiteStatusBar()
+        setToolbarBackButtonTint(R.color.Unify_NN900)
+        binding.loadContainer.loaderFlipper.displayedChild = 1
+        if (error is UnknownHostException || error is SocketTimeoutException) {
+            binding.loadContainer.medalCabinetError.setType(GlobalError.NO_CONNECTION)
+        } else {
+            binding.loadContainer.medalCabinetError.apply {
+                setType(GlobalError.SERVER_ERROR)
+                errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
+            }
         }
     }
 
