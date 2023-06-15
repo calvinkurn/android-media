@@ -41,5 +41,8 @@ class UserProfileReviewAnalyticTest {
 
             .clickLikeReview(0)
             .verifyEventAction("click - like review")
+
+            .clickReviewSeeMore()
+            .verifyEventAction("click - review selengkapnya")
     }
 }

@@ -95,6 +95,23 @@ fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, @IdRes id: Int) {
         )
 }
 
+fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, action: (view: View) -> Unit) {
+    select(rvId)
+        .perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, object : ViewAction {
+                    override fun getConstraints() = null
+
+                    override fun getDescription() = "Click on a child view with specific action"
+
+                    override fun perform(uiController: UiController, view: View) {
+                        action(view)
+                    }
+                }
+            )
+        )
+}
+
 fun clickItemOnNestedRecyclerView(
     @IdRes parentRvId: Int,
     parentPosition: Int,

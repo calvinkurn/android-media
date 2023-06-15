@@ -29,7 +29,7 @@ class UserReviewModelBuilder {
                         )
                     ),
                     rating = it.coerceAtMost(5),
-                    reviewText = "review $it",
+                    reviewText = List(25) { "review $it " }.joinToString(),
                     reviewTime = "1 bulan lalu",
                     attachments = listOf(
                         UserReviewUiModel.Attachment.Image(
