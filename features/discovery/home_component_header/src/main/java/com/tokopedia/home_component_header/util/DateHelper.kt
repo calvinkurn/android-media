@@ -16,8 +16,7 @@ object DateHelper {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ")
         return try {
             format.parse(expiredTimeString)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
             Date()
         }
     }
@@ -33,8 +32,7 @@ object DateHelper {
             val toFormat: DateFormat = SimpleDateFormat(DEFAULT_VIEW_FORMAT, DEFAULT_LOCALE)
             toFormat.isLenient = false
             toFormat.format(date)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
             ""
         }
     }

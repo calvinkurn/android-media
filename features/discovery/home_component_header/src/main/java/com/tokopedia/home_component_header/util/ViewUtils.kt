@@ -34,7 +34,7 @@ internal object ViewUtils {
             } else {
                 this.setBackgroundColor(Color.parseColor(colorArray[0]))
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
     }
 
@@ -90,17 +90,16 @@ internal object ViewUtils {
      * @return with example (hashtag)FFFFFF hex color uppercase
      *
      */
-    private fun getHexColorFromIdColor(context: Context, idColor: Int) : String {
+    private fun getHexColorFromIdColor(context: Context, idColor: Int): String {
         return try {
             String.format(FORMAT_HEX_COLOR, ContextCompat.getColor(context, idColor) and COLOR_WHITE).uppercase()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
             ""
         }
     }
 
     @ColorInt
-    fun Int.invertIfDarkMode(context: Context?): Int{
+    fun Int.invertIfDarkMode(context: Context?): Int {
         return if (context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) getContrastColor(this) else this
     }
 
