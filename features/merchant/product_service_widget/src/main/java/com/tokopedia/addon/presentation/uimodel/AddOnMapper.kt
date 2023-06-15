@@ -12,6 +12,11 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAd
 
 object AddOnMapper {
 
+    private const val ATC_ADDON_STATUS_SELECTING = 1
+    private const val ATC_ADDON_STATUS_DESELECTING = 2
+    private const val ATC_ADDON_DEFAULT_QTY = 1
+    private const val ATC_ADDON_SERVICE_FEATURE_TYPE = 1
+
     private fun String.convertToAddonEnum(): AddOnType {
         return AddOnType.values().find { it.value == this }
             ?: AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
@@ -87,10 +92,11 @@ object AddOnMapper {
             .map {
                 AddOnDataRequest(
                     addOnId = it.id.toLongOrZero(),
-                    addOnQty = 1,
+                    addOnQty = ATC_ADDON_DEFAULT_QTY,
                     addOnUniqueId = it.uniqueId,
                     addOnType = it.addOnType.toRequestAddonType(),
-                    addOnStatus = if (it.isSelected) 1 else 2,
+                    addOnStatus = if (it.isSelected)
+                        ATC_ADDON_STATUS_SELECTING else ATC_ADDON_STATUS_DESELECTING,
                 )
             }
 
@@ -108,7 +114,7 @@ object AddOnMapper {
         return SaveAddOnStateRequest(
             addOns = listOf(request),
             source = source,
-            featureType = 1
+            featureType = ATC_ADDON_SERVICE_FEATURE_TYPE
         )
     }
 
