@@ -12,7 +12,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -29,7 +28,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -98,6 +96,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentFeedPlusBinding
 import com.tokopedia.feedplus.oldFeed.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.oldFeed.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.oldFeed.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -113,7 +112,6 @@ import com.tokopedia.feedplus.oldFeed.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.oldFeed.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.oldFeed.view.viewmodel.FeedPromotedShopModel
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -141,7 +139,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.net.ConnectException
@@ -179,15 +176,10 @@ class FeedPlusFragment :
     ShopRecomWidgetCallback,
     FeedPlusTabParentFragment {
 
-    @Suppress("LateinitUsage")
-    private lateinit var feedGlobalError: GlobalError
+    private var _binding: FragmentFeedPlusBinding? = null
+    private val binding: FragmentFeedPlusBinding
+        get() = _binding!!
 
-    @Suppress("LateinitUsage")
-    private lateinit var feedContainer: RelativeLayout
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeToRefresh: SwipeToRefresh
-    private lateinit var mainContent: View
-    private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
     private lateinit var dynamicPostReceiver: BroadcastReceiver
     private lateinit var adapter: FeedPlusAdapter
@@ -820,7 +812,7 @@ class FeedPlusFragment :
                             isFeedPageShown = true
                         }
                         if (isHaveNewFeed) {
-                            newFeed.visible()
+                            binding.layoutNewFeed.visible()
                             triggerNewFeedNotification()
                         }
                     } else if (intent.action == BROADCAST_VISIBLITY) {
@@ -851,11 +843,11 @@ class FeedPlusFragment :
             try {
                 // loop all current child in recyclerview and change all dynamic video
                 // correspond to broadcast action. This is behaves the same way as notifyItemChange
-                val childCount = recyclerView.childCount
+                val childCount = binding.recyclerView.childCount
                 var i = 0
                 while (i < childCount) {
                     val holder: RecyclerView.ViewHolder =
-                        recyclerView.getChildViewHolder(recyclerView.getChildAt(i))
+                        binding.recyclerView.getChildViewHolder(binding.recyclerView.getChildAt(i))
                     if (holder is DynamicPostNewViewHolder) {
                         holder.setPostDynamicView(action)
                     }
@@ -886,17 +878,10 @@ class FeedPlusFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        retainInstance = true
-        val parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false)
-        feedGlobalError = parentView.findViewById(R.id.feed_plus_global_error)
-        feedContainer = parentView.findViewById(R.id.feed_plus_container)
-        recyclerView = parentView.findViewById(R.id.recycler_view)
-        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
-        mainContent = parentView.findViewById(R.id.main)
-        newFeed = parentView.findViewById(R.id.layout_new_feed)
+    ): View {
+        _binding = FragmentFeedPlusBinding.inflate(layoutInflater)
         prepareView()
-        return parentView
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -904,8 +889,8 @@ class FeedPlusFragment :
 
         onRefresh()
 
-        recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-        feedFloatingButtonManager.setDelayForExpandFab(recyclerView)
+        binding.recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.setDelayForExpandFab(binding.recyclerView)
     }
 
     private fun prepareView() {
@@ -917,19 +902,19 @@ class FeedPlusFragment :
                 false
             )
 
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-        swipeToRefresh.setOnRefreshListener(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
         context?.let {
             infoBottomSheet = TopAdsInfoBottomSheet.newInstance(it)
         }
-        newFeed.setOnClickListener {
+        binding.layoutNewFeed.setOnClickListener {
             scrollToTop()
             sendNewFeedClickEvent()
             showRefresh()
             onRefresh()
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -956,7 +941,7 @@ class FeedPlusFragment :
     }
 
     override fun onRefresh() {
-        newFeed.visibility = View.GONE
+        binding.layoutNewFeed.visibility = View.GONE
         hideAdapterLoading()
         fetchFirstPage()
         afterRefresh = true
@@ -985,7 +970,8 @@ class FeedPlusFragment :
         TopAdsHeadlineActivityCounter.page = 1
         Toaster.onCTAClick = View.OnClickListener { }
         feedFloatingButtonManager.cancel()
-        recyclerView.clearOnScrollListeners()
+        binding.recyclerView.clearOnScrollListeners()
+        _binding = null
     }
 
     override fun onInfoClicked() {
@@ -1156,9 +1142,7 @@ class FeedPlusFragment :
     }
 
     fun scrollToTop() {
-        if (::recyclerView.isInitialized) {
-            recyclerView.scrollToPosition(0)
-        }
+        binding.recyclerView.scrollToPosition(0)
     }
 
     private fun triggerNewFeedNotification() {
@@ -1223,7 +1207,7 @@ class FeedPlusFragment :
     }
 
     private fun resetImagePostWhenFragmentNotVisible() {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager?
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
@@ -1244,14 +1228,14 @@ class FeedPlusFragment :
     }
 
     private fun resetVODWhenFeedTabChanged() {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager?
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
             val item = getCardViewModel(adapter.getList(), i)
             if (isVOD(adapter.getList(), i)) {
                 if (item != null) {
-                    val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(i)
                     if (viewHolder is DynamicPostNewViewHolder) {
                         (viewHolder as DynamicPostNewViewHolder).setPostDynamicView(if (!isFeedPageShown) BROADCAST_VISIBLITY else "")
                     }
@@ -2878,7 +2862,7 @@ class FeedPlusFragment :
     }
 
     private fun fetchFirstPage() {
-        feedContainer.show()
+        binding.feedPlusContainer.show()
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
@@ -2934,7 +2918,7 @@ class FeedPlusFragment :
         if (model.postList.isNotEmpty()) {
             setLastCursorOnFirstPage(model.cursor)
             setFirstPageCursor(model.firstPageCursor)
-            swipe_refresh_layout.isEnabled = true
+            binding.swipeRefreshLayout.isEnabled = true
             trackFeedImpression(model.postList)
             adapter.clearData()
             adapter.updateList(model.postList)
@@ -3028,7 +3012,7 @@ class FeedPlusFragment :
     }
 
     private fun showGlobalError() {
-        feedGlobalError.apply {
+        binding.feedPlusGlobalError.apply {
             visible()
             errorSecondaryAction.hide()
             setActionClickListener {
@@ -3036,7 +3020,7 @@ class FeedPlusFragment :
                 hide()
             }
         }
-        feedContainer.hide()
+        binding.feedPlusContainer.hide()
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -3288,15 +3272,14 @@ class FeedPlusFragment :
             data.errorMessage,
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                feedViewModel.doToggleFavoriteShop(
-                    data.rowNumber,
-                    data.adapterPosition,
-                    data.shopId
-                )
-            }
-        )
+            getString(com.tokopedia.abstraction.R.string.title_try_again)
+        ) {
+            feedViewModel.doToggleFavoriteShop(
+                data.rowNumber,
+                data.adapterPosition,
+                data.shopId
+            )
+        }
     }
 
     private fun sendMoEngageOpenFeedEvent() {
@@ -3386,8 +3369,8 @@ class FeedPlusFragment :
     }
 
     private fun showRefresh() {
-        if (!swipeToRefresh.isRefreshing) {
-            swipeToRefresh.isRefreshing = true
+        if (!binding.swipeRefreshLayout.isRefreshing) {
+            binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
@@ -3404,7 +3387,7 @@ class FeedPlusFragment :
     }
 
     private fun finishLoading() {
-        swipeToRefresh.isRefreshing = false
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun hideAdapterLoading() {
@@ -3759,18 +3742,18 @@ class FeedPlusFragment :
     }
 
     override fun hideTopadsView(position: Int) {
-        recyclerView.isComputingLayout.let {
+        binding.recyclerView.isComputingLayout.let {
             if (isAllowedNotify(it, position)) {
                 if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
                     adapter.getlist().removeAt(position)
-                    recyclerView.post {
+                    binding.recyclerView.post {
                         adapter.notifyItemRemoved(position)
                     }
                 }
 
                 if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
                     adapter.getlist().removeAt(position)
-                    recyclerView.post {
+                    binding.recyclerView.post {
                         adapter.notifyItemRemoved(position)
                     }
                 }
@@ -4096,17 +4079,6 @@ class FeedPlusFragment :
         val newList = feedViewModel.processFollowStatusUpdate(adapter.getList(), data)
 
         if (newList.isNotEmpty()) {
-//            val scrollPosition = getCurrentPosition()
-//            clearData()
-//            adapter.addList(newList)
-//
-//            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-//                ViewTreeObserver.OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    recyclerView.scrollToPosition(scrollPosition)
-//                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                }
-//            })
             adapter.updateList(newList)
         }
 
