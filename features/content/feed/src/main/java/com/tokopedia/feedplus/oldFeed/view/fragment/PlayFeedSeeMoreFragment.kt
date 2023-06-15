@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentPlaySeeMoreBinding
 import com.tokopedia.feedplus.oldFeed.view.activity.PlayVideoLiveListActivity
 import com.tokopedia.feedplus.oldFeed.view.adapter.viewholder.playseemore.PlaySeeMoreAdapter
 import com.tokopedia.feedplus.oldFeed.view.analytics.widget.FeedPlayVideoDetailPageAnalyticsListener
@@ -30,6 +31,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,7 +42,6 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderI
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
-import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -49,7 +50,10 @@ import javax.inject.Inject
  */
 class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
 
-    private val rvWidgetSample by lazy(LazyThreadSafetyMode.NONE) { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private var _binding: FragmentPlaySeeMoreBinding? = null
+    private val binding: FragmentPlaySeeMoreBinding
+        get() = _binding!!
+
     private val widgetType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE) ?: "" }
     private val sourceType by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE) ?: "" }
     private val sourceId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID) ?: "" }
@@ -85,7 +89,6 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initVar()
-        retainInstance = true
     }
 
     private fun initVar() {
@@ -103,8 +106,9 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_play_see_more, container, false)
+    ): View {
+        _binding = FragmentPlaySeeMoreBinding.inflate(layoutInflater)
+        return binding.root
     }
     override fun initInjector() {
         DaggerFeedPlusComponent.builder()
@@ -196,16 +200,16 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
         )
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
-            rvWidgetSample?.addOnScrollListener(it)
+            binding.rvWidgetSample.addOnScrollListener(it)
             it.resetState()
         }
         playWidgetAnalyticsListenerImp.filterCategory = filterCategory
         playWidgetAnalyticsListenerImp.entryPoint = if (widgetType == WIDGET_LIVE) ENTRY_POINT_WIDGET_LIVE else ENTRY_POINT_WIDGET_UPCOMING
 
-        rvWidgetSample?.adapter = adapter
+        binding.rvWidgetSample.adapter = adapter
     }
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(rvWidgetSample?.layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(binding.rvWidgetSample.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 playFeedVideoTabViewModel.getPlayDetailPageData(widgetType, sourceId, sourceType)
             }
@@ -214,15 +218,22 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
 
     private fun setUpShopDataHeader() {
         (activity as PlayVideoLiveListActivity).getShopInfoLayout()?.run {
+            val shopHeader: Typography = findViewById(R.id.shopHeader)
+            val productDetailBackIcon: AppCompatImageView = findViewById(R.id.product_detail_back_icon)
             shopHeader.text =
                 when (widgetType) {
                     WIDGET_UPCOMING -> getString(com.tokopedia.feedplus.R.string.feed_play_header_upcoming_text)
-                    else -> getString(com.tokopedia.feedplus.R.string.feed_play_header_text)
+                    else -> getString(R.string.feed_play_header_text)
                 }
 
-            product_detail_back_icon?.setOnClickListener { activity?.finish() }
+            productDetailBackIcon.setOnClickListener { activity?.finish() }
             show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
