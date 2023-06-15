@@ -222,6 +222,9 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             layoutDoneGopay.imgItem.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_gopay)
             )
+            layoutDoneGopay.icCard.show()
+            layoutDoneGopay.imgItem.invisible()
+            layoutDoneGopay.tvTitleKtp.text = getString(R.string.goto_kyc_bridging_progressive_item_title)
             layoutDoneGopay.tvNameKtp.text = encryptedName
         }
     }
