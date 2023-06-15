@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocInfoBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 
 class OwocInfoViewHolder(
@@ -46,7 +48,12 @@ class OwocInfoViewHolder(
     }
 
     private fun ItemOwocInfoBinding.setOWOCSectionImage(imageUrl: String) {
-        ivOWOCSection.loadImage(imageUrl)
+        if (imageUrl.isNotBlank()) {
+            ivOWOCSection.show()
+            ivOWOCSection.loadImage(imageUrl)
+        } else {
+            ivOWOCSection.hide()
+        }
     }
 
     interface Listener {
