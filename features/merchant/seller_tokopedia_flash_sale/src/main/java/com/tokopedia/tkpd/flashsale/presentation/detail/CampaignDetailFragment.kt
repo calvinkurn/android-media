@@ -803,7 +803,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             when (flashSale.status) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
                 FlashSaleStatus.WAITING_FOR_SELECTION -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_ORANGE)
@@ -819,7 +819,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
             }
             tickerHeader.gone()
@@ -1129,7 +1129,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         ongoingCdpHeaderBinding?.run {
             imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
             tgCampaignStatus.apply {
-                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 text = flashSale.statusText
             }
         }
