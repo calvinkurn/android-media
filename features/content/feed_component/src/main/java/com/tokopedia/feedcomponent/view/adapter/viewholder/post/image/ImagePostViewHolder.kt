@@ -16,11 +16,9 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 class ImagePostViewHolder(private val listener: ImagePostListener) :
     BasePostViewHolder<ImagePostModel>() {
 
-    private val ivImage: ImageView = itemView.findViewById(R.id.image)
-
     override var layoutRes = R.layout.item_fc_post_image
-
     override fun bind(element: ImagePostModel) {
+        val ivImage: ImageView = itemView.findViewById(R.id.image)
         ivImage.setOnClickListener {
             listener.onImageClick(
                 element.postId,

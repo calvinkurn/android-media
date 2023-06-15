@@ -25,28 +25,19 @@ class CardTitleView : BaseCustomView {
         const val ACTION_REDIRECT = "redirectpage"
     }
 
+    private val view = View.inflate(context, R.layout.partial_card_title, this)
     var listener: CardTitleListener? = null
 
-    private val titleLayout: LinearLayout = findViewById(R.id.titleLayout)
-    private val text: Typography = findViewById(R.id.text)
-    private val badge: ImageView = findViewById(R.id.badge)
-    private val cta: Typography = findViewById(R.id.cta)
+    private val titleLayout: LinearLayout = view.findViewById(R.id.titleLayout)
+    private val text: Typography = view.findViewById(R.id.text)
+    private val badge: ImageView = view.findViewById(R.id.badge)
+    private val cta: Typography = view.findViewById(R.id.cta)
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.partial_card_title, this)
-    }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun bind(title: Title, template: TemplateTitle, adapterPosition: Int) {
         titleLayout.shouldShowWithAction(shouldShowTitle(title, template)) {

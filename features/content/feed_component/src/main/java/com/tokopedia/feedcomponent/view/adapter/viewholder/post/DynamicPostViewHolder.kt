@@ -94,6 +94,7 @@ open class DynamicPostViewHolder(
     private val userSession: UserSessionInterface
 ) : AbstractViewHolder<DynamicPostModel>(v) {
 
+    private val viewItemPostTag: View = itemView.findViewById(R.id.layoutPostTag)
     private val authorTitle: Typography = itemView.findViewById(R.id.authorTitle)
     private val authorSubtitle: Typography = itemView.findViewById(R.id.authorSubtitile)
     private val footerBackground: View = itemView.findViewById(R.id.footerBackground)
@@ -110,9 +111,6 @@ open class DynamicPostViewHolder(
     private val clHeader: ConstraintLayout = itemView.findViewById(R.id.header)
     private val likeIcon: AppCompatImageView = itemView.findViewById(R.id.likeIcon)
     private val commentText: Typography = itemView.findViewById(R.id.commentText)
-    private val layoutPostTag: ConstraintLayout = itemView.findViewById(R.id.container_post_tag)
-    private val cardTitlePostTag: Typography = itemView.findViewById(R.id.cardTitlePostTag)
-    private val rvPostTag: RecyclerView = itemView.findViewById(R.id.rvPosttag)
     private val tvCaption: Typography = itemView.findViewById(R.id.caption)
     private val contentLayout: RelativeLayout = itemView.findViewById(R.id.contentLayout)
     private val contentViewPager: WrapContentViewPager = itemView.findViewById(R.id.contentViewPager)
@@ -123,6 +121,9 @@ open class DynamicPostViewHolder(
     private val shareText: Typography = itemView.findViewById(R.id.shareText)
     private val shareIcon: AppCompatImageView = itemView.findViewById(R.id.shareIcon)
     private val statsIcon: AppCompatImageView = itemView.findViewById(R.id.statsIcon)
+
+    private val cardTitlePostTag: Typography = viewItemPostTag.findViewById(R.id.cardTitlePostTag)
+    private val rvPostTag: RecyclerView = viewItemPostTag.findViewById(R.id.rvPosttag)
 
     lateinit var adapter: PostPagerAdapter
 
@@ -664,7 +665,7 @@ open class DynamicPostViewHolder(
         feedType: String,
         authorType: String
     ) {
-        layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
+        viewItemPostTag.rootView.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 cardTitlePostTag.text = postTag.text
                 cardTitlePostTag.show()
