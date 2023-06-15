@@ -118,6 +118,7 @@ class AddTextFragment @Inject constructor(
                 viewBinding?.addTextInput?.requestFocus()
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             }
+
             AddTextActivity.POSITION_MODE -> {
                 viewBinding?.let {
                     it.positionOverlayContainer.show()
@@ -162,7 +163,8 @@ class AddTextFragment @Inject constructor(
             it.btnCancel.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finish()
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
 
             renderPositionButton { view, index ->
@@ -179,7 +181,8 @@ class AddTextFragment @Inject constructor(
             it.btnSave.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finishPage()
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
         }
     }
@@ -247,10 +250,12 @@ class AddTextFragment @Inject constructor(
                 gravity = Gravity.CENTER
                 IconUnify.FORMAT_CENTER
             }
+
             AddTextAlignment.LEFT.value -> {
                 gravity = Gravity.START
                 IconUnify.FORMAT_ALIGN_LEFT
             }
+
             else -> {
                 gravity = Gravity.END
                 IconUnify.FORMAT_ALIGN_RIGHT
@@ -288,6 +293,7 @@ class AddTextFragment @Inject constructor(
                         AddTextStyle.BOLD.value -> {
                             styleItem.setStyleBold()
                         }
+
                         AddTextStyle.ITALIC.value -> {
                             styleItem.setStyleItalic()
                         }
@@ -332,13 +338,13 @@ class AddTextFragment @Inject constructor(
     }
 
     private fun viewToFontCard(view: View): AddTextStyleItem? {
-        try {
+        return try {
             val card = (view as CardUnify2)
             val typo = card.findViewById<Typography>(editorR.id.font_selection_item)
-            return AddTextStyleItem(card, typo)
+            AddTextStyleItem(card, typo)
         } catch (_: Exception) {
+            null
         }
-        return null
     }
 
     private fun getUserInput(): String {
