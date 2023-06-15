@@ -130,6 +130,13 @@ class BestSellerViewHolder (private val view: View,
         }
     }
 
+    override fun onFilterAnnotationImpressed(
+        annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip,
+    ) {
+        val bestSellerDataModel = bestSellerDataModel ?: return
+        listener.onBestSellerFilterImpression(annotationChip, bestSellerDataModel)
+    }
+
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
             annotationChipAdapter.submitList(

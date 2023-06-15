@@ -26,6 +26,7 @@ data class BestSellerDataModel(
         var dividerType: Int = 0,
         var dividerSize: Int = 1
 ) : RecommendationVisitable{
+
     override fun visitableId(): String? {
         return id
     }
