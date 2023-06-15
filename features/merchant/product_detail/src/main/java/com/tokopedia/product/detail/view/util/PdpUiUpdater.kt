@@ -83,6 +83,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 
 /**
@@ -362,7 +363,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             true
                         )
                     ).orEmpty()
-                } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                } else if (tradeinResponse.widgetString.isNotBlank()) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
