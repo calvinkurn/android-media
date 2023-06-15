@@ -3874,6 +3874,24 @@ class ShipmentFragment :
     override fun onClickAddonProductInfoIcon() {
         // TODO: open bottomsheet product info
     }
+
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>) {
+        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        val productId = cartItemModel.productId
+        val cartId = cartItemModel.cartId
+        val addOnIds = arrayListOf<Long>()
+        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+            addOnIds.add(addOnItem.addOnDataId)
+        }
+        val warehouseId = cartItemModel.warehouseId
+        val isTokoCabang = cartItemModel.isTokoCabang // need to confirm
+        val applink = "tokopedia://addon/" + productId + "/?cartId=" + cartId +
+            "&selectedAddonIds=" + addOnIds.toString() + "&source=cart&warehouseId=" + warehouseId + "&isTokocabang=" + isTokoCabang
+        println("++ applink = " + applink)
+        activity?.let {
+            RouteManager.route(it, applink)
+        }
+    }
     // endregion
 
     // region upsell
@@ -4210,16 +4228,16 @@ class ShipmentFragment :
 
     fun showLoaderTotalPayment() {
         shipmentPresenter.updateShipmentButtonPaymentModel(loading = true)
-//        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
         shipmentButtonPaymentModel.loading = true
-//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     fun hideLoaderTotalPayment() {
         shipmentPresenter.updateShipmentButtonPaymentModel(loading = false)
-//        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
         shipmentButtonPaymentModel.loading = false
-//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     fun showPaymentFeeTickerFailedToLoad(ticker: String) {

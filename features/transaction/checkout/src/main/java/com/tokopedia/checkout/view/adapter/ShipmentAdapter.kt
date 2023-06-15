@@ -1360,6 +1360,9 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onClickAddonProductInfoIcon()
     }
 
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: java.util.ArrayList<Long>) {
+        shipmentAdapterActionListener.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
+    }
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
         notifyItemChanged(position)
@@ -1370,7 +1373,7 @@ class ShipmentAdapter @Inject constructor(
         val currentShipmentData = shipmentDataList[position]
         if (currentShipmentData is ShipmentCartItemModel) {
             shipmentCartItemModel = currentShipmentData
-            shipmentCartItemModel.cartItemModels.forEach { item  ->
+            shipmentCartItemModel.cartItemModels.forEach { item ->
                 if (item.cartId == cartItemModel.cartId) {
                     item.addOnProduct.listAddOnProductData.forEach { addOnData ->
                         if (addOnData.addOnDataId == addOnProductDataItemModel.addOnDataId) {

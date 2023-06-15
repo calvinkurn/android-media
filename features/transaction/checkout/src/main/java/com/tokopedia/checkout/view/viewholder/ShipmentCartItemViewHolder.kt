@@ -48,7 +48,8 @@ class ShipmentCartItemViewHolder(
     }
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
-    // private val llAddOnProduct: LinearLayout = itemView.findViewById(R.id.ll_addon_product)
+
+    private val listSelectedAddOnId: ArrayList<Long> = arrayListOf()
 
     fun bind(
         cartItem: CartItemModel
@@ -458,8 +459,8 @@ class ShipmentCartItemViewHolder(
                     addOnName.text = addon.addOnDataName
                     val addOnPrice = addOnView.tvShipmentAddOnPrice
                     addOnPrice.text = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-                            .removeDecimalSuffix()
+                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                        .removeDecimalSuffix()
                     addOnView.apply {
                         cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
@@ -514,6 +515,14 @@ class ShipmentCartItemViewHolder(
                 tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
                 if (cartItemModel.addOnProduct.bottomsheet.isShown) {
                     tvSeeAllAddonProduct.visible()
+                    tvSeeAllAddonProduct.setOnClickListener {
+                        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+                            if (addOnItem.addOnDataStatus == 1) {
+                                listSelectedAddOnId.add(addOnItem.addOnDataId)
+                            }
+                        }
+                        listener?.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
+                    }
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -528,8 +537,8 @@ class ShipmentCartItemViewHolder(
                     addOnName.text = addon.addOnDataName
                     val addOnPrice = addOnView.tvShipmentAddOnPrice
                     addOnPrice.text = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-                            .removeDecimalSuffix()
+                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                        .removeDecimalSuffix()
                     addOnView.apply {
                         cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
@@ -558,5 +567,7 @@ class ShipmentCartItemViewHolder(
         fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
         fun onClickAddonProductInfoIcon()
+
+        fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>)
     }
 }
