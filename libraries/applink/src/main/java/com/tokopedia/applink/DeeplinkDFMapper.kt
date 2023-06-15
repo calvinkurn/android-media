@@ -317,7 +317,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_CATEGORY_EPHARMACY, R.string.applink_title_e_pharmacy))
             // adding create post before resolving affiliate toko because it also uses affiliate app link host
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2) }, DF_FEED_CONTENT_CREATION, R.string.title_feed_create_post))
-            add(DFP({ it.startsWith(INTERNAL_AFFILIATE) }, DF_CATEGORY_AFFILIATE, R.string.host_affiliate_toko))
+            add(DFP({ it.startsWith(INTERNAL_AFFILIATE) }, DF_CATEGORY_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_BASE, R.string.applink_title_catalog_library))
             add(DFP({ it.startsWith(INTERNAL_FIND) }, DF_BASE, R.string.applink_title_find_native))
             add(DFP({ it.startsWith(INTERNAL_CATEGORY) }, DF_BASE, R.string.label_category))
