@@ -92,6 +92,7 @@ object ApplinkConstInternalMarketplace {
 
     // BulkReviewActivity
     const val BULK_CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/bulk-create"
+    const val BULK_CREATE_REVIEW_MESSAGE = "bulk_create_review_message"
 
     // EditReviewActivity
     const val EDIT_REVIEW = "$INTERNAL_MARKETPLACE/product-review/edit/{reputation_id}/{product_id}/"

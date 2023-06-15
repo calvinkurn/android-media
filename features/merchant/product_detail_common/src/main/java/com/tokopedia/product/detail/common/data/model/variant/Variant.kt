@@ -33,7 +33,6 @@ data class Variant(
 ){
         companion object {
                 const val SIZE = "size" // this is from api
-                const val COLOR = "colour" // this is from api
         }
 
         val isSizeIdentifier: Boolean

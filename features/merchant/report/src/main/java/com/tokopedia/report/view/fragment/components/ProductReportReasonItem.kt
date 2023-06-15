@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.report.data.model.ProductReportReason
 
 /**

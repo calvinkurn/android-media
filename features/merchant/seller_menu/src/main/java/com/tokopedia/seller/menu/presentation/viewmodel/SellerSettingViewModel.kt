@@ -27,7 +27,7 @@ class SellerSettingViewModel @Inject constructor(
 
     fun getShopLocEligible(shopId: Long) {
         launchCatchError(block = {
-            val shopLocWhitelist = shopLocWhitelist.invoke(shopId).shopLocWhitelist
+            val shopLocWhitelist = shopLocWhitelist.invoke(shopId).keroGetRolloutEligibility
             val eligibilityState = shopLocWhitelist.data.eligibilityState
             val isMultiLocation = eligibilityState == SHOP_MULTILOC_ELIGIBLE
             _shopLocEligible.postValue(Success(isMultiLocation))
