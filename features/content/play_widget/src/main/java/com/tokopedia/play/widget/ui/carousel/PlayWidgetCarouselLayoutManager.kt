@@ -9,10 +9,11 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
  * Created by kenny.hadisaputra on 04/05/23
  */
 class PlayWidgetCarouselLayoutManager(
-    context: Context,
+    context: Context
 ) : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
 
     private val maxWidth = 234.dpToPx(context.resources.displayMetrics)
+
     override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
         if (lp != null) {
             lp.width = (0.65 * width).toInt().coerceAtMost(maxWidth)

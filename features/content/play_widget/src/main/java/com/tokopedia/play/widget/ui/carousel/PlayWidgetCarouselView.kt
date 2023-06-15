@@ -176,7 +176,23 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            binding.rvChannels.smoothScrollToPosition(position)
+            val itemView = binding.rvChannels.findViewHolderForAdapterPosition(position)?.itemView
+            if (itemView == null) {
+                binding.rvChannels.smoothScrollToPosition(position)
+            } else {
+                val offset = itemDecoration.getHorizontalOffset()
+                val itemWidth = view.width
+
+                val currPosition = mSelectedWidgetPos
+                val distance = offset + itemWidth
+
+                binding.rvChannels.smoothScrollBy(
+                    if (currPosition > position) -distance else distance,
+                    0,
+                    null,
+                    500
+                )
+            }
         }
     }
 
@@ -265,7 +281,23 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            binding.rvChannels.smoothScrollToPosition(position)
+            val itemView = binding.rvChannels.findViewHolderForAdapterPosition(position)?.itemView
+            if (itemView == null) {
+                binding.rvChannels.smoothScrollToPosition(position)
+            } else {
+                val offset = itemDecoration.getHorizontalOffset()
+                val itemWidth = view.width
+
+                val currPosition = mSelectedWidgetPos
+                val distance = offset + itemWidth
+
+                binding.rvChannels.smoothScrollBy(
+                    if (currPosition > position) -distance else distance,
+                    0,
+                    null,
+                    500
+                )
+            }
         }
     }
 
