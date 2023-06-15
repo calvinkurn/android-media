@@ -6,11 +6,15 @@ import com.tokopedia.remoteconfig.RollenceKey
 /**
  * Created by Frenzel on 13/06/23
  */
-internal object RollenceController {
-    private var rollenceDynamicChannelHeader: String? = null
+object HomeChannelHeaderRollenceController {
+    private var rollenceDynamicChannelHeader: String = ""
 
-    fun isDynamicChannelHeaderUsingRollenceVariant(): Boolean {
+    fun fetchHomeHeaderRollence(): String {
         rollenceDynamicChannelHeader = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP, "")
+        return rollenceDynamicChannelHeader
+    }
+
+    fun isHeaderUsingRollenceVariant(): Boolean {
         return rollenceDynamicChannelHeader == RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT
     }
 }

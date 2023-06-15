@@ -13,16 +13,16 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.home_component_header.util.RollenceController
+import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
-import com.tokopedia.home_component_header.R
 
 class HomeChannelHeaderView : FrameLayout {
     private val itemView: View
@@ -36,7 +36,7 @@ class HomeChannelHeaderView : FrameLayout {
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
     private var listener: HomeChannelHeaderListener? = null
 
-    private val isUsingHeaderRevamp = RollenceController.isDynamicChannelHeaderUsingRollenceVariant()
+    private val isUsingHeaderRevamp = HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()
     private val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(isUsingHeaderRevamp)
 
     constructor(context: Context) : super(context)
@@ -136,7 +136,7 @@ class HomeChannelHeaderView : FrameLayout {
             val constraintSet = ConstraintSet()
             constraintSet.clone(channelHeaderContainer)
             constraintSet.connect(R.id.channel_title, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
-            if(channelHeader.subtitle.isEmpty() && !hasExpiredTime(channelHeader)) {
+            if (channelHeader.subtitle.isEmpty() && !hasExpiredTime(channelHeader)) {
                 constraintSet.connect(R.id.channel_title, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
             } else {
                 constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
