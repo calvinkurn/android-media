@@ -65,7 +65,9 @@ class UserProfileRobot {
     private val mockProfileCreationInfo = profileModelBuilder.buildProfileCreationInfo()
     private val mockTab = profileModelBuilder.buildProfileTab()
     private val mockProfileSettings = profileModelBuilder.buildProfileSettings()
+    private val mockProfileSettingsHiddenReview = profileModelBuilder.buildProfileSettings(isShowReview = false)
     private val mockReviewList = userReviewModelBuilder.buildReviewList()
+    private val mockEmptyReviewList = userReviewModelBuilder.buildReviewList(size = 0)
     private val mockLikeDislike = userReviewModelBuilder.buildLikeDislike()
 
     fun init() {
@@ -106,6 +108,14 @@ class UserProfileRobot {
         coEvery { mockRepo.setLikeStatus(any(), any()) } returns mockLikeDislike
 
         coEvery { mockUserProfileSharedPref.hasBeenShown(any()) } returns true
+    }
+
+    fun mockEmptyReview() = chainable {
+        coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockEmptyReviewList
+    }
+
+    fun mockHiddenReview() = chainable {
+        coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettingsHiddenReview
     }
 
     fun launch() = chainable {

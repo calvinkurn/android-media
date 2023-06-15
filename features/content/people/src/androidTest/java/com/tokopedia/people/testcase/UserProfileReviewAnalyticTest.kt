@@ -2,7 +2,9 @@ package com.tokopedia.people.testcase
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.people.robot.UserProfileRobot
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
+import io.mockk.coEvery
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,5 +49,25 @@ class UserProfileReviewAnalyticTest {
 
             .clickProductInfo()
             .verifyEventAction("click - product on review")
+    }
+
+    @Test
+    fun testAnalytic_userProfileReview_emptyReview() {
+        userProfileRobot
+            .mockEmptyReview()
+            .launch()
+            .clickReviewTab()
+            .performDelay()
+            .verifyOpenScreen("/user profile - review tab")
+    }
+
+    @Test
+    fun testAnalytic_userProfileReview_hiddenReview() {
+        userProfileRobot
+            .mockHiddenReview()
+            .launch()
+            .clickReviewTab()
+            .performDelay()
+            .verifyOpenScreen("/user profile - review tab")
     }
 }
