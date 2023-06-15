@@ -146,7 +146,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     private fun invalidateUi(model: PlayWidgetChannelUiModel) {
-        binding.tvLiveBadge.showWithCondition(model.channelType == PlayWidgetChannelType.Live)
+        binding.tvLiveBadge.showWithCondition(model.video.isLive && model.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = model.totalView.totalViewFmt
         binding.imgCover.loadImage(model.video.coverUrl)
 
