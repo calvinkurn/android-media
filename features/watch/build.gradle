@@ -60,7 +60,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.playServiceWearable
     implementation rootProject.ext.miscDependencies.coroutinePlayService
 
-    wearApp project(':wearosapp')
+//    wearApp project(':wearosapp')
 
 }
 
