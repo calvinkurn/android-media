@@ -12,19 +12,24 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightDppoConsentModel
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.util.FlightHomepageMapper.mapDppoConsentToFlightModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
 import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,6 +47,7 @@ class FlightHomepageViewModel @Inject constructor(
         private val flightAnalytics: FlightAnalytics,
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
+        private val getDppoConsentUseCase: GetDppoConsentUseCase,
         private val dashboardCache: FlightDashboardCache,
         private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
@@ -68,6 +74,10 @@ class FlightHomepageViewModel @Inject constructor(
     private val mutableAutoSearch = MutableLiveData<Boolean>()
     val autoSearch: LiveData<Boolean>
         get() = mutableAutoSearch
+
+    private val mutableDppoConsent = MutableLiveData<Result<FlightDppoConsentModel>>()
+    val dppoConsent: LiveData<Result<FlightDppoConsentModel>>
+        get() = mutableDppoConsent
 
     fun init() {
         mutableDashboardData.postValue(FlightHomepageModel())
@@ -154,6 +164,16 @@ class FlightHomepageViewModel @Inject constructor(
             data.data.banners[position]
         } catch (t: Throwable) {
             null
+        }
+    }
+
+    fun getDppoConsent(categoryId: Int) {
+        launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(categoryId)
+            val uiData = mapDppoConsentToFlightModel(data)
+            mutableDppoConsent.postValue(Success(uiData))
+        }) {
+            mutableDppoConsent.postValue(Fail(it))
         }
     }
 

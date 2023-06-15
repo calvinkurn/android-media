@@ -1,28 +1,38 @@
 package com.tokopedia.flight.homepage.presentation.fragment
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightCommonConst.DPPO_CATEGORY_ID
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
+import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.databinding.FragmentFlightHomepageBinding
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
@@ -36,7 +46,10 @@ import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTrip
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -59,7 +72,10 @@ import javax.inject.Inject
  * @author by furqan on 27/03/2020
  */
 class FlightHomepageFragment : BaseDaggerFragment(),
-        FlightSearchFormView.FlightSearchFormListener, TravelVideoBannerWidget.ActionListener {
+    FlightSearchFormView.FlightSearchFormListener,
+    TravelVideoBannerWidget.ActionListener,
+    TravelMenuBottomSheet.TravelMenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -82,6 +98,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
         performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE)
@@ -117,6 +134,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             }
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
+            flightHomepageViewModel.getDppoConsent(DPPO_CATEGORY_ID)
         }
     }
 
@@ -193,6 +211,21 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
         if (::flightHomepageViewModel.isInitialized)
             flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalyticsScreenName.HOMEPAGE)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = flightHomepageViewModel.dppoConsent.value
+        inflater.inflate(R.menu.menu_flight_dashboard, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
@@ -585,6 +618,84 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun measureBannerHeightBasedOnRatio(): Int =
         (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toIntSafely()
 
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenu()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
+    }
+
+    private fun showBottomMenu() {
+        val flightMenuBottomSheet = TravelMenuBottomSheet()
+        flightMenuBottomSheet.listener = this
+        flightMenuBottomSheet.show(childFragmentManager, BaseFlightActivity.TAG_FLIGHT_MENU)
+    }
+
+    override fun onOrderListClicked() {
+        // TODO: [Misael] Flight analytics event click transactions
+//        flightAnalytics.eventClickTransactions(screenName)
+        RouteManager.route(activity, ApplinkConst.FLIGHT_ORDER)
+    }
+
+    override fun onPromoClicked() {
+        navigateToAllPromoPage()
+    }
+
+    open override fun onHelpClicked() {
+        navigateToHelpPage()
+    }
+
+    private fun navigateToHelpPage() {
+        RouteManager.route(activity, FlightUrl.CONTACT_US_FLIGHT)
+    }
+
+    private fun navigateToAllPromoPage() {
+        RouteManager.route(activity, FlightUrl.FLIGHT_PROMO_APPLINK)
+    }
 
     override fun onDestroyView() {
         binding?.flightHomepageBanner?.timer?.cancel()
@@ -597,6 +708,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         private const val BANNER_WIDTH_RATIO = 414f
         private const val BANNER_HEIGHT_RATIO = 139f
         private const val BANNER_SHOW_SIZE = 1.1f
+        private const val TOOLBAR_ICON_SIZE = 64
 
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"

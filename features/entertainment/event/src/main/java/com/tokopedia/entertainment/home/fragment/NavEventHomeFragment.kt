@@ -137,7 +137,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     private fun requestData(isLoadFromCloud: Boolean = false){
         viewModel.getHomeData(isLoadFromCloud)
-        viewModel.getDppoConsent(EventCommonConst.CATEGORY_ID)
+        viewModel.getDppoConsent(EventCommonConst.DPPO_CATEGORY_ID)
     }
 
     private fun loadAllData(){
@@ -298,11 +298,6 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     private fun actionMenuMore() {
         context?.let { MenuSheet.newInstance(it, this).show() }
-    }
-
-    private fun actionDppoConsent() {
-        // TODO: [Misael] DPPO consent
-        viewModel
     }
 
     private fun openEventSearch(): Boolean {

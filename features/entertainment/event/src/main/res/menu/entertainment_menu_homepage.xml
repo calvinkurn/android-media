@@ -16,6 +16,7 @@
         android:id="@+id/action_more"
         android:icon="@drawable/ent_ic_more_vert"
         android:orderInCategory="200"
+        android:iconTint="@color/Unify_N700_96"
         app:itemIconSize="12dp"
         android:title="More"
         app:showAsAction="always" />
