@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_container"
@@ -22,7 +23,7 @@
             android:layout_height="wrap_content"
             />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/btn_container"
@@ -34,7 +35,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_next"
-            android:text="Lanjut"
+            android:text="@string/add_text_tips_cta_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

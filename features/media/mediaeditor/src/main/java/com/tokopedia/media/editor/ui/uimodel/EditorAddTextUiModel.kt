@@ -6,6 +6,7 @@ import android.text.Layout
 import com.tokopedia.media.editor.data.entity.AddTextAlignment
 import com.tokopedia.media.editor.data.entity.AddTextPosition
 import com.tokopedia.media.editor.data.entity.AddTextStyle
+import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
 import com.tokopedia.media.editor.data.entity.AddTextToolId
 import kotlinx.parcelize.Parcelize
 
@@ -16,14 +17,14 @@ class EditorAddTextUiModel(
     var textColor: Int = 0,
     var textAlignment: Int = AddTextAlignment.CENTER.value,
     var textPosition: Int = AddTextPosition.BOTTOM.value,
-    var textTemplate: Int = TEXT_TEMPLATE_FREE,
+    var textTemplate: Int = AddTextTemplateMode.FREE.value,
     private var textTemplateBackgroundDetail: BackgroundTemplateDetail? = null,
     var textImagePath: String? = null
 ) : Parcelable {
 
     // need to encapsulate background template model to prevent error when using `Free Text` but accessing `Latar Text` template
     fun getBackgroundTemplate(): BackgroundTemplateDetail? {
-        return if (textTemplate != TEXT_TEMPLATE_BACKGROUND) {
+        return if (textTemplate != AddTextTemplateMode.BACKGROUND.value) {
             return null
         } else {
             textTemplateBackgroundDetail
@@ -32,7 +33,7 @@ class EditorAddTextUiModel(
 
     fun setBackgroundTemplate(backgroundTemplate: BackgroundTemplateDetail) {
         textTemplateBackgroundDetail = backgroundTemplate
-        if (textTemplate == TEXT_TEMPLATE_BACKGROUND) {
+        if (textTemplate == AddTextTemplateMode.BACKGROUND.value) {
             // if using background, text can be only on bottom or right
             if (textPosition == AddTextPosition.TOP.value || textPosition == AddTextPosition.LEFT.value) {
                 textPosition = AddTextPosition.BOTTOM.value
@@ -60,8 +61,8 @@ class EditorAddTextUiModel(
     }
 
     companion object {
-        val TEXT_TEMPLATE_FREE = AddTextToolId.FREE_TEXT_INDEX.value
-        val TEXT_TEMPLATE_BACKGROUND = AddTextToolId.BACKGROUND_TEXT_INDEX.value
+//        val TEXT_TEMPLATE_FREE = AddTextToolId.FREE_TEXT_INDEX.value
+//        val TEXT_TEMPLATE_BACKGROUND = AddTextToolId.BACKGROUND_TEXT_INDEX.value
     }
 }
 

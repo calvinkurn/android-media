@@ -35,6 +35,7 @@ import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.AddTextColorProvider
+import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -45,9 +46,7 @@ import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.*
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -427,12 +426,12 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddFreeText() {
         editorDetailAnalytics.clickAddTextFreeText()
 
-        if (data.addTextValue?.textTemplate == TEXT_TEMPLATE_BACKGROUND) {
+        if (data.addTextValue?.textTemplate == AddTextTemplateMode.BACKGROUND.value) {
             isEdited = true
         }
 
         data.addTextValue?.let {
-            it.textTemplate = TEXT_TEMPLATE_FREE
+            it.textTemplate = AddTextTemplateMode.FREE.value
         }
 
         implementAddTextData()
@@ -441,12 +440,12 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddSingleBackgroundText() {
         editorDetailAnalytics.clickAddTextBackgroundText()
         showAddTextBackgroundSelection{ color, model ->
-            if (data.addTextValue?.textTemplate == TEXT_TEMPLATE_FREE) {
+            if (data.addTextValue?.textTemplate == AddTextTemplateMode.FREE.value) {
                 isEdited = true
             }
 
             data.addTextValue?.let {
-                it.textTemplate = TEXT_TEMPLATE_BACKGROUND
+                it.textTemplate = AddTextTemplateMode.BACKGROUND.value
                 it.setBackgroundTemplate(BackgroundTemplateDetail(
                     addTextBackgroundColor = color,
                     addTextBackgroundModel = model

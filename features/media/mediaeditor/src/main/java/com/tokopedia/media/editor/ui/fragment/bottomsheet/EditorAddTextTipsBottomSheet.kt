@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.media.editor.databinding.AddTextTipsBottomsheetBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -16,8 +17,7 @@ import com.tokopedia.media.editor.R as editorR
 class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     private var carouselIndex = 0
 
-    private var btnRef: UnifyButton? = null
-    private var carouselRef: CarouselUnify? = null
+    private var viewBinding: AddTextTipsBottomsheetBinding? = null
 
     private val btnTextCollection = mutableListOf<String>()
     private var btmSheetTitle = ""
@@ -27,15 +27,12 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        inflater.inflate(editorR.layout.add_text_tips_bottomsheet, null)?.apply {
-            setChild(this)
+        viewBinding = AddTextTipsBottomsheetBinding.inflate(LayoutInflater.from(inflater.context))
+        setChild(viewBinding?.root)
 
-            carouselRef = findViewById(editorR.id.tips_text_carousel)
-            btnRef = findViewById(editorR.id.btn_next)
+        setCarousel()
+        setBtnListener()
 
-            setCarousel()
-            setBtnListener()
-        }
         getBottomSheetText(inflater.context)
         setTitle(btmSheetTitle)
 
@@ -56,7 +53,7 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     private fun setCarousel() {
         var index = 0
 
-        carouselRef?.apply {
+        viewBinding?.tipsTextCarousel?.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
             freeMode = false
@@ -96,16 +93,17 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     }
 
     private fun setBtnListener() {
-        btnRef?.setOnClickListener {
+
+        viewBinding?.btnNext?.setOnClickListener {
             updateCarouselIndex(carouselIndex + 1, true)
         }
     }
 
     private fun updateBtnAndCarousel(isCarouselUpdate: Boolean) {
-        btnRef?.text = btnTextCollection[carouselIndex]
+        viewBinding?.btnNext?.text = btnTextCollection[carouselIndex]
 
         if (isCarouselUpdate) {
-            carouselRef?.activeIndex = carouselIndex
+            viewBinding?.tipsTextCarousel?.activeIndex = carouselIndex
         }
     }
 

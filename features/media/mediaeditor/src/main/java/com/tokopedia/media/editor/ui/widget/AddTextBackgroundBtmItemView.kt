@@ -60,7 +60,7 @@ class AddTextBackgroundBtmItemView constructor(
         when (backgroundTemplate) {
             AddTextBackgroundTemplate.FULL.value -> editorR.drawable.add_text_background_full
             AddTextBackgroundTemplate.FLOATING.value -> {
-                val margin = TEXT_BACKGROUND_FLOATING_PADDING.toPx()
+                val margin = TEXT_BACKGROUND_FLOATING_MARGIN.toPx()
                 viewBinding.btmItemBackground.setMargin(margin, 0, margin, margin)
                 editorR.drawable.add_text_background_floating
             }
@@ -78,7 +78,7 @@ class AddTextBackgroundBtmItemView constructor(
     }
 
     companion object {
-        private const val TEXT_BACKGROUND_FLOATING_PADDING = 4
+        private const val TEXT_BACKGROUND_FLOATING_MARGIN = 4
         private const val BORDER_SIZE = 2
     }
 }

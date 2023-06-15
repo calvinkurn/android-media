@@ -32,7 +32,7 @@ class AddTextBackgroundBottomSheet(
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextBackgroundBtmItemView> = arrayListOf()
 
-    // 0 -> black || 1 -> white
+    // relate with colorButtonRef
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
 

@@ -41,6 +41,7 @@
                 android:id="@+id/btm_item_background"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btm_item_guideline"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
