@@ -68,9 +68,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
@@ -605,6 +605,7 @@ open class DynamicProductDetailFragment :
         }
 
         setPDPDebugMode()
+        showAlertCampaignEnded()
     }
 
     private fun setPDPDebugMode() {
@@ -2230,16 +2231,17 @@ open class DynamicProductDetailFragment :
     }
 
     override fun showAlertCampaignEnded() {
-        activity?.let {
-            Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
-                setTitle(getString(R.string.campaign_expired_title))
-                setDesc(getString(R.string.campaign_expired_descr))
-                setBtnCancel(getString(com.tokopedia.abstraction.R.string.close))
-                setOnCancelClickListener {
-                    onSwipeRefresh()
-                    dismiss()
-                }
-            }.show()
+        val mActivity = activity ?: return
+
+        DialogUnify(mActivity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.campaign_expired_title))
+            setDescription(getString(R.string.campaign_expired_descr))
+            setPrimaryCTAText(getString(com.tokopedia.abstraction.R.string.close))
+            setPrimaryCTAClickListener {
+                onSwipeRefresh()
+                dismiss()
+            }
+            show()
         }
     }
 
@@ -2425,7 +2427,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(com.tokopedia.design.R.string.oke)
+                    ctaText = getString(R.string.oke)
                 )
                 logException(throwable)
             }
@@ -2439,7 +2441,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(com.tokopedia.design.R.string.oke)
+                    ctaText = getString(R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -4245,7 +4247,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
     }
 
@@ -4261,7 +4263,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
     }
 
@@ -5150,7 +5152,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
