@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -21,6 +22,9 @@ import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
+import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
+import com.tokopedia.scp_rewards_widgets.medal.MedalData
+import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import javax.inject.Inject
 
 class MedalCabinetFragment : BaseDaggerFragment() {
@@ -35,7 +39,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     private var medaliSlug = ""
     private var sourceName = ""
 
-    private val medalCabinetViewModel by lazy {
+    private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory!!)[MedalCabinetViewModel::class.java]
     }
 
@@ -67,11 +71,103 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(binding.toolbar)
         setTopBottomMargin()
+        setupScrollListener()
         setupViewModelObservers()
     }
 
     private fun setupViewModelObservers() {
-
+        val data = listOf<MedalData>(
+            MedalData(
+                "Earned medal",
+                "",
+                "#6D7588",
+                listOf(
+                    MedalItem(
+                        1,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://gist.githubusercontent.com/rooparshgojek/40122d190c1311d58ef82ae609c866ab/raw/83c1a23eb0572710a71a0d0fd8107446f9504932/confetti.json",
+                        true,
+                        false, 23,
+                        isEarned = true,
+                    ),
+                    MedalItem(
+                        2,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        false,
+                        false, 23,
+                        isEarned = true,
+                    ),
+                    MedalItem(
+                        3,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        false,
+                        false, 23,
+                        isEarned = true,
+                    ),
+                    MedalItem(
+                        4,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        false,
+                        false, 23,
+                        isEarned = true,
+                    ),
+                )),
+            MedalData(
+                "InProgress medal",
+                "",
+                "#6D7588",
+                listOf(
+                    MedalItem(
+                        1,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        true,
+                        false, 23,
+                        isEarned = false,
+                    ),
+                    MedalItem(
+                        2,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        true,
+                        false, 23,
+                        isEarned = false,
+                    ),
+                    MedalItem(
+                        3,
+                        "Beauty Shopper",
+                        "By Unilever",
+                        "Ada Bonus",
+                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
+                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
+                        true,
+                        false, 23,
+                        isEarned = false,
+                    ),
+                ))
+        )
+        binding.viewCabinet.bindData(CabinetHeader("hi", "asdas", ""), data)
     }
 
 
@@ -106,6 +202,19 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
             windowInsetsController?.isAppearanceLightStatusBars = false
         }
+    }
+
+    private fun setupScrollListener() {
+        binding.viewCabinet.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (binding.viewCabinet.computeVerticalScrollOffset() == 0) {
+                    setTransparentStatusBar()
+                } else {
+                    setWhiteStatusBar()
+                }
+            }
+        })
     }
 
     private fun setTopBottomMargin() {

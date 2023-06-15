@@ -46,9 +46,9 @@ import com.tokopedia.scp_rewards.common.utils.DeviceInfo
 import com.tokopedia.scp_rewards.common.utils.dpToPx
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.isNullOrZero
-import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
