@@ -4,7 +4,6 @@ import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounterGone
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuSectionIsNotOnPosition
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuSectionOnPosition
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounterGone
@@ -38,7 +37,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuSectionIsNotOnPosition(1)
+        assertMenuSectionOnPosition(1, true)
         setABValue(ROLLENCE_KEY, ROLLENCE_TYPE_A) // Reset
     }
 

@@ -8,10 +8,13 @@ import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
 import com.tokopedia.inbox.universalinbox.stub.di.base.DaggerUniversalInboxFakeBaseAppComponent
 import com.tokopedia.inbox.universalinbox.stub.di.base.UniversalInboxFakeAppModule
 import com.tokopedia.inbox.universalinbox.stub.di.base.UniversalInboxFakeBaseAppComponent
+import com.tokopedia.inbox.universalinbox.stub.di.recommendationwidget.DaggerUniversalInboxRecommendationWidgetComponentStub
+import com.tokopedia.inbox.universalinbox.stub.di.recommendationwidget.UniversalInboxRecommendationWidgetComponentStub
 
 class UniversalInboxFakeActivityComponentFactory : UniversalInboxActivityComponentFactory() {
 
     val universalInboxComponent: UniversalInboxComponentStub
+    val recommendationWidgetComponent: UniversalInboxRecommendationWidgetComponentStub
     private val baseComponent: UniversalInboxFakeBaseAppComponent
 
     init {
@@ -22,6 +25,10 @@ class UniversalInboxFakeActivityComponentFactory : UniversalInboxActivityCompone
         universalInboxComponent = DaggerUniversalInboxComponentStub.builder()
             .universalInboxFakeBaseAppComponent(baseComponent)
             .build()
+        recommendationWidgetComponent =
+            DaggerUniversalInboxRecommendationWidgetComponentStub.builder()
+                .universalInboxFakeBaseAppComponent(baseComponent)
+                .build()
     }
 
     override fun createUniversalInboxComponent(application: Application): UniversalInboxComponent {

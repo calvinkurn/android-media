@@ -1,0 +1,234 @@
+{
+  "displayAdsV3": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.088530179,
+      "total_data": 1
+    },
+    "data": [
+      {
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JpHpy7opJfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHpyDUSz2Q31i6sJf6AyRoAnOosyDUMVj9RosQR-BUstaosyXosy7H_nhopHRosrOH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1Ok__uouJ1F_S2V8JNJz92oqMP2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVuO_7zS81OEu9BvuVVd_uzsHjNJyfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uPz81Y939PoqjO73BzSP7YAHAC6z7gD_VP-8VBk19z6HB-2_S2VoJOW_9xoz77OZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhk3_-6zJuR_uzs8jNE3_o6uJ1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhke_uozcrp_uzCP7NkZ9P6ucP2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9foDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJaHmFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-FrMBsguYiq3ei6sUaHAnFbm-SQfVD9fBjUsthwe?uid\u003d148201295\u0026src\u003dinbox\u0026template_id_used\u003d3\u0026dv\u003dandroid-3.150\u0026t\u003dandroid\u0026cpm_template_req\u003d3\u0026click_ad_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Flocknlock-id\u0026page\u003d1\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st",
+        "ad_ref_key": "113364716",
+        "id": "113364716",
+        "redirect": "https://www.tokopedia.com/locknlock-id",
+        "applinks": "tokopedia://shop/2147991",
+        "headline": {
+          "promoted_text": "Dipromosikan oleh",
+          "name": "LocknLock Official",
+          "button_text": "Cek Sekarang",
+          "layout": 1,
+          "position": 36,
+          "widget_image_url": "",
+          "description": "Belanja di LocknLock Official, diskon hingga 65%!",
+          "widget_title": "",
+          "image": {
+            "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJhHpHfoArhoiFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sHfbm-7q3OBUsthosKfopeFo_yfbm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpJFHmOpr9uxrM15rfx5rIHWHZ4aHAUFbpJ56m4aH_eR6_jhbpUhoArN6_Vw63e7H3HfH_eWyMHagi776_nab_KpH3yW63JdocyRoAusgsuBbSCXgaUDUMoFQZUEHsUDUMVj9RosQR-BUstaosyXosy7H_nhopHRosrOH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1Ok__uouJ1F_S2V8JNJz92oqMP2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVuO_7zS81OEu9BvuVVd_uzsHjNJyfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uPz81Y939PoqjO73BzSP7YAHAC6z7gD_VP-8VBk19z6HB-2_S2VoJOW_9xoz77OZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhk3_-6zJuR_uzs8jNE3_o6uJ1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhke_uozcrp_uzCP7NkZ9P6ucP2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9foDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJaHmFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-ag9Vwqcuxgch2QMuwrI-5gIusPVYsQRuXPmUEHaFiPMBBPfuj9RCaQfzOyRzwq3zpUs2QHsK7HpeNop1pHiFp6A1OHAyFo_eabAJfH_ehosKho_PPbm-FrMBsguYiq3ei6sUaHAnFbm-SQfVD9fBjUsthwe?t\u003dandroid\u0026uid\u003d148201295\u0026template_id_used\u003d3\u0026dv\u003dandroid-3.150\u0026src\u003dinbox\u0026page\u003d1\u0026cpm_template_req\u003d3\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st",
+            "full_ecs": "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/1/8/2147991/2147991_9d41c614-bc2f-4902-831f-9a84f745cf5e.png"
+          },
+          "flash_sale_campaign_detail": {
+            "start_time": "",
+            "end_time": "",
+            "campaign_type": ""
+          },
+          "shop": {
+            "id": "2147991",
+            "name": "LocknLock Official",
+            "tagline": "Where the healthy lifestyle begins!",
+            "slogan": "Belanja di LocknLock Official, diskon hingga 65%!",
+            "location": "Kab. Tangerang",
+            "city": "Kab. Tangerang",
+            "domain": "locknlock-id",
+            "is_followed": false,
+            "gold_shop": false,
+            "shop_is_official": true,
+            "pm_pro_shop": false,
+            "merchant_vouchers": [
+              "Cashback 3%"
+            ],
+            "product": [
+              {
+                "id": "2843497532",
+                "name": "LocknLock Oven Glass Tritan Cap Baby Food Container - LLG510S3",
+                "applinks": "tokopedia://product/2843497532?extParam\u003dsrc%3Dinbox%26whid%3D12669178",
+                "stock_info": {
+                  "sold_stock_percentage": 0,
+                  "stock_wording": "",
+                  "stock_colour": ""
+                },
+                "image": {
+                  "m_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/12/2/c77e3f5b-2ba3-449a-9587-2e4e6285fcf7.jpg"
+                },
+                "image_product": {
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/12/2/c77e3f5b-2ba3-449a-9587-2e4e6285fcf7.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JpHpy7opJfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHpyDUSz2Q31i6sJf6AyRoAnOosyDUMVj9RosQR-BUstaosyXosy7H_nhopHRosrOH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1Ok__uouJ1F_S2V8JNJz92oqMP2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVuO_7zS81OEu9BvuVVd_uzsHjNJyfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uPz81Y939PoqjO73BzSP7YAHAC6z7gD_VP-8VBk19z6HB-2_S2VoJOW_9xoz77OZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhk3_-6zJuR_uzs8jNE3_o6uJ1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhke_uozcrp_uzCP7NkZ9P6ucP2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9foDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJaHmFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-FrMBsguYiq3ei6sUaHAnFwe?sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Flocknlock-id%2Flocknlock-oven-glass-tritan-cap-baby-food-container-llg510s3\u0026src\u003dinbox\u0026cpm_template_req\u003d3\u0026template_id_used\u003d3\u0026t\u003dandroid\u0026click_ad_type\u003d2\u0026product_id\u003d2843497532\u0026uid\u003d148201295"
+                },
+                "price_format": "Rp 224.000",
+                "product_rating": 99,
+                "uri": "https://www.tokopedia.com/locknlock-id/locknlock-oven-glass-tritan-cap-baby-food-container-llg510s3",
+                "count_review_format": "682",
+                "label_group": [
+                  {
+                    "title": "Cashback",
+                    "position": "promo",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 2,1 rb",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "fulfillment",
+                    "type": "textDarkGrey",
+                    "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "campaign": {
+                  "original_price": "Rp 320.000",
+                  "discount_percentage": 30
+                }
+              },
+              {
+                "id": "3855060542",
+                "name": "LocknLock Exclusive Wanna Be Screw Tumbler Carry Handle 450ml LHC4246 - Ivory",
+                "applinks": "tokopedia://product/3855060542?extParam\u003dsrc%3Dinbox%26whid%3D12669178",
+                "stock_info": {
+                  "sold_stock_percentage": 0,
+                  "stock_wording": "",
+                  "stock_colour": ""
+                },
+                "image": {
+                  "m_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/1/16/b556aa4f-7356-4ac7-9b8d-d409c85e0fe9.jpg"
+                },
+                "image_product": {
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/1/16/b556aa4f-7356-4ac7-9b8d-d409c85e0fe9.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JpHpy7opJfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHpyDUSz2Q31i6sJf6AyRoAnOosyDUMVj9RosQR-BUstaosyXosy7H_nhopHRosrOH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1Ok__uouJ1F_S2V8JNJz92oqMP2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVuO_7zS81OEu9BvuVVd_uzsHjNJyfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uPz81Y939PoqjO73BzSP7YAHAC6z7gD_VP-8VBk19z6HB-2_S2VoJOW_9xoz77OZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhk3_-6zJuR_uzs8jNE3_o6uJ1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhke_uozcrp_uzCP7NkZ9P6ucP2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9foDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJaHmFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-FrMBsguYiq3ei6sUaHAnFwe?dv\u003dandroid-3.150\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026uid\u003d148201295\u0026src\u003dinbox\u0026product_id\u003d3855060542\u0026t\u003dandroid\u0026click_ad_type\u003d2\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Flocknlock-id%2Flocknlock-exclusive-wanna-be-screw-tumbler-carry-handle-450ml-lhc4246-ivory\u0026page\u003d1\u0026cpm_template_req\u003d3\u0026template_id_used\u003d3"
+                },
+                "price_format": "Rp 226.000",
+                "product_rating": 99,
+                "uri": "https://www.tokopedia.com/locknlock-id/locknlock-exclusive-wanna-be-screw-tumbler-carry-handle-450ml-lhc4246-ivory",
+                "count_review_format": "1.663",
+                "label_group": [
+                  {
+                    "title": "Cashback",
+                    "position": "promo",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 5,1 rb",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "fulfillment",
+                    "type": "textDarkGrey",
+                    "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "campaign": {
+                  "original_price": "Rp 299.000",
+                  "discount_percentage": 24
+                }
+              },
+              {
+                "id": "1614168157",
+                "name": "LocknLock Exclusive Tempat Makan Anak - Oven Glass Set 3PCS 170ML",
+                "applinks": "tokopedia://product/1614168157?extParam\u003dsrc%3Dinbox%26whid%3D12669178",
+                "stock_info": {
+                  "sold_stock_percentage": 0,
+                  "stock_wording": "",
+                  "stock_colour": ""
+                },
+                "image": {
+                  "m_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/1/ec98253e-0b80-47c7-b5a7-c97732ed7e84.jpg"
+                },
+                "image_product": {
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/3/1/ec98253e-0b80-47c7-b5a7-c97732ed7e84.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JpHpy7opJfbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHpyDUSz2Q31i6sJf6AyRoAnOosyDUMVj9RosQR-BUstaosyXosy7H_nhopHRosrOH_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7o1Ok__uouJ1F_S2V8JNJz92oqMP2_JoGqMzUZMgsHBgtyfO6Q7BkQfBouVuO_7zS81OEu9BvuVVd_uzsHjNJyfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_uPz81Y939PoqjO73BzSP7YAHAC6z7gD_VP-8VBk19z6HB-2_S2VoJOW_9xoz77OZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gHjhk3_-6zJuR_uzs8jNE3_o6uJ1FZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32uHjhke_uozcrp_uzCP7NkZ9P6ucP2gBJYvZUDUSupg9-wq3ei6iUhoAKaHAJa6_1ibm-pg9opq3YX9fBjUstig1FN3MdR9f2_oMJfZMtaoO2poSVv__2C1JJNH3-UeMhZZS-Wz9-A_J1FZ3-UqsPf8M2uqSg_HuYZZ1V_Ps-boRuMg1xMzMOy3BxEq7tNPO-BHfzNzaOJHjuW_sByHICuHc1a1f2NguoUzMBxZBusZsoFgRnWZJKpqVYpe7tpqjuq8uxzypuy3BCzriOh3szy81gCyMYjPJOquVPJZRrOrpVpPmUDUMVDgaUEUMxBy3zDq3NB9R-ByfYW9foDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJaHmFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-FrMBsguYiq3ei6sUaHAnFwe?src\u003dinbox\u0026page\u003d1\u0026click_ad_type\u003d2\u0026product_id\u003d1614168157\u0026t\u003dandroid\u0026sid\u003deL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st\u0026uid\u003d148201295\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Flocknlock-id%2Flocknlock-exclusive-tempat-makan-anak-oven-glass-set-3pcs-170ml\u0026cpm_template_req\u003d3\u0026template_id_used\u003d3\u0026dv\u003dandroid-3.150"
+                },
+                "price_format": "Rp 117.000",
+                "product_rating": 99,
+                "uri": "https://www.tokopedia.com/locknlock-id/locknlock-exclusive-tempat-makan-anak-oven-glass-set-3pcs-170ml",
+                "count_review_format": "1.617",
+                "label_group": [
+                  {
+                    "title": "Cashback",
+                    "position": "promo",
+                    "type": "lightGreen",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 5,8 rb",
+                    "position": "integrity",
+                    "type": "textDarkGrey",
+                    "url": ""
+                  },
+                  {
+                    "title": "Dilayani Tokopedia",
+                    "position": "fulfillment",
+                    "type": "textDarkGrey",
+                    "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "campaign": {
+                  "original_price": "Rp 178.000",
+                  "discount_percentage": 34
+                }
+              }
+            ],
+            "image_shop": {
+              "xs_url": "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/1/8/2147991/2147991_9d41c614-bc2f-4902-831f-9a84f745cf5e.png"
+            }
+          },
+          "badges": [
+            {
+              "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+              "title": "Official Store",
+              "show": true
+            }
+          ],
+          "template_id": "3"
+        }
+      }
+    ]
+  }
+}

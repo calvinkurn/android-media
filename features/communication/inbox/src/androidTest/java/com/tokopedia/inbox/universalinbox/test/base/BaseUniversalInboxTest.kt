@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.stub.common.ActivityScenarioTestRule
@@ -13,6 +14,7 @@ import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.stub.di.UniversalInboxFakeActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxActivity
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetComponentProvider
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -25,13 +27,11 @@ abstract class BaseUniversalInboxTest {
     var activityScenarioRule = ActivityScenarioTestRule<UniversalInboxActivity>()
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @ActivityScope
     @Inject
     lateinit var abTestPlatform: UniversalInboxAbPlatform
 
@@ -53,8 +53,13 @@ abstract class BaseUniversalInboxTest {
 
     private fun setupDaggerComponent() {
         val fakeComponent = UniversalInboxFakeActivityComponentFactory()
+
         UniversalInboxActivityComponentFactory.instance = fakeComponent
         fakeComponent.universalInboxComponent.inject(this)
+
+        RecommendationWidgetComponentProvider.setRecommendationComponent(
+            fakeComponent.recommendationWidgetComponent
+        )
     }
 
     protected fun launchActivity(

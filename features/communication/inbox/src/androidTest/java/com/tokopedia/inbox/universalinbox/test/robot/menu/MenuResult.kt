@@ -15,21 +15,12 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 
 object MenuResult {
 
-    fun assertMenuSectionOnPosition(position: Int) {
-        onView(withId(R.id.inbox_rv)).check(
-            atPositionCheckInstanceOf(
-                position = position,
-                expectedClass = UniversalInboxMenuSectionUiModel::class.java
-            )
-        )
-    }
-
-    fun assertMenuSectionIsNotOnPosition(position: Int) {
+    fun assertMenuSectionOnPosition(position: Int, reverse: Boolean = false) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
                 expectedClass = UniversalInboxMenuSectionUiModel::class.java,
-                reverse = true
+                reverse = reverse
             )
         )
     }

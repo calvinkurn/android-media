@@ -34,10 +34,11 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class UniversalInboxMenuMapper @Inject constructor(
+open class UniversalInboxMenuMapper @Inject constructor(
     private val resourceProvider: UniversalInboxResourceProvider,
     private val abTestPlatform: UniversalInboxAbPlatform
 ) {
+
     fun getStaticMenu(userSession: UserSessionInterface): List<Any> {
         val chatSectionList = getChatSectionList(userSession)
         val othersSectionList = getOthersSectionList()
@@ -118,10 +119,14 @@ class UniversalInboxMenuMapper @Inject constructor(
                 )
             )
             add(UniversalInboxMenuSeparatorUiModel())
-            add(UniversalInboxTopAdsBannerUiModel())
+            add(getTopAdsUiModel())
             add(generateRecommendationWidgetModel())
         }
         return othersSectionList
+    }
+
+    open fun getTopAdsUiModel(): UniversalInboxTopAdsBannerUiModel {
+        return UniversalInboxTopAdsBannerUiModel()
     }
 
     private fun getDiscussionApplink(): String {
@@ -136,8 +141,8 @@ class UniversalInboxMenuMapper @Inject constructor(
     }
 
     fun mapWidgetMetaToUiModel(
-        widgetMeta: UniversalInboxWidgetMetaResponse? = null,
-        allCounter: UniversalInboxAllCounterResponse? = null
+        widgetMeta: UniversalInboxWidgetMetaResponse?,
+        allCounter: UniversalInboxAllCounterResponse?
     ): UniversalInboxWidgetMetaUiModel {
         val result = UniversalInboxWidgetMetaUiModel()
         if (widgetMeta != null) {
