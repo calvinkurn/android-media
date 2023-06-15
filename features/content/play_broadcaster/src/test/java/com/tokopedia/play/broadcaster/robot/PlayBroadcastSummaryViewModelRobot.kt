@@ -70,7 +70,10 @@ class PlayBroadcastSummaryViewModelRobot(
                 uiState = it
             }
         }
-        dispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        dispatcher.coroutineDispatcher.runBlockingTest {
+            delay(TEST_DELAY)
+            fn()
+        }
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState
@@ -84,7 +87,10 @@ class PlayBroadcastSummaryViewModelRobot(
                 uiStateList.add(it)
             }
         }
-        dispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        dispatcher.coroutineDispatcher.runBlockingTest {
+            delay(TEST_DELAY)
+            fn()
+        }
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiStateList
@@ -98,7 +104,10 @@ class PlayBroadcastSummaryViewModelRobot(
                 uiEventList.add(it)
             }
         }
-        dispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        dispatcher.coroutineDispatcher.runBlockingTest {
+            delay(TEST_DELAY)
+            fn()
+        }
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiEventList
@@ -118,7 +127,10 @@ class PlayBroadcastSummaryViewModelRobot(
                 uiEvents.add(it)
             }
         }
-        dispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        dispatcher.coroutineDispatcher.runBlockingTest {
+            delay(TEST_DELAY)
+            fn()
+        }
         dispatcher.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
@@ -147,5 +159,9 @@ class PlayBroadcastSummaryViewModelRobot(
 
     override fun close() {
         cancelRemainingTasks()
+    }
+
+    companion object {
+        private const val TEST_DELAY = 500L
     }
 }

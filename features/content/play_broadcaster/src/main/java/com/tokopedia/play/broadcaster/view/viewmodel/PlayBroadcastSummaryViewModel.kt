@@ -132,9 +132,6 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     val uiEvent: Flow<PlayBroadcastSummaryEvent>
         get() = _uiEvent
 
-    val productList: List<ProductUiModel>
-        get() = productSectionList.flatMap { it.products }
-
     init {
         fetchLiveTraffic()
         getTags()
