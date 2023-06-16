@@ -2,7 +2,9 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
@@ -14,10 +16,12 @@ import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -206,5 +210,97 @@ class PlayCoverSetupViewModelTest {
                 .assertThat(originalImageUrl)
                 .isEqualTo("https://tokopedia.com/product/original_image/product_3")
         }
+    }
+
+    @Test
+    fun `uploadCover success`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+
+        val mockUploadCoverSuccess = NetworkResult.Success(Unit)
+
+        coEvery { uploadImageUseCase.executeOnBackground() } returns UploadResult.Success(uploadId = "123", fileUrl = "fileUrl", videoUrl = "videoUrl")
+        coverDataStore.setUploadSelectedCoverResponse { mockUploadCoverSuccess }
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Success::class.java)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
+    }
+
+    @Test
+    fun `uploadCover fail`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+
+        val mockException = Exception("network error")
+        val mockUploadCoverFail = NetworkResult.Fail(mockException)
+
+        coEvery { uploadImageUseCase.executeOnBackground() } returns UploadResult.Success(uploadId = "123", fileUrl = "fileUrl", videoUrl = "videoUrl")
+        coverDataStore.setUploadSelectedCoverResponse { mockUploadCoverFail }
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(mockUploadCoverFail)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
+    }
+
+    @Test
+    fun `uploadCover error`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+
+        val mockException = Exception("network error")
+        val mockUploadCoverFail = NetworkResult.Fail(mockException)
+
+        coEvery { uploadImageUseCase.executeOnBackground() } returns UploadResult.Success(uploadId = "123", fileUrl = "fileUrl", videoUrl = "videoUrl")
+        coverDataStore.setUploadSelectedCoverResponse { throw mockException }
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(mockUploadCoverFail)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
     }
 }

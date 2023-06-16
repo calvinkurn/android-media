@@ -123,7 +123,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
 
     fun uploadCover() {
         _observableUploadCoverEvent.value = NetworkResult.Loading
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchError(context = dispatcher.main, block = {
             uploadImageAndUpdateCoverState()
 
             val result = setupDataStore.uploadSelectedCover(account.id, channelId)
@@ -189,7 +189,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
                 /**
                  * Upload Cover Image to remote store
                  */
-                val uploadedImageUri = Uri.parse(uploadImageToRemoteStore(validatedImagePath))
+                val uploadedImageUri = coverImageTransformer.parseToUri(uploadImageToRemoteStore(validatedImagePath))
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),
