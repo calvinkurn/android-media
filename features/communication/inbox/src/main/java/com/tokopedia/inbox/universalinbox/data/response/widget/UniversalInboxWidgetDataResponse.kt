@@ -13,7 +13,7 @@ data class UniversalInboxWidgetDataResponse(
     @SerializedName("subtext")
     val subtext: String = "",
 
-    @SerializedName("applink")
+    @SerializedName("androidApplink")
     val applink: String = "",
 
     @SerializedName("type")

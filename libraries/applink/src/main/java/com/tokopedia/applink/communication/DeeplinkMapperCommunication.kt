@@ -12,7 +12,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
-    private const val KEY_ROLLENCE_UNIVERSAL_INBOX = "universal_inbox"
+    private const val KEY_ROLLENCE_UNIVERSAL_INBOX = "inbox_universal"
     private const val ROLLENCE_TYPE_A = "inbox_varA"
     private const val ROLLENCE_TYPE_B = "inbox_varB"
 

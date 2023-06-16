@@ -19,8 +19,9 @@ class UniversalInboxGetWidgetMetaUseCase @Inject constructor(
               icon
               title
               subtext
-              applink
+              androidApplink
               type
+              isDynamic
             }
           }
         }
@@ -29,5 +30,4 @@ class UniversalInboxGetWidgetMetaUseCase @Inject constructor(
     override suspend fun execute(params: Unit): UniversalInboxWidgetWrapperResponse {
         return repository.request(graphqlQuery(), params)
     }
-
 }
