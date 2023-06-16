@@ -55,7 +55,7 @@ object UniversalInboxValueUtil {
      */
     private const val ROLE_BUYER = "buyer"
     private const val ROLE_BOTH = "both"
-    const val X = "x"
+    const val VALUE_X = "x"
     fun getRoleUser(userSession: UserSessionInterface): String {
         return if (userSession.hasShop()) {
             ROLE_BOTH
@@ -67,7 +67,7 @@ object UniversalInboxValueUtil {
         return if (userSession.hasShop()) {
             userSession.shopId
         } else {
-            X
+            VALUE_X
         }
     }
 

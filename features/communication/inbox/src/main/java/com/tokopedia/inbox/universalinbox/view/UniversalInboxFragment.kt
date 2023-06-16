@@ -32,8 +32,8 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_F
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.X
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
@@ -467,15 +467,15 @@ class UniversalInboxFragment :
 
     private fun trackInboxPageImpression(counter: UniversalInboxAllCounterResponse) {
         val shopId = getShopIdTracker(userSession)
-        val sellerChatCounter = if (shopId != X) {
+        val sellerChatCounter = if (shopId != VALUE_X) {
             counter.chatUnread.unreadSeller.toString()
         } else {
-            X
+            VALUE_X
         }
         val helpCounter = if (adapter.isHelpWidgetAdded()) {
             counter.othersUnread.helpUnread.toString()
         } else {
-            X
+            VALUE_X
         }
         analytics.viewOnInboxPage(
             abVariant = getVariantTracker(abTestPlatform),
@@ -486,7 +486,7 @@ class UniversalInboxFragment :
             discussionCounter = counter.othersUnread.discussionUnread.toString(),
             reviewCounter = counter.othersUnread.reviewUnread.toString(),
             notifCenterCounter = counter.notifCenterUnread.notifUnread,
-            driverCounter = X, // Temporary always X until phase 2
+            driverCounter = VALUE_X, // Temporary always X until phase 2
             helpCounter = helpCounter
         )
     }
