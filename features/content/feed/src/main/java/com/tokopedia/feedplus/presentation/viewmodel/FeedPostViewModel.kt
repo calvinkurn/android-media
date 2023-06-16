@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
@@ -88,6 +89,7 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
+    private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -788,6 +790,26 @@ class FeedPostViewModel @Inject constructor(
                         TrackVisitChannelBroadcasterUseCase.createParams(
                             playChannelId,
                             TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
+                        )
+                    )
+                }.executeOnBackground()
+            }
+        }) {
+        }
+    }
+
+    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
+        val playChannelId = model.playChannelId
+        if (playChannelId.isBlank()) return
+
+        val productIds = model.products.map { it.id }
+        viewModelScope.launchCatchError(block = {
+            withContext(dispatchers.io) {
+                trackReportTrackViewerUseCase.apply {
+                    setRequestParams(
+                        BroadcasterReportTrackViewerUseCase.createParams(
+                            playChannelId,
+                            productIds
                         )
                     )
                 }.executeOnBackground()
