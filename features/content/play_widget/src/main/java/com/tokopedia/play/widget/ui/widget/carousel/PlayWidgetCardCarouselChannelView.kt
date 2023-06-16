@@ -35,6 +35,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 /**
  * Created by kenny.hadisaputra on 17/05/23
  */
+@Suppress("LateinitUsage")
 class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     constructor(context: Context) : super(context)

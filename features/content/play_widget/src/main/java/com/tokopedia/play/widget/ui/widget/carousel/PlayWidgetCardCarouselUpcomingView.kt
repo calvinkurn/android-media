@@ -27,6 +27,7 @@ import com.tokopedia.play.widget.ui.model.switch
 /**
  * Created by kenny.hadisaputra on 17/05/23
  */
+@Suppress("LateinitUsage")
 class PlayWidgetCardCarouselUpcomingView : FrameLayout {
 
     constructor(context: Context) : super(context)
