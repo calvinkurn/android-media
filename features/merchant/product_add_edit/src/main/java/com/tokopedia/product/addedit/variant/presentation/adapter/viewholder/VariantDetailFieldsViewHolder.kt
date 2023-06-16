@@ -144,8 +144,9 @@ class VariantDetailFieldsViewHolder(
             if (!isChecked && !enableVariantStatusChange && hasDTStock) {
                 statusSwitch?.isChecked = true
                 variantDetailFieldsViewHolderListener.onDisabledVariantStatusChanged(visitablePosition)
+            } else {
+                variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
             }
-            variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
         }
     }
 
