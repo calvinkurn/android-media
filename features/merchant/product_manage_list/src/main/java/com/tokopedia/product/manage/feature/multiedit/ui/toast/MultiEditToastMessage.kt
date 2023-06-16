@@ -21,7 +21,7 @@ object MultiEditToastMessage {
 
         when (result.status) {
             INACTIVE -> {
-                return if (itemsChecked.size == 1) {
+                return if (successCount == 1) {
                     context.getString(
                         com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_status_inactive_success,
                         itemsChecked.firstOrNull()?.title.orEmpty()
@@ -32,11 +32,10 @@ object MultiEditToastMessage {
             }
 
             DELETED -> {
-                return context.getString(R.string.product_manage_delete_products_success,successCount)
-
+                return context.getString(R.string.product_manage_delete_products_success, successCount)
             }
             else -> {
-                return context.getString(R.string.product_manage_edit_products_success,successCount)
+                return context.getString(R.string.product_manage_edit_products_success, successCount)
             }
         }
     }
@@ -65,7 +64,6 @@ object MultiEditToastMessage {
                     val stringResId = R.string.product_manage_edit_products_inactive_retry
                     context.getString(stringResId, successCount, failedCount)
                 }
-
             }
 
             DELETED -> {
@@ -87,7 +85,6 @@ object MultiEditToastMessage {
                 return context.getString(stringResId, successCount, failedCount)
             }
         }
-
     }
 
     private fun getEditEtalaseRetryMessage(context: Context, result: EditByMenu): String {

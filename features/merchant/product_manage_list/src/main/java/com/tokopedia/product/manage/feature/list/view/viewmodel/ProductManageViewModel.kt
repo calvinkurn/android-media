@@ -122,6 +122,9 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         const val REQUEST_DELAY = 1000L
+
+        // If hit bulk edit more than once in a row
+        const val REQUEST_DELAY_BULK_EDIT = 2500L
         private const val REASON_DT_FOR_BULK_EDIT = "FORBIDDEN_DT_PRODUCT_DELETION"
     }
 
@@ -159,8 +162,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _toggleMultiSelect
     val multiEditProductResult: LiveData<Result<MultiEditResult>>
         get() = _multiEditProductResult
-    val multiEditDTProductResult: LiveData<Result<MultiEditResult>>
-        get() = _multiEditDTProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
     val editVariantPriceResult: LiveData<Result<EditVariantResult>>
@@ -197,7 +198,6 @@ class ProductManageViewModel @Inject constructor(
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
-    private val _multiEditDTProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
@@ -270,13 +270,17 @@ class ProductManageViewModel @Inject constructor(
 
     fun editProductsByStatus(
         productIds: List<String>,
+        productDTNeedConfirm: List<ProductUiModel> = listOf(),
         status: ProductStatus,
-        isDT: Boolean = false
+        withDelay: Boolean = false
     ) {
         launchCatchError(block = {
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
+                if (withDelay) {
+                    delay(REQUEST_DELAY_BULK_EDIT)
+                }
                 val warehouseResponse = async {
                     getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
                 }.await()
@@ -304,21 +308,13 @@ class ProductManageViewModel @Inject constructor(
                     it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
             }.orEmpty()
 
-            if (isDT) {
-                _multiEditDTProductResult.value =
-                    Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
-            } else {
-                _multiEditProductResult.value =
-                    Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
-            }
+            _multiEditProductResult.value =
+                Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct, productDTNeedConfirm))
 
             hideProgressDialog()
         }, onError = {
-                if (isDT) {
-                    _multiEditDTProductResult.value = Fail(it)
-                } else {
-                    _multiEditProductResult.value = Fail(it)
-                }
+                _multiEditProductResult.value = Fail(it)
+
                 hideProgressDialog()
             })
     }
@@ -571,6 +567,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -583,6 +580,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -725,6 +723,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -736,6 +735,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -880,10 +880,12 @@ class ProductManageViewModel @Inject constructor(
                 productUpdateV3Data.isSuccess -> {
                     Success(EditStockResult(productName, productId, stock, status))
                 }
+
                 errorMessage.isNotEmpty() -> {
                     val error = Throwable(message = errorMessage.last())
                     Fail(EditStockResult(productName, productId, stock, status, error))
                 }
+
                 else -> {
                     val message =
                         com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -934,6 +936,7 @@ class ProductManageViewModel @Inject constructor(
                     val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
+
                 else -> {
                     val message = com.tokopedia.product.manage.common.R.string
                         .product_stock_reminder_toaster_failed_desc.toString()

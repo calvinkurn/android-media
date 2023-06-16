@@ -1788,9 +1788,8 @@ open class ProductManageFragment :
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         when (result) {
             is EditByStatus -> {
-                val haveDTProducts = itemsChecked.filter { it.isDTInbound && !it.isCampaign }
                 if (result.status == INACTIVE) {
-                    if (haveDTProducts.isNotEmpty()) {
+                    if (result.productDTNeedConfirm.isNotEmpty()) {
                         showEditDTProductsInActiveConfirmationDialog()
                         showMultiEditToast(result, true)
                     } else {
@@ -1798,6 +1797,15 @@ open class ProductManageFragment :
                         updateEditProductList(result)
                     }
                 } else {
+                    if (result.failedDT.isNotEmpty() && result.status == DELETED) {
+                        showInfoNotAllowedToDeleteProductDT(
+                            getString(
+                                com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
+                                result.failedDT.size.toString()
+                            ),
+                            getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
+                        )
+                    }
                     showMultiEditToast(result)
                 }
             }
@@ -1809,33 +1817,8 @@ open class ProductManageFragment :
         }
     }
 
-    private fun onSuccessMultiEditDTProducts(result: MultiEditResult) {
-        if (result is EditByStatus) {
-            if (result.failedDT.isNotEmpty() && result.status == DELETED) {
-                showInfoNotAllowedToDeleteProductDT(
-                    getString(
-                        com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
-                        result.failedDT.size.toString()
-                    ),
-                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
-                )
-            }
-        }
-        showMultiEditToast(result)
-        updateEditProductList(result)
-    }
-
     private fun showMultiEditToast(result: MultiEditResult, isHaveNextProcess: Boolean = false) {
         context?.let { context ->
-            if (result.failedDT.isNotEmpty()) {
-                showInfoNotAllowedToDeleteProductDT(
-                    getString(
-                        com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
-                        result.failedDT.size.toString()
-                    ),
-                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
-                )
-            }
             if (result.failed.isNotEmpty()) {
                 val okeLabel =
                     getString(R.string.label_oke)
@@ -1843,11 +1826,7 @@ open class ProductManageFragment :
 
                 showErrorToast(retryMessage, okeLabel)
             } else if (result.success.isNotEmpty()) {
-                val itemCheckedNonDT = itemsChecked.filter {
-                    !it.isDTInbound
-                }.toMutableList()
-
-                val message = getSuccessMessage(context, result, itemCheckedNonDT)
+                val message = getSuccessMessage(context, result, itemsChecked)
                 showMessageToast(message)
                 if (!isHaveNextProcess) {
                     clearSelectedProduct()
@@ -1861,7 +1840,13 @@ open class ProductManageFragment :
         val productIds = result.failed.map { it.productID }
 
         when (result) {
-            is EditByStatus -> viewModel.editProductsByStatus(productIds, result.status)
+            is EditByStatus -> viewModel.editProductsByStatus(
+                productIds,
+                result.productDTNeedConfirm,
+                result.status,
+                withDelay = true
+            )
+
             is EditByMenu -> viewModel.editProductsEtalase(
                 productIds,
                 result.menuId,
@@ -2830,7 +2815,6 @@ open class ProductManageFragment :
                         onSuccessEditStock(productId, productName, stock, status)
                     }
                 }
-
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2850,23 +2834,6 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.multiEditProductResult) {
             when (it) {
                 is Success -> onSuccessMultiEditProducts(it.data)
-                is Fail -> {
-                    showErrorToast()
-                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    ProductManageListErrorHandler.logExceptionToServer(
-                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
-                        throwable = it.throwable,
-                        errorType =
-                        ProductManageListErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
-                        deviceId = userSession.deviceId.orEmpty()
-                    )
-                }
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.multiEditDTProductResult) {
-            when (it) {
-                is Success -> onSuccessMultiEditDTProducts(it.data)
                 is Fail -> {
                     showErrorToast()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2906,7 +2873,7 @@ open class ProductManageFragment :
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
                     val productIds = itemsChecked.map { item -> item.id }
-                    viewModel.editProductsByStatus(productIds, DELETED)
+                    viewModel.editProductsByStatus(productIds = productIds, status = DELETED)
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
@@ -2928,8 +2895,10 @@ open class ProductManageFragment :
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
                     val productIds =
-                        itemsChecked.filter { !it.isDTInbound || it.isCampaign }.map { item -> item.id }
-                    viewModel.editProductsByStatus(productIds, INACTIVE)
+                        itemsChecked.filter { !it.isDTInbound || it.isCampaign }
+                            .map { item -> item.id }
+                    val productDTNeedConfirm = itemsChecked.filter { it.isDTInbound && !it.isCampaign }
+                    viewModel.editProductsByStatus(productIds, productDTNeedConfirm, INACTIVE)
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
@@ -2953,8 +2922,14 @@ open class ProductManageFragment :
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
-                    val productIds = itemsChecked.filter { it.isDTInbound && !it.isCampaign }.map { item -> item.id }
-                    viewModel.editProductsByStatus(productIds, INACTIVE, true)
+                    val productIds = itemsChecked.filter { it.isDTInbound && !it.isCampaign }
+                        .map { item -> item.id }
+                    val withDelay = itemsChecked.size != productIds.size
+                    viewModel.editProductsByStatus(
+                        productIds = productIds,
+                        status = INACTIVE,
+                        withDelay = withDelay
+                    )
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
