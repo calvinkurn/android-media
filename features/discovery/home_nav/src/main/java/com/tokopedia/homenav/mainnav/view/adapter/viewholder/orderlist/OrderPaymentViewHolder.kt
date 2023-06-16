@@ -59,7 +59,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             Glide.with(itemView.context)
                     .load(paymentModel.navPaymentModel.imageUrl)
                     .centerInside()
-                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                    .error(com.tokopedia.utils.R.drawable.ic_loading_placeholder)
                     .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                             imageView?.setImageDrawable(resource)
