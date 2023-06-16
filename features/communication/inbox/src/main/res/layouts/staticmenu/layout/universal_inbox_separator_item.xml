@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/inbox_separator_topads_banner"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <View
-        android:id="@+id/inbox_separator_topads_banner"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/Unify_NN50" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="8dp"
+    android:background="@color/Unify_NN50" />
