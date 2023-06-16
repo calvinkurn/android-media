@@ -41,11 +41,11 @@ class SliderBannerHighlightLayoutManager(
     override fun onLayoutCompleted(state: RecyclerView.State?) {
         super.onLayoutCompleted(state)
         scaleChild()
-        listener.onCheckPrevNextButton(
-            findFirstVisibleItemPosition(),
-            findLastVisibleItemPosition(),
-            recyclerView?.adapter?.itemCount.orZero()
-        )
+//        listener.onCheckPrevNextButton(
+//            findFirstVisibleItemPosition(),
+//            findLastVisibleItemPosition(),
+//            recyclerView?.adapter?.itemCount.orZero()
+//        )
     }
 
     override fun scrollHorizontallyBy(
@@ -56,11 +56,11 @@ class SliderBannerHighlightLayoutManager(
         return if (orientation == HORIZONTAL) {
             super.scrollHorizontallyBy(dx, recycler, state).also {
                 scaleChild()
-                listener.onCheckPrevNextButton(
-                    findFirstVisibleItemPosition(),
-                    findLastVisibleItemPosition(),
-                    recyclerView?.adapter?.itemCount.orZero()
-                )
+//                listener.onCheckPrevNextButton(
+//                    findFirstVisibleItemPosition(),
+//                    findLastVisibleItemPosition(),
+//                    recyclerView?.adapter?.itemCount.orZero()
+//                )
             }
         } else {
             Int.ZERO

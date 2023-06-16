@@ -14,6 +14,10 @@ class ShopCampaignDisplaySliderBannerHighlightAdapter(
     private val listener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener
 ) : RecyclerView.Adapter<ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder>() {
 
+    companion object{
+        private const val INT_TWO = 2
+    }
+
     private val differCallback = object :
         DiffUtil.ItemCallback<ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData>() {
         override fun areItemsTheSame(
@@ -49,11 +53,12 @@ class ShopCampaignDisplaySliderBannerHighlightAdapter(
         holder: ShopCampaignDisplaySliderBannerHighlightProductImageItemViewHolder,
         position: Int
     ) {
-        holder.bind(differ.currentList[position])
+        val adjustedPosition = position % differ.currentList.size
+        holder.bind(differ.currentList[adjustedPosition])
     }
 
     override fun getItemCount(): Int {
-        return differ.currentList.size
+        return differ.currentList.size * INT_TWO
     }
 
     fun submit(data: List<ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData>) {
