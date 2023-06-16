@@ -68,7 +68,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     public static final String PATH_REGEX = "(query)\\s*(\\w+)";
 
-    protected Context context;
+    private Context context;
     protected UserSessionInterface userSession;
     protected String authKey;
     private NetworkRouter networkRouter;

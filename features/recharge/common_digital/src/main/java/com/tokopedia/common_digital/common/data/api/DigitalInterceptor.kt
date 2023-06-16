@@ -21,7 +21,7 @@ import java.io.IOException
 /**
  * Created by Rizky on 16/08/18.
  */
-class DigitalInterceptor(@ApplicationContext context: Context,
+class DigitalInterceptor(@ApplicationContext val context: Context,
                          networkRouter: NetworkRouter,
                          userSessionInterface: UserSessionInterface) : TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface) {
 
