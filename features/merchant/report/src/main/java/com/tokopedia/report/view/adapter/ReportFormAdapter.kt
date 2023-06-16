@@ -25,6 +25,7 @@ import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.databinding.*
 import com.tokopedia.report.view.util.SpaceItemDecoration
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import java.util.*
 
 @Suppress("UNCHECKED_CAST")
@@ -126,28 +127,17 @@ class ReportFormAdapter(private val item: ProductReportReason,
         private val context = binding.root.context
         init {
             with(binding){
-                footer.movementMethod = LinkMovementMethod.getInstance()
-                val spannable = MethodChecker.fromHtml(context.getString(R.string.product_report_see_all_types)) as Spannable
-                spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
-                    val start = spannable.getSpanStart(it)
-                    val end = spannable.getSpanEnd(it)
-                    spannable.removeSpan(it)
-                    val urlSpan = object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
-                        }
-
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.isUnderlineText = false
-                            super.updateDrawState(ds)
-                        }
-
-                    }
-                    spannable.setSpan(urlSpan, start, end, 0)
-                    spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
+                footer.text = HtmlLinkHelper(
+                    context,
+                    context.getString(R.string.product_report_see_all_types)
+                ).spannedString
+                footer.setOnClickListener {
+                    tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
+                    RouteManager.route(
+                        context,
+                        "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}"
+                    )
                 }
-                footer.text = spannable
                 if (item.additionalFields.isEmpty()){
                     btnLapor.gone()
                 } else {
