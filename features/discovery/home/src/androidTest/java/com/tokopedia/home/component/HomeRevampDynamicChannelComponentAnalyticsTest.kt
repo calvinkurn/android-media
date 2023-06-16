@@ -128,7 +128,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(delayBeforeRender = 2000, dataModelClass = PopularKeywordListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnPopularKeywordSection(viewHolder)
+                clickOnPopularKeywordSection(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
@@ -296,7 +296,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
             }
         } validateAnalytics {
             addDebugEnd()

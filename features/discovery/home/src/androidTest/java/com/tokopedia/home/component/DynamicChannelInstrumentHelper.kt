@@ -15,7 +15,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
@@ -73,7 +72,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widg
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DEALS_WIDGET = "tracker/home/deals_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/flash_sale_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FLASH_SALE_WIDGET = "tracker/home/flash_sale_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
@@ -171,10 +170,10 @@ fun clickOnProductHighlightItem() {
     }
 }
 
-fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder) {
+fun clickOnPopularKeywordSection(viewHolder: RecyclerView.ViewHolder, position: Int) {
     waitForPopularKeywordData()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_popular_keyword, 0)
-    clickLihatSemuaPopularKeyword()
+    clickLihatSemuaPopularKeyword(viewHolder.itemView, position)
 }
 
 fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -271,10 +270,6 @@ fun clickOnBusinessWidgetSection(viewHolder: RecyclerView.ViewHolder) {
 
 fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
     clickTickerItem(viewHolder.itemView)
-}
-
-fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
-    clickHomeBannerItemAndViewAll(viewHolder)
 }
 
 fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
@@ -486,10 +481,15 @@ private fun clickOnMixTopCTA(view: View) {
     }
 }
 
-private fun clickLihatSemuaPopularKeyword() {
+private fun clickLihatSemuaPopularKeyword(view: View, position: Int) {
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
-            .perform(ViewActions.click())
+        if (view.findViewById<View?>(R.id.tv_reload).isVisible) {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.tv_reload, 0)))
+        } else if (view.findViewById<View?>(R.id.cta_button_revamp).isVisible) {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, clickOnViewChild(R.id.cta_button_revamp, 0)))
+        }
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -515,32 +515,6 @@ private fun clickTickerItem(view: View) {
             .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
-    }
-}
-
-private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
-    val view = viewHolder.itemView
-    val childView = view
-    val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
-
-    // banner item click
-    val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
-    val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
-    bannerViewPager.pauseAutoScroll()
-    try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
-            .perform(ViewActions.click())
-    } catch (e: PerformException) {
-        e.printStackTrace()
-    }
-    // see all promo button click
-    if (seeAllButton.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.see_more_label)))
-                .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
     }
 }
 
