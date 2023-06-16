@@ -37,7 +37,6 @@ internal class MultiProductSearchGeneralSearchTrackingTest : MultiProductSearchT
 
         `When view created`(mpsViewModel)
 
-
         `Then verify general search tracking called`(expectedGeneralSearchTracking)
     }
 
