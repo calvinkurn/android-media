@@ -160,7 +160,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

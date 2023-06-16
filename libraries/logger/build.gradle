@@ -19,7 +19,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
-    ksp rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk

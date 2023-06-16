@@ -28,7 +28,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    ksp rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.dbDependencies.dbRoomKtx
 
     implementation rootProject.ext.networkDependencies.okHttp

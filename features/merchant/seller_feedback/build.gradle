@@ -60,7 +60,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 }
 
 project.ext {

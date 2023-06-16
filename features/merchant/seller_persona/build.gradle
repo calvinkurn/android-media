@@ -64,7 +64,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)

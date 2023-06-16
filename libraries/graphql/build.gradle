@@ -54,7 +54,7 @@ dependencies {
     api rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    ksp rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation rootProject.ext.miscDependencies.dagger

@@ -25,7 +25,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)

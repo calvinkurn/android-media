@@ -24,7 +24,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
 

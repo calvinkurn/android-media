@@ -30,7 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    ksp rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 

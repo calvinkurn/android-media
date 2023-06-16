@@ -71,7 +71,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation('de.hdodenhof:circleimageview:2.2.0') {

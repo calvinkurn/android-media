@@ -71,7 +71,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    ksp rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 
