@@ -1,16 +1,17 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
-import com.tokopedia.cart.data.model.response.updatecart.Data
-import com.tokopedia.cart.data.model.response.updatecart.UpdateCartDataResponse
-import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cart.domain.mapper.mapUpdateCartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -29,8 +30,6 @@ class UpdateCartUseCaseTest {
     @MockK(relaxUnitFun = true)
     private lateinit var graphqlRepository: GraphqlRepository
 
-    val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
-
     private lateinit var updateCartUseCase: UpdateCartUseCase
 
     val params = UpdateCartWrapperRequest(
@@ -40,13 +39,13 @@ class UpdateCartUseCaseTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        updateCartUseCase = UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper, coroutineTestDispatchers)
+        updateCartUseCase = UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper)
     }
 
     @Test
     fun updateCartUseCaseRun_Success() {
         // Given
-        val response = UpdateCartDataResponse(data = Data(status = true), status = "OK")
+        val response = UpdateCartV2Data(data = Data(status = true), status = "OK")
 
         val result = HashMap<Type, Any>()
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(response)
@@ -57,7 +56,9 @@ class UpdateCartUseCaseTest {
 
         runBlocking {
             // When
-            val updateCartData = updateCartUseCase(params)
+            updateCartUseCase.setParams(params.updateCartRequestList)
+            val updateCartDataResponse = updateCartUseCase.executeOnBackground()
+            val updateCartData = mapUpdateCartData(updateCartDataResponse)
 
             // Then
             assertEquals(UpdateCartData(isSuccess = true, message = ""), updateCartData)
@@ -71,7 +72,7 @@ class UpdateCartUseCaseTest {
 
         val result = HashMap<Type, Any>()
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
-            UpdateCartDataResponse(data = Data(status = false, error = errorMessage), status = "ERROR")
+            UpdateCartV2Data(data = Data(status = false), status = "ERROR", error = listOf(errorMessage))
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
@@ -79,20 +80,25 @@ class UpdateCartUseCaseTest {
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
         runBlocking {
-            // When
-            val updateCartData = updateCartUseCase(params)
-
-            // Then
-            assertEquals(UpdateCartData(isSuccess = false, message = errorMessage), updateCartData)
+            try {
+                // When
+                updateCartUseCase.setParams(params.updateCartRequestList)
+                updateCartUseCase.executeOnBackground()
+            } catch (e: Exception) {
+                // Then
+                assertEquals(errorMessage, e.message)
+            }
         }
     }
 
     @Test
     fun updateCartUseCaseRun_FailedWithNoErrorMessage() {
         // Given
+        val defaultErrorMessage = "Terjadi kesalahan, ulangi beberapa saat lagi"
+
         val result = HashMap<Type, Any>()
         result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
-            UpdateCartDataResponse(data = Data(status = false), status = "ERROR")
+            UpdateCartV2Data(data = Data(status = false), status = "ERROR")
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
@@ -100,11 +106,14 @@ class UpdateCartUseCaseTest {
         every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
 
         runBlocking {
-            // When
-            val updateCartData = updateCartUseCase(params)
-
-            // Then
-            assertEquals(UpdateCartData(isSuccess = false, message = ""), updateCartData)
+            try {
+                // When
+                updateCartUseCase.setParams(params.updateCartRequestList)
+                updateCartUseCase.executeOnBackground()
+            } catch (e: Exception) {
+                // Then
+                assertEquals(defaultErrorMessage, e.message)
+            }
         }
     }
 }

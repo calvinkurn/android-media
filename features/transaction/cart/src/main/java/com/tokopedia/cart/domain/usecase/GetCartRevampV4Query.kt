@@ -130,7 +130,6 @@ const val CART_REVAMP_V4_QUERY =
                     badge_url
                     app_link
                     description
-                    description_badge_url
                   }
                   group_shop_v2_cart {
                     cart_string_order
