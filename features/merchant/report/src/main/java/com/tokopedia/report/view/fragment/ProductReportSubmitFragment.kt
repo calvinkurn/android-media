@@ -35,6 +35,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.databinding.PartialLoadingTransparentLayoutBinding
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -50,11 +51,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductReportSubmitViewModel
-    private val loadingView: FrameLayout? by lazy {
-        runCatching {
-            return@lazy binding.root.findViewById(com.tokopedia.utils.R.id.loadingTransparentView)
-        }
-        return@lazy null
+    private val loadingView by lazy {
+        PartialLoadingTransparentLayoutBinding.bind(binding.root).loadingTransparentView
     }
 
     override fun initInjector() {
@@ -86,7 +84,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             cacheManager.get(ProductReportFormActivity.REASON_OBJECT, ProductReportReason::class.java)
 
         }
-        loadingView?.gone()
+        loadingView.gone()
         binding.recyclerView.clearItemDecoration()
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
