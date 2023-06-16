@@ -42,8 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ImageContrastCheck"
-        tools:src="@drawable/ic_star_four" />
+        tools:ignore="ImageContrastCheck"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/assigned_value_typography"
