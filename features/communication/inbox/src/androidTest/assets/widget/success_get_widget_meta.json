@@ -5,17 +5,17 @@
         "icon": "330",
         "title": "Chat Driver",
         "subtext": "{order_counter} pesanan",
-        "applink": "tokopedia://tokochat/chatlist",
+        "androidApplink": "tokopedia://tokochat/chatlist",
         "type": 101,
-        "is_dynamic": true
+        "isDynamic": true
       },
       {
         "icon": "81",
         "title": "Tokopedia Care",
         "subtext": "Cek pesan bantuan",
-        "applink": "tokopedia://customercare",
+        "androidApplink": "tokopedia://customercare",
         "type": 1,
-        "is_dynamic": true
+        "isDynamic": true
       }
     ]
   }

@@ -14,7 +14,7 @@ object MenuRobot {
         onView(withId(R.id.inbox_layout_swipe_refresh)).perform(
             withCustomConstraints(
                 ViewActions.swipeDown(),
-                ViewMatchers.isDisplayingAtLeast(90)
+                ViewMatchers.isDisplayingAtLeast(100)
             )
         )
     }
