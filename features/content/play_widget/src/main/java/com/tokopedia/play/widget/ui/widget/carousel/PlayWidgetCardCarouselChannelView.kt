@@ -199,6 +199,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 binding.root,
                 AutoTransition()
                     .addTarget(binding.viewPlayWidgetActionButton.root)
+                    .setDuration(DURATION_ACTION_TRANSITION)
             )
         }
 
@@ -335,6 +336,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         ).forEach {
             LottieCompositionFactory.fromUrl(context, context.getString(it))
         }
+    }
+
+    companion object {
+        private const val DURATION_ACTION_TRANSITION = 200L
     }
 
     interface Listener {

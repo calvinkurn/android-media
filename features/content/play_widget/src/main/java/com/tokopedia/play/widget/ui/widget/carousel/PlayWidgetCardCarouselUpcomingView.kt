@@ -97,6 +97,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
                 binding.root,
                 AutoTransition()
                     .addTarget(binding.viewPlayWidgetActionButton.root)
+                    .setDuration(DURATION_ACTION_TRANSITION)
             )
         }
 
@@ -105,8 +106,11 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
 
     fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
         val lottieUrl = context.getString(
-            if (shouldRemind) R.string.lottie_reminder_off_on
-            else R.string.lottie_reminder_on_off
+            if (shouldRemind) {
+                R.string.lottie_reminder_off_on
+            } else {
+                R.string.lottie_reminder_on_off
+            }
         )
 
         LottieCompositionFactory.fromUrl(context, lottieUrl)
@@ -124,15 +128,18 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                 binding.viewPlayWidgetActionButton.lottieAction.show()
 
-                if (animate) binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
-                else binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
+                if (animate) {
+                    binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
+                } else {
+                    binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
+                }
             }
 
         binding.viewPlayWidgetActionButton.root.setOnClickListener {
             mListener?.onReminderClicked(
                 this,
                 mModel,
-                mModel.reminderType.switch(),
+                mModel.reminderType.switch()
             )
         }
     }
@@ -146,16 +153,20 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         }
     }
 
+    companion object {
+        private const val DURATION_ACTION_TRANSITION = 200L
+    }
+
     interface Listener {
         fun onReminderClicked(
             view: PlayWidgetCardCarouselUpcomingView,
             item: PlayWidgetChannelUiModel,
-            reminderType: PlayWidgetReminderType,
+            reminderType: PlayWidgetReminderType
         )
 
         fun onPartnerClicked(
             view: PlayWidgetCardCarouselUpcomingView,
-            item: PlayWidgetChannelUiModel,
+            item: PlayWidgetChannelUiModel
         )
 
         fun onOverlayClicked(
