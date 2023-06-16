@@ -60,7 +60,7 @@ internal class MultiProductSearchGeneralSearchTrackingTest : MultiProductSearchT
         val expectedGeneralSearchTracking = GeneralSearchTrackingMPS(
             eventLabel = String.format(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
-                "$keyword1 ^ $keyword2 ^ $keyword3",
+                "$keyword1^$keyword2^$keyword3",
                 mpsModel.searchShopMPS.header.treatmentCode,
                 "0",
                 SearchEventTracking.PHYSICAL_GOODS,
@@ -89,7 +89,7 @@ internal class MultiProductSearchGeneralSearchTrackingTest : MultiProductSearchT
         val expectedGeneralSearchTracking = GeneralSearchTrackingMPS(
             eventLabel = String.format(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
-                "$keyword1 ^ $keyword2 ^ $keyword3",
+                "$keyword1^$keyword2^$keyword3",
                 mpsModel.searchShopMPS.header.treatmentCode,
                 "1",
                 SearchEventTracking.PHYSICAL_GOODS,
@@ -122,7 +122,7 @@ internal class MultiProductSearchGeneralSearchTrackingTest : MultiProductSearchT
         val expectedGeneralSearchTracking = GeneralSearchTrackingMPS(
             eventLabel = String.format(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
-                "$keyword1 ^ $keyword2 ^ $keyword3",
+                "$keyword1^$keyword2^$keyword3",
                 mpsModel.searchShopMPS.header.treatmentCode,
                 "1",
                 SearchEventTracking.PHYSICAL_GOODS,

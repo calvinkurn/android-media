@@ -54,7 +54,7 @@ data class GeneralSearchTrackingMPS(
         }
 
         private fun Map<String, String>.joinMpsQueryString(
-            separator: String = " ^ "
+            separator: String = "^"
         ): String {
             val keywords = mutableListOf<String>().also {
                 it.addIfKeyExist(this, SearchApiConst.Q1)
