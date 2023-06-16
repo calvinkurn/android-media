@@ -38,21 +38,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun setUpWebViewClient() {
-        webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                val uri = Uri.parse(url)
-                if(uri.host == "www.youtube.com" || uri.host == "m.youtube.com") {
-                    context?.let { openYoutubeVideo(it, uri) }
-                    return true
-                }
-                return false
-            }
-
-            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
-                customViewInterface?.renderProcessKilled()
-                return true
-            }
-        }
         webChromeClient = object : WebChromeClient() {
             override fun onShowCustomView(view: View, callback: CustomViewCallback?) {
                 super.onShowCustomView(view, callback)
@@ -137,75 +122,94 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun getYoutubePlayerHtml(): String {
-        return "<html>\n" +
-                "  <body style =\"padding: 0;margin: 0\">\n" +
-                "    <div id=\"player\"></div>\n" +
-                "\n" +
-                "    <script>\n" +
-                "      var tag = document.createElement('script');\n" +
-                "\n" +
-                "      tag.src = \"https://www.youtube.com/iframe_api\";\n" +
-                "      tag.defer = true;\n" +
-                "      var firstScriptTag = document.getElementsByTagName('script')[0];\n" +
-                "      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);\n" +
-                "\n" +
-                "      var player;\n" +
-                "      function onYouTubeIframeAPIReady() {\n" +
-                "        player = new YT.Player('player', {\n" +
-                "          height: '100%',\n" +
-                "          width: '100%',\n" +
-                "          playerVars: {\n" +
-                "            'rel': 0,\n" +
-                "            'modestbranding': 1\n" +
-                "          }," +
-                "          events: {\n" +
-                "            'onReady': onPlayerReady,\n"+
-                "            'onStateChange': onPlayerStateChange\n" +
-                "          }\n" +
-                "        });\n" +
-                "      }\n" +
-                "\n" +
-                "      function onPlayerStateChange(event) {\n" +
-                "          jsInterface.onStateChanged(event.data, player.getCurrentTime());\n" +
-                "      }\n" +
-                "      function onPlayerReady(event) {\n" +
-                "          jsInterface.onReady();\n" +
-                "      }\n" +
-                "      function cueVideo(videoId, startSeconds) {\n" +
-                "          player.cueVideoById(videoId, startSeconds);\n" +
-                "      }\n" +
-                "      function loadVideo(videoId, startSeconds) {\n" +
-                "          player.loadVideoById(videoId, startSeconds);\n" +
-                "      }\n" +
-                "      function playVideo() {\n" +
-                "         player.playVideo();\n" +
-                "      }\n"+
-                "      function pauseVideo() {\n" +
-                "         player.pauseVideo();\n" +
-                "      }\n"+
-                "      function mute() {\n" +
-                "         player.mute();\n" +
-                "      }\n" +
-                "      function unMute() {\n" +
-                "         player.unMute();\n" +
-                "      }\n"+
-                "    </script>\n" +
-                "  </body>\n" +
-                "</html>"
-    }
+        return """
+            <!DOCTYPE html>
+            <html>
+              <style type="text/css">
+                    html, body {
+                        height: 100%;
+                        width: 100%;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #000000;
+                        overflow: hidden;
+                        position: fixed;
+                    }
+                </style>
 
-    fun openYoutubeVideo(context: Context, uri: Uri) {
-        val webIntent = Intent(
-            Intent.ACTION_VIEW,
-            uri
-        )
-        context.startActivity(webIntent)
+              <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <!-- defer forces the library to execute after the html page is fully parsed. -->
+                <!-- This is needed to avoid race conditions, where the library executes and calls `onYouTubeIframeAPIReady` before the page is fully parsed. -->
+                <!-- See #873 on GitHub -->
+                <script defer src="https://www.youtube.com/iframe_api"></script>
+              </head>
+
+              <body>
+                <div id="player"></div>
+              </body>
+
+              <script type="text/javascript">
+                var player;
+
+                function onYouTubeIframeAPIReady() {
+
+                	player = new YT.Player('player', {
+                			
+                    height: '100%',
+                	width: '100%',
+
+                    events: {
+                	    onReady: function(event) { jsInterface.onReady() },
+                		  onStateChange: function(event) { jsInterface.onStateChanged(event.data, player.getCurrentTime()) },
+                		  onError: function(error) { console.log(error) }
+                	  },
+
+                  });
+                }
+
+                // JAVA to WEB functions
+
+                function seekTo(startSeconds) {
+                  player.seekTo(startSeconds, true);
+                }
+
+                function pauseVideo() {
+                  player.pauseVideo();
+                }
+
+                function playVideo() {
+                  player.playVideo();
+                }
+
+                function loadVideo(videoId, startSeconds) {
+                  player.loadVideoById(videoId, startSeconds);
+                }
+
+                function cueVideo(videoId, startSeconds) {
+                  player.cueVideoById(videoId, startSeconds);
+                }
+
+                function mute() {
+                  player.mute();
+                }
+
+                function unMute() {
+                  player.unMute();
+                }
+
+                function toggleFullscreen() {
+                  player.toggleFullscreen();
+                }
+
+              </script>
+            </html>
+        """.trimIndent()
     }
 
     fun release() {
         mainThread.removeCallbacksAndMessages(null)
         destroy()
     }
-
 
 }
