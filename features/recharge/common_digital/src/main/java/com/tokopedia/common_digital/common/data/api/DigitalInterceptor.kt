@@ -98,6 +98,5 @@ class DigitalInterceptor(@ApplicationContext context: Context,
 
     init {
         authKey = digitalAuthKey
-        this.context = context
     }
 }
