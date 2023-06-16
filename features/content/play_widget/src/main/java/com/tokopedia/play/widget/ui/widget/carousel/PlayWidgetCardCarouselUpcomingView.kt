@@ -56,6 +56,8 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
 
     private val offset12 = resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12)
 
+    private val downloadedLottieSet = mutableSetOf<Int>()
+
     init {
         preloadLottie()
         showReminderButton(false, animate = false)
@@ -129,35 +131,27 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     }
 
     fun setReminded(shouldRemind: Boolean, animate: Boolean = false) {
-        val lottieUrl = context.getString(
-            if (shouldRemind) {
-                R.string.lottie_reminder_off_on
-            } else {
-                R.string.lottie_reminder_on_off
-            }
-        )
+        val lottieRes = if (shouldRemind) {
+            R.string.lottie_reminder_off_on
+        } else {
+            R.string.lottie_reminder_on_off
+        }
 
-        LottieCompositionFactory.fromUrl(context, lottieUrl)
-            .addFailureListener {
-                binding.viewPlayWidgetActionButton.lottieAction.hide()
-
-                binding.viewPlayWidgetActionButton.iconActionFallback.setImage(
-                    if (shouldRemind) IconUnify.BELL_FILLED else IconUnify.BELL
-                )
-                binding.viewPlayWidgetActionButton.iconActionFallback.show()
-            }
-            .addListener { composition ->
-                binding.viewPlayWidgetActionButton.iconActionFallback.hide()
-
-                binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
-                binding.viewPlayWidgetActionButton.lottieAction.show()
-
-                if (animate) {
+        if (!downloadedLottieSet.contains(lottieRes) || !animate) {
+            binding.viewPlayWidgetActionButton.lottieAction.hide()
+            binding.viewPlayWidgetActionButton.iconActionFallback.setImage(
+                if (shouldRemind) IconUnify.BELL_FILLED else IconUnify.BELL
+            )
+            binding.viewPlayWidgetActionButton.iconActionFallback.show()
+        } else {
+            LottieCompositionFactory.fromUrl(context, context.getString(lottieRes))
+                .addListener { composition ->
+                    binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+                    binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
+                    binding.viewPlayWidgetActionButton.lottieAction.show()
                     binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
-                } else {
-                    binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
                 }
-            }
+        }
 
         binding.viewPlayWidgetActionButton.root.setOnClickListener {
             mListener?.onReminderClicked(
@@ -172,8 +166,11 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         listOf(
             R.string.lottie_reminder_off_on,
             R.string.lottie_reminder_on_off
-        ).forEach {
-            LottieCompositionFactory.fromUrl(context, context.getString(it))
+        ).forEach { res ->
+            LottieCompositionFactory.fromUrl(context, context.getString(res))
+                .addListener {
+                    downloadedLottieSet.add(res)
+                }
         }
     }
 
