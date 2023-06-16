@@ -5,8 +5,8 @@
     >
 
     <gradient
-        android:startColor="@color/Unify_NN900_70"
-        android:endColor="@color/transparent"
+        android:startColor="@color/play_widget_carousel_dms_bottom_overlay_start"
+        android:endColor="@color/play_widget_dms_transparent"
         android:angle="90"
         />
 
