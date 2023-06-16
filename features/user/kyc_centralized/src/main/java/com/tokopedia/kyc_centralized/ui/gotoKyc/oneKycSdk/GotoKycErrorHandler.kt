@@ -3,12 +3,17 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 import android.app.Activity
 import android.widget.Toast
 import com.gojek.kyc.plus.utils.KycSdkErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import javax.inject.Inject
+import com.tokopedia.kyc_centralized.R
 
-//TODO: change implementation when OneKycSDK final was ready
 class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
     override fun onUserAuthenticationFailed(activity: Activity) {
-        Toast.makeText(activity.applicationContext, "Launch Login flow", Toast.LENGTH_SHORT).show()
+        if (!activity.isFinishing) {
+            val gotoLogin = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN)
+            activity.startActivity(gotoLogin)
+        }
     }
 
     override fun showNoInternetConnectionDialog(
@@ -16,7 +21,9 @@ class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
         ctaClickListener: () -> Unit,
         userDismissListener: () -> Unit
     ) {
-        Toast.makeText(activity.applicationContext, "No internet connection", Toast.LENGTH_SHORT).show()
+        if (!activity.isFinishing) {
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.goto_kyc_internet_issue), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun showSomethingWentWrongDialog(
@@ -27,6 +34,8 @@ class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
         onClickCta: () -> Unit,
         userDismissListener: () -> Unit
     ) {
-        Toast.makeText(activity.applicationContext, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show()
+        if (!activity.isFinishing) {
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.goto_kyc_error_from_be), Toast.LENGTH_SHORT).show()
+        }
     }
 }

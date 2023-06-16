@@ -296,5 +296,6 @@
     <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
+    <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
 
 </resources>
