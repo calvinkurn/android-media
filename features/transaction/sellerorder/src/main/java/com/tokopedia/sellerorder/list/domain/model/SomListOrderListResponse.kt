@@ -13,8 +13,18 @@ data class SomListOrderListResponse(
     data class Data(
         @SerializedName("orderList")
         @Expose
-        val orderList: OrderList = OrderList()
+        val orderList: OrderList = OrderList(),
+        @SerializedName("empty_state")
+        val emptyState: EmptyState? = null
     ) {
+        data class EmptyState(
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("subtitle")
+            val subTitle: String = "",
+            @SerializedName("image_url")
+            val imageUrl: String = ""
+        )
         data class OrderList(
             @SerializedName("cursor_order_id")
             @Expose

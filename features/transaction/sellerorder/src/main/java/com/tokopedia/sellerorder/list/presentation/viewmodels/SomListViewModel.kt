@@ -50,7 +50,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListFilterUtil
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopadmin.common.util.AccessId
@@ -119,9 +119,9 @@ class SomListViewModel @Inject constructor(
     val somListHeaderIconsInfoResult: LiveData<Result<SomListHeaderIconsInfoUiModel>>
         get() = _somListHeaderIconsInfoResult
 
-    private val _orderListResult = MutableLiveData<Result<List<SomListOrderUiModel>>>()
-    val orderListResult: LiveData<Result<List<SomListOrderUiModel>>>
-        get() = _orderListResult
+    private val _orderListWrapperResult = MutableLiveData<Result<SomListOrderWrapperUiModel>>()
+    val orderListWrapperResult: LiveData<Result<SomListOrderWrapperUiModel>>
+        get() = _orderListWrapperResult
 
     private val _refreshOrderResult = MutableLiveData<Result<OptionalOrderData>>()
     val refreshOrderResult: LiveData<Result<OptionalOrderData>>
@@ -576,10 +576,10 @@ class SomListViewModel @Inject constructor(
                 val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
                 getOrderListParams.nextOrderId = result.first.toLongOrZero()
-                _orderListResult.postValue(Success(result.second))
+                _orderListWrapperResult.postValue(Success(SomListOrderWrapperUiModel(result.second, result.third)))
             }
         }, onError = {
-                _orderListResult.postValue(Fail(it))
+                _orderListWrapperResult.postValue(Fail(it))
             }).apply { updateLoadOrderStatus(this) }
     }
 
@@ -596,7 +596,7 @@ class SomListViewModel @Inject constructor(
                 waitForGetFiltersCompleted()
                 withContext(dispatcher.main) {
                     refreshOrderJobs.remove(refreshOrder)
-                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull(), result.third))
                 }
             }, onError = {
                     withContext(dispatcher.main) {

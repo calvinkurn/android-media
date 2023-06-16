@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.domain.mapper
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
+import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import javax.inject.Inject
 
@@ -54,6 +55,16 @@ class OrderListMapper @Inject constructor() {
                 buttons = mapButtons(it.buttons),
                 searchParam = keyword,
                 orderPlusData = mapOrderPlusData(it.plusData)
+            )
+        }
+    }
+
+    fun mapToEmptyState(emptyState: SomListOrderListResponse.Data.EmptyState?): SomListEmptyStateUiModel? {
+        return emptyState?.let {
+            SomListEmptyStateUiModel(
+                title = it.title,
+                description = it.subTitle,
+                imageUrl = it.imageUrl
             )
         }
     }

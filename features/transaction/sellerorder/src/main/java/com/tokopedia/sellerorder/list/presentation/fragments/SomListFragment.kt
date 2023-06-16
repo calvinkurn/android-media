@@ -129,6 +129,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiMod
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListMultiSelectSectionUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListCoachMarkManager
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
@@ -1024,7 +1025,7 @@ open class SomListFragment :
     }
 
     private fun observeOrderList() {
-        viewModel.orderListResult.observe(viewLifecycleOwner) { result ->
+        viewModel.orderListWrapperResult.observe(viewLifecycleOwner) { result ->
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             somListBinding?.rvSomList?.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
@@ -1772,8 +1773,8 @@ open class SomListFragment :
         }
     }
 
-    private fun showEmptyState() {
-        val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
+    private fun showEmptyState(emptyStateUiModel: SomListEmptyStateUiModel? = null) {
+        val newItems = arrayListOf(createSomListEmptyStateModel(emptyStateUiModel, viewModel.isTopAdsActive()))
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
@@ -2127,34 +2128,34 @@ open class SomListFragment :
         }
     }
 
-    protected open fun renderOrderList(data: List<SomListOrderUiModel>) {
+    protected open fun renderOrderList(data: SomListOrderWrapperUiModel) {
         skipSearch = false
         if (somListBinding?.rvSomList?.visibility != View.VISIBLE) somListBinding?.rvSomList?.show()
         // show only if current order list is based on current search keyword
-        if (isLoadingInitialData && data.isEmpty()) {
-            showEmptyState()
+        if (isLoadingInitialData && data.somListOrders.isEmpty()) {
+            showEmptyState(data.somListEmptyStateUiModel)
             toggleBulkActionButtonVisibility()
-        } else if (data.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
+        } else if (data.somListOrders.firstOrNull()?.searchParam == somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.toString().orEmpty()) {
             if (isLoadingInitialData) {
                 val shouldShowMultiSelectSection = somListOrderStatusFilterTab
                     ?.shouldShowBulkAction()
                     ?.and(canMultiAcceptOrder)
                     .orFalse()
-                    .and(data.isNotEmpty())
+                    .and(data.somListOrders.isNotEmpty())
                 val newItems = if (shouldShowMultiSelectSection) {
-                    ArrayList<Visitable<SomListAdapterTypeFactory>>(data).apply {
+                    ArrayList<Visitable<SomListAdapterTypeFactory>>(data.somListOrders).apply {
                         add(
                             Int.ZERO,
                             SomListMultiSelectSectionUiModel(
                                 isEnabled = viewModel.isMultiSelectEnabled,
                                 totalOrder = somListOrderStatusFilterTab?.getSelectedFilterOrderCount().orZero(),
                                 totalSelected = Int.ZERO,
-                                totalSelectable = data.count { !it.isOrderWithCancellationRequest() }
+                                totalSelectable = data.somListOrders.count { !it.isOrderWithCancellationRequest() }
                             )
                         )
                     }
                 } else {
-                    data
+                    data.somListOrders
                 }
                 (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
                 toggleBulkActionButtonVisibility()
@@ -2168,7 +2169,7 @@ open class SomListFragment :
                 val newItems = ArrayList(adapter.data)
                 val multiSelectSectionIndex = newItems.indexOfFirst { it is SomListMultiSelectSectionUiModel }
                 val emptyStateIndex = newItems.size.dec()
-                val updatedData = data.map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
+                val updatedData = data.somListOrders.map { it.copy(multiSelectEnabled = viewModel.isMultiSelectEnabled) }
                 newItems.addAll(updatedData)
                 newItems.getOrNull(multiSelectSectionIndex)?.let {
                     if (it is SomListMultiSelectSectionUiModel) {
@@ -2206,7 +2207,7 @@ open class SomListFragment :
             toggleBulkAction(false)
             toggleBulkAction(false)
             toggleBulkActionButtonVisibility()
-            showEmptyState()
+            showEmptyState(result.somListEmptyStateUiModel)
         }
     }
 
@@ -2224,7 +2225,7 @@ open class SomListFragment :
         }
     }
 
-    private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
+    private fun createSomListEmptyStateModel(somListEmptyStateUiModel: SomListEmptyStateUiModel?, isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
         val isSellerApp = GlobalConfig.isSellerApp()
         val isNewOrderFilterSelected = somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
         val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(
@@ -2242,17 +2243,24 @@ open class SomListFragment :
                 buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
                 showButton = true
             )
-        } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
-            SomListEmptyStateUiModel(
-                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
-                title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title).orEmpty()
-            )
         } else {
-            SomListEmptyStateUiModel(
-                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
-                title = context?.resources?.getString(R.string.empty_peluang_title).orEmpty(),
-                description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter).orEmpty()
-            )
+            somListEmptyStateUiModel.let {
+                it ?: if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
+                    SomListEmptyStateUiModel(
+                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
+                        title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title)
+                            .orEmpty()
+                    )
+                } else {
+                    SomListEmptyStateUiModel(
+                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
+                        title = context?.resources?.getString(R.string.empty_peluang_title)
+                            .orEmpty(),
+                        description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter)
+                            .orEmpty()
+                    )
+                }
+            }
         }
     }
 
