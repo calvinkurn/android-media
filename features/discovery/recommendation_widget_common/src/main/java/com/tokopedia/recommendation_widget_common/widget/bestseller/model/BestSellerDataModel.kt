@@ -28,6 +28,7 @@ data class BestSellerDataModel(
         var dividerSize: Int = 1,
         val channelHeader: ChannelHeader = ChannelHeader()
 ) : RecommendationVisitable{
+
     override fun visitableId(): String? {
         return id
     }
