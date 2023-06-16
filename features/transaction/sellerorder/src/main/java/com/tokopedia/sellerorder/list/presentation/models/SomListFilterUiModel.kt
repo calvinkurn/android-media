@@ -8,7 +8,8 @@ data class SomListFilterUiModel(
     val sortByList: List<SortBy> = listOf(),
     var refreshOrder: Boolean = true,
     val fromCache: Boolean,
-    val quickFilterList: List<QuickFilter> = listOf()
+    val quickFilterList: List<QuickFilter> = listOf(),
+    val highLightedStatusKey: String = ""
 ) {
 
     fun mergeWithCurrent(getOrderListParam: SomListGetOrderListParam, tabActiveFromAppLink: String) {

@@ -13,8 +13,8 @@ object SomFilterUtil {
     }
 
     fun getDefaultSortBy(orderStatusFilterKey: String): Long {
-        return if (orderStatusFilterKey == SomConsts.KEY_CONFIRM_SHIPPING) {
-            SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
+        return if (orderStatusFilterKey in listOf(SomConsts.STATUS_NEW_ORDER, SomConsts.KEY_CONFIRM_SHIPPING)) {
+            SomConsts.SORT_BY_DEADLINE_DATE_ASCENDING
         } else {
             SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING
         }

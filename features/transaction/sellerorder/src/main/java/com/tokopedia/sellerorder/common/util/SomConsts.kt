@@ -28,6 +28,7 @@ object SomConsts {
 
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
+    const val STATUS_CONFIRM_SHIPPING = "confirm_shipping"
 
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
@@ -137,6 +138,7 @@ object SomConsts {
     const val SORT_BY_PAYMENT_DATE_ASCENDING = 0L
     const val SORT_BY_TOTAL_OPEN_DESCENDING = 1L
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
+    const val SORT_BY_DEADLINE_DATE_ASCENDING = 2L
 
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = TokopediaImageUrl.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION

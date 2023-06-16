@@ -10,9 +10,10 @@ class FilterResultMapper @Inject constructor() {
     fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data, fromCache: Boolean): SomListFilterUiModel {
         return SomListFilterUiModel(
             quickFilterList = mapQuickFilterList(resultFilterList.orderFilterSom.quickFilterList),
-            statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
+            statusList = mapStatusList(resultFilterList.orderFilterSom.statusList, resultFilterList.orderFilterSom.highLightedStatusKey),
             sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
-            fromCache = fromCache
+            fromCache = fromCache,
+            highLightedStatusKey = resultFilterList.orderFilterSom.highLightedStatusKey
         )
     }
 
@@ -27,7 +28,7 @@ class FilterResultMapper @Inject constructor() {
         }
     }
 
-    private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>): List<SomListFilterUiModel.Status> {
+    private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>, highLightedStatusKey: String): List<SomListFilterUiModel.Status> {
         return statusList.map {
             SomListFilterUiModel.Status(
                 key = it.key,
@@ -43,7 +44,17 @@ class FilterResultMapper @Inject constructor() {
                         isChecked = it.isChecked
                     )
                 },
-                isChecked = it.isChecked
+                isChecked = if (highLightedStatusKey in
+                    listOf(
+                            SomConsts.STATUS_ALL_ORDER,
+                            SomConsts.STATUS_NEW_ORDER,
+                            SomConsts.STATUS_CONFIRM_SHIPPING
+                        )
+                ) {
+                    true
+                } else {
+                    it.isChecked
+                }
             )
         }.run {
             if (containsAllStatusOrderFilter()) {

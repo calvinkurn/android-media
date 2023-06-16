@@ -89,7 +89,7 @@ class SomListOrderStatusFilterTab(
         )
     }
 
-    inner class TabSelectedListener: TabLayout.OnTabSelectedListener {
+    inner class TabSelectedListener : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             somListFilterUiModel?.statusList?.getOrNull(tab?.position ?: -1)?.let { selected ->
                 selected.isChecked = true
