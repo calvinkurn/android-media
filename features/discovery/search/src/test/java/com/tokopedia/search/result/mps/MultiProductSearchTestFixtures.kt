@@ -7,7 +7,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.mps.analytics.MPSTracking
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
-import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
