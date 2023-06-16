@@ -51,6 +51,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
         }
     }
     override fun onDestroy() {
+        youtubeWebView?.pause()
         destroyYoutubeWebView()
         super.onDestroy()
     }
