@@ -254,7 +254,7 @@ class ShipmentCostViewHolder(
                 } else {
                     mTvPlatformSlashedFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 }
 
                 if (platformFeeModel.isShowTooltip) {
