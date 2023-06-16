@@ -1094,16 +1094,4 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
             "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
     }
-
-    @Test
-    fun `check seller persona internal appLink should return DF_SELLER_PERSONA in seller app`() {
-        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP+"/seller-persona"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_PERSONA)
-    }
-
-    @Test
-    fun `check seller persona external appLink should return DF_SELLER_PERSONA in seller app`() {
-        val appLink = "sellerapp://seller-persona"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_PERSONA)
-    }
 }

@@ -40,7 +40,6 @@ class ContentCoachMarkSharedPref @Inject constructor(
         PerformanceDashboardEntryPointBanner("performance_dashboard_entry_point_banner"),
         PlayShortsEntryPoint("play_shorts_entry_point"),
         PlayShortsPreparation("play_shorts_preparation"),
-        PerformanceDashboardEntryPointShopPage("play_shorts_preparation_shop_page"),
         ProductCommission("product_commission"),
         ProductSummaryCommission("product_summary_commission"),
         Unknown("")
