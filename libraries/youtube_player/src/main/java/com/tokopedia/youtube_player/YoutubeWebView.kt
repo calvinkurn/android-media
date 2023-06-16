@@ -10,7 +10,6 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
@@ -53,9 +52,14 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
         setUpWebViewClient()
-        loadUrl("about:blank")
+//        loadUrl("about:blank")
         mainThread.post {
-            loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
+            val baseUrl = "https://www.journaldev.com"
+            val data = "Relative Link"
+            val mimeType = "text/html"
+            val encoding = "UTF-8"
+            val historyUrl = "https://www.journaldev.com"
+            loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
         }
     }
 
