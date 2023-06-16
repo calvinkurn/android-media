@@ -15,7 +15,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 
 const val MPSSuccessJSON = "mps/mps.json"
 const val MPSLoadMoreSuccessJSON = "mps/mps-load-more.json"
