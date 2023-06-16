@@ -13,12 +13,12 @@ data class UniversalInboxWidgetDataResponse(
     @SerializedName("subtext")
     val subtext: String = "",
 
-    @SerializedName("applink")
+    @SerializedName("androidApplink")
     val applink: String = "",
 
     @SerializedName("type")
     val type: Int = Int.ZERO,
 
-    @SerializedName("is_dynamic")
-    var isDynamic: Boolean = false
+    @SerializedName("isDynamic")
+    val isDynamic: Boolean = false
 )

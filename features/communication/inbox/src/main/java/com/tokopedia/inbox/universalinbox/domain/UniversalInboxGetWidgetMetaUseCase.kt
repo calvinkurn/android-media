@@ -19,9 +19,9 @@ class UniversalInboxGetWidgetMetaUseCase @Inject constructor(
               icon
               title
               subtext
-              applink
+              androidApplink
               type
-              is_dynamic
+              isDynamic
             }
           }
         }
