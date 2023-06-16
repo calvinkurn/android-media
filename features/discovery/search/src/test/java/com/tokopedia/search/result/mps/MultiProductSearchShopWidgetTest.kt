@@ -266,7 +266,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         val duplicateShopId = loadMoreMPSModel.shopList.filter {
                 shop -> firstPageMPSModel.shopList.any { it.id == shop.id }
         }.map { it.id }
-        val secondPageShopListSize =secondPageShopListNotDuplicate.size
+        val secondPageShopListSize = secondPageShopListNotDuplicate.size
         val totalShopCount = firstPageShopListSize + secondPageShopListSize
         val allShopWidgetVisitableList = mpsVisitableList.filterIsInstance<MPSShopWidgetDataView>()
 
