@@ -58,7 +58,7 @@
 
     <!--scp-rewards-->
     <string name="host_scp_rewards">scp-rewards</string>
-    <string name="path_scp_rewards_medal_cabinet">/medali/.*</string>
+    <string name="path_scp_rewards_medal_cabinet">/medali/*</string>
     <string name="path_scp_rewards_medal_detail">/medali/detail/.*</string>
     <string name="path_scp_rewards_celebration">/celebration/.*</string>
 </resources>

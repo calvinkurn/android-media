@@ -23,6 +23,12 @@ import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
+import com.tokopedia.scp_rewards.common.data.Error
+import com.tokopedia.scp_rewards.common.data.Loading
+import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.data.Error
+import com.tokopedia.scp_rewards.common.data.Loading
+import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.constants.MedalType
@@ -43,7 +49,6 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     var viewModelFactory: ViewModelFactory? = null
 
     private var medaliSlug = ""
-    private var sourceName = ""
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory!!)[MedalCabinetViewModel::class.java]
@@ -56,11 +61,10 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.intent?.let {
-            medaliSlug = it.data?.pathSegments?.last() ?: ""
-            sourceName = it.extras?.getString(
+            medaliSlug = it.extras?.getString(
                 ApplinkConstInternalPromo.SOURCE_PARAM,
-                TrackerConstants.General.SOURCE_OTHER_PAGE
-            ) ?: TrackerConstants.General.SOURCE_OTHER_PAGE
+                ""
+            ) ?: ""
         }
     }
 
@@ -75,6 +79,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        medalCabinetViewModel.medaliSlug = medaliSlug
+        medalCabinetViewModel.getHomePage()
         setupToolbar(binding.toolbar)
         setTopBottomMargin()
         setupScrollListener()
@@ -82,6 +88,13 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     }
 
     private fun setupViewModelObservers() {
+        medalCabinetViewModel.cabinetLiveData.observe(viewLifecycleOwner){
+            when(it){
+                is Success<*> -> {}
+                is Loading -> {}
+                is Error -> {}
+            }
+        }
         val data = listOf<MedalData>(
             MedalData(
                 "Earned medal",
