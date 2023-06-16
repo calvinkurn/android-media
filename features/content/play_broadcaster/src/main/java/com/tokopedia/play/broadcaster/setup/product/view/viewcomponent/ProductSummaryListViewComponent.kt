@@ -50,8 +50,8 @@ internal class ProductSummaryListViewComponent(
                 }
 
                 addAll(section.products.map { product ->
-                    productIdx += 1
-                    ProductSummaryAdapter.Model.Body(product.copy(number = productIdx.toString()), isEligibleForPin, isProductNumerationShown)
+                    productIdx += 1 //if numeration is not available / in prep page use hard-coded
+                    ProductSummaryAdapter.Model.Body(product.copy(number = product.number.ifBlank { "$productIdx" }), isEligibleForPin, isProductNumerationShown)
                 })
             }
         }
