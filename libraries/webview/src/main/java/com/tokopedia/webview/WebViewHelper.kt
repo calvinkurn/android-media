@@ -12,6 +12,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -427,10 +428,11 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false): Intent {
+    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false, disableGallery: Boolean = false): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
             modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
+            pageType(if (disableGallery) PageType.CAMERA else PageType.COMMON)
             singleSelectionMode()
         }
     }
