@@ -37,8 +37,4 @@
             <enum name="resource" value="2"/>
         </attr>
     </declare-styleable>
-
-    <declare-styleable name="NestedScrollableHost">
-        <attr name="lockScroll" format="boolean"/>
-    </declare-styleable>
 </resources>
