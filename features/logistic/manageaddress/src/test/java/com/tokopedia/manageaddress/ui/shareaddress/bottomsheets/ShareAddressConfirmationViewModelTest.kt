@@ -140,8 +140,6 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
-            dismissObs.onChanged(null)
-            loadingObs.onChanged(ShareAddressConfirmationViewModel.LoadingState.NotLoading)
             finishPageObs.onChanged(null)
         }
     }

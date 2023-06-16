@@ -25,7 +25,7 @@ class ShareAddressConfirmationViewModel @Inject constructor(
 
     private val _leavePageEvent = SingleLiveEvent<Unit>()
     val leavePageEvent: LiveData<Unit>
-        get() = _dismissEvent
+        get() = _leavePageEvent
 
     private val _toastEvent = SingleLiveEvent<Toast>()
     val toastEvent: LiveData<Toast>
@@ -65,15 +65,12 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 }
                 if (result.isSuccess) {
                     _toastEvent.value = Toast.Success
-                    _loading.value = LoadingState.NotLoading
-                    _dismissEvent.call()
                     _leavePageEvent.call()
+                    return@launch
                 } else {
                     if (param.approve) {
                         _toastEvent.value = Toast.Error(result.errorMessage)
                     }
-                    _loading.value = LoadingState.NotLoading
-                    _dismissEvent.call()
                 }
             } catch (e: Exception) {
                 _toastEvent.value = Toast.Error(e.message.orEmpty())
@@ -82,9 +79,9 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 } else {
                     ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
                 }
-                _loading.value = LoadingState.NotLoading
-                _dismissEvent.call()
             }
+            _loading.value = LoadingState.NotLoading
+            _dismissEvent.call()
         }
     }
 
