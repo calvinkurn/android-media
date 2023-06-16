@@ -145,6 +145,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      var tag = document.createElement('script');\n" +
                 "\n" +
                 "      tag.src = \"https://www.youtube.com/iframe_api\";\n" +
+                "      tag.defer = true;\n" +
                 "      var firstScriptTag = document.getElementsByTagName('script')[0];\n" +
                 "      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);\n" +
                 "\n" +
