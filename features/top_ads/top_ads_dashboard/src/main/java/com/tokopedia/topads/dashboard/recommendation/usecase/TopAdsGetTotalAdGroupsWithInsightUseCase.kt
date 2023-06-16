@@ -39,7 +39,6 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
     private fun createRequestParam(adGroupTypeList: List<String>, source: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(ParamObject.SHOP_ID, userSession.shopId)
-//        requestParams.putString(SOURCE, "gql.get_total_ad_groups_with_insight_by_shop_id.test")
         requestParams.putString(SOURCE, source)
         requestParams.putObject(
             FILTER,

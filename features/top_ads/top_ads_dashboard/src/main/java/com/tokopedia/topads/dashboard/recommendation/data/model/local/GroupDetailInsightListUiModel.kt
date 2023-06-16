@@ -1,16 +1,16 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 class GroupDetailInsightListUiModel(
-    private val title: String = "Coba cek dan maksimalkan iklanmu yang lain, ya.",
     val adGroups: MutableList<InsightListUiModel> = mutableListOf(),
     var insightType: Int = 0
 ) :
     GroupDetailDataModel {
 
     override fun type(): String {
-        return "4"
+        return TYPE_EMPTY_STATE.toString()
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

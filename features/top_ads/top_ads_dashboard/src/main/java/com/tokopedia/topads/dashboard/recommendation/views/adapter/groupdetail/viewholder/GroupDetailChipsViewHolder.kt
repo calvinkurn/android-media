@@ -43,6 +43,7 @@ class GroupDetailChipsViewHolder(private val view: View, private val onChipClick
     }
 
     fun onViewAttachedToWindow() {
+        adapter?.notifyDataSetChanged()
         chipsRv.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
     }
 

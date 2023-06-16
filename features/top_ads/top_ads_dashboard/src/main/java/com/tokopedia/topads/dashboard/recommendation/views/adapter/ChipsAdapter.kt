@@ -32,7 +32,7 @@ class ChipsAdapter(private val onChipClick: (List<SaranTopAdsChipsUiModel>, Int)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.topads_layout, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.topads_insight_chips_item_layout, parent, false)
         return TopAdsViewHolder(view)
     }
 

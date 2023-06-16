@@ -18,6 +18,8 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_INSIGHT_MUTATION_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_INSIGHT_MUTATION_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
@@ -29,7 +31,15 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
@@ -95,7 +105,7 @@ class GroupDetailViewModel @Inject constructor(
     ) {
         val list =
             mutableListOf(
-                if (PRODUCT_KEY == adType) "Iklan Produk" else "Iklan Toko",
+                if (PRODUCT_KEY == adType) TAB_NAME_PRODUCT else TAB_NAME_SHOP,
                 adGroupName ?: ""
             )
         groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
@@ -106,17 +116,16 @@ class GroupDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
                 val data = topAdsListAllInsightCountsUseCase(
-//                    source = "gql.list_all_insight_counts.test",
                     source = SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE,
                     adGroupType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY,
-                    insightType = 0
+                    insightType = TYPE_INSIGHT
                 )
                 loadDetailPage(
                     adType,
                     data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: ""
                 )
                 val list = mutableListOf(
-                    if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
+                    if (adType == TYPE_PRODUCT_VALUE) TAB_NAME_PRODUCT else TAB_NAME_SHOP,
                     data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
                 )
                 groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
@@ -134,7 +143,7 @@ class GroupDetailViewModel @Inject constructor(
                 )
 
                 val list = mutableListOf(
-                    if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
+                    if (adType == TYPE_PRODUCT_VALUE) TAB_NAME_PRODUCT else TAB_NAME_SHOP,
                     groupName
                 )
                 groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =

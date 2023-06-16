@@ -3,12 +3,12 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.dashboard.databinding.ViewholderItemListBinding
+import com.tokopedia.topads.dashboard.databinding.TopadsInsightCentreInsightSelctionItemBinding
 import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
 
 class ItemListViewHolder(
-    private val viewBinding: ViewholderItemListBinding,
+    private val viewBinding: TopadsInsightCentreInsightSelctionItemBinding,
     private val listener: OnItemSelectChangeListener
 ) : AbstractViewHolder<ItemListUiModel>(viewBinding.root) {
 
@@ -44,7 +44,7 @@ class ItemListViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT_RES = com.tokopedia.topads.dashboard.R.layout.viewholder_item_list
+        val LAYOUT_RES = com.tokopedia.topads.dashboard.R.layout.topads_insight_centre_insight_selction_item
 
     }
 }

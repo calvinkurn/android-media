@@ -8,17 +8,16 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
-
 class GroupDetailInsightListViewHolder(
-    private val view1: View,
+    private val view: View,
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit
 ) :
-    AbstractViewHolder<GroupDetailInsightListUiModel>(view1) {
+    AbstractViewHolder<GroupDetailInsightListUiModel>(view) {
     private val insightListAdapter = InsightListAdapter(onInsightItemClick)
-    private var groupCardRecyclerView: RecyclerView = view1.findViewById(R.id.groupCardRecyclerView)
+    private var groupCardRecyclerView: RecyclerView = view.findViewById(R.id.groupCardRecyclerView)
     private val layoutManager by lazy {
         LinearLayoutManager(
-            view1.context,
+            view.context,
             LinearLayoutManager.VERTICAL,
             false
         )

@@ -42,11 +42,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
+        app:unifyEmptyStateDescription="@string/topads_insight_global_error_description"
         app:unifyEmptyStateImageDrawable="@drawable/recommendation_empty_state"
         app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStatePrimaryCTAText="Coba Lagi"
-        app:unifyEmptyStateTitle="Ada gangguan di rumah Toped!"
+        app:unifyEmptyStateTitle="@string/topads_insight_global_error_title"
         app:unifyEmptyStateType="page" />
 
     <com.tokopedia.unifycomponents.UnifyButton

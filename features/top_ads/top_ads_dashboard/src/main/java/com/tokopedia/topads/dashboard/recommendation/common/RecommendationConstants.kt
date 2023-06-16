@@ -34,6 +34,7 @@ object RecommendationConstants {
     const val INVALID_INSIGHT_TYPE = -1
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
+    const val INSIGHT_COUNT_PLACE_HOLDER = 10
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"
@@ -51,10 +52,22 @@ object RecommendationConstants {
     const val INSIGHT_DAILY_BUDGET_MAX_BID = 10000000
     const val INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE = 10000
     const val INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE = 400
+    const val PARAM_INSIGHT_TYPE = "insight_type"
+    const val PARAM_AD_TYPE = "ad_type"
+    const val PARAM_INSIGHT_TYPES = "insightTypes"
+    const val PARAM_PAGE_SETTING= "pageSetting"
+    const val PARAM_SIZE= "size"
+    const val PARAM_START_CURSOR= "startCursor"
+
+
+    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP_LIST"
+    const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"
+    const val PER_PAGE_COUNT_VALUE = 20
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
     const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
     const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
+    const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
 
     object InsightTypeConstants {
         const val INSIGHT_TYPE_ALL = 0
@@ -80,19 +93,8 @@ object RecommendationConstants {
     }
 
     object InsightGqlInputSource {
-        // topadsGetShopInfoV2_1
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
         const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center_landing_page"
-
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
-        // topAdsBatchGetKeywordInsightByGroupIDV3
-        // topAdsBatchGetAdGroupBidInsightByGroupID
         const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center_group_detail_page"
-
-        // topAdsGetTotalAdGroupsWithInsightByShopID
-        // topAdsListAllInsightCounts
         const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
     }
 }

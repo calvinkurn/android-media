@@ -26,7 +26,6 @@ class GroupDetailsChipsAdapter(
             itemView.setOnClickListener {
                 doOperation(groupDetailChipsItemUiModel)
                 onChipsClick(position)
-
             }
         }
 
@@ -41,7 +40,7 @@ class GroupDetailsChipsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsViewHolder {
         return ChipsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.topads_layout,
+                R.layout.topads_insight_chips_item_layout,
                 parent,
                 false
             ), onChipsClick

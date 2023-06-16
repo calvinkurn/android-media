@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips
 
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
@@ -11,7 +12,7 @@ data class InsightTypeChipsUiModel(
     GroupDetailDataModel {
 
     override fun type(): String {
-        return "1"
+        return TYPE_INSIGHT.toString()
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

@@ -564,6 +564,15 @@
     <string name="specific">Spesifik</string>
 
     <string name="topads_url_format_template">%s?url=%s</string>
+    <string name="unoptimised_group_heading_group_detail">Coba cek dan maksimalkan iklanmu yang lain, ya.</string>
+    <string name="topads_insight_no_active_ads_title">Kamu belum punya iklan yang lagi aktif, nih~</string>
+    <string name="topads_insight_max_out_title">Yay, semua iklanmu sudah maksimal!</string>
+    <string name="topads_insight_title_improve_ads_performance">Tingkatkan performa %s grup iklanmu, yuk!</string>
+    <string name="topads_insight_global_error_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="topads_insight_global_error_title">Ada gangguan di rumah Toped!.</string>
+    <string name="topads_insight_educational_bottom_sheet_title">Saran TopAds adalah fitur yang menyediakan rekomendasi saat iklanmu masih bisa dimaksimalkan untuk hasil yang lebih baik. Yuk, tonton video penjelasannya!</string>
+
+
     <string name="topads_insight_biaya_iklan_cta_text">Terapkan Biaya yang Disarankan</string>
     <string name="topads_insight_daily_budget_cta_text">Terapkan Anggaran Harian</string>
     <string name="topads_insight_positive_keywords_cta_text_format">Tambah %d Kata Kunci</string>

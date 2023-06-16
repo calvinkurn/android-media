@@ -56,7 +56,6 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase.invoke(
-//                    source = "gql.list_all_insight_counts.test",
                     source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
@@ -67,7 +66,6 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
-//                    source = "gql.list_all_insight_counts.test",
                     source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
@@ -92,7 +90,6 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase(
-//                    source = "gql.list_all_insight_counts.test",
                     source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
@@ -103,7 +100,6 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
-//                    source = "gql.list_all_insight_counts.test",
                     source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,

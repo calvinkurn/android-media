@@ -16,6 +16,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
@@ -30,12 +31,14 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_LIST_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
@@ -62,7 +65,7 @@ import javax.inject.Inject
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var adType: String? = ""
-    private var insightType: Int = 0
+    private var insightType: Int = TYPE_INSIGHT
     private var insightList: ArrayList<AdGroupUiModel>? = null
     private var adGroupId: String? = ""
     private var adGroupName: String? = ""
@@ -76,7 +79,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
-                onChipClick,
+                onChipsClick,
                 onInsightItemClick,
                 ::onInsightTypeChipClick,
                 onAccordianItemClick,
@@ -332,13 +335,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun setUpChipsRecyclerView() {
-        groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onChipsClick)
+        groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onStickyChipsClick)
         groupDetailChipsRv?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         groupDetailChipsRv?.adapter = groupDetailsChipsAdapter
     }
 
-    private val onChipsClick: (Int) -> Unit = { position ->
+    private val onStickyChipsClick: (Int) -> Unit = { position ->
         groupDetailChipsRv?.layoutManager?.startSmoothScroll(
             object :
                 LinearSmoothScroller(context) {
@@ -351,7 +354,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 }
             }.apply { targetPosition = position }
         )
-        groupDetailAdapter.updateItem()
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedItem = TYPE_PRODUCT_VALUE
@@ -361,7 +363,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { _, item ->
             loadDetailPageOnAction(
-                if (item.adGroupType == PRODUCT_KEY) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                utils.convertAdTypeToInt(item.adGroupType),
                 item.adGroupID,
                 item.insightType
             )
@@ -370,6 +372,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private fun setUpRecyclerView() {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
         groupDetailsRecyclerView?.adapter = groupDetailAdapter
+        handleStickyView()
+
+    }
+
+    private fun handleStickyView() {
         groupDetailsRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -377,8 +384,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                     (recyclerView.layoutManager as LinearLayoutManager?)?.findFirstVisibleItemPosition()
                         ?: return
 
-                if (dy > 0) {
-                    if (position > 1) {
+                if (dy > Int.ZERO) {
+                    if (position > Int.ONE) {
                         if (viewModel.checkIfGroupChipsAvailable()) {
                             groupChipsLayout?.show()
                             groupDetailsChipsAdapter?.notifyDataSetChanged()
@@ -386,7 +393,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         }
                     }
                 } else {
-                    if (position <= 1) {
+                    if (position <= Int.ONE) {
                         groupChipsLayout?.hide()
                     }
                 }
@@ -441,7 +448,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         confirmationDailog?.show()
     }
 
-    private val onChipClick: (Int) -> Unit = {
+    private val onChipsClick: (Int) -> Unit = {
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedItem = TYPE_PRODUCT_VALUE
@@ -496,8 +503,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId
+        this.insightType = INSIGHT_TYPE_ALL
         this.adGroupName = groupName
-        this.insightType = if (adType == TYPE_PRODUCT_VALUE) 0 else 5
         viewModel.selectDefaultChips(insightType)
         loadDetailPageOnAction(
             adType,

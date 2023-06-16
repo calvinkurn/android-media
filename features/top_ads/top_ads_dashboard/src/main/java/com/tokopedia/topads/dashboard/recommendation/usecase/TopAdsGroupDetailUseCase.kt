@@ -108,7 +108,6 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     val dailyBudgetUiModel = groupDetailMapper.convertToAccordianDailyBudgetUiModel(sellerInsightData)
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = dailyBudgetUiModel
                 }
-                is TopAdsListAllInsightState.Fail -> {}
                 else -> {}
             }
             return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)

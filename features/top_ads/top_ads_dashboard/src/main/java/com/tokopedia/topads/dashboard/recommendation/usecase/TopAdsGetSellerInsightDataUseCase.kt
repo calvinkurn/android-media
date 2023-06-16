@@ -3,6 +3,10 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_id
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PARAM_INSIGHT_TYPE_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -34,9 +38,9 @@ class TopAdsGetSellerInsightDataUseCase @Inject constructor(
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("shop_id", userSession.shopId)
-        requestParams.putString("group_id", groupId)
-        requestParams.putString("insight_type", "DAILY_BUDGET_GROUP_LIST")
+        requestParams.putString(SHOP_id, userSession.shopId)
+        requestParams.putString(GROUP_ID, groupId)
+        requestParams.putString(PARAM_INSIGHT_TYPE, PARAM_INSIGHT_TYPE_VALUE)
         return requestParams
     }
 

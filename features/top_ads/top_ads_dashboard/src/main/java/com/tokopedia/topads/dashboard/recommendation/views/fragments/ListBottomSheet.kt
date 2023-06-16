@@ -95,7 +95,6 @@ class ListBottomSheet:
                 currentGroupId = groupId
                 newAdType = adtype
                 newGroupId = groupId
-                isFullpage = type == CHOOSE_AD_GROUP_BOTTOMSHEET
             }
             bottomSheet.show(fm, "")
             return bottomSheet
