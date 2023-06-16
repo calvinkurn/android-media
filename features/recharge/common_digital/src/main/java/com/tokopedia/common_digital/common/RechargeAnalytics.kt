@@ -93,6 +93,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         )
     }
 
+    @Suppress("SpreadOperator")
     fun eventAddToCart(digitalAtcTrackingModel: DigitalAtcTrackingModel) {
         val productName: String = "${digitalAtcTrackingModel.operatorName.lowercase()} " +
             "${digitalAtcTrackingModel.priceText.lowercase()}"
@@ -105,6 +106,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         }
 
         val eventLabel = String.format(
+            Locale.getDefault(),
             "%s - %s - %s",
             digitalAtcTrackingModel.categoryName.lowercase(),
             digitalAtcTrackingModel.operatorName,
