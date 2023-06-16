@@ -9,11 +9,17 @@ import io.mockk.mockk
  */
 class MockImageTransformer : ImageTransformer {
 
+    private var transformImageFromUriResponse: (() -> Uri)? = null
+
     override fun transformImageFromUri(uri: Uri): Uri {
-        return uri
+        return transformImageFromUriResponse?.invoke() ?: uri
     }
 
     override fun parseToUri(id: String): Uri {
         return mockk(relaxed = true)
+    }
+
+    fun setTransformImageFromUriResponse(transformImageFromUriResponse: () -> Uri) {
+        this.transformImageFromUriResponse = transformImageFromUriResponse
     }
 }

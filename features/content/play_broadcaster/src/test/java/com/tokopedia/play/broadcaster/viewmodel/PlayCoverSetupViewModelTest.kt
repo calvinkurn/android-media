@@ -50,6 +50,8 @@ class PlayCoverSetupViewModelTest {
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var titleConfigStore: TitleConfigStore
 
+    private val mockImageTransformer = MockImageTransformer()
+
     private val uploadImageUseCase: UploadImageToRemoteV2UseCase = mockk(relaxed = true)
     private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase = mockk(relaxed = true)
 
@@ -93,7 +95,7 @@ class PlayCoverSetupViewModelTest {
             uploadImageUseCase = uploadImageUseCase,
             getOriginalProductImageUseCase = getOriginalProductImageUseCase,
             coverImageUtil = MockPlayCoverImageUtil(),
-            coverImageTransformer = MockImageTransformer(),
+            coverImageTransformer = mockImageTransformer,
             account = ContentAccountUiModel.Empty.copy(id = "123"),
             pageSource = PlayBroPageSource.Live
         )
@@ -300,6 +302,95 @@ class PlayCoverSetupViewModelTest {
         Assertions
             .assertThat(result)
             .isEqualTo(mockUploadCoverFail)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
+    }
+
+    @Test
+    fun `uploadCover error on uploadImageUseCase`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+
+        val mockException = Exception("network error")
+
+        coEvery { uploadImageUseCase.executeOnBackground() } returns UploadResult.Error("network error")
+        coverDataStore.setUploadSelectedCoverResponse { throw mockException }
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
+    }
+
+    @Test
+    fun `uploadCover error because of cover state is not draft`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+
+        val mockException = Exception("network error")
+
+        coEvery { uploadImageUseCase.executeOnBackground() } returns UploadResult.Error("network error")
+        coverDataStore.setUploadSelectedCoverResponse { throw mockException }
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.GeneratedCover(
+                    coverImage = "asdf"
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
+
+        viewModel.observableCropState.removeObserver(coverSetupStateObserver)
+    }
+
+    @Test
+    fun `uploadCover error because validate image min size is failing`() {
+        val coverSetupStateObserver = Observer<CoverSetupState> {}
+        val mockUri = mockk<Uri>(relaxed = true)
+
+        coEvery { mockUri.path } returns null
+        mockImageTransformer.setTransformImageFromUriResponse { mockUri }
+
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        viewModel.observableCropState.observeForever(coverSetupStateObserver)
+        viewModel.uploadCover()
+
+        val result = viewModel.observableUploadCoverEvent.getOrAwaitValue()
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(NetworkResult.Fail::class.java)
 
         viewModel.observableCropState.removeObserver(coverSetupStateObserver)
     }
