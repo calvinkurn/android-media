@@ -138,7 +138,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 tokoNowProductRecommendationListener = createProductRecommendationCallback(),
                 productCardCompactListener = createProductCardCompactCallback(),
                 productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
-                recycledViewPool = recycledViewPool
+                recycledViewPool = recycledViewPool,
+                lifecycleOwner = viewLifecycleOwner
             ),
             differ = CategoryDiffer()
         )

@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.category.presentation.viewholder
 import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -12,12 +14,16 @@ import com.tokopedia.productcard.compact.similarproduct.presentation.listener.Pr
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class CategoryShowcaseItemViewHolder(
     itemView: View,
     private var listener: CategoryShowcaseItemListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ) : AbstractViewHolder<CategoryShowcaseItemUiModel>(itemView), ProductCardCompactWishlistButtonView.WishlistButtonListener {
 
     companion object {
@@ -27,49 +33,53 @@ class CategoryShowcaseItemViewHolder(
 
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
+    private var job: Job? = null
+
     override fun bind(element: CategoryShowcaseItemUiModel) {
-        binding?.productCard?.apply {
-            setData(
-                model = element.productCardModel
-            )
-            setOnClickListener {
-                listener?.onProductCardClicked(
-                    context = context,
-                    position = layoutPosition,
-                    product = element
+        job = lifecycleOwner?.lifecycleScope?.launch(Dispatchers.Main.immediate) {
+            binding?.productCard?.apply {
+                setData(
+                    model = element.productCardModel
                 )
-            }
-            setOnClickQuantityEditorListener { quantity ->
-                listener?.onProductCardQuantityChanged(
-                    position = layoutPosition,
-                    product = element,
-                    quantity = quantity
+                setOnClickListener {
+                    listener?.onProductCardClicked(
+                        context = context,
+                        position = layoutPosition,
+                        product = element
+                    )
+                }
+                setOnClickQuantityEditorListener { quantity ->
+                    listener?.onProductCardQuantityChanged(
+                        position = layoutPosition,
+                        product = element,
+                        quantity = quantity
+                    )
+                }
+                setOnClickQuantityEditorVariantListener {
+                    listener?.onProductCardAddVariantClicked(
+                        context = context,
+                        position = layoutPosition,
+                        product = element
+                    )
+                }
+                setWishlistButtonListener(
+                    wishlistButtonListener = this@CategoryShowcaseItemViewHolder
                 )
-            }
-            setOnClickQuantityEditorVariantListener {
-                listener?.onProductCardAddVariantClicked(
-                    context = context,
-                    position = layoutPosition,
-                    product = element
+                setSimilarProductTrackerListener(
+                    productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
                 )
-            }
-            setWishlistButtonListener(
-                wishlistButtonListener = this@CategoryShowcaseItemViewHolder
-            )
-            setSimilarProductTrackerListener(
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
-            )
-            setListener(
-                productCardCompactListener = productCardCompactListener
-            )
-            setOnBlockAddToCartListener {
-                listener?.onProductCardAddToCartBlocked()
-            }
-            addOnImpressionListener(element) {
-                listener?.onProductCardImpressed(
-                    position = layoutPosition,
-                    product = element
+                setListener(
+                    productCardCompactListener = productCardCompactListener
                 )
+                setOnBlockAddToCartListener {
+                    listener?.onProductCardAddToCartBlocked()
+                }
+                addOnImpressionListener(element) {
+                    listener?.onProductCardImpressed(
+                        position = layoutPosition,
+                        product = element
+                    )
+                }
             }
         }
     }
@@ -98,6 +108,11 @@ class CategoryShowcaseItemViewHolder(
             type = type,
             ctaClickListener = ctaClickListener
         )
+    }
+
+    override fun onViewRecycled() {
+        job?.cancel()
+        super.onViewRecycled()
     }
 
     interface CategoryShowcaseItemListener {

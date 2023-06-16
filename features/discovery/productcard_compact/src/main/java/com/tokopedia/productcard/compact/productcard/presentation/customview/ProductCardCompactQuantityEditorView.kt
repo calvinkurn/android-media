@@ -220,6 +220,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
         addButton.layoutParams = layoutParams
         addButton.alpha = MAX_ALPHA
+        addButton.show()
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddButton() {
@@ -288,7 +289,11 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.transitionToEnd()
 
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
+
         addToCartBtnShimmer.alpha = MAX_ALPHA
+        addToCartBtnShimmer.show()
+
         onQuantityChangedListener?.invoke(minQuantity)
     }
 
@@ -414,7 +419,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
             clearFocus()
             setEditTextPadding()
         }
+
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
     }
 
     private fun executeTimer() {
@@ -452,7 +459,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.progress = NO_PROGRESS
 
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addToCartBtnShimmer.gone()
+
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
@@ -460,7 +470,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.progress = NO_PROGRESS
 
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addToCartBtnShimmer.gone()
+
         addButton.alpha = MAX_ALPHA
+        addButton.show()
     }
 
     fun setQuantity(quantity: Int) {
