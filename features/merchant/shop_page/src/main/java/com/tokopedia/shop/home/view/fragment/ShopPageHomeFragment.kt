@@ -607,14 +607,16 @@ open class ShopPageHomeFragment :
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
             shopId = "1854168", //Unilever Official Store,
             useDarkBackground = true,
-            slugs = listOf(
+            voucherSlugs = listOf(
                 "ELTTS400JUN",
                 "ELTTS150JUN",
                 "CFDDJUN",
                 "KFSJUN",
                 "AUTO423",
                 "SHOPASHJUNE"
-            )
+            ),
+            campaignId = "",
+            widgetId = ""
         )
         bottomSheet.setOnVoucherClaimSuccess {
             //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
