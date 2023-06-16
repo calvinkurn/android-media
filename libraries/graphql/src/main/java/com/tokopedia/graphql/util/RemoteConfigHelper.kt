@@ -14,7 +14,9 @@ object RemoteConfigHelper {
                 KEY_ENABLE_GQL_PARSE_ERROR_LOGGING_IMPROVEMENT
             )
         } catch (e: Exception) {
-            Firebase.crashlytics.recordException(e)
+            try {
+                Firebase.crashlytics.recordException(e)
+            } catch (_: Exception) {}
             false
         }
     }

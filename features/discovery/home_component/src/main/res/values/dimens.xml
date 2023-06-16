@@ -57,10 +57,27 @@
     <dimen name="home_dynamic_icon_image_size_revamp">64dp</dimen>
     <dimen name="home_dynamic_icon_title_width_revamp">64dp</dimen>
 
+    <dimen name="home_deals_outer_card_padding">4dp</dimen>
 
     <dimen name="home_todo_widget_height">98dp</dimen>
     <dimen name="home_todo_widget_image_size">44dp</dimen>
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
     <dimen name="home_todo_widget_cta_height">32dp</dimen>
+
     <dimen name="home_todo_widget_label_discount_height">20dp</dimen>
+
+    <dimen name="home_dynamic_header_cta_container">32dp</dimen>
+    <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
+    <dimen name="home_dynamic_header_subtitle_top_padding">6dp</dimen>
+    <dimen name="home_dynamic_header_timer_top_padding">4dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding">12dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
+
+    <dimen name="home_product_highlight_content_top_padding">9dp</dimen>
+    <dimen name="home_product_highlight_content_horizontal_padding">12dp</dimen>
+
+    <dimen name="home_flash_sale_left_margin">11dp</dimen>
+    <dimen name="home_flash_sale_right_margin">12dp</dimen>
+    <dimen name="home_flash_sale_top_margin">-4dp</dimen>
+    <dimen name="home_flash_sale_bottom_margin">12dp</dimen>
 </resources>

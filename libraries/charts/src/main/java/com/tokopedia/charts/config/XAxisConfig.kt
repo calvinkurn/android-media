@@ -30,13 +30,14 @@ class XAxisConfig : BaseAxisConfig() {
 
     internal fun build(): XAxisConfigModel {
         return XAxisConfigModel(
-                typeface = typeface,
-                isEnabled = isEnabled,
-                isLabelEnabled = isLabelEnabled,
-                isGridEnabled = isGridEnabled,
-                mLabelPosition = labelPosition,
-                axisMinimum = axisMinimum,
-                labelFormatter = labelFormatter
+            typeface = typeface,
+            isEnabled = isEnabled,
+            isLabelEnabled = isLabelEnabled,
+            isGridEnabled = isGridEnabled,
+            mLabelPosition = labelPosition,
+            axisMinimum = axisMinimum,
+            labelFormatter = labelFormatter,
+            textColor = textColor
         )
     }
 }

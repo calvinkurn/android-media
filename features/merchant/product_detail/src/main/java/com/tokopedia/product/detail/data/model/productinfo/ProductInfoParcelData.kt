@@ -22,13 +22,16 @@ data class ProductInfoParcelData(
     val isGiftable: Boolean = false,
     val parentId: String = String.EMPTY,
     val catalogId: String = String.EMPTY,
-    val isOpenSpecification: Boolean = false
+    val isOpenSpecification: Boolean = false,
+    val annotationExtParam: String = String.EMPTY
 ) {
 
     val isOpenCatalogDescription
         get() = !isOpenSpecification && productInfo.isCatalog
 
-    val bottomSheetParam = if (isOpenSpecification) {
+    val bottomSheetParam = if (annotationExtParam.isNotBlank()) {
+        annotationExtParam
+    } else if (isOpenSpecification) {
         productInfo.catalogBottomSheet?.param.orEmpty()
     } else {
         productInfo.bottomSheet.param

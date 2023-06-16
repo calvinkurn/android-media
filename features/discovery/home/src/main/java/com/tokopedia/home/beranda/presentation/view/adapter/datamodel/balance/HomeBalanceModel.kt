@@ -150,7 +150,7 @@ data class HomeBalanceModel(
             it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
-                    headerTitle = headerTitle,
+                    headerTitle = it.label,
                     position = position
             )
         }

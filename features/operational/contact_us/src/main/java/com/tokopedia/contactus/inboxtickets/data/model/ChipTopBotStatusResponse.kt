@@ -24,7 +24,9 @@ data class ChipTopBotStatusResponse(
             @SerializedName("unread_notif")
             val unreadNotif: Boolean = false,
             @SerializedName("welcome_message")
-            val welcomeMessage: String? = null
+            val welcomeMessage: String? = null,
+            @SerializedName("is_chatbot_active")
+            val isChatbotActive: Boolean? = true
         ) {
             fun getMessageID() = messageId.orEmpty()
 
@@ -35,4 +37,6 @@ data class ChipTopBotStatusResponse(
     }
 
     fun getTopBotStatusInbox() = chipTopBotStatusInbox ?: ChipTopBotStatusInbox()
+    fun isStatusTopBotNotError() = chipTopBotStatusInbox?.messageError.isNullOrEmpty()
+    fun getErrorMessage() = chipTopBotStatusInbox?.messageError?.firstOrNull().orEmpty()
 }

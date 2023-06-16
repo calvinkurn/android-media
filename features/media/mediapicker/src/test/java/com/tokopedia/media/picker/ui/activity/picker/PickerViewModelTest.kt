@@ -157,7 +157,7 @@ class PickerViewModelTest {
         every { networkStateManager.isNetworkConnected() } returns true
         every { paramCacheManager.get().includeMedias() } returns includeMedias
         every { bitmapConverterRepository.convert(any()) } returns flow {
-            emit(convertedResultMedias)
+            emit(includeMedias.zip(convertedResultMedias))
         }
 
         // Then

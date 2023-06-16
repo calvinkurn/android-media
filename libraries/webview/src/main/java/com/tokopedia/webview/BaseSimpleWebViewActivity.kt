@@ -9,16 +9,12 @@ import android.view.MenuItem
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
@@ -143,9 +139,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val currentUrl = f.webView?.url
             if (currentUrl != null &&
                 (
-                        currentUrl.contains("/paylater/acquisition/status") ||
-                                currentUrl.contains("/paylater/thank-you")
-                        )
+                    currentUrl.contains("/paylater/acquisition/status") ||
+                        currentUrl.contains("/paylater/thank-you")
+                    )
             ) {
                 this.finish()
                 return
@@ -311,6 +307,20 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             messageMap["type"] = "webview"
             messageMap["url"] = url
             ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
+        }
+    }
+
+    fun updateToolbarVisibility(url: String) {
+        if (WebViewHelper.isWhiteListedFintechPathEnabled(this)) {
+            val uri = Uri.parse(url)
+            val path = uri.pathSegments.joinToString("/")
+            if (WebViewHelper.isFintechUrlPathWhiteList(path)) {
+                supportActionBar?.hide()
+            } else {
+                setupToolbar()
+            }
+        } else {
+            setupToolbar()
         }
     }
 

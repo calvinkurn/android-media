@@ -12,6 +12,7 @@
     <string name="play_bro_tnc_ok">Oke, Mengerti</string>
 
     <string name="play_cancel_live_stream" tools:ignore="UnusedResources">Batalkan</string>
+    <string name="content_zero">0</string>
 
     <!--CONTENT-->
     <string name="feed_content_position_text" tools:ignore="UnusedResources">Tag produk pada postingan ini %s</string>
@@ -138,6 +139,11 @@
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
     <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
 
+    <string name="performance_see">Lihat Performa</string>
+    <string name="performance_learn_video_insight">Pelajari Wawasan Video</string>
+    <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
+    <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
+
     <!-- Comment   -->
     <string name="content_comment_header">Komentar</string>
     <string name="content_comment_reply">Balas</string>
@@ -155,4 +161,267 @@
     <string name="content_comment_edit_text_hint">Ketik komentarmu…</string>
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>
+
+    <string name="kol_action_share">Share</string>
+    <string name="kol_action_like">Like</string>
+    <string name="kol_action_comment">Comment</string>
+    <string name="kol_action_follow">Follow</string>
+
+    <!--Post Time-->
+    <string name="post_time_just_now">Baru saja</string>
+    <string name="post_time_minutes_ago">\u0020menit</string>
+    <string name="post_time_hours_ago">\u0020jam</string>
+    <string name="content_common_post_time_hour">\u0020pukul\u0020</string>
+    <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+
+    <!--Post Time new-->
+    <string name="post_time_just_now_new">1 menit</string>
+    <string name="post_time_few_moments_ago">Beberapa detik yang lalu</string>
+    <string name="post_time_minutes_ago_new">menit</string>
+    <string name="post_comment_time_minute_ago_new">menit</string>
+    <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_comment_time_hours_ago_new">jam</string>
+    <string name="post_time_days_ago">hari</string>
+    <string name="post_comment_time_days_ago">hari</string>
+    <string name="post_time_hour_new">\u0020pukul\u0020</string>
+    <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
+
+    <!--Post Time Comment -->
+    <string name="comment_time_just_now"> Beberapa detik yang lalu</string>
+    <string name="comment_time_minutes_ago"> menit</string>
+    <string name="comment_time_hours_ago"> jam</string>
+    <string name="comment_time_days_ago"> hari</string>
+
+    <!-- Action -->
+    <string name="feed_content_reported">Konten berhasil dilaporkan</string>
+
+    <!-- Dialog Delete Post-->
+    <string name="card_dialog_delete_post">Hapus Post</string>
+    <string name="card_dialog_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="card_dialog_title_delete">Hapus</string>
+    <string name="card_dialog_title_cancel">Batal</string>
+
+    <!-- Empty Card Detail Feed -->
+    <string name="feed_post_detail_empty_title">Duh, Halamannya ga ketemu</string>
+    <string name="feed_post_detail_empty_subtitle">Ada sedikit kendala nih. Coba beberapa
+        saat lagi ya.</string>
+    <string name="feed_post_detail_empty_button">Kembali</string>
+    <string name="feed_other_related_post">Post lainnya</string>
+
+    <string name="string_posttag_buy">Beli</string>
+
+    <string name="empty_product">Kosong</string>
+
+    <!--SHARE BOTTOM SHEETS ASSETS-->
+    <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silakan Coba Lagi</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_share_en">Share</string>
+    <string name="copy">Salin Link</string>
+    <string name="other">Lainnya</string>
+    <string name="title_youtube">Youtube</string>
+    <string name="menu_copy">Salin</string>
+    <string name="msg_copy">Teks berhasil disalin.</string>
+    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+    <string name="error_occurred">terjadi kesalahan</string>
+
+    <!-- delete bottoms Sheet-->
+    <string name="feed_delete_comment">Hapus</string>
+    <string name="feed_report_comment">Laporkan</string>
+
+    <!--Available Share Names-->
+    <string name="share_whatsapp">WhatsApp</string>
+    <string name="share_facebook">Facebook</string>
+    <string name="share_line">Line</string>
+    <string name="share_twitter">Twitter</string>
+    <string name="share_instagram">Instagram</string>
+    <string name="share_instagram_feed">Instagram Feed</string>
+    <string name="share_instagram_story">Instagram Story</string>
+
+    <!-- Share profile-->
+    <string name="profile_share_title">Bagikan Postmu untuk raih Komisi!</string>
+    <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
+    <string name="profile_share_profile">Bagikan Profil</string>
+    <string name="profile_share_this_profile">Bagikan Profile Ini</string>
+    <string name="profile_other_share_title">Suka profil ini? Share, yuk!</string>
+
+    <!--Create Post-->
+    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
+    <string name="feed_create_post_shop">Buat Post Toko</string>
+
+    <!--Post Statistic-->
+    <string name="feed_post_statistic_info">Pakai hashtag yang trending bisa bikin post kamu banyak dilihat!</string>
+    <string name="feed_post_statistic_commission_info">komisi dari post ini</string>
+    <string name="feed_post_statistic_check_dashboard">Cek Dashboard</string>
+    <string name="feed_post_statistic_seen_count">total post dilihat</string>
+    <string name="feed_post_statistic_click_count">klik pada barang</string>
+    <string name="feed_post_statistic_like_count">like(s)</string>
+    <string name="feed_post_statistic_comment_count">comment(s)</string>
+    <string name="feed_post_statistic_see_detail">Lihat</string>
+    <string name="feed_post_statistic_commission_placeholder">Rp 0</string>
+
+    <string name="feed_try_again">Coba Lagi</string>
+
+    <string name="feed_header_time_format" formatted="false">%s • %s</string>
+    <string name="feed_header_time_new" formatted="false">%s</string>
+
+    <string name="content_desc_authorImage">image profil</string>
+    <string name="content_desc_authorBadge">image badge</string>
+    <string name="content_desc_authorTitle">text nama toko</string>
+    <string name="content_desc_headerAction">button action</string>
+    <string name="content_desc_menu">button menu</string>
+    <string name="content_desc_caption">text caption</string>
+    <string name="content_product_bs_title">Dalam post ini</string>
+    <string name="content_product_bs_title_with_promo">Produk dan promo pilihan</string>
+
+    <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
+    <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
+
+    <!--MENU OPTION BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_it">Laporkan</string>
+    <string name="feed_component_follow">Follow</string>
+    <string name="feed_component_unfollow">Unfollow</string>
+    <string name="feed_component_not_interested">Tidak Tertarik</string>
+    <string name="feed_common_terjual">Terjual</string>
+    <string name="feed_component_edit">Ubah</string>
+
+    <!--Follow Functionalities ASSETS-->
+    <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_follow_success_toast">Berhasil mengikuti toko ini</string>
+    <string name="feed_component_unfollow_fail_toast">Oops, gagal meng-unfollow.</string>
+    <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
+    <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
+    <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
+    <string name="kol_action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
+    <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
+    <string name="feed_header_follow_count_less_text">Rekomendasi</string>
+
+    <!--REPORT BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
+    <string name="feed_component_report_description">Kamu akan melaporkan sebagai anonim, kecuali jika kamu melaporkan pelanggaran kekayaan intelektual. Jika ada seseorang dalam bahaya, segera hubungi layanan darurat terdekat.</string>
+    <string name="feed_component_report_subtext1">Postingan  ini spam</string>
+    <string name="feed_component_report_subtext2">Postingan tidak pantas</string>
+    <string name="feed_component_spam_report_header">Terima kasih sudah melapor, ya!</string>
+    <string name="feed_component_spam_report_subtext">Masukanmu sangat penting bagi kami untuk menjaga keamanan komunitas di Tokopedia.</string>
+    <string name="feed_component_report_option_text1">Pornografi atau aktivitas seksual</string>
+    <string name="feed_component_report_option_text2">Ucapan atau simbol kebencian</string>
+    <string name="feed_component_report_option_text3">Penipuan</string>
+    <string name="feed_component_report_option_text4">Penjualan barang ilegal dan terlarang</string>
+    <string name="feed_component_report_option_text5">Pelanggaran kekayaan intelektual</string>
+
+    <!--DYNAMIC POST ASSETS-->
+    <string name="feed_component_liked_count_text"> Disukai oleh <![CDATA["<b> %s orang</b>]]></string>
+    <string name="feed_component_viewed_count_text"> Ditonton oleh <![CDATA["<b> %s orang</b> ]]></string>
+    <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
+    <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<b>%s lainnya</b> ]]></string>
+    <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<b>%s lainnya</b>]]></string>
+    <string name="feed_component_see_all_comments">Lihat semua %s komentar</string>
+    <string name="feed_component_add_comment">Comment as %s…</string>
+    <string name="feed_component_read_more_button">selengkapnya</string>
+
+    <!-- REPORT BOTTOMSHEET -->
+    <string name="feed_common_reason_type_spam" translatable="false">spam</string>
+    <string name="feed_common_reason_type_abuse" translatable="false">abuse</string>
+    <string name="feed_common_reason_type_inappropriate" translatable="false">inappropriate image</string>
+    <string name="feed_common_reason_type_others" translatable="false">custom</string>
+    <string name="feed_common_reason_desc_spam">Ini adalah spam</string>
+    <string name="feed_common_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="feed_common_reason_desc_inappropriate">Mengandung pornografi</string>
+    <string name="feed_common_reason_desc_others">Lainnya</string>
+
+    <!--PRODUCT_BOTTOMSSHEET -->
+    <string name="feed_product_info_sheet_add_to_wishlist">Simpan ke Wishlist</string>
+    <string name="feed_product_info_sheet_add_to_cart">Tambah ke Keranjang</string>
+    <string name="feed_product_info_sheet_share_product">Bagikan</string>
+
+    <!--SHARE-->
+    <string name="feed_share_default_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+    <string name="cdp_share_default_text">"Beli %s %s di toko %s %s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_detail_share_default_text">"Beli %s di toko %s %s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_share_detail_format_text">Ini bagus deh, kayaknya cocok buat kamu %s </string>
+
+    <!--POST-->
+    <string name="feed_post_tag_text">Lihat Barang</string>
+
+    <!--VOD-->
+    <string name="feed_post_lanjut_menonton">Lanjut Menonton</string>
+    <string name="feed_post_content_desc_full_screen">VOD full screen</string>
+    <string name="feed_post_content_desc_volume_btn">VOD volume button</string>
+    <string name="feed_post_content_desc_play_btn">VOD play button</string>
+    <string name="feed_post_content_video_volume_btn_desc">Video Post Volume Icon</string>
+
+    <!--PRODUCT TAGGING VIEW-->
+    <string name="feed_product_tag_dot">Product Tag Pointer Dot</string>
+    <string name="feed_product_tag_up">Product Tag Pointer Up</string>
+    <string name="feed_product_tag_down">Product Tag Pointer Down</string>
+
+    <string name="feeds_cek_sekarang">Cek Sekarang</string>
+    <string name="feeds_check_x_products">Cek %d Barang Lainnya</string>
+    <string name="feeds_asgc_disc_x_products">Cek Sekarang! %d Barang Diskon s.d %s</string>
+    <string name="feeds_asgc_disc_one_products">Cek Sekarang! Diskon s.d %s</string>
+    <string name="feeds_ads_text">Ad</string>
+    <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
+    <string name="feeds_asgc_restock_text">Barang Restock</string>
+
+    //video Tab in feed
+    <string name="feed_video_tab_success_add_reminder">Kami akan kirim pengingat, ya!</string>
+    <string name="feed_video_tab_success_remove_reminder">Yaah, pengingat batal dikirim.</string>
+    <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="feed_video_tab_failed_to_set_reminder_text">Gagal pasang pengingat. Coba lagi, ya.</string>
+    <string name="feed_video_tab_failed_to_unset_reminder_text">Gagal batalkan pengingat. Coba lagi, ya.</string>
+    <string name="feed_asgc_diskon_toko">Barang Diskon</string>
+    <string name="feed_asgc_flash_sale_toko">Flash Sale</string>
+    <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
+    <string name="feed_asgc_reminder_activate_fst_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Flash Sale dimulai.</string>
+    <string name="feed_asgc_reminder_activate_rs_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Rilisan Spesial dimulai.</string>
+    <string name="feed_asgc_reminder_deactivate_message" tools:ignore="UnusedResources">Pengingat telah dibatalkan.</string>
+
+    <string name="feed_fab_create_live">Buat Live</string>
+    <string name="feed_fab_create_content">Buat Konten</string>
+    <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_shorts">Buat Video</string>
+
+    <!-- Play Short Entry Point Coach Mark -->
+    <string name="feed_play_shorts_entry_point_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_play_shorts_entry_point_coachmark_description">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
+
+    <string name="feed_webview_template">%s?url=%s</string>
+    <string name="feed_post_sebagai">Post sebagai</string>
+
+    <!-- Shop Recommendation -->
+    <string name="other_shops_based_on_your_recommendation">Toko lain sesuai rekomendasimu</string>
+    <string name="btn_text_follow">Follow</string>
+    <string name="btn_text_following">Following</string>
+    <string name="empty_page_title">Belum ada postingan</string>
+    <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+    <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
+    <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
+
+    <!-- Flash Sale and Rilisan Special -->
+    <string name="btn_asgc_flash_sale_name">Sneaker Fest</string>
+    <string name="btn_asgc_flash_sale_time_text">Dimulai dalam</string>
+    <string name="btn_asgc_ongoing_flash_sale_rs_endtime_text">Berakhir dalam</string>
+    <string name="btn_asgc_flash_remind_btn_text">Ingatkan Saya</string>
+    <string name="btn_asgc_flash_remind_btn_text_disabled">Pengingat Aktif</string>
+    <string name="btn_add_to_cart_text">+ Keranjang</string>
+    <string name="btn_add_to_cart_text_disabled">Segera Hadir</string>
+
+    <!--Follow Bottom Sheet-->
+    <string name="feed_follow_bottom_sheet_success_toaster_text" tools:ignore="UnusedResources">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_follow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil mengikuti akun ini</string>
+    <string name="feed_unfollow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil berhenti mengikuti akun ini</string>
+    <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
+    <string name="feed_follow_bottom_sheet_button_text">Follow</string>
+    <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>
+    <string name="feed_follow_bottom_sheet_desc_upcoming_text">Supaya nanti kamu bisa beli
+produk eksklusif ini.</string>
+    <string name="feed_follow_bottom_sheet_desc_ongoing_text">Supaya kamu bisa beli produk eksklusif ini.</string>
+    <string name="feed_ok" tools:ignore="UnusedResources">Oke</string>
+
+    <!-- Product Sharing Experience -->
+    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_product_discount_percent">%d%%</string>
+
+    <!-- Product List Bottom Sheet-->
+    <string name="feed_product_add_to_cart">+ Keranjang</string>
+    <string name="feed_product_buy">Beli</string>
 </resources>

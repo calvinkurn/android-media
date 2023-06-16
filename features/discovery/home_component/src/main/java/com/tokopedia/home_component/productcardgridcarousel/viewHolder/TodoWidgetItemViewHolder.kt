@@ -12,8 +12,8 @@ import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,7 +44,11 @@ class TodoWidgetItemViewHolder(
             }
 
             cardContainerTodoWidget.addOnImpressionListener(element) {
-                element.todoWidgetComponentListener.onTodoImpressed(element, element.cardPosition)
+                element.todoWidgetComponentListener.onTodoImpressed(element)
+            }
+
+            cardContainerTodoWidget.setOnClickListener {
+                element.todoWidgetComponentListener.onTodoCardClicked(element)
             }
 
             setLayoutWidth(element)
@@ -113,7 +117,7 @@ class TodoWidgetItemViewHolder(
             text = element.ctaText
 
             setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCTAClicked(element, absoluteAdapterPosition)
+                element.todoWidgetComponentListener.onTodoCTAClicked(element)
             }
         }
     }
@@ -127,9 +131,11 @@ class TodoWidgetItemViewHolder(
     }
 
     private fun TextView.renderData(data: String) {
-        if(data.isNotEmpty()) {
+        if (data.isNotEmpty()) {
             text = data
             show()
-        } else hide()
+        } else {
+            hide()
+        }
     }
 }

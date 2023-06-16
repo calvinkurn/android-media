@@ -60,6 +60,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val CUE_WIDGET_MIN_SIZE = 4
         private const val VPS_WIDGET_SIZE = 4
         private const val LEGO_4_PRODUCT_SIZE = 4
+        private const val DEALS_WIDGET_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -226,6 +227,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_TODO_WIDGET_REVAMP -> {
                     createTodoWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_DEALS_WIDGET -> {
+                    createDealsWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_FLASH_SALE_WIDGET -> {
+                    createFlashSaleWidget(channel, position)
                 }
             }
         }
@@ -840,6 +847,35 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingDealsWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return DealsDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingFlashSaleWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return FlashSaleDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache,
+            cardInteraction = false
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -920,16 +956,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 isCache
             )
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                    channel.grids.toList(),
-                    userSessionInterface?.userId ?: "",
-                    false,
-                    channel
-                ) as HashMap<String, Any>
-            )
-        }
+
         context?.let {
             HomeTrackingUtils.homeDiscoveryWidgetImpression(
                 it,
@@ -1008,6 +1035,29 @@ class HomeDynamicChannelVisitableFactoryImpl(
         visitableList.add(
             mappingTodoWidgetComponent(
                 channel,
+                verticalPosition
+            )
+        )
+    }
+
+    private fun createDealsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= DEALS_WIDGET_SIZE) {
+            visitableList.add(
+                mappingDealsWidgetComponent(
+                    channel,
+                    isCache,
+                    verticalPosition
+                )
+            )
+        }
+    }
+
+    private fun createFlashSaleWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(
+            mappingFlashSaleWidgetComponent(
+                channel,
+                isCache,
                 verticalPosition
             )
         )

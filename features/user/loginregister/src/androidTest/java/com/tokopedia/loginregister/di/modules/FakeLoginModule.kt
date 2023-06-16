@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.di.modules
 
 import android.content.Context
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC
 import com.tokopedia.loginregister.login.di.LoginModule
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -12,7 +13,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 
-object FakeLoginModule: LoginModule() {
+object FakeLoginModule : LoginModule() {
 
     override fun provideAbTestPlatform(): AbTestPlatform {
         return mockk {
@@ -20,6 +21,7 @@ object FakeLoginModule: LoginModule() {
             every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_INACTIVE_PHONE_NUMBER, any()) } returns "true"
             every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_GOTO_SEAMLESS, any()) } returns "true"
             every { getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, any()) } returns "true"
+            every { getString(DIRECT_LOGIN_BIOMETRIC, any()) } returns ""
         }
     }
 
@@ -34,7 +36,7 @@ object FakeLoginModule: LoginModule() {
             }
 
             override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
-                return when(key) {
+                return when (key) {
                     CONFIG_LOGIN_ENCRYPTION -> true
                     else -> false
                 }

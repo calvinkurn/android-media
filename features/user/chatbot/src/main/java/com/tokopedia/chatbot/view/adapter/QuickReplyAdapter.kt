@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.databinding.ItemChatbotQuickReplyViewBinding
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
-import com.tokopedia.chatbot.databinding.ChatbotItemQuickReplyBinding
 
 /**
  * @author by yfsx on 08/05/18.
@@ -22,7 +22,7 @@ class QuickReplyAdapter(
     private val END_CHAT = "end chat"
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
-        val view = ChatbotItemQuickReplyBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val view = ItemChatbotQuickReplyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return Holder(view)
     }
 
@@ -51,7 +51,7 @@ class QuickReplyAdapter(
         }
     }
 
-    inner class Holder(itemView: ChatbotItemQuickReplyBinding) : RecyclerView.ViewHolder(itemView.root) {
+    inner class Holder(itemView: ItemChatbotQuickReplyViewBinding) : RecyclerView.ViewHolder(itemView.root) {
         internal var text: TextView
 
         init {

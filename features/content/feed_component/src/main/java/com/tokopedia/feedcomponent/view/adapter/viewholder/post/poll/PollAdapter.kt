@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -12,8 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_poll_option.view.*
@@ -39,6 +40,7 @@ class PollAdapter(private val contentPosition: Int,
         holder.bind(optionList[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: MutableList<PollContentOptionModel>) {
         optionList.clear()
         optionList.addAll(list)

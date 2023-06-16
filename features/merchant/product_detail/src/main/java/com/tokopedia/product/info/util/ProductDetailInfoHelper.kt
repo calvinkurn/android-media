@@ -22,7 +22,8 @@ object ProductDetailInfoHelper {
         sizeChartImageUrl: String?,
         infoData: ProductDetailInfoDataModel,
         forceRefresh: Boolean,
-        isOpenSpecification: Boolean
+        isOpenSpecification: Boolean,
+        annotationExtParam: String = ""
     ) {
         val cacheManager = SaveInstanceCacheManager(fragmentActivity, true)
         val parcelData = generateProductInfoParcel(
@@ -30,7 +31,8 @@ object ProductDetailInfoHelper {
             variantGuideLine = sizeChartImageUrl.orEmpty(),
             productInfo = infoData,
             forceRefresh = forceRefresh,
-            isOpenSpecification = isOpenSpecification
+            isOpenSpecification = isOpenSpecification,
+            annotationExtParam = annotationExtParam
         )
         cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
@@ -55,9 +57,9 @@ object ProductDetailInfoHelper {
         variantGuideLine: String,
         productInfo: ProductDetailInfoDataModel,
         forceRefresh: Boolean,
-        isOpenSpecification: Boolean
+        isOpenSpecification: Boolean,
+        annotationExtParam: String
     ): ProductInfoParcelData {
-
         productInfoP1?.let {
             val data = it.data
             val basic = it.basic
@@ -77,7 +79,8 @@ object ProductDetailInfoHelper {
                 isGiftable = basic.isGiftable,
                 parentId = parentId,
                 catalogId = basic.catalogID,
-                isOpenSpecification = isOpenSpecification
+                isOpenSpecification = isOpenSpecification,
+                annotationExtParam = annotationExtParam
             )
         } ?: return ProductInfoParcelData()
     }

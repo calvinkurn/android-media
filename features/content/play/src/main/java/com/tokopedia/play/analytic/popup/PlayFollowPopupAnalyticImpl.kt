@@ -1,12 +1,13 @@
 package com.tokopedia.play.analytic.popup
 
-import com.tokopedia.play.analytic.*
 import com.tokopedia.play.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
+import com.tokopedia.play.analytic.KEY_TRACK_CLICK_CONTENT
 import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
+import com.tokopedia.play.analytic.KEY_TRACK_TRACKER_ID
 import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface

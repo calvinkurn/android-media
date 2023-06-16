@@ -219,6 +219,15 @@
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 
+    <ViewStub
+        android:id="@+id/vs_shipment_plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout="@layout/view_shipment_plus"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_rates_error" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/pdp_shipment_guidelines_start"
         android:layout_width="wrap_content"

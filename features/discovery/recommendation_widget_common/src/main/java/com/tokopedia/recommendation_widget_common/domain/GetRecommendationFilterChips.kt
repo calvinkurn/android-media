@@ -6,10 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.query.RecommendationFilterChipsQuery
-import com.tokopedia.recommendation_widget_common.domain.query.RecommendationFilterChipsQueryV2
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -28,18 +26,7 @@ class GetRecommendationFilterChips @Inject constructor(
     private val params = RequestParams.create()
 
     init {
-        graphqlUseCase.setGraphqlQuery(
-            if (remoteConfig.getBoolean(
-                    RemoteConfigKey.RECOM_USE_GQL_FED_QUERY,
-                    true
-                )
-            ) {
-                RecommendationFilterChipsQueryV2()
-            } else {
-                RecommendationFilterChipsQuery()
-            }
-//            RecommendationFilterChipsQuery()
-        )
+        graphqlUseCase.setGraphqlQuery(RecommendationFilterChipsQuery())
         graphqlUseCase.setTypeClass(RecommendationFilterChipsEntity::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()

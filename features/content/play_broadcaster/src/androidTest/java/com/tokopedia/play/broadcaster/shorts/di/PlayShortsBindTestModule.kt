@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
@@ -36,6 +38,10 @@ import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
@@ -65,6 +71,14 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsGeneralAnalytic(analytic: PlayShortsGeneralAnalyticImpl): PlayShortsGeneralAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAffiliateAnalytic(analytic: PlayShortsAffiliateAnalyticImpl): PlayShortsAffiliateAnalytic
 
     @Binds
     @PlayShortsScope
@@ -113,6 +127,10 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayPerformanceDashboardEntryPointAnalytic(playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
 
     /** Play Broadcaster Config Store */
     @Binds

@@ -296,7 +296,12 @@
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
     <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
-    
+    <string name="play_bro_banner_shorts_join_affiliate_title">Yuk, daftar Tokopedia Affiliate!</string>
+    <string name="play_bro_banner_shorts_join_affiliate_description">Biar bisa dapat komisi cuma dengan promosikan produk di videomu.</string>
+
+    <string name="play_bro_banner_performance_title">Cek performa di Wawasan Video</string>
+    <string name="play_bro_banner_performance_subtitle">Untuk analisa video yang lebih detail</string>
+
     <!-- Shorts -->
     <string name="play_shorts_next_action_label">Lanjut</string>
     <string name="play_shorts_toolbar_title">Buat video sebagai</string>
@@ -325,4 +330,21 @@
     <string name="play_shorts_summary_upload_action">Upload Video</string>
 
     <string name="play_title_bottom_sheet_hint">Promo menarik cuma hari ini!</string>
+
+    <!-- shorts x affiliate -->
+    <string name="play_shorts_affiliate_tnc_title">Daftar Tokopedia Affiliate, yuk!</string>
+    <string name="play_shorts_affiliate_tnc_description">Supaya kamu bisa promosikan produk sambil ngonten di Tokopedia Play! Dapatkan komisi jika ada penonton yang beli produknya.</string>
+    <string name="play_shorts_affiliate_success_title">Hai %s, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="play_shorts_affiliate_success_description">Ayo bikin konten, tag produk yang mau kamu promosikan, &amp; dapat komisi jika ada yang beli!</string>
+    <string name="play_shorts_affiliate_success_description_learn_more">Penasaran tentang Tokopedia Affiliate? Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_description_learn_more_action">Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_button_next">Lanjut Buat Konten</string>
+    <string name="play_shorts_affiliate_commission_extra">Komisi Ekstra</string>
+    <string name="play_shorts_affiliate_commission_fmt">Komisi %s</string>
+    <string name="play_shorts_affiliate_success_tnc_web_link">https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate</string>
+    <string name="play_shorts_affiliate_success_learn_more_web_link">https://affiliate.tokopedia.com</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_title">Cek produk bertanda komisi di sini, ya</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_subtitle">Tag produk di videonya biar bisa kamu promosikan supaya dapat komisi kalau ada yang beli.</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_title">Nge-tag produk bisa dapat komisi, lho</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_subtitle">Sekalian promosikan produknya di videomu, &amp; kamu akan dapat komisi kalau ada yang beli!</string>
 </resources>

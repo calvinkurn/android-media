@@ -4,7 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
-import com.tokopedia.people.model.userprofile.*
+import com.tokopedia.people.model.userprofile.FeedsModelBuilder
+import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
+import com.tokopedia.people.model.userprofile.PlayVideoModelBuilder
+import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
+import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
+import com.tokopedia.people.model.userprofile.TabModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.andThen
 import com.tokopedia.people.util.assertEmpty
@@ -55,7 +60,7 @@ class UserProfileContentViewModelTest {
     private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockCreationInfo = profileWhitelistBuilder.buildCreationInfoModel()
     private val mockProfileTabShown = profileTabBuilder.mockProfileTab()
     private val mockProfileTabNotShown = profileTabBuilder.mockProfileTab(showTabs = false)
     private val mockFeed = feedsModelBuilder.mockFeedsPost()
@@ -86,7 +91,7 @@ class UserProfileContentViewModelTest {
         coEvery { mockRepo.getPlayVideo(any(), any(), any()) } returns mockPlayVideo
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
 
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
     }
 
     @Test

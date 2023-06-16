@@ -58,24 +58,6 @@
         app:typographyWeight="bold"
         tools:text="@string/tv_courier" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_promo_potency"
-        app:typographyType="body_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_courier"
-        android:layout_marginStart="8dp"
-        android:layout_toEndOf="@+id/tv_courier"
-        android:background="@drawable/bg_promo_potency"
-        android:paddingLeft="8dp"
-        android:paddingTop="2dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="2dp"
-        android:text="@string/label_text_promo_potency"
-        android:textColor="@color/Unify_R600"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_cod_available"
         android:layout_width="wrap_content"

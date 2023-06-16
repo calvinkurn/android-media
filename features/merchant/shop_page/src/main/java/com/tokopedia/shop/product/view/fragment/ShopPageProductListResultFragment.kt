@@ -457,7 +457,6 @@ class ShopPageProductListResultFragment :
     }
 
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
-        selectedEtalaseId = ""
         sortId = SORT_NEWEST
         context?.let {
             viewModel.getShopProductEmptyState(
@@ -465,7 +464,7 @@ class ShopPageProductListResultFragment :
                 page,
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortId.toIntOrZero(),
-                selectedEtalaseId,
+                "",
                 keywordEmptyState,
                 localCacheModel ?: LocalCacheModel(),
                 isEnableDirectPurchase

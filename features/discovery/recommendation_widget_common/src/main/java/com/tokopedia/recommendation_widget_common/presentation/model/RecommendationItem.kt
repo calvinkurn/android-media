@@ -4,55 +4,62 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
-        val productId: Long = 0L,
-        val name: String = "",
-        val categoryBreadcrumbs: String = "",
-        val url: String = "",
-        val appUrl: String = "",
-        val clickUrl: String = "",
-        val wishlistUrl: String = "",
-        val trackerImageUrl: String = "",
-        val imageUrl: String = "",
-        val price: String = "",
-        val priceInt: Int = 0,
-        val departmentId: Int = 0,
-        val rating: Int = 0,
-        val ratingAverage: String = "",
-        val countReview: Int = 0,
-        val stock: Int = 0,
-        val recommendationType: String = "",
-        val isTopAds: Boolean = false,
-        var isWishlist: Boolean = false,
-        val slashedPrice: String = "",
-        val slashedPriceInt: Int = 0,
-        val discountPercentageInt: Int = 0,
-        val discountPercentage: String = "",
-        val position: Int = 0,
-        val shopId: Int = 0,
-        val shopType: String = "",
-        val shopName: String = "",
-        var cartId: String = "",
-        var quantity: Int = 0,
-        val header: String = "",
-        val pageName: String = "",
-        val minOrder: Int = 0,
-        val maxOrder: Int = 0,
-        val location: String = "",
-        val badgesUrl: List<String> = listOf(),
-        val type: String = "",
-        val isFreeOngkirActive: Boolean = false,
-        val freeOngkirImageUrl: String = "",
-        val labelGroupList: List<RecommendationLabel> = listOf(),
-        val isGold: Boolean = false,
-        val isOfficial: Boolean = false,
-        // for tracker field
-        val dimension61: String = "",
-        val specs: List<RecommendationSpecificationLabels> = listOf(),
-        //for tokonow
-        val parentID: Long = 0L,
-        val isRecomProductShowVariantAndCart:Boolean = false,
-        var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
-): ImpressHolder(){
+    val productId: Long = 0L,
+    val name: String = "",
+    val categoryBreadcrumbs: String = "",
+    val url: String = "",
+    val appUrl: String = "",
+    val clickUrl: String = "",
+    val wishlistUrl: String = "",
+    val trackerImageUrl: String = "",
+    val imageUrl: String = "",
+    val price: String = "",
+    val priceInt: Int = 0,
+    val departmentId: Int = 0,
+    val rating: Int = 0,
+    val ratingAverage: String = "",
+    val countReview: Int = 0,
+    val stock: Int = 0,
+    val recommendationType: String = "",
+    val isTopAds: Boolean = false,
+    var isWishlist: Boolean = false,
+    val slashedPrice: String = "",
+    val slashedPriceInt: Int = 0,
+    val discountPercentageInt: Int = 0,
+    val discountPercentage: String = "",
+    val position: Int = 0,
+    val shopId: Int = 0,
+    val shopType: String = "",
+    val shopName: String = "",
+    var cartId: String = "",
+    var quantity: Int = 0,
+    val header: String = "",
+    val pageName: String = "",
+    val minOrder: Int = 0,
+    val maxOrder: Int = 0,
+    val location: String = "",
+    val badgesUrl: List<String> = listOf(),
+    val type: String = "",
+    val isFreeOngkirActive: Boolean = false,
+    val freeOngkirImageUrl: String = "",
+    val labelGroupList: List<RecommendationLabel> = listOf(),
+    val isGold: Boolean = false,
+    val isOfficial: Boolean = false,
+    val specs: List<RecommendationSpecificationLabels> = listOf(),
+    val addToCartType: AddToCartType = AddToCartType.None,
+    // for tracker field
+    val dimension61: String = "",
+    val anchorProductId: String = "",
+    // for tokonow
+    val parentID: Long = 0L,
+    var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
+) : ImpressHolder() {
+
+    enum class AddToCartType {
+        DirectAtc,
+        QuantityEditor,
+        None
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -100,8 +107,9 @@ data class RecommendationItem(
         if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
         if (parentID != other.parentID) return false
-        if (isRecomProductShowVariantAndCart != other.isRecomProductShowVariantAndCart) return false
+        if (addToCartType != other.addToCartType) return false
         if (currentQuantity != other.currentQuantity) return false
+        if (specs != other.specs) return false
 
         return true
     }
@@ -149,12 +157,13 @@ data class RecommendationItem(
         result = HASH_CODE * result + isOfficial.hashCode()
         result = HASH_CODE * result + dimension61.hashCode()
         result = HASH_CODE * result + parentID.hashCode()
-        result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
+        result = HASH_CODE * result + addToCartType.hashCode()
         result = HASH_CODE * result + currentQuantity.hashCode()
+        result = HASH_CODE * result + specs.hashCode()
         return result
     }
 
-    companion object{
+    companion object {
         private const val HASH_CODE = 31
     }
 
@@ -162,24 +171,24 @@ data class RecommendationItem(
         return parentID != 0L
     }
 
-    //default value 0
+    // default value 0
     fun setDefaultCurrentStock() {
         this.quantity = 0
         this.currentQuantity = 0
     }
 
-    //func to update quantity from minicart
+    // func to update quantity from minicart
     fun updateItemCurrentStock(quantity: Int) {
         this.quantity = quantity
         this.currentQuantity = quantity
     }
 
-    //call this when product card update values
-    fun onCardQuantityChanged(updatedQuantity : Int) {
+    // call this when product card update values
+    fun onCardQuantityChanged(updatedQuantity: Int) {
         currentQuantity = updatedQuantity
     }
 
-    //call this when failed atc / update / delete
+    // call this when failed atc / update / delete
     fun onFailedUpdateCart() {
         currentQuantity = quantity
     }
@@ -188,8 +197,17 @@ data class RecommendationItem(
         AffiliateSdkProductInfo(
             categoryID = "",
             isVariant = isProductHasParentID(),
-            stockQty = currentQuantity,
+            stockQty = currentQuantity
         )
 }
 
-data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")
+data class RecommendationSpecificationLabels(
+    var specTitle: String = "",
+    val specSummary: String = "",
+    val recommendationSpecificationLabelsBullet: List<RecommendationSpecificationLabelsBullet> = listOf()
+)
+
+data class RecommendationSpecificationLabelsBullet(
+    val specsSummary: String,
+    val icon: String?
+)

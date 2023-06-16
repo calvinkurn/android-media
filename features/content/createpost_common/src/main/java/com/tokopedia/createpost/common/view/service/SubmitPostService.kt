@@ -6,19 +6,18 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
-import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
-import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
-import com.tokopedia.createpost.common.di.qualifier.CreatePostCommonDispatchers
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
@@ -50,7 +49,6 @@ class SubmitPostService : JobIntentServiceX() {
     lateinit var scope: CoroutineScope
 
     @Inject
-    @CreatePostCommonDispatchers
     lateinit var dispatchers: CoroutineDispatchers
 
     private var postUpdateProgressManager: PostUpdateProgressManager? = null
@@ -232,9 +230,11 @@ class SubmitPostService : JobIntentServiceX() {
     }
 
     private fun initInjector() {
-        DaggerCreatePostCommonComponent.builder()
-            .createPostCommonModule(CreatePostCommonModule(this.applicationContext))
-            .build()
+        DaggerCreatePostCommonComponent.factory()
+            .create(
+                baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                context = baseContext,
+            )
             .inject(this)
     }
 

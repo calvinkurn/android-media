@@ -58,7 +58,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,10 +76,10 @@ abstract class BulkReviewViewModelTestFixture {
         const val SAMPLE_USER_ID = "2546"
         const val SAMPLE_ERROR_MESSAGE = "Something went wrong!"
         const val SAMPLE_ERROR_CODE = "IS-WKWK"
-        const val SAMPLE_GET_BAD_RATING_CATEGORY_RESULT_SUCCESS_NON_EMPTY =
-            "json/get_bad_rating_category_use_case_result_success_non_empty.json"
-        const val SAMPLE_GET_FORM_RESULT_SUCCESS =
-            "json/bulk_write_review/get_form_use_case_result_success.json"
+        const val SAMPLE_INVOICE = "123/INV/456789"
+        const val SAMPLE_UTM_SOURCE = "review"
+        const val SAMPLE_GET_BAD_RATING_CATEGORY_RESULT_SUCCESS_NON_EMPTY = "json/get_bad_rating_category_use_case_result_success_non_empty.json"
+        const val SAMPLE_GET_FORM_RESULT_SUCCESS = "json/bulk_write_review/get_form_use_case_result_success.json"
     }
 
     @get:Rule
@@ -167,7 +166,7 @@ abstract class BulkReviewViewModelTestFixture {
         getFormResult: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm = getFormUseCaseResultSuccess
     ) {
         coEvery {
-            getFormUseCase(Unit)
+            getFormUseCase(any())
         } returns flow {
             emit(BulkReviewGetFormRequestState.Requesting())
             emit(BulkReviewGetFormRequestState.Complete.Success(getFormResult))
@@ -176,7 +175,7 @@ abstract class BulkReviewViewModelTestFixture {
 
     protected fun mockErrorGetFormResult() {
         coEvery {
-            getFormUseCase(Unit)
+            getFormUseCase(any())
         } returns flow {
             emit(BulkReviewGetFormRequestState.Requesting())
             emit(BulkReviewGetFormRequestState.Complete.Error(mockk(relaxed = true)))
@@ -292,7 +291,7 @@ abstract class BulkReviewViewModelTestFixture {
     protected fun doSuccessGetInitialData() {
         mockSuccessGetFormResult()
         mockSuccessBadRatingCategoryResult()
-        viewModel.getData()
+        viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
     }
 
     protected fun doRestoreInstanceState(
@@ -313,7 +312,6 @@ abstract class BulkReviewViewModelTestFixture {
     ) {
         mockkStatic("com.tokopedia.reviewcommon.extension.CacheManagerExtKt") {
             val saveInstanceCacheManager = mockk<SaveInstanceCacheManager>(relaxed = true)
-            val spykViewModel = spyk(viewModel)
 
             every {
                 saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
@@ -437,7 +435,9 @@ abstract class BulkReviewViewModelTestFixture {
                 )
             } returns mockActiveMediaPickerInboxID
 
-            spykViewModel.onRestoreInstanceState(saveInstanceCacheManager)
+            viewModel.onRestoreInstanceState(saveInstanceCacheManager) {
+                viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
+            }
 
             verify(exactly = 1) {
                 saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
@@ -525,7 +525,7 @@ abstract class BulkReviewViewModelTestFixture {
                 )
             }
 
-            assertionBlock(spykViewModel)
+            assertionBlock(viewModel)
         }
     }
 

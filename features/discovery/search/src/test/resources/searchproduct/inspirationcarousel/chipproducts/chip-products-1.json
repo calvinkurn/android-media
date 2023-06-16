@@ -41,7 +41,8 @@
           "productClickUrl": "",
           "productWishlistUrl": "",
           "productViewUrl": ""
-        }
+        },
+        "warehouse_id_default": "1234"
       },
       {
         "id": 455064185,

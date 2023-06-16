@@ -31,10 +31,10 @@ abstract class BaseWidgetMapper(
             LastUpdatedUiModel(
                 lastUpdatedInMillis = lastUpdated,
                 needToUpdated = isFromCache,
-                isEnabled = isEnabled
+                isEnabled = true
             )
         } else {
-            LastUpdatedUiModel(isEnabled = isEnabled)
+            LastUpdatedUiModel(isEnabled = false)
         }
     }
 
