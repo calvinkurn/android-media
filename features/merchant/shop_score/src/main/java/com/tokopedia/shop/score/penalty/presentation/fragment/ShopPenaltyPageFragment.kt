@@ -19,7 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.gm.common.constant.ZERO_NUMBER
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
@@ -27,10 +28,20 @@ import com.tokopedia.shop.score.common.plt.ShopPenaltyMonitoringContract
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPerformanceMonitoringListener
 import com.tokopedia.shop.score.databinding.FragmentPenaltyPageBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
-import com.tokopedia.shop.score.penalty.presentation.adapter.*
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
+import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
-import com.tokopedia.shop.score.penalty.presentation.model.*
+import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
@@ -185,6 +196,7 @@ open class ShopPenaltyPageFragment :
     }
 
     private fun clearAllPenaltyData() {
+        endlessRecyclerViewScrollListener?.resetState()
         penaltyPageAdapter.run {
             removeShopPenaltyLoading()
             removeErrorStatePenalty()

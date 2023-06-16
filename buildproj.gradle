@@ -5,6 +5,8 @@ if (rootProject.file("local.properties").exists()) {
 
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
+    // https://github.com/robolectric/robolectric-gradle-plugin/issues/144
+    tasks.withType(Test) { jvmArgs += "-noverify" }
     repositories {
         maven {
             url = "$rootDir/localMavenRepository"
