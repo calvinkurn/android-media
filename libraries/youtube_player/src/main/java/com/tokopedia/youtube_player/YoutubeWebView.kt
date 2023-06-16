@@ -8,8 +8,11 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
@@ -65,6 +68,18 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             override fun onHideCustomView() {
                 super.onHideCustomView()
                 customViewInterface?.onExitFullScreen()
+            }
+
+
+        }
+
+        webViewClient = object : WebViewClient(){
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                val asd = -2
             }
         }
     }
