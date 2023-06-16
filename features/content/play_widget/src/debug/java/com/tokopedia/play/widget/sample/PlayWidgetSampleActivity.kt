@@ -20,7 +20,6 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     private val viewPager by lazy { findViewById<ViewPager2>(R.id.play_vp_sample) }
 
     private val pages = listOf<Pair<String, Fragment>>(
-//        Pair("Carousel",  PlayWidgetSampleCarouselFragment()),
         Pair("Feed", PlayWidgetSampleFeedFragment()),
         Pair("Common",  PlayWidgetSampleCommonFragment()),
     )
