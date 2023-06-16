@@ -6,6 +6,7 @@ object UniversalInboxAnalyticsConstants {
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val TRACKER_ID = "trackerId"
 
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
@@ -19,10 +20,40 @@ object UniversalInboxAnalyticsConstants {
     const val CLICK_INBOX = "clickInbox"
     const val PRODUCT_CLICK = "productClick"
     const val CLICK_PDP = "clickPDP"
+    const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
+    const val CLICK_COMMUNICATION = "clickCommunication"
 
     // Event Action
     const val CLICK_ON_PRODUCT_RECOMMENDATION = "click on product recommendation"
+
     const val CLICK_DISKUSI = "click - Diskusi"
+
+    const val VIEW_ON_INBOX_PAGE = "view on inbox page"
+    const val TRACKER_ID_44352 = "44352"
+
+    const val CLICK_CHAT_PEMBELI = "click - chat pembeli"
+    const val TRACKER_ID_44353 = "44353"
+
+    const val CLICK_CHAT_PENJUAL = "click - chat penjual"
+    const val TRACKER_ID_44354 = "44354"
+
+    const val CLICK_DISCUSSION = "click - diskusi"
+    const val TRACKER_ID_44355 = "44355"
+
+    const val CLICK_REVIEW = "click - ulasan"
+    const val TRACKER_ID_44356 = "44356"
+
+    const val CLICK_HELP = "click - pesan bantuan"
+    const val TRACKER_ID_44357 = "44357"
+
+    const val CLICK_CHAT_DRIVER = "click - chat driver"
+    const val TRACKER_ID_44358 = "44358"
+
+    const val CLICK_NOTIF_CENTER = "click - notif center"
+    const val TRACKER_ID_44367 = "44367"
+
+    // Event Category
+    const val NEW_INBOX_PAGE = "new inbox page"
 
     // Ecommerce
     const val NAME = "name"
@@ -53,4 +84,5 @@ object UniversalInboxAnalyticsConstants {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val INBOX_TALK = "/inbox - talk"
     const val PG = "physical goods"
+    const val COMMUNICATION = "communication"
 }

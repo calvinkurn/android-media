@@ -2,6 +2,7 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
@@ -122,5 +123,24 @@ class UniversalInboxAdapter(
 
     fun isWidgetMetaAdded(): Boolean {
         return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
+    }
+
+    fun isHelpWidgetAdded(): Boolean {
+        return try {
+            if (isWidgetMetaAdded()) {
+                val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+                var result = false
+                widgetMetaUiModel?.widgetList?.forEach {
+                    if (it.type == UniversalInboxValueUtil.CHATBOT_TYPE) {
+                        result = true
+                    }
+                }
+                result
+            } else {
+                false
+            }
+        } catch (throwable: Throwable) {
+            false
+        }
     }
 }

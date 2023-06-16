@@ -3,20 +3,17 @@ package com.tokopedia.inbox.universalinbox.view
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxActivityBinding
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
-import com.tokopedia.inbox.R
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_DEFAULT_PERCENTAGE_X_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_MAX_PERCENTAGE_X_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_Y_POSITION
@@ -25,13 +22,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
 
-class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxComponent> {
+class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInboxComponent> {
 
     private var universalInboxComponent: UniversalInboxComponent? = null
     private var viewBinding: UniversalInboxActivityBinding? = null
     private var toolbarNotificationIcon: IconNotification? = null
 
     var listener: UniversalInboxCounterListener? = null
+
+    private var notificationCounter = "0"
 
     override fun getNewFragment(): Fragment {
         return UniversalInboxFragment.getFragment(
@@ -41,12 +40,12 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
         )
     }
 
-    private fun getFragmentBundle(): Bundle { //TODO: if any param, put here
+    private fun getFragmentBundle(): Bundle {
         return Bundle()
     }
 
     override fun getComponent(): UniversalInboxComponent {
-        return universalInboxComponent?: initializeUniversalInboxComponent()
+        return universalInboxComponent ?: initializeUniversalInboxComponent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +87,7 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
             setImageWithUnifyIcon(IconUnify.BELL)
             notificationGravity = Gravity.TOP or Gravity.END
             setOnClickListener {
-                goToNotifCenter()
+                listener?.onNotificationIconClicked(notificationCounter)
             }
         }
         viewBinding?.inboxToolbar?.apply {
@@ -113,17 +112,6 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
             }
     }
 
-    private fun goToNotifCenter() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.NOTIFICATION)
-        notifCenterResultLauncher.launch(intent)
-    }
-
-    private val notifCenterResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-       listener?.loadWidgetMetaAndCounter()
-    }
-
     fun updateNotificationCounter(strCounter: String) {
         toolbarNotificationIcon?.apply {
             notificationRef.showWithCondition(strCounter.isNotEmpty())
@@ -142,5 +130,6 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
                 ICON_PERCENTAGE_Y_POSITION
             )
         }
+        notificationCounter = strCounter
     }
 }

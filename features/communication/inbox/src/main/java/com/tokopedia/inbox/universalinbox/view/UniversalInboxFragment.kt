@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -18,6 +19,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
+import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
@@ -30,8 +32,12 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_F
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
@@ -52,6 +58,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -97,6 +104,9 @@ class UniversalInboxFragment :
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
     private lateinit var adapter: UniversalInboxAdapter
@@ -206,17 +216,20 @@ class UniversalInboxFragment :
             loadTopAdsAndRecommendation()
         }
 
-        viewModel.widget.observe(viewLifecycleOwner) {
+        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
             if (adapter.isWidgetMetaAdded()) {
                 adapter.removeItemAt(Int.ZERO)
             }
             // If not empty (if empty then should hide) or Error, show the widget meta
-            if (it.widgetList.isNotEmpty() || it.isError) {
-                adapter.addItem(Int.ZERO, it)
+            if (widget.widgetList.isNotEmpty() || widget.isError) {
+                adapter.addItem(Int.ZERO, widget)
             }
             binding?.inboxRv?.post {
                 val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
                 adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
+                counter?.let {
+                    trackInboxPageImpression(it)
+                }
             }
         }
 
@@ -413,6 +426,24 @@ class UniversalInboxFragment :
 
     override fun onClickWidget(item: UniversalInboxWidgetUiModel) {
         if (item.applink.isEmpty()) return
+        when (item.type) {
+            CHATBOT_TYPE -> {
+                analytics.clickOnHelp(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    helpCounter = item.counter.toString()
+                )
+            }
+            GOJEK_TYPE -> {
+                analytics.clickOnChatDriver(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    chatDriverCounter = item.counter.toString()
+                )
+            }
+        }
         context?.let {
             val intent = RouteManager.getIntent(it, item.applink)
             inboxMenuResultLauncher.launch(intent)
@@ -429,18 +460,89 @@ class UniversalInboxFragment :
                 loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
-                // TODO SDK
+                // Do nothing for phase 1, will be using SDK in phase 2
             }
         }
     }
 
+    private fun trackInboxPageImpression(counter: UniversalInboxAllCounterResponse) {
+        val shopId = getShopIdTracker(userSession)
+        val sellerChatCounter = if (shopId != VALUE_X) {
+            counter.chatUnread.unreadSeller.toString()
+        } else {
+            VALUE_X
+        }
+        val helpCounter = if (adapter.isHelpWidgetAdded()) {
+            counter.othersUnread.helpUnread.toString()
+        } else {
+            VALUE_X
+        }
+        analytics.viewOnInboxPage(
+            abVariant = getVariantTracker(abTestPlatform),
+            userRole = getRoleUser(userSession),
+            shopId = shopId,
+            sellerChatCounter = sellerChatCounter,
+            buyerChatCounter = counter.chatUnread.unreadBuyer.toString(),
+            discussionCounter = counter.othersUnread.discussionUnread.toString(),
+            reviewCounter = counter.othersUnread.reviewUnread.toString(),
+            notifCenterCounter = counter.notifCenterUnread.notifUnread,
+            driverCounter = VALUE_X, // Temporary always X until phase 2
+            helpCounter = helpCounter
+        )
+    }
+
     override fun onMenuClicked(item: UniversalInboxMenuUiModel) {
         if (item.applink.isEmpty()) return
-        if (item.type == MenuItemType.DISCUSSION) {
-            analytics.sendNewPageInboxTalkTracking(userSession.userId, item.counter.toString())
+        when (item.type) {
+            MenuItemType.CHAT_BUYER -> {
+                analytics.clickOnBuyerChat(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    buyerChatCounter = item.counter.toString()
+                )
+            }
+            MenuItemType.CHAT_SELLER -> {
+                analytics.clickOnSellerChat(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    sellerChatCounter = item.counter.toString()
+                )
+            }
+            MenuItemType.DISCUSSION -> {
+                analytics.sendNewPageInboxTalkTracking(userSession.userId, item.counter.toString())
+                analytics.clickOnDiscussion(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    discussionCounter = item.counter.toString()
+                )
+            }
+            MenuItemType.REVIEW -> {
+                analytics.clickOnReview(
+                    abVariant = getVariantTracker(abTestPlatform),
+                    userRole = getRoleUser(userSession),
+                    shopId = getShopIdTracker(userSession),
+                    reviewCounter = item.counter.toString()
+                )
+            }
         }
         context?.let {
             val intent = RouteManager.getIntent(it, item.applink)
+            inboxMenuResultLauncher.launch(intent)
+        }
+    }
+
+    override fun onNotificationIconClicked(counter: String) {
+        analytics.clickOnNotifCenter(
+            abVariant = getVariantTracker(abTestPlatform),
+            userRole = getRoleUser(userSession),
+            shopId = getShopIdTracker(userSession),
+            notifCenterCounter = counter
+        )
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.NOTIFICATION)
             inboxMenuResultLauncher.launch(intent)
         }
     }
