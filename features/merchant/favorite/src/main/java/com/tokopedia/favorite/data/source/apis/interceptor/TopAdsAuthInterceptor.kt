@@ -7,7 +7,6 @@ import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_AUTHORIZATION
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,7 +39,7 @@ class TopAdsAuthInterceptor(
                 authKey,
                 "dd MMM yy HH:mm ZZZ",
                 userSession,
-                theme
+                headerTheme
         )
 
         val dateFormat = SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH)

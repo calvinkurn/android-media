@@ -224,7 +224,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
         return AuthHelper.generateHeaders(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession, getTheme()
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession, getHeaderTheme()
         );
     }
 
@@ -490,7 +490,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return result;
     }
 
-    protected String getTheme() {
+    protected String getHeaderTheme() {
         return ThemeUtils.getHeader(context);
     }
 }

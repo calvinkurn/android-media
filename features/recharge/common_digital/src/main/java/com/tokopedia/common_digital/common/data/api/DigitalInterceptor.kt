@@ -75,7 +75,9 @@ class DigitalInterceptor(@ApplicationContext context: Context,
             path: String, strParam: String, method: String, authKey: String, contentTypeHeader: String
     ): Map<String, String> {
         val header = AuthUtil.generateHeadersWithXUserId(
-            path, strParam, method, authKey, contentTypeHeader, userSession.userId, userSession, theme)
+            path, strParam, method, authKey, contentTypeHeader, userSession.userId, userSession,
+            headerTheme
+        )
 
         // replace with Digital's auth organization key
         header[AuthUtil.HEADER_AUTHORIZATION] = header[AuthUtil.HEADER_AUTHORIZATION]?.replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, digitalAuthOrganization)
