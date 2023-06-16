@@ -33,6 +33,9 @@ class HomeRecommendationChipRepository @Inject constructor(
         )
         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
         recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
+        recomFilterList.forEachIndexed { index, chip ->
+            chip.position = index + 1
+        }
         return recomFilterList
     }
 
