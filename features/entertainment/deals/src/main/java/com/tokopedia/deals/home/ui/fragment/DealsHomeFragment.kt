@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -216,6 +217,14 @@ class DealsHomeFragment : DealsBaseFragment(),
         }
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is DealsCategoryBottomSheet) {
+            childFragment.setListener(this)
+        } else {
+            super.onAttachFragment(childFragment)
+        }
+    }
+
     private fun changeLocationAndLoadData() {
         if ((activity as DealsBaseActivity).changeLocationBasedOnCache()) loadData(0)
     }
@@ -259,9 +268,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
         analytics.eventClickViewAllProductCardInHomepage()
-        val categoriesBottomSheet = DealsCategoryBottomSheet(this)
-        categoriesBottomSheet.showDealsCategories(categories)
-        categoriesBottomSheet.show(requireFragmentManager(), "")
+        val categoriesBottomSheet = DealsCategoryBottomSheet.newInstance(ArrayList(categories))
+        categoriesBottomSheet.show(childFragmentManager, "")
     }
 
     /* BRAND SECTION ACTION */

@@ -363,8 +363,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
         val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
-        filterBottomSheet?.setListener(this)
-        filterBottomSheet?.show(childFragmentManager, "")
+        filterBottomSheet.setListener(this)
+        filterBottomSheet.show(childFragmentManager, "")
     }
 
     override fun onChipClicked(chips: List<ChipDataView>) {
