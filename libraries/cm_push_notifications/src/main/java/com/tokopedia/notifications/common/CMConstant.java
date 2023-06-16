@@ -153,6 +153,7 @@ public interface CMConstant {
         String ADVANCE_TARGET = "isAdvanceTarget";
         String GROUP_ID = "groupId";
         String GROUP_NAME = "groupName";
+        String USER_TYPE = "userType";
 
         interface PayloadExtraDataKey {
             String CAMPAIGN_NAME = "cmpgnName";
