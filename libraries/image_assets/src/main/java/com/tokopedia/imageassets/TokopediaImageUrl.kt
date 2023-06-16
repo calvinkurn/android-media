@@ -55,7 +55,7 @@ object TokopediaImageUrl {
     const val RECIPE_BACKGROUND_IMAGE_URL = "https://images.tokopedia.net/img/tokonow/recipe/tokopedianow_recipe_background.png"
     const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_search.png"
     const val TOKO_NOW_NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
-    const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_no_address_small.png"
+    const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_oos.png"
     const val FEEDBACK_WIDGET_IMAGE = "https://images.tokopedia.net/img/tokopedianow/feedback_loop_illustration.png"
     const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
     const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"

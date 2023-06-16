@@ -1,0 +1,253 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 8,
+      "totalDataText": "8",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 1922322301,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/6/15/6c3aabe6-844e-4c29-84fc-3a428273998b.jpg",
+          "name": "T074.N12",
+          "price": "Rp1.100",
+          "priceInt": 1100,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 5,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 5,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 2",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "1000 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4208746239,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/769baa01-8581-4e70-9247-d098d5ac4e85.jpg",
+          "name": "Minute_Maid_Nutriboost_Mango_Botol_300_ml",
+          "price": "Rp7.000",
+          "priceInt": 7000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 11",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5194296223,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/3/46428a1f-d69d-4daa-a2c2-433ccb9e7e9e.jpg",
+          "name": "single_tempe_phase_2",
+          "price": "Rp2.500",
+          "priceInt": 2500,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 2000,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 2000,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 1",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 2714002516,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/1/12/4ff1eec1-3117-466e-b09b-7a7bfc6bfdf0.jpg",
+          "name": "tofu_lembut",
+          "price": "Rp300",
+          "priceInt": 300,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 6",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4208745965,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/6e489f86-2f6c-40ff-86ff-c1e30d83197e.jpg",
+          "name": "Pocari_Sweat_Ionessence_250_ml",
+          "price": "Rp6.300",
+          "priceInt": 6300,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 10",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5194296203,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/3/caad4fcd-2f44-4db5-818a-4f1931cd9984.jpg",
+          "name": "single_tahu",
+          "price": "Rp1.600",
+          "priceInt": 1600,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 1,
+          "ratingAverage": "4.2",
+          "minOrder": 1,
+          "stock": 0,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Stok Habis",
+              "type": "transparentBlack",
+              "position": "status"
+            },
+            {
+              "url": "",
+              "title": "Terjual 32",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}
