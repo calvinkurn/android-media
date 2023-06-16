@@ -170,14 +170,37 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                 }
                 currentClashingPromo = tmpCurrentClashingPromoList
-                currentClashingSecondaryPromo = mutableListOf()
+                val tmpCurrentClashingSecondaryPromoList = ArrayList<String>()
+                var tmpClashingSecondaryIconUrl = ""
+                val tmpErrorMessageSecondary = StringBuilder()
+                if (secondaryCoupons.isNotEmpty()) {
+                    selectedPromo.forEach { promoCode ->
+                        val clashingInfo =
+                            secondaryCoupons.first().clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
+                        if (clashingInfo != null) {
+                            tmpCurrentClashingSecondaryPromoList.add(promoCode)
+                            tmpErrorMessageSecondary.clear()
+                            tmpErrorMessageSecondary.append(clashingInfo.message)
+                            tmpClashingSecondaryIconUrl = clashingInfo.icon
+                        }
+                    }
+                }
+                currentClashingSecondaryPromo = tmpCurrentClashingSecondaryPromoList
 
                 if (hasClashingPromo) {
-                    if (tmpErrorMessage.isEmpty()) {
-                        tmpErrorMessage.append(couponItem.message)
+                    if (currentClashingSecondaryPromo.isNotEmpty()) {
+                        if (tmpErrorMessageSecondary.isEmpty()) {
+                            tmpErrorMessageSecondary.append(secondaryCoupons.first().message)
+                        }
+                        errorMessage = tmpErrorMessageSecondary.toString()
+                        errorIcon = tmpClashingSecondaryIconUrl
+                    } else if (currentClashingPromo.isNotEmpty()) {
+                        if (tmpErrorMessage.isEmpty()) {
+                            tmpErrorMessage.append(couponItem.message)
+                        }
+                        errorMessage = tmpErrorMessage.toString()
+                        errorIcon = tmpClashingIconUrl
                     }
-                    errorMessage = tmpErrorMessage.toString()
-                    errorIcon = tmpClashingIconUrl
                 }
                 promoInfos = couponItem.promoInfos
                 remainingPromoCount = couponSubSection.couponGroups.firstOrNull {

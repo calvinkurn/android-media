@@ -1433,8 +1433,10 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
-                    showLoadingForMvcSection(promoItem)
-                    delay(CLASH_LOADING_MILLISECONDS)
+                    val affectedPromoCount = showLoadingMvcSection(promoItem)
+                    if (affectedPromoCount > 0) {
+                        delay(CLASH_LOADING_MILLISECONDS)
+                    }
 
                     // Perform clash calculation
                     calculateClash(promoItem)
@@ -1743,15 +1745,18 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun showLoadingForMvcSection(selectedItem: PromoListItemUiModel) {
+    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
+        var affectedPromoCount = 0
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
-                !it.uiState.isDisabled && it.uiData.shopId > 0
+                it.uiData.shopId > 0 && !it.uiState.isDisabled
             ) {
                 it.uiState.isLoading = true
                 _tmpUiModel.value = Update(it)
+                affectedPromoCount += 1
             }
         }
+        return affectedPromoCount
     }
 
     private fun calculateClash(selectedItem: PromoListItemUiModel) {
@@ -1780,6 +1785,20 @@ class PromoCheckoutViewModel @Inject constructor(
                     _tmpUiModel.value = Update(it)
                 }
             }
+
+            // Recalculate clash for selected secondary promos
+            promoListUiModel.value
+                ?.filter { it is PromoListItemUiModel && it.uiData.secondaryCoupons.isNotEmpty() && it.uiState.isSelected }
+                ?.forEach {
+                    if (it is PromoListItemUiModel) {
+                        if (selectedItem.uiData.clashingInfos.isNotEmpty()) {
+                            val tmpClashResult = checkAndSetClashOnSelectionEvent(selectedItem, it)
+                            if (!clashResult) clashResult = tmpClashResult
+                        }
+                        selectedItem.uiState.isLoading = false
+                        _tmpUiModel.value = Update(selectedItem)
+                    }
+                }
         }
 
         if (clashResult) {
@@ -1794,7 +1813,14 @@ class PromoCheckoutViewModel @Inject constructor(
         promoListItemUiModel: PromoListItemUiModel,
         selectedItem: PromoListItemUiModel
     ) {
-        val selectedPromoCode = selectedItem.uiData.promoCode
+        val useSecondaryPromo = selectedItem.uiData.currentClashingPromo.isNotEmpty() &&
+            selectedItem.uiData.currentClashingSecondaryPromo.isEmpty() &&
+            selectedItem.uiData.secondaryCoupons.isNotEmpty()
+        val selectedPromoCode = if (useSecondaryPromo) {
+            selectedItem.uiData.secondaryCoupons.first().code
+        } else {
+            selectedItem.uiData.promoCode
+        }
         val primaryClashingInfo =
             promoListItemUiModel.uiData.clashingInfos
                 .firstOrNull { clashingInfo -> clashingInfo.code == selectedPromoCode }
@@ -1859,7 +1885,14 @@ class PromoCheckoutViewModel @Inject constructor(
         selectedItem: PromoListItemUiModel
     ): Boolean {
         var clashResult = false
-        val selectedPromoCode = selectedItem.uiData.promoCode
+        val useSecondaryPromo = selectedItem.uiData.currentClashingPromo.isNotEmpty() &&
+            selectedItem.uiData.currentClashingSecondaryPromo.isEmpty() &&
+            selectedItem.uiData.secondaryCoupons.isNotEmpty()
+        val selectedPromoCode = if (useSecondaryPromo) {
+            selectedItem.uiData.secondaryCoupons.first().code
+        } else {
+            selectedItem.uiData.promoCode
+        }
         val primaryClashingInfo =
             promoListItemUiModel.uiData.clashingInfos
                 .firstOrNull { clashingInfo -> clashingInfo.code == selectedPromoCode }
@@ -2003,7 +2036,14 @@ class PromoCheckoutViewModel @Inject constructor(
         if (promoListItemUiModel.uiState.isBebasOngkir) {
             this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
         } else {
-            this.add(promoListItemUiModel.uiData.promoCode)
+            val useSecondaryPromo = promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty() &&
+                promoListItemUiModel.uiData.currentClashingSecondaryPromo.isEmpty() &&
+                promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()
+            if (useSecondaryPromo) {
+                this.add(promoListItemUiModel.uiData.secondaryCoupons.first().code)
+            } else {
+                this.add(promoListItemUiModel.uiData.promoCode)
+            }
         }
     }
 }

@@ -76,18 +76,21 @@ class PromoListItemViewHolder(
     private var currentItemId: String? = null
 
     override fun bind(element: PromoListItemUiModel) {
+        val useSecondaryPromo = element.uiData.currentClashingPromo.isNotEmpty() &&
+            element.uiData.currentClashingSecondaryPromo.isEmpty() &&
+            element.uiData.secondaryCoupons.isNotEmpty()
         if (element.uiState.isUpdateSelectionStateAction) {
             element.uiState.isUpdateSelectionStateAction = false
             if (currentItemId != null && currentItemId == element.id) {
-                renderPromoState(viewBinding, element)
+                renderPromoState(viewBinding, element, useSecondaryPromo)
             } else {
-                renderPromoData(viewBinding, element)
-                renderPromoState(viewBinding, element)
+                renderPromoData(viewBinding, element, useSecondaryPromo)
+                renderPromoState(viewBinding, element, useSecondaryPromo)
                 setPromoItemClickListener(viewBinding, element)
             }
         } else {
-            renderPromoData(viewBinding, element)
-            renderPromoState(viewBinding, element)
+            renderPromoData(viewBinding, element, useSecondaryPromo)
+            renderPromoState(viewBinding, element, useSecondaryPromo)
             setPromoItemClickListener(viewBinding, element)
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
                 listener.onShowPromoItem(element, it)
@@ -101,7 +104,7 @@ class PromoListItemViewHolder(
     ) {
         viewBinding.cardPromoItem.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                if (!element.uiData.hasClashingPromo && element.uiState.isParentEnabled &&
+                if (element.uiState.isParentEnabled && !element.uiData.hasClashingPromo &&
                     !element.uiState.isDisabled && !element.uiState.isLoading
                 ) {
                     listener.onClickPromoListItem(element, adapterPosition)
@@ -132,20 +135,21 @@ class PromoListItemViewHolder(
 
     private fun renderPromoState(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         when {
             getState(element) == STATE_LOADING -> {
                 renderPromoLoading(viewBinding)
             }
             getState(element) == STATE_SELECTED -> {
-                renderPromoSelected(viewBinding, element)
+                renderPromoSelected(viewBinding, element, useSecondaryPromo)
             }
             getState(element) == STATE_DISABLED -> {
-                renderPromoDisabled(viewBinding, element)
+                renderPromoDisabled(viewBinding, element, useSecondaryPromo)
             }
             else -> {
-                renderPromoEnabled(viewBinding, element)
+                renderPromoEnabled(viewBinding, element, useSecondaryPromo)
             }
         }
     }
@@ -169,9 +173,10 @@ class PromoListItemViewHolder(
 
     private fun renderPromoSelected(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
-        renderPromoEnabled(viewBinding, element)
+        renderPromoEnabled(viewBinding, element, useSecondaryPromo)
         with(viewBinding) {
             containerConstraintPromoCheckout.show()
             containerPromoLoading.gone()
@@ -190,7 +195,7 @@ class PromoListItemViewHolder(
             val imageSelectPromoLayoutParam =
                 imageSelectPromo.layoutParams as ViewGroup.MarginLayoutParams
             if (element.uiData.remainingPromoCount > 1) {
-                if (getPromoInformationDetailsCount(element) <= 1) {
+                if (getPromoInformationDetailsCount(element, useSecondaryPromo) <= 1) {
                     imageSelectPromoLayoutParam.topMargin =
                         itemView.context.resources.getDimension(R.dimen.dp_22).toInt()
                 } else {
@@ -203,13 +208,14 @@ class PromoListItemViewHolder(
             }
 
             // Need to re render here to achieve dynamic color on selection state
-            renderUserValidityState(viewBinding, element)
+            renderUserValidityState(viewBinding, element, useSecondaryPromo)
         }
     }
 
     private fun renderPromoEnabled(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
             containerConstraintPromoCheckout.show()
@@ -238,13 +244,14 @@ class PromoListItemViewHolder(
             cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
             imageSelectPromo.gone()
             updateImaginaryBorderViewVisibility(viewBinding)
-            renderUserValidityState(viewBinding, element)
+            renderUserValidityState(viewBinding, element, useSecondaryPromo)
         }
     }
 
     private fun renderPromoDisabled(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
             containerConstraintPromoCheckout.show()
@@ -263,7 +270,7 @@ class PromoListItemViewHolder(
             cardPromoItem.setCardBackgroundColor(colorBackgroundDisabled)
             imageSelectPromo.gone()
             updateImaginaryBorderViewVisibility(viewBinding)
-            renderUserValidityState(viewBinding, element)
+            renderUserValidityState(viewBinding, element, useSecondaryPromo)
         }
     }
 
@@ -363,16 +370,17 @@ class PromoListItemViewHolder(
 
     private fun renderPromoData(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
-        renderHighlightIdentifier(viewBinding, element)
-        renderQuantityIdentifier(viewBinding, element)
-        renderTitle(viewBinding, element)
-        renderBenefit(viewBinding, element)
-        renderPromoCodeIdentifier(viewBinding, element)
-        renderPromoInfo(viewBinding, element)
-        renderTimeValidity(viewBinding, element)
-        renderUserValidity(viewBinding, element)
+        renderHighlightIdentifier(viewBinding, element, useSecondaryPromo)
+        renderQuantityIdentifier(viewBinding, element, useSecondaryPromo)
+        renderTitle(viewBinding, element, useSecondaryPromo)
+        renderBenefit(viewBinding, element, useSecondaryPromo)
+        renderPromoCodeIdentifier(viewBinding, element, useSecondaryPromo)
+        renderPromoInfo(viewBinding, element, useSecondaryPromo)
+        renderTimeValidity(viewBinding, element, useSecondaryPromo)
+        renderUserValidity(viewBinding, element, useSecondaryPromo)
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
         adjustConstraints(viewBinding)
@@ -381,12 +389,21 @@ class PromoListItemViewHolder(
 
     private fun renderHighlightIdentifier(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            if (element.uiState.isHighlighted) {
-                val topBanner =
+            val isHighlighted = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            if (isHighlighted) {
+                val topBanner = if (useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                } else {
                     element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                }
                 if (topBanner != null) {
                     textPromoHighlightIdentifier.text = topBanner.title
                     textPromoHighlightIdentifier.show()
@@ -414,7 +431,8 @@ class PromoListItemViewHolder(
 
     private fun renderQuantityIdentifier(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
             if (element.uiData.remainingPromoCount > 1) {
@@ -426,9 +444,17 @@ class PromoListItemViewHolder(
 
                 val promoQuantityIdentifierLayoutParam =
                     promoQuantityIdentifierTop.layoutParams as ViewGroup.MarginLayoutParams
-                val topBanner =
+                val isHighlighted = if (useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().isHighlighted
+                } else {
+                    element.uiState.isHighlighted
+                }
+                val topBanner = if (useSecondaryPromo) {
+                    element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                } else {
                     element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-                if (element.uiState.isHighlighted && topBanner != null) {
+                }
+                if (isHighlighted && topBanner != null) {
                     promoQuantityIdentifierLayoutParam.topMargin =
                         itemView.context.resources.getDimension(R.dimen.dp_32).toInt()
                 } else {
@@ -447,15 +473,29 @@ class PromoListItemViewHolder(
 
     private fun renderTitle(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            textPromoItemTitle.text = element.uiData.title
+            val title = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().title
+            } else {
+                element.uiData.title
+            }
+            textPromoItemTitle.text = title
             val textPromoItemTitleLayoutParam =
                 textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
-            val topBanner =
+            val isHighlighted = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            val topBanner = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-            if (element.uiState.isHighlighted && topBanner != null) {
+            }
+            if (isHighlighted && topBanner != null) {
                 textPromoItemTitleLayoutParam.topMargin = 0
             } else {
                 textPromoItemTitleLayoutParam.topMargin =
@@ -467,14 +507,23 @@ class PromoListItemViewHolder(
 
     private fun renderBenefit(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
             val textPromoItemTitleInfoLayoutParam =
                 textPromoItemTitleInfo.layoutParams as ViewGroup.MarginLayoutParams
-            val topBanner =
+            val isHighlighted = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isHighlighted
+            } else {
+                element.uiState.isHighlighted
+            }
+            val topBanner = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            } else {
                 element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
-            if (element.uiState.isHighlighted && topBanner != null) {
+            }
+            if (isHighlighted && topBanner != null) {
                 textPromoItemTitleInfoLayoutParam.topMargin = 0
             } else {
                 textPromoItemTitleInfoLayoutParam.topMargin =
@@ -482,8 +531,13 @@ class PromoListItemViewHolder(
                         .toInt()
             }
 
-            if (element.uiData.currencyDetailStr.isNotBlank()) {
-                textPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+            val currencyDetailStr = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().currencyDetailStr
+            } else {
+                element.uiData.currencyDetailStr
+            }
+            if (currencyDetailStr.isNotBlank()) {
+                textPromoItemTitleInfo.text = currencyDetailStr
                 textPromoItemTitleInfo.show()
             } else {
                 textPromoItemTitleInfo.gone()
@@ -493,11 +547,22 @@ class PromoListItemViewHolder(
 
     private fun renderPromoCodeIdentifier(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            if (element.uiState.isAttempted) {
-                textPromoCode.text = element.uiData.promoCode
+            val isAttempted = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isAttempted
+            } else {
+                element.uiState.isAttempted
+            }
+            val promoCode = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().code
+            } else {
+                element.uiData.promoCode
+            }
+            if (isAttempted) {
+                textPromoCode.text = promoCode
                 textPromoCode.show()
                 textPromoCodeInfo.show()
             } else {
@@ -509,10 +574,15 @@ class PromoListItemViewHolder(
 
     private fun renderPromoInfo(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
+            val promoInfoList = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
+            } else {
+                element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO && it.title.isNotEmpty() }
+            }
             if (promoInfoList.isNotEmpty()) {
                 containerPromoInfoList.removeAllViews()
                 promoInfoList.forEach {
@@ -559,10 +629,15 @@ class PromoListItemViewHolder(
 
     private fun renderTimeValidity(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            val timeValidityInfo = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
+            val timeValidityInfo = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
+            } else {
+                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_PROMO_VALIDITY }
+            }
             if (timeValidityInfo != null) {
                 if (timeValidityInfo.title.isNotBlank() && timeValidityInfo.icon.isNotBlank()) {
                     renderIcon(
@@ -586,17 +661,23 @@ class PromoListItemViewHolder(
                 textTimeValidity.gone()
             }
 
-            renderPromoDetailButton(viewBinding, element, timeValidityInfo)
+            renderPromoDetailButton(viewBinding, element, timeValidityInfo, useSecondaryPromo)
         }
     }
 
     private fun renderPromoDetailButton(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel,
-        timeValidityInfo: PromoInfo?
+        timeValidityInfo: PromoInfo?,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            if (!element.uiState.isBebasOngkir && !element.uiState.isAttempted) {
+            val isAttempted = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().isAttempted
+            } else {
+                element.uiState.isAttempted
+            }
+            if (!element.uiState.isBebasOngkir && !isAttempted) {
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }
@@ -620,17 +701,27 @@ class PromoListItemViewHolder(
 
     private fun renderUserValidity(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            val bottomBanner = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            } else {
+                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            }
             if (bottomBanner != null) {
                 textUserValidity.text =
                     HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
 
                 val containerUserValidityLayoutParam =
                     containerUserValidity.layoutParams as ViewGroup.MarginLayoutParams
-                if (element.uiState.isDisabled || element.uiData.currentClashingPromo.isNotEmpty()) {
+                val isClashing = if (useSecondaryPromo) {
+                    element.uiData.currentClashingPromo.isNotEmpty()
+                } else {
+                    element.uiData.currentClashingSecondaryPromo.isNotEmpty()
+                }
+                if (element.uiState.isDisabled || isClashing) {
                     dividerUserValidity.show()
                     containerUserValidityLayoutParam.topMargin = 0
                 } else {
@@ -649,10 +740,15 @@ class PromoListItemViewHolder(
 
     private fun renderUserValidityState(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
     ) {
         with(viewBinding) {
-            val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            val bottomBanner = if (useSecondaryPromo) {
+                element.uiData.secondaryCoupons.first().promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            } else {
+                element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
+            }
             if (bottomBanner != null) {
                 renderIcon(
                     iconUserValidity,
@@ -711,9 +807,17 @@ class PromoListItemViewHolder(
         }
     }
 
-    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
+    private fun getPromoInformationDetailsCount(
+        element: PromoListItemUiModel,
+        useSecondaryPromo: Boolean
+    ): Int {
         var promoInformationDetailsCount = 0
-        element.uiData.promoInfos.forEach {
+        val promoInfos = if (useSecondaryPromo) {
+            element.uiData.secondaryCoupons.first().promoInfos
+        } else {
+            element.uiData.promoInfos
+        }
+        promoInfos.forEach {
             if (it.type == PromoInfo.TYPE_PROMO_INFO || it.type == PromoInfo.TYPE_BOTTOM_BANNER || it.type == PromoInfo.TYPE_PROMO_VALIDITY) {
                 promoInformationDetailsCount++
             }
