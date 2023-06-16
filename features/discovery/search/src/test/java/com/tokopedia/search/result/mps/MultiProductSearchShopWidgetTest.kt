@@ -18,7 +18,6 @@ import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-
 private const val MPSLoadMoreDuplicateJSON = "mps/mps-duplicate-shop.json"
 internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures() {
 
