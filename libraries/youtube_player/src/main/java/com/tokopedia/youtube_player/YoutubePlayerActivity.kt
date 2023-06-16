@@ -35,7 +35,15 @@ class YoutubePlayerActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
         getIntentData()
-        setupYoutubeVideo()
+        initYoutubePlayer()
+    }
+
+    private fun initYoutubePlayer() {
+        youtubeWebView?.initialize()
+        youtubeWebView?.setUpEventListeners(
+            youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this,
+            youtubeEventVideoEnded = this, youtubeEventVideoCued = this, playerReady = this
+        )
     }
 
     private fun setupYoutubeVideo() {
@@ -51,13 +59,12 @@ class YoutubePlayerActivity : AppCompatActivity(),
         }
     }
     override fun onDestroy() {
-        youtubeWebView?.pause()
-        destroyYoutubeWebView()
+        releaseYoutubePlayer()
         super.onDestroy()
     }
 
-    private fun destroyYoutubeWebView() {
-        youtubeWebView?.destroy()
+    private fun releaseYoutubePlayer() {
+        youtubeWebView?.release()
     }
 
     override fun onEnterFullScreen(view: View) {
@@ -102,18 +109,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
     }
 
     override fun renderProcessKilled() {
-        destroyYoutubeWebView()
-        showVideoInWebView()
-    }
-
-    private fun showVideoInWebView() {
-        if (youtubeWebView?.youtubeJSInterface == null) {
-            youtubeWebView?.setUpEventListeners(
-                youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this,
-                youtubeEventVideoEnded = this, youtubeEventVideoCued = this, playerReady = this
-            )
-        }
-        youtubeWebView?.loadVideo(videoId)
+        releaseYoutubePlayer()
     }
 
     override fun onVideoEnded(time: Int) {
@@ -130,6 +126,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     override fun onPlayerReady() {
         youtubeWebView?.isPlayerReady = true
+        setupYoutubeVideo()
     }
 
 }

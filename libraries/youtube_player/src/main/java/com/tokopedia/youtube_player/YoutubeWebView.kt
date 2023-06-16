@@ -3,6 +3,8 @@ package com.tokopedia.youtube_player
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +16,7 @@ import android.webkit.WebViewClient
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
 private const val DELAY_TO_MIMIC_CLICK = 1000
+private const val BASE_URL_YOUTUBE = "https://www.youtube.com"
 
 class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : WebView(context, attrs, defStyleAttr) {
@@ -24,12 +27,14 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var jsInterface: String = "jsInterface"
     var isPlayerReady:Boolean = false
     var customViewInterface: YoutubeCustomViewListener? = null
+    private val mainThread: Handler = Handler(Looper.getMainLooper())
 
-    init {
-        setupTouchListener()
-        setUpWebViewClient()
+    fun initialize(){
         settings.javaScriptEnabled = true
         settings.mediaPlaybackRequiresUserGesture = false
+        setupTouchListener()
+        setUpWebViewClient()
+        loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
     }
 
     private fun setUpWebViewClient() {
@@ -105,35 +110,33 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         addJavascriptInterface(youtubeJSInterface, jsInterface)
     }
 
-    fun loadVideo(videoId: String) {
+    fun loadVideo(videoId: String, startSeconds: Int = 0) {
         this.videoId = videoId
-//        if (isPlayerReady) {
-//            loadUrl("javascript:cueVideo('$videoId', 0)")
-//        } else
-        loadData(getYoutubePlayerHtml(videoId), MIME_TYPE, ENCODING)
+        invokeFunction("loadVideo", "'$videoId'", "$startSeconds")
     }
 
     fun mute(){
-        if(isPlayerReady)
-            loadUrl("javascript:mute()")
+        invokeFunction("mute")
     }
 
     fun unMute(){
-        if(isPlayerReady)
-            loadUrl("javascript:unMute()")
+        invokeFunction("unMute")
     }
 
     fun play() {
-        if(isPlayerReady)
-            loadUrl("javascript:playVideo()")
+        invokeFunction("playVideo")
     }
 
     fun pause() {
-        if(isPlayerReady)
-            loadUrl("javascript:pauseVideo()")
+        invokeFunction("pauseVideo")
     }
 
-    private fun getYoutubePlayerHtml(videoId: String): String {
+    private fun invokeFunction(function: String, vararg stringArgs: String) {
+        if (isPlayerReady)
+            mainThread.post { loadUrl("javascript:$function(${stringArgs.joinToString(",")})") }
+    }
+
+    private fun getYoutubePlayerHtml(): String {
         return "<html>\n" +
                 "  <body style =\"padding: 0;margin: 0\">\n" +
                 "    <div id=\"player\"></div>\n" +
@@ -150,7 +153,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "        player = new YT.Player('player', {\n" +
                 "          height: '100%',\n" +
                 "          width: '100%',\n" +
-                "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +
                 "            'rel': 0,\n" +
                 "            'modestbranding': 1\n" +
@@ -197,6 +199,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             uri
         )
         context.startActivity(webIntent)
+    }
+
+    fun release() {
+        mainThread.removeCallbacksAndMessages(null)
+        destroy()
     }
 
 
