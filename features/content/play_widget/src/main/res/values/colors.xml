@@ -39,6 +39,7 @@
 
     <!--Play Widget Carousel-->
     <color name="play_widget_carousel_dms_top_overlay_start">#802E3137</color>
-    <color name="play_widget_carousel_dms_bg_product">#A62E3137</color>
+    <color name="play_widget_carousel_dms_bg_product_card">#A62E3137</color>
+    <color name="play_widget_carousel_dms_bg_product_img">#BFC9D9</color>
 
 </resources>

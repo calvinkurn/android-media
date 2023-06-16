@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="190dp"
     android:layout_height="58dp"
-    android:background="@color/play_widget_carousel_dms_bg_product"
+    android:background="@color/play_widget_carousel_dms_bg_product_card"
     app:rcl_cornerRadius="12dp"
     >
 
@@ -17,6 +17,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:scaleType="centerCrop"
+        android:background="@color/play_widget_carousel_dms_bg_product_img"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

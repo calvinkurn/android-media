@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
@@ -66,7 +67,13 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvStartTime.text = model.startTime
         binding.viewPlayWidgetCaption.root.text = model.title
-        binding.imgCover.loadImage(model.video.coverUrl)
+
+        binding.imgCover.scaleType = ImageView.ScaleType.CENTER
+        binding.imgCover.loadImage(model.video.coverUrl) {
+            listener(
+                onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP }
+            )
+        }
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.viewPlayWidgetPartnerInfo.imgAvatar.loadImage(model.partner.avatarUrl)
