@@ -57,6 +57,9 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
                     Player.STATE_READY -> {
                         whenIsPlayingChanged(isPlaying = true)
                     }
+                    Player.STATE_BUFFERING -> {
+                        // don't do anything when buffering, just follow the previous state
+                    }
                     else -> whenIsPlayingChanged(isPlaying = false)
                 }
             }
@@ -147,7 +150,7 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
                 TimeUnit.NANOSECONDS.toMicros(durationToPlay.toNanos()),
                 true,
                 true,
-                true,
+                true
             )
         }
     }
