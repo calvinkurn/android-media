@@ -184,10 +184,10 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 val itemWidth = view.width
 
                 val currPosition = mSelectedWidgetPos
-                val distance = offset + itemWidth
+                val distance = (position - currPosition) * (offset + itemWidth)
 
                 binding.rvChannels.smoothScrollBy(
-                    if (currPosition > position) -distance else distance,
+                    distance,
                     0,
                     null,
                     500
@@ -289,10 +289,10 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 val itemWidth = view.width
 
                 val currPosition = mSelectedWidgetPos
-                val distance = offset + itemWidth
+                val distance = (position - currPosition) * (offset + itemWidth)
 
                 binding.rvChannels.smoothScrollBy(
-                    if (currPosition > position) -distance else distance,
+                    distance,
                     0,
                     null,
                     500
