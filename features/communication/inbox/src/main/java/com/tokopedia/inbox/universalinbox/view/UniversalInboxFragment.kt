@@ -239,11 +239,11 @@ class UniversalInboxFragment :
                 is Success -> {
                     // Update notif & static menu counters
                     if (activity is UniversalInboxActivity) {
-                        val notifUnread = it.data.notifCenterUnread.notifUnread
-                        if (notifUnread.toIntOrZero() > Int.ZERO) {
+                        val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
+                        if (notifUnread > Int.ZERO) {
                             (activity as UniversalInboxActivity).updateNotificationCounter(
                                 UniversalInboxViewUtil.getStringCounter(
-                                    it.data.notifCenterUnread.notifUnread.toIntOrZero()
+                                    notifUnread
                                 )
                             )
                         }
