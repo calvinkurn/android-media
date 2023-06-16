@@ -2,24 +2,18 @@ package com.tokopedia.catalog.viewholder.components
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
-import android.widget.RatingBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogImageReviewAdapter
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
@@ -40,7 +34,7 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
     private var catalogDetailListener: CatalogDetailListener? = null
 
     private val shopReviewWidget: ShopReviewBasicInfoWidget by lazy(LazyThreadSafetyMode.NONE) {
-        itemView.findViewById(R.id.rating_review_catalog)
+        itemView.findViewById(R.id.catalog_shop_review_widget)
     }
 
     fun bind(
@@ -57,21 +51,17 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         catalogName = argCatalogName
         catalogId = argCatalogId
         catalogDetailListener = listener
-        setReviewStars(model.rating)
-        view.findViewById<Typography>(R.id.txt_user_name_catalog)?.displayTextOrHide(model.reviewerName ?: "")
-        view.findViewById<Typography>(R.id.txt_date_user_catalog)?.displayTextOrHide(model.reviewDate ?: "")
+
+        renderWidget(model)
         setReviewDescription(model.reviewText ?: "", model.reviewId ?: "")
         view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
         renderReviewImage(model, catalogDetailListener)
     }
 
-    private fun setReviewStars(rating: Int?) {
-        shopReviewWidget.apply {
-            show()
-            setRating(rating ?: 0)
-            findViewById<Typography>(R.id.tv_review_item_reviewer_name)?.hide()
-            findViewById<Typography>(R.id.tv_review_item_reviewer_statistic)?.hide()
-        }
+    private fun renderWidget(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review) {
+        shopReviewWidget.setRating(model.rating ?: 0)
+        shopReviewWidget.setReviewerName(model.reviewerName ?: "")
+        shopReviewWidget.setCreateTime(model.reviewDate ?: "")
     }
 
     private fun setReviewDescription(description: String, reviewId: String) {
