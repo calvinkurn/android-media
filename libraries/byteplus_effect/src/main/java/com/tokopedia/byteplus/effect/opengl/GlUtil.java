@@ -26,7 +26,6 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.nio.ByteBuffer;
@@ -34,6 +33,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
+
+import timber.log.Timber;
 
 /**
  * Created By : Jonathan Darwin on March 20, 2023
@@ -88,7 +89,7 @@ public abstract class GlUtil {
         int program = GLES20.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
-            Log.e(TAG, "Could not create program");
+            Timber.e(TAG, "Could not create program");
         }
         GLES20.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
@@ -98,8 +99,8 @@ public abstract class GlUtil {
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] != GLES20.GL_TRUE) {
-            Log.e(TAG, "Could not link program: ");
-            Log.e(TAG, GLES20.glGetProgramInfoLog(program));
+            Timber.e(TAG, "Could not link program: ");
+            Timber.e(TAG, GLES20.glGetProgramInfoLog(program));
             GLES20.glDeleteProgram(program);
             program = 0;
         }
@@ -119,8 +120,8 @@ public abstract class GlUtil {
         int[] compiled = new int[1];
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            Log.e(TAG, "Could not compile shader " + shaderType + ":");
-            Log.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
+            Timber.e(TAG, "Could not compile shader " + shaderType + ":");
+            Timber.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
             GLES20.glDeleteShader(shader);
             shader = 0;
         }
@@ -134,7 +135,7 @@ public abstract class GlUtil {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);
-            Log.e(TAG, msg);
+            Timber.e(TAG, msg);
         }
     }
 
@@ -146,7 +147,7 @@ public abstract class GlUtil {
      */
     public static void checkLocation(int location, String label) {
         if (location < 0) {
-            Log.e(TAG, "Unable to locate '" + label + "' in program");
+            Timber.e(TAG, "Unable to locate '" + label + "' in program");
         }
     }
 
@@ -411,7 +412,7 @@ public abstract class GlUtil {
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         int version = configurationInfo.reqGlEsVersion >= 0x30000 ? 3 : 2;
         String glEsVersion = configurationInfo.getGlEsVersion();
-        Log.d(TAG, "reqGlEsVersion: " + Integer.toHexString(configurationInfo.reqGlEsVersion)
+        Timber.d(TAG, "reqGlEsVersion: " + Integer.toHexString(configurationInfo.reqGlEsVersion)
                 + ", glEsVersion: " + glEsVersion + ", return: " + version);
         return version;
     }

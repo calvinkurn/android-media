@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bef.effectsdk.OpenGLUtils;
@@ -17,6 +16,8 @@ import com.tokopedia.byteplus.effect.opengl.ProgramManager;
 import com.tokopedia.byteplus.effect.opengl.ProgramTextureYUV;
 
 import java.nio.ByteBuffer;
+
+import timber.log.Timber;
 
 /**
  * Created By : Jonathan Darwin on March 20, 2023
@@ -360,7 +361,7 @@ public class ImageUtil {
                                          BytedEffectConstants.TextureFormat outputTextureFormat,
                                          int width, int height, Transition transition) {
         if (outputTextureFormat != BytedEffectConstants.TextureFormat.Texure2D){
-            Log.e(TAG,"the inputTexture is not supported,please use Texure2D as output texture format");
+            Timber.e(TAG,"the inputTexture is not supported,please use Texure2D as output texture format");
             return  GlUtil.NO_TEXTURE;
         }
         if (null == mProgramManager) {
@@ -408,7 +409,7 @@ public class ImageUtil {
     public ByteBuffer transferTextureToBuffer(int texture, BytedEffectConstants.TextureFormat inputTextureFormat,
                                               BytedEffectConstants.PixlFormat outputFormat, int width, int height, float ratio){
         if (outputFormat != BytedEffectConstants.PixlFormat.RGBA8888){
-            Log.e(TAG,"the outputFormat is not supported,please use RGBA8888 as output texture format");
+            Timber.e(TAG,"the outputFormat is not supported,please use RGBA8888 as output texture format");
             return  null;
         }
         if (null == mProgramManager) {
@@ -455,12 +456,12 @@ public class ImageUtil {
                                        BytedEffectConstants.TextureFormat outputFormat, int width, int height){
 
         if (inputFormat != BytedEffectConstants.PixlFormat.RGBA8888){
-            Log.e(TAG,"inputFormat support RGBA8888 only");
+            Timber.e(TAG,"inputFormat support RGBA8888 only");
             return GlUtil.NO_TEXTURE;
         }
 
         if (outputFormat != BytedEffectConstants.TextureFormat.Texure2D){
-            Log.e(TAG,"outputFormat support Texure2D only");
+            Timber.e(TAG,"outputFormat support Texure2D only");
             return GlUtil.NO_TEXTURE;
         }
 
