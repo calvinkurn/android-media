@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TopAdsAuthInterceptor(
-        val context: Context?,
+        context: Context?,
         networkRouter: NetworkRouter?,
         userSessionInterface: UserSessionInterface?
 ) : TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
