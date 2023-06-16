@@ -303,4 +303,115 @@ class PlayCoverSetupViewModelTest {
 
         viewModel.observableCropState.removeObserver(coverSetupStateObserver)
     }
+
+    @Test
+    fun `when app calls setCroppingCoverByUri, it should change the cover state to draft`() {
+        /** To make sure that the state is changing from Uploaded to Draft */
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Uploaded)
+
+        viewModel.setCroppingCoverByUri(
+            coverUri = mockk(relaxed = true),
+            source = CoverSource.Gallery
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Draft)
+    }
+
+    @Test
+    fun `when app calls setCroppingCoverByBitmap, it should change the cover state to draft`() {
+        /** To make sure that the state is changing from Uploaded to Draft */
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Uploaded)
+
+        viewModel.setCroppingCoverByBitmap(
+            bitmap = mockk(relaxed = true),
+            source = CoverSource.Gallery
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Draft)
+    }
+
+    @Test
+    fun `when app calls setCroppingProductCover, it should change the cover state to draft`() {
+        /** To make sure that the state is changing from Uploaded to Draft */
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Uploaded)
+
+        viewModel.setCroppingProductCover(
+            productId = "123",
+            imageUrl = "123",
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Draft)
+    }
+
+    @Test
+    fun `when app calls setDraftCroppedCover, it should change the cover state to draft`() {
+        /** To make sure that the state is changing from Uploaded to Draft */
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Uploaded)
+
+        viewModel.setDraftCroppedCover(
+            coverUri = mockk(relaxed = true)
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Draft)
+    }
+
+    @Test
+    fun `when app calls removeCover, it should change the cover state to draft`() {
+        /** To make sure that the state is changing from Uploaded to Draft */
+        coverDataStore.setFullCover(
+            PlayCoverUiModel(
+                croppedCover = CoverSetupState.Cropped.Draft(
+                    coverImage = mockk(relaxed = true),
+                    coverSource = CoverSource.Gallery,
+                ),
+                state = SetupDataState.Uploaded
+            )
+        )
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Uploaded)
+
+        viewModel.removeCover()
+
+        Assertions.assertThat(viewModel.selectedCover?.state).isEqualTo(SetupDataState.Draft)
+    }
 }
