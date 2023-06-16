@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemPenaltyStepperBinding
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel

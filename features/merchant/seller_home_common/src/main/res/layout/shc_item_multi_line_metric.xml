@@ -25,9 +25,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_NN900"
-            android:textSize="14sp"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
+            app:typographyType="display_3"
             tools:text="Pesanan" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -41,7 +39,7 @@
             android:minHeight="@dimen/shc_dimen_22dp"
             android:text="@string/shc_load_failed"
             android:textColor="@color/Unify_NN900"
-            android:textSize="16sp"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Rp999.999.999" />
 
@@ -56,9 +54,7 @@
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_NN600"
-            android:textSize="12sp"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
+            app:typographyType="display_3"
             tools:text="Potensi +Rp10 jt" />
 
         <View

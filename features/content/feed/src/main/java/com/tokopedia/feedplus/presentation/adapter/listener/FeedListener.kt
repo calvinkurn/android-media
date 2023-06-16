@@ -1,20 +1,14 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
-import com.tokopedia.content.common.report_content.model.FeedContentData
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
     fun onMenuClicked(
         id: String,
-        editable: Boolean,
-        deletable: Boolean,
-        reportable: Boolean,
-        contentData: FeedContentData,
+        menuItems: List<FeedMenuItem>,
         trackerModel: FeedTrackerDataModel
     )
 
@@ -92,13 +86,7 @@ interface FeedListener {
         positionInFeed: Int
     )
 
-    fun onSharePostClicked(
-        id: String,
-        authorName: String,
-        applink: String,
-        weblink: String,
-        imageUrl: String
-    )
+    fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel)
 
     fun onLikePostCLicked(
         id: String,
@@ -115,7 +103,7 @@ interface FeedListener {
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)
     fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel)
-    fun onWatchPostVideo(trackerModel: FeedTrackerDataModel)
+    fun onWatchPostVideo(model: FeedCardVideoContentModel, trackerModel: FeedTrackerDataModel)
 
     fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel)
 

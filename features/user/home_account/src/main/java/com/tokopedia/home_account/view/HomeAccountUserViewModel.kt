@@ -7,19 +7,41 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
+import com.tokopedia.home_account.data.model.SafeModeParam
+import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
-import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
+import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetSafeModeUseCase
+import com.tokopedia.home_account.domain.usecase.GetSaldoBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.GetTokopointsBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
+import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
+import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
+import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
+import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
+import com.tokopedia.sessioncommon.data.ocl.OclStatus
+import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -57,11 +79,14 @@ class HomeAccountUserViewModel @Inject constructor(
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
     private val offerInterruptUseCase: OfferInterruptUseCase,
     private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    private val profileWithDataStoreMapper: ProfileWithDataStoreMapper,
+    private val getOclStatusUseCase: GetOclStatusUseCase,
+    private val oclPreference: OclPreference,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
-    val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
+    private val _buyerAccountData = MutableLiveData<Result<ProfileDataView>>()
+    val buyerAccountDataData: LiveData<Result<ProfileDataView>>
         get() = _buyerAccountData
 
     private val _settingData = MutableLiveData<SettingDataView>()
@@ -110,6 +135,10 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopediaPlusData: LiveData<Result<TokopediaPlusDataModel>>
         get() = _tokopediaPlusData
 
+    private val _getOclStatus = MutableLiveData<OclStatus>()
+    val getOclStatus: LiveData<OclStatus>
+        get() = _getOclStatus
+
     fun refreshUserProfile() {
         launch {
             try {
@@ -137,11 +166,20 @@ class HomeAccountUserViewModel @Inject constructor(
             if (result.isSuccess && result.errorMessage.isEmpty()) {
                 mutableCheckFingerprintStatus.postValue(Success(result))
             } else {
-                mutableCheckFingerprintStatus.value = Fail(Throwable("Gagal"))
+                mutableCheckFingerprintStatus.value = Fail(MessageErrorException(result.errorMessage))
             }
         }, onError = {
                 mutableCheckFingerprintStatus.value = Fail(it)
             })
+    }
+
+    fun getOclStatus() {
+        launch {
+            try {
+                val result = getOclStatusUseCase(oclPreference.getToken())
+                _getOclStatus.value = result
+            } catch (ignored: Exception) { }
+        }
     }
 
     fun setSafeMode(isActive: Boolean) {
@@ -198,7 +236,7 @@ class HomeAccountUserViewModel @Inject constructor(
                         this.offerInterrupt = offerInterruption.data
                     }
 
-                    _buyerAccountData.value = Success(accountModel)
+                    _buyerAccountData.value = Success(profileWithDataStoreMapper(accountModel))
                     // This is executed after setting live data to save load time
                     saveAttributeOnLocal(accountModel)
                 }
@@ -271,26 +309,35 @@ class HomeAccountUserViewModel @Inject constructor(
             })
     }
 
-    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean, titleText: String) {
+    fun getBalanceAndPoint(walletId: String, hideTitleText: Boolean, titleText: String) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 else -> {
-                    getOtherBalanceAndPoint(walletId, hideTitle)
+                    getOtherBalanceAndPoint(walletId, hideTitleText)
                 }
             }
         }, onError = {
@@ -301,13 +348,16 @@ class HomeAccountUserViewModel @Inject constructor(
     /**
      * same API
      */
-    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitle: Boolean) {
+    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitleText: Boolean) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
             }
             AccountConstants.WALLET.GOPAYLATER -> {
                 getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.GOPAYLATERCICIL -> {
+                getBalanceAndPointUseCase(GOPAYLATERCICIL_PARTNER_CODE)
             }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
@@ -316,12 +366,14 @@ class HomeAccountUserViewModel @Inject constructor(
                 BalanceAndPointDataModel()
             }
         }
-        setBalanceAndPointValue(result.data, walletId, hideTitle)
+        result.data.apply {
+            hideTitle = hideTitleText
+        }
+        setBalanceAndPointValue(result.data, walletId)
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String, hideTitle: Boolean) {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
         if (data.id.isNotEmpty()) {
-            data.hideTitle = hideTitle
             _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
@@ -355,6 +407,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
         private const val GOPAY_PARTNER_CODE = "PEMUDA"
         private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        private const val GOPAYLATERCICIL_PARTNER_CODE = "PEMUDACICIL"
         private const val OVO_PARTNER_CODE = "OVO"
         private const val GOPAY_WALLET_CODE = "PEMUDAPOINTS"
     }

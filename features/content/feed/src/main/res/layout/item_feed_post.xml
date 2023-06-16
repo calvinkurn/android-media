@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+    <com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
         android:id="@+id/scrollable_host"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+    </com.tokopedia.feedcomponent.util.FeedNestedScrollableHost>
 
     <include
         android:id="@+id/overlay_top"

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -21,12 +20,14 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
@@ -90,10 +91,12 @@ class FeedPostImageViewHolder(
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -123,7 +126,8 @@ class FeedPostImageViewHolder(
                 )
             }
 
-            val postGestureDetector = GestureDetector(root.context,
+            val postGestureDetector = GestureDetector(
+                root.context,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                         return true
@@ -151,7 +155,8 @@ class FeedPostImageViewHolder(
 
                     override fun onLongPress(e: MotionEvent) {
                     }
-                })
+                }
+            )
 
             rvFeedPostImageContent.setOnTouchListener { _, event ->
                 when (event.action) {
@@ -205,31 +210,21 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
-                        FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
-                        ),
-                        trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data),
-
-                        )
+                        data.menuItems.map {
+                            it.copy(
+                                contentData = it.contentData?.copy(rowNumber = absoluteAdapterPosition)
+                            )
+                        },
+                        trackerData
+                    )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
+                    listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -257,6 +252,10 @@ class FeedPostImageViewHolder(
                 bindComments(it)
             }
 
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
@@ -279,10 +278,12 @@ class FeedPostImageViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
@@ -399,7 +400,6 @@ class FeedPostImageViewHolder(
             postType = model.typename,
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
-            hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
@@ -449,6 +449,7 @@ class FeedPostImageViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
             trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model),
@@ -532,6 +533,27 @@ class FeedPostImageViewHolder(
                     binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
                 }
             }
+        }
+    }
+
+    private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
+        return if (data.isTopAds) {
+            val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
+            // intentionally, get data from 'products' instead of 'medias'
+            // as long as products value === medias value (please check the MapperTopAdsFeed.kt)
+            // todo: differentiate TopAds model with the rest
+            val productLink = if (data.products.size > selectedImagePosition) {
+                val productItem = data.products[selectedImagePosition]
+                Pair(productItem.applink, productItem.weblink)
+            } else {
+                Pair(data.share.appLink, data.share.webLink)
+            }
+            return data.share.copy(
+                appLink = productLink.first,
+                webLink = productLink.second
+            )
+        } else {
+            data.share
         }
     }
 

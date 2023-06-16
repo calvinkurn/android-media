@@ -318,7 +318,7 @@ class LineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -326,7 +326,7 @@ class LineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData.yAxisLabel
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

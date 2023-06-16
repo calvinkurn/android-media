@@ -21,8 +21,8 @@ class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
     private lateinit var invoiceLabel: Label
     private lateinit var invoice: ConstraintLayout
 
-    var sendButtonListener : ChatbotSendButtonListener? = null
-    var invoiceListener : InvoiceListener? = null
+    var sendButtonListener: ChatbotSendButtonListener? = null
+    var invoiceListener: InvoiceListener? = null
 
     init {
         initViewBindings()
@@ -48,26 +48,27 @@ class ChatbotFloatingInvoice(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun setUpInvoiceData(invoiceTitle: String?, invoiceIconURL: String?, labelType : Int, labelText : String?) {
-        if (invoiceTitle != null)
+    fun setUpInvoiceData(invoiceTitle: String?, invoiceIconURL: String?, labelType: Int, labelText: String?) {
+        if (invoiceTitle != null) {
             invoiceName.text = invoiceTitle
+        }
         invoiceLabel.text = labelText
         invoiceLabel.setLabelType(labelType)
-        if (invoiceIconURL != null)
+        if (invoiceIconURL != null) {
             ImageHandler.loadImage(
                 context,
                 invoiceImage,
                 invoiceIconURL,
                 R.drawable.ic_retry_image_send
             )
+        }
     }
 
     companion object {
-        val LAYOUT = R.layout.attached_invoice_float_chat_item
+        val LAYOUT = R.layout.customview_chatbot_floating_invoice
     }
 
     interface InvoiceListener {
-        fun isInvoiceRemoved(isRemoved : Boolean)
+        fun isInvoiceRemoved(isRemoved: Boolean)
     }
-
 }

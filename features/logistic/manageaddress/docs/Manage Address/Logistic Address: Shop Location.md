@@ -6,21 +6,19 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** |  <!--start status:GREEN-->RELEASE<!--end status-->  |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence)  |
-| Product Manager | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)  |
-| Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
-| Release date | 18 Dec 2020  |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | <https://docs.google.com/document/d/1lpc98btp1vOgFcTrCllUc3qrS23AF8vlz2ebFyt6i7s/edit#heading=h.i6nxfhanqq70>  |
-| Module Location | `features/logistic/manageaddress` |
-
-## Table of Contents
+| **Status**              | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                          |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) |
+| Product Manager         | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)                                                                                                                                                                                               |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                                                                                                             |
+| Release date            | 18 Dec 2020                                                                                                                                                                                                                                                                                                |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                         |
+| Product PRD             | <https://docs.google.com/document/d/1lpc98btp1vOgFcTrCllUc3qrS23AF8vlz2ebFyt6i7s/edit#heading=h.i6nxfhanqq70>                                                                                                                                                                                              |
+| Module Location         | `features/logistic/manageaddress`                                                                                                                                                                                                                                                                          |
 
 <!--toc-->
 
-## Release Notes (max 5 latest release notes)
+## Release Notes
 
 <!--start expand:18 Dec 2020-->
 

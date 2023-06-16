@@ -260,6 +260,13 @@ interface DynamicProductDetailListener {
         templateNameType: String
     )
 
+    fun onRecomAddToCartClick(
+        recommendationWidget: RecommendationWidget,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    )
+
     fun onRecomAddToCartNonVariantQuantityChangedClick(
         recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,

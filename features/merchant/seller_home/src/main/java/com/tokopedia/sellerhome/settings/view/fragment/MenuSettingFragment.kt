@@ -103,9 +103,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     @Inject
     lateinit var sharedPref: SellerHomeSharedPref
 
-    @DrawableRes
-    private val logoutIconDrawable = R.drawable.sah_qc_launcher2
-
     private val logoutUiModel by lazy {
         OtherSettingsUiModel(LOGOUT_BUTTON_NAME, LOGOUT_ALIAS)
     }

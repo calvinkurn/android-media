@@ -12,10 +12,14 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.TextAreaUnify2
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -23,10 +27,11 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var commentContainer: LinearLayout? = null
-    var commentEditText: EditText? = null
+    var commentEditText: TextAreaUnify2? = null
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
     var sendButton: ImageView? = null
+    var replyBoxClickListener: ReplyBoxClickListener? = null
 
     private var textWatcher: TextWatcher? = null
     var listener: ChatbotSendButtonListener? = null
@@ -37,7 +42,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getMessageView(): EditText? {
-        return commentEditText
+        return commentEditText?.editText
     }
 
     fun getReplyBubbleContainer(): ReplyBubbleAreaMessage? {
@@ -61,15 +66,27 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         with(view) {
             replyBox = findViewById(R.id.reply_box)
             replyBubbleContainer = findViewById(R.id.reply_bubble_container)
-            commentContainer = findViewById(R.id.new_comment_container)
             commentEditText = findViewById(R.id.new_comment)
-            addAttachmentMenu = findViewById(R.id.iv_chat_menu)
+            addAttachmentMenu = commentEditText?.icon1
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
+        context?.resources?.getString(R.string.cb_bot_reply_text)?.toBlankOrString()
+            ?.let { setHint(it) }
+        addAttachmentMenu?.setOnClickListener {
+            replyBoxClickListener?.onAttachmentMenuClicked()
+        }
     }
 
-    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
+    fun setHint(hint: String) {
+        with(commentEditText) {
+            this?.labelText?.text = ""
+            this?.labelText?.hide()
+            this?.setPlaceholder(hint)
+        }
+    }
+
+    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding) {
         videoUploadOnBoarding.showVideoBubbleOnBoarding(
             addAttachmentMenu,
             context
@@ -77,15 +94,15 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     fun clearChatText() {
-        commentEditText?.setText("")
+        commentEditText?.editText?.setText("")
     }
 
     fun addTextChangedListener() {
-        commentEditText?.addTextChangedListener(textWatcher)
+        commentEditText?.editText?.addTextChangedListener(textWatcher)
     }
 
     fun removeTextChangedListener() {
-        commentEditText?.removeTextChangedListener(textWatcher)
+        commentEditText?.editText?.removeTextChangedListener(textWatcher)
     }
 
     fun bindCommentTextBackground() {
@@ -110,7 +127,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getMessage(): String {
-        return commentEditText?.text.toString() ?: ""
+        return commentEditText?.editText?.text.toString() ?: ""
     }
 
     private fun getTextWatcherForMessage(): TextWatcher {
@@ -133,6 +150,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
-        val LAYOUT = R.layout.compose_message_area
+        val LAYOUT = R.layout.customview_chatbot_small_reply_box
     }
 }

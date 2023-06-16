@@ -48,7 +48,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
+import com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.bold
 import com.tokopedia.feedcomponent.util.buildSpannedString
@@ -103,6 +103,7 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import kotlin.math.round
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -208,7 +209,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val userImage: ImageUnify = findViewById(R.id.user_image)
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val gridList: RecyclerView = findViewById(R.id.gridList)
-    private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
+    private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
@@ -520,7 +521,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shareButton.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
 
-            val desc = context.getString(R.string.feed_share_default_text)
+            val desc = context.getString(contentCommonR.string.feed_share_default_text)
             val url =
                 if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                     feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -688,23 +689,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region bind content sub info
         val contentSubInfoValue = if (isTopads) {
-            context.getString(R.string.feeds_ads_text)
+            context.getString(contentCommonR.string.feeds_ads_text)
         } else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             when (feedXCard.type) {
-                ASGC_NEW_PRODUCTS -> context.getString(R.string.feeds_asgc_new_product_text)
-                ASGC_RESTOCK_PRODUCTS -> context.getString(R.string.feeds_asgc_restock_text)
-                ASGC_DISCOUNT_TOKO -> context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO -> context.getString(R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL -> context.getString(R.string.feed_asgc_rilisan_special)
+                ASGC_NEW_PRODUCTS -> context.getString(contentCommonR.string.feeds_asgc_new_product_text)
+                ASGC_RESTOCK_PRODUCTS -> context.getString(contentCommonR.string.feeds_asgc_restock_text)
+                ASGC_DISCOUNT_TOKO -> context.getString(contentCommonR.string.feed_asgc_diskon_toko)
+                ASGC_FLASH_SALE_TOKO -> context.getString(contentCommonR.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(contentCommonR.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(R.string.feed_header_follow_count_text),
+                    context.getString(contentCommonR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(R.string.feed_header_follow_count_less_text)
+            } else context.getString(contentCommonR.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
             shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -747,13 +748,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
         }
         val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(R.string.kol_action_following_color)
+            context.getString(contentCommonR.string.kol_action_following_color)
         } else {
-            context.getString(R.string.kol_action_follow_color)
+            context.getString(contentCommonR.string.kol_action_follow_color)
         }
         if (!isFollowed || followers.transitionFollow) {
             this.authorFollowAction.text = MethodChecker.fromHtml(
-                "${context.getString(R.string.feed_header_separator)}$textFollowAction"
+                "${context.getString(contentCommonR.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
@@ -827,7 +828,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.text =
                 MethodChecker.fromHtml(
                     context.getString(
-                        R.string.feed_component_viewed_count_text,
+                        contentCommonR.string.feed_component_viewed_count_text,
                         view.count.productThousandFormatted(1)
                     )
                 )
@@ -871,12 +872,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (like.isLiked) {
                     if (like.count == 1) {
                         likedText.text =
-                            context.getString(R.string.feed_component_liked_count_text_only_me)
+                            context.getString(contentCommonR.string.feed_component_liked_count_text_only_me)
                     } else
                         likedText.text =
                             MethodChecker.fromHtml(
                                 context.getString(
-                                    R.string.feed_component_liked_by_text_me,
+                                    contentCommonR.string.feed_component_liked_by_text_me,
                                     (like.count - 1).productThousandFormatted(1)
                                 )
                             )
@@ -884,14 +885,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     likedText.text =
                         MethodChecker.fromHtml(
                             context.getString(
-                                R.string.feed_component_liked_count_text,
+                                contentCommonR.string.feed_component_liked_count_text,
                                 like.count.productThousandFormatted(1)
                             )
                         )
             } else {
                 likedText.text = MethodChecker.fromHtml(
                     context.getString(
-                        R.string.feed_component_liked_by_text,
+                        contentCommonR.string.feed_component_liked_by_text,
                         getLikedByText(like.likedBy),
                         like.count.productThousandFormatted(1)
                     )
@@ -981,7 +982,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
-                label = context.getString(R.string.feed_component_read_more_button),
+                label = context.getString(contentCommonR.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
@@ -1044,7 +1045,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(R.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(contentCommonR.string.feed_component_add_comment, name)
 
         var authId = ""
         if (authorType != 1)
@@ -1090,7 +1091,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(contentCommonR.string.feed_component_see_all_comments, comments.countFmt)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1233,7 +1234,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                volume_icon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                volume_icon?.setImageResource(
+                    if (!GridPostAdapter.isMute) com.tokopedia.iconunify.R.drawable.iconunify_volume_up
+                    else com.tokopedia.iconunify.R.drawable.iconunify_volume_mute
+                )
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1551,9 +1555,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0,
-                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_3),
+                gridList.getDimens(contentCommonR.dimen.content_common_dp_3),
                 0
             )
         }
@@ -1634,7 +1638,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val spannableString =
             SpannableString(
                 String.format(
-                    context.getString(R.string.feed_header_time_new),
+                    context.getString(contentCommonR.string.feed_header_time_new),
                     avatarDate
                 )
             )
@@ -1892,7 +1896,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight) card.cta.text
-        else context.getString(R.string.feeds_cek_sekarang)
+        else context.getString(contentCommonR.string.feeds_cek_sekarang)
 
     private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
 

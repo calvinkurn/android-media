@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomecommon.presentation.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -28,9 +27,9 @@ class DateTextFieldView(
         set(value) {
             field = value
             val color = if (value) {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN400)
             } else {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
             }
             binding.horLineDtf.setBackgroundColor(color)
         }
@@ -46,7 +45,7 @@ class DateTextFieldView(
             field = value
             binding.tvShcDateText.text = value
             binding.tvShcDateText.setTextColor(
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             )
         }
 
@@ -55,13 +54,7 @@ class DateTextFieldView(
             field = value
             binding.tvShcDateText.text = value
             binding.tvShcDateText.setTextColor(
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             )
-        }
-
-    var labelGravity: Int = Gravity.START
-        set(value) {
-            field = value
-            binding.tvShcDateLabel.gravity = value
         }
 }

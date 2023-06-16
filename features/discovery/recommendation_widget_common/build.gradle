@@ -2,14 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'kotlin-kapt'
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-android {
-    buildFeatures {
-        viewBinding true
-    }
-}
-repositories {
-}
 
 kapt {
     correctErrorTypes = true
@@ -46,6 +41,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -88,6 +84,11 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

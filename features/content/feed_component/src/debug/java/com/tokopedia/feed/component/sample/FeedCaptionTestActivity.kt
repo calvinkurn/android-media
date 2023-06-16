@@ -53,7 +53,7 @@ class FeedCaptionTestActivity : AppCompatActivity() {
 
         val readMoreCaption = FeedCaption.ReadMore(
             maxTrimChar = 120,
-            label = getString(R.string.feed_component_read_more_button),
+            label = getString(com.tokopedia.content.common.R.string.feed_component_read_more_button),
             colorRes = MethodChecker.getColor(
                 this@FeedCaptionTestActivity,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN600

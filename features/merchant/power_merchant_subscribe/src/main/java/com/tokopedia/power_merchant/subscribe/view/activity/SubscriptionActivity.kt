@@ -2,13 +2,12 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -22,8 +21,6 @@ import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiM
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.setLightStatusBar
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
@@ -56,7 +53,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 25/02/21
  */
 
-class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent>,
+class SubscriptionActivity : BaseSimpleActivity(), HasComponent<PowerMerchantSubscribeComponent>,
     SubscriptionActivityInterface {
 
     companion object {
@@ -111,6 +108,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             REQUEST_LOGIN -> handleAfterLogin()
         }
     }
+
+    override fun getNewFragment(): Fragment? = null
 
     private fun handleAfterLogin() {
         if (userSession.isLoggedIn) {
@@ -250,7 +249,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
         setSupportActionBar(binding?.toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setWhiteStatusBar()
     }
 
     fun fetchPmBasicInfo(isFirstLoad: Boolean) {
@@ -258,13 +256,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         startNetworkPerformanceMonitoring()
         startCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_BASIC_INFO_METRICS)
         sharedViewModel.getPowerMerchantBasicInfo(isFirstLoad)
-    }
-
-    private fun setWhiteStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
-            setLightStatusBar(true)
-        }
     }
 
     private fun setupViewPager(data: PowerMerchantBasicInfoUiModel) {

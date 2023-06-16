@@ -858,4 +858,56 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmData[ExtraKey.TRACKER_ID] = if (isSelected) ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_BATAL else ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS
         sendGeneralEvent(gtmData)
     }
+
+    fun eventClickPlatformFeeInfoButton(userId: String, platformFee: String) {
+        val listPromotions: MutableList<Map<String, Any?>> = ArrayList()
+        listPromotions.add(
+            mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to "",
+                ConstantTransactionAnalytics.Key.ITEM_NAME to ""
+            )
+        )
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.CLICK_INFO_BUTTON_IN_PLATFORM_FEE,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.CLICK_INFO_BUTTON_IN_PLATFORM_FEE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.PLATFORM_FEE] = platformFee
+        gtmData[ConstantTransactionAnalytics.Key.PROMOTIONS] = listPromotions
+        gtmData[ExtraKey.USER_ID] = userId
+        sendEnhancedEcommerce(gtmData)
+    }
+
+    fun eventViewPlatformFeeInCheckoutPage(userId: String, platformFee: String) {
+        val listPromotions: MutableList<Map<String, Any?>> = ArrayList()
+        listPromotions.add(
+            mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to "",
+                ConstantTransactionAnalytics.Key.ITEM_NAME to ""
+            )
+        )
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_ITEM,
+            ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+            ConstantTransactionAnalytics.EventAction.VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] =
+            ConstantTransactionAnalytics.TrackerId.VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.PLATFORM_FEE] = platformFee
+        gtmData[ConstantTransactionAnalytics.Key.PROMOTIONS] = listPromotions
+        gtmData[ExtraKey.USER_ID] = userId
+        sendEnhancedEcommerce(gtmData)
+    }
 }
