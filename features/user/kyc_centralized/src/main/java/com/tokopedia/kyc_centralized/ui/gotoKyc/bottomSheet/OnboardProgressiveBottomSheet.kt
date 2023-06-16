@@ -143,7 +143,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
             )
             binding?.consentGotoKycProgressive?.submitConsent()
-            viewModel.registerProgressiveUseCase(projectId)
+            viewModel.registerProgressive(projectId)
         }
     }
 

@@ -72,7 +72,7 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     private fun initLoader() {
         if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
-            viewModel.registerProgressiveUseCase(
+            viewModel.registerProgressive(
                 projectId = args.parameter.projectId,
                 challengeId = args.parameter.challengeId
             )

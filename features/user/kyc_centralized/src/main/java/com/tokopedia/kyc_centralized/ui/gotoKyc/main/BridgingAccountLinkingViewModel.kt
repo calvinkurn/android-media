@@ -53,7 +53,7 @@ class BridgingAccountLinkingViewModel @Inject constructor(
         )
     }
 
-    fun registerProgressiveUseCase(projectId: String) {
+    fun registerProgressive(projectId: String) {
         _registerProgressive.value = RegisterProgressiveResult.Loading()
 
         val parameter = RegisterProgressiveParam(
