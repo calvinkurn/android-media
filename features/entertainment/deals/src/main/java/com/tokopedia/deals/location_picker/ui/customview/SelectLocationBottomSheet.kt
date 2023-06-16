@@ -3,6 +3,7 @@ package com.tokopedia.deals.location_picker.ui.customview
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.databinding.LayoutDealsChangeLocationBinding
@@ -26,6 +27,14 @@ class SelectLocationBottomSheet (private val selectedLocation: String = "", priv
         super.onViewCreated(view, savedInstanceState)
         initView()
     }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is DealsSelectLocationFragment) {
+            childFragment.setCallback(callback)
+        } else {
+            super.onAttachFragment(childFragment)
+        }
+    }
     private fun initBottomSheet() {
         isFullpage = true
         context?.let { context ->
@@ -37,7 +46,7 @@ class SelectLocationBottomSheet (private val selectedLocation: String = "", priv
     }
     private fun initView() {
         setLayoutMargin()
-        val fragment = DealsSelectLocationFragment.createInstance(selectedLocation, currentLocation, isLandmarkPage, callback)
+        val fragment = DealsSelectLocationFragment.createInstance(selectedLocation, currentLocation, isLandmarkPage)
         val fragmentTransaction = childFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.layout_location, fragment).commit()
     }
