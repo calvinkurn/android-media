@@ -85,7 +85,6 @@ internal class MultiProductSearchGeneralSearchTrackingTest : MultiProductSearchT
         val mpsModel = "mps/mps-emptystate.json".jsonToObject<MPSModel>()
         val mpsViewModel = mpsViewModel(MPSState(parameter))
 
-
         val expectedGeneralSearchTracking = GeneralSearchTrackingMPS(
             eventLabel = String.format(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
