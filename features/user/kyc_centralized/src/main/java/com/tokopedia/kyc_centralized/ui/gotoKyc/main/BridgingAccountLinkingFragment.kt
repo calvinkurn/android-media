@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -66,11 +68,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            val parameter = CaptureKycDocumentsParam(
-                projectId = args.parameter.projectId,
-                source = args.parameter.source
-            )
-            gotoCaptureKycDocuments(parameter)
+            gotoCaptureKycDocuments()
         } else {
             showPermissionRejected()
         }
@@ -88,7 +86,6 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.unifyToolbar?.setNavigationOnClickListener { activity?.finish() }
         gotoAccountLinking()
         initObserver()
         initSpannable()
@@ -117,12 +114,12 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is AccountLinkingStatusResult.NotLinked -> {
-                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
+                    activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
                     showToaster(it.throwable)
-                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
+                    activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
             }
@@ -137,12 +134,12 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.AwaitingApprovalGopay -> {
-                    activity?.setResult(KYCConstant.ActivityResult.AWAITING_APPROVAL_GOPAY)
+                    activity?.setResult(KYCConstant.ActivityResult.RELOAD)
                     activity?.finish()
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(it.throwable)
-                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.setResult(KYCConstant.ActivityResult.RELOAD)
                     activity?.finish()
                 }
             }
@@ -222,6 +219,9 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             layoutDoneGopay.imgItem.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_gopay)
             )
+            layoutDoneGopay.icCard.show()
+            layoutDoneGopay.imgItem.invisible()
+            layoutDoneGopay.tvTitleKtp.text = getString(R.string.goto_kyc_bridging_progressive_item_title)
             layoutDoneGopay.tvNameKtp.text = encryptedName
         }
     }
@@ -257,6 +257,21 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.setResult(KYCConstant.ActivityResult.RELOAD)
+                    activity?.finish()
+                }
+            }
+        )
+
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            activity?.setResult(KYCConstant.ActivityResult.RELOAD)
+            activity?.finish()
+        }
+
         binding?.btnConfirm?.setOnClickListener {
             if (viewModel.checkEligibility.value is CheckEligibilityResult.Progressive) {
                 viewModel.registerProgressive(args.parameter.projectId)
@@ -265,11 +280,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissionLocation.launch(Manifest.permission.CAMERA)
                     } else {
-                        val parameter = CaptureKycDocumentsParam(
-                            projectId = args.parameter.projectId,
-                            source = args.parameter.source
-                        )
-                        gotoCaptureKycDocuments(parameter)
+                        gotoCaptureKycDocuments()
                     }
                 }
             }
@@ -327,7 +338,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
-    private fun gotoCaptureKycDocuments(parameter: CaptureKycDocumentsParam) {
+    private fun gotoCaptureKycDocuments() {
+        val parameter = CaptureKycDocumentsParam(
+            projectId = args.parameter.projectId,
+            source = args.parameter.source
+        )
         val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
         view?.findNavController()?.navigate(toCaptureKycDocuments)
     }

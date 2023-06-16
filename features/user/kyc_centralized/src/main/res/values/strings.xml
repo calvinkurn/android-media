@@ -214,7 +214,7 @@
     <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
     <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
-    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>%s</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
@@ -260,6 +260,7 @@
     <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
     <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">e-KTP di GoPay</string>
+    <string name="goto_kyc_bridging_progressive_item_title">Nama e-KTP</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
     <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
@@ -295,5 +296,6 @@
     <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
+    <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
 
 </resources>

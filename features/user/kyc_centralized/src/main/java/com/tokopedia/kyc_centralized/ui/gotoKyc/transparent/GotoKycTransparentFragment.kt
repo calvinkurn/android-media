@@ -51,10 +51,23 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     lateinit var oneKycSdk: OneKycSdk
 
     private var isReVerify = false
+    private var directShowBottomSheetInOnboardBenefit = false
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            KYCConstant.ActivityResult.RELOAD -> {
+                directShowBottomSheetInOnboardBenefit = true
+                viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
+            }
+            else -> {
+                finishWithResult(result.resultCode)
+            }
+        }
+    }
+
+    private fun finishWithResult(result: Int) {
         kycSharedPreference.removeProjectId()
-        activity?.setResult(result.resultCode)
+        activity?.setResult(result)
         activity?.finish()
     }
 
@@ -124,9 +137,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(it.throwable)
-                    kycSharedPreference.removeProjectId()
-                    activity?.setResult(Activity.RESULT_CANCELED)
-                    activity?.finish()
+                    finishWithResult(Activity.RESULT_CANCELED)
                 }
             }
         }
@@ -144,9 +155,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(it.throwable)
-                    kycSharedPreference.removeProjectId()
-                    activity?.setResult(Activity.RESULT_CANCELED)
-                    activity?.finish()
+                    finishWithResult(Activity.RESULT_CANCELED)
                 }
             }
         }
@@ -159,7 +168,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                 encryptedName = encryptedName,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                sourcePage = viewModel.source
+                sourcePage = viewModel.source,
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
             )
             gotoOnboardBenefit(parameter)
         } else {
@@ -176,7 +186,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                sourcePage = viewModel.source
+                sourcePage = viewModel.source,
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
             )
             gotoOnboardBenefit(parameter)
         } else {
@@ -193,7 +204,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             val parameter = GotoKycMainParam(
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY,
-                sourcePage = viewModel.source
+                sourcePage = viewModel.source,
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
             )
             gotoOnboardBenefit(parameter)
         } else {
@@ -237,9 +249,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         )
 
         onBoardProgressiveBottomSheet.setOnDismissListener {
-            kycSharedPreference.removeProjectId()
-            activity?.setResult(Activity.RESULT_CANCELED)
-            activity?.finish()
+            finishWithResult(Activity.RESULT_CANCELED)
         }
     }
 
@@ -255,9 +265,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
-        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isAwaitingApprovalGopay ->
-            if (isAwaitingApprovalGopay) {
-                showAwaitingApprovalBottomSheet()
+        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
+            if (isReload) {
+                viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
             } else {
                 kycSharedPreference.removeProjectId()
                 activity?.setResult(Activity.RESULT_CANCELED)

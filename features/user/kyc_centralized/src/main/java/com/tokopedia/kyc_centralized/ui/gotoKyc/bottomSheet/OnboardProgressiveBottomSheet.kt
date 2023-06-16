@@ -50,16 +50,18 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_OK)
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_CANCELED)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_CANCELED)
             }
         }
+    }
+
+    private fun finishWithResult(result: Int) {
+        kycSharedPreference.removeProjectId()
+        activity?.setResult(result)
+        activity?.finish()
     }
 
     @Inject

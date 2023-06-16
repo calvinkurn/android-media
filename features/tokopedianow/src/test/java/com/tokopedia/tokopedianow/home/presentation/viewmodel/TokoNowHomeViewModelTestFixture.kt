@@ -33,6 +33,8 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -635,6 +637,13 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery {
             referralEvaluateJoinUseCase.execute(any())
         } throws error
+    }
+
+    protected fun getOldRepurchaseProduct(): List<TokoNowProductCardUiModel> {
+        val items = (viewModel.homeLayoutList.value as? Success<HomeLayoutListUiModel>)?.data?.items.orEmpty()
+        val item = items.firstOrNull { it is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
+        val repurchase = item as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
+        return repurchase?.productList.orEmpty()
     }
 
     object UnknownHomeLayout : HomeLayoutUiModel("1") {

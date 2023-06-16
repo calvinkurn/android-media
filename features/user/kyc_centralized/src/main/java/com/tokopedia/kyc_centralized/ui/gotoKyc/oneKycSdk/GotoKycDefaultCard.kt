@@ -14,16 +14,20 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         activity: Activity,
         contentView: View,
         onDismiss: (() -> Unit)?
-    ): KycPlusCard {
-        val bottomSheetDialog = getBottomSheet(
-            activity = activity,
-            view = contentView
-        )
-        return GotoKycSdkBottomSheet(
-            activity = activity,
-            bottomSheetDialog = bottomSheetDialog,
-            onDismiss = onDismiss
-        )
+    ): KycPlusCard? {
+        return if (activity.isFinishing) {
+            null
+        } else {
+            val bottomSheetDialog = getBottomSheet(
+                activity = activity,
+                view = contentView
+            )
+            return GotoKycSdkBottomSheet(
+                activity = activity,
+                bottomSheetDialog = bottomSheetDialog,
+                onDismiss = onDismiss
+            )
+        }
     }
 
     override fun getDismissibleNotchCard(
@@ -31,16 +35,20 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         contentView: View,
         resizable: Boolean,
         onDismiss: (() -> Unit)?
-    ): KycPlusCard {
-        val bottomSheetDialog = getBottomSheet(
-            activity = activity,
-            view = contentView
-        )
-        return GotoKycSdkBottomSheet(
-            activity = activity,
-            bottomSheetDialog = bottomSheetDialog,
-            onDismiss = onDismiss
-        )
+    ): KycPlusCard? {
+        return if (activity.isFinishing) {
+            null
+        } else {
+            val bottomSheetDialog = getBottomSheet(
+                activity = activity,
+                view = contentView
+            )
+            return GotoKycSdkBottomSheet(
+                activity = activity,
+                bottomSheetDialog = bottomSheetDialog,
+                onDismiss = onDismiss
+            )
+        }
     }
 
     override fun getFixedCard(
@@ -48,17 +56,21 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         contentView: View,
         isModal: Boolean,
         onUserDismiss: (() -> Unit)?
-    ): KycPlusCard {
-        val bottomSheetDialog = getBottomSheet(
-            activity = activity,
-            view = contentView,
-            showCloseIcon = false
-        )
-        return GotoKycSdkBottomSheet(
-            activity = activity,
-            bottomSheetDialog = bottomSheetDialog,
-            onDismiss = onUserDismiss
-        )
+    ): KycPlusCard? {
+        return if (activity.isFinishing) {
+            null
+        } else {
+            val bottomSheetDialog = getBottomSheet(
+                activity = activity,
+                view = contentView,
+                showCloseIcon = false
+            )
+            return GotoKycSdkBottomSheet(
+                activity = activity,
+                bottomSheetDialog = bottomSheetDialog,
+                onDismiss = onUserDismiss
+            )
+        }
     }
 
     private fun getBottomSheet(activity: Activity, view: View, showCloseIcon: Boolean = true): BottomSheetDialog {

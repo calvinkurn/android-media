@@ -85,7 +85,7 @@ class DobChallengeExhaustedBottomSheet : BottomSheetUnify() {
         private const val SOURCE = "source"
         private const val ONE_SECOND_IN_MILLIS = 1000
         private const val ONE_MINUTE_IN_MILLIS = 60000
-        private const val FORMAT_DATE = "dd MMM yyyy hh:mm"
+        private const val FORMAT_DATE = "dd MMM yyyy HH:mm"
         private const val COOLDOWN_TIME_IN_SECONDS = "cooldownTimeInSeconds"
         private const val MAXIMUM_ATTEMPTS_ALLOWED = "maximumAttemptsAllowed"
 

@@ -49,12 +49,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -63,7 +59,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -209,12 +204,10 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
-import com.tokopedia.content.common.R as contentCommonR
 
 open class ShopPageHomeFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
@@ -307,9 +300,6 @@ open class ShopPageHomeFragment :
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
-
-    @Inject
-    lateinit var coachMarkSharedPref: ContentCoachMarkSharedPref
 
     var viewModel: ShopHomeViewModel? = null
     var extParam: String = ""
@@ -1671,7 +1661,6 @@ open class ShopPageHomeFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
-                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
@@ -4225,35 +4214,6 @@ open class ShopPageHomeFragment :
                 }
             }
         )
-    }
-
-    private fun checkIsShouldShowPerformanceDashboardCoachMark() {
-        val isShownAlready = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
-        if (isShownAlready) return
-        val recyclerView = getRecyclerView(view)
-        recyclerView?.addOneTimeGlobalLayoutListener {
-            val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
-            val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
-            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
-            if (ivAction?.isVisible == true) {
-                val coachMarkItems = mutableListOf<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        anchorView = ivAction,
-                        title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
-                        description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMark.isOutsideTouchable = true
-                coachMark.showCoachMark(ArrayList(coachMarkItems))
-                coachMarkSharedPref.setHasBeenShown(
-                    Key.PerformanceDashboardEntryPointShopPage,
-                    viewModel?.userSessionShopId.orEmpty()
-                )
-            }
-        }
     }
 
     private fun observePlayWidgetReminder() {
