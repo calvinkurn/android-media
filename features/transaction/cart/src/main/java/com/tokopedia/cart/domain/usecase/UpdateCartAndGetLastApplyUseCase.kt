@@ -2,7 +2,9 @@ package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.domain.mapper.mapUpdateCartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
@@ -25,7 +27,9 @@ class UpdateCartAndGetLastApplyUseCase @Inject constructor(
 
     override suspend fun execute(params: UpdateCartWrapperRequest): UpdateAndGetLastApplyData {
         val updateAndValidateUseData = UpdateAndGetLastApplyData()
-        val updateCartData = updateCartUseCase(params)
+        updateCartUseCase.setParams(params.updateCartRequestList, params.source)
+        val updateCartDataResponse = updateCartUseCase.executeOnBackground()
+        val updateCartData = mapUpdateCartData(updateCartDataResponse)
         updateAndValidateUseData.updateCartData = updateCartData
         if (!updateCartData.isSuccess) {
             throw CartResponseErrorException(updateCartData.message)
