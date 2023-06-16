@@ -29,6 +29,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var isEnabledFromText: Boolean = false
     private var charCount: Long = 0
     private var selectedReasonList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    private var isSendButtonClicked: Boolean = false
 
     init {
         isFullpage = false
@@ -102,6 +103,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
     private fun BottomSheetChatbotReasonsBinding.setUpClickListener() {
         btnSubmit.setOnClickListener {
+            isSendButtonClicked = true
             listener?.submitRejectReasonsViaSocket(
                 reasonsAdapter?.selectedList ?: emptyList(),
                 reasonText.editText.text?.toString() ?: "",
@@ -110,6 +112,12 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
             reasonText.editText.setText("")
 
             dismiss()
+        }
+
+        setOnDismissListener {
+            if (!isSendButtonClicked) {
+                listener?.isDismissClicked(true)
+            }
         }
     }
     private fun getMyLayoutManager(): RecyclerView.LayoutManager {
@@ -133,6 +141,10 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
     fun setUpChipClickListener(listener: ChatbotRejectReasonsChipListener) {
         this.chipSelectedListener = listener
+    }
+
+    fun updateSendButtonStatus(sendButtonStatus: Boolean) {
+        this.isSendButtonClicked = sendButtonStatus
     }
 
     private fun handleButtonState() {
@@ -196,5 +208,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
             reasonText: String,
             helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
         )
+
+        fun isDismissClicked(isDismissClickOnRejectReasons: Boolean)
     }
 }

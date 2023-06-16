@@ -2301,6 +2301,8 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2313,17 +2315,21 @@ class ChatbotViewModelTest {
                     any(),
                     any(),
                     any(),
+                    any(),
+                    any(),
                     any()
                 ),
                 any()
             )
         } just runs
 
-        viewModel.sendDynamicAttachment108(emptyList(), "", "", "", "", DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion())
+        viewModel.sendDynamicAttachment108(emptyList(), "", "", "", "", DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion(), 0, true)
 
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamDynamicAttachment108(
+                    any(),
+                    any(),
                     any(),
                     any(),
                     any(),

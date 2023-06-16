@@ -50,6 +50,7 @@ import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachment108
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
@@ -1397,7 +1398,9 @@ class ChatbotViewModel @Inject constructor(
         messageId: String,
         toUid: String,
         startTime: String,
-        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
     ) {
         chatbotWebSocket.send(
             generateParamDynamicAttachment108(
@@ -1406,7 +1409,30 @@ class ChatbotViewModel @Inject constructor(
                 messageId,
                 toUid,
                 startTime,
-                helpfulQuestion
+                helpfulQuestion,
+                index,
+                isSubmitAfterOpenForm
+            ),
+            listInterceptor
+        )
+    }
+
+    fun sendDynamicAttachment108ForAcknowledgement(
+        messageId: String,
+        toUid: String,
+        model: QuickReplyUiModel,
+        startTime: String,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
+    ) {
+        chatbotWebSocket.send(
+            generateParamDynamicAttachment108ForAcknowledgement(
+                messageId,
+                toUid,
+                model,
+                startTime,
+                index,
+                isSubmitAfterOpenForm
             ),
             listInterceptor
         )
