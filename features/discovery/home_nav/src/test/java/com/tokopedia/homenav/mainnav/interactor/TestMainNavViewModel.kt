@@ -15,10 +15,6 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
-import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.admin.AdminData
@@ -491,7 +487,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when refresh data affiliate with control rollence data then affiliate data should not error in header`() {
+    fun `given success when refresh data affiliate data then affiliate data should not error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         val affiliateUserDetailData = AffiliateUserDetailData()
@@ -522,7 +518,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
@@ -534,7 +529,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given network error when refresh data affiliate with control rollence then affiliate data still error in header`() {
+    fun `given network error when refresh data affiliate then affiliate data still error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         coEvery {
@@ -563,7 +558,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
@@ -575,7 +569,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given thrown exception when refresh data affiliate with control rollence then affiliate data still error in header`() {
+    fun `given thrown exception when refresh data affiliate then affiliate data still error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         coEvery {
@@ -604,7 +598,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
@@ -616,7 +609,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given control rollence then test Success getProfileFullData`() {
+    fun `test Success getProfileFullData`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -634,7 +627,6 @@ class TestMainNavViewModel {
             )
         )
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -657,7 +649,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when refresh profile after login with control rollence then data not null and have exact result`() {
+    fun `given success when refresh profile after login then data not null and have exact result`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val accountHeaderDataModel = AccountHeaderDataModel(
             profileDataModel = ProfileDataModel(
@@ -676,7 +668,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns accountHeaderDataModel
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         viewModel.refreshProfileData()
@@ -701,13 +692,12 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given control rollence then test Success getUserNameAndPictureData`() {
+    fun `test Success getUserNameAndPictureData`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "Joko", userImage = "Tingkir"))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -722,13 +712,12 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given disable me page rollence then Error getUserNameAndPictureData missing name`() {
+    fun `test Error getUserNameAndPictureData missing name`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "", userImage = "Tingkir"))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -743,13 +732,12 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given control rollence then test Error getUserNameAndPictureData missing profile picture`() {
+    fun `test Error getUserNameAndPictureData missing profile picture`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "Joko", userImage = ""))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -764,13 +752,12 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given disable rollence me page Error getUserNameAndPictureData missing all`() {
+    fun `test Error getUserNameAndPictureData missing all`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "", userImage = ""))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -846,7 +833,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase
         )
 
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -896,7 +882,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getShopInfoUseCase = shopInfoRefreshData
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         viewModel.refreshUserShopData()
@@ -959,7 +944,6 @@ class TestMainNavViewModel {
             accountAdminInfoUseCase = accountAdminInfoUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         viewModel.refreshUserShopData()
@@ -1000,7 +984,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getTokopediaPlusUseCase = getTokopediaPlusUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val visitableListBefore = viewModel.mainNavLiveData.value?.dataList ?: listOf()
@@ -1047,7 +1030,6 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getTokopediaPlusUseCase = getTokopediaPlusUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val visitableListBefore = viewModel.mainNavLiveData.value?.dataList ?: listOf()
@@ -1063,7 +1045,7 @@ class TestMainNavViewModel {
 
     // Category section
     @Test
-    fun `given success when refresh category after got error with control rollence then should be success and delete error bu list`() {
+    fun `given success when refresh category after got error then should be success and delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -1079,7 +1061,6 @@ class TestMainNavViewModel {
             getBuListUseCase.setStrategyCloudThenCache()
         } answers { }
         viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1100,7 +1081,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given default data from cache when load all categories on control rollence with exception then success get data from cache`() {
+    fun `given default data from cache when load all categories with exception then success get data from cache`() {
         val getCategoryGroupUseCase = mockk<GetCategoryGroupUseCase>()
         coEvery {
             getCategoryGroupUseCase.executeOnBackground()
@@ -1119,7 +1100,6 @@ class TestMainNavViewModel {
         } answers { }
 
         viewModel = createViewModel(getBuListUseCase = getCategoryGroupUseCase)
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1129,7 +1109,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when refresh category after got success with control rollence then update with cache data`() {
+    fun `given error when refresh category after got success then update with cache data`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
@@ -1148,7 +1128,6 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
 
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1167,7 +1146,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given failed data when refresh category with control rollence then show retry button`() {
+    fun `given failed data when refresh category then show retry button`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
@@ -1186,7 +1165,6 @@ class TestMainNavViewModel {
         } answers { }
         viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
 
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1205,7 +1183,7 @@ class TestMainNavViewModel {
 
     // Transaction section
     @Test
-    fun `given user does not have ongoing order and payment transaction with control rollence then only create transaction menu item`() {
+    fun `given user does not have ongoing order and payment transaction then only create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
 
@@ -1216,7 +1194,6 @@ class TestMainNavViewModel {
             getUohOrdersNavUseCase = getUohOrdersNavUseCase,
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
@@ -1232,7 +1209,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given logged in user only has ongoing order with control rollence then create transaction menu item`() {
+    fun `given logged in user only has ongoing order then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -1241,7 +1218,6 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -1250,7 +1226,6 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1267,12 +1242,11 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given logged in user only has payment transaction with control page rollence then create transaction menu item`() {
+    fun `given logged in user only has payment transaction then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
 
-        every { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { userSession.isShopOwner } returns true
@@ -1284,7 +1258,6 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1301,20 +1274,18 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when refresh uoh and transaction with control rollence then result not null`() {
+    fun `given success when refresh uoh and transaction then result not null`() {
         val getNavOrderUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns true
-        every { getNavOrderUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentUseCase,
             getUohOrdersNavUseCase = getNavOrderUseCase
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.refreshTransactionListData()
 
@@ -1331,7 +1302,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when logged in user get payment data and success when get ongoing order with control rollence then show error state`() {
+    fun `given error when logged in user get payment data and success when get ongoing order then show error state`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -1340,7 +1311,6 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
@@ -1349,7 +1319,6 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1366,7 +1335,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when logged in user get ongoing order data and success when get payment with control rollence then show error state`() {
+    fun `given error when logged in user get ongoing order data and success when get payment then show error state`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -1375,7 +1344,6 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -1384,7 +1352,6 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1401,7 +1368,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when logged in user get ongoing order and payment data with control rollence then show error`() {
+    fun `given error when logged in user get ongoing order and payment data then show error`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -1410,7 +1377,6 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
@@ -1419,7 +1385,6 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
@@ -1433,241 +1398,6 @@ class TestMainNavViewModel {
 
         Assert.assertNull(transactionDataModel)
         Assert.assertNotNull(transactionError)
-    }
-
-    // Wishlist section
-    @Test
-    fun `given success and not empty data when get wishlist with me page variant 2 should add wishlist model to visitable list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } returns Triple(listOf(NavWishlistModel(), NavWishlistModel()), false, false)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getWishlistNavUseCase = wishlistUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel } == true)
-        assert(viewModel.allProcessFinished.value?.peekContent() == true)
-    }
-
-    @Test
-    fun `given empty data when get wishlist with me page variant 2 should add empty wishlist`() {
-        val userSession = mockk<UserSessionInterface>()
-        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } returns Triple(listOf(), false, true)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getWishlistNavUseCase = wishlistUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as? WishlistDataModel
-        assert(wishlistModel != null && wishlistModel.collections.isEmpty())
-    }
-
-    @Test
-    fun `given error when get wishlist with me page variant 2 should add error state`() {
-        val userSession = mockk<UserSessionInterface>()
-        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } throws Exception()
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getWishlistNavUseCase = wishlistUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
-    }
-
-    @Test
-    fun `given success when refresh wishlist after got error with me page variant 2 then update error state to show wishlist`() {
-        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
-
-        val wishlist = NavWishlistModel(
-            id = "123",
-            name = "Item 1"
-        )
-
-        coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
-
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns Triple(listOf(wishlist), true, false)
-
-        viewModel.refreshWishlistData()
-
-        Assert.assertTrue(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is WishlistDataModel &&
-                    it.collections.contains(wishlist)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given success when refresh wishlist with me page variant 2 should update existing list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
-
-        val wishlist1 = NavWishlistModel(
-            id = "123",
-            name = "Item 1"
-        )
-        val wishlist2 = NavWishlistModel(
-            id = "234",
-            name = "Item 2"
-        )
-
-        // Initial wishlist data
-        every { userSession.isLoggedIn } returns true
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns Triple(listOf(wishlist1), true, false)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getWishlistNavUseCase = wishlistNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is WishlistDataModel &&
-                    it.collections.contains(wishlist1)
-            } == true
-        )
-
-        // Refresh data
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns Triple(listOf(wishlist2), true, false)
-        viewModel.refreshWishlistData()
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is WishlistDataModel &&
-                    it.collections.contains(wishlist2)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given error when get wishlist with me page variant 2 then success after reload page should update error state to show wishlist`() {
-        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
-
-        val wishlist = NavWishlistModel(
-            id = "123",
-            name = "Item 1"
-        )
-
-        coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
-
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns Triple(listOf(wishlist), true, false)
-
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is WishlistDataModel &&
-                    it.collections.contains(wishlist)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given only 1 wishlist data when get wishlist with me page variant 2 should show only 1 full width wishlist data`() {
-        val mockList1Wishlist = Triple(listOf(NavWishlistModel()), true, false)
-        val getWishlistNavUseCase = mockk<GetWishlistNavUseCase>()
-        coEvery {
-            getWishlistNavUseCase.executeOnBackground()
-        } returns mockList1Wishlist
-        viewModel = createViewModel(
-            getWishlistNavUseCase = getWishlistNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val wishlistDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is WishlistDataModel
-        } as? WishlistDataModel
-
-        Assert.assertEquals(1, wishlistDataModel?.collections?.size)
-        Assert.assertTrue(wishlistDataModel?.collections?.get(0)?.fullWidth == true)
-    }
-
-    // Transaction section revamp (me page)
-    @Test
-    fun `given 3 payment list and 3 ongoing transaction when get order history with me page variant then show only 3 payments and 2 ongoing transaction data`() {
-        val mockList3PaymentOrder = listOf(NavPaymentOrder(), NavPaymentOrder(), NavPaymentOrder())
-        val mockList3ProductOrder = listOf(NavProductOrder(), NavProductOrder(), NavProductOrder())
-        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every {
-            getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any())
-        } answers { }
-        coEvery {
-            getPaymentOrderNavUseCase.executeOnBackground()
-        } returns mockList3PaymentOrder
-        coEvery {
-            getUohOrdersNavUseCase.executeOnBackground()
-        } returns mockList3ProductOrder
-
-        viewModel = createViewModel(
-            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        Assert.assertEquals(3, transactionDataModel?.orderListModel?.paymentList?.size)
-        Assert.assertEquals(2, transactionDataModel?.orderListModel?.orderList?.size)
     }
 
     @Test
@@ -1684,7 +1414,6 @@ class TestMainNavViewModel {
             userSession = userSession
         )
 
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns false
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -1693,387 +1422,5 @@ class TestMainNavViewModel {
         viewModel.refreshTransactionListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
-    }
-
-    @Test
-    fun `given error when refresh order transaction with me page variant then show failed get order transaction`() {
-        val userSession = mockk<UserSessionInterface>()
-        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        every { userSession.isLoggedIn } returns true
-        every { userSession.isShopOwner } returns true
-        coEvery {
-            getPaymentOrderNavUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
-
-        viewModel.refreshTransactionListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
-    }
-
-    @Test
-    fun `given only 1 payment data when get order history with me page variant then show only 1 full width payment data`() {
-        val mockList1PaymentOrder = listOf(NavPaymentOrder())
-        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-        every { userSession.isLoggedIn } returns true
-        coEvery {
-            getPaymentOrderNavUseCase.executeOnBackground()
-        } returns mockList1PaymentOrder
-        viewModel = createViewModel(
-            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        Assert.assertEquals(1, transactionDataModel?.orderListModel?.paymentList?.size)
-        Assert.assertTrue(transactionDataModel?.orderListModel?.paymentList?.get(0)?.fullWidth == true)
-    }
-
-    @Test
-    fun `given only 1 ongoing order when get order history with me page variant then show only 1 full width order data`() {
-        val mockList1OrderProduct = listOf(NavProductOrder())
-        val getUohOrderNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        every { getUohOrderNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        val userSession = mockk<UserSessionInterface>()
-        every { userSession.isLoggedIn } returns true
-        coEvery {
-            getUohOrderNavUseCase.executeOnBackground()
-        } returns mockList1OrderProduct
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrderNavUseCase,
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        Assert.assertEquals(1, transactionDataModel?.orderListModel?.orderList?.size)
-        Assert.assertTrue(transactionDataModel?.orderListModel?.orderList?.get(0)?.fullWidth == true)
-    }
-
-    @Test
-    fun `given error when logged in user get payment data and success when get ongoing order with me page variant then show error state`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    @Test
-    fun `given error when logged in user get ongoing order data and success when get payment with me page variant then show error state`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    @Test
-    fun `given error when logged in user get ongoing order and payment data with me page variant then show error state`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(any()) }.answers { }
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    // Review section
-    @Test
-    fun `given success and not empty data when get review with me page variant 2 should add review model to visitable list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val reviewProductUseCase = mockk<GetReviewProductUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { reviewProductUseCase.executeOnBackground() } returns listOf(NavReviewModel(), NavReviewModel())
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getReviewProductUseCase = reviewProductUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ReviewListDataModel } == true)
-        assert(viewModel.allProcessFinished.value?.peekContent() == true)
-    }
-
-    @Test
-    fun `given empty data when get review with me page variant 2 should add empty review`() {
-        val userSession = mockk<UserSessionInterface>()
-        val reviewProductUseCase = mockk<GetReviewProductUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { reviewProductUseCase.executeOnBackground() } returns listOf()
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getReviewProductUseCase = reviewProductUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val reviewModel = viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel } as? ReviewListDataModel
-        assert(reviewModel != null && reviewModel.reviewList.isEmpty())
-    }
-
-    @Test
-    fun `given error when get review with me page variant 2 should add error state`() {
-        val userSession = mockk<UserSessionInterface>()
-        val reviewProductUseCase = mockk<GetReviewProductUseCase>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { reviewProductUseCase.executeOnBackground() } throws Exception()
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getReviewProductUseCase = reviewProductUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateReviewDataModel } == true)
-    }
-
-    @Test
-    fun `given success when refresh review after got error with me page variant 2 then update error state to show review`() {
-        val reviewProductUseCase = mockk<GetReviewProductUseCase>()
-
-        val review = NavReviewModel(
-            productId = "123",
-            productName = "Asd"
-        )
-
-        coEvery { reviewProductUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(getReviewProductUseCase = reviewProductUseCase)
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateReviewDataModel } == true)
-
-        coEvery { reviewProductUseCase.executeOnBackground() } returns listOf(review)
-
-        viewModel.refreshReviewData()
-
-        Assert.assertTrue(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is ReviewListDataModel &&
-                    it.reviewList.contains(review)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given success when refresh review with me page variant 2 should update existing list`() {
-        val userSession = mockk<UserSessionInterface>()
-        val reviewNavUseCase = mockk<GetReviewProductUseCase>()
-
-        val review1 = NavReviewModel(
-            productId = "123",
-            productName = "Item 1"
-        )
-        val review2 = NavReviewModel(
-            productId = "234",
-            productName = "Item 2"
-        )
-
-        // Initial wishlist data
-        every { userSession.isLoggedIn } returns true
-        coEvery { reviewNavUseCase.executeOnBackground() } returns listOf(review1)
-
-        viewModel = createViewModel(
-            userSession = userSession,
-            getReviewProductUseCase = reviewNavUseCase
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is ReviewListDataModel &&
-                    it.reviewList.contains(review1)
-            } == true
-        )
-
-        // Refresh data
-        coEvery { reviewNavUseCase.executeOnBackground() } returns listOf(review2)
-        viewModel.refreshReviewData()
-
-        assert(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is ReviewListDataModel &&
-                    it.reviewList.contains(review2)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given error when get review with me page variant 2 then success after reload page should update error state to show review`() {
-        val reviewNavUseCase = mockk<GetReviewProductUseCase>()
-
-        val review = NavReviewModel(
-            productId = "123",
-            productName = "Item 1"
-        )
-
-        coEvery { reviewNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(getReviewProductUseCase = reviewNavUseCase)
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateReviewDataModel } == true)
-
-        coEvery { reviewNavUseCase.executeOnBackground() } returns listOf(review)
-
-        viewModel.getMainNavData(true)
-
-        Assert.assertTrue(
-            viewModel.mainNavLiveData.value?.dataList?.any {
-                it is ReviewListDataModel &&
-                    it.reviewList.contains(review)
-            } == true
-        )
-    }
-
-    @Test
-    fun `given only 1 review product data when get order history with me page variant 2 then show only 1 full width review product`() {
-        val mockList1ReviewOrder = listOf(NavReviewModel())
-        val getReviewProductUseCase = mockk<GetReviewProductUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-        every { userSession.isLoggedIn } returns true
-        coEvery {
-            getReviewProductUseCase.executeOnBackground()
-        } returns mockList1ReviewOrder
-        viewModel = createViewModel(
-            getReviewProductUseCase = getReviewProductUseCase,
-            userSession = userSession
-        )
-
-        every { MePageRollenceController.isUsingMePageRollenceVariant() } returns true
-        every { MePageRollenceController.isUsingMePageRollenceVariant2() } returns true
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-        val reviewListDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ReviewListDataModel
-        } as? ReviewListDataModel
-
-        Assert.assertEquals(1, reviewListDataModel?.reviewList?.size)
-        Assert.assertTrue(reviewListDataModel?.reviewList?.get(0)?.fullWidth == true)
     }
 }
