@@ -2,10 +2,14 @@ package com.tokopedia.play.widget.ui.widget.carousel
 
 import android.animation.Animator
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.TouchDelegate
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.doOnLayout
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.airbnb.lottie.LottieCompositionFactory
@@ -103,6 +107,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         }
     }
 
+    private val offset12 = resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12)
+
     init {
         preloadLottie()
         showMuteButton(false, animate = false)
@@ -115,6 +121,16 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         binding.viewPlayWidgetOverlay.root.setOnClickListener {
             mListener?.onOverlayClicked(this, mModel)
+        }
+
+        binding.viewPlayWidgetActionButton.root.doOnLayout {
+            val parent = it.parent
+            if (parent !is ViewGroup) return@doOnLayout
+
+            val rect = Rect()
+            it.getHitRect(rect)
+            rect.inset(-offset12, -offset12)
+            parent.touchDelegate = TouchDelegate(rect, it)
         }
     }
 
