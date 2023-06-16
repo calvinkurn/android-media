@@ -1531,7 +1531,7 @@ open class HomeRevampFragment :
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
             FlashSaleWidgetCallback(this),
-            CarouselPlayWidgetCallback(getTrackingQueueObj()!!, userSession, this),
+            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

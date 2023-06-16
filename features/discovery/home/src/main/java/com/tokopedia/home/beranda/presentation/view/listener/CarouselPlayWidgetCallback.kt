@@ -24,7 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by kenny.hadisaputra on 25/05/23
  */
 class CarouselPlayWidgetCallback(
-    private val trackingQueue: TrackingQueue,
+    private val trackingQueue: TrackingQueue?,
     private val userSession: UserSessionInterface,
     lifecycleOwner: LifecycleOwner
 ) : PlayWidgetInListAnalyticListener, BaseTrackerConst() {
@@ -155,7 +155,7 @@ class CarouselPlayWidgetCallback(
             .appendCustomKeyValue(ChannelId.KEY, mHomeChannelId)
             .build()
 
-        trackingQueue.putEETracking(HashMap(trackerMap))
+        trackingQueue?.putEETracking(HashMap(trackerMap))
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3947
@@ -428,13 +428,13 @@ class CarouselPlayWidgetCallback(
             TrackerId.KEY to "43578"
         )
 
-        trackingQueue.putEETracking(HashMap(trackerMap))
+        trackingQueue?.putEETracking(HashMap(trackerMap))
     }
 
     private fun impressChannel(channelId: String, onNotImpressed: () -> Map<String, Any>) {
         if (channelImpressions.contains(channelId)) return
         channelImpressions.add(channelId)
-        trackingQueue.putEETracking(HashMap(onNotImpressed()))
+        trackingQueue?.putEETracking(HashMap(onNotImpressed()))
     }
 
     private fun impressProductInChannel(
@@ -445,7 +445,7 @@ class CarouselPlayWidgetCallback(
         val key = ProductInChannelKey(productId, channelId)
         if (productImpressions.contains(key)) return
         productImpressions.add(key)
-        trackingQueue.putEETracking(HashMap(onNotImpressed()))
+        trackingQueue?.putEETracking(HashMap(onNotImpressed()))
     }
 
     companion object {
