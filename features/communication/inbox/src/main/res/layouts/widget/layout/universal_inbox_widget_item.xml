@@ -71,7 +71,7 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/inbox_notification_icon_widget"
-                android:layout_width="16dp"
+                android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

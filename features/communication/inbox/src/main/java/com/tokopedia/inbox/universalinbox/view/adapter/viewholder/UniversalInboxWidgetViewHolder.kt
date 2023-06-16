@@ -3,9 +3,10 @@ package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.inbox.databinding.UniversalInboxWidgetItemBinding
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -39,8 +40,8 @@ class UniversalInboxWidgetViewHolder(
     }
 
     private fun bindCounter(uiModel: UniversalInboxWidgetUiModel) {
-        if (uiModel.counter > Int.ONE) {
-            val strCounter = uiModel.counter.toString()
+        if (uiModel.counter > Int.ZERO) {
+            val strCounter = UniversalInboxViewUtil.getStringCounter(uiModel.counter)
             if (strCounter.isNotEmpty()) {
                 binding?.inboxNotificationIconWidget?.setNotification(
                     notif = strCounter,
