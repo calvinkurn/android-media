@@ -1433,10 +1433,8 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
-                    val affectedPromoCount = showLoadingMvcSection(promoItem)
-                    if (affectedPromoCount > 0) {
-                        delay(CLASH_LOADING_MILLISECONDS)
-                    }
+                    showLoadingMvcSection(promoItem)
+                    delay(CLASH_LOADING_MILLISECONDS)
 
                     // Perform clash calculation
                     calculateClash(promoItem)
@@ -1745,18 +1743,15 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
-        var affectedPromoCount = 0
+    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel) {
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
                 it.uiData.shopId > 0 && !it.uiState.isDisabled
             ) {
                 it.uiState.isLoading = true
                 _tmpUiModel.value = Update(it)
-                affectedPromoCount += 1
             }
         }
-        return affectedPromoCount
     }
 
     private fun calculateClash(selectedItem: PromoListItemUiModel) {
@@ -1792,10 +1787,8 @@ class PromoCheckoutViewModel @Inject constructor(
                 ?.forEach {
                     if (it is PromoListItemUiModel) {
                         if (selectedItem.uiData.clashingInfos.isNotEmpty()) {
-                            val tmpClashResult = checkAndSetClashOnSelectionEvent(selectedItem, it)
-                            if (!clashResult) clashResult = tmpClashResult
+                            checkAndSetClashOnSelectionEvent(selectedItem, it)
                         }
-                        selectedItem.uiState.isLoading = false
                         _tmpUiModel.value = Update(selectedItem)
                     }
                 }
