@@ -18,7 +18,9 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -187,5 +189,22 @@ class PlayCoverSetupViewModelTest {
         Assertions
                 .assertThat(viewModel.isValidCoverTitle(coverTitle))
                 .isEqualTo(true)
+    }
+
+    @Test
+    fun `given productId and resized image path, it should return the original image url when app calls getOriginalImageUrl`() {
+
+        val mockOriginalImageUrlList = List(5) { "https://tokopedia.com/product/original_image/product_$it" }
+        val mockResizedImageUrl = "https://tokopedia.com/product/resized_image/product_3"
+
+        coEvery { getOriginalProductImageUseCase.executeOnBackground() } returns mockOriginalImageUrlList
+
+        runBlocking {
+            val originalImageUrl = viewModel.getOriginalImageUrl("", mockResizedImageUrl)
+
+            Assertions
+                .assertThat(originalImageUrl)
+                .isEqualTo("https://tokopedia.com/product/original_image/product_3")
+        }
     }
 }
