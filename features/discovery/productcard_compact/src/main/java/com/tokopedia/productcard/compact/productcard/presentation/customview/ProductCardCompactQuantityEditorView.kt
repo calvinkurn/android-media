@@ -9,7 +9,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.util.ContextUtil.getActivityFromContext
@@ -36,7 +38,6 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
         private const val NO_PROGRESS = 0F
-        private const val FINISHED_PROGRESS = 100F
         private const val HIDE_SOFT_INPUT_KEYBOARD_FLAG = 0
         private const val MAX_ALPHA = 1f
         private const val MIN_ALPHA = 0f

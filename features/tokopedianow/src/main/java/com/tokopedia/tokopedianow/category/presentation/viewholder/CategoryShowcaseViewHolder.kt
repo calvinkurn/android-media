@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,6 +28,7 @@ class CategoryShowcaseViewHolder(
     private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val parentRecycledViewPool: RecyclerView.RecycledViewPool
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
     companion object {
         private const val SPAN_COUNT = 3
@@ -116,6 +118,8 @@ class CategoryShowcaseViewHolder(
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 spanSizeLookup = getLayoutManagerSpanSize()
             }
+            animation = null
+            setRecycledViewPool(parentRecycledViewPool)
         }
     }
 

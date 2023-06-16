@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -50,6 +51,7 @@ class CategoryAdapterTypeFactory(
     private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val recycledViewPool: RecyclerView.RecycledViewPool
 ): BaseAdapterTypeFactory(),
     CategoryTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
@@ -90,7 +92,8 @@ class CategoryAdapterTypeFactory(
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
                 categoryShowcaseHeaderListener = categoryShowcaseHeaderListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
+                parentRecycledViewPool = recycledViewPool
             )
 
             /* Common Component View Holder */
