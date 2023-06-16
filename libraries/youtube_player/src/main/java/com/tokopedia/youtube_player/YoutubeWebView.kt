@@ -107,10 +107,10 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun loadVideo(videoId: String) {
         this.videoId = videoId
-        if (isPlayerReady) {
-            loadUrl("javascript:cueVideo('$videoId', 0)")
-        } else
-            loadData(getYoutubePlayerHtml(videoId), MIME_TYPE, ENCODING)
+//        if (isPlayerReady) {
+//            loadUrl("javascript:cueVideo('$videoId', 0)")
+//        } else
+        loadData(getYoutubePlayerHtml(videoId), MIME_TYPE, ENCODING)
     }
 
     fun mute(){
@@ -158,6 +158,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "          events: {\n" +
                 "            'onReady': onPlayerReady,\n"+
                 "            'onStateChange': onPlayerStateChange\n" +
+                "            'onError': onPlayerError\n" +
                 "          }\n" +
                 "        });\n" +
                 "      }\n" +
@@ -167,6 +168,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      }\n" +
                 "      function onPlayerReady(event) {\n" +
                 "          jsInterface.onReady();\n" +
+                "      }\n" +
+                "      function onPlayerError(event) {\n" +
+                "          jsInterface.onError();\n" +
                 "      }\n" +
                 "      function cueVideo(videoId, startSeconds) {\n" +
                 "          player.cueVideoById(videoId, startSeconds);\n" +
