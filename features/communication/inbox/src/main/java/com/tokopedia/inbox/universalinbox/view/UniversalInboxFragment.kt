@@ -38,6 +38,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
@@ -241,7 +242,9 @@ class UniversalInboxFragment :
                         val notifUnread = it.data.notifCenterUnread.notifUnread
                         if (notifUnread.toIntOrZero() > Int.ZERO) {
                             (activity as UniversalInboxActivity).updateNotificationCounter(
-                                it.data.notifCenterUnread.notifUnread
+                                UniversalInboxViewUtil.getStringCounter(
+                                    it.data.notifCenterUnread.notifUnread.toIntOrZero()
+                                )
                             )
                         }
                     }
