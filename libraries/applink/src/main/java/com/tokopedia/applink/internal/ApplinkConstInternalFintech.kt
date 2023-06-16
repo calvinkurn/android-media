@@ -26,5 +26,4 @@ object ApplinkConstInternalFintech {
     const val INSURANCE_INFO = "$INTERNAL_FINTECH/insurance-info"
     const val PARAM_INSURANCE_INFO_URL = "url"
 
-    const val PARTNER_KYC = "$INTERNAL_FINTECH/partner-kyc"
 }

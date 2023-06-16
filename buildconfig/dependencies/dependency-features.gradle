@@ -113,7 +113,6 @@ ext {
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
-			partnerKyc						: ":features:fintech:partner_kyc",
 
 			dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",

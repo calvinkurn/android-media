@@ -2493,10 +2493,5 @@
           "destination_activity": "com.tokopedia.loginHelper.presentation.LoginHelperActivity",
           "deeplink": "tokopedia-android-internal://global/login-helper",
           "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
-     },
-     {
-          "destination_activity": "com.tokopedia.partnerkyc.presentation.view.activity.PartnerKycActivity",
-          "deeplink": "tokopedia-android-internal://partner-kyc",
-          "deeplink_variable": "ApplinkConstInternalFintech.PARTNER_KYC"
      }
 ]
