@@ -1,10 +1,9 @@
 package com.tokopedia.statistic.common
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
@@ -12,7 +11,8 @@ import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -21,8 +21,6 @@ import javax.inject.Inject
  */
 
 class StatisticPageHelper @Inject constructor(
-    @ApplicationContext
-    private val context: Context,
     private val remoteConfig: StatisticRemoteConfig
 ) {
 
@@ -34,7 +32,7 @@ class StatisticPageHelper @Inject constructor(
         }
     }
 
-    fun getShopStatistic(): StatisticPageUiModel {
+    fun getShopStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_shop)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -57,7 +55,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getProductStatistic(): StatisticPageUiModel {
+    fun getProductStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_product)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -80,7 +78,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getBuyerStatistic(): StatisticPageUiModel {
+    fun getBuyerStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -103,7 +101,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getOperationalStatistic(): StatisticPageUiModel {
+    fun getOperationalStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_operational)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -126,7 +124,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getTrafficStatistic(): StatisticPageUiModel {
+    fun getTrafficStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_traffic)
         return StatisticPageUiModel(
             pageTitle = title,
