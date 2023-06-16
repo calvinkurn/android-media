@@ -86,7 +86,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(rtrWidgetListResponse)
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -246,7 +250,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(rtrWidgetListResponse)
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, "2", 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -421,7 +429,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(rtrWidgetListResponse)
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -576,7 +588,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(rtrWidgetListResponse)
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -692,7 +708,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(NullPointerException())
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -754,7 +774,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             onGetRecommendation_thenReturn(rtrWidgetListResponse)
             onAddToCart_thenReturn(AddToCartDataModel())
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)

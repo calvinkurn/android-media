@@ -233,6 +233,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_DEALS_WIDGET -> {
                     createDealsWidget(channel, position)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_FLASH_SALE_WIDGET -> {
+                    createFlashSaleWidget(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -860,6 +863,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingFlashSaleWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return FlashSaleDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache,
+            cardInteraction = false
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -1035,6 +1053,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createFlashSaleWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(
+            mappingFlashSaleWidgetComponent(
+                channel,
+                isCache,
+                verticalPosition
+            )
+        )
     }
 
     override fun build(): List<Visitable<*>> = visitableList

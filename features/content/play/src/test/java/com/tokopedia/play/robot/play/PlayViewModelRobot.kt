@@ -1,6 +1,7 @@
 package com.tokopedia.play.robot.play
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.domain.*
@@ -46,9 +47,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 
 /**
  * Created by jegul on 10/02/21
@@ -78,7 +77,7 @@ class PlayViewModelRobot(
     chatManagerFactory: ChatManager.Factory,
     chatStreamsFactory: ChatStreams.Factory,
     playLog: PlayLog,
-    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -106,7 +105,7 @@ class PlayViewModelRobot(
         playLog,
         chatManagerFactory,
         chatStreamsFactory,
-        liveRoomMetricsCommon,
+        liveRoomMetricsCommon
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -134,7 +133,7 @@ class PlayViewModelRobot(
     }
 
     fun setPiPState(pipState: PiPState) {
-        when(pipState) {
+        when (pipState) {
             is PiPState.Requesting -> when (val mode = pipState.mode) {
                 PiPMode.WatchInPiP -> viewModel.requestWatchInPiP()
                 is PiPMode.BrowsingOtherPage -> viewModel.requestPiPBrowsingPage(mode.applinkModel)
@@ -164,32 +163,24 @@ class PlayViewModelRobot(
         viewModel.onShowProductSheet(bottomSheetHeight)
     }
 
-    fun showCouponBottomSheet(bottomSheetHeight: Int = 50){
+    fun showCouponBottomSheet(bottomSheetHeight: Int = 50) {
         viewModel.showCouponSheet(bottomSheetHeight)
     }
 
-    fun showKebabBottomSheet(bottomSheetHeight: Int = 20){
+    fun showKebabBottomSheet(bottomSheetHeight: Int = 20) {
         viewModel.onShowKebabMenuSheet(bottomSheetHeight)
     }
 
-    fun showUserReportBottomSheet(bottomSheetHeight: Int = 80){
+    fun showUserReportBottomSheet(bottomSheetHeight: Int = 80) {
         viewModel.onShowUserReportSheet(bottomSheetHeight)
     }
 
-    fun showUserReportSubmissionBottomSheet(bottomSheetHeight: Int = 80){
+    fun showUserReportSubmissionBottomSheet(bottomSheetHeight: Int = 80) {
         viewModel.onShowUserReportSubmissionSheet(bottomSheetHeight)
     }
 
     fun hideProductBottomSheet() {
         viewModel.onHideProductSheet()
-    }
-
-    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
-        viewModel.onShowVariantSheet(bottomSheetHeight)
-    }
-
-    fun hideVariantBottomSheet() {
-        viewModel.onHideVariantSheet()
     }
 
     fun showLeaderboardBottomSheet(bottomSheetHeight: Int = 50) {
@@ -200,19 +191,19 @@ class PlayViewModelRobot(
         viewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    fun hideCouponBottomSheet(){
+    fun hideCouponBottomSheet() {
         viewModel.hideCouponSheet()
     }
 
-    fun hideKebabBottomSheet(){
+    fun hideKebabBottomSheet() {
         viewModel.hideKebabMenuSheet()
     }
 
-    fun hideUserReportBottomSheet(){
+    fun hideUserReportBottomSheet() {
         viewModel.hideUserReportSheet()
     }
 
-    fun hideUserReportSubmissionBottomSheet(){
+    fun hideUserReportSubmissionBottomSheet() {
         viewModel.hideUserReportSubmissionSheet()
     }
 
@@ -281,7 +272,7 @@ fun givenPlayViewModelRobot(
     chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
     playLog: PlayLog = mockk(relaxed = true),
     liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
-    fn: PlayViewModelRobot.() -> Unit = {},
+    fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
         channelId = channelId,
@@ -308,15 +299,15 @@ fun givenPlayViewModelRobot(
         chatManagerFactory = chatManagerFactory,
         chatStreamsFactory = chatStreamsFactory,
         playLog = playLog,
-        liveRoomMetricsCommon = liveRoomMetricsCommon,
+        liveRoomMetricsCommon = liveRoomMetricsCommon
     ).apply(fn)
 }
 
 suspend fun PlayViewModelRobot.state() = viewModel.uiState.first()
 
 fun PlayViewModelRobot.withState(
-        dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
-        fn: suspend PlayViewerNewUiState.() -> Unit
+    dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+    fn: suspend PlayViewerNewUiState.() -> Unit
 ) = runBlockingTest(dispatcher.coroutineDispatcher) {
     state().fn()
 }
@@ -325,8 +316,8 @@ fun PlayViewModelRobot.withState(
  * Temporary. might need to use Turbine library
  */
 infix fun PlayViewModelRobot.andWhenExpectEvent(
-        fn: PlayViewModelRobot.() -> Unit
-) : RobotWithValue<PlayViewModelRobot, PlayViewerNewUiEvent> {
+    fn: PlayViewModelRobot.() -> Unit
+): RobotWithValue<PlayViewModelRobot, PlayViewerNewUiEvent> {
     var result: PlayViewerNewUiEvent? = null
     runBlockingTest(CoroutineTestDispatchers.coroutineDispatcher) {
         val value = async {

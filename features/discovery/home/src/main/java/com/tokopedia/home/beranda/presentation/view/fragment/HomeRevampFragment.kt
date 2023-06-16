@@ -151,6 +151,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -1529,6 +1530,7 @@ open class HomeRevampFragment :
             MissionWidgetComponentCallback(this, getHomeViewModel()),
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
+            FlashSaleWidgetCallback(this),
             CarouselPlayWidgetCallback(getTrackingQueueObj()!!, userSession, this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
