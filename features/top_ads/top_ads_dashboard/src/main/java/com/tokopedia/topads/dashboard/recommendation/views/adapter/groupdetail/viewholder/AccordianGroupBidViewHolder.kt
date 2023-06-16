@@ -6,13 +6,13 @@ import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_GROUP_BID_MAX_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse.TopAdsBatchGetAdGroupBidInsightByGroupID.Group.AdGroupBidInsightData
 
 class AccordianGroupBidViewHolder(
     private val itemView: View,
@@ -33,100 +33,14 @@ class AccordianGroupBidViewHolder(
     private val recommendationGroup: Group = itemView.findViewById(R.id.recommendationGroup)
 
     override fun bind(element: AccordianGroupBidUiModel?) {
-        createDefaultInputMddel(element)
-        searchGroup.visibility =
-            if ((element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid
-                    ?: 0) < (element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid
-                    ?: 0)
-            ) View.VISIBLE else View.GONE
-
-        recommendationGroup.visibility =
-            if ((element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid
-                    ?: 0) < (element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid
-                    ?: 0)
-            ) View.VISIBLE else View.GONE
-
-        searchCurrentCost.text = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toString()
-        searchPotential.text = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toString()
-        searchCost.editText.setText(element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toString())
-
-        recommendationCurrentCost.text = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toString()
-        recommendationPotential.text = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toString()
-        recommendationCost.editText.setText(element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toString())
-
-        searchCheckBox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked){
-                updateSearchInput(element, searchCost.editText.text.toString().toIntOrZero())
-            } else {
-                updateSearchInput(element, element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toString().toIntOrZero())
-            }
-            onInsightAction.invoke(hasErrors)
-        }
-
-        recommendationCheckBox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked){
-                updateRecommendationInput(element, recommendationCost.editText.text.toString().toIntOrZero())
-            } else {
-                updateRecommendationInput(element, element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toString().toIntOrZero())
-            }
-            onInsightAction.invoke(hasErrors)
-        }
-
-        searchCost.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(text: Editable?) {
-                val bid = text.toString().toIntOrZero()
-                if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()){
-                    searchCost.isInputError = true
-                    searchCost.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()))
-                } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
-                    searchCost.isInputError = true
-                    searchCost.editText.error = "Maks. biaya Rp$INSIGHT_GROUP_BID_MAX_BID"
-                    searchCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_GROUP_BID_MAX_BID))
-                } else if(bid % INSIGHT_MULTIPLIER != 0){
-                    searchCost.isInputError = true
-                    searchCost.setMessage(getString(R.string.error_bid_not_multiple_50))
-                } else {
-                    searchCost.isInputError = false
-                    if(text.toString().toIntOrZero() == element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toZeroIfNull())
-                        searchCost.setMessage(getString(R.string.biaya_optimal))
-                    else
-                        searchCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()))
-                }
-            }
-        })
-
-        recommendationCost.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(text: Editable?) {
-                val bid = text.toString().toIntOrZero()
-                if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()){
-                    recommendationCost.isInputError = true
-                    recommendationCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()))
-                } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
-                    recommendationCost.isInputError = true
-                    recommendationCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_GROUP_BID_MAX_BID))
-                } else if(bid % INSIGHT_MULTIPLIER != 0){
-                    recommendationCost.isInputError = true
-                    recommendationCost.setMessage(getString(R.string.error_bid_not_multiple_50))
-                } else {
-                    recommendationCost.isInputError = false
-                    if(text.toString().toIntOrZero() == element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull())
-                        recommendationCost.setMessage(getString(R.string.biaya_optimal))
-                    else
-                        recommendationCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()))
-                }
-            }
-        })
+        createDefaultInputModel(element)
+        setViews(element)
+        bindValues(element)
+        setCheckedChangeListener(element)
+        addTextChangeListener(element)
     }
 
-    private fun createDefaultInputMddel(element: AccordianGroupBidUiModel?) {
+    private fun createDefaultInputModel(element: AccordianGroupBidUiModel?) {
         element?.input?.groupInput = GroupEditInput(
             action = ACTION_EDIT_PARAM,
             group = GroupEditInput.Group(
@@ -138,35 +52,160 @@ class AccordianGroupBidViewHolder(
                 strategies = null,
                 bidSettings = arrayListOf(
                     GroupEditInput.Group.TopadsGroupBidSetting(
-                        bidType = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.bidType,
-                        priceBid = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid?.toFloat(),
+                        bidType = getAdGroupBidInsightData(element)?.currentBidSettings?.firstOrNull()?.bidType,
+                        priceBid = getSearchTypeCurrentBid(element).toFloat(),
                     ),
                     GroupEditInput.Group.TopadsGroupBidSetting(
-                        bidType = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.bidType,
-                        priceBid = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid?.toFloat(),
+                        bidType = getAdGroupBidInsightData(element)?.currentBidSettings?.getOrNull(1)?.bidType,
+                        priceBid = getBrowseTypeCurrentBid(element).toFloat(),
                     )
                 ),
                 suggestionBidSettings = arrayListOf(
                     GroupEditInput.Group.TopadsSuggestionBidSetting(
-                        bidType = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.bidType,
-                        suggestionPriceBid = (element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid ?: 0 ).toFloat(),
+                        bidType = getAdGroupBidInsightData(element)?.suggestionBidSettings?.firstOrNull()?.bidType,
+                        suggestionPriceBid = getSearchTypeSuggestionBid(element).toFloat(),
                     ),
                     GroupEditInput.Group.TopadsSuggestionBidSetting(
-                        bidType = element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.bidType,
-                        suggestionPriceBid = (element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid ?: 0).toFloat(),
+                        bidType = getAdGroupBidInsightData(element)?.suggestionBidSettings?.getOrNull(1)?.bidType,
+                        suggestionPriceBid = getBrowseTypeSuggestionBid(element).toFloat(),
                     )
                 )
             )
         )
+        element?.input?.keywordOperation = null
     }
 
-    private fun updateSearchInput(element: AccordianGroupBidUiModel?, bid: Int){
+    private fun setViews(element: AccordianGroupBidUiModel?) {
+        searchGroup.visibility =
+            if (getSearchTypeCurrentBid(element) < getSearchTypeSuggestionBid(element)) View.VISIBLE else View.GONE
+
+        recommendationGroup.visibility =
+            if (getBrowseTypeCurrentBid(element) < getBrowseTypeSuggestionBid(element)) View.VISIBLE else View.GONE
+    }
+
+    private fun bindValues(element: AccordianGroupBidUiModel?) {
+        searchCurrentCost.text = getSearchTypeCurrentBid(element).toString()
+        searchPotential.text = getSearchTypeSuggestionBid(element).toString()
+        searchCost.editText.setText(getSearchTypeSuggestionBid(element).toString())
+
+        recommendationCurrentCost.text = getBrowseTypeCurrentBid(element).toString()
+        recommendationPotential.text = getBrowseTypeSuggestionBid(element).toString()
+        recommendationCost.editText.setText(getBrowseTypeSuggestionBid(element).toString())
+    }
+
+    private fun setCheckedChangeListener(element: AccordianGroupBidUiModel?) {
+        searchCheckBox.setOnCheckedChangeListener { btn, isChecked ->
+            if (isChecked)
+                updateSearchInput(element, searchCost.editText.text.toString().toIntOrZero())
+            else
+                updateSearchInput(element, getSearchTypeCurrentBid(element))
+            onInsightAction.invoke(hasErrors)
+        }
+
+        recommendationCheckBox.setOnCheckedChangeListener { btn, isChecked ->
+            if (isChecked)
+                updateRecommendationInput(element, recommendationCost.editText.text.toString().toIntOrZero())
+            else
+                updateRecommendationInput(element, getBrowseTypeCurrentBid(element))
+            onInsightAction.invoke(hasErrors)
+        }
+    }
+
+    private fun addTextChangeListener(element: AccordianGroupBidUiModel?) {
+        searchCost.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(text: Editable?) {
+                val bid = text.toString().toIntOrZero()
+                val errorMsg = validateInput(bid, getSearchTypeCurrentBid(element))
+                if(errorMsg.isEmpty()){
+                    searchCost.isInputError = false
+                    if (text.toString().toIntOrZero() == getSearchTypeSuggestionBid(element))
+                        searchCost.setMessage(getString(R.string.biaya_optimal))
+                    else
+                        searchCost.setMessage(
+                            String.format(
+                                getString(R.string.topads_insight_recommended_bid_apply),
+                                getSearchTypeSuggestionBid(element)
+                            )
+                        )
+                } else {
+                    searchCost.isInputError = true
+                    searchCost.setMessage(errorMsg)
+                }
+            }
+        })
+
+        recommendationCost.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(text: Editable?) {
+                val bid = text.toString().toIntOrZero()
+                val errorMsg = validateInput(bid, getBrowseTypeCurrentBid(element))
+                if(errorMsg.isEmpty()){
+                    recommendationCost.isInputError = false
+                    if (text.toString()
+                            .toIntOrZero() == getBrowseTypeSuggestionBid(element)
+                    )
+                        recommendationCost.setMessage(getString(R.string.biaya_optimal))
+                    else
+                        recommendationCost.setMessage(
+                            String.format(
+                                getString(R.string.topads_insight_recommended_bid_apply),
+                                getBrowseTypeSuggestionBid(element)
+                            )
+                        )
+                } else {
+                    recommendationCost.isInputError = true
+                    recommendationCost.setMessage(errorMsg)
+                }
+            }
+        })
+    }
+
+    private fun updateSearchInput(element: AccordianGroupBidUiModel?, bid: Int) {
         element?.input?.groupInput?.group?.bidSettings?.firstOrNull()?.priceBid = bid.toFloat()
     }
 
-
-    private fun updateRecommendationInput(element: AccordianGroupBidUiModel?, bid: Int){
+    private fun updateRecommendationInput(element: AccordianGroupBidUiModel?, bid: Int) {
         element?.input?.groupInput?.group?.bidSettings?.getOrNull(1)?.priceBid = bid.toFloat()
+    }
+
+    private fun getSearchTypeCurrentBid(element: AccordianGroupBidUiModel?): Int {
+        return getAdGroupBidInsightData(element)?.currentBidSettings?.firstOrNull()?.priceBid ?: 0
+    }
+
+    private fun getSearchTypeSuggestionBid(element: AccordianGroupBidUiModel?): Int {
+        return getAdGroupBidInsightData(element)?.suggestionBidSettings?.firstOrNull()?.priceBid ?: 0
+    }
+
+    private fun getBrowseTypeCurrentBid(element: AccordianGroupBidUiModel?): Int {
+        return getAdGroupBidInsightData(element)?.currentBidSettings?.getOrNull(1)?.priceBid ?: 0
+    }
+
+    private fun getBrowseTypeSuggestionBid(element: AccordianGroupBidUiModel?): Int {
+        return getAdGroupBidInsightData(element)?.suggestionBidSettings?.getOrNull(1)?.priceBid ?: 0
+    }
+
+    private fun getAdGroupBidInsightData(element: AccordianGroupBidUiModel?): AdGroupBidInsightData? {
+        return element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData
+    }
+
+    private fun validateInput(inputBid: Int, currentBid: Int): String {
+        return if (inputBid < currentBid)
+            String.format(getString(R.string.topads_insight_min_bid_error_msg_format), currentBid)
+        else if (inputBid > INSIGHT_GROUP_BID_MAX_BID)
+            String.format(
+                getString(R.string.topads_insight_max_bid_error_msg_format),
+                INSIGHT_GROUP_BID_MAX_BID
+            )
+        else if (inputBid % INSIGHT_MULTIPLIER != 0)
+            getString(R.string.error_bid_not_multiple_50)
+        else ""
     }
 
     companion object {

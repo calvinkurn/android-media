@@ -30,6 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checked="false"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

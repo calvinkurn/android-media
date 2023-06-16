@@ -16,6 +16,8 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_INSIGHT_MUTATION_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_INSIGHT_MUTATION_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
@@ -156,38 +158,65 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-    fun applyInsight2(input: TopadsManagePromoGroupProductInput?, groupId: String?, adType: String?, InsightType: Int?, groupName: String?) {
-        if(adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD){
-            val data = groupDetailMapper.convertToTopAdsManageHeadlineInput2(input, userSession.shopId, groupId, "android.insight_center_headline_keyword_recom",groupName)
-            launchCatchError(
-                block = {
-                    createHeadlineAdsUseCase.setParams(data)
-                    val response : TopadsManageHeadlineAdResponse.Data = createHeadlineAdsUseCase.executeOnBackground()
-                    if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
-                        _editHeadlineInsightLiveData.value = Success(response)
-                    }
-                    if (response.topadsManageHeadlineAd.errors.isNotEmpty()) {
-                        _editHeadlineInsightLiveData.value = Fail(Throwable())
-                    }
-                },
-                onError = {
-                    _editHeadlineInsightLiveData.value = Fail(it)
+    fun submitInsights(
+        input: TopadsManagePromoGroupProductInput?,
+        groupId: String?,
+        adType: String?,
+        InsightType: Int?,
+        groupName: String?
+    ) {
+        if (adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD)
+            submitHeadlineInsights(input, groupId, groupName)
+        else
+            submitProductInsights(input, groupId)
+    }
+
+    private fun submitHeadlineInsights(
+        input: TopadsManagePromoGroupProductInput?,
+        groupId: String?,
+        groupName: String?
+    ) {
+        val data = groupDetailMapper.convertToTopAdsManageHeadlineInput2(
+            input,
+            userSession.shopId,
+            groupId,
+            HEADLINE_INSIGHT_MUTATION_SOURCE,
+            groupName
+        )
+        launchCatchError(
+            block = {
+                createHeadlineAdsUseCase.setParams(data)
+                val response: TopadsManageHeadlineAdResponse.Data =
+                    createHeadlineAdsUseCase.executeOnBackground()
+                if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
+                    _editHeadlineInsightLiveData.value = Success(response)
                 }
-            )
-        } else {
-            input?.let {
-                it.groupID = groupId ?: ""
-                it.shopID = userSession.shopId
-                it.source = "product_recom_app"
-                val requestParams =
-                    topAdsCreateUseCase.createRequestParamForInsight2(it)
-                launchCatchError(dispatcher.main, block = {
-                    val data = topAdsCreateUseCase.execute(requestParams)
-                    _editInsightLiveData.value = Success(data)
-                }, onError = {
-                    _editInsightLiveData.value = Fail(it)
-                })
+                if (response.topadsManageHeadlineAd.errors.isNotEmpty()) {
+                    _editHeadlineInsightLiveData.value = Fail(Throwable())
+                }
+            },
+            onError = {
+                _editHeadlineInsightLiveData.value = Fail(it)
             }
+        )
+    }
+
+    private fun submitProductInsights(
+        input: TopadsManagePromoGroupProductInput?,
+        groupId: String?
+    ) {
+        input?.let {
+            it.groupID = groupId ?: ""
+            it.shopID = userSession.shopId
+            it.source = PRODUCT_INSIGHT_MUTATION_SOURCE
+            val requestParams =
+                topAdsCreateUseCase.createRequestParamForInsight2(it)
+            launchCatchError(dispatcher.main, block = {
+                val data = topAdsCreateUseCase.execute(requestParams)
+                _editInsightLiveData.value = Success(data)
+            }, onError = {
+                _editInsightLiveData.value = Fail(it)
+            })
         }
     }
 
@@ -232,11 +261,11 @@ class GroupDetailViewModel @Inject constructor(
 
     fun getInputDataFromMapper(insightType: Int?): TopadsManagePromoGroupProductInput?{
         return when(insightType){
-            TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
-            TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
-            TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
-            TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
-            TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
+            TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
+            TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
+            TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
+            TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
+            TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
             else -> null
         }
     }

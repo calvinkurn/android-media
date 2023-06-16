@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,18 +36,16 @@ class AccordianNegativeKeywordViewHolder(
             private val potentialCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
             private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
             fun bind(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
-                checkbox.setOnCheckedChangeListener(null)
+                bindValues(element)
+                setCheckedChangeListener(element)
+                setSelected(element)
+            }
+
+            private fun setSelected(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
                 checkbox.isChecked = element.isSelected
-                title.text = element.keywordTag
-                impressionCount.text = String.format("+%s kali/hari",element.predictedImpression)
-                potentialCount.text = String.format("Rp%s /bulan",element.potentialSavings)
-                if(element.keywordType == RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE){
-                    keywordStateType.text = getString(R.string.wide)
-                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
-                } else {
-                    keywordStateType.text = getString(R.string.specific)
-                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
-                }
+            }
+            private fun setCheckedChangeListener(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
+                checkbox.setOnCheckedChangeListener(null)
                 checkbox.setOnCheckedChangeListener { btn, isChecked ->
                     element.isSelected = isChecked
                     if(isChecked){
@@ -55,6 +54,31 @@ class AccordianNegativeKeywordViewHolder(
                         topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
                     }
                     onInsightAction.invoke(false)
+                }
+            }
+
+            private fun bindValues(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
+                title.text = element.keywordTag
+                impressionCount.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_times_per_day_value),
+                        element.predictedImpression
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                potentialCount.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_price_per_month_template),
+                        element.potentialSavings.toString()
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                if(element.keywordType == RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE){
+                    keywordStateType.text = getString(R.string.wide)
+                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+                } else {
+                    keywordStateType.text = getString(R.string.specific)
+                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
                 }
             }
         }
@@ -89,7 +113,41 @@ class AccordianNegativeKeywordViewHolder(
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
 
     override fun bind(element: AccordianNegativeKeywordUiModel?) {
-        topadsManagePromoGroupProductInput = element?.input
+        updateInputModel(element)
+        setViews(element)
+        setCheckedChangeListener(element)
+    }
+
+    private fun setCheckedChangeListener(element: AccordianNegativeKeywordUiModel?) {
+        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
+            if(isChecked) {
+                val list = mutableListOf<KeywordEditInput>()
+                element?.newNegativeKeywordsRecom?.forEach { list.add(
+                    KeywordEditInput(
+                        ACTION_CREATE_PARAM,
+                        keyword = KeywordEditInput.Keyword(
+                            type = it.keywordType,
+                            status = it.keywordStatus,
+                            tag = it.keywordTag,
+                            suggestionPriceBid = it.predictedImpression.toDoubleOrZero(),
+                            price_bid = it.potentialSavings.toDouble(),
+                            source = it.keywordSource
+                        )
+                    )
+                ) }
+                topadsManagePromoGroupProductInput?.keywordOperation = list
+            } else {
+                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
+            }
+            element?.newNegativeKeywordsRecom?.forEach { it.isSelected = isChecked }
+            element?.newNegativeKeywordsRecom?.let {
+                adapter.updateList(it)
+            }
+            onInsightAction.invoke(false)
+        }
+    }
+
+    private fun setViews(element: AccordianNegativeKeywordUiModel?) {
         negatifKataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         negatifKataKunciRv.adapter = adapter
@@ -102,33 +160,10 @@ class AccordianNegativeKeywordViewHolder(
                 LinearLayoutManager.VERTICAL
             )
         )
+    }
 
-        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked) {
-                val list = mutableListOf<KeywordEditInput>()
-                element?.newNegativeKeywordsRecom?.forEach { list.add(
-                    KeywordEditInput(
-                    ACTION_CREATE_PARAM,
-                    keyword = KeywordEditInput.Keyword(
-                        type = it.keywordType,
-                        status = it.keywordStatus,
-                        tag = it.keywordTag,
-                        suggestionPriceBid = it.predictedImpression.toDoubleOrZero(),
-                        price_bid = it.potentialSavings.toDouble(),
-                        source = it.keywordSource
-                    )
-                )
-                ) }
-                topadsManagePromoGroupProductInput?.keywordOperation = list
-            } else {
-                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
-            }
-            element?.newNegativeKeywordsRecom?.forEach { it.isSelected = isChecked }
-            element?.newNegativeKeywordsRecom?.let {
-                adapter.updateList(it)
-            }
-            onInsightAction.invoke(false)
-        }
+    private fun updateInputModel(element: AccordianNegativeKeywordUiModel?) {
+        topadsManagePromoGroupProductInput = element?.input
     }
 
     fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom ){

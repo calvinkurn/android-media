@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -34,12 +34,34 @@ class AccordianKeywordBidViewHolder(
             private val potentialValue: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
 
             fun bind(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom) {
-                checkbox.setOnCheckedChangeListener(null)
+                setViews(element)
+                setCheckedChangeListener(element)
+            }
+
+            private fun setViews(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom){
                 checkbox.isChecked = element.isSelected
                 title.text = element.keywordTag
-                currentCost.text = String.format("Rp%d/klik",element.currentBid)
-                recommendedValue.text = String.format("Rp%d/klik",element.suggestionBid)
-                potentialValue.text = String.format("+%s kali",element.predictedImpression)
+                currentCost.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_price_per_click_template),
+                        element.currentBid.toString()
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                recommendedValue.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_price_per_click_template),
+                        element.suggestionBid.toString()
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                potentialValue.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_increase_times_template),
+                        element.predictedImpression
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
                 if(element.keywordType == RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE){
                     keywordState.text = getString(R.string.wide)
                     keywordState.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
@@ -47,6 +69,11 @@ class AccordianKeywordBidViewHolder(
                     keywordState.text = getString(R.string.specific)
                     keywordState.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
                 }
+            }
+
+            private fun setCheckedChangeListener(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom){
+                checkbox.setOnCheckedChangeListener(null)
+
                 checkbox.setOnCheckedChangeListener { btn, isChecked ->
                     element.isSelected = isChecked
                     if(isChecked){
@@ -90,7 +117,42 @@ class AccordianKeywordBidViewHolder(
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
 
     override fun bind(element: AccordianKeywordBidUiModel?) {
-        topadsManagePromoGroupProductInput = element?.input
+        updateInputModel(element)
+        setViews(element)
+        setCheckedChangeListener(element)
+    }
+
+    private fun setCheckedChangeListener(element: AccordianKeywordBidUiModel?) {
+        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
+            if(isChecked) {
+                val list = mutableListOf<KeywordEditInput>()
+                element?.existingKeywordsBidRecom?.forEach { list.add(
+                    KeywordEditInput(
+                        RecommendationConstants.ACTION_EDIT_PARAM,
+                        keyword = KeywordEditInput.Keyword(
+                            type = it.keywordType,
+                            status = it.keywordStatus,
+                            tag = it.keywordTag,
+                            suggestionPriceBid = it.suggestionBid.toDouble(),
+                            price_bid = it.currentBid.toDouble(),
+                            source = it.suggestionBidSource,
+                            id = it.keywordID
+                        )
+                    )
+                ) }
+                topadsManagePromoGroupProductInput?.keywordOperation = list
+            } else {
+                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
+            }
+            element?.existingKeywordsBidRecom?.forEach { it.isSelected = isChecked }
+            element?.existingKeywordsBidRecom?.let {
+                adapter.updateList(it)
+            }
+            onInsightAction.invoke(false)
+        }
+    }
+
+    private fun setViews(element: AccordianKeywordBidUiModel?) {
         biayaKataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         biayaKataKunciRv.adapter = adapter
@@ -104,34 +166,10 @@ class AccordianKeywordBidViewHolder(
                 LinearLayoutManager.VERTICAL
             )
         )
+    }
 
-        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked) {
-                val list = mutableListOf<KeywordEditInput>()
-                element?.existingKeywordsBidRecom?.forEach { list.add(
-                    KeywordEditInput(
-                    RecommendationConstants.ACTION_EDIT_PARAM,
-                    keyword = KeywordEditInput.Keyword(
-                        type = it.keywordType,
-                        status = it.keywordStatus,
-                        tag = it.keywordTag,
-                        suggestionPriceBid = it.suggestionBid.toDouble(),
-                        price_bid = it.currentBid.toDouble(),
-                        source = it.suggestionBidSource,
-                        id = it.keywordID
-                    )
-                )
-                ) }
-                topadsManagePromoGroupProductInput?.keywordOperation = list
-            } else {
-                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
-            }
-            element?.existingKeywordsBidRecom?.forEach { it.isSelected = isChecked }
-            element?.existingKeywordsBidRecom?.let {
-                adapter.updateList(it)
-            }
-            onInsightAction.invoke(false)
-        }
+    private fun updateInputModel(element: AccordianKeywordBidUiModel?) {
+        topadsManagePromoGroupProductInput = element?.input
     }
 
     fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom){

@@ -1,13 +1,12 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
-import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -51,29 +50,13 @@ class AccordianKataKunciViewHolder(
             private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
             private val keywordCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.keyword_cost)
             fun bind(element: NewPositiveKeywordsRecom) {
-                checkbox.setOnCheckedChangeListener(null)
-                checkbox.isChecked = element.isSelected
-                title.text = element.keywordTag
-                searchesCount.text = String.format("%s/bulan",element.totalSearch)
-                potentialCount.text = String.format("+%s kali/hari",element.predictedImpression)
-                keywordCost.editText.setText(element.suggestionBid.toString())
-                if(element.keywordType == KEYWORD_TYPE_POSITIVE_PHRASE){
-                    keywordStateType.text = getString(R.string.wide)
-                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
-                } else {
-                    keywordStateType.text = getString(R.string.specific)
-                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
-                }
-                checkbox.setOnCheckedChangeListener { btn, isChecked ->
-                    element.isSelected = isChecked
-                    if(isChecked){
-                        addTopadsManagePromoGroupProductInput(element)
-                    } else {
-                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
-                    }
-                    onInsightAction.invoke(hasErrors)
-                }
+                bindValues(element)
+                setCheckedChangeListener(element)
+                setTextChangeListener(element)
+                setSelected(element)
+            }
 
+            private fun setTextChangeListener(element: NewPositiveKeywordsRecom) {
                 keywordCost.editText.addTextChangedListener(object : TextWatcher{
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -100,6 +83,59 @@ class AccordianKataKunciViewHolder(
                         }
                     }
                 })
+            }
+
+            private fun bindValues(element: NewPositiveKeywordsRecom) {
+                title.text = element.keywordTag
+                searchesCount.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_times_per_month_template),
+                        element.totalSearch
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                potentialCount.text = HtmlCompat.fromHtml(
+                    String.format(
+                        getString(R.string.topads_dashboard_times_per_day_value),
+                        element.predictedImpression
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                keywordCost.editText.setText(element.suggestionBid.toString())
+                if (element.keywordType == KEYWORD_TYPE_POSITIVE_PHRASE) {
+                    keywordStateType.text = getString(R.string.wide)
+                    keywordStateType.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN100
+                        )
+                    )
+                } else {
+                    keywordStateType.text = getString(R.string.specific)
+                    keywordStateType.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_BN100
+                        )
+                    )
+                }
+            }
+
+            private fun setCheckedChangeListener(element: NewPositiveKeywordsRecom){
+                checkbox.setOnCheckedChangeListener(null)
+                checkbox.setOnCheckedChangeListener { btn, isChecked ->
+                    element.isSelected = isChecked
+                    if(isChecked){
+                        addTopadsManagePromoGroupProductInput(element)
+                    } else {
+                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
+                    }
+                    onInsightAction.invoke(hasErrors)
+                }
+            }
+
+            private fun setSelected(element: NewPositiveKeywordsRecom) {
+                checkbox.isChecked = element.isSelected
             }
         }
 
@@ -136,9 +172,18 @@ class AccordianKataKunciViewHolder(
     private var minBid: Int? = 0
 
     override fun bind(element: AccordianKataKunciUiModel?) {
+        updateKeys(element)
+        setViews(element)
+        setCheckedChangeListener(element)
+    }
+
+    private fun updateKeys(element: AccordianKataKunciUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
         maxBid = element?.maxBid
         minBid = element?.minBid
+    }
+
+    private fun setViews(element: AccordianKataKunciUiModel?) {
         kataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         kataKunciRv.adapter = adapter
@@ -151,7 +196,9 @@ class AccordianKataKunciViewHolder(
                 LinearLayoutManager.VERTICAL
             )
         )
+    }
 
+    private fun setCheckedChangeListener(element: AccordianKataKunciUiModel?){
         selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
             if(isChecked) {
                 val list = mutableListOf<KeywordEditInput>()
@@ -174,6 +221,7 @@ class AccordianKataKunciViewHolder(
             } else {
                 topadsManagePromoGroupProductInput?.keywordOperation = listOf()
             }
+            topadsManagePromoGroupProductInput?.groupInput = null
             element?.newPositiveKeywordsRecom?.forEach { it.isSelected = isChecked }
             element?.newPositiveKeywordsRecom?.let {
                 adapter.updateList(it)
@@ -196,6 +244,7 @@ class AccordianKataKunciViewHolder(
             )
         ))
         topadsManagePromoGroupProductInput?.keywordOperation = list
+        topadsManagePromoGroupProductInput?.groupInput = null
     }
 
     private fun getKeywordType(type: String): String {

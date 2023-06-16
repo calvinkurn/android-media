@@ -26,10 +26,22 @@ class AccordianDailyBudgetViewHolder(
     private var hasError : Boolean = false
 
     override fun bind(element: AccordianDailyBudgetUiModel?) {
+        updateProductInputData(element)
+        bindValue(element)
+        setTextChangeListener(element)
+    }
+
+    private fun updateProductInputData(element: AccordianDailyBudgetUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
+    }
+
+    private fun bindValue(element: AccordianDailyBudgetUiModel?) {
         currentBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toString())
         recommendedBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
+        dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
+    }
 
+    private fun setTextChangeListener(element: AccordianDailyBudgetUiModel?) {
         dailyBudget.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -46,8 +58,6 @@ class AccordianDailyBudgetViewHolder(
                 onInsightAction.invoke(hasError)
             }
         })
-
-        dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
     }
 
     private fun checkForErrors(budget: Double, element: AccordianDailyBudgetUiModel?){

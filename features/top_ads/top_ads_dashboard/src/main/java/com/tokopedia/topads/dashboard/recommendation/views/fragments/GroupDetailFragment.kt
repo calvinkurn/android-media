@@ -132,7 +132,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         detailPageEmptyState?.emptyStateCTAID?.setOnClickListener {
             viewModel.selectDefaultChips(insightType)
             if (!adGroupId.isNullOrEmpty() && !adGroupName.isNullOrEmpty()) {
-                viewModel.loadDetailPageOnAction(
+                loadDetailPageOnAction(
                     utils.convertAdTypeToInt(this.adType),
                     adGroupId!!,
                     DEFAULT_SELECTED_INSIGHT_TYPE,
@@ -360,7 +360,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { _, item ->
-            viewModel.loadDetailPageOnAction(
+            loadDetailPageOnAction(
                 if (item.adGroupType == PRODUCT_KEY) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
                 item.adGroupID,
                 item.insightType
@@ -433,7 +433,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         confirmationDailog?.setSecondaryCTAText("Batal")
         confirmationDailog?.setPrimaryCTAClickListener {
             confirmationDailog?.dialogPrimaryCTA?.isLoading = true
-            viewModel.applyInsight2(input, adGroupId, adType, saveButton?.tag as? Int, adGroupName)
+            viewModel.submitInsights(input, adGroupId, adType, saveButton?.tag as? Int, adGroupName)
         }
         confirmationDailog?.setSecondaryCTAClickListener {
             confirmationDailog?.dismiss()
@@ -499,7 +499,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         this.adGroupName = groupName
         this.insightType = if (adType == TYPE_PRODUCT_VALUE) 0 else 5
         viewModel.selectDefaultChips(insightType)
-        viewModel.loadDetailPageOnAction(
+        loadDetailPageOnAction(
             adType,
             groupId,
             DEFAULT_SELECTED_INSIGHT_TYPE,
@@ -511,6 +511,17 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     val onInsightAction = {hasErrors: Boolean ->
         saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
         updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
+    }
+
+    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = ""){
+        viewModel.loadDetailPageOnAction(
+            adType,
+            adgroupID,
+            insightType,
+            isSwitchAdType,
+            groupName
+        )
+        saveButton?.visibility = View.GONE
     }
 
     private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{

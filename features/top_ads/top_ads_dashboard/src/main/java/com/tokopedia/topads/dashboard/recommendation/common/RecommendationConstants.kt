@@ -53,6 +53,8 @@ object RecommendationConstants {
     const val INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE = 400
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
+    const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
+    const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
 
     object InsightTypeConstants {
         const val INSIGHT_TYPE_ALL = 0

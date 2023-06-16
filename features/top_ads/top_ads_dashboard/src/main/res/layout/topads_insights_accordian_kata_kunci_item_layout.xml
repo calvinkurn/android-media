@@ -61,7 +61,6 @@
         tools:text="800/bulan"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/searches_count"
         app:layout_constraintTop_toBottomOf="@id/searches_count" />
 
@@ -83,7 +82,6 @@
         tools:text="+2.900 kali/hari"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/show_potential"
         app:layout_constraintTop_toBottomOf="@id/show_potential" />
 

@@ -1,8 +1,10 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
+import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
@@ -175,14 +177,11 @@ class GroupDetailMapper @Inject constructor() {
         groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?,
         pricingDetails: TopAdsGetPricingDetailsResponse
     ): GroupInsightsUiModel {
-        var impressionSum = 0
-        groupData?.newPositiveKeywordsRecom?.forEach {
-            impressionSum += it.predictedImpression.toIntOrZero()
-        }
+        val impressionSum = getImpressionSum(TYPE_POSITIVE_KEYWORD, groupData)
         return GroupInsightsUiModel(
             TYPE_POSITIVE_KEYWORD,
             INSIGHT_TYPE_POSITIVE_KEYWORD_NAME,
-            "Kunjungan pembeli menurun. Pakai kata kunci populer untuk potensi tampil +$impressionSum kali/hari.",
+            impressionSum.toString(),
             !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
             AccordianKataKunciUiModel(
                 groupData?.newPositiveKeywordsRecom,
@@ -193,15 +192,11 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     fun convertToAccordianKeywordBidUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
-        var impressionSum = 0
-        groupData?.existingKeywordsBidRecom?.forEach {
-            impressionSum += it.predictedImpression.toIntOrZero()
-        }
-
+        val impressionSum = getImpressionSum(TYPE_KEYWORD_BID, groupData)
         return GroupInsightsUiModel(
             TYPE_KEYWORD_BID,
             INSIGHT_TYPE_KEYWORD_BID_NAME,
-            "Kata kuncimu kalah saing. Sesuaikan biaya kata kunci untuk potensi tampil +$impressionSum kali/hari.",
+            impressionSum.toString(),
             !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
             AccordianKeywordBidUiModel(
                 groupData?.existingKeywordsBidRecom
@@ -210,15 +205,11 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     fun convertToAccordianNegativeKeywordUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
-        var impressionSum = 0
-        groupData?.newNegativeKeywordsRecom?.forEach {
-            impressionSum += it.predictedImpression.toIntOrZero()
-        }
-
+        val impressionSum = getImpressionSum(TYPE_NEGATIVE_KEYWORD_BID, groupData)
         return GroupInsightsUiModel(
             TYPE_NEGATIVE_KEYWORD_BID,
             INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME,
-            "Iklanmu kurang efektif & boros. Potensi hemat Rp$impressionSum/hari dengan kata kunci negatif.",
+            impressionSum.toString(),
             !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
             AccordianNegativeKeywordUiModel(
                 groupData?.newNegativeKeywordsRecom
@@ -232,7 +223,7 @@ class GroupDetailMapper @Inject constructor() {
         return GroupInsightsUiModel(
             TYPE_GROUP_BID,
             INSIGHT_TYPE_GROUP_BID_NAME,
-            "Total tampil menurun, nih. Tambah biaya iklan untuk potensi tampil +${data?.predictedTotalImpression} kali/hari.",
+            data?.predictedTotalImpression.toString(),
             !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
             AccordianGroupBidUiModel(
                 groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
@@ -245,7 +236,7 @@ class GroupDetailMapper @Inject constructor() {
         return GroupInsightsUiModel(
             TYPE_DAILY_BUDGET,
             INSIGHT_TYPE_DAILY_BUDGET_NAME,
-            "Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +${sellerInsightData.data.getSellerInsightData.sellerInsightData.dailyBudgetData.firstOrNull()?.topSlotImpression} klik/hari.",
+            sellerInsightData.data.getSellerInsightData.sellerInsightData.dailyBudgetData.firstOrNull()?.topSlotImpression.toString(),
             data.dailyBudgetData.isNotEmpty(),
             AccordianDailyBudgetUiModel(
                 data
@@ -266,7 +257,7 @@ class GroupDetailMapper @Inject constructor() {
                 TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
                     action = keywordEditInput?.action.toString(),
                     keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
-                        priceBid = keywordEditInput?.keyword?.price_bid?.toLong() ?: 0,
+                        priceBid = keywordEditInput?.keyword?.price_bid?.toLong() ?: Long.ZERO,
                         status = keywordEditInput?.keyword?.status.toString(),
                         tag = keywordEditInput?.keyword?.tag.toString(),
                         type = keywordEditInput?.keyword?.type.toString()
@@ -282,9 +273,7 @@ class GroupDetailMapper @Inject constructor() {
                 group = TopAdsManageHeadlineInput2.Operation.Group(
                     id = groupId.toString(),
                     shopID = shopId,
-                    keywordOperations = keywords,
-                    status = "published",
-                    name = groupName.toString()
+                    keywordOperations = keywords
                 )
             )
         )
@@ -292,5 +281,27 @@ class GroupDetailMapper @Inject constructor() {
 
     fun putInsightCount(adGroupType: Int, totalInsight: Int) {
         insightCountMap[adGroupType] = totalInsight
+    }
+
+    private fun getImpressionSum(insightType: Int, groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): Int{
+        var impressionSum = Int.ZERO
+        when(insightType){
+            TYPE_POSITIVE_KEYWORD -> {
+                groupData?.newPositiveKeywordsRecom?.forEach {
+                    impressionSum += it.predictedImpression.toIntOrZero()
+                }
+            }
+            TYPE_KEYWORD_BID -> {
+                groupData?.existingKeywordsBidRecom?.forEach {
+                    impressionSum += it.predictedImpression.toIntOrZero()
+                }
+            }
+            TYPE_NEGATIVE_KEYWORD_BID -> {
+                 groupData?.newNegativeKeywordsRecom?.forEach {
+                     impressionSum += it.predictedImpression.toIntOrZero()
+                 }
+             }
+        }
+        return impressionSum
     }
 }

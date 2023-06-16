@@ -82,16 +82,40 @@ class GroupDetailAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view, onInsightTypeChipClick)
+            InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(
+                view,
+                onInsightTypeChipClick
+            )
             PerformanceWidgetViewHolder.LAYOUT -> PerformanceWidgetViewHolder(view)
             GroupDetailChipsViewHolder.LAYOUT -> GroupDetailChipsViewHolder(view, onChipClick)
-            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick, onInsightTypeChipClick, onAccordianItemClick, onInsightAction)
-            AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(view,onInsightAction)
-            AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view, onInsightAction)
+            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(
+                view,
+                onChipClick,
+                onInsightTypeChipClick,
+                onAccordianItemClick,
+                onInsightAction
+            )
+            AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(
+                view,
+                onInsightAction
+            )
+            AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(
+                view,
+                onInsightAction
+            )
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view, onInsightAction)
-            AccordianDailyBudgetViewHolder.LAYOUT -> AccordianDailyBudgetViewHolder(view, onInsightAction)
-            AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view,onInsightAction)
-            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view, onInsightItemClick)
+            AccordianDailyBudgetViewHolder.LAYOUT -> AccordianDailyBudgetViewHolder(
+                view,
+                onInsightAction
+            )
+            AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(
+                view,
+                onInsightAction
+            )
+            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(
+                view,
+                onInsightItemClick
+            )
             GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
