@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -49,6 +50,12 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductReportSubmitViewModel
+    private val loadingView: FrameLayout? by lazy {
+        runCatching {
+            return@lazy binding.root.findViewById(com.tokopedia.utils.R.id.loadingTransparentView)
+        }
+        return@lazy null
+    }
 
     override fun initInjector() {
         getComponent(MerchantReportComponent::class.java).inject(this)
@@ -79,6 +86,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             cacheManager.get(ProductReportFormActivity.REASON_OBJECT, ProductReportReason::class.java)
 
         }
+        loadingView?.gone()
         binding.recyclerView.clearItemDecoration()
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
@@ -90,7 +98,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setSecondaryCTAText(getString(R.string.report_cancel))
                     setPrimaryCTAClickListener{
                         dismiss()
-                        binding.loadingView.visible()
+                        loadingView?.visible()
                         viewModel.submitReport(
                             productId.toLongOrZero(),
                             reasonItem.categoryId.toIntOrZero(),
@@ -112,7 +120,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
 
     private fun onSuccessSubmit(isSuccess: Boolean){
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
-        binding.loadingView.gone()
+        loadingView?.gone()
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
@@ -131,7 +139,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onFailSubmit(throwable: Throwable?){
-        binding.loadingView.gone()
+        loadingView?.gone()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
