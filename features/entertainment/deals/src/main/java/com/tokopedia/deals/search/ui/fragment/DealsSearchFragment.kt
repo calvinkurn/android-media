@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
@@ -267,8 +268,18 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         setSearchBarListener()
         binding2.ivButtonBack.setOnClickListener { activity?.onBackPressed() }
         binding2.tvLocation.setOnClickListener {
-            bottomSheet = SelectLocationBottomSheet(binding2.tvLocation.text.toString(), currentLocation, false, this)
+            bottomSheet = SelectLocationBottomSheet.createInstance(binding2.tvLocation.text.toString(), currentLocation, false)
+            bottomSheet?.setCallback(this)
             fragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
+        }
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        //TODO Need to check again the implementation
+        if (childFragment is SelectLocationBottomSheet) {
+            childFragment.setCallback(this)
+        } else {
+            super.onAttachFragment(childFragment)
         }
     }
 

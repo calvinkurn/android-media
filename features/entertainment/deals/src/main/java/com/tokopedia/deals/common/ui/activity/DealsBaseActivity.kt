@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -243,18 +244,39 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet("", currentLoc, isLandmarkPage, object : CurrentLocationCallback {
-            override fun setCurrentLocation(location: Location) {
-                locationBottomSheet.dismiss()
-                this@DealsBaseActivity.setCurrentLocation(location)
-            }
-
-            override fun setChangedLocation() {
-                locationBottomSheet.dismiss()
-                this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
-            }
-        })
+        locationBottomSheet = SelectLocationBottomSheet.createInstance("", currentLoc, isLandmarkPage)
+//        val callback = object : CurrentLocationCallback {
+//            override fun setCurrentLocation(location: Location) {
+//                locationBottomSheet.dismiss()
+//                this@DealsBaseActivity.setCurrentLocation(location)
+//            }
+//
+//            override fun setChangedLocation() {
+//                locationBottomSheet.dismiss()
+//                this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
+//            }
+//        }
+//        locationBottomSheet.setCallback(callback)
         locationBottomSheet.show(supportFragmentManager, "")
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        if (fragment is SelectLocationBottomSheet) {
+            val callback = object : CurrentLocationCallback {
+                override fun setCurrentLocation(location: Location) {
+                    fragment.dismiss()
+                    this@DealsBaseActivity.setCurrentLocation(location)
+                }
+
+                override fun setChangedLocation() {
+                    fragment.dismiss()
+                    this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
+                }
+            }
+            fragment.setCallback(callback)
+        } else {
+            super.onAttachFragment(fragment)
+        }
     }
 
     fun changeLocationBasedOnCache(): Boolean {
