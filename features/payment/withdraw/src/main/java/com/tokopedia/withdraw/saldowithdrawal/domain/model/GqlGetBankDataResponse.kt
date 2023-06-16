@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GqlGetBankDataResponse(
-        @SerializedName("GetBankListWD")
+        @SerializedName("GetBankListWDV2")
         @Expose
         var bankAccount: GqlBankListResponse
 )
@@ -21,7 +21,10 @@ data class GqlBankListResponse(
         val message: String? = null,
         @SerializedName("data")
         @Expose
-        var bankAccountList: ArrayList<BankAccount> = arrayListOf()
+        var bankAccountList: ArrayList<BankAccount> = arrayListOf(),
+        @SerializedName("gopay_data")
+        @Expose
+        val gopayData: GopayData = GopayData()
 )
 
 data class BankAccount(
@@ -156,3 +159,32 @@ data class BankAccount(
         }
     }
 }
+
+data class GopayData(
+    @SerializedName("limit")
+    @Expose
+    var limit: String = "",
+    @SerializedName("limit_copy_writing")
+    @Expose
+    var limitCopyWriting: String = "",
+    @SerializedName("image_url")
+    @Expose
+    var imageUrl: String = "",
+    @SerializedName("widget_note")
+    @Expose
+    var widgetNote: String = "",
+    @SerializedName("bottomsheet_data")
+    @Expose
+    var bottomsheetData: BottomsheetData = BottomsheetData()
+)
+
+data class BottomsheetData(
+    @SerializedName("title")
+    @Expose
+    var title: String = "",
+    @SerializedName("description")
+    @Expose
+    var description: String = "",
+    @SerializedName("balance")
+    var balance: String = ""
+)

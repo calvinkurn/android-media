@@ -61,7 +61,7 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     fun getBankList() {
         launchCatchError(block = {
-            when (val result = bankListUseCase.getBankList()) {
+            when (val result = bankListUseCase.getBankList(false)) {
                 is Success -> {
                     bankListResponseMutableData.postValue(Success(result.data.bankAccount.bankAccountList))
                 }
