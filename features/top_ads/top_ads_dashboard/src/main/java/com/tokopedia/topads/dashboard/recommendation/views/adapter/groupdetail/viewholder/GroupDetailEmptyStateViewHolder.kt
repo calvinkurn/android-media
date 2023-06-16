@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
@@ -34,7 +35,7 @@ class GroupDetailEmptyStateViewHolder(view: View) :
         pagerAdapter.emptyStatePages = element.statesList
         emptyStateRecyclerView.layoutManager = layoutManager
         emptyStateRecyclerView.adapter = pagerAdapter
-        if ((element?.statesList?.size ?: 0) > 1) {
+        if (element.statesList.size > Int.ONE) {
             pageControlEmptyState.setIndicator(element.statesList.size)
             pageControlEmptyState.show()
         } else {
@@ -59,6 +60,6 @@ class GroupDetailEmptyStateViewHolder(view: View) :
     }
 
     companion object {
-        val LAYOUT = R.layout.empty_state_layout
+        val LAYOUT = R.layout.topads_insight_centre_empty_state_layout
     }
 }

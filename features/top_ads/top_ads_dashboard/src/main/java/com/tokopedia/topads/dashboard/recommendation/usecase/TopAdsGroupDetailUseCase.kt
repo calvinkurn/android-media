@@ -106,19 +106,6 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     val dailyBudgetUiModel = groupDetailMapper.convertToAccordianDailyBudgetUiModel(sellerInsightData)
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = dailyBudgetUiModel
                 }
-                is TopAdsListAllInsightState.Fail -> {
-                    groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
-                        TYPE_DAILY_BUDGET,
-                        "Anggaran harian",
-                        "Kunjungan embellish menurun. Pakai kata kunci...",
-                        true,
-//                            false,
-                        AccordianDailyBudgetUiModel(
-                            text = "Biaya Iklan",
-                            TopAdsGetSellerInsightDataResponse.GetSellerInsightData.SellerInsightData()
-                        )
-                    )
-                }
                 else -> {}
             }
             return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)

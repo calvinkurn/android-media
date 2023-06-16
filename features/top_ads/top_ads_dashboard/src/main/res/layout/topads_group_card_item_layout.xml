@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:text="4 saran untukmu"
+        tools:text="4 saran untukmu"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@+id/groupCardCountWarning"
         app:layout_constraintTop_toTopOf="parent"

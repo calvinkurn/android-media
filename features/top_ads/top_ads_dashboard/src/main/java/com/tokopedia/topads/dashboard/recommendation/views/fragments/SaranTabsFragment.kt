@@ -215,7 +215,6 @@ class SaranTabsFragment : BaseDaggerFragment() {
     private fun onRecyclerViewListener(layoutManager: LinearLayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Toast.makeText(context, "scdjn", Toast.LENGTH_LONG).show()
                 val selected = chipsAdapter?.getSelectedChips()
                 val nextCursor = mapper?.insightDataMap?.get(selected)?.nextCursor
                 if (nextCursor?.isNotEmpty() == true) {

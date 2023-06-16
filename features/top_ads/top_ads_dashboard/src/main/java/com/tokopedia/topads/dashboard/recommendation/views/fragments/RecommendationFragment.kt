@@ -25,6 +25,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_COUNT_PLACE_HOLDER
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_PRODUCT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
@@ -72,10 +73,11 @@ class RecommendationFragment : BaseDaggerFragment() {
     var viewModelFactory: ViewModelFactory? = null
 
     private val viewModel: RecommendationViewModel? by lazy {
-        if (viewModelFactory == null) {
-            null
-        } else {
-            ViewModelProvider(this, viewModelFactory!!)[RecommendationViewModel::class.java]
+        viewModelFactory?.let {
+            ViewModelProvider(
+                this,
+                it
+            )[RecommendationViewModel::class.java]
         }
     }
 
@@ -207,7 +209,8 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private fun renderTopLevelWidgetForNoTopAds(isTopAds: Boolean) {
         if (!isTopAds && context != null) {
-            insightWidgetTitle?.text = "Kamu belum punya iklan yang lagi aktif, nih~"
+            insightWidgetTitle?.text =
+                context?.getString(R.string.topads_insight_no_active_ads_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
@@ -241,7 +244,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         val count =
             data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
         if (count == Int.ZERO) {
-            insightWidgetTitle?.text = "Yay, semua iklanmu sudah maksimal!"
+            insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
@@ -250,8 +253,11 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             hideTabAndShowEmptyState()
             renderEmptyStates()
-        } else if (count <= 10) {
-            insightWidgetTitle?.text = "Tingkatkan performa $count grup iklanmu, yuk!"
+        } else if (count <= INSIGHT_COUNT_PLACE_HOLDER) {
+            insightWidgetTitle?.text = String.format(
+                context?.getString(R.string.topads_insight_title_improve_ads_performance) ?: "",
+                "$count"
+            )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
@@ -259,7 +265,10 @@ class RecommendationFragment : BaseDaggerFragment() {
                 )
             )
         } else {
-            insightWidgetTitle?.text = "Tingkatkan performa 10+ grup iklanmu, yuk!"
+            insightWidgetTitle?.text = String.format(
+                context?.getString(R.string.topads_insight_title_improve_ads_performance) ?: "",
+                "$INSIGHT_COUNT_PLACE_HOLDER+"
+            )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
@@ -327,5 +336,11 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
         collapseStateCallBack?.setAppBarStateHeadline(state)
+    }
+
+    companion object{
+        fun  createInstance():RecommendationFragment{
+            return RecommendationFragment()
+        }
     }
 }

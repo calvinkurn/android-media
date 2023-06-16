@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
@@ -30,6 +31,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_LIST_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
@@ -51,7 +53,7 @@ import javax.inject.Inject
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var adType: String? = ""
-    private var insightType: Int = 0
+    private var insightType: Int = TYPE_INSIGHT
     private var insightList: ArrayList<AdGroupUiModel>? = null
     private var adGroupId: String? = ""
     private var adGroupName: String? = ""
@@ -200,7 +202,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 }
             }.apply { targetPosition = position }
         )
-        groupDetailAdapter.updateItem()
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedItem = TYPE_PRODUCT_VALUE
@@ -219,6 +220,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private fun setUpRecyclerView() {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
         groupDetailsRecyclerView?.adapter = groupDetailAdapter
+        handleStickyView()
+
+    }
+
+    private fun handleStickyView() {
         groupDetailsRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -226,8 +232,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                     (recyclerView.layoutManager as LinearLayoutManager?)?.findFirstVisibleItemPosition()
                         ?: return
 
-                if (dy > 0) {
-                    if (position > 1) {
+                if (dy > Int.ZERO) {
+                    if (position > Int.ONE) {
                         if (viewModel.checkIfGroupChipsAvailable()) {
                             groupChipsLayout?.show()
                             groupDetailsChipsAdapter?.notifyDataSetChanged()
@@ -235,7 +241,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         }
                     }
                 } else {
-                    if (position <= 1) {
+                    if (position <= Int.ONE) {
                         groupChipsLayout?.hide()
                     }
                 }

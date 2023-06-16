@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.ItemListTypeFactory
 
-class ItemListAdapter(private val factory: ItemListTypeFactory?) :
+class ItemListAdapter(factory: ItemListTypeFactory?) :
     BaseListAdapter<Visitable<*>, ItemListTypeFactory>(factory) {
 
     @SuppressLint("NotifyDataSetChanged")

@@ -41,7 +41,6 @@ class RecommendationViewModel @Inject constructor(
 
     private fun getShopInfo() {
         launchCatchError(dispatcher.main, block = {
-//            _shopInfo.value = topAdsGetShopInfoUseCase(source = "test")
             _shopInfo.value = topAdsGetShopInfoUseCase(source = SOURCE_INSIGHT_CENTER_LANDING_PAGE)
         }, onError = {
                 _shopInfo.value = Fail(it)

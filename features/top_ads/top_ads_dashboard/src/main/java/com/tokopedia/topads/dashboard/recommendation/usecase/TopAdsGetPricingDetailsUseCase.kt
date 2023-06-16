@@ -28,7 +28,6 @@ class TopAdsGetPricingDetailsUseCase @Inject constructor(
     private fun createRequestParam(adType: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("scheme", adType)
-//        requestParams.putString(SOURCE, "adsmgmt.pricing.test")
         requestParams.putString(SOURCE, SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         return requestParams
     }

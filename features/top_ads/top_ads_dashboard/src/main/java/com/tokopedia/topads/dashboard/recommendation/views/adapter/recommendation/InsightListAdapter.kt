@@ -11,10 +11,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
@@ -75,11 +81,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
 
         private fun setProgressBar(count: Int) {
             when (count) {
-                5 -> {
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(5), false)
+                CONST_5 -> {
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_5), false)
                     groupCardCountWarning.show()
                 }
-                4 -> {
+                CONST_4 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
@@ -91,9 +97,9 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                         )
 
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(4), false)
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_4), false)
                 }
-                3 -> {
+                CONST_3 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
@@ -104,9 +110,9 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                             com.tokopedia.unifycomponents.R.color.Unify_YN300
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(3), false)
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_3), false)
                 }
-                2 -> {
+                CONST_2 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
@@ -117,9 +123,9 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                             com.tokopedia.unifycomponents.R.color.Unify_GN200
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(2), false)
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_2), false)
                 }
-                1 -> {
+                CONST_1 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
@@ -130,7 +136,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                             com.tokopedia.unifycomponents.R.color.Unify_GN200
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(1), false)
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_1), false)
                 }
             }
         }
@@ -164,7 +170,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             pagerAdapter.emptyStatePages = item.statesList
             emptyStateRecyclerView.layoutManager = layoutManager
             emptyStateRecyclerView.adapter = pagerAdapter
-            if (item.statesList.size > 1) {
+            if (item.statesList.size > Int.ONE) {
                 pageControlEmptyState.setIndicator(item.statesList.size)
                 pageControlEmptyState.show()
             } else {
@@ -204,7 +210,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             }
             else -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.empty_state_layout, parent, false)
+                    .inflate(R.layout.topads_insight_centre_empty_state_layout, parent, false)
                 EmptyStateListViewHolder(view)
             }
         }
@@ -231,7 +237,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
         return when (getItem(position)) {
             is AdGroupUiModel -> R.layout.topads_group_card_item_layout
             is LoadingUiModel -> R.layout.insight_bottom_loading_layout
-            is EmptyStateUiListModel -> R.layout.empty_state_layout
+            is EmptyStateUiListModel -> R.layout.topads_insight_centre_empty_state_layout
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }

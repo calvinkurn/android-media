@@ -23,6 +23,7 @@ object RecommendationConstants {
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
     const val INVALID_INSIGHT_TYPE = -1
+    const val INSIGHT_COUNT_PLACE_HOLDER = 10
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"
@@ -35,8 +36,20 @@ object RecommendationConstants {
     const val INSIGHT_TYPE_KEY = "insightType"
     const val INSIGHT_TYPE_LIST_KEY = "insightTypeList"
     const val GROUP_DETAIL_BUNDLE_KEY = "groupDetailBundle"
+    const val PARAM_INSIGHT_TYPE = "insight_type"
+    const val PARAM_AD_TYPE = "ad_type"
+    const val PARAM_INSIGHT_TYPES = "insightTypes"
+    const val PARAM_PAGE_SETTING= "pageSetting"
+    const val PARAM_SIZE= "size"
+    const val PARAM_START_CURSOR= "startCursor"
+
+
+    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP_LIST"
+    const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"
+    const val PER_PAGE_COUNT_VALUE = 20
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
+    const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
 
     object InsightTypeConstants {
         const val INSIGHT_TYPE_ALL = 0

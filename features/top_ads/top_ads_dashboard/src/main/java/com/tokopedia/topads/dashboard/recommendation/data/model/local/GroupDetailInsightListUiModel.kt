@@ -4,7 +4,6 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 class GroupDetailInsightListUiModel(
-    private val title: String = "Coba cek dan maksimalkan iklanmu yang lain, ya.",
     val adGroups: MutableList<InsightListUiModel> = mutableListOf(),
     var insightType: Int = 0
 ) :

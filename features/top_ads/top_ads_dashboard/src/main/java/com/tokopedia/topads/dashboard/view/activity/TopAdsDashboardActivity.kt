@@ -492,7 +492,7 @@ class TopAdsDashboardActivity :
         list.add(
             FragmentTabItem(
                 resources.getString(R.string.topads_dash_suggestion),
-                RecommendationFragment()
+                RecommendationFragment.createInstance()
             )
         )
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)

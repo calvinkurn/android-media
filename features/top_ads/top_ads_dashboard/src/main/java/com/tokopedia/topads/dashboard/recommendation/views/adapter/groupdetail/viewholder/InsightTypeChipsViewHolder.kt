@@ -12,7 +12,10 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightLis
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 
-class InsightTypeChipsViewHolder(val itemView: View, private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?) :
+class InsightTypeChipsViewHolder(
+    val itemView: View,
+    private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?
+) :
     AbstractViewHolder<InsightTypeChipsUiModel>(itemView) {
 
     inner class InsightTypeChipsAdapter :

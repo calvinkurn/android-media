@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.dashboard.databinding.ViewholderItemListBinding
+import com.tokopedia.topads.dashboard.databinding.TopadsInsightCentreInsightSelctionItemBinding
 import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.ItemListViewHolder
@@ -23,7 +23,7 @@ class ItemListTypeFactory(val listener: OnItemSelectChangeListener) :
     ): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ItemListViewHolder.LAYOUT_RES -> {
-                val viewBinding = ViewholderItemListBinding.inflate(
+                val viewBinding = TopadsInsightCentreInsightSelctionItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false

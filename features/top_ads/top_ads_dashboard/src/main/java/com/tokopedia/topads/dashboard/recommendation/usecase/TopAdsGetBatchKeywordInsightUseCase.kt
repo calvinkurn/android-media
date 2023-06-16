@@ -33,7 +33,6 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("insightType", "all")
-//        requestParams.putString("source", "adsmgmt.keywordinsight.test")
         requestParams.putString("source", SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         requestParams.putObject(
             "groupIDs",

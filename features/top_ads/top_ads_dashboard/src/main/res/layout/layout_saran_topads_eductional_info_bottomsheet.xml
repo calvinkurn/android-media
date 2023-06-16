@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="paragraph_3"
         android:textColor="@color/Unify_NN950"
-        android:text="Saran TopAds adalah fitur yang menyediakan rekomendasi saat iklanmu masih bisa dimaksimalkan untuk hasil yang lebih baik. Yuk, tonton video penjelasannya!"/>
+        android:text="@string/topads_insight_educational_bottom_sheet_title" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/video_thumbnail"

@@ -220,7 +220,6 @@ class TopAdsDashboardViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
             val data = topAdsListAllInsightCountsUseCase.invoke(
-//                source = "gql.list_all_insight_counts.test",
                 source = SOURCE_TOP_ADS_DASHBOARD,
                 adGroupType = adGroupType,
                 insightType = insightType,
