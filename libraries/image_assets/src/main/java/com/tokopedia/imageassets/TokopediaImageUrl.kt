@@ -362,4 +362,7 @@ object TokopediaImageUrl {
     const val GIF_TYPING_DARK = "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
     const val IMG_UNAVAILABLE_GENERAL =  "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
     const val IMG_TOKOCHAT_CONSENT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_consent.png"
+    const val IMG_TOKOCHAT_BUBBLES_AWARENESS_BIG = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_big.png"
+    const val IMG_TOKOCHAT_BUBBLES_AWARENESS_1 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_1.png"
+    const val IMG_TOKOCHAT_BUBBLES_AWARENESS_2 = "https://images.tokopedia.net/img/android/tokochat_common/img_tokochat_awareness_2.png"
 }

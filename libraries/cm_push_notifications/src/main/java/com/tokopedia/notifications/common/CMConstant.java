@@ -162,6 +162,8 @@ public interface CMConstant {
             String SESSION_ID = "sesnId";
             String INTENT_ACTION = "intentAction";
             String TOPCHAT = "topChat";
+
+            String TOKOCHAT = "tokoChat";
         }
 
 
