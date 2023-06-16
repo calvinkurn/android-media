@@ -39,8 +39,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         settings.apply {
             javaScriptEnabled = true
             mediaPlaybackRequiresUserGesture = false
-            cacheMode = WebSettings.LOAD_DEFAULT
         }
+        clearCache(true)
+        clearHistory()
         setupTouchListener()
         val youtubeJSInterface = YoutubeWebViewInterface(
             youtubeEventVideoEnded, youtubeEventVideoPlaying,
@@ -48,8 +49,10 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         )
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
-        loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
         setUpWebViewClient()
+        mainThread.post {
+            loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
+        }
     }
 
     private fun setUpWebViewClient() {
@@ -96,18 +99,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             }
             return@setOnTouchListener false
         }
-    }
-
-    fun setUpEventListeners(youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
-                            youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
-                            youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
-                            youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
-                            youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
-                            playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null) {
-        val youtubeJSInterface = YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
-            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued,playerReady)
-        this.youtubeJSInterface = youtubeJSInterface
-        addJavascriptInterface(youtubeJSInterface, jsInterface)
     }
 
     fun loadVideo(videoId: String, startSeconds: Int = 0) {
