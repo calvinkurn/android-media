@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
-import com.tokopedia.content.common.util.toFuzzyPercent
 import com.tokopedia.content.common.util.toPercent
 import com.tokopedia.content.common.util.toUnitInterval
 import com.tokopedia.iconunify.IconUnify
