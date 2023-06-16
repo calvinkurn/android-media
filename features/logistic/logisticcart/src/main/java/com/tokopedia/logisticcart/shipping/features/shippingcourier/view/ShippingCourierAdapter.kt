@@ -19,7 +19,6 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data: MutableList<RatesViewModelType> = mutableListOf()
     private var shippingCourierAdapterListener: ShippingCourierAdapterListener? = null
     private var cartPosition = 0
-    private var isEndYearPromotion = false
 
     fun setShippingCourierViewModels(uiModel: MutableList<RatesViewModelType>) {
         this.data = uiModel
@@ -32,10 +31,6 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
-    }
-
-    fun setEndYearPromotion(endYearPromotion: Boolean) {
-        this.isEndYearPromotion = endYearPromotion
     }
 
     override fun getItemViewType(position: Int): Int = when (data[position]) {
@@ -60,7 +55,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is PreOrderViewHolder -> holder.bindData(data[position] as PreOrderModel)
-            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1, isEndYearPromotion)
+            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
             is NotifierViewHolder -> holder.bindData(data[position] as NotifierModel)
         }
     }

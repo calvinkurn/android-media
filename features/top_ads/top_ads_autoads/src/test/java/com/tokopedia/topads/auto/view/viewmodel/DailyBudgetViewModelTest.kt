@@ -80,7 +80,7 @@ class DailyBudgetViewModelTest {
 
 
     @Test
-    fun `test result in getBudgetInfo`() = testRule.runBlockingTest {
+    fun `test result in getBudgetInfo`() = testRule.runTest {
         val expected = 2
         var actual = 0
         val bidInfoData: ResponseBidInfo.Result =

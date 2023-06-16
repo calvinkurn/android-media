@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/holder_specs"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/comparison_bpc_specs_bullet_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/icon_spec_bullet"
+        android:contentDescription="@string/content_desc_comparison_bpc_spec_bullet"
+        android:layout_width="@dimen/comparison_bpc_specs_bullet_size"
+        android:layout_height="@dimen/comparison_bpc_specs_bullet_size"
+        android:layout_gravity="center_vertical"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_summary"
+        app:typographyType="display_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/comparison_bpc_specs_bullet_margin"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_gravity="center_vertical"
+        android:singleLine="true"/>
+</LinearLayout>

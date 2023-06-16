@@ -59,7 +59,7 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(CUSTOM_VALUE)
-    var customValues: String? = null,
+    var customValues: Map<String, String>? = null,
 
     @Expose
     @SerializedName(NOTIFICATION_TYPE)

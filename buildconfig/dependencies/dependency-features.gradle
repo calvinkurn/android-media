@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			sellerShopNib		: ":features:merchant:seller_shop_nib",
 			sellerPersona		: ":features:merchant:seller_persona",
 			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
 			shopDiscount		: ":features:merchant:shop_discount",
@@ -18,13 +19,14 @@ ext {
             internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
+            catalogLibrary                  : ":features:category:catalog_library",
             commonTradein                   : ":features:category:common_tradein",
-            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
+            affiliateSDK                    : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
-            affiliateToko                  : ":features:category:affiliate_toko",
+            affiliateToko                   : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
             commonEPharmacy                 : ":features:category:common_epharmacy",
             tradeIn                         : ":features:category:tradein",
@@ -103,11 +105,9 @@ ext {
             videoWidget                     : ":features:discovery:video_widget",
 
             homecredit                      : ":features:fintech:home_credit",
-            merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
-            ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
@@ -147,7 +147,6 @@ ext {
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
-            ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
             productServiceWidget            : ":features:merchant:product_service_widget",
             productManageCommon             : ":features:merchant:product_manage_common",
@@ -161,6 +160,7 @@ ext {
             cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
+			centralizedPromo				: ":features:merchant:centralized_promo",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewCommon                    : ":features:merchant:review_common",
@@ -187,8 +187,6 @@ ext {
             feedShop                        : ":features:merchant:feed_shop",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
-            officialStore                  : ":features:merchant:official_store",
-            voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
@@ -207,8 +205,6 @@ ext {
             pms                             : ":features:payment:pms",
             goPayKyc                        : ":features:payment:gopay.kyc",
             withdraw                        : ":features:payment:withdraw",
-
-            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
@@ -307,6 +303,7 @@ ext {
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
             watch                           : ":features:watch",
-            tokofood                        : ":features:tokofood"
+            tokofood                        : ":features:tokofood",
+            samples                         : ":features:samples",
     ]
 }

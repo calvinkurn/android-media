@@ -18,6 +18,7 @@ class HomeProductRecomCallback(
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeProductRecomListener {
 
@@ -27,6 +28,8 @@ class HomeProductRecomCallback(
         headerName: String,
         position: Int
     ) {
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+
         analytics.onClickProductRecom(
             channelId = channelId,
             headerName = headerName,
@@ -34,7 +37,7 @@ class HomeProductRecomCallback(
             position = position
         )
 
-        openAppLink(product.appLink)
+        openAppLink(appLink)
     }
 
     override fun onProductRecomImpressed(
@@ -84,6 +87,8 @@ class HomeProductRecomCallback(
                 productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {
@@ -106,6 +111,8 @@ class HomeProductRecomCallback(
             )
         }
     }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun openAppLink(appLink: String) {
         if (appLink.isNotEmpty()) {

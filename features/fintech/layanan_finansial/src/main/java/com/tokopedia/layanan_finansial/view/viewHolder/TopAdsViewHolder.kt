@@ -26,7 +26,6 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
     }
     private val recommendedText: Typography by lazy { itemView.findViewById(R.id.recommendedText) }
 
-
     /**
      * For topAds seller source is 20
      */
@@ -37,7 +36,6 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
         const val addCount = 3
         const val dimenId = 3
     }
-
 
     override fun bind(element: Visitable<*>?) {
         var element = element as TopAdsImageModel
@@ -57,9 +55,7 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
             override fun onError(t: Throwable) {
                 t.printStackTrace()
             }
-
         })
-
     }
 
     /**
@@ -72,7 +68,9 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         val topAdsAdapter = TopAdsAdapter(imageList, ::onClick)
         displayRecycler.adapter = topAdsAdapter
-        PagerSnapHelper().attachToRecyclerView(displayRecycler)
+        if (displayRecycler.onFlingListener == null) {
+            PagerSnapHelper().attachToRecyclerView(displayRecycler)
+        }
     }
 
     /**
@@ -84,6 +82,4 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
             RouteManager.route(it, appLink)
         }
     }
-
-
 }

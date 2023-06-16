@@ -93,24 +93,6 @@ class MediaQueryDataSourceImpl @Inject constructor(
         return context.getVideoDuration(file)
     }
 
-    override fun isFileValidFromParam(media: Media): Boolean {
-        // Video
-        if (media.file.isVideo()) {
-            if (media.file.length() > param.get().maxVideoFileSize()) return false
-            if (media.duration <= param.get().minVideoDuration()) return false
-            if (media.duration > param.get().maxVideoDuration()) return false
-        }
-
-        // Image
-        if (media.file.isImage()) {
-            if (media.file.isMinImageRes(param.get().minImageResolution())) return false
-            if (media.file.isMaxImageRes(param.get().maxImageResolution())) return false
-            if (media.file.length() > param.get().maxImageFileSize()) return false
-        }
-
-        return true
-    }
-
     /**
      * This query builder to set the sort, limit, and offset for contentResolver's query.
      * To gathering the media data of images nor video locally.

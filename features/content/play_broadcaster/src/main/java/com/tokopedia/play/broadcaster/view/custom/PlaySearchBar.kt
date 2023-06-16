@@ -99,8 +99,7 @@ class PlaySearchBar : ConstraintLayout {
             if (hasFocus) {
                 onChangeFocusTransition()
                 etSearch.addTextChangedListener(getTextWatcher())
-            }
-            else {
+            } else {
                 hideKeyboard()
                 etSearch.removeTextChangedListener(getTextWatcher())
             }
@@ -111,7 +110,9 @@ class PlaySearchBar : ConstraintLayout {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch()
                 true
-            } else false
+            } else {
+                false
+            }
         }
 
         etSearch.setOnTouchListener { _, motionEvent ->
@@ -144,30 +145,30 @@ class PlaySearchBar : ConstraintLayout {
 
     private fun onChangeFocusTransition() {
         TransitionManager.beginDelayedTransition(
-                view as ViewGroup,
-                TransitionSet()
-                        .addTransition(getSearchBoxTransition())
-                        .addTransition(getCancelButtonTransition())
-                        .addTransition(getClearButtonTransition())
-                        .setStartDelay(200)
+            view as ViewGroup,
+            TransitionSet()
+                .addTransition(getSearchBoxTransition())
+                .addTransition(getCancelButtonTransition())
+                .addTransition(getClearButtonTransition())
+                .setStartDelay(200)
         )
     }
 
     private fun getCancelButtonTransition(): Transition {
         return Slide(Gravity.END)
-                .setDuration(300)
+            .setDuration(300)
     }
 
     private fun getSearchBoxTransition(): Transition {
         return ChangeBounds()
-                .addTarget(clSearch)
-                .setDuration(300)
+            .addTarget(clSearch)
+            .setDuration(300)
     }
 
     private fun getClearButtonTransition(): Transition {
         return ScaleTransition()
-                .addTarget(ivClear)
-                .setDuration(300)
+            .addTarget(ivClear)
+            .setDuration(300)
     }
 
     private fun showKeyboard() {

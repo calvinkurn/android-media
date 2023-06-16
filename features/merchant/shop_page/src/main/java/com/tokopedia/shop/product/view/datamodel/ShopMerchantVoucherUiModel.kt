@@ -8,7 +8,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  * Created by zulfikarrahman on 1/16/18.
  */
 
-class ShopMerchantVoucherUiModel(val data: MerchantVoucherCouponUiModel? = null) : BaseShopProductViewModel {
+data class ShopMerchantVoucherUiModel(val data: MerchantVoucherCouponUiModel? = null) : BaseShopProductViewModel {
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }

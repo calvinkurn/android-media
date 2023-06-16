@@ -453,6 +453,9 @@ class ProductChooserBottomSheet @Inject constructor(
             is SearchBarViewComponent.Event.OnSearched -> {
                 viewModel.submitAction(ProductSetupAction.SearchProduct(event.keyword))
             }
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -488,6 +491,9 @@ class ProductChooserBottomSheet @Inject constructor(
             }
             is Event.SortChosen -> {
                 viewModel.submitAction(ProductSetupAction.SetSort(event.sort))
+            }
+            else -> {
+                //no-op
             }
         }
     }

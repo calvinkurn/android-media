@@ -7,8 +7,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -19,6 +21,9 @@ class PlayShortsTitleViewModelTest {
     private val mockRepo: PlayShortsRepository = mockk(relaxed = true)
     private val mockTitle = "Pokemon"
     private val mockException = Exception("Network Error")
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_preparation_title_openForm() {

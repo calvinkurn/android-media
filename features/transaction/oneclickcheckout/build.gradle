@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 buildscript {
     repositories {
@@ -25,9 +19,7 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
 
-        testInstrumentationRunnerArguments clearPackageData: 'true',
-                // Leak Canary Listener, if do not want to use, just comment the code below
-                'listener': 'leakcanary.FailTestOnLeakRunListener'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     testOptions {

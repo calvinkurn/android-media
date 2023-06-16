@@ -24,7 +24,7 @@ class SingleTapListener(context: Context, action: (event: MotionEvent?) -> Boole
             }
         }
     }
-    
+
     private fun createGestureDetector(
         context: Context,
         gestureListener: GestureDetector.SimpleOnGestureListener

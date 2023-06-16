@@ -13,14 +13,14 @@ import java.io.File
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
-    fun convert(urls: List<String>): Flow<List<String?>>
+    fun convert(urls: List<String>): Flow<List<Pair<String, String>?>>
 }
 
 class BitmapConverterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BitmapConverterRepository {
 
-    override fun convert(urls: List<String>): Flow<List<String?>> {
+    override fun convert(urls: List<String>): Flow<List<Pair<String, String>?>> {
         return flow {
             val convertedUrl = urls.map {
                 convert(it)
@@ -30,7 +30,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun convert(url: String): String? {
+    private suspend fun convert(url: String): Pair<String, String>? {
         var bitmap: Bitmap? = null
 
         retryOperator(retries = 3) {
@@ -60,7 +60,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             it.renameTo(newFile)
 
             // 3. get file url, if image source from remote url
-            return newFile.path
+            return Pair(newFile.path, url)
         }
 
         return null

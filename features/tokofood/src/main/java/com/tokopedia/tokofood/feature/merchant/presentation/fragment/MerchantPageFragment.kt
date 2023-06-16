@@ -52,9 +52,11 @@ import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
@@ -64,7 +66,7 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
-import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessAddToCartResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -115,7 +117,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -180,6 +181,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var merchantId: String = ""
     private var productId: String = ""
     private var currentPromoName: String? = null
+    private var hasAppliedProductRendered = false
+    private var isAbleToUpdateQuantity = false
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -286,19 +289,19 @@ class MerchantPageFragment : BaseMultiFragment(),
         uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectUiEventFlow()
         }
-        if (getIsImplementDebounce()) {
-            updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                collectUpdateQuantity()
-            }
+        updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            collectUpdateQuantity()
         }
     }
 
     override fun onResume() {
+        isAbleToUpdateQuantity = false
         super.onResume()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
+        hasAppliedProductRendered = false
         applySelectedProducts()
     }
 
@@ -489,11 +492,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun applySelectedProducts() {
+    private fun applySelectedProducts(applyOnLoadCartFirstTime: Boolean = false) {
         activityViewModel?.hasCartUpdatedIntoLatestState?.value?.let { hasCartUpdated ->
-            if (hasCartUpdated) {
+            if (hasCartUpdated || applyOnLoadCartFirstTime) {
                 viewModel.getAppliedProductSelection()?.let { appliedProductList ->
                     renderProductList(appliedProductList)
+                    hasAppliedProductRendered = true
                 }
             }
         }
@@ -659,6 +663,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                             isShopClosed,
                             foodCategories
                         )
+                        viewModel.productListItems = productListItems.toMutableList()
                         // set default category filter selection
                         viewModel.filterNameSelected =
                             productListItems.firstOrNull()?.productCategory?.title.orEmpty()
@@ -729,7 +734,10 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
-            viewModel.selectedProducts = cartData?.availableSection?.products.orEmpty()
+            viewModel.selectedProducts = cartData?.data?.getTokofoodBusinessData()?.getAvailableSectionProducts().orEmpty()
+            if (viewModel.selectedProducts.isNotEmpty() && !hasAppliedProductRendered) {
+                applySelectedProducts(true)
+            }
         }
     }
 
@@ -749,12 +757,12 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
                 UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
                     if (it.source == SOURCE) {
-                        onSuccessAddCart(it.data?.getSuccessUpdateResultPair())
+                        onSuccessAddCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
                 UiEvent.EVENT_PHONE_VERIFICATION -> {
                     if (it.source == SOURCE) {
-                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        val bottomSheetData = it.data as? CartListBusinessDataBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
                                 val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
@@ -766,7 +774,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
                 UiEvent.EVENT_SUCCESS_UPDATE_CART -> {
                     if (it.source == SOURCE) {
-                        onSuccessUpdateCart(it.data?.getSuccessUpdateResultPair())
+                        onSuccessUpdateCart(it.data?.getSuccessAddToCartResultPair())
                     }
                 }
                 UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
@@ -774,29 +782,44 @@ class MerchantPageFragment : BaseMultiFragment(),
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? UpdateParam)?.productList?.firstOrNull()
                                 ?.let { requestParam ->
-                                    (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                        cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
+                                    (pair.second as? CartGeneralAddToCartData)?.let { cartListData ->
+                                        cartListData.data.getTokofoodBusinessData()
+                                            .getAvailableSectionProducts()
+                                            .firstOrNull { data -> data.productId == requestParam.productId }
                                             ?.let { cartTokoFood ->
-                                                val cardPositions =
-                                                    viewModel.productMap[requestParam.productId]
-                                                cardPositions?.run {
-                                                    binding?.rvProductList?.post {
-                                                        productListAdapter?.updateProductUiModel(
-                                                            cartTokoFood = cartTokoFood,
-                                                            dataSetPosition = viewModel.getDataSetPosition(this),
-                                                            adapterPosition = viewModel.getAdapterPosition(this)
-                                                        )
+                                                if (viewModel.sameProductList.contains(requestParam.productId)) {
+                                                    productListAdapter?.getProductUiModelPositions(requestParam.productId)?.forEach { position ->
+                                                        binding?.rvProductList?.post {
+                                                            productListAdapter?.updateProductUiModel(
+                                                                cartTokoFood = cartTokoFood,
+                                                                dataSetPosition = viewModel.getDataSetPosition(position to position),
+                                                                adapterPosition = viewModel.getAdapterPosition(position to position)
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    val cardPositions =
+                                                        viewModel.productMap[requestParam.productId]
+                                                    cardPositions?.run {
+                                                        binding?.rvProductList?.post {
+                                                            productListAdapter?.updateProductUiModel(
+                                                                cartTokoFood = cartTokoFood,
+                                                                dataSetPosition = viewModel.getDataSetPosition(this),
+                                                                adapterPosition = viewModel.getAdapterPosition(this)
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
-                                    }
-                                    view?.let { view ->
-                                        Toaster.build(
-                                            view = view,
-                                            text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
-                                            duration = Toaster.LENGTH_SHORT,
-                                            type = Toaster.TYPE_NORMAL
-                                        ).show()
+
+                                        view?.let { view ->
+                                            Toaster.build(
+                                                view = view,
+                                                text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
+                                                duration = Toaster.LENGTH_SHORT,
+                                                type = Toaster.TYPE_NORMAL
+                                            ).show()
+                                        }
                                     }
                                 }
                         }
@@ -805,35 +828,43 @@ class MerchantPageFragment : BaseMultiFragment(),
                 UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? String)?.let { cartId ->
-                                (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
-                                    ?.let { product ->
-                                        val cardPositions = viewModel.productMap[product.productId]
+                            (pair.first as? String)?.let { productId ->
+                                (pair.second as? String)?.let { cartId ->
+                                    val hasSameProduct = viewModel.sameProductList.contains(productId)
+                                    if (hasSameProduct) {
+                                        productListAdapter?.getProductUiModelPositions(productId)?.forEach { position ->
+                                            val productUiModel =
+                                                productListAdapter?.getProductUiModel(position)
+                                            removeProduct(
+                                                productUiModel?.isCustomizable == true,
+                                                cartId,
+                                                position,
+                                                position to position
+                                            )
+                                        }
+                                    } else {
+                                        val cardPositions = viewModel.productMap[productId]
                                         cardPositions?.run {
                                             val dataSetPosition = viewModel.getDataSetPosition(this)
-                                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-                                            if (productUiModel?.isCustomizable == true) {
-                                                productListAdapter?.removeCustomOrder(
-                                                    cartId = cartId,
-                                                    dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(this)
-                                                )
-                                            } else {
-                                                productListAdapter?.resetProductUiModel(
-                                                    dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(this)
-                                                )
-                                            }
-                                            view?.let { view ->
-                                                Toaster.build(
-                                                    view = view,
-                                                    text = getString(com.tokopedia.tokofood.R.string.text_product_removed),
-                                                    duration = Toaster.LENGTH_SHORT,
-                                                    type = Toaster.TYPE_NORMAL
-                                                ).show()
-                                            }
+                                            val productUiModel =
+                                                productListAdapter?.getProductUiModel(dataSetPosition)
+                                            removeProduct(
+                                                productUiModel?.isCustomizable == true,
+                                                cartId,
+                                                dataSetPosition,
+                                                cardPositions
+                                            )
                                         }
                                     }
+                                    view?.let { view ->
+                                        Toaster.build(
+                                            view = view,
+                                            text = getString(com.tokopedia.tokofood.R.string.text_product_removed),
+                                            duration = Toaster.LENGTH_SHORT,
+                                            type = Toaster.TYPE_NORMAL
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                     }
@@ -841,53 +872,40 @@ class MerchantPageFragment : BaseMultiFragment(),
                 UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                     if (it.source == SOURCE) {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? UpdateParam)?.productList?.forEach { requestParam ->
-                                    (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                        cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                                            ?.let { cartTokoFood ->
-                                                val cardPositions = viewModel.productMap[requestParam.productId]
-                                                cardPositions?.run {
-                                                    val dataSetPosition = viewModel.getDataSetPosition(this)
-                                                    val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-                                                    if (productUiModel?.isCustomizable == true) {
-                                                        productListAdapter?.updateCustomOrderQty(
-                                                            cartId = cartTokoFood.cartId,
-                                                            orderQty = cartTokoFood.quantity,
-                                                            dataSetPosition = dataSetPosition
-                                                        )
-                                                    } else {
-                                                        binding?.rvProductList?.post {
-                                                            productListAdapter?.updateProductUiModel(
-                                                                cartTokoFood = cartTokoFood,
-                                                                dataSetPosition = dataSetPosition,
-                                                                adapterPosition = viewModel.getAdapterPosition(
-                                                                    this
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
+                            (pair.second as? UpdateQuantityTokofoodParam)?.businessData?.carts?.forEach { requestParam ->
+                                val productUiModel = productListAdapter?.getProductUiModel(requestParam.cartId)
+                                productUiModel?.id?.let { productId ->
+                                    val cardPositions = viewModel.productMap[productId]
+                                    val hasSameProduct = viewModel.sameProductList.contains(productId)
+
+                                    if (hasSameProduct) {
+                                        productListAdapter?.getProductUiModelPositions(productId)?.forEach { position ->
+                                            updateProductQuantity(productUiModel.isCustomizable, requestParam.quantity, requestParam.cartId, position to position)
+                                        }
+                                    } else {
+                                        updateProductQuantity(productUiModel.isCustomizable, requestParam.quantity, requestParam.cartId, cardPositions)
                                     }
                                 }
+                            }
                         }
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
-                        if (it.source == SOURCE){
-                            val products = checkOutTokoFoodData.getProductListFromCart()
-                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
-                            val merchantId = checkOutTokoFoodData.shop.shopId
-                            val merchantName = checkOutTokoFoodData.shop.name
+                    if (it.source == SOURCE){
+                        (it.data as? CartGeneralCartListData)?.let { cartData ->
+                            val products = cartData.getProductListFromCart()
+                            val purchaseAmount = cartData.data.shoppingSummary.getTokofoodBusinessBreakdown().totalBillFmt
+                            val shop = cartData.data.getTokofoodBusinessData().customResponse.shop
+                            val merchantId = shop.shopId
+                            val merchantName = shop.name
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
                                 products,
                                 purchaseAmount,
                                 merchantId,
                                 merchantName
                             )
-                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
+                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
             }
@@ -896,7 +914,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectUpdateQuantity() {
         viewModel.updateQuantityParam.collect { updateParam ->
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            if (isAbleToUpdateQuantity) {
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1062,79 +1082,55 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
 
-    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartTokoFoodData>?) {
-        addCartData?.let { (updateParam, cartTokoFoodData) ->
+    private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartGeneralAddToCartData>?) {
+        addCartData?.let { (updateParam, cartListData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                    ?.let { cartTokoFood ->
-                        val cardPositions = viewModel.productMap[requestParam.productId]
-                        cardPositions?.run {
-                            val dataSetPosition = viewModel.getDataSetPosition(this)
-                            val adapterPosition = viewModel.getAdapterPosition(this)
-                            binding?.rvProductList?.post {
-                                productListAdapter?.updateProductUiModel(
-                                    cartTokoFood = cartTokoFood,
-                                    dataSetPosition = dataSetPosition,
-                                    adapterPosition = adapterPosition,
-                                    customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                        cartTokoFood = cartTokoFood,
-                                        productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                                    )
-                                )
-                                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
-                                val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
-                                val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
-                                if (isSameCustomProductExist || isMultipleCustomProductMade) {
-                                    showCustomOrderDetailBottomSheet(productUiModel, this)
-                                }
+                cartListData.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                    .firstOrNull { product -> product.productId == requestParam.productId }
+                    ?.let { cart ->
+                        val hasSameProduct = viewModel.sameProductList.contains(requestParam.productId)
+                        if (hasSameProduct) {
+                            productListAdapter?.getProductUiModelPositions(requestParam.productId)?.forEach { position ->
+                                addToCartProduct(cart, position to position)
                             }
+                        } else {
+                            val cardPositions = viewModel.productMap[requestParam.productId]
+                            addToCartProduct(cart, cardPositions)
                         }
+                        showSuccessAddToCartToaster(cartListData.message)
                     }
-            }
-
-            cartTokoFoodData.message.takeIf { it.isNotBlank() }?.let { message ->
-                view?.let { view ->
-                    Toaster.build(
-                        view = view,
-                        text = message,
-                        duration = Toaster.LENGTH_SHORT,
-                        type = Toaster.TYPE_NORMAL
-                    ).show()
-                }
             }
         }
     }
 
-    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartTokoFoodData>?) {
-        updateCartData?.let { (updateParam, cartTokoFoodData) ->
+    private fun showSuccessAddToCartToaster(message: String) {
+        if (message.isNotBlank()) {
+            view?.let { view ->
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_NORMAL
+                ).show()
+            }
+        }
+    }
+
+    private fun onSuccessUpdateCart(updateCartData: Pair<UpdateParam, CartGeneralAddToCartData>?) {
+        updateCartData?.let { (updateParam, cartListData) ->
             updateParam.productList.firstOrNull()?.let { requestParam ->
-                cartTokoFoodData.carts.firstOrNull { data -> data.productId == requestParam.productId }
-                    ?.let { cartTokoFood ->
-                        val cardPositions =
-                            viewModel.productMap[requestParam.productId]
-                        cardPositions?.run {
-                            val dataSetPosition =
-                                viewModel.getDataSetPosition(this)
-                            val adapterPosition =
-                                viewModel.getAdapterPosition(this)
-                            val productUiModel =
-                                productListAdapter?.getProductUiModel(
-                                    dataSetPosition
-                                ) ?: ProductUiModel()
-                            productListAdapter?.updateCartProductUiModel(
-                                cartTokoFood = cartTokoFood,
-                                dataSetPosition = dataSetPosition,
-                                adapterPosition = adapterPosition,
-                                customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
-                                    cartTokoFood,
-                                    productUiModel
-                                )
-                            )
-                            showCustomOrderDetailBottomSheet(
-                                productListAdapter?.getProductUiModel(
-                                    dataSetPosition
-                                ) ?: ProductUiModel(), this
-                            )
+                cartListData.data.getTokofoodBusinessData().getAvailableSectionProducts()
+                    .filter { data -> data.productId == requestParam.productId }
+                    .let { cartTokoFoodList ->
+                        val hasSameProduct = viewModel.sameProductList.contains(requestParam.productId)
+                        if (hasSameProduct) {
+                            productListAdapter?.getProductUiModelPositions(requestParam.productId)?.forEach { position ->
+                                updateCartProduct(requestParam.cartId, cartTokoFoodList, position to position)
+                            }
+                        } else {
+                            val cardPositions =
+                                viewModel.productMap[requestParam.productId]
+                            updateCartProduct(requestParam.cartId, cartTokoFoodList, cardPositions)
                         }
                     }
             }
@@ -1144,6 +1140,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
         hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
+        viewModel.productMap[productUiModel.id] = cardPositions
         val bundle = Bundle().apply {
             putInt(
                 CustomOrderDetailBottomSheet.BUNDLE_KEY_PRODUCT_POSITION,
@@ -1277,12 +1274,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         productId: String,
         cardPositions: Pair<Int, Int>
     ) {
+        KeyboardHandler.hideSoftKeyboard(activity)
         viewModel.productMap[productId] = cardPositions
         activityViewModel?.deleteProduct(
-            productId = productId,
             cartId = cartId,
+            productId = productId,
             source = SOURCE,
-            shopId = merchantId
         )
     }
 
@@ -1307,15 +1304,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            if (getIsImplementDebounce()) {
-                viewModel.updateQuantity(merchantId, this)
-            } else {
-                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = merchantId,
-                    productUiModel = productUiModel
-                )
-                activityViewModel?.updateQuantity(updateParam, SOURCE)
-            }
+            isAbleToUpdateQuantity = true
+            viewModel.updateQuantity(cartId, quantity)
         }
     }
 
@@ -1329,15 +1319,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            if (getIsImplementDebounce()) {
-                viewModel.updateQuantity(merchantId, this)
-            } else {
-                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = merchantId,
-                    productUiModel = productUiModel
-                )
-                activityViewModel?.updateQuantity(updateParam, SOURCE)
-            }
+            isAbleToUpdateQuantity = true
+            viewModel.updateQuantity(cartId, quantity)
         }
     }
 
@@ -1366,15 +1349,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            if (getIsImplementDebounce()) {
-                viewModel.updateQuantity(merchantId, this)
-            } else {
-                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = merchantId,
-                    productUiModel = productUiModel
-                )
-                activityViewModel?.updateQuantity(updateParam, SOURCE)
-            }
+            isAbleToUpdateQuantity = true
+            viewModel.updateQuantity(cartId, quantity)
         }
     }
 
@@ -1438,10 +1414,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String) {
         activityViewModel?.deleteProduct(
-            productId = productId,
             cartId = cartId,
-            source = SOURCE,
-            shopId = merchantId
+            productId = productId,
+            source = SOURCE
         )
     }
 
@@ -1451,16 +1426,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         customOrderDetail: CustomOrderDetail
     ) {
         customOrderDetail.qty = quantity
-        if (getIsImplementDebounce()) {
-            viewModel.updateQuantity(merchantId, productId, customOrderDetail)
-        } else {
-            val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
-                shopId = merchantId,
-                productId = productId,
-                customOrderDetail = customOrderDetail
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
-        }
+        isAbleToUpdateQuantity = true
+        viewModel.updateQuantity(customOrderDetail.cartId, customOrderDetail.qty)
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
@@ -1623,15 +1590,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun isNoAddress(localCacheModel: LocalCacheModel): Boolean {
-        return (localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
+        return (localCacheModel.address_id.isEmpty() || localCacheModel.address_id == EMPTY_ADDRESS_ID)
     }
 
     private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
-        return (!localCacheModel.address_id.isNullOrEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
-                && (localCacheModel.lat.isNullOrEmpty() || localCacheModel.long.isNullOrEmpty() ||
-                localCacheModel.lat.equals(EMPTY_COORDINATE) || localCacheModel.long.equals(
-            EMPTY_COORDINATE
-        ))
+        return (!localCacheModel.address_id.isEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
+                && (localCacheModel.lat.isEmpty() || localCacheModel.long.isEmpty() ||
+            localCacheModel.lat == EMPTY_COORDINATE || localCacheModel.long == EMPTY_COORDINATE)
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1703,13 +1668,112 @@ class MerchantPageFragment : BaseMultiFragment(),
         navigateToNewFragment(
             TokoFoodPromoFragment.createInstance(
                 SOURCE,
-                merchantId
+                merchantId,
+                viewModel.selectedProducts.map { it.cartId }
             )
         )
     }
 
-    private fun getIsImplementDebounce(): Boolean {
-        return true
+    private fun addToCartProduct(
+        cart: CartListCartGroupCart,
+        cardPositions: Pair<Int, Int>?
+    ) {
+        cardPositions?.run {
+            val dataSetPosition = viewModel.getDataSetPosition(this)
+            val adapterPosition = viewModel.getAdapterPosition(this)
+            binding?.rvProductList?.post {
+                productListAdapter?.updateProductUiModel(
+                    cartTokoFood = cart,
+                    dataSetPosition = dataSetPosition,
+                    adapterPosition = adapterPosition,
+                    customOrderDetail = viewModel.mapCartTokoFoodToCustomOrderDetail(
+                        cartTokoFood = cart,
+                        productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                    )
+                )
+                val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition) ?: ProductUiModel()
+                val isSameCustomProductExist = productUiModel.customOrderDetails.firstOrNull { it.qty > Int.ONE } != null
+                val isMultipleCustomProductMade = productUiModel.customOrderDetails.size > Int.ONE
+                if (isSameCustomProductExist || isMultipleCustomProductMade) {
+                    showCustomOrderDetailBottomSheet(productUiModel, this)
+                }
+            }
+        }
+    }
+
+    private fun updateCartProduct(
+        cartId: String,
+        cartTokoFoodList: List<CartListCartGroupCart>,
+        cardPositions: Pair<Int, Int>?
+    ) {
+        cardPositions?.run {
+            val dataSetPosition =
+                viewModel.getDataSetPosition(this)
+            val adapterPosition =
+                viewModel.getAdapterPosition(this)
+            binding?.rvProductList?.post {
+                productListAdapter?.updateCartProductUiModel(
+                    cartTokoFood = cartTokoFoodList.firstOrNull { it.cartId == cartId },
+                    cartTokoFoodList = cartTokoFoodList,
+                    dataSetPosition = dataSetPosition,
+                    adapterPosition = adapterPosition
+                )
+                showCustomOrderDetailBottomSheet(
+                    productListAdapter?.getProductUiModel(
+                        dataSetPosition
+                    ) ?: ProductUiModel(), this
+                )
+            }
+        }
+    }
+
+    private fun removeProduct(
+        isCustomizable: Boolean,
+        cartId: String,
+        dataSetPosition: Int,
+        cardPositions: Pair<Int, Int>
+    ) {
+        if (isCustomizable) {
+            productListAdapter?.removeCustomOrder(
+                cartId = cartId,
+                dataSetPosition = dataSetPosition,
+                adapterPosition = viewModel.getAdapterPosition(cardPositions)
+            )
+        } else {
+            productListAdapter?.resetProductUiModel(
+                dataSetPosition = dataSetPosition,
+                adapterPosition = viewModel.getAdapterPosition(cardPositions)
+            )
+        }
+    }
+
+    private fun updateProductQuantity(
+        isCustomizable: Boolean,
+        quantity: Int,
+        cartId: String,
+        cardPositions: Pair<Int, Int>?
+    ) {
+        cardPositions?.run {
+            val dataSetPosition = viewModel.getDataSetPosition(this)
+            if (isCustomizable) {
+                productListAdapter?.updateCustomOrderQty(
+                    cartId = cartId,
+                    orderQty = quantity,
+                    dataSetPosition = dataSetPosition
+                )
+            } else {
+                binding?.rvProductList?.post {
+                    productListAdapter?.updateProductUiModel(
+                        dataSetPosition = dataSetPosition,
+                        adapterPosition = viewModel.getAdapterPosition(
+                            this
+                        ),
+                        quantity = quantity,
+                        currentCartId = cartId
+                    )
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

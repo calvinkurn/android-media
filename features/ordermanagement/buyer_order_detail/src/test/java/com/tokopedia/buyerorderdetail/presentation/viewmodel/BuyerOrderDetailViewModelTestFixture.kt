@@ -31,6 +31,8 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -40,14 +42,11 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -73,7 +72,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     lateinit var viewModel: BuyerOrderDetailViewModel
 
     @get:Rule
-    val rule = CoroutineTestRule()
+    val rule = UnconfinedTestRule()
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -183,6 +182,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                         )
                     )
                 )
+                delay(1)
                 actionBeforeComplete()
                 emit(
                     GetBuyerOrderDetailDataRequestState.Complete(
@@ -339,13 +339,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun runCollectingUiState(block: suspend TestCoroutineScope.(List<BuyerOrderDetailUiState>) -> Unit) {
+    fun runCollectingUiState(block: suspend TestScope.(List<BuyerOrderDetailUiState>) -> Unit) = runTest {
         val uiStates = mutableListOf<BuyerOrderDetailUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiStateCollectorJob = backgroundScope.launch(dispatcher) {
             viewModel.buyerOrderDetailUiState.toList(uiStates)
         }
-        rule.runBlockingTest { block(uiStates) }
+        block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
@@ -372,7 +372,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         }
     }
 
-    fun TestCoroutineScope.getBuyerOrderDetailData(
+    fun TestScope.getBuyerOrderDetailData(
         orderId: String = this@BuyerOrderDetailViewModelTestFixture.orderId,
         paymentId: String = this@BuyerOrderDetailViewModelTestFixture.paymentId,
         cart: String = this@BuyerOrderDetailViewModelTestFixture.cart,
@@ -380,6 +380,6 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     ) {
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
         // skip debounce on viewModel#productListUiState
-        advanceTimeBy(1000L)
+        advanceTimeBy(1050L)
     }
 }

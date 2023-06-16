@@ -8,7 +8,6 @@ import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingU
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 

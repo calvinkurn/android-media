@@ -121,9 +121,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         setRecipeData()
         setupToolbarHeader()
         setupRecyclerView()
-        updateAddressData()
         observeLiveData()
-        checkAddressData()
+        onViewCreated()
     }
 
     override fun onAttach(context: Context) {
@@ -152,12 +151,22 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         getMiniCart()
     }
 
-    override fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int) {
+    override fun onCartQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
         if(userSession.isLoggedIn) {
-            viewModel.onCartQuantityChanged(productId, shopId, quantity)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
+    }
+
+    override fun createAffiliateLink(url: String): String {
+        return viewModel.createAffiliateLink(url)
     }
 
     override fun showChooseAddressBottomSheet() {
@@ -540,8 +549,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         analytics.trackClickSeeAddToCartToaster()
     }
 
-    private fun checkAddressData() {
-        viewModel.checkAddressData()
+    private fun onViewCreated() {
+        viewModel.onViewCreated()
     }
 
     private fun showLoading() {

@@ -353,7 +353,7 @@ class VoucherGameListFragment :
                 promoBanner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
                 promoBanner.setOnPromoAllClickListener {
                     voucherGameAnalytics.eventClickViewAllBanner()
-                    RouteManager.route(context, ApplinkConst.PROMO_LIST)
+                    RouteManager.route(context, BaseVoucherGameActivity.APPLINK_CONST_DEALS)
                 }
                 context?.let {
                     promoBanner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))

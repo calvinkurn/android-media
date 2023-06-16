@@ -490,7 +490,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 startMiniConsultation(enablerName, groupId, consultationId)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
-                startPhotoUpload(groupId)
+                startPhotoUpload(enablerName, groupId)
             }
             PrescriptionActionType.REDIRECT_OPTION.type -> {
                 startAttachmentChooser(chooserLogo, groupId, enablerName, consultationId)
@@ -502,7 +502,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             }
             PrescriptionActionType.REDIRECT_CHECK_PRESCRIPTION.type -> {
                 groupId?.let { ePharmacyGroupId ->
-                    startPhotoUpload(ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
+                    startPhotoUpload(enablerName, ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
                 }
             }
         }
@@ -524,7 +524,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun startPhotoUpload(groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
+    private fun startPhotoUpload(enablerName: String?, groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {
+        EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(enablerName, groupId ?: "")
         RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING, groupId)
             putExtra(EXTRA_SOURCE_STRING, UPLOAD_PAGE_SOURCE_PAP)
@@ -535,6 +536,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun startMiniConsultation(enablerName: String?, groupId: String?, consultationSourceId: Long?) {
         if (!groupId.isNullOrBlank()) {
+            EPharmacyMiniConsultationAnalytics.clickChatDokter(enablerName, groupId)
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
                     InitiateConsultationParam.InitiateConsultationParamInput(groupId, EPHARMACY_ANDROID_SOURCE)
@@ -555,13 +557,11 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                                 groupId,
                                 data.getLongExtra(EPHARMACY_CONSULTATION_SOURCE_ID, 0L)
                             )
-                            EPharmacyMiniConsultationAnalytics.clickChatDokter(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
                         }
                     }
                     EPHARMACY_UPLOAD_REQUEST_CODE -> {
                         data?.getStringExtra(EPHARMACY_GROUP_ID)?.let { groupId ->
-                            startPhotoUpload(groupId)
-                            EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
+                            startPhotoUpload(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
                         }
                     }
                 }

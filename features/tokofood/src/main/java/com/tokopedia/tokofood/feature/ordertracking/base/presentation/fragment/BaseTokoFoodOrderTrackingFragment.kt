@@ -375,6 +375,9 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

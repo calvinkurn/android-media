@@ -1,13 +1,12 @@
 package com.tokopedia.shop.open.presentation.view.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop.open.R
@@ -31,7 +30,6 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
     private var isNeedLocation = false
     private var shouldShowExitDialog = true
     private var bundle: Bundle? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +55,12 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         val fragmentValidateShopName = ShopOpenRevampInputShopFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-                .replace(R.id.shop_open_container, fragmentValidateShopName)
-                .commit()
+            .replace(R.id.shop_open_container, fragmentValidateShopName)
+            .commit()
     }
 
     override fun navigateToNextPage(page: String, tag: String) {
-        if( !isDestroyed && !isFinishing) {
+        if (!isDestroyed && !isFinishing) {
             if (page == PageNameConstant.SPLASH_SCREEN_PAGE) {
                 val fragmentSplashScreenPage = ShopOpenRevampSplashScreenFragment()
                 navigateToOtherFragment(fragmentSplashScreenPage, null)
@@ -108,29 +106,28 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
     private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-                .replace(R.id.shop_open_container, fragment)
-                .addToBackStack(tag)
-                .commitAllowingStateLoss()
+            .replace(R.id.shop_open_container, fragment)
+            .addToBackStack(tag)
+            .commitAllowingStateLoss()
     }
 
     private fun setBackgroundColor() {
         window?.decorView?.apply {
             if (context.isDarkMode()) {
                 setBackgroundColor(
-                        androidx.core.content.ContextCompat.getColor(
-                                context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N50
-                        )
+                    androidx.core.content.ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    )
                 )
             } else {
                 setBackgroundColor(
-                        androidx.core.content.ContextCompat.getColor(
-                                context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
-                        )
+                    androidx.core.content.ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
                 )
             }
         }
     }
 }
-

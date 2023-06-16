@@ -56,6 +56,7 @@ dependencies {
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
     implementation projectOrAar(rootProject.ext.features.catalog)
+    implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.affiliateToko)
@@ -88,9 +89,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-    //implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
-   // implementation projectOrAar(rootProject.ext.features.ovop2p)
     implementation projectOrAar(rootProject.ext.features.paylater)
     implementation projectOrAar(rootProject.ext.features.insurance)
 
@@ -125,11 +124,6 @@ dependencies {
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-
-    //Salam
-
-    //Travel
-    implementation projectOrAar(rootProject.ext.features.travelHomepage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)

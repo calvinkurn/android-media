@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -75,7 +76,8 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
-    userSession: UserSessionInterface,
+    affiliateService: NowAffiliateService,
+    userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
     baseDispatcher,
     queryParamMap,
@@ -86,7 +88,8 @@ class TokoNowCategoryViewModel @Inject constructor (
     getWarehouseUseCase,
     setUserPreferenceUseCase,
     chooseAddressWrapper,
-    userSession,
+    affiliateService,
+    userSession
 ) {
 
     private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
@@ -150,6 +153,7 @@ class TokoNowCategoryViewModel @Inject constructor (
                 categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
                 bannerChannel = categoryModel.bannerChannel,
+                targetedTicker = categoryModel.targetedTicker
         )
 
         val contentDataView = ContentDataView(

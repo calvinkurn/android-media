@@ -172,6 +172,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
             shortVideoAllowed = config.shortVideoAllowed,
+            hasContent = config.hasContent,
             channelId = channelStatus.first,
             channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
@@ -523,7 +524,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         otherParticipant = it.otherParticipantCount.toLong(),
                         leaderBoardType = getLeaderboardType(it.type),
                         totalParticipant = it.winner.size.toLong(),
-                        emptyLeaderBoardCopyText = it.otherParticipantCountText,
+                        emptyLeaderBoardCopyText = "", //in bro GQL no empty leaderboard
                         id = it.interactiveId,
                     )
                 )

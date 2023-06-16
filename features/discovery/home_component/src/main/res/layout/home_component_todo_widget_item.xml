@@ -100,6 +100,7 @@
                 android:id="@+id/price_todo_widget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 tools:text="Rp151.000"
                 android:maxLines="2"
                 app:typographyType="display_3"
@@ -110,6 +111,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/desc_todo_widget"
                 app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/label_discount_todo_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/home_todo_widget_label_discount_height"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                app:labelType="general_light_red"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toEndOf="@id/price_todo_widget"
+                app:layout_constraintTop_toTopOf="@id/price_todo_widget"
+                app:layout_constraintBottom_toBottomOf="@id/price_todo_widget"
+                tools:text="20%"
+                tools:visibility="gone" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/slashed_price_todo_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/Unify_N700_44"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/label_discount_todo_widget"
+                app:layout_constraintTop_toTopOf="@id/label_discount_todo_widget"
+                app:layout_constraintBottom_toBottomOf="@id/label_discount_todo_widget"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:typographyType="small"
+                tools:text="Rp8.499.000"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

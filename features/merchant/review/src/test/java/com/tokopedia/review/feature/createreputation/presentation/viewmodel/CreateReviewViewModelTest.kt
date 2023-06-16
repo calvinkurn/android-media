@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 
 import android.os.Bundle
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.R
@@ -36,20 +35,19 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
 
 class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     @Test
-    fun `should trigger load reputation form when form not yet loaded`() {
+    fun `should trigger load reputation form when form not yet loaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         setInitialData()
         coVerify { getProductReputationForm.getReputationForm(any()) }
     }
 
     @Test
-    fun `should not trigger load reputation form when form already loaded`() {
+    fun `should not trigger load reputation form when form already loaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         setInitialData()
         coVerify(exactly = 1) { getProductReputationForm.getReputationForm(any()) }
@@ -58,434 +56,428 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `should not trigger load reputation form when reputationID is empty`() {
+    fun `should not trigger load reputation form when reputationID is empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         setInitialData(reputationID = "")
         coVerify(inverse = true) { getProductReputationForm.getReputationForm(any()) }
     }
 
     @Test
-    fun `should not trigger load reputation form when productID is empty`() {
+    fun `should not trigger load reputation form when productID is empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         setInitialData(productID = "")
         coVerify(inverse = true) { getProductReputationForm.getReputationForm(any()) }
     }
 
     @Test
-    fun `productCardUiState should equal to CreateReviewProductCardUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `productCardUiState should equal to CreateReviewProductCardUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        Assert.assertEquals(CreateReviewProductCardUiState.Loading, viewModel.productCardUiState.first())
+        Assert.assertEquals(CreateReviewProductCardUiState.Loading, viewModel.productCardUiState.value)
     }
 
     @Test
-    fun `productCardUiState should equal to CreateReviewProductCardUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `productCardUiState should equal to CreateReviewProductCardUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewProductCardUiState.Showing>(viewModel.productCardUiState.first())
+        assertInstanceOf<CreateReviewProductCardUiState.Showing>(viewModel.productCardUiState.value)
     }
 
     @Test
-    fun `ratingUiState should equal to CreateReviewRatingUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `ratingUiState should equal to CreateReviewRatingUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        Assert.assertEquals(CreateReviewRatingUiState.Loading, viewModel.ratingUiState.first())
+        Assert.assertEquals(CreateReviewRatingUiState.Loading, viewModel.ratingUiState.value)
     }
 
     @Test
-    fun `ratingUiState should equal to CreateReviewProductCardUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `ratingUiState should equal to CreateReviewProductCardUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewRatingUiState.Showing>(viewModel.ratingUiState.first())
+        assertInstanceOf<CreateReviewRatingUiState.Showing>(viewModel.ratingUiState.value)
     }
 
     @Test
-    fun `tickerUiState should equal to CreateReviewTickerUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+    fun `tickerUiState should equal to CreateReviewTickerUiState#Hidden when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        Assert.assertEquals(CreateReviewTickerUiState.Hidden, viewModel.tickerUiState.first())
+        Assert.assertEquals(CreateReviewTickerUiState.Hidden, viewModel.tickerUiState.value)
     }
 
     @Test
-    fun `tickerUiState should equal to CreateReviewTickerUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `tickerUiState should equal to CreateReviewTickerUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTickerUiState.Showing>(viewModel.tickerUiState.first())
+        assertInstanceOf<CreateReviewTickerUiState.Showing>(viewModel.tickerUiState.value)
     }
 
     @Test
-    fun `tickerUiState should equal to CreateReviewTickerUiState#Hidden when getIncentiveOvo return null`() = runBlockingTest {
+    fun `tickerUiState should equal to CreateReviewTickerUiState#Hidden when getIncentiveOvo return null`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo(null)
         setInitialData()
-        Assert.assertEquals(CreateReviewTickerUiState.Hidden, viewModel.tickerUiState.first())
+        Assert.assertEquals(CreateReviewTickerUiState.Hidden, viewModel.tickerUiState.value)
     }
 
     @Test
-    fun `textAreaTitleUiState should equal to CreateReviewTextAreaTitleUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `textAreaTitleUiState should equal to CreateReviewTextAreaTitleUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        Assert.assertEquals(CreateReviewTextAreaTitleUiState.Loading, viewModel.textAreaTitleUiState.first())
+        Assert.assertEquals(CreateReviewTextAreaTitleUiState.Loading, viewModel.textAreaTitleUiState.value)
     }
 
     @Test
-    fun `textAreaTitleUiState should equal to CreateReviewTextAreaTitleUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `textAreaTitleUiState should equal to CreateReviewTextAreaTitleUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTextAreaTitleUiState.Showing>(viewModel.textAreaTitleUiState.first())
+        assertInstanceOf<CreateReviewTextAreaTitleUiState.Showing>(viewModel.textAreaTitleUiState.value)
     }
 
     @Test
-    fun `textAreaTitleUiState textRes id should equal to review_create_worst_title when rating is 1`() = runBlockingTest {
+    fun `textAreaTitleUiState textRes id should equal to review_create_worst_title when rating is 1`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
-        val textAreaTitleUiState = viewModel.textAreaTitleUiState.first() as CreateReviewTextAreaTitleUiState.Showing
+        val textAreaTitleUiState = viewModel.textAreaTitleUiState.value as CreateReviewTextAreaTitleUiState.Showing
         Assert.assertEquals(R.string.review_create_worst_title, textAreaTitleUiState.textRes.id)
     }
 
     @Test
-    fun `textAreaTitleUiState textRes id should equal to review_form_bad_title when rating is 2`() = runBlockingTest {
+    fun `textAreaTitleUiState textRes id should equal to review_form_bad_title when rating is 2`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 2)
-        val textAreaTitleUiState = viewModel.textAreaTitleUiState.first() as CreateReviewTextAreaTitleUiState.Showing
+        val textAreaTitleUiState = viewModel.textAreaTitleUiState.value as CreateReviewTextAreaTitleUiState.Showing
         Assert.assertEquals(R.string.review_form_bad_title, textAreaTitleUiState.textRes.id)
     }
 
     @Test
-    fun `textAreaTitleUiState textRes id should equal to review_form_neutral_title when rating is 3`() = runBlockingTest {
+    fun `textAreaTitleUiState textRes id should equal to review_form_neutral_title when rating is 3`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 3)
-        val textAreaTitleUiState = viewModel.textAreaTitleUiState.first() as CreateReviewTextAreaTitleUiState.Showing
+        val textAreaTitleUiState = viewModel.textAreaTitleUiState.value as CreateReviewTextAreaTitleUiState.Showing
         Assert.assertEquals(R.string.review_form_neutral_title, textAreaTitleUiState.textRes.id)
     }
 
     @Test
-    fun `textAreaTitleUiState textRes id should equal to review_create_best_title when rating is more than 3`() = runBlockingTest {
+    fun `textAreaTitleUiState textRes id should equal to review_create_best_title when rating is more than 3`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 4)
-        val textAreaTitleUiState = viewModel.textAreaTitleUiState.first() as CreateReviewTextAreaTitleUiState.Showing
+        val textAreaTitleUiState = viewModel.textAreaTitleUiState.value as CreateReviewTextAreaTitleUiState.Showing
         Assert.assertEquals(R.string.review_create_best_title, textAreaTitleUiState.textRes.id)
     }
 
     @Test
-    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Hidden when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Hidden>(viewModel.badRatingCategoriesUiState.first())
+        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Hidden>(viewModel.badRatingCategoriesUiState.value)
     }
 
     @Test
-    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Hidden when isGoodRating is true`() = runBlockingTest {
+    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Hidden when isGoodRating is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Hidden>(viewModel.badRatingCategoriesUiState.first())
+        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Hidden>(viewModel.badRatingCategoriesUiState.value)
     }
 
     @Test
-    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `badRatingCategoriesUiState should equal to CreateReviewBadRatingCategoriesUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
-        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Showing>(viewModel.badRatingCategoriesUiState.first())
+        assertInstanceOf<CreateReviewBadRatingCategoriesUiState.Showing>(viewModel.badRatingCategoriesUiState.value)
     }
 
     @Test
-    fun `textAreaUiState should equal to CreateReviewTextAreaUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `textAreaUiState should equal to CreateReviewTextAreaUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTextAreaUiState.Loading>(viewModel.textAreaUiState.first())
+        assertInstanceOf<CreateReviewTextAreaUiState.Loading>(viewModel.textAreaUiState.value)
     }
 
     @Test
-    fun `textAreaUiState should equal to CreateReviewTextAreaUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `textAreaUiState should equal to CreateReviewTextAreaUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTextAreaUiState.Showing>(viewModel.textAreaUiState.first())
+        assertInstanceOf<CreateReviewTextAreaUiState.Showing>(viewModel.textAreaUiState.value)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper_must_fill when only bad rating other category selected`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper_must_fill when only bad rating other category selected`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_OTHER, true)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_bad_helper_must_fill, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper when not only bad rating other category selected`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper when not only bad rating other category selected`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 2)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_OTHER, true)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_PRODUCT_PROBLEM, true)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_bad_helper, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper when no bad rating other category selected`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_bad_helper when no bad rating other category selected`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_bad_helper, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_neutral_helper when selected rating is 3`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_neutral_helper when selected rating is 3`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 3)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_neutral_helper, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_raw_string_format when selected rating is more than 3, placeholder from BE is not blank and review topics inspiration is enabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
-            mockSuccessGetReputationForm()
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData(rating = 4)
-            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
-            Assert.assertEquals(R.string.review_raw_string_format, textAreaUiState.hint.id)
-            Assert.assertEquals(listOf("Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh \uD83D\uDC4D"), textAreaUiState.hint.params)
-        }
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_raw_string_format when selected rating is more than 3, placeholder from BE is not blank and review topics inspiration is enabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData(rating = 4)
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
+        Assert.assertEquals(R.string.review_raw_string_format, textAreaUiState.hint.id)
+        Assert.assertEquals(listOf("Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh \uD83D\uDC4D"), textAreaUiState.hint.params)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and placeholder from BE is blank`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and placeholder from BE is blank`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 4)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and review topics inspiration is disabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
-            mockSuccessGetReputationForm()
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData(rating = 4)
-            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
-            Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
-        }
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and review topics inspiration is disabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant")
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData(rating = 4)
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
+        Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_partial_incentive when review text length is between 1 to 40`() = runBlockingTest {
+    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_partial_incentive when review text length is between 1 to 40`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateTextAreaHasFocus(true)
         viewModel.setReviewText("a", CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_create_bottom_sheet_text_area_partial_incentive, textAreaUiState.helper.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_eligible_for_incentive when review text length is more than or equal to 40`() = runBlockingTest {
+    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_eligible_for_incentive when review text length is more than or equal to 40`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo(getProductIncentiveOvoUseCaseResultSuccessChallenge)
         setInitialData()
         viewModel.updateTextAreaHasFocus(true)
         viewModel.setReviewText("a".repeat(40), CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive, textAreaUiState.helper.id)
     }
 
     @Test
-    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_empty_incentive when review text is empty`() = runBlockingTest {
+    fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_empty_incentive when review text is empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateTextAreaHasFocus(true)
-        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        val textAreaUiState = viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_create_bottom_sheet_text_area_empty_incentive, textAreaUiState.helper.id)
     }
 
     @Test
-    fun `templateUiState should equal to CreateReviewTemplateUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `templateUiState should equal to CreateReviewTemplateUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTemplateUiState.Loading>(viewModel.templateUiState.first())
+        assertInstanceOf<CreateReviewTemplateUiState.Loading>(viewModel.templateUiState.value)
     }
 
     @Test
-    fun `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`() = runBlockingTest {
+    fun `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTemplateUiState.Hidden>(viewModel.templateUiState.first())
+        assertInstanceOf<CreateReviewTemplateUiState.Hidden>(viewModel.templateUiState.value)
     }
 
     @Test
-    fun `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`() = runBlockingTest {
+    fun `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
-        assertInstanceOf<CreateReviewTemplateUiState.Loading>(
-            viewModel.templateUiState.first { it is CreateReviewTemplateUiState.Loading }
-        )
+        assertInstanceOf<CreateReviewTemplateUiState.Loading>(viewModel.templateUiState.value)
         setInitialData()
-        assertInstanceOf<CreateReviewTemplateUiState.Showing>(
-            viewModel.templateUiState.first { it is CreateReviewTemplateUiState.Showing }
-        )
+        assertInstanceOf<CreateReviewTemplateUiState.Showing>(viewModel.templateUiState.value)
     }
 
     @Test
-    fun `mediaPickerUiState should equal to CreateReviewMediaPickerUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `mediaPickerUiState should equal to CreateReviewMediaPickerUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewMediaPickerUiState.Loading>(viewModel.mediaPickerUiState.first())
+        assertInstanceOf<CreateReviewMediaPickerUiState.Loading>(viewModel.mediaPickerUiState.value)
     }
 
     @Test
-    fun `mediaPickerUiState should equal to CreateReviewMediaPickerUiState#SuccessUpload when canRenderForm is true`() = runBlockingTest {
+    fun `mediaPickerUiState should equal to CreateReviewMediaPickerUiState#SuccessUpload when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewMediaPickerUiState.SuccessUpload>(viewModel.mediaPickerUiState.first())
+        assertInstanceOf<CreateReviewMediaPickerUiState.SuccessUpload>(viewModel.mediaPickerUiState.value)
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddLarge when no media added`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddLarge when no media added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         assertInstanceOf<CreateReviewMediaUiModel.AddLarge>(mediaPickerUiState.mediaItems.first())
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain 1 video added through new media picker`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain 1 video added through new media picker`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain at least 1 image added through new media picker`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain at least 1 image added through new media picker`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain media with error state when upload image is failed`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain media with error state when upload image is failed`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         val image = mediaPickerUiState.mediaItems.first() as CreateReviewMediaUiModel.Image
         Assert.assertEquals(CreateReviewMediaUiModel.State.UPLOAD_FAILED, image.state)
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain media with error state when upload video is failed`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain media with error state when upload video is failed`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         val video = mediaPickerUiState.mediaItems.first() as CreateReviewMediaUiModel.Video
         Assert.assertEquals(CreateReviewMediaUiModel.State.UPLOAD_FAILED, video.state)
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain media with success state when upload image is success`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain media with success state when upload image is success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockSuccessUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         val image = mediaPickerUiState.mediaItems.first() as CreateReviewMediaUiModel.Image
         Assert.assertEquals(CreateReviewMediaUiModel.State.UPLOADED, image.state)
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain media with error state when upload video is success`() = runBlockingTest {
+    fun `mediaPickerUiState mediaItems should contain media with error state when upload video is success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockSuccessUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiState = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         val video = mediaPickerUiState.mediaItems.first() as CreateReviewMediaUiModel.Video
         Assert.assertEquals(CreateReviewMediaUiModel.State.UPLOADED, video.state)
     }
 
     @Test
-    fun `when added new image then the already uploaded image should not be re-uploaded`() = runBlockingTest {
+    fun `when added new image then the already uploaded image should not be re-uploaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -493,36 +485,28 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         setInitialData()
         every { isVideoFormat(any()) } returns false
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 2
-        }
+        viewModel.mediaPickerUiState.value
         viewModel.updateMediaPicker(listOf("image.jpg", "another-image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 3
-        } as CreateReviewMediaPickerUiState.HasMedia
+        viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         coVerify(exactly = 2) { uploaderUseCase(any()) }
     }
 
     @Test
-    fun `when added new image then the already uploaded video should not be re-uploaded`() = runBlockingTest {
+    fun `when added new image then the already uploaded video should not be re-uploaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockSuccessUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 2
-        }
+        viewModel.mediaPickerUiState.value
         viewModel.updateMediaPicker(listOf("video.mp4", "image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 3
-        } as CreateReviewMediaPickerUiState.HasMedia
+        viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         coVerify(exactly = 2) { uploaderUseCase(any()) }
     }
 
     @Test
-    fun `when added new image then the already failed to upload image should be re-uploaded`() = runBlockingTest {
+    fun `when added new image then the already failed to upload image should be re-uploaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -530,136 +514,128 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         setInitialData()
         every { isVideoFormat(any()) } returns false
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 2
-        }
+        viewModel.mediaPickerUiState.value
         viewModel.updateMediaPicker(listOf("image.jpg", "another-image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 3
-        } as CreateReviewMediaPickerUiState.HasMedia
+        viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         coVerify(exactly = 3) { uploaderUseCase(any()) }
     }
 
     @Test
-    fun `when added new image then the already failed to upload video should be re-uploaded`() = runBlockingTest {
+    fun `when added new image then the already failed to upload video should be re-uploaded`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 2
-        }
+        viewModel.mediaPickerUiState.value
         viewModel.updateMediaPicker(listOf("video.mp4", "image.jpg"))
-        viewModel.mediaPickerUiState.first {
-            it is CreateReviewMediaPickerUiState.HasMedia && it.mediaItems.size == 3
-        } as CreateReviewMediaPickerUiState.HasMedia
+        viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         coVerify(exactly = 3) { uploaderUseCase(any()) }
     }
 
     @Test
-    fun `anonymousUiState should equal to CreateReviewAnonymousUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `anonymousUiState should equal to CreateReviewAnonymousUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewAnonymousUiState.Loading>(viewModel.anonymousUiState.first())
+        assertInstanceOf<CreateReviewAnonymousUiState.Loading>(viewModel.anonymousUiState.value)
     }
 
     @Test
-    fun `anonymousUiState should equal to CreateReviewAnonymousUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `anonymousUiState should equal to CreateReviewAnonymousUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewAnonymousUiState.Showing>(viewModel.anonymousUiState.first())
+        assertInstanceOf<CreateReviewAnonymousUiState.Showing>(viewModel.anonymousUiState.value)
     }
 
     @Test
-    fun `progressBarUiState should equal to CreateReviewProgressBarUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `progressBarUiState should equal to CreateReviewProgressBarUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewProgressBarUiState.Loading>(viewModel.progressBarUiState.first())
+        assertInstanceOf<CreateReviewProgressBarUiState.Loading>(viewModel.progressBarUiState.value)
     }
 
     @Test
-    fun `progressBarUiState should equal to CreateReviewProgressBarUiState#Showing when canRenderForm is true`() = runBlockingTest {
+    fun `progressBarUiState should equal to CreateReviewProgressBarUiState#Showing when canRenderForm is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewProgressBarUiState.Showing>(viewModel.progressBarUiState.first())
+        assertInstanceOf<CreateReviewProgressBarUiState.Showing>(viewModel.progressBarUiState.value)
     }
 
     @Test
-    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Loading when canRenderForm is false`() = runBlockingTest {
+    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Loading when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewSubmitButtonUiState.Loading>(viewModel.submitButtonUiState.first())
+        assertInstanceOf<CreateReviewSubmitButtonUiState.Loading>(viewModel.submitButtonUiState.value)
     }
 
     @Test
-    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review and have good rating`() = runBlockingTest {
+    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review and have good rating`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.first())
+        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.value)
     }
 
     @Test
-    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review, have bad rating, only other bad rating category selected and review text is not empty`() = runBlockingTest {
+    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review, have bad rating, only other bad rating category selected and review text is not empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
         viewModel.setReviewText("a", CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_OTHER, true)
-        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.first())
+        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.value)
     }
 
     @Test
-    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review, have bad rating, any other bad rating category than other category selected and review text is not empty`() = runBlockingTest {
+    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Enabled when not sending review, have bad rating, any other bad rating category than other category selected and review text is not empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
         viewModel.setReviewText("a", CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_PRODUCT_PROBLEM, true)
-        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.first())
+        assertInstanceOf<CreateReviewSubmitButtonUiState.Enabled>(viewModel.submitButtonUiState.value)
     }
 
     @Test
-    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Disabled when not sending review, have bad rating, only other bad rating category selected and review text is empty`() = runBlockingTest {
+    fun `submitButtonUiState should equal to CreateReviewSubmitButtonUiState#Disabled when not sending review, have bad rating, only other bad rating category selected and review text is empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 1)
         viewModel.updateBadRatingSelectedStatus(BAD_RATING_CATEGORY_ID_OTHER, true)
-        assertInstanceOf<CreateReviewSubmitButtonUiState.Disabled>(viewModel.submitButtonUiState.first())
+        assertInstanceOf<CreateReviewSubmitButtonUiState.Disabled>(viewModel.submitButtonUiState.value)
     }
 
     @Test
-    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#Showing when reviewForm is success and valid`() = runBlockingTest {
+    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#Showing when reviewForm is success and valid`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewBottomSheetUiState.Showing>(viewModel.createReviewBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewBottomSheetUiState.Showing>(viewModel.createReviewBottomSheetUiState.value)
     }
 
     @Test
-    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when reviewForm is error`() = runBlockingTest {
+    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when reviewForm is error`() = runCollectingStateFlows {
         mockErrorGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.value
         assertInstanceOf<CreateReviewBottomSheetUiState.ShouldDismiss>(createReviewBottomSheetUiState)
         Assert.assertEquals(
             R.string.review_toaster_page_error,
@@ -670,12 +646,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when review is invalid`() = runBlockingTest {
+    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when review is invalid`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.value
         assertInstanceOf<CreateReviewBottomSheetUiState.ShouldDismiss>(createReviewBottomSheetUiState)
         Assert.assertEquals(
             R.string.review_pending_invalid_to_review,
@@ -686,12 +662,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when product status is 0`() = runBlockingTest {
+    fun `createReviewBottomSheetUiState should equal to CreateReviewBottomSheetUiState#ShouldDismiss when product status is 0`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.value
         assertInstanceOf<CreateReviewBottomSheetUiState.ShouldDismiss>(createReviewBottomSheetUiState)
         Assert.assertEquals(
             R.string.review_pending_deleted_product_error_toaster,
@@ -702,97 +678,97 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.value)
     }
 
     @Test
-    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is true and incentive ovo result is null`() = runBlockingTest {
+    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is true and incentive ovo result is null`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo(null)
         setInitialData()
         viewModel.showIncentiveBottomSheet()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.value)
     }
 
     @Test
-    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is true and shouldShowIncentiveBottomSheet is false`() = runBlockingTest {
+    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Hidden when canRenderForm is true and shouldShowIncentiveBottomSheet is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.value)
     }
 
     @Test
-    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Showing when canRenderForm is true and incentive ovo result is not null`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.showIncentiveBottomSheet()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Showing>(viewModel.incentiveBottomSheetUiState.first())
-    }
-
-    @Test
-    fun `dismissIncentiveBottomSheet should change incentiveBottomSheetUiState equal to CreateReviewIncentiveBottomSheetUiState#Hidden`() = runBlockingTest {
+    fun `incentiveBottomSheetUiState should equal to CreateReviewIncentiveBottomSheetUiState#Showing when canRenderForm is true and incentive ovo result is not null`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.showIncentiveBottomSheet()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Showing>(viewModel.incentiveBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Showing>(viewModel.incentiveBottomSheetUiState.value)
+    }
+
+    @Test
+    fun `dismissIncentiveBottomSheet should change incentiveBottomSheetUiState equal to CreateReviewIncentiveBottomSheetUiState#Hidden`() = runCollectingStateFlows {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showIncentiveBottomSheet()
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Showing>(viewModel.incentiveBottomSheetUiState.value)
         viewModel.dismissIncentiveBottomSheet()
-        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewIncentiveBottomSheetUiState.Hidden>(viewModel.incentiveBottomSheetUiState.value)
     }
 
     @Test
-    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Hidden when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.value)
     }
 
     @Test
-    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Hidden when canRenderForm is true and shouldShowTextAreaBottomSheet is false`() = runBlockingTest {
+    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Hidden when canRenderForm is true and shouldShowTextAreaBottomSheet is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.value)
     }
 
     @Test
-    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Showing when canRenderForm is true and shouldShowTextAreaBottomSheet is true`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.showTextAreaBottomSheet()
-        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Showing>(viewModel.textAreaBottomSheetUiState.first())
-    }
-
-    @Test
-    fun `dismissTextAreaBottomSheet should change textAreaBottomSheetUiState equal to CreateReviewTextAreaBottomSheetUiState#Hidden`() = runBlockingTest {
+    fun `textAreaBottomSheetUiState should equal to CreateReviewTextAreaBottomSheetUiState#Showing when canRenderForm is true and shouldShowTextAreaBottomSheet is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.showTextAreaBottomSheet()
-        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Showing>(viewModel.textAreaBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Showing>(viewModel.textAreaBottomSheetUiState.value)
+    }
+
+    @Test
+    fun `dismissTextAreaBottomSheet should change textAreaBottomSheetUiState equal to CreateReviewTextAreaBottomSheetUiState#Hidden`() = runCollectingStateFlows {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showTextAreaBottomSheet()
+        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Showing>(viewModel.textAreaBottomSheetUiState.value)
         viewModel.dismissTextAreaBottomSheet()
-        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewTextAreaBottomSheetUiState.Hidden>(viewModel.textAreaBottomSheetUiState.value)
     }
 
     @Test
-    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#Hidden when postSubmitReviewResult is not success`() = runBlockingTest {
+    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#Hidden when postSubmitReviewResult is not success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -800,11 +776,11 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockErrorPostSubmitBottomSheet()
         setInitialData()
         viewModel.submitReview()
-        assertInstanceOf<PostSubmitUiState.Hidden>(viewModel.postSubmitBottomSheetUiState.first())
+        assertInstanceOf<PostSubmitUiState.Hidden>(viewModel.postSubmitBottomSheetUiState.value)
     }
 
     @Test
-    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#ShowThankYouBottomSheet when postSubmitReviewResult is success`() = runBlockingTest {
+    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#ShowThankYouBottomSheet when postSubmitReviewResult is success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -812,11 +788,11 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessPostSubmitBottomSheet()
         setInitialData()
         viewModel.submitReview()
-        assertInstanceOf<PostSubmitUiState.ShowThankYouBottomSheet>(viewModel.postSubmitBottomSheetUiState.first())
+        assertInstanceOf<PostSubmitUiState.ShowThankYouBottomSheet>(viewModel.postSubmitBottomSheetUiState.value)
     }
 
     @Test
-    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#ShowThankYouToaster when postSubmitReviewResult is success`() = runBlockingTest {
+    fun `postSubmitBottomSheetUiState should equal to PostSubmitUiState#ShowThankYouToaster when postSubmitReviewResult is success`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -824,108 +800,104 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessPostSubmitBottomSheet(getPostSubmitBottomSheetResultSuccessShowToaster)
         setInitialData()
         viewModel.submitReview()
-        assertInstanceOf<PostSubmitUiState.ShowThankYouToaster>(viewModel.postSubmitBottomSheetUiState.first())
+        assertInstanceOf<PostSubmitUiState.ShowThankYouToaster>(viewModel.postSubmitBottomSheetUiState.value)
     }
 
     @Test
-    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.value)
     }
 
     @Test
-    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is false`() = runBlockingTest {
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is false`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.value)
     }
 
     @Test
-    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Showing when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is true`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.showAnonymousInfoBottomSheet()
-        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
-    }
-
-    @Test
-    fun `dismissAnonymousInfoBottomSheet should change anonymousInfoBottomSheetUiState equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden`() = runBlockingTest {
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Showing when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is true`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.showAnonymousInfoBottomSheet()
-        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.value)
+    }
+
+    @Test
+    fun `dismissAnonymousInfoBottomSheet should change anonymousInfoBottomSheetUiState equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden`() = runCollectingStateFlows {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.value)
         viewModel.dismissAnonymousInfoBottomSheet()
-        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.value)
     }
 
     @Test
-    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false and review topics inspiration is enabled`() = runBlockingTest {
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false and review topics inspiration is enabled`() = runCollectingStateFlows {
         mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.value)
     }
 
     @Test
-    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when postSubmitReviewResult is not success and review topics inspiration is enabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
-            mockErrorGetReputationForm()
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData()
-            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
-        }
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when postSubmitReviewResult is not success and review topics inspiration is enabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        mockErrorGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.value)
     }
 
     @Test
-    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is empty and review topics inspiration is enabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
-            mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyKeywords)
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData()
-            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
-        }
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is empty and review topics inspiration is enabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyKeywords)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.value)
     }
 
     @Test
-    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is not empty and review topics inspiration is disabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
-            setShouldRunReviewTopicsPeekAnimation()
-            mockSuccessGetReputationForm()
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData()
-            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
-        }
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is not empty and review topics inspiration is disabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant")
+        setShouldRunReviewTopicsPeekAnimation()
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.value)
     }
 
     @Test
-    fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not empty and review topics inspiration is enabled`() = runBlockingTest {
-        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
-            setShouldRunReviewTopicsPeekAnimation()
-            mockSuccessGetReputationForm()
-            mockSuccessGetReviewTemplate()
-            mockSuccessGetProductIncentiveOvo()
-            setInitialData()
-            assertInstanceOf<CreateReviewTopicsUiState.Showing>(viewModel.topicsUiState.first())
-        }
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not empty and review topics inspiration is enabled`() = runCollectingStateFlows {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        setShouldRunReviewTopicsPeekAnimation()
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Showing>(viewModel.topicsUiState.value)
     }
 
     @Test
-    fun `should enqueue toaster error when submit review returns error`() = runBlockingTest {
+    fun `should enqueue toaster error when submit review returns error`() = runCollectingStateFlows { toasterQueue ->
         val expectedToasterQueue = CreateReviewToasterUiModel(
-            message = StringRes(R.string.review_create_fail_toaster),
+            message = StringRes(R.string.review_create_fail_toaster, listOf(ERROR_CODE)),
             actionText = StringRes(R.string.review_oke),
             duration = Toaster.LENGTH_SHORT,
             type = Toaster.TYPE_ERROR,
@@ -935,21 +907,16 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorSubmitReview()
+        mockErrorHandler()
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first {
-                it.message.id == R.string.review_create_fail_toaster
-            }
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-        }, onError = {})
         viewModel.submitReview()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `should enqueue toaster error when retry upload media returns error`() = runBlockingTest {
+    fun `should enqueue toaster error when retry upload media returns error`() = runCollectingStateFlows { toasterQueue ->
         val expectedToasterQueue = CreateReviewToasterUiModel(
-            message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
+            message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(ERROR_CODE)),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
             type = Toaster.TYPE_ERROR,
@@ -959,22 +926,17 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia(withException = false)
+        mockErrorHandler()
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first {
-                it.message.id == R.string.review_form_media_picker_toaster_failed_upload_message
-            }
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-        }, onError = {})
         viewModel.updateMediaPicker(listOf("image.jpg"))
         viewModel.retryUploadMedia()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `should enqueue toaster error when try to submit review and there's at least 1 failed to upload media`() = runBlockingTest {
+    fun `should enqueue toaster error when try to submit review and there's at least 1 failed to upload media`() = runCollectingStateFlows { toasterQueue ->
         val expectedToasterQueue = CreateReviewToasterUiModel(
-            message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
+            message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(ERROR_CODE)),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
             type = Toaster.TYPE_ERROR,
@@ -984,20 +946,15 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia()
+        mockErrorHandler()
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first {
-                it.message.id == R.string.review_form_media_picker_toaster_failed_upload_message
-            }
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-        }, onError = {})
         viewModel.updateMediaPicker(listOf("image.jpg"))
         viewModel.submitReview()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `should enqueue toaster when try to submit review and there's at least 1 uploading image`() = runBlockingTest {
+    fun `should enqueue toaster when try to submit review and there's at least 1 uploading image`() = runCollectingStateFlows { toasterQueue ->
         val expectedToasterQueue = CreateReviewToasterUiModel(
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
@@ -1010,20 +967,13 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia(delayTime = 10000L)
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first {
-                it.message.id == R.string.review_form_media_picker_toaster_wait_for_upload_message
-            }
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-            viewModel.flush()
-        }, onError = {})
         viewModel.updateMediaPicker(listOf("image.jpg"))
         viewModel.submitReview()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `should enqueue toaster when try to submit review and there's at least 1 uploading video`() = runBlockingTest {
+    fun `should enqueue toaster when try to submit review and there's at least 1 uploading video`() = runCollectingStateFlows { toasterQueue ->
         val expectedToasterQueue = CreateReviewToasterUiModel(
             message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
             actionText = StringRes(Int.ZERO),
@@ -1036,61 +986,51 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetProductIncentiveOvo()
         mockErrorUploadMedia(delayTime = 10000L)
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first {
-                it.message.id == R.string.review_form_media_picker_toaster_wait_for_upload_message
-            }
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-            viewModel.flush()
-        }, onError = {})
         viewModel.updateMediaPicker(listOf("video.mp4"))
         viewModel.submitReview()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `selectTemplate should add template text to review text`() = runBlockingTest {
+    fun `selectTemplate should add template text to review text`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = viewModel.templateUiState.first().templates.first().data
+        val templateToSelect = viewModel.templateUiState.value.templates.first().data
         viewModel.selectTemplate(templateToSelect)
-        Assert.assertEquals(templateToSelect.text, (viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing).reviewTextAreaTextUiModel.text)
+        Assert.assertEquals(templateToSelect.text, (viewModel.textAreaUiState.value as CreateReviewTextAreaUiState.Showing).reviewTextAreaTextUiModel.text)
     }
 
     @Test
-    fun `getProductId should return current product ID`() = runBlockingTest {
+    fun `getProductId should return current product ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(SAMPLE_PRODUCT_ID, viewModel.getProductId())
     }
 
     @Test
-    fun `getOrderId should return current order ID`() = runBlockingTest {
+    fun `getOrderId should return current order ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(SAMPLE_ORDER_ID, viewModel.getOrderId())
     }
 
     @Test
-    fun `getReputationId should return current reputation ID`() = runBlockingTest {
+    fun `getReputationId should return current reputation ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(SAMPLE_REPUTATION_ID, viewModel.getReputationId())
     }
 
     @Test
-    fun `getUtmSource should return current UTM source ID`() {
+    fun `getUtmSource should return current UTM source ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1099,27 +1039,25 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `hasIncentive should return current has incentive value`() = runBlockingTest {
+    fun `hasIncentive should return current has incentive value`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(true, viewModel.hasIncentive())
     }
 
     @Test
-    fun `hasOngoingChallenge should return current has ongoing challenge value`() = runBlockingTest {
+    fun `hasOngoingChallenge should return current has ongoing challenge value`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo(getProductIncentiveOvoUseCaseResultSuccessChallenge)
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(true, viewModel.hasOngoingChallenge())
     }
 
     @Test
-    fun `isGoodRating should return current good rating value`() {
+    fun `isGoodRating should return current good rating value`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1128,7 +1066,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `isReviewTextEmpty should return true when review text empty`() {
+    fun `isReviewTextEmpty should return true when review text empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1137,123 +1075,113 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `isMediaEmpty should return true when data not yet loaded`() {
+    fun `isMediaEmpty should return true when data not yet loaded`() = runCollectingStateFlows {
         Assert.assertEquals(true, viewModel.isMediaEmpty())
     }
 
     @Test
-    fun `isMediaEmpty should return true when data loaded and no media added`() = runBlockingTest {
+    fun `isMediaEmpty should return true when data loaded and no media added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(true, viewModel.isMediaEmpty())
     }
 
     @Test
-    fun `isMediaEmpty should return false when data loaded and 1 image added`() = runBlockingTest {
+    fun `isMediaEmpty should return false when data loaded and 1 image added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(false, viewModel.isMediaEmpty())
     }
 
     @Test
-    fun `isMediaEmpty should return false when data loaded and 1 video added`() = runBlockingTest {
+    fun `isMediaEmpty should return false when data loaded and 1 video added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(false, viewModel.isMediaEmpty())
     }
 
     @Test
-    fun `getUserId should return current user ID`() {
+    fun `getUserId should return current user ID`() = runCollectingStateFlows {
         Assert.assertEquals(SAMPLE_USER_ID, viewModel.getUserId())
     }
 
     @Test
-    fun `getShopId should return current shop ID`() = runBlockingTest {
+    fun `getShopId should return current shop ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.tickerUiState.first()
         Assert.assertEquals(SAMPLE_SHOP_ID, viewModel.getShopId())
     }
 
     @Test
-    fun `getSelectedMediasUrl should return empty when no media added`() = runBlockingTest {
+    fun `getSelectedMediasUrl should return empty when no media added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediasUrl().isEmpty())
     }
 
     @Test
-    fun `getSelectedMediasUrl should return non empty when 1 image added`() = runBlockingTest {
+    fun `getSelectedMediasUrl should return non empty when 1 image added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediasUrl().isNotEmpty())
     }
 
     @Test
-    fun `getSelectedMediasUrl should return non empty when 1 video added`() = runBlockingTest {
+    fun `getSelectedMediasUrl should return non empty when 1 video added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediasUrl().isNotEmpty())
     }
 
     @Test
-    fun `getSelectedMediaFiles should return empty when no media added`() = runBlockingTest {
+    fun `getSelectedMediaFiles should return empty when no media added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediaFiles().isEmpty())
     }
 
     @Test
-    fun `getSelectedMediaFiles should return non empty when 1 image added`() = runBlockingTest {
+    fun `getSelectedMediaFiles should return non empty when 1 image added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediaFiles().isNotEmpty())
     }
 
     @Test
-    fun `getSelectedMediaFiles should return non empty when 1 video added`() = runBlockingTest {
+    fun `getSelectedMediaFiles should return non empty when 1 video added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertTrue(viewModel.getSelectedMediaFiles().isNotEmpty())
     }
 
     @Test
-    fun `getRating should return current rating`() {
+    fun `getRating should return current rating`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1262,164 +1190,171 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `getReviewMessageLength should return review text length`() = runBlockingTest {
+    fun `getReviewMessageLength should return review text length`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.setReviewText("a".repeat(40), CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
-        viewModel.textAreaUiState.first()
         Assert.assertEquals(40, viewModel.getReviewMessageLength())
     }
 
     @Test
-    fun `getNumberOfMedia should return empty when no media added`() = runBlockingTest {
+    fun `getNumberOfMedia should return empty when no media added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(0, viewModel.getNumberOfMedia())
     }
 
     @Test
-    fun `getNumberOfMedia should return 1 when 1 image added`() = runBlockingTest {
+    fun `getNumberOfMedia should return 1 when 1 image added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(1, viewModel.getNumberOfMedia())
     }
 
     @Test
-    fun `getNumberOfMedia should return 1 when 1 video added`() = runBlockingTest {
+    fun `getNumberOfMedia should return 1 when 1 video added`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("video.mp4"))
-        viewModel.mediaPickerUiState.first()
         Assert.assertEquals(1, viewModel.getNumberOfMedia())
     }
 
     @Test
-    fun `isAnonymous should return current true when user check anonymous checkbox`() = runBlockingTest {
+    fun `isAnonymous should return current true when user check anonymous checkbox`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.setAnonymous(true)
-        viewModel.anonymousUiState.first()
         Assert.assertTrue(viewModel.isAnonymous())
     }
 
     @Test
-    fun `isAnonymous should return current true when user uncheck anonymous checkbox`() = runBlockingTest {
+    fun `isAnonymous should return current true when user uncheck anonymous checkbox`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.setAnonymous(true)
         viewModel.setAnonymous(false)
-        viewModel.anonymousUiState.first()
         Assert.assertFalse(viewModel.isAnonymous())
     }
 
     @Test
-    fun `isTemplateAvailable should return false when template is not loaded`() = runBlockingTest {
-        viewModel.templateUiState.first()
+    fun `isTemplateAvailable should return false when template is not loaded`() = runCollectingStateFlows {
         Assert.assertFalse(viewModel.isTemplateAvailable())
     }
 
     @Test
-    fun `isTemplateAvailable should return false when template is loaded but empty`() = runBlockingTest {
+    fun `isTemplateAvailable should return false when template is loaded but empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.templateUiState.first()
         Assert.assertFalse(viewModel.isTemplateAvailable())
     }
 
     @Test
-    fun `isTemplateAvailable should return true when template is loaded and not empty`() = runBlockingTest {
+    fun `isTemplateAvailable should return true when template is loaded and not empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.templateUiState.first()
         Assert.assertTrue(viewModel.isTemplateAvailable())
     }
 
     @Test
-    fun `getSelectedTemplateCount should return zero when template is not loaded`() = runBlockingTest {
-        viewModel.templateUiState.first()
+    fun `getSelectedTemplateCount should return zero when template is not loaded`() = runCollectingStateFlows {
         Assert.assertEquals(0, viewModel.getSelectedTemplateCount())
     }
 
     @Test
-    fun `getSelectedTemplateCount should return zero when template is loaded but empty`() = runBlockingTest {
+    fun `getSelectedTemplateCount should return zero when template is loaded but empty`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.templateUiState.first()
         Assert.assertEquals(0, viewModel.getSelectedTemplateCount())
     }
 
     @Test
-    fun `getSelectedTemplateCount should return zero when template is loaded, not empty and no template selected`() = runBlockingTest {
+    fun `getSelectedTemplateCount should return zero when template is loaded, not empty and no template selected`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.templateUiState.first()
         Assert.assertEquals(0, viewModel.getSelectedTemplateCount())
     }
 
     @Test
-    fun `getSelectedTemplateCount should return non zero when template is loaded, not empty and at least 1 template selected`() = runBlockingTest {
+    fun `getSelectedTemplateCount should return non zero when template is loaded, not empty and at least 1 template selected`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = viewModel.templateUiState.first().templates.last().data
+        val templateToSelect = viewModel.templateUiState.value.templates.last().data
         viewModel.selectTemplate(templateToSelect)
-        viewModel.templateUiState.first()
         Assert.assertEquals(1, viewModel.getSelectedTemplateCount())
     }
 
     @Test
-    fun `isReviewComplete should return true when review data is complete`() = runBlockingTest {
+    fun `isReviewComplete should return true when review data is complete on non incentive or challenge review`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
+        mockSuccessGetProductIncentiveOvo(getProductIncentiveOvoUseCaseResultSuccessNoIncentive)
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        viewModel.setReviewText("a".repeat(40), CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
-        viewModel.progressBarUiState.first()
+        viewModel.setReviewText("a", CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
         Assert.assertTrue(viewModel.isReviewComplete())
     }
 
     @Test
-    fun `isReviewComplete should return true when review data is not complete`() = runBlockingTest {
+    fun `isReviewComplete should return true when review data is complete on incentive review`() = runCollectingStateFlows {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo(getProductIncentiveOvoUseCaseResultSuccessIncentive)
+        setInitialData()
+        viewModel.updateMediaPicker(listOf("image.jpg"))
+        viewModel.setReviewText("a".repeat(40), CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
+        Assert.assertTrue(viewModel.isReviewComplete())
+    }
+
+    @Test
+    fun `isReviewComplete should return true when review data is complete on challenge review`() = runCollectingStateFlows {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo(getProductIncentiveOvoUseCaseResultSuccessChallenge)
+        setInitialData()
+        viewModel.updateMediaPicker(listOf("image.jpg"))
+        viewModel.setReviewText("a".repeat(40), CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
+        Assert.assertTrue(viewModel.isReviewComplete())
+    }
+
+    @Test
+    fun `isReviewComplete should return true when review data is not complete`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.progressBarUiState.first()
         Assert.assertFalse(viewModel.isReviewComplete())
     }
 
     @Test
-    fun `getUserName should return current user name`() {
+    fun `getUserName should return current user name`() = runCollectingStateFlows {
         Assert.assertEquals(SAMPLE_USER_NAME, viewModel.getUserName())
     }
 
     @Test
-    fun `getFeedbackId should return current review feedback ID`() = runBlockingTest {
+    fun `getFeedbackId should return current review feedback ID`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1431,26 +1366,22 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `removeMedia should remove media from list of added media`() = runBlockingTest {
+    fun `removeMedia should remove media from list of added media`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.updateMediaPicker(listOf("image.jpg"))
-        val mediaPickerUiStateWith1Image = viewModel.mediaPickerUiState.first {
-            (it is CreateReviewMediaPickerUiState.HasMedia) && it.mediaItems.size == 2 // 2 because it contain AddSmall item
-        } as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiStateWith1Image = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         viewModel.removeMedia(mediaPickerUiStateWith1Image.mediaItems.first())
-        val mediaPickerUiStateWith0Media = viewModel.mediaPickerUiState.first {
-            (it is CreateReviewMediaPickerUiState.HasMedia) && it.mediaItems.size == 1
-        } as CreateReviewMediaPickerUiState.HasMedia
+        val mediaPickerUiStateWith0Media = viewModel.mediaPickerUiState.value as CreateReviewMediaPickerUiState.HasMedia
         Assert.assertEquals(1, mediaPickerUiStateWith0Media.mediaItems.size)
         assertInstanceOf<CreateReviewMediaUiModel.AddLarge>(mediaPickerUiStateWith0Media.mediaItems.first())
     }
 
     @Test
-    fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runBlockingTest {
-        val expectedToasterQueue = CreateReviewToasterUiModel<Unit>(
+    fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runCollectingStateFlows { toasterQueue ->
+        val expectedToasterQueue = CreateReviewToasterUiModel(
             message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
             actionText = StringRes(Int.ZERO),
             duration = Toaster.LENGTH_SHORT,
@@ -1461,17 +1392,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val toasterQueueCollectorJob = launchCatchError(block = {
-            val actualToasterQueue = viewModel.toasterQueue.first()
-            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
-            viewModel.flush()
-        }, onError = {})
         viewModel.enqueueDisabledAddMoreMediaToaster()
-        toasterQueueCollectorJob.join()
+        Assert.assertEquals(expectedToasterQueue, toasterQueue.last())
     }
 
     @Test
-    fun `submit review should include uploaded image attachment ID when there's any uploaded image`() = runBlockingTest {
+    fun `submit review should include uploaded image attachment ID when there's any uploaded image`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1501,7 +1427,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `submit review should include uploaded video attachment ID and URL when there's any uploaded video`() = runBlockingTest {
+    fun `submit review should include uploaded video attachment ID and URL when there's any uploaded video`() = runCollectingStateFlows {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
@@ -1535,47 +1461,47 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `hasTemplate should return true when contain template`() {
+    fun `hasTemplate should return true when contain template`() = runCollectingStateFlows {
         `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`()
         Assert.assertTrue(viewModel.hasTemplate())
     }
 
     @Test
-    fun `hasTemplate should return false when does not contain template`() {
+    fun `hasTemplate should return false when does not contain template`() = runCollectingStateFlows {
         `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`()
         Assert.assertFalse(viewModel.hasTemplate())
     }
 
     @Test
-    fun `hasTemplate should return false when template not loaded`() {
+    fun `hasTemplate should return false when template not loaded`() = runCollectingStateFlows {
         Assert.assertFalse(viewModel.hasTemplate())
     }
 
     @Test
-    fun `templateUsedCount should return 0 when contain template and no template used`() {
+    fun `templateUsedCount should return 0 when contain template and no template used`() = runCollectingStateFlows {
         `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`()
         Assert.assertEquals(0, viewModel.templateUsedCount())
     }
 
     @Test
-    fun `templateUsedCount should return 1 when contain template and 1 template used`() {
+    fun `templateUsedCount should return 1 when contain template and 1 template used`() = runCollectingStateFlows {
         `selectTemplate should add template text to review text`()
         Assert.assertEquals(1, viewModel.templateUsedCount())
     }
 
     @Test
-    fun `templateUsedCount should 0 false when does not contain template`() {
+    fun `templateUsedCount should 0 false when does not contain template`() = runCollectingStateFlows {
         `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`()
         Assert.assertEquals(0, viewModel.templateUsedCount())
     }
 
     @Test
-    fun `templateUsedCount should return 0 when template not loaded`() {
+    fun `templateUsedCount should return 0 when template not loaded`() = runCollectingStateFlows {
         Assert.assertEquals(0, viewModel.templateUsedCount())
     }
 
     @Test
-    fun `saveUiState should save current state`() {
+    fun `saveUiState should save current state`() = runCollectingStateFlows {
         mockk<Bundle>(relaxed = true) {
             viewModel.saveUiState(this)
             verify { putInt("savedStateRating", any()) }
@@ -1604,7 +1530,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreUiState should restore saved state`() {
+    fun `restoreUiState should restore saved state`() = runCollectingStateFlows {
         mockk<Bundle>(relaxed = true) {
             every { this@mockk.get(any()) } answers {
                 when (args.first()) {
@@ -1660,14 +1586,14 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `setBottomSheetBottomInset should update createReviewBottomSheetUiState when createReviewBottomSheetUiState is CreateReviewBottomSheetUiState#Showing`() = runBlockingTest {
+    fun `setBottomSheetBottomInset should update createReviewBottomSheetUiState when createReviewBottomSheetUiState is CreateReviewBottomSheetUiState#Showing`() = runCollectingStateFlows {
         val expectedInset = 100
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
         viewModel.setBottomSheetBottomInset(expectedInset)
-        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.value
         Assert.assertEquals(expectedInset, (createReviewBottomSheetUiState as CreateReviewBottomSheetUiState.Showing).bottomInset)
     }
 }

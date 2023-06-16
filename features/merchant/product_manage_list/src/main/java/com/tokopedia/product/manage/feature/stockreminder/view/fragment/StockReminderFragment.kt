@@ -28,6 +28,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -141,6 +143,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         initView()
         observeMaxStock()
         observeState()
+        showNotificationReminderPrompt()
     }
 
     override fun onChangeStockReminder(
@@ -559,6 +562,15 @@ class StockReminderFragment : BaseDaggerFragment(),
             }
         } else {
             activity?.finish()
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "stockReminder"
+        activity?.let {
+            val view = NotificationGeneralPromptLifecycleCallbacks()
+                .notificationGeneralPromptView(it, pageName)
+            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
         }
     }
 

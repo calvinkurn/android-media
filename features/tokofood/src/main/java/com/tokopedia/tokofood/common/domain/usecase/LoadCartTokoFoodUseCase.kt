@@ -88,7 +88,7 @@ private const val QUERY = """
         }
     """
 
-@GqlQuery("MiniCartTokofood", QUERY)
+@GqlQuery("MiniCartTokofoodOld", QUERY)
 class LoadCartTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
@@ -96,7 +96,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
 
     init {
         setTypeClass(MiniCartTokoFoodResponse::class.java)
-        setGraphqlQuery(MiniCartTokofood())
+        setGraphqlQuery(MiniCartTokofoodOld())
     }
 
     suspend fun execute(source: String): CheckoutTokoFood? {

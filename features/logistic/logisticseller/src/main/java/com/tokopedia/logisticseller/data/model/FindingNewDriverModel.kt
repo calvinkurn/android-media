@@ -7,5 +7,5 @@ data class FindingNewDriverModel(
     val message: String,
     val availableTime: String,
     var isEnable: Boolean = false,
-    var calendar: Calendar? = null,
+    var calendar: Calendar? = null
 )

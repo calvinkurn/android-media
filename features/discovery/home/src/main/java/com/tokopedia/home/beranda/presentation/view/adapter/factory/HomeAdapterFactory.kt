@@ -90,6 +90,7 @@ import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
+import com.tokopedia.home_component.listener.FlashSaleWidgetListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.listener.Lego6AutoBannerListener
@@ -102,18 +103,20 @@ import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
-import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
+import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
 import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
 import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
+import com.tokopedia.home_component.viewholders.DealsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
@@ -126,19 +129,21 @@ import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
-import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
+import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
+import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
@@ -151,8 +156,8 @@ import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
-import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -203,7 +208,8 @@ class HomeAdapterFactory(
     private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
     private val missionWidgetComponentListener: MissionWidgetComponentListener,
     private val legoProductListener: LegoProductListener,
-    private val todoWidgetComponentListener: TodoWidgetComponentListener
+    private val todoWidgetComponentListener: TodoWidgetComponentListener,
+    private val flashSaleWidgetListener: FlashSaleWidgetListener
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -470,6 +476,14 @@ class HomeAdapterFactory(
         return TodoWidgetViewHolder.LAYOUT
     }
 
+    override fun type(dealsDataModel: DealsDataModel): Int {
+        return DealsWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(flashSaleDataModel: FlashSaleDataModel): Int {
+        return FlashSaleViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -684,18 +698,20 @@ class HomeAdapterFactory(
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
-            MixLeftPaddingComponentViewHolder.LAYOUT -> viewHolder =
-                MixLeftPaddingComponentViewHolder(
-                    view,
-                    mixLeftComponentListener,
-                    homeComponentListener,
-                    cardInteraction = true
-                )
-            TodoWidgetViewHolder.LAYOUT -> viewHolder =
-                TodoWidgetViewHolder(
-                    view,
-                    todoWidgetComponentListener
-                )
+            MixLeftPaddingComponentViewHolder.LAYOUT ->
+                viewHolder =
+                    MixLeftPaddingComponentViewHolder(
+                        view,
+                        mixLeftComponentListener,
+                        homeComponentListener,
+                        cardInteraction = true
+                    )
+            TodoWidgetViewHolder.LAYOUT ->
+                viewHolder =
+                    TodoWidgetViewHolder(
+                        view,
+                        todoWidgetComponentListener
+                    )
             BannerRevampViewHolder.LAYOUT ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
@@ -707,6 +723,9 @@ class HomeAdapterFactory(
                         homeComponentListener,
                         cardInteraction = true
                     )
+            DealsWidgetViewHolder.LAYOUT ->
+                viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -11,17 +11,19 @@ object TokoFoodAnalytics {
     const val KEY_SHOP_ID = "shop_id"
     const val KEY_SHOP_NAME = "shop_name"
     const val KEY_SHOP_TYPE = "shop_type"
-    const val KEY_CATEGORY_ID = "category_id"
     const val KEY_ITEMS = "items"
     const val KEY_QUANTITY = "quantity"
     const val KEY_TRACKER_ID = "trackerId"
 
     // Event Name
     const val EVENT_CHECKOUT_PROGRESS = "checkout_progress"
+    const val EVENT_CHECKOUT = "checkout"
     const val EVENT_BEGIN_CHECKOUT = "begin_checkout"
     const val EVENT_VIEW_PG_IRIS = "viewPGIris"
     const val EVENT_VIEW_ITEM = "view_item"
     const val EVENT_SELECT_CONTENT = "select_content"
+    const val EVENT_PROMO_CLICK = "promoClick"
+    const val EVENT_PROMO_VIEW = "promoView"
 
     // Event Action
     const val EVENT_ACTION_VIEW_CHECKOUT = "view tokofood checkout"

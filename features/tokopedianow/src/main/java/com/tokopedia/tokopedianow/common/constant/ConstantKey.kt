@@ -6,7 +6,6 @@ import com.tokopedia.remoteconfig.RollenceKey
 object ConstantKey {
     //remote config
     const val REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search"
-    const val REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH = "android_user_duration_auto_transition_search"
 
     //shared preferences
     const val SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"

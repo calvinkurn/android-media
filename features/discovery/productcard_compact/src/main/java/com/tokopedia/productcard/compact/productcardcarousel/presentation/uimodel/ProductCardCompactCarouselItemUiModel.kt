@@ -2,7 +2,7 @@ package com.tokopedia.productcard.compact.productcardcarousel.presentation.uimod
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.typefactory.ProductCardCompactCarouselTypeFactory
 
 data class ProductCardCompactCarouselItemUiModel(
@@ -25,7 +25,7 @@ data class ProductCardCompactCarouselItemUiModel(
     /**
      * Mandatory params
      */
-    var productCardModel: TokoNowProductCardViewUiModel,
+    var productCardModel: ProductCardCompactUiModel,
 ): Visitable<ProductCardCompactCarouselTypeFactory> {
 
     val impressHolder: ImpressHolder = ImpressHolder()

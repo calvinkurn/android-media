@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.seller.active.common.features.sellerfeedback.ScreenshotPreferenceManager
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.databinding.BottomSheetFeedbackSettingsBinding
-import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 

@@ -358,6 +358,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 TokoLiveDataResult.STATUS.ERROR ->{
 
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
 
@@ -378,6 +381,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
 
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

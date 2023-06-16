@@ -6,7 +6,6 @@
     android:id="@+id/tv_total_likes"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_like_count"
     android:gravity="center"
     android:includeFontPadding="false"
     android:inputType="textNoSuggestions"

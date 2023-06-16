@@ -176,6 +176,7 @@ class ShopCommonModule {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
+    // TODO: Need to be deleted once V3 is already used in the production & stable enough
     @GqlGetShopInfoUseCaseTopContentQualifier
     @Provides
     fun provideGqlGetShopInfoUseCaseTopContent(

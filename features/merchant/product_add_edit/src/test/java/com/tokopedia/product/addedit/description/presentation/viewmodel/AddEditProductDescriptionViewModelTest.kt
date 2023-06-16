@@ -103,14 +103,21 @@ class AddEditProductDescriptionViewModelTest {
                 ),
                 selections = listOf(
                     SelectionInputModel(
-                        variantId = "1", variantName = "Warna", unitID = "0", identifier = "colour",
+                        variantId = "1",
+                        variantName = "Warna",
+                        unitID = "0",
+                        identifier = "colour",
                         options = listOf(
                             OptionInputModel(unitValueID = "9", value = "Merah"),
                             OptionInputModel(unitValueID = "6", value = "Biru Muda")
                         )
                     ),
                     SelectionInputModel(
-                        variantId = "29", variantName = "Ukuran", unitID = "27", unitName = "Default", identifier = "size",
+                        variantId = "29",
+                        variantName = "Ukuran",
+                        unitID = "27",
+                        unitName = "Default",
+                        identifier = "size",
                         options = listOf(
                             OptionInputModel(unitValueID = "449", value = "8"),
                             OptionInputModel(unitValueID = "450", value = "10")
@@ -162,7 +169,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runTest {
         mockkObject(ValidateProductDescriptionUseCase)
         var message = ""
         val validateProductDescriptionResponse = ValidateProductDescriptionResponse().apply {
@@ -185,7 +192,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runTest {
         mockkObject(AddEditProductErrorHandler)
         every { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) } returns mockk(relaxed = true)
         coEvery {
@@ -200,7 +207,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -217,7 +224,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -234,7 +241,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 
@@ -251,7 +258,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url with unknown host expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When user insert url with unknown host expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         usedYoutubeVideoUrl = unknownYoutubeUrl
 
@@ -262,7 +269,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url host is null expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the url host is null expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         every {
             videoUri.host
@@ -276,7 +283,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url lastPathSegment is null expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the url lastPathSegment is null expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         every {
             videoUri.host
@@ -293,7 +300,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockkStatic(Uri::class)
         every {
             Uri.parse(any())
@@ -308,7 +315,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockUriParsing()
         mockkObject(GetYoutubeVideoDetailUseCase)
 

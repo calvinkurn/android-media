@@ -10,7 +10,6 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import com.tokopedia.play.broadcaster.R
 
-
 /**
  * Created by jegul on 16/07/20
  */
@@ -32,6 +31,8 @@ class PlayBroadcastEditText : AppCompatEditText {
                 Toast.makeText(context, errorMessageForbiddenMime, Toast.LENGTH_SHORT).show()
                 true
             }
-        } else inputConnection
+        } else {
+            inputConnection
+        }
     }
 }

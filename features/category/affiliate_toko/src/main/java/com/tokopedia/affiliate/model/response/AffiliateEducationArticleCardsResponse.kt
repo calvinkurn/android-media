@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class AffiliateEducationArticleCardsResponse(
 
     @SerializedName("cardsArticle")
-    val cardsArticle: CardsArticle? = null
+    var cardsArticle: CardsArticle? = null
 ) {
     data class CardsArticle(
 
@@ -15,7 +15,7 @@ data class AffiliateEducationArticleCardsResponse(
         data class Data(
 
             @SerializedName("cards")
-            val cards: List<CardsItem?>? = null,
+            var cards: List<CardsItem?>? = null,
 
             @SerializedName("status")
             val status: String? = null
@@ -58,44 +58,44 @@ data class AffiliateEducationArticleCardsResponse(
                     val duration: String? = null,
 
                     @SerializedName("thumbnail")
-                    val thumbnail: Thumbnail? = null,
+                    var thumbnail: Thumbnail? = null,
 
                     @SerializedName("publish_time")
-                    val publishTime: String? = null,
+                    var publishTime: String? = null,
 
                     @SerializedName("description")
-                    val description: String? = null,
+                    var description: String? = null,
 
                     @SerializedName("attributes")
-                    val attributes: Attributes? = null,
+                    var attributes: Attributes? = null,
 
                     @SerializedName("categories")
-                    val categories: List<CategoriesItem?>? = null,
+                    var categories: List<CategoriesItem?>? = null,
 
                     @SerializedName("title")
-                    val title: String? = null,
+                    var title: String? = null,
 
                     @SerializedName("modified_date")
-                    val modifiedDate: String? = null,
+                    var modifiedDate: String? = null,
 
                     @SerializedName("youtube_url")
-                    val youtubeUrl: String? = null,
+                    var youtubeUrl: String? = null,
 
                     @SerializedName("upload_datetime")
                     val uploadDatetime: String? = null,
 
                     @SerializedName("slug")
-                    val slug: String? = null,
+                    var slug: String? = null,
 
                     @SerializedName("id")
-                    val articleId: Long? = null
+                    var articleId: Long? = null
 
                 ) {
 
                     data class Attributes(
 
                         @SerializedName("read_time")
-                        val readTime: String? = null
+                        var readTime: String? = null
                     )
 
                     data class CategoriesItem(

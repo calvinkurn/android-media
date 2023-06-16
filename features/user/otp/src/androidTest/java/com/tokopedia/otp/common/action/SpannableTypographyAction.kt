@@ -9,7 +9,6 @@ import androidx.test.espresso.ViewAction
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 
-
 object SpannableTypographyAction {
 
     fun clickClickableSpan(textToClick: CharSequence): ViewAction {
@@ -23,13 +22,13 @@ object SpannableTypographyAction {
             }
 
             override fun perform(uiController: UiController?, view: View) {
-                val typography = view as Typography
+                val typography = view as com.tokopedia.unifyprinciples.Typography
                 val spannableString = typography.text as SpannableString
                 if (spannableString.isEmpty()) {
                     throw NoMatchingViewException.Builder()
-                            .includeViewHierarchy(true)
-                            .withRootView(typography)
-                            .build()
+                        .includeViewHierarchy(true)
+                        .withRootView(typography)
+                        .build()
                 }
 
                 val spans = spannableString.getSpans(0, spannableString.length, ClickableSpan::class.java)
@@ -48,9 +47,9 @@ object SpannableTypographyAction {
                 }
 
                 throw NoMatchingViewException.Builder()
-                        .includeViewHierarchy(true)
-                        .withRootView(typography)
-                        .build()
+                    .includeViewHierarchy(true)
+                    .withRootView(typography)
+                    .build()
             }
         }
     }
