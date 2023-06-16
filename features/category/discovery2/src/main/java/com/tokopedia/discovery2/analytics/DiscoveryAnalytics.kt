@@ -1578,34 +1578,41 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackMerchantVoucherMultipleVoucherDetailClicks(components: ComponentsItem, userID: String?, position:Int){
+    override fun trackMerchantVoucherMultipleVoucherDetailClicks(components: ComponentsItem, userID: String?, position: Int) {
         val dataItem = components.data?.firstOrNull()
-        val shopId  = dataItem?.shopInfo?.id ?: ""
+        val shopId = dataItem?.shopInfo?.id ?: ""
         val list = ArrayList<Map<String, Any>>()
-        val horizontalPosition:Int
-        val componentName:String
-        val action:String
+        val horizontalPosition: Int
+        val componentName: String
+        val action: String
         val tracker: String
-        when(components.name) {
+        when (components.name) {
             ComponentNames.MerchantVoucherListItem.componentName -> {
-                horizontalPosition = components.position+1
+                horizontalPosition = components.position + 1
                 componentName = MV_LIST_COMPONENT
                 action = CLICK_MV_LIST_DETAIL
                 tracker = "19682"
+                list.add(mapOf(
+                    KEY_ID to "${components.parentComponentId}_$shopId",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
+                    KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
+                    KEY_POSITION to horizontalPosition
+                ))
             }
+
             else -> {
                 horizontalPosition = position + 1
                 componentName = MV_MULTIPLE_COMPONENT
                 action = CLICK_MV_MULTIPLE_DETAIL
                 tracker = "19677"
+                list.add(mapOf(
+                    KEY_ID to "${components.parentComponentId}_$shopId",
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
+                    KEY_CREATIVE to "${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
+                    KEY_POSITION to horizontalPosition
+                ))
             }
         }
-        list.add(mapOf(
-            KEY_ID to "${components.parentComponentId}_$shopId",
-            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
-            KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
-            KEY_POSITION to horizontalPosition
-        ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
             EVENT_PROMO_CLICK to mapOf(
                 KEY_PROMOTIONS to list))
