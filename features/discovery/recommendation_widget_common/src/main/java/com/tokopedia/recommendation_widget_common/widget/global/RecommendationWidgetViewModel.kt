@@ -20,6 +20,9 @@ class RecommendationWidgetViewModel @Inject constructor(
     override val stateFlow: StateFlow<RecommendationWidgetState>
         get() = _stateFlow
 
+    private val stateValue: RecommendationWidgetState
+        get() = stateFlow.value
+
     private fun updateState(action: (RecommendationWidgetState) -> RecommendationWidgetState) {
         _stateFlow.update(action)
     }
@@ -27,7 +30,7 @@ class RecommendationWidgetViewModel @Inject constructor(
     internal fun bind(model: RecommendationWidgetModel) {
         if (model.widget != null) {
             updateState { it.from(model, listOf(model.widget)) }
-        } else {
+        } else if (!stateValue.contains(model)) {
             updateState { it.loading(model) }
 
             viewModelScope.launch {

@@ -166,4 +166,24 @@ class RecommendationWidgetViewModelTest {
 
         assertEquals(0, viewModel.stateValue.widgetMap.size)
     }
+
+    @Test
+    fun `bind model will not call use case if state has data for that model`() {
+        val metadata = RecommendationWidgetMetadata(
+            pageNumber = 1,
+            productIds = listOf("123456"),
+            queryParam = "test=test&test2=test2",
+            pageName = "pageName",
+            categoryIds = listOf("1", "2", "3"),
+            keyword = listOf("samsung", "iphone", "xiaomi"),
+            isTokonow = true,
+        )
+        val model = RecommendationWidgetModel(metadata = metadata)
+        val state = RecommendationWidgetState().loading(model)
+        val viewModel = ViewModel(state)
+
+        viewModel.bind(model)
+
+        coVerify (exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
+    }
 }

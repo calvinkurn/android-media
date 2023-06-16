@@ -51,4 +51,7 @@ data class RecommendationWidgetState(
     fun clear() = copy(
         widgetMap = mapOf()
     )
+
+    fun contains(model: RecommendationWidgetModel): Boolean =
+        widgetMap.contains(model.id)
 }
