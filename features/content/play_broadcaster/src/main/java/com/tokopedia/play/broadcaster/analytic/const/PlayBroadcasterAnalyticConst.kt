@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.analytic.const
 /**
  * Created By : Jonathan Darwin on March 17, 2023
  */
-object Label {
+internal object Label {
     const val TRACKER_ID_LABEL = "trackerId"
     const val SESSION_IRIS_LABEL = "sessionIris"
     const val SCREEN_NAME_LABEL = "screenName"
@@ -12,7 +12,7 @@ object Label {
     const val CURRENT_SITE_LABEL = "currentSite"
 }
 
-object Value {
+internal object Value {
     const val BROADCASTER_OPEN_SCREEN = "openScreen"
     const val BROADCASTER_VIEW_CONTENT = "viewContentIris"
     const val BROADCASTER_CLICK_CONTENT = "clickContent"

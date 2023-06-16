@@ -9,7 +9,7 @@ import com.tokopedia.track.TrackApp
 /**
  * Created By : Jonathan Darwin on March 17, 2023
  */
-object PlayBroadcasterAnalyticHelper {
+internal object PlayBroadcasterAnalyticHelper {
 
     val currentSite: String
         get() = if (GlobalConfig.isSellerApp()) {
