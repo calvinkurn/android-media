@@ -55,6 +55,8 @@
             android:padding="4dp"
             android:visibility="gone"
             android:background="@drawable/universal_inbox_shop_info_border"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
