@@ -1,17 +1,15 @@
 package com.tokopedia.youtube_player
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
@@ -29,12 +27,29 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
-    fun initialize(){
-        settings.javaScriptEnabled = true
-        settings.mediaPlaybackRequiresUserGesture = false
+    @SuppressLint("SetJavaScriptEnabled")
+    fun initialize(
+        youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
+        youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
+        youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
+        youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
+        youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
+        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
+    ) {
+        settings.apply {
+            javaScriptEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+            cacheMode = WebSettings.LOAD_DEFAULT
+        }
         setupTouchListener()
-        setUpWebViewClient()
+        val youtubeJSInterface = YoutubeWebViewInterface(
+            youtubeEventVideoEnded, youtubeEventVideoPlaying,
+            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
+        )
+        this.youtubeJSInterface = youtubeJSInterface
+        addJavascriptInterface(youtubeJSInterface, jsInterface)
         loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
+        setUpWebViewClient()
     }
 
     private fun setUpWebViewClient() {

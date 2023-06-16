@@ -39,10 +39,12 @@ class YoutubePlayerActivity : AppCompatActivity(),
     }
 
     private fun initYoutubePlayer() {
-        youtubeWebView?.initialize()
-        youtubeWebView?.setUpEventListeners(
-            youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this,
-            youtubeEventVideoEnded = this, youtubeEventVideoCued = this, playerReady = this
+        youtubeWebView?.initialize(
+            youtubeEventVideoPlaying = this,
+            youtubeEventVideoPaused = this,
+            youtubeEventVideoEnded = this,
+            youtubeEventVideoCued = this,
+            playerReady = this
         )
     }
 
