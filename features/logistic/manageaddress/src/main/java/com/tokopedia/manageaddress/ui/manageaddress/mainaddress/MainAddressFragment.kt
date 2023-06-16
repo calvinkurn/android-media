@@ -68,6 +68,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -90,6 +95,7 @@ class MainAddressFragment :
             "https://images.tokopedia.net/android/others/address_not_found3x.png"
         private const val IS_SUCCESS = "success"
         private const val IS_NOT_SUCCESS = "not success"
+        private const val TOAST_SHOWING_TIME = 3000L
 
         fun newInstance(bundle: Bundle): MainAddressFragment {
             return MainAddressFragment().apply {
@@ -131,6 +137,7 @@ class MainAddressFragment :
     private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
     private var mainAddressListener: MainAddressListener? = null
+    private var leavePageJob: Job? = null
 
     override fun getScreenName(): String = ""
 
@@ -967,7 +974,11 @@ class MainAddressFragment :
     }
 
     override fun leavePage() {
-        activity?.finish()
+        leavePageJob?.cancel()
+        leavePageJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(TOAST_SHOWING_TIME)
+            activity?.finish()
+        }
     }
 
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {

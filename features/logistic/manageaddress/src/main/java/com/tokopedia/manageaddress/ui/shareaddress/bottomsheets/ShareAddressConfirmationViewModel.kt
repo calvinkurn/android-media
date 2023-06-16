@@ -60,17 +60,14 @@ class ShareAddressConfirmationViewModel @Inject constructor(
                 val result = selectShareAddressUseCase(param)
                 if (param.approve) {
                     ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
-                } else {
-                    ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
-                }
-                if (result.isSuccess) {
-                    _toastEvent.value = Toast.Success
-                    _leavePageEvent.call()
-                    return@launch
-                } else {
-                    if (param.approve) {
+                    if (result.isSuccess) {
+                        _toastEvent.value = Toast.Success
+                        _leavePageEvent.call()
+                    } else {
                         _toastEvent.value = Toast.Error(result.errorMessage)
                     }
+                } else {
+                    ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
                 }
             } catch (e: Exception) {
                 _toastEvent.value = Toast.Error(e.message.orEmpty())
