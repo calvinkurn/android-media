@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -349,6 +350,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is DealsCategoryFilterBottomSheet) {
+            childFragment.setListener(this)
+        } else {
+            super.onAttachFragment(childFragment)
+        }
+    }
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventClickBrandPopular(brand, position, true)
@@ -363,7 +371,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
         val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
-        filterBottomSheet.setListener(this)
         filterBottomSheet.show(childFragmentManager, "")
     }
 
