@@ -31,6 +31,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
@@ -195,19 +196,14 @@ class UniversalInboxFragment :
     private fun setupObservers() {
         viewModel.inboxMenu.observe(viewLifecycleOwner) {
             binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
-            when (it) {
-                is Success -> {
-                    adapter.addItems(it.data)
-                    binding?.inboxRv?.post {
-                        adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
-                    }
-                    loadWidgetMetaAndCounter()
-                    loadTopAdsAndRecommendation()
-                }
-                is Fail -> {
-                    // Do nothing
+            if (it.isNotEmpty()) {
+                adapter.addItems(it)
+                binding?.inboxRv?.post {
+                    adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
                 }
             }
+            loadWidgetMetaAndCounter()
+            loadTopAdsAndRecommendation()
         }
 
         viewModel.widget.observe(viewLifecycleOwner) {
@@ -231,7 +227,7 @@ class UniversalInboxFragment :
                     if (activity is UniversalInboxActivity) {
                         val notifUnread = it.data.notifCenterUnread.notifUnread
                         if (notifUnread.toIntOrZero() > Int.ZERO) {
-                            (activity  as UniversalInboxActivity).updateNotificationCounter(
+                            (activity as UniversalInboxActivity).updateNotificationCounter(
                                 it.data.notifCenterUnread.notifUnread
                             )
                         }
@@ -376,7 +372,7 @@ class UniversalInboxFragment :
     private fun loadTopAdsAndRecommendation() {
         showLoadMoreLoading()
         topAdsHeadlineViewModel.getTopAdsHeadlineData(
-            viewModel.getHeadlineAdsParam(Int.ZERO),
+            getHeadlineAdsParam(Int.ZERO, userSession.userId),
             { data ->
                 headlineData = data
                 if (data.data.isEmpty()) {
@@ -433,7 +429,7 @@ class UniversalInboxFragment :
                 loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
-                //TODO SDK
+                // TODO SDK
             }
         }
     }

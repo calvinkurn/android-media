@@ -1,5 +1,20 @@
 package com.tokopedia.inbox.universalinbox.util
 
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
+
 object UniversalInboxValueUtil {
 
     const val PAGE_NAME = "inbox"
@@ -42,6 +57,20 @@ object UniversalInboxValueUtil {
     // TopAds - Headline
     const val HEADLINE_ADS_BANNER_COUNT = 2
     const val HEADLINE_POS_NOT_TO_BE_ADDED = 11 // Probably random number, value same as old inbox
+    fun getHeadlineAdsParam(topAdsHeadLinePage: Int, userId: String): String {
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
+                PARAM_DEVICE to VALUE_DEVICE,
+                PARAM_PAGE to topAdsHeadLinePage,
+                PARAM_EP to VALUE_EP,
+                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
+                PARAM_ITEM to VALUE_ITEM,
+                PARAM_SRC to PAGE_NAME,
+                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
+                PARAM_USER_ID to userId
+            )
+        )
+    }
 
     // Wishlist
     const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
