@@ -297,7 +297,6 @@ ext {
             userIdentification              : ":features:user:user_identification",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
-            tkpdcore                        : ":tkpdcore",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             logintestapp                    : ":testapp-features:user:logintestapp",

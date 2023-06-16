@@ -205,7 +205,6 @@ includeIfEnabled("features:category:common_sdk_affiliate_toko")
 
 includeIfEnabled(":features:watch")
 
-includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
 includeIfEnabled("sellerapp")
