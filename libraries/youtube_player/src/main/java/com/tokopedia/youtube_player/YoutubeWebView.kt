@@ -53,6 +53,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
         setUpWebViewClient()
+        loadUrl("about:blank")
         mainThread.post {
             loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
         }
