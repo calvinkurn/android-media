@@ -686,7 +686,7 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
         DLP.startWith(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
         DLP.startWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
-        DLP.startWith(ApplinkConst.ScpRewards.MEDAL_CABINET_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
+        DLP.startWith(ApplinkConst.ScpRewards.MEDAL_CABINET) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
     ).apply {
         addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
     }
