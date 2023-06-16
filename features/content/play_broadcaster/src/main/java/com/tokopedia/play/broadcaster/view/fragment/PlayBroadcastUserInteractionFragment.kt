@@ -512,8 +512,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
-            /** TODO: gonna delete this */
-//            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
             else -> showDialogWhenActionClose()
         }
     }
