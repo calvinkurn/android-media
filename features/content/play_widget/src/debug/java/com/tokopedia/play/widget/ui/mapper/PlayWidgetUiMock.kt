@@ -30,7 +30,7 @@ object PlayWidgetUiMock {
     private const val MIN_DATA_INDEX = 0
     private const val BANNER_POSITION_INDEX = 3
 
-    internal fun getSamplePlayWidget(
+    fun getSamplePlayWidget(
         title: String = "Video Menarik Untukmu!",
         isActionVisible: Boolean = true,
         items: List<PlayWidgetItemUiModel> = getSampleItemData()
