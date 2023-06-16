@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDi
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.layoutmanager.NonPredictiveLinearLayoutManager
@@ -114,6 +115,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView()
         observeProducts()
         observeDeleteDiscount()

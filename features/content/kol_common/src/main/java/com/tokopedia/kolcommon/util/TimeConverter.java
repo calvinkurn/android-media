@@ -92,7 +92,7 @@ public class TimeConverter {
 
         } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
             return sdfDay.format(postDate)
-                    + context.getString(R.string.post_time_hour)
+                    + context.getString(R.string.kol_common_post_time_hour)
                     + sdfHour.format(postDate);
 
         else {

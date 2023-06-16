@@ -83,4 +83,7 @@
     <!-- Shop Settings -->
     <string name="title_module_shop_settings_sellerapp">Shop Settings</string>
 
+
+    <string name="title_module_seller_front_funnel">Seller Front Funnel</string>
+
 </resources>
