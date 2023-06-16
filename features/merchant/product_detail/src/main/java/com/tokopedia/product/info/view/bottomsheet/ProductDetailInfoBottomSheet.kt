@@ -32,7 +32,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.data.response.ShopNotesData
@@ -54,7 +53,6 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -320,7 +318,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, url, index))
+                redirectToYoutubePlayerPage(url[index])
             } else {
                 try {
                     startActivity(
@@ -334,6 +332,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(youTubeVideoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
     }
 
     override fun goToShopNotes(shopNotesData: ShopNotesData) {
