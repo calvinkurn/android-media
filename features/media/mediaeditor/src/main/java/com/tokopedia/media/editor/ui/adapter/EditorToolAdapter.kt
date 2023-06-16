@@ -56,11 +56,10 @@ class EditorToolAdapter constructor(
                     EditorToolType.REMOVE_BACKGROUND -> editorDetailUiModel.removeBackgroundUrl != null
                     EditorToolType.ADD_LOGO -> editorDetailUiModel.addLogoValue.overlayLogoUrl.isNotEmpty()
                     EditorToolType.CROP -> {
-                        if (isAutoCropped && index == 0 && (editorDetailUiModel.originalRatio != editorDetailUiModel.cropRotateValue.getRatio())) {
+                        if (isAutoCropped && index == 0 && (editorDetailUiModel.originalRatio != editorDetailUiModel.cropRotateValue.getRatio()))
                             false
-                        } else {
+                        else
                             editorDetailUiModel.cropRotateValue.isCrop
-                        }
                     }
                     else -> false
                 }
