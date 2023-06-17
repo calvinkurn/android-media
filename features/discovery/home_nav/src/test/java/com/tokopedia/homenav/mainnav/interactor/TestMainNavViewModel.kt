@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.interactor
 
 import android.accounts.NetworkErrorException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -237,6 +238,41 @@ class TestMainNavViewModel {
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
 
         Assert.assertNotNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `given launch global menu when from other pages first then launch from home should remove back button`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val initialSource = "Other page"
+        var visitableList = listOf<Visitable<*>>()
+        var backToHomeButton: HomeNavMenuDataModel? = null
+        var backToHomeSeparator: SeparatorDataModel? = null
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setInitialState()
+
+        viewModel.setPageSource(initialSource)
+        Assert.assertEquals(initialSource, viewModel.getPageSource())
+        visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        backToHomeButton = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as? HomeNavMenuDataModel
+        backToHomeSeparator = visitableList.find { it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME } as? SeparatorDataModel
+        Assert.assertNotNull(backToHomeButton)
+        Assert.assertNotNull(backToHomeSeparator)
+
+        val homeSource = ApplinkConsInternalNavigation.SOURCE_HOME
+        viewModel.setPageSource(homeSource)
+        Assert.assertEquals(homeSource, viewModel.getPageSource())
+        visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        backToHomeButton = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as? HomeNavMenuDataModel
+        backToHomeSeparator = visitableList.find { it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME } as? SeparatorDataModel
+        Assert.assertNull(backToHomeButton)
+        Assert.assertNull(backToHomeSeparator)
     }
 
     // User menu section

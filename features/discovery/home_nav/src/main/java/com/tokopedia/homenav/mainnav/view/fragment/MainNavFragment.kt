@@ -193,12 +193,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         )
 
-        viewModel.allProcessFinished.observe(
-            viewLifecycleOwner,
-            Observer {
-            }
-        )
-
         viewModel.networkProcessLiveData.observe(
             viewLifecycleOwner,
             Observer { isFinished ->

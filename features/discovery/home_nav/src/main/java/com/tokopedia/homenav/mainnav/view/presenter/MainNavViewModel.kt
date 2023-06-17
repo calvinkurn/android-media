@@ -110,10 +110,6 @@ class MainNavViewModel @Inject constructor(
 
     private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
 
-    val allProcessFinished: LiveData<Event<Boolean>>
-        get() = _allProcessFinished
-    private val _allProcessFinished: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
-
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(
@@ -434,13 +430,11 @@ class MainNavViewModel @Inject constructor(
             } else {
                 deleteWidget(InitialShimmerTransactionDataModel())
             }
-            onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             // find shimmering and change with result value
             findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
-            onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         }
     }
 
