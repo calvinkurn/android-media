@@ -46,7 +46,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_CATEGORY_WIDGET_V2 = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
-        private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"

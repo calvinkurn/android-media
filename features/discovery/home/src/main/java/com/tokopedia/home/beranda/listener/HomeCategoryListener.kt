@@ -79,8 +79,6 @@ interface HomeCategoryListener {
 
     fun onPageDragStateChanged(isDragged: Boolean)
 
-    fun onSpotlightItemClicked(actionLink: String)
-
     fun onTokopointCheckNowClicked(applink: String)
 
     fun sendEETracking(data: HashMap<String, Any>)

@@ -8,7 +8,6 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
 import com.tokopedia.iris.util.ConstantKt;
@@ -75,9 +74,7 @@ public class HomePageTracking {
 
     public static final String CHANNEL_ID = "channelId";
 
-    private static final String VALUE_PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner";
     public static final String EVENT_PROMO_VIEW_IRIS = "promoViewIris";
-    public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT = "impression on banner spotlight";
     public static final String FIELD_ID = "id";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_CREATIVE = "creative";
@@ -95,7 +92,6 @@ public class HomePageTracking {
     public static final String VALUE_NAME_DYNAMIC_ICON = "/ - dynamic icon";
     public static final String EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON = "impression on dynamic icon";
     public static final String SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
-    public static final String EVENT_ACTION_CLICK_ON_BANNER_SPOTLIGHT = "click on banner spotlight";
     public static final String EVENT_ACTION_CLICK_ON_BANNER_INSIDE_RECOMMENDATION_TAB = "click on banner inside recommendation tab";
     public static final String VALUE_CREATIVE_BANNER_INSIDE_RECOM_TAB = "/ - banner inside recom tab - %s - ";
     public static final String FIELD_PROMO_ID = "promo_id";
@@ -186,35 +182,6 @@ public class HomePageTracking {
                     data
             );
         }
-    }
-
-    public static Map<String, Object> getEventEnhancedClickSpotlightHomePage(int position,
-                                                                             SpotlightItemDataModel spotlightItemDataModel) {
-        return DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_ACTION_CLICK_ON_BANNER_SPOTLIGHT,
-                EVENT_LABEL, spotlightItemDataModel.getTitle(),
-                CHANNEL_ID, spotlightItemDataModel.getChanneldId(),
-                ATTRIBUTION, spotlightItemDataModel.getGalaxyAttribution(),
-                AFFINITY_LABEL, spotlightItemDataModel.getAffinityLabel(),
-                GALAXY_CATEGORY_ID, spotlightItemDataModel.getCategoryPersona(),
-                SHOP_ID, spotlightItemDataModel.getShopId(),
-                CAMPAIGN_CODE,
-                ECOMMERCE, DataLayer.mapOf(
-                        PROMO_CLICK, DataLayer.mapOf(
-                                PROMOTIONS, DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                FIELD_ID, spotlightItemDataModel.getChanneldId()+"_"+ spotlightItemDataModel.getId(),
-                                                FIELD_NAME, spotlightItemDataModel.getPromoName(),
-                                                FIELD_POSITION, String.valueOf((position + 1)),
-                                                FIELD_CREATIVE, spotlightItemDataModel.getTitle(),
-                                                FIELD_CREATIVE_URL, spotlightItemDataModel.getBackgroundImageUrl()
-                                        )
-                                )
-                        )
-                )
-        );
     }
 
     public static void eventClickSeeAllDynamicChannel(String applink, String channelId) {
@@ -468,52 +435,6 @@ public class HomePageTracking {
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
                                 LIST, "/ - p1 - lego product - " + headerName,
-                                FIELD_POSITION, String.valueOf(i + 1)
-                        )
-                );
-            }
-        }
-        return list;
-    }
-
-    public static HashMap<String, Object> getIrisEnhanceImpressionSpotlightHomePage(
-            String channelId,
-            List<SpotlightItemDataModel> spotlights,
-            int position) {
-        List<Object> list = convertPromoEnhanceSpotlight(spotlights, position);
-        return (HashMap<String, Object>) DataLayer.mapOf(
-                EVENT, EVENT_PROMO_VIEW_IRIS,
-                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT,
-                EVENT_LABEL, LABEL_EMPTY,
-                CHANNEL_ID, channelId,
-                ECOMMERCE, DataLayer.mapOf(
-                        PROMO_VIEW, DataLayer.mapOf(
-                                PROMOTIONS, DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                )
-                        )
-                )
-        );
-    }
-
-    private static List<Object> convertPromoEnhanceSpotlight(List<SpotlightItemDataModel> spotlights,
-                                                             int position) {
-        List<Object> list = new ArrayList<>();
-        String promoName = String.format(
-                VALUE_PROMO_NAME_SPOTLIGHT_BANNER,
-                String.valueOf(position)
-        );
-
-        if (spotlights != null) {
-            for (int i = 0; i < spotlights.size(); i++) {
-                SpotlightItemDataModel item = spotlights.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                FIELD_ID, String.valueOf(item.getId()),
-                                FIELD_NAME, promoName,
-                                FIELD_CREATIVE, item.getTitle(),
-                                FIELD_CREATIVE_URL, item.getBackgroundImageUrl(),
                                 FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );

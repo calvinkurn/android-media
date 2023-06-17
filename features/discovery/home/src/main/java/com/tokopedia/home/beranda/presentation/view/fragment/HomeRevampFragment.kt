@@ -1489,10 +1489,6 @@ open class HomeRevampFragment :
         onActionLinkClicked(actionLink)
     }
 
-    override fun onSpotlightItemClicked(actionLink: String) {
-        onActionLinkClicked(actionLink)
-    }
-
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         initAutoRefreshHandler()
         if (isEnableToAutoRefresh(homeFlag)) {

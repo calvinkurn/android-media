@@ -6,8 +6,6 @@
     <dimen name="tab_home_feed_width">104dp</dimen>
     <dimen name="tab_home_feed_max_height">64dp</dimen>
     <dimen name="home_feeds_padding_info">16dp</dimen>
-    <dimen name="spotlight_width">240dp</dimen>
-    <dimen name="spotlight_height">80dp</dimen>
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>

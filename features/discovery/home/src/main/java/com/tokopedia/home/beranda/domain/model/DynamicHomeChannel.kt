@@ -273,7 +273,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_TOPADS: String = "topads"
-            const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
             const val LAYOUT_BANNER_ORGANIC: String = "banner_organic"
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
