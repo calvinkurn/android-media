@@ -42,6 +42,7 @@ class LoggingToServerViewHolder(
         }
         viewServerLoggerBtn.setOnClickListener {
             itemView.context.run {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_SERVER_LOGGER)
                 startActivity(ServerLoggerActivity.newInstance(this))
             }
         }

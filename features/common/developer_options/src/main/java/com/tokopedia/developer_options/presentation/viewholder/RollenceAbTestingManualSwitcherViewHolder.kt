@@ -49,6 +49,7 @@ class RollenceAbTestingManualSwitcherViewHolder(
         btnListAbTest.setOnClickListener {
             itemView.context.apply {
                 val intent = Intent(this, AbTestRollenceConfigFragmentActivity::class.java)
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_AB_TEST_LIST)
                 startActivity(intent)
             }
         }
