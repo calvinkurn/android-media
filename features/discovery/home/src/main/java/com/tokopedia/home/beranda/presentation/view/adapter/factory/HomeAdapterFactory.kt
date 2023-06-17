@@ -5,13 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelErrorModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
@@ -129,6 +128,7 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.DealsDataModel
@@ -242,11 +242,6 @@ class HomeAdapterFactory(
         return HomeRecommendationFeedViewHolder.LAYOUT
     }
 
-    override fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int {
-        val layout = dynamicChannelDataModel.channel?.layout ?: ""
-        return getDynamicChannelLayoutFromType(layout)
-    }
-
     fun type(retryModel: RetryModel): Int {
         return RetryViewHolder.LAYOUT
     }
@@ -275,6 +270,9 @@ class HomeAdapterFactory(
     }
 
     // Home-Component
+    override fun type(categoryWidgetDataModel: CategoryWidgetDataModel): Int {
+        return CategoryWidgetViewHolder.LAYOUT
+    }
     override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
         return CategoryWidgetV2ViewHolder.LAYOUT
     }
@@ -317,6 +315,10 @@ class HomeAdapterFactory(
 
     override fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int {
         return DynamicChannelLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicChannelErrorModel: DynamicChannelErrorModel): Int {
+        return ErrorPromptViewHolder.LAYOUT
     }
 
     override fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int {
@@ -456,17 +458,6 @@ class HomeAdapterFactory(
         return FlashSaleViewHolder.LAYOUT
     }
 
-    private fun getDynamicChannelLayoutFromType(layout: String): Int {
-        return when (layout) {
-            /**
-             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
-             * used by category widget
-             */
-            DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
-
-            else -> EmptyBlankViewHolder.LAYOUT
-        }
-    }
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -486,7 +477,6 @@ class HomeAdapterFactory(
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
-            ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, categoryWidgetV2Listener, cardInteraction = true)
@@ -536,6 +526,7 @@ class HomeAdapterFactory(
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             TopAdsVerticalBannerViewHolder.LAYOUT -> viewHolder = TopAdsVerticalBannerViewHolder(view)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
+            ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
             Lego4AutoBannerViewHolder.LAYOUT ->
                 viewHolder =

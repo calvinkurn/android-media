@@ -93,10 +93,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
@@ -1230,7 +1228,6 @@ open class HomeRevampFragment :
                 homeVisitables?.let {
                     val visitables = it as List<Visitable<*>>
                     addImpressionToTrackingQueue(visitables)
-                    setupViewportImpression(visitables)
                 }
             }
         )
@@ -2495,42 +2492,6 @@ open class HomeRevampFragment :
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             if (activity?.isFinishing == false) {
                 errorToaster?.show()
-            }
-        }
-    }
-
-    private fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {
-        if (!impressionScrollListeners.containsKey(dynamicChannelDataModel.channel?.id)) {
-            val listener = object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (layoutManager!!.findLastVisibleItemPosition() >= adapterPosition) {
-                        sendIrisTracker(
-                            DynamicChannelViewHolder.getLayoutType(dynamicChannelDataModel.channel!!),
-                            dynamicChannelDataModel.channel!!,
-                            adapterPosition
-                        )
-                        homeRecyclerView?.removeOnScrollListener(this)
-                    }
-                }
-            }
-            impressionScrollListeners[dynamicChannelDataModel.channel?.id!!] = listener
-            homeRecyclerView?.addOnScrollListener(listener)
-        }
-    }
-
-    private fun sendIrisTracker(layoutType: Int, channel: DynamicHomeChannel.Channels, position: Int) {
-        when (layoutType) {
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
-        }
-    }
-
-    private fun setupViewportImpression(visitables: List<Visitable<*>>) {
-        for ((index, visitable) in visitables.withIndex()) {
-            if (visitable is DynamicChannelDataModel) {
-                if (!visitable.isCache && !visitable.channel!!.isInvoke) {
-                    addRecyclerViewScrollImpressionListener(visitable, index)
-                }
             }
         }
     }

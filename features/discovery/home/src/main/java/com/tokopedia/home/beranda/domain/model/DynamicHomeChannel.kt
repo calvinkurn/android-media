@@ -46,9 +46,6 @@ data class DynamicHomeChannel(
         @SerializedName("grids")
         val grids: Array<Grid> = arrayOf(),
         @Expose
-        @SerializedName("hero")
-        val hero: Array<Hero> = arrayOf(),
-        @Expose
         @SerializedName("type")
         val type: String = "",
         @SerializedName("pageName")
@@ -212,31 +209,6 @@ data class DynamicHomeChannel(
             const val DIVIDER_NO_DIVIDER = 0
         }
     }
-
-    class Hero(
-        @Expose
-        @SerializedName("id")
-        val id: String = "",
-        @Expose
-        @SerializedName("imageUrl")
-        val imageUrl: String = "",
-        @Expose
-        @SerializedName("name")
-        val name: String = "",
-        @Expose
-        @SerializedName("applink")
-        val applink: String = "",
-        @Expose
-        @SerializedName("url")
-        val url: String = "",
-        @SuppressLint("Invalid Data Type")
-        @Expose
-        @SerializedName("price")
-        val price: String = "0",
-        @Expose
-        @SerializedName("attribution")
-        val attribution: String = ""
-    )
 
     data class Grid(
         @Expose

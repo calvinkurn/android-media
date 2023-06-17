@@ -3,15 +3,12 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
@@ -113,7 +110,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createPopularKeywordChannel(channel = channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> {
-                    createDynamicChannel(channel = channel)
+                    createDynamicChannelError(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> {
                     createReviewWidget(channel = channel)
@@ -137,16 +134,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createCampaignFeaturingWidget(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
-                    createDynamicChannel(
-                        channel,
-                        trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                            channel.grids.toList(),
-                            userSessionInterface?.userId ?: "",
-                            false,
-                            channel
-                        ),
-                        isCombined = false
-                    )
+//                    HomeTrackingUtils.homeDiscoveryWidgetViewAll(
+//                        context,
+//                        DynamicLinkHelper.getActionLink(channel.header)
+//                    )
+                    createCategoryWidget(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
                     createCategoryWidgetV2(
@@ -267,28 +259,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
         visitableList.add(DynamicChannelLoadingModel())
     }
 
-    private fun createDynamicChannel(
-        channel: DynamicHomeChannel.Channels,
-        trackingData: Map<String, Any>? = null,
-        trackingDataForCombination: List<Any>? = null,
-        isCombined: Boolean = false
-    ) {
-        visitableList.add(
-            mappingDynamicChannel(
-                channel,
-                trackingData,
-                trackingDataForCombination,
-                isCombined,
-                isCache
-            )
-        )
-        context?.let {
-            HomeTrackingUtils.homeDiscoveryWidgetImpression(
-                it,
-                visitableList.size,
-                channel
-            )
-        }
+    private fun createDynamicChannelError(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(DynamicChannelErrorModel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)))
     }
 
     private fun createDynamicLegoBannerComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
@@ -564,27 +536,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createReviewWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(ReviewDataModel(channel = channel))
-    }
-
-    private fun mappingDynamicChannel(
-        channel: DynamicHomeChannel.Channels,
-        trackingData: Map<String, Any>?,
-        trackingDataForCombination: List<Any>?,
-        isCombined: Boolean,
-        isCache: Boolean
-    ): Visitable<*> {
-        val viewModel = DynamicChannelDataModel()
-        channel.isCache = isCache
-        viewModel.channel = channel
-        if (!isCache) {
-            viewModel.trackingData = trackingData
-            viewModel.trackingDataForCombination = trackingDataForCombination
-            viewModel.isTrackingCombined = isCombined
-        }
-        viewModel.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
-            channel.header.serverTimeUnix
-        )
-        return viewModel
     }
 
     private fun mappingDynamicLegoBannerComponent(
@@ -910,6 +861,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
+    private fun createCategoryWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(
+            CategoryWidgetDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache
+            )
+        )
+    }
+
     private fun createCategoryWidgetV2(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(
             CategoryWidgetV2DataModel(
@@ -917,14 +877,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 isCache
             )
         )
-
-        context?.let {
-            HomeTrackingUtils.homeDiscoveryWidgetImpression(
-                it,
-                visitableList.size,
-                channel
-            )
-        }
     }
 
     private fun createQuestChannel(

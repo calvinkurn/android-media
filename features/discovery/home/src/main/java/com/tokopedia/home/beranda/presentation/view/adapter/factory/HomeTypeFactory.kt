@@ -29,8 +29,6 @@ interface HomeTypeFactory {
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
-    fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
-
     fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
 
     fun type(reviewDataModel: ReviewDataModel): Int
@@ -46,6 +44,8 @@ interface HomeTypeFactory {
     fun type(homeTopAdsVerticalBannerDataModel: HomeTopAdsVerticalBannerDataModel): Int
 
     fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
+
+    fun type(dynamicChannelErrorModel: DynamicChannelErrorModel): Int
 
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
 

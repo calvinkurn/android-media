@@ -61,7 +61,6 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
@@ -362,10 +361,6 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: Ho
         emit(homeDynamicChannelModel)
         emit(newHomeDynamicChannelModel)
     }
-}
-
-fun HomeDynamicChannelUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
 }
 
 fun createDefaultHomeDataModel(): HomeDynamicChannelModel {

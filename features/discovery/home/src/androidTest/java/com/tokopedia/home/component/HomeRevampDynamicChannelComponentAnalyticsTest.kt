@@ -21,7 +21,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
@@ -392,7 +391,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentCategoryWidget() {
         HomeDCCassavaTest {
             initTest()
-            doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            doActivityTestByModelClass(dataModelClass = CategoryWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnCategoryWidgetSection(viewHolder, i)
             }
         } validateAnalytics {
