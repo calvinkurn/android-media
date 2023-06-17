@@ -5,27 +5,18 @@ import android.app.Instrumentation
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.homenav.mock.MainNavMockResponseConfig
 import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.homenav.view.activity.HomeNavActivity
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -53,7 +44,6 @@ class MainNavAnalyticsTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainNavMockResponseConfig())
-            setupAbTestRemoteConfig()
         }
     }
 
@@ -85,33 +75,6 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testClickAllSectionTitle() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-
-            val recyclerView =
-                activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-            val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-            for (i in 0 until itemCount) {
-                Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(
-                    RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-                        i
-                    )
-                )
-                checkViewHolderOnRecyclerView(recyclerView, i)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL
-            )
-        }
-    }
-
-    @Test
     fun testComponentOrderHistory() {
         mainNavCassavaTest {
             login()
@@ -127,66 +90,6 @@ class MainNavAnalyticsTest {
             hasPassedAnalytics(
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION
-            )
-        }
-    }
-
-    @Test
-    fun testComponentWishlist() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = WishlistDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnWishlist(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST
-            )
-        }
-    }
-
-    @Test
-    fun testComponentShopFavorite() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = FavoriteShopListDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnEachShop(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_FAVORITE_SHOP
-            )
-        }
-    }
-
-    @Test
-    fun testComponentReview() {
-        mainNavCassavaTest {
-            login()
-            waitForData()
-            doActivityTestByModelClass(
-                delayBeforeRender = 2000,
-                dataModelClass = ReviewListDataModel::class
-            ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnReview(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(
-                cassavaTestRule,
-                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REVIEW
             )
         }
     }
@@ -228,14 +131,6 @@ class MainNavAnalyticsTest {
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS
             )
-        }
-    }
-
-    private fun checkViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
-        when (recyclerView.findViewHolderForAdapterPosition(position)) {
-            is HomeNavTitleViewHolder -> {
-                clickSectionTitle(recyclerView.id, position)
-            }
         }
     }
 
@@ -289,12 +184,5 @@ class MainNavAnalyticsTest {
             }
         }
         endActivityTest()
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            RollenceKey.ME_PAGE_EXP,
-            RollenceKey.ME_PAGE_VARIANT_2
-        )
     }
 }

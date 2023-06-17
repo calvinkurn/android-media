@@ -27,10 +27,6 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE = "tracker/home_nav/
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL = "tracker/home_nav/section_title_view_all.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS = "tracker/home_nav/tokopedia_plus.json"
 
-fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
-    CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.favorite_shop_rv, 0)
-}
-
 fun clickOnWishlist(viewHolder: RecyclerView.ViewHolder) {
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.wishlist_rv, 0)
 }
