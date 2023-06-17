@@ -263,11 +263,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when logged in user get complain notification then viewmodel update complain visitable with notification`() {
+    fun `given success when logged in user get notification then viewmodel update notification counter`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val getNavNotification = mockk<GetNavNotification>()
 
-        val mockUnreadCount = 800
+        val mockComplainCount = 10
+        val mockInboxCount = 20
+        val mockReviewCount = 30
 
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
             .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
@@ -275,7 +277,11 @@ class TestMainNavViewModel {
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
             .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-        coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountComplain = mockUnreadCount) }
+        coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(
+            unreadCountComplain = mockComplainCount,
+            unreadCountInboxTicket = mockInboxCount,
+            unreadCountReview = mockReviewCount
+        ) }
 
         viewModel = createViewModel(
             clientMenuGenerator = clientMenuGenerator,
@@ -286,36 +292,12 @@ class TestMainNavViewModel {
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val complainVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuDataModel
+        val inboxVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as HomeNavMenuDataModel
+        val reviewVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_REVIEW } as HomeNavMenuDataModel
 
-        Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
-    }
-
-    @Test
-    fun `given success when logged in user get inbox ticket notification then viewmodel update tokopedia care visitable with notification`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val getNavNotification = mockk<GetNavNotification>()
-
-        val mockUnreadCount = 900
-
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
-        every { clientMenuGenerator.getTicker(menuId = any()) }
-            .answers { HomeNavTickerDataModel() }
-        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-        coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(unreadCountInboxTicket = mockUnreadCount) }
-
-        viewModel = createViewModel(
-            clientMenuGenerator = clientMenuGenerator,
-            getNavNotification = getNavNotification
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
-        val complainVisitable = visitableList.find { it is HomeNavMenuDataModel && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as HomeNavMenuDataModel
-
-        Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
+        Assert.assertEquals(mockComplainCount.toString(), complainVisitable.notifCount)
+        Assert.assertEquals(mockInboxCount.toString(), inboxVisitable.notifCount)
+        Assert.assertEquals(mockReviewCount.toString(), reviewVisitable.notifCount)
     }
 
     @Test
@@ -324,6 +306,7 @@ class TestMainNavViewModel {
         coEvery { getNavNotification.executeOnBackground() } throws MessageErrorException()
         viewModel = createViewModel(getNavNotification = getNavNotification)
         viewModel.setInitialState()
+        viewModel.getMainNavData(false)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList
         Assert.assertTrue((visitableList?.find { it is HomeNavVisitable && it.id() == ClientMenuGenerator.ID_COMPLAIN } as? HomeNavMenuDataModel)?.notifCount == "")

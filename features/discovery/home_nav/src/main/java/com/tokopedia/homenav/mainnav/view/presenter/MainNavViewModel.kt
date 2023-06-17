@@ -102,10 +102,7 @@ class MainNavViewModel @Inject constructor(
         get() = _networkProcessLiveData
     private val _networkProcessLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private var navNotification: NavNotificationModel = NavNotificationModel(
-        unreadCountInboxTicket = 0,
-        unreadCountComplain = 0
-    )
+    private var navNotification: NavNotificationModel = NavNotificationModel()
 
     private var pageSource: String = ""
     private var pageSourceDefault: String = "Default"
@@ -141,7 +138,7 @@ class MainNavViewModel @Inject constructor(
             newMainNavList[position] = visitable
             _mainNavListVisitable = newMainNavList
             _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
-        } catch (e: Exception) { }
+        } catch (_: Exception) { }
     }
 
     private fun addWidgetList(visitables: List<Visitable<*>>, position: Int) {
@@ -150,7 +147,7 @@ class MainNavViewModel @Inject constructor(
             newMainNavList.addAll(position, visitables)
             _mainNavListVisitable = newMainNavList
             _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
-        } catch (e: Exception) { }
+        } catch (_: Exception) { }
     }
 
     private fun deleteWidget(visitable: Visitable<*>) {
@@ -159,7 +156,7 @@ class MainNavViewModel @Inject constructor(
             newMainNavList.remove(visitable)
             _mainNavListVisitable = newMainNavList
             _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
-        } catch (e: Exception) { }
+        } catch (_: Exception) { }
     }
 
     private fun deleteWidgetList(visitables: List<Visitable<*>>) {
@@ -168,7 +165,7 @@ class MainNavViewModel @Inject constructor(
             newMainNavList.removeAll(visitables)
             _mainNavListVisitable = newMainNavList
             _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
-        } catch (e: Exception) { }
+        } catch (_: Exception) { }
     }
 
     fun setPageSource(pageSource: String = pageSourceDefault) {
@@ -280,7 +277,7 @@ class MainNavViewModel @Inject constructor(
                 findBuStartIndexPosition()?.let {
                     addWidgetList(result, it)
                 }
-            } catch (e: Exception) { }
+            } catch (_: Exception) { }
             val shimmeringDataModel = _mainNavListVisitable.find {
                 it is InitialShimmerDataModel
             }
@@ -325,31 +322,29 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun getProfileDataCached() {
-        try {
-            mainNavProfileCache?.let {
-                val accountHeaderModel = AccountHeaderDataModel(
-                    profileDataModel = ProfileDataModel(
-                        userName = it.profileName ?: "",
-                        userImage = it.profilePicUrl ?: ""
-                    ),
-                    profileMembershipDataModel = ProfileMembershipDataModel(
-                        badge = it.memberStatusIconUrl ?: ""
-                    ),
-                    isCacheData = true,
-                    state = NAV_PROFILE_STATE_SUCCESS,
-                    profileSellerDataModel = ProfileSellerDataModel(
-                        isGetShopLoading = true
-                    ),
-                    profileAffiliateDataModel = ProfileAffiliateDataModel(
-                        isGetAffiliateLoading = true
-                    ),
-                    tokopediaPlusDataModel = TokopediaPlusDataModel(
-                        isGetTokopediaPlusLoading = true
-                    )
+        mainNavProfileCache?.let {
+            val accountHeaderModel = AccountHeaderDataModel(
+                profileDataModel = ProfileDataModel(
+                    userName = it.profileName ?: "",
+                    userImage = it.profilePicUrl ?: ""
+                ),
+                profileMembershipDataModel = ProfileMembershipDataModel(
+                    badge = it.memberStatusIconUrl ?: ""
+                ),
+                isCacheData = true,
+                state = NAV_PROFILE_STATE_SUCCESS,
+                profileSellerDataModel = ProfileSellerDataModel(
+                    isGetShopLoading = true
+                ),
+                profileAffiliateDataModel = ProfileAffiliateDataModel(
+                    isGetAffiliateLoading = true
+                ),
+                tokopediaPlusDataModel = TokopediaPlusDataModel(
+                    isGetTokopediaPlusLoading = true
                 )
-                updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
-            }
-        } catch (e: Exception) { }
+            )
+            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        }
     }
 
     private suspend fun updateProfileData() {
@@ -392,9 +387,7 @@ class MainNavViewModel @Inject constructor(
                 updateWidget(InitialShimmerDataModel(), it)
             }
             getBuListMenu()
-        }) {
-            // no-op
-        }
+        }) { }
     }
 
     fun refreshTransactionListData() {
@@ -461,22 +454,10 @@ class MainNavViewModel @Inject constructor(
 
     private fun buildUserMenuList(): List<Visitable<*>> {
         clientMenuGenerator.get().let {
-            val complainNotification = if (navNotification.unreadCountComplain.isMoreThanZero()) {
-                navNotification.unreadCountComplain.toString()
-            } else {
-                ""
-            }
-
-            val inboxTicketNotification = if (navNotification.unreadCountInboxTicket.isMoreThanZero()) {
-                navNotification.unreadCountInboxTicket.toString()
-            } else {
-                ""
-            }
-
             val firstSectionList = mutableListOf<Visitable<*>>(
                 it.getSectionTitle(IDENTIFIER_TITLE_HELP_CENTER),
-                it.getMenu(menuId = ID_COMPLAIN, notifCount = complainNotification, sectionId = MainNavConst.Section.USER_MENU),
-                it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU)
+                it.getMenu(menuId = ID_COMPLAIN, sectionId = MainNavConst.Section.USER_MENU),
+                it.getMenu(menuId = ID_TOKOPEDIA_CARE, sectionId = MainNavConst.Section.USER_MENU)
             )
             firstSectionList.add(SeparatorDataModel())
 
@@ -528,7 +509,7 @@ class MainNavViewModel @Inject constructor(
                 if (complainNotification.isMoreThanZero()) findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
                 if (inboxTicketNotification.isMoreThanZero()) findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
                 if (reviewNotification.isMoreThanZero()) findMenu(ID_REVIEW)?.updateBadgeCounter(reviewNotification.toString())
-            } catch (e: Exception) { }
+            } catch (_: Exception) { }
         }
     }
 
@@ -777,15 +758,11 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    fun findMenu(menuId: Int): HomeNavMenuDataModel? {
+    private fun findMenu(menuId: Int): HomeNavMenuDataModel? {
         val findExistingMenu = _mainNavListVisitable.find {
-            it is HomeNavVisitable && it.id() == menuId
-        }
-        return if (findExistingMenu is HomeNavMenuDataModel) {
-            findExistingMenu
-        } else {
-            null
-        }
+            it is HomeNavMenuDataModel && it.id() == menuId
+        } as? HomeNavMenuDataModel
+        return findExistingMenu
     }
 
     private fun HomeNavMenuDataModel.updateBadgeCounter(counter: String) {
