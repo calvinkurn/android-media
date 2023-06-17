@@ -1238,8 +1238,8 @@ class AddEditProductPreviewFragment :
     private fun updateImageListFromPicker(data: Intent) {
         val result = MediaPicker.result(data)
         val imagePickerResult = ArrayList<String>(result.editedImages)
-        val originalImageUrl = ArrayList<String>(result.originalPaths)
-        if (imagePickerResult.size > 0) {
+        val originalImageUrl = ArrayList<String>(result.selectedIncludeMedia)
+        if (imagePickerResult.isNotEmpty()) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                 viewModel.isDuplicate ||
                 viewModel.productInputModel.value != null

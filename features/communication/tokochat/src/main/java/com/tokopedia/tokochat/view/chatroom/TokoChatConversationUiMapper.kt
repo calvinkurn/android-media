@@ -29,9 +29,14 @@ class TokoChatConversationUiMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     private var firstTicker: TokoChatReminderTickerUiModel? = null
+    private var bubbleTicker: TokoChatReminderTickerUiModel? = null
 
     fun setFirstTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
         firstTicker = reminderTickerUiModel
+    }
+
+    fun setBubbleTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
+        bubbleTicker = reminderTickerUiModel
     }
 
     fun mapToChatUiModel(
@@ -112,6 +117,9 @@ class TokoChatConversationUiMapper @Inject constructor(
 
         firstTicker?.let {
             resultList.add(resultList.size, it)
+        }
+        bubbleTicker?.let {
+            resultList.add(Int.ZERO, it)
         }
         return resultList
     }

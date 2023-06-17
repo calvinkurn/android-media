@@ -58,6 +58,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
@@ -146,6 +147,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentC
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
@@ -2255,8 +2257,44 @@ open class HomeRevampFragment :
         )
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
-        BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
+    override fun onBestSellerFilterImpression(
+        filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+    ) {
+        val filterValue = UrlParamUtils.getParamMap(filter.value)
+        val categoryId = filterValue[CATEGORY_ID].toString()
+
+        trackingQueue?.putEETracking(
+            BestSellerWidgetTracker.getFilterImpressionTracker(
+                categoryId = categoryId,
+                channelId = bestSellerDataModel.id,
+                headerName = bestSellerDataModel.title,
+                userId = userId,
+                position = filter.position,
+                ncpRank = filter.ncpRank,
+                totalFilterCount = bestSellerDataModel.filterChip.size,
+                chipsValue = filter.title,
+            ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onBestSellerFilterClick(
+        filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+        widgetPosition: Int,
+        selectedChipsPosition: Int,
+    ) {
+        val filterValue = UrlParamUtils.getParamMap(filter.value)
+        val categoryId = filterValue[CATEGORY_ID].toString()
+
+        BestSellerWidgetTracker.sendFilterClickTracker(
+            categoryId = categoryId,
+            channelId = bestSellerDataModel.id,
+            headerName = bestSellerDataModel.title,
+            position = filter.position,
+            ncpRank = filter.ncpRank,
+            chipsValue = filter.title
+        )
         getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
     }
 

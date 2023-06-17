@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 
 object MacroDevOps {
+    const val LEWATI_BTN = "Lewati"
     fun setupEnvironment(intent: Intent) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         instrumentation.targetContext.startActivity(intent)
@@ -25,21 +26,38 @@ object MacroDevOps {
                 }
             )
             val device = UiDevice.getInstance(instrumentation)
-            val packageName = "${MacroIntent.TKPD_PACKAGE_NAME}.df_base"
 
-            device.wait(
-                Until.hasObject(By.res(packageName, "skipDynamicOnbaording")),
-                2000L
-            )
-            val btn = device.findObject(By.res(packageName, "skipDynamicOnbaording"));
-            btn.click()
+            skipOnboardingPage()
 
             Thread.sleep(3000L)
             device.pressBack()
 
             Thread.sleep(300L)
             killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            //no-op
+        }
+    }
+
+    fun skipOnboardingPage() {
+        try {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            val device = UiDevice.getInstance(instrumentation)
+
+            device.wait(
+                Until.hasObject(By.text(LEWATI_BTN)),
+                5000L
+            )
+            val btn = device.findObject(By.text(LEWATI_BTN));
+            btn.click()
+
+            Thread.sleep(3000L)
+
+            //in case there is dialog/bottomsheet
+            device.pressBack()
+        } catch (e: Exception) {
+            //no-op
+        }
     }
 
     fun killProcess(device: UiDevice, packageName: String) {
