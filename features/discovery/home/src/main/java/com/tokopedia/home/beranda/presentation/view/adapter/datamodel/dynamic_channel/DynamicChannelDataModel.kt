@@ -19,11 +19,6 @@ class DynamicChannelDataModel : HomeVisitable {
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
 
-    companion object {
-        val HOME_RV_BANNER_IMAGE_URL = "home_rv_banner_image_url"
-        val HOME_RV_SPRINT_BG_IMAGE_URL = "home_rv_sprint_bg_image_url"
-    }
-
     override fun equalsWith(b: Any?): Boolean {
         if (b is DynamicChannelDataModel) {
             if (isExpiredTimeChanged(b)) return false
@@ -58,20 +53,8 @@ class DynamicChannelDataModel : HomeVisitable {
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         val bundle = Bundle()
-        if (b is DynamicChannelDataModel) {
-            if (isSprintType(b) && isSprintBackImageSame(b)) {
-                bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
-            }
-        }
         return bundle
     }
-
-    private fun isSprintType(b: DynamicChannelDataModel): Boolean {
-        return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO
-    }
-
-    private fun isSprintBackImageSame(b: DynamicChannelDataModel) =
-        channel?.header?.backImage != b.channel?.header?.backImage ?: ""
 
     override fun isCache(): Boolean {
         return isCache

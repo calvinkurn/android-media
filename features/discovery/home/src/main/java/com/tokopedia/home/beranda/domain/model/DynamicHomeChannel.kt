@@ -161,66 +161,6 @@ data class DynamicHomeChannel(
             return list
         }
 
-        fun convertPromoEnhanceDynamicChannelDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            if (hero.isNotEmpty()) {
-                list.add(
-                    DataLayer.mapOf(
-                        "id",
-                        hero[0].id,
-                        "name",
-                        promoName,
-                        "creative",
-                        promoName,
-                        "position",
-                        1.toString()
-                    )
-                )
-            }
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                    DataLayer.mapOf(
-                        "id", grid.id,
-                        "name", promoName,
-                        "creative", promoName,
-                        "creative_url", grid.imageUrl,
-                        "position", (i + 2).toString()
-                    )
-                )
-            }
-
-            return list
-        }
-
-        private fun convertPromoEnhanceDynamicSprintLegoDataLayer(grids: Array<Grid>?): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            if (grids != null) {
-                for (i in grids.indices) {
-                    val grid: Grid = grids[i]
-                    list.add(
-                        DataLayer.mapOf(
-                            "id", grid.id,
-                            "name", grid.name,
-                            "price",
-                            CurrencyFormatHelper.convertRupiahToInt(
-                                grid.price
-                            ).toString(),
-                            "brand", "none / other",
-                            "variant", "none / other",
-                            "list", "/ - p1 - lego product - product - ${grid.recommendationType} - $pageName - " + header.name,
-                            "position", (i + 1).toString(),
-                            "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                            "dimension84", id,
-                            "dimension96", persoType + "_" + categoryID
-                        )
-                    )
-                }
-            }
-            return list
-        }
-
         fun setPosition(position: Int) {
             this.position = position
         }
@@ -228,8 +168,6 @@ data class DynamicHomeChannel(
         fun getPosition() = position
 
         companion object {
-            const val LAYOUT_HERO: String = "hero_4_image"
-            const val LAYOUT_SPRINT_LEGO: String = "sprint_lego"
             const val LAYOUT_6_IMAGE: String = "6_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"

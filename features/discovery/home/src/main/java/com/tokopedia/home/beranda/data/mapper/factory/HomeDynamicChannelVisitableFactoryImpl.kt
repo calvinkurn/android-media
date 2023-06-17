@@ -87,12 +87,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
-                DynamicHomeChannel.Channels.LAYOUT_HERO ->
-                    createDynamicChannel(
-                        channel = channel,
-                        trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                        isCombined = true
-                    )
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> {
@@ -100,12 +94,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO -> {
                     createDynamicLegoBannerSixAutoComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
-                    createDynamicChannel(
-                        channel = channel,
-                        trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
-                    )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createRecommendationListCarouselComponent(channel, position, isCache)
@@ -515,10 +503,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_2_IMAGE, position.toString(), channel.header.name)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO) {
-                channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
-                channel.setPosition(position)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS) {
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS) {
                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
                 channel.setPosition(position)

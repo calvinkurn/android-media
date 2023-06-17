@@ -45,7 +45,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CMHomeWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconTwoRowsSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.EmptyBannerViewHolder
@@ -458,43 +457,12 @@ class HomeAdapterFactory(
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
-        if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)) {
-            /**
-             * Layout registered as sprint sale
-             * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
-             */
-            return DynamicChannelSprintViewHolder.LAYOUT
-        }
-
         return when (layout) {
             /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
              * used by category widget
              */
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
-
-            /**
-             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget_v2}
-             * used by category widget v2
-             */
-            DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> CategoryWidgetV2ViewHolder.LAYOUT
-
-            /**
-             * refer to popular keyword layout com.tokopedia.home.R.layout#layout_popular_image
-             */
-            DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
-
-            /**
-             * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
-             */
-            DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
-
-            /**
-             * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
-             */
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> TopadsBannerViewHolder.LAYOUT
-
-            DynamicHomeChannel.Channels.LAYOUT_VERTICAL_BANNER_ADS -> TopAdsVerticalBannerViewHolder.LAYOUT
 
             else -> EmptyBlankViewHolder.LAYOUT
         }
@@ -506,7 +474,6 @@ class HomeAdapterFactory(
             HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
             HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
-            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)

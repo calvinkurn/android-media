@@ -45,7 +45,6 @@ abstract class DynamicChannelViewHolder(
      * List of possible layout from backend
      */
     companion object {
-        const val TYPE_SPRINT_LEGO = 1
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_CURATED = 5
         const val TYPE_FOUR_GRID_LEGO = 9
@@ -63,7 +62,6 @@ abstract class DynamicChannelViewHolder(
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
@@ -129,7 +127,6 @@ abstract class DynamicChannelViewHolder(
             handleTitle(channelHeaderName, channelTitleContainer, stubChannelTitle, channel)
             handleSubtitle(channelSubtitleName, stubChannelSubtitle, channel)
             handleSeeAllApplink(channel, stubSeeAllButton, channelSubtitleName, channelTitleContainer)
-            handleBackImage(channel, stubSeeAllButtonUnify, channelSubtitleName, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView, element)
         }
     }
@@ -239,48 +236,6 @@ abstract class DynamicChannelViewHolder(
             constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
             constraintSet.applyTo(channelTitleContainer)
         }
-    }
-
-    private fun handleBackImage(channel: DynamicHomeChannel.Channels, stubSeeAllButtonUnify: View?, channelSubtitleName: String?, channelTitleContainer: ConstraintLayout?) {
-        /**
-         * Requirement:
-         * Show unify button of see more button for dc sprint if back image is not empty
-         */
-        if (channel.header.backImage.isNotBlank() && getLayoutType(channel) == TYPE_SPRINT_LEGO) {
-            seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
-                !isViewStubHasBeenInflated(stubSeeAllButtonUnify)
-            ) {
-                val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
-                stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
-            } else {
-                itemView.findViewById(R.id.see_all_button_unify)
-            }
-
-            handleUnifySeeAllButton(channelSubtitleName, channel, channelTitleContainer)
-        }
-    }
-
-    private fun handleUnifySeeAllButton(channelSubtitleName: String?, channel: DynamicHomeChannel.Channels, channelTitleContainer: ConstraintLayout?) {
-        /**
-         * Requirement:
-         * `see all unify` button align to subtitle and countdown timer
-         */
-        if (channelSubtitleName?.isEmpty() != false && !hasExpiredTime(channel)) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelTitleContainer)
-            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
-            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(channelTitleContainer)
-        } else {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelTitleContainer)
-            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
-            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(channelTitleContainer)
-        }
-
-        seeAllButtonUnify?.show()
-        seeAllButton?.hide()
     }
 
     private fun handleHeaderExpiredTime(channel: DynamicHomeChannel.Channels, stubCountDownView: View?, element: DynamicChannelDataModel) {
