@@ -54,7 +54,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ProductOrganicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ReviewViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TopAdsVerticalBannerViewHolder
@@ -211,13 +210,6 @@ class HomeAdapterFactory(
     HomeComponentTypeFactory,
     RecommendationTypeFactory,
     RechargeComponentTypeFactory {
-
-    private val productLayout = HashSet(
-        listOf(
-            DynamicHomeChannel.Channels.LAYOUT_3_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT
-        )
-    )
 
     override fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int {
         return InspirationHeaderViewHolder.LAYOUT
@@ -466,13 +458,7 @@ class HomeAdapterFactory(
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
-        /**
-         * Layout registered as sprint sale viewholder
-         * refer to item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
-         */
-        if (productLayout.contains(layout)) {
-            return ProductOrganicChannelViewHolder.LAYOUT
-        } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)) {
+        if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)) {
             /**
              * Layout registered as sprint sale
              * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
@@ -521,7 +507,6 @@ class HomeAdapterFactory(
             HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
-            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)

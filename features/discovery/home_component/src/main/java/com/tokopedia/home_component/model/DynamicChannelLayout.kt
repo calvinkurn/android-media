@@ -2,8 +2,6 @@ package com.tokopedia.home_component.model
 
 object DynamicChannelLayout {
     const val LAYOUT_HERO: String = "hero_4_image"
-    const val LAYOUT_3_IMAGE: String = "3_image"
-    const val LAYOUT_SPRINT: String = "sprint_3_image"
     const val LAYOUT_SPRINT_LEGO: String = "sprint_lego"
     const val LAYOUT_6_IMAGE: String = "6_image"
     const val LAYOUT_BANNER_GIF: String = "banner_image"

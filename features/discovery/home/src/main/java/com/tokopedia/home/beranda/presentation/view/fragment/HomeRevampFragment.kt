@@ -19,9 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -46,7 +44,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -129,6 +126,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentC
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
@@ -148,7 +146,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -2181,7 +2178,7 @@ open class HomeRevampFragment :
                 }
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -2525,13 +2522,6 @@ open class HomeRevampFragment :
 
     private fun sendIrisTracker(layoutType: Int, channel: DynamicHomeChannel.Channels, position: Int) {
         when (layoutType) {
-            DynamicChannelViewHolder.TYPE_SPRINT_SALE -> putEEToIris(
-                HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                    channel.id,
-                    channel.grids,
-                    position
-                )
-            )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                 getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
@@ -2778,10 +2768,13 @@ open class HomeRevampFragment :
 
     override fun showHomeCoachmark(
         isShowBalanceWidgetCoachmark: Boolean,
-        homeBalanceModel: HomeBalanceModel,
+        homeBalanceModel: HomeBalanceModel
     ) {
-        if (isShowBalanceWidgetCoachmark) showBalanceWidgetCoachMark(homeBalanceModel)
-        else showTokonowCoachmark()
+        if (isShowBalanceWidgetCoachmark) {
+            showBalanceWidgetCoachMark(homeBalanceModel)
+        } else {
+            showTokonowCoachmark()
+        }
     }
 
     private fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {

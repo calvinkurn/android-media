@@ -67,8 +67,7 @@ class DynamicChannelDataModel : HomeVisitable {
     }
 
     private fun isSprintType(b: DynamicChannelDataModel): Boolean {
-        return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT ||
-            b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO
+        return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO
     }
 
     private fun isSprintBackImageSame(b: DynamicChannelDataModel) =

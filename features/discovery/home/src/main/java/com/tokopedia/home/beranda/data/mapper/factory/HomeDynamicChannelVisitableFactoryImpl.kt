@@ -39,14 +39,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s - %s"
 
-        private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
         private const val PROMO_NAME_LEGO_2_IMAGE = "/ - p%s - lego banner 2 image - %s"
         private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
         private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_CATEGORY_WIDGET_V2 = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
-        private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
         private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
@@ -89,23 +87,19 @@ class HomeDynamicChannelVisitableFactoryImpl(
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
-                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
+                DynamicHomeChannel.Channels.LAYOUT_HERO ->
                     createDynamicChannel(
                         channel = channel,
                         trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                         isCombined = true
                     )
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO -> {
                     createDynamicLegoBannerSixAutoComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
-                    createDynamicChannel(channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
                     createDynamicChannel(
@@ -510,15 +504,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
-            if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
-                channel.setPosition(position)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
+            if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
                 channel.promoName =
                     String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), "individual_grid", channel.header.name)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
-                channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE ||
                 channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO
             ) {
@@ -528,7 +518,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO) {
                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                 channel.setPosition(position)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS) {
                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
                 channel.setPosition(position)

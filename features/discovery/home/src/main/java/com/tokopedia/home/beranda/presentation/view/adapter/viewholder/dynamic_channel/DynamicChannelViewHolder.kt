@@ -45,10 +45,8 @@ abstract class DynamicChannelViewHolder(
      * List of possible layout from backend
      */
     companion object {
-        const val TYPE_SPRINT_SALE = 0
         const val TYPE_SPRINT_LEGO = 1
         const val TYPE_SIX_GRID_LEGO = 3
-        const val TYPE_THREE_GRID_LEGO = 4
         const val TYPE_CURATED = 5
         const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_MIX_TOP = 10
@@ -63,10 +61,8 @@ abstract class DynamicChannelViewHolder(
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when (channels.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT

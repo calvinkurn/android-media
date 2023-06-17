@@ -221,41 +221,6 @@ data class DynamicHomeChannel(
             return list
         }
 
-        fun getEnhanceClickDynamicChannelHomePage(grid: Grid, position: Int): Map<String, Any> {
-            return DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", "homepage",
-                "eventAction", "curated list banner click",
-                "eventLabel", "${header.name} - ${header.applink}",
-                channelId, id,
-                "ecommerce",
-                DataLayer.mapOf(
-                    "promoClick",
-                    DataLayer.mapOf(
-                        "promotions",
-                        DataLayer.listOf(
-                            DataLayer.mapOf(
-                                "id",
-                                grid.id,
-                                "name",
-                                promoName,
-                                "creative",
-                                grid.attribution,
-                                "position",
-                                position.toString()
-                            )
-                        )
-                    )
-                ),
-                "attribution", getHomeAttribution(position, grid.attribution)
-            )
-        }
-
-        fun getHomeAttribution(position: Int, creativeName: String?): String {
-            if (homeAttribution.isEmpty()) return ""
-            return homeAttribution.replace("$1", position.toString()).replace("$2", if ((creativeName != null)) creativeName else "")
-        }
-
         fun setPosition(position: Int) {
             this.position = position
         }
@@ -264,11 +229,8 @@ data class DynamicHomeChannel(
 
         companion object {
             const val LAYOUT_HERO: String = "hero_4_image"
-            const val LAYOUT_3_IMAGE: String = "3_image"
-            const val LAYOUT_SPRINT: String = "sprint_3_image"
             const val LAYOUT_SPRINT_LEGO: String = "sprint_lego"
             const val LAYOUT_6_IMAGE: String = "6_image"
-            const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
