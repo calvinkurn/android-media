@@ -1,27 +1,30 @@
 package com.tokopedia.report.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -35,7 +38,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.databinding.PartialLoadingTransparentLayoutBinding
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -51,9 +53,6 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductReportSubmitViewModel
-    private val loadingView by lazy {
-        PartialLoadingTransparentLayoutBinding.bind(binding.root).loadingTransparentView
-    }
 
     override fun initInjector() {
         getComponent(MerchantReportComponent::class.java).inject(this)
@@ -62,7 +61,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val vmProvider = ViewModelProviders.of(this, viewModelFactory)
+            val vmProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = vmProvider.get(ProductReportSubmitViewModel::class.java)
         }
         arguments?.let {
@@ -84,7 +83,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             cacheManager.get(ProductReportFormActivity.REASON_OBJECT, ProductReportReason::class.java)
 
         }
-        loadingView.gone()
+
         binding.recyclerView.clearItemDecoration()
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
@@ -96,7 +95,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setSecondaryCTAText(getString(R.string.report_cancel))
                     setPrimaryCTAClickListener{
                         dismiss()
-                        loadingView?.visible()
+                        binding.loadingView.visible()
                         viewModel.submitReport(
                             productId.toLongOrZero(),
                             reasonItem.categoryId.toIntOrZero(),
@@ -118,7 +117,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
 
     private fun onSuccessSubmit(isSuccess: Boolean){
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
-        loadingView?.gone()
+        binding.loadingView.gone()
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
@@ -137,7 +136,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onFailSubmit(throwable: Throwable?){
-        loadingView?.gone()
+        binding.loadingView.gone()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
