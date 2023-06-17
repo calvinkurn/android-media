@@ -219,13 +219,6 @@ class HomeAdapterFactory(
         )
     )
 
-    private val bannerLayout = HashSet(
-        listOf(
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL,
-            DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
-        )
-    )
-
     override fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int {
         return InspirationHeaderViewHolder.LAYOUT
     }

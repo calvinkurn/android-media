@@ -274,7 +274,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
-            const val LAYOUT_BANNER_ORGANIC: String = "banner_organic"
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"

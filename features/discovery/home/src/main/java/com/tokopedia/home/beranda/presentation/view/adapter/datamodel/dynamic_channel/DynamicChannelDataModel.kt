@@ -30,38 +30,35 @@ class DynamicChannelDataModel : HomeVisitable {
             if (isGridSizeChanged(b)) return false
             if (isLayoutChanged(b)) return false
             channel?.grids?.let {
-                it.forEachIndexed {position, grid->
-                    b.channel?.grids?.let {newGrid->
+                it.forEachIndexed { position, grid ->
+                    b.channel?.grids?.let { newGrid ->
                         if (grid.imageUrl != newGrid[position].imageUrl) return false
                     }
                 }
-                return  channel?.layout == b.channel?.layout
-                        &&channel?.header == b.channel?.header
-                        && channel?.banner == b.channel?.banner
+                return channel?.layout == b.channel?.layout &&
+                    channel?.header == b.channel?.header &&
+                    channel?.banner == b.channel?.banner
             }
         }
         return false
     }
 
     private fun isLayoutChanged(b: DynamicChannelDataModel) =
-            channel?.layout ?: "" != b.channel?.layout ?: ""
+        channel?.layout ?: "" != b.channel?.layout ?: ""
 
     private fun isGridSizeChanged(b: DynamicChannelDataModel) =
-            channel?.grids?.size != b.channel?.grids?.size ?: 0
+        channel?.grids?.size != b.channel?.grids?.size ?: 0
 
     private fun isExpiredTimeChanged(b: DynamicChannelDataModel): Boolean {
-        if (channel?.header?.expiredTime?.isNotEmpty() == true && channel?.header?.expiredTime != b.channel?.header?.expiredTime)
+        if (channel?.header?.expiredTime?.isNotEmpty() == true && channel?.header?.expiredTime != b.channel?.header?.expiredTime) {
             return true
+        }
         return false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         val bundle = Bundle()
         if (b is DynamicChannelDataModel) {
-            if (isDcMixType(b) && isBannerImageSame(b)) {
-                bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
-            }
-
             if (isSprintType(b) && isSprintBackImageSame(b)) {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
@@ -71,26 +68,18 @@ class DynamicChannelDataModel : HomeVisitable {
 
     private fun isSprintType(b: DynamicChannelDataModel): Boolean {
         return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT ||
-                b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO
+            b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO
     }
 
     private fun isSprintBackImageSame(b: DynamicChannelDataModel) =
-            channel?.header?.backImage != b.channel?.header?.backImage ?: ""
-
-    private fun isBannerImageSame(b: DynamicChannelDataModel) =
-            channel?.banner?.imageUrl != b.channel?.banner?.imageUrl ?: ""
-
-    private fun isDcMixType(dynamicChannelDataModel: DynamicChannelDataModel): Boolean {
-        return dynamicChannelDataModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL ||
-                dynamicChannelDataModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
-    }
+        channel?.header?.backImage != b.channel?.header?.backImage ?: ""
 
     override fun isCache(): Boolean {
         return isCache
     }
 
     override fun visitableId(): String {
-        return channel?.id?:""
+        return channel?.id ?: ""
     }
 
     fun setCache(cache: Boolean) {

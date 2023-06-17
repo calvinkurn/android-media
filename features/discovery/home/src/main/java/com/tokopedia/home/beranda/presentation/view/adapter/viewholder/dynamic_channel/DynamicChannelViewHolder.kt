@@ -29,8 +29,10 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-abstract class DynamicChannelViewHolder(itemView: View,
-                                        private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
+abstract class DynamicChannelViewHolder(
+    itemView: View,
+    private val listener: HomeCategoryListener?
+) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
     private val context: Context = itemView.context
 
     var countDownView: TimerUnifySingle? = null
@@ -48,8 +50,6 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
         const val TYPE_CURATED = 5
-        const val TYPE_BANNER = 6
-        const val TYPE_BANNER_CAROUSEL = 7
         const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_MIX_TOP = 10
         const val TYPE_MIX_LEFT = 20
@@ -61,15 +61,13 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_MERCHANT_VOUCHER = 18
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
-            when(channels.layout) {
+            when (channels.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
@@ -148,7 +146,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
         if (channelHeaderName?.isNotEmpty() == true) {
             channelTitleContainer.visibility = View.VISIBLE
             channelTitle = if (stubChannelTitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelTitle)) {
+                !isViewStubHasBeenInflated(stubChannelTitle)
+            ) {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
@@ -157,8 +156,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                if (channel.header.textColor.isNotEmpty()) {
+                    Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                } else {
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                }
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -172,7 +174,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
          */
         if (channelSubtitleName?.isNotEmpty() == true) {
             channelSubtitle = if (stubChannelSubtitle is ViewStub &&
-                    !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                !isViewStubHasBeenInflated(stubChannelSubtitle)
+            ) {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
@@ -181,8 +184,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
-                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                if (channel.header.textColor.isNotEmpty()) {
+                    Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                } else {
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                }
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -195,10 +201,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
          * Only show `see all` button when it is exist
          * Don't show `see all` button on dynamic channel mix carousel
          */
-        if (isHasSeeMoreApplink(channel) &&
-                getLayoutType(channel) != TYPE_BANNER_CAROUSEL) {
+        if (isHasSeeMoreApplink(channel)) {
             seeAllButton = if (stubSeeAllButton is ViewStub &&
-                    !isViewStubHasBeenInflated(stubSeeAllButton)) {
+                !isViewStubHasBeenInflated(stubSeeAllButton)
+            ) {
                 val stubSeeAllView = stubSeeAllButton.inflate()
                 stubSeeAllView?.findViewById(R.id.see_all_button)
             } else {
@@ -210,8 +216,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
                 listener?.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
-                HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
-                        DynamicLinkHelper.getActionLink(channel.header))
+                HomeTrackingUtils.homeDiscoveryWidgetViewAll(
+                    context,
+                    DynamicLinkHelper.getActionLink(channel.header)
+                )
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
             }
         }
@@ -244,7 +252,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
          */
         if (channel.header.backImage.isNotBlank() && getLayoutType(channel) == TYPE_SPRINT_LEGO) {
             seeAllButtonUnify = if (stubSeeAllButtonUnify is ViewStub &&
-                    !isViewStubHasBeenInflated(stubSeeAllButtonUnify)) {
+                !isViewStubHasBeenInflated(stubSeeAllButtonUnify)
+            ) {
                 val stubSeeAllButtonView = stubSeeAllButtonUnify.inflate()
                 stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
             } else {
@@ -287,7 +296,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
          */
         if (hasExpiredTime(channel)) {
             countDownView = if (stubCountDownView is ViewStub &&
-                    !isViewStubHasBeenInflated(stubCountDownView)) {
+                !isViewStubHasBeenInflated(stubCountDownView)
+            ) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
@@ -302,7 +312,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 serverTime.time = currentMillisecond
                 val timeDiff = serverTime.getTimeDiff(expiredTime)
                 countDownView?.targetDate = timeDiff
-                if(channel.header.backColor.isNotEmpty()){
+                if (channel.header.backColor.isNotEmpty()) {
                     countDownView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
                 } else {
                     countDownView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
