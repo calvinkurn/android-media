@@ -82,9 +82,9 @@ class YoutubePlayerActivity :
         super.onDestroy()
     }
 
-    private fun releaseYoutubePlayer() {
-        youtubeWebView?.release()
-    }
+//    private fun releaseYoutubePlayer() {
+//        youtubeWebView?.release()
+//    }
 
     override fun onEnterFullScreen(view: View) {
         hideSystemUi()
@@ -128,7 +128,7 @@ class YoutubePlayerActivity :
     }
 
     override fun renderProcessKilled() {
-        releaseYoutubePlayer()
+//        releaseYoutubePlayer()
     }
 
     override fun onVideoEnded(time: Int) {
