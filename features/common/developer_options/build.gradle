@@ -59,7 +59,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation "com.tokopedia.skynet:db-interactor:1.0-alpha-05"
+    implementation rootProject.ext.miscDependencies.influxInteractor
 
     implementation rootProject.ext.firebase.messaging
     
