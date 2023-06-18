@@ -1,7 +1,9 @@
 package com.tokopedia.youtube_player
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
@@ -27,15 +29,25 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     private val viewBinding: ActivityYoutubePlayerBinding? by viewBinding()
     private var videoId: String = ""
-    private val youtubeWebView: YoutubeWebView? by lazy {
-        viewBinding?.youtubeView
-    }
+    private var youtubeWebView: YoutubeWebView? = null
 
+    init {
+        youtubeWebView =  viewBinding?.youtubeView
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
         getIntentData()
+    }
+
+    override fun onCreateView(
+        parent: View?,
+        name: String,
+        context: Context,
+        attrs: AttributeSet
+    ): View? {
         initYoutubePlayer()
+        return super.onCreateView(parent, name, context, attrs)
     }
 
     private fun initYoutubePlayer() {

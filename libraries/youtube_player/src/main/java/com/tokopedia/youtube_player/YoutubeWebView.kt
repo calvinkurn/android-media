@@ -13,6 +13,7 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.google.android.play.core.splitcompat.SplitCompat
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
@@ -30,7 +31,13 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
-    @SuppressLint("SetJavaScriptEnabled")
+    init {
+        val webSettings = settings
+        val userAgent =
+            String.format("%s - Android %s", "Tokopedia Webview", "123")
+        webSettings.userAgentString = userAgent
+        SplitCompat.installActivity(context)
+    }
     fun initialize(
         youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
         youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
@@ -55,11 +62,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 //        setUpWebViewClient()
 //        loadUrl("about:blank")
         val baseUrl = "https://www.journaldev.com"
-        val data = "Relative Link"
-        val mimeType = "text/html"
-        val encoding = "UTF-8"
-        val historyUrl = "https://www.journaldev.com"
-        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
+//        val data = "Relative Link"
+//        val mimeType = "text/html"
+//        val encoding = "UTF-8"
+//        val historyUrl = "https://www.journaldev.com"
+//        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
 //        mainThread.post {
 //            val baseUrl = "https://www.journaldev.com"
 //            val data = "Relative Link"
@@ -68,7 +75,15 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 //            val historyUrl = "https://www.journaldev.com"
 //            loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
 //        }
+//        val generatedHtml = constructContentToHtml(context, data)
+//        loadData(
+//            Base64.encodeToString(generatedHtml.toByteArray(), Base64.DEFAULT),
+//            "text/html",
+//            "base64"
+//        )
+        loadUrl(baseUrl)
     }
+
 
     private fun setUpWebViewClient() {
         webChromeClient = object : WebChromeClient() {
