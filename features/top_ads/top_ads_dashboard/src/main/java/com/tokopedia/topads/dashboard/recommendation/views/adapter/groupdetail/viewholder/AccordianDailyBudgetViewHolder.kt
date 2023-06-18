@@ -26,18 +26,20 @@ class AccordianDailyBudgetViewHolder(
     private var hasError : Boolean = false
 
     override fun bind(element: AccordianDailyBudgetUiModel?) {
-        updateProductInputData(element)
-        bindValue(element)
+        setDefaultInputModel(element)
         setTextChangeListener(element)
+        bindValue(element)
     }
 
-    private fun updateProductInputData(element: AccordianDailyBudgetUiModel?) {
+    private fun setDefaultInputModel(element: AccordianDailyBudgetUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
+        setDailyBudgetIntoInputModel(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily?.toDouble() ?: 0.0)
+        topadsManagePromoGroupProductInput?.keywordOperation = null
     }
 
     private fun bindValue(element: AccordianDailyBudgetUiModel?) {
-        currentBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toString())
-        recommendedBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
+        currentBudget.text = String.format(getString(R.string.topads_ads_price_format_1), element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toString())
+        recommendedBudget.text = String.format(getString(R.string.topads_ads_price_format_1), element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
         dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
     }
 
@@ -48,32 +50,43 @@ class AccordianDailyBudgetViewHolder(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(text: Editable?) {
-                checkForErrors(text.toString().toDoubleOrZero(), element)
-                topadsManagePromoGroupProductInput?.groupInput = GroupEditInput(
-                    action = ACTION_EDIT_PARAM,
-                    group = GroupEditInput.Group(
-                        dailyBudget = text.toString().toDoubleOrZero()
-                    )
-                )
+                val dailyBudgetBid = text.toString().toDoubleOrZero()
+                val errorMsg = validateDailyBudgetBidInput(dailyBudgetBid, element)
+                if(errorMsg.isEmpty()){
+                    hasError = false
+                    dailyBudget.isInputError = false
+                } else {
+                    hasError = true
+                    dailyBudget.isInputError = true
+                }
+                dailyBudget.setMessage(errorMsg)
+                setDailyBudgetIntoInputModel(dailyBudgetBid)
                 onInsightAction.invoke(hasError)
             }
         })
     }
 
-    private fun checkForErrors(budget: Double, element: AccordianDailyBudgetUiModel?){
-        if(budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull()){
-            hasError = true
-            dailyBudget.isInputError = true
-            dailyBudget.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()))
-        } else if(budget > INSIGHT_DAILY_BUDGET_MAX_BID){
-            dailyBudget.isInputError = true
-            dailyBudget.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_DAILY_BUDGET_MAX_BID))
-            hasError = true
-        } else {
-            dailyBudget.isInputError = false
-            dailyBudget.setMessage("")
-            hasError = false
-        }
+    private fun validateDailyBudgetBidInput(budget: Double, element: AccordianDailyBudgetUiModel?): String {
+        return if (budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull())
+            String.format(
+                getString(R.string.topads_insight_min_bid_error_msg_format),
+                element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
+            )
+        else if (budget > INSIGHT_DAILY_BUDGET_MAX_BID)
+            String.format(
+                getString(R.string.topads_insight_max_bid_error_msg_format),
+                INSIGHT_DAILY_BUDGET_MAX_BID
+            )
+        else ""
+    }
+
+    private fun setDailyBudgetIntoInputModel(dailyBudgetBid: Double) {
+        topadsManagePromoGroupProductInput?.groupInput = GroupEditInput(
+            action = ACTION_EDIT_PARAM,
+            group = GroupEditInput.Group(
+                dailyBudget = dailyBudgetBid
+            )
+        )
     }
 
     companion object {

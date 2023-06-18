@@ -34,10 +34,10 @@ class AccordianGroupBidViewHolder(
 
     override fun bind(element: AccordianGroupBidUiModel?) {
         createDefaultInputModel(element)
+        addTextChangeListener(element)
         setViews(element)
         bindValues(element)
         setCheckedChangeListener(element)
-        addTextChangeListener(element)
     }
 
     private fun createDefaultInputModel(element: AccordianGroupBidUiModel?) {

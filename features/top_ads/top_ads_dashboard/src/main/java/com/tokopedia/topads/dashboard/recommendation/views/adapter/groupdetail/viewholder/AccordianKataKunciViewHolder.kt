@@ -36,10 +36,10 @@ class AccordianKataKunciViewHolder(
     private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<AccordianKataKunciUiModel>(itemView) {
+    private var kataKunciItemList: List<NewPositiveKeywordsRecom> = mutableListOf()
 
     inner class KataKunciItemsAdapter :
         RecyclerView.Adapter<KataKunciItemsAdapter.KataKunciItemsViewHolder>() {
-        var kataKunciItemList: List<NewPositiveKeywordsRecom> = mutableListOf()
 
         inner class KataKunciItemsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -50,10 +50,10 @@ class AccordianKataKunciViewHolder(
             private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
             private val keywordCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.keyword_cost)
             fun bind(element: NewPositiveKeywordsRecom) {
-                bindValues(element)
-                setCheckedChangeListener(element)
                 setTextChangeListener(element)
+                bindValues(element)
                 setSelected(element)
+                setClickListener(element)
             }
 
             private fun setTextChangeListener(element: NewPositiveKeywordsRecom) {
@@ -64,22 +64,21 @@ class AccordianKataKunciViewHolder(
 
                     override fun afterTextChanged(text: Editable?) {
                         val bid = text.toString().toIntOrZero()
-                        if(bid < minBid.toZeroIfNull()){
-                            keywordCost.isInputError = true
-                            keywordCost.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), minBid.toZeroIfNull()))
-                        } else if(bid > maxBid.toZeroIfNull()){
-                            keywordCost.isInputError = true
-                            keywordCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull()))
-                        } else if(bid % INSIGHT_MULTIPLIER != 0){
-                            keywordCost.isInputError = true
-                            keywordCost.setMessage(getString(R.string.error_bid_not_multiple_50))
-                        } else {
+                        element.currentBid = bid
+                        val errorMsg = validateKataKunciBid(bid)
+                        if(errorMsg.isEmpty()){
                             keywordCost.isInputError = false
-                            element.priceBid = text.toString().toIntOrZero()
-                            if(text.toString().toIntOrZero() == element.suggestionBid)
+                            if(bid == element.suggestionBid)
                                 keywordCost.setMessage(getString(R.string.biaya_optimal))
                             else
                                 keywordCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply),element.suggestionBid))
+
+                            if(checkbox.isChecked){
+                                topadsManagePromoGroupProductInput?.keywordOperation?.firstOrNull { it?.keyword?.tag == element.keywordTag }?.keyword?.price_bid = bid.toDouble()
+                            }
+                        } else {
+                            keywordCost.isInputError = true
+                            keywordCost.setMessage(errorMsg)
                         }
                     }
                 })
@@ -101,7 +100,8 @@ class AccordianKataKunciViewHolder(
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                keywordCost.editText.setText(element.suggestionBid.toString())
+                if(keywordCost.editText.text.isNullOrEmpty())
+                    keywordCost.editText.setText(element.suggestionBid.toString())
                 if (element.keywordType == KEYWORD_TYPE_POSITIVE_PHRASE) {
                     keywordStateType.text = getString(R.string.wide)
                     keywordStateType.setBackgroundColor(
@@ -121,16 +121,15 @@ class AccordianKataKunciViewHolder(
                 }
             }
 
-            private fun setCheckedChangeListener(element: NewPositiveKeywordsRecom){
-                checkbox.setOnCheckedChangeListener(null)
-                checkbox.setOnCheckedChangeListener { btn, isChecked ->
-                    element.isSelected = isChecked
-                    if(isChecked){
-                        addTopadsManagePromoGroupProductInput(element)
-                    } else {
-                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
-                    }
-                    onInsightAction.invoke(hasErrors)
+            private fun setClickListener(element: NewPositiveKeywordsRecom){
+                checkbox.setOnClickListener {
+                    if (checkbox.isChecked)
+                        addItemIntoInput(element, keywordCost.editText.text.toString().toIntOrZero())
+                    else
+                        removeItemFromInput(element)
+                    element.isSelected = checkbox.isChecked
+                    onInsightAction.invoke(validateAllSelectedItems())
+                    setSelectAllButtonIndeterminateState()
                 }
             }
 
@@ -167,20 +166,29 @@ class AccordianKataKunciViewHolder(
     private val kataKunciRv: RecyclerView = itemView.findViewById(R.id.kataKunciRv)
     private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
-    private var hasErrors: Boolean = false
     private var maxBid: Int? = 0
     private var minBid: Int? = 0
 
     override fun bind(element: AccordianKataKunciUiModel?) {
         updateKeys(element)
+        setDefaultInputModel(element)
         setViews(element)
-        setCheckedChangeListener(element)
+        setClickListener(element)
     }
 
     private fun updateKeys(element: AccordianKataKunciUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
         maxBid = element?.maxBid
         minBid = element?.minBid
+    }
+
+    private fun setDefaultInputModel(element: AccordianKataKunciUiModel?) {
+        topadsManagePromoGroupProductInput?.groupInput = null
+        addAllItemsIntoInput(element)
+        element?.newPositiveKeywordsRecom?.forEach {
+            it.isSelected = true
+        }
+        onInsightAction.invoke(validateAllSelectedItems())
     }
 
     private fun setViews(element: AccordianKataKunciUiModel?) {
@@ -198,39 +206,24 @@ class AccordianKataKunciViewHolder(
         )
     }
 
-    private fun setCheckedChangeListener(element: AccordianKataKunciUiModel?){
-        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked) {
-                val list = mutableListOf<KeywordEditInput>()
-                element?.newPositiveKeywordsRecom?.forEach {
-                    list.add(
-                        KeywordEditInput(
-                            ACTION_CREATE_PARAM,
-                            keyword = KeywordEditInput.Keyword(
-                                type = it.keywordType,
-                                status = it.keywordStatus,
-                                tag = it.keywordTag,
-                                suggestionPriceBid = it.suggestionBid.toDouble(),
-                                price_bid = if(it.priceBid.isZero()) it.suggestionBid.toDouble() else it.priceBid.toDouble(),
-                                source = it.keywordSource
-                            )
-                        )
-                    )
-                }
-                topadsManagePromoGroupProductInput?.keywordOperation = list
-            } else {
+    private fun setClickListener(element: AccordianKataKunciUiModel?) {
+        selectAllCheckbox.setOnClickListener {
+            selectAllCheckbox.setIndeterminate(false)
+            if (selectAllCheckbox.isChecked)
+                addAllItemsIntoInput(element)
+            else
                 topadsManagePromoGroupProductInput?.keywordOperation = listOf()
+            element?.newPositiveKeywordsRecom?.forEach {
+                it.isSelected = selectAllCheckbox.isChecked
             }
-            topadsManagePromoGroupProductInput?.groupInput = null
-            element?.newPositiveKeywordsRecom?.forEach { it.isSelected = isChecked }
             element?.newPositiveKeywordsRecom?.let {
                 adapter.updateList(it)
             }
-            onInsightAction.invoke(hasErrors)
+            onInsightAction.invoke(validateAllSelectedItems())
         }
     }
 
-    fun addTopadsManagePromoGroupProductInput(element: NewPositiveKeywordsRecom){
+    private fun addItemIntoInput(element: NewPositiveKeywordsRecom, priceBid: Int){
         val list = topadsManagePromoGroupProductInput?.keywordOperation?.toMutableList()
         list?.add(KeywordEditInput(
             ACTION_CREATE_PARAM,
@@ -238,13 +231,45 @@ class AccordianKataKunciViewHolder(
                 type = getKeywordType(element.keywordType),
                 status = getKeywordStatus(element.keywordStatus),
                 tag = element.keywordTag,
-                price_bid = if(element.priceBid.isZero()) element.suggestionBid.toDouble() else element.priceBid.toDouble(),
+                price_bid = priceBid.toDouble(),
                 suggestionPriceBid = element.suggestionBid.toDouble(),
                 source = element.keywordSource
             )
         ))
         topadsManagePromoGroupProductInput?.keywordOperation = list
-        topadsManagePromoGroupProductInput?.groupInput = null
+    }
+
+    private fun removeItemFromInput(element: NewPositiveKeywordsRecom) {
+        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
+    }
+
+    private fun addAllItemsIntoInput(element: AccordianKataKunciUiModel?) {
+        val list = mutableListOf<KeywordEditInput>()
+        element?.newPositiveKeywordsRecom?.forEach {
+            list.add(
+                KeywordEditInput(
+                    ACTION_CREATE_PARAM,
+                    keyword = KeywordEditInput.Keyword(
+                        type = it.keywordType,
+                        status = it.keywordStatus,
+                        tag = it.keywordTag,
+                        suggestionPriceBid = it.suggestionBid.toDouble(),
+                        price_bid = it.suggestionBid.toDouble(),
+                        source = it.keywordSource
+                    )
+                )
+            )
+        }
+        topadsManagePromoGroupProductInput?.keywordOperation = list
+    }
+
+    private fun setSelectAllButtonIndeterminateState(){
+        if(topadsManagePromoGroupProductInput?.keywordOperation?.count() == kataKunciItemList.count())
+            selectAllCheckbox.setIndeterminate(false)
+        else
+            selectAllCheckbox.setIndeterminate(true)
+
+        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > 0
     }
 
     private fun getKeywordType(type: String): String {
@@ -269,6 +294,26 @@ class AccordianKataKunciViewHolder(
                 status
             else
                 KEYWORD_STATUS_ACTIVE
+    }
+
+    private fun validateKataKunciBid(bid: Int): String{
+        return if(bid < minBid.toZeroIfNull())
+            String.format(getString(R.string.topads_insight_min_bid_error_msg_format), minBid.toZeroIfNull())
+        else if(bid > maxBid.toZeroIfNull())
+            String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull())
+        else if(bid % INSIGHT_MULTIPLIER != 0)
+            getString(R.string.error_bid_not_multiple_50)
+        else ""
+    }
+
+    private fun validateAllSelectedItems(): Boolean{
+        var hasErrors = false
+        kataKunciItemList.forEach {
+            if(it.isSelected && !validateKataKunciBid(it.currentBid).isEmpty()){
+                hasErrors = true
+            }
+        }
+        return hasErrors
     }
 
     companion object {

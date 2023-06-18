@@ -590,8 +590,16 @@
     <string name="topads_insight_daily_budget_accordian_subtitle">Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +%s klik/hari.</string>
     <string name="topads_dashboard_times_per_day_value"><![CDATA[<b><font size="17">+%s</font></b> kali/hari]]></string>
     <string name="topads_dashboard_times_per_month_template"><![CDATA[<b><font size="17">+%s</font></b> /bulan]]></string>
-    <string name="topads_dashboard_price_per_click_template"><![CDATA[Rp<b><font size="17">%s</font></b>/klik]]></string>
+    <string name="topads_dashboard_price_per_click_template"><![CDATA[<b><font size="17">Rp%s</font></b>/klik]]></string>
     <string name="topads_dashboard_increase_times_template"><![CDATA[<b><font size="17">+%s</font></b> kali]]></string>
     <string name="topads_dashboard_price_per_month_template"><![CDATA[<b><font size="17">Rp%s</font></b> /bulan]]></string>
+    <string name="topads_dashboard_submit_insight_success_toast_msg">Berhasil menambahkan kata kunci.</string>
+    <string name="topads_dashboard_submit_insight_fail_dialog_description">Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya.</string>
+    <string name="topads_dashboard_submit_kata_kunci_insight_fail_title">%d kata kunci gagal ditambahkan</string>
+    <string name="topads_dashboard_submit_biaya_kata_kunci_insight_fail_title">%d biaya kata kunci gagal diubah</string>
+    <string name="topads_dashboard_submit_negative_kata_kunci_insight_fail_title">%d kata kunci negatif gagal ditambahkan</string>
+    <string name="topads_dashboard_submit_biaya_iklan_insight_fail_title">Perubahan biaya iklan gagal diterapkan</string>
+    <string name="topads_dashboard_submit_daily_budget_insight_fail_title">Perubahan pada anggaran harian gagal diterapkan</string>
+    <string name="topads_ads_price_format_1">Rp%s</string>
 </resources>
 

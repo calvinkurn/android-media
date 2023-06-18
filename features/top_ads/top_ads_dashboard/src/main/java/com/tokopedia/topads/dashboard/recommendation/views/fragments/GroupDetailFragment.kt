@@ -231,49 +231,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    confirmationDailog?.dismiss()
-                    showSuccessToast("Berhasil menambahkan kata kunci.")
-                    loadData(
-                        utils.convertAdTypeToInt(adType),
-                        adGroupId
-                    )
+                    successfulInsightSubmission()
                 }
                 is Fail -> {
-                    confirmationDailog?.let {
-                        if (it.isShowing) {
-                            var title = ""
-                            var description = "Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya."
-                            val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
-
-                            it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
-                            when (saveButton?.tag) {
-                                TYPE_POSITIVE_KEYWORD -> {
-                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci gagal ditambahkan"
-                                }
-                                TYPE_KEYWORD_BID -> {
-                                    title = "${input?.keywordOperation?.size ?: 0} biaya kata kunci gagal diubah"
-                                }
-                                TYPE_GROUP_BID -> {
-                                    title = "Perubahan biaya iklan gagal diterapkan"
-                                }
-                                TYPE_DAILY_BUDGET -> {
-                                    title = "Perubahan pada anggaran harian gagal diterapkan"
-                                }
-                                TYPE_NEGATIVE_KEYWORD_BID -> {
-                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci negatif gagal ditambahkan"
-                                }
-                                else -> ""
-                            }
-                            it.setTitle(title)
-                            it.setDescription(description)
-
-                            if(it.dialogPrimaryCTA.isLoading)
-                                it.dialogPrimaryCTA.isLoading = false
-
-                            it.setPrimaryCTAText("Coba Lagi")
-                            it.setSecondaryCTAText("Tutup")
-                        }
-                    }
+                    showFailedInsightApplyDialog()
                 }
             }
         }
@@ -281,39 +242,66 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner){
             when (it) {
                 is Success -> {
-                    confirmationDailog?.dismiss()
-                    showSuccessToast("Berhasil menambahkan kata kunci.")
-                    loadData(
-                        utils.convertAdTypeToInt(adType),
-                        adGroupId
-                    )
+                    successfulInsightSubmission()
                 }
                 is Fail -> {
-                    confirmationDailog?.let {
-                        if (it.isShowing) {
-                            var title = ""
-                            var description = "Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya."
-                            val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
-
-                            it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
-                            when (saveButton?.tag) {
-                                TYPE_POSITIVE_KEYWORD -> {
-                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci gagal ditambahkan"
-                                }
-                                else -> ""
-                            }
-                            it.setTitle(title)
-                            it.setDescription(description)
-
-                            if(it.dialogPrimaryCTA.isLoading)
-                                it.dialogPrimaryCTA.isLoading = false
-
-                            it.setPrimaryCTAText("Coba Lagi")
-                            it.setSecondaryCTAText("Tutup")
-                        }
-                    }
+                    showFailedInsightApplyDialog()
                 }
             }
+        }
+    }
+
+    private fun successfulInsightSubmission(){
+        confirmationDailog?.dismiss()
+        showSuccessToast(getString(R.string.topads_dashboard_submit_insight_success_toast_msg))
+        loadData(
+            utils.convertAdTypeToInt(adType),
+            adGroupId
+        )
+    }
+
+    private fun showFailedInsightApplyDialog() {
+        if (confirmationDailog?.isShowing != true) {
+            confirmationDailog =
+                DialogUnify(
+                    requireContext(),
+                    DialogUnify.HORIZONTAL_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
+            confirmationDailog?.show()
+        }
+
+        val description =
+            getString(R.string.topads_dashboard_submit_insight_fail_dialog_description)
+        val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
+        val title = when (saveButton?.tag) {
+            TYPE_POSITIVE_KEYWORD -> String.format(
+                getString(R.string.topads_dashboard_submit_kata_kunci_insight_fail_title),
+                input?.keywordOperation?.size ?: 0
+            )
+            TYPE_KEYWORD_BID -> String.format(
+                getString(R.string.topads_dashboard_submit_biaya_kata_kunci_insight_fail_title),
+                input?.keywordOperation?.size ?: 0
+            )
+            TYPE_GROUP_BID -> getString(R.string.topads_dashboard_submit_biaya_iklan_insight_fail_title)
+            TYPE_DAILY_BUDGET -> getString(R.string.topads_dashboard_submit_daily_budget_insight_fail_title)
+            TYPE_NEGATIVE_KEYWORD_BID -> String.format(
+                getString(R.string.topads_dashboard_submit_negative_kata_kunci_insight_fail_title),
+                input?.keywordOperation?.size ?: 0
+            )
+            else -> ""
+        }
+
+        confirmationDailog?.let {
+            it.setTitle(title)
+            it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
+            it.setDescription(description)
+
+            if (it.dialogPrimaryCTA.isLoading)
+                it.dialogPrimaryCTA.isLoading = false
+
+            it.setPrimaryCTAText(getString(R.string.title_try_again))
+            it.setSecondaryCTAText(getString(R.string.label_close))
         }
     }
 

@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
@@ -24,9 +24,9 @@ class AccordianNegativeKeywordViewHolder(
     private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<AccordianNegativeKeywordUiModel>(view) {
+    private var negativeKeywordItemList: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom> = mutableListOf()
     inner class NegativeKeywordItemsAdapter :
         RecyclerView.Adapter<NegativeKeywordItemsAdapter.NegativeKeywordItemsViewHolder>() {
-        var negativeKeywordItemList: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom> = mutableListOf()
 
         inner class NegativeKeywordItemsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -37,23 +37,22 @@ class AccordianNegativeKeywordViewHolder(
             private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
             fun bind(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
                 bindValues(element)
-                setCheckedChangeListener(element)
+                setClickListener(element)
                 setSelected(element)
             }
 
             private fun setSelected(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
                 checkbox.isChecked = element.isSelected
             }
-            private fun setCheckedChangeListener(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
-                checkbox.setOnCheckedChangeListener(null)
-                checkbox.setOnCheckedChangeListener { btn, isChecked ->
-                    element.isSelected = isChecked
-                    if(isChecked){
-                        addTopadsManagePromoGroupProductInput(element)
-                    } else {
-                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
-                    }
+            private fun setClickListener(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
+                checkbox.setOnClickListener {
+                    element.isSelected = checkbox.isChecked
+                    if(checkbox.isChecked)
+                        addItemIntoInput(element)
+                    else
+                        removeItemFromInput(element)
                     onInsightAction.invoke(false)
+                    setSelectAllButtonIndeterminateState()
                 }
             }
 
@@ -113,33 +112,20 @@ class AccordianNegativeKeywordViewHolder(
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
 
     override fun bind(element: AccordianNegativeKeywordUiModel?) {
-        updateInputModel(element)
+        setDefaultInputModel(element)
         setViews(element)
-        setCheckedChangeListener(element)
+        setClickListener(element)
     }
 
-    private fun setCheckedChangeListener(element: AccordianNegativeKeywordUiModel?) {
-        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
-            if(isChecked) {
-                val list = mutableListOf<KeywordEditInput>()
-                element?.newNegativeKeywordsRecom?.forEach { list.add(
-                    KeywordEditInput(
-                        ACTION_CREATE_PARAM,
-                        keyword = KeywordEditInput.Keyword(
-                            type = it.keywordType,
-                            status = it.keywordStatus,
-                            tag = it.keywordTag,
-                            suggestionPriceBid = it.predictedImpression.toDoubleOrZero(),
-                            price_bid = it.potentialSavings.toDouble(),
-                            source = it.keywordSource
-                        )
-                    )
-                ) }
-                topadsManagePromoGroupProductInput?.keywordOperation = list
+    private fun setClickListener(element: AccordianNegativeKeywordUiModel?) {
+        selectAllCheckbox.setOnClickListener {
+            selectAllCheckbox.setIndeterminate(false)
+            if(selectAllCheckbox.isChecked) {
+                addAllItemsIntoInput(element)
             } else {
                 topadsManagePromoGroupProductInput?.keywordOperation = listOf()
             }
-            element?.newNegativeKeywordsRecom?.forEach { it.isSelected = isChecked }
+            element?.newNegativeKeywordsRecom?.forEach { it.isSelected = selectAllCheckbox.isChecked }
             element?.newNegativeKeywordsRecom?.let {
                 adapter.updateList(it)
             }
@@ -162,26 +148,61 @@ class AccordianNegativeKeywordViewHolder(
         )
     }
 
-    private fun updateInputModel(element: AccordianNegativeKeywordUiModel?) {
+    private fun setDefaultInputModel(element: AccordianNegativeKeywordUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
+        addAllItemsIntoInput(element)
+        topadsManagePromoGroupProductInput?.groupInput = null
+        element?.newNegativeKeywordsRecom?.forEach { it.isSelected = true }
+        onInsightAction.invoke(false)
     }
 
-    fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom ){
+    private fun addItemIntoInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
         val list = topadsManagePromoGroupProductInput?.keywordOperation?.toMutableList()
         list?.add(
             KeywordEditInput(
                 ACTION_CREATE_PARAM,
-            keyword = KeywordEditInput.Keyword(
-                type = getKeywordType(element.keywordType),
-                status = getKeywordStatus(element.keywordStatus),
-                tag = element.keywordTag,
-                suggestionPriceBid = element.predictedImpression.toDoubleOrZero(),
-                price_bid = element.potentialSavings.toDouble(),
-                source = element.keywordSource
+                keyword = KeywordEditInput.Keyword(
+                    type = getKeywordType(element.keywordType),
+                    status = getKeywordStatus(element.keywordStatus),
+                    tag = element.keywordTag,
+                    suggestionPriceBid = element.predictedImpression.toDoubleOrZero(),
+                    price_bid = element.potentialSavings.toDouble(),
+                    source = element.keywordSource
+                )
             )
         )
-        )
         topadsManagePromoGroupProductInput?.keywordOperation = list
+    }
+
+    private fun removeItemFromInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom) {
+        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
+    }
+
+    private fun addAllItemsIntoInput(element: AccordianNegativeKeywordUiModel?) {
+        val list = mutableListOf<KeywordEditInput>()
+        element?.newNegativeKeywordsRecom?.forEach { list.add(
+            KeywordEditInput(
+                ACTION_CREATE_PARAM,
+                keyword = KeywordEditInput.Keyword(
+                    type = it.keywordType,
+                    status = it.keywordStatus,
+                    tag = it.keywordTag,
+                    suggestionPriceBid = it.predictedImpression.toDoubleOrZero(),
+                    price_bid = it.potentialSavings.toDouble(),
+                    source = it.keywordSource
+                )
+            )
+        ) }
+        topadsManagePromoGroupProductInput?.keywordOperation = list
+    }
+
+    private fun setSelectAllButtonIndeterminateState(){
+        if(topadsManagePromoGroupProductInput?.keywordOperation?.count() == negativeKeywordItemList.count())
+            selectAllCheckbox.setIndeterminate(false)
+        else
+            selectAllCheckbox.setIndeterminate(true)
+
+        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > 0
     }
 
     private fun getKeywordType(type: String): String {
