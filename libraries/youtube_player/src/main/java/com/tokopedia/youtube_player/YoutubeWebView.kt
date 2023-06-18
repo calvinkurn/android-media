@@ -7,13 +7,8 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.webkit.JsResult
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import com.google.android.play.core.splitcompat.SplitCompat
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
@@ -31,59 +26,31 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
-    init {
-        val webSettings = settings
-        val userAgent =
-            String.format("%s - Android %s", "Tokopedia Webview", "123")
-        webSettings.userAgentString = userAgent
-        SplitCompat.installActivity(context)
-    }
+    @SuppressLint("SetJavaScriptEnabled")
     fun initialize(
-//        youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
-//        youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
-//        youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
-//        youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
-//        youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
-//        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
+        youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
+        youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
+        youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
+        youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
+        youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
+        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
     ) {
-//        settings.apply {
-//            javaScriptEnabled = true
-//            mediaPlaybackRequiresUserGesture = false
-//        }
-//        clearCache(true)
-//        clearHistory()
-//        setupTouchListener()
-//        val youtubeJSInterface = YoutubeWebViewInterface(
-//            youtubeEventVideoEnded, youtubeEventVideoPlaying,
-//            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
-//        )
-//        this.youtubeJSInterface = youtubeJSInterface
-//        addJavascriptInterface(youtubeJSInterface, jsInterface)
-//        setUpWebViewClient()
-//        loadUrl("about:blank")
-        val baseUrl = "https://www.journaldev.com"
-        val data = "Relative Link"
-//        val mimeType = "text/html"
-//        val encoding = "UTF-8"
-//        val historyUrl = "https://www.journaldev.com"
-        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
-//        mainThread.post {
-//            val baseUrl = "https://www.journaldev.com"
-//            val data = "Relative Link"
-//            val mimeType = "text/html"
-//            val encoding = "UTF-8"
-//            val historyUrl = "https://www.journaldev.com"
-//            loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
-//        }
-//        val generatedHtml = constructContentToHtml(context, data)
-//        loadData(
-//            Base64.encodeToString(generatedHtml.toByteArray(), Base64.DEFAULT),
-//            "text/html",
-//            "base64"
-//        )
-//        loadUrl(baseUrl)
+        settings.apply {
+            javaScriptEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+        }
+        clearCache(true)
+        clearHistory()
+        setupTouchListener()
+        val youtubeJSInterface = YoutubeWebViewInterface(
+            youtubeEventVideoEnded, youtubeEventVideoPlaying,
+            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
+        )
+        this.youtubeJSInterface = youtubeJSInterface
+        addJavascriptInterface(youtubeJSInterface, jsInterface)
+        setUpWebViewClient()
+        loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
     }
-
 
     private fun setUpWebViewClient() {
         webChromeClient = object : WebChromeClient() {
@@ -95,27 +62,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             override fun onHideCustomView() {
                 super.onHideCustomView()
                 customViewInterface?.onExitFullScreen()
-            }
-
-            override fun onJsAlert(
-                view: WebView?,
-                url: String?,
-                message: String?,
-                result: JsResult?
-            ): Boolean {
-                return false
-            }
-
-
-        }
-
-        webViewClient = object : WebViewClient(){
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                val asd = -2
             }
         }
     }
@@ -266,7 +212,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun release() {
         mainThread.removeCallbacksAndMessages(null)
-        destroy()
     }
 
 }
