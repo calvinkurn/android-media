@@ -17,11 +17,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_player.databinding.ActivityYoutubePlayerBinding
 
-class YoutubePlayerActivity : AppCompatActivity(),
-    YoutubeWebViewEventListener.EventVideoPaused, YoutubeWebViewEventListener.EventVideoPlaying,
-    YoutubeWebViewEventListener.EventVideoEnded, YoutubeWebViewEventListener.EventVideoCued,
-    YoutubeCustomViewListener, YoutubeWebViewEventListener.EventPlayerReady
-{
+class YoutubePlayerActivity :
+    AppCompatActivity(),
+    YoutubeWebViewEventListener.EventVideoPaused,
+    YoutubeWebViewEventListener.EventVideoPlaying,
+    YoutubeWebViewEventListener.EventVideoEnded,
+    YoutubeWebViewEventListener.EventVideoCued,
+    YoutubeCustomViewListener,
+    YoutubeWebViewEventListener.EventPlayerReady {
 
     companion object {
         private const val ROTATION = 90f
@@ -31,13 +34,15 @@ class YoutubePlayerActivity : AppCompatActivity(),
     private var videoId: String = ""
     private var youtubeWebView: YoutubeWebView? = null
 
-    init {
-        youtubeWebView =  viewBinding?.youtubeView
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
+        initView()
         getIntentData()
+    }
+
+    private fun initView() {
+        youtubeWebView = viewBinding?.youtubeView
     }
 
     override fun onCreateView(
@@ -73,7 +78,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
         }
     }
     override fun onDestroy() {
-        releaseYoutubePlayer()
+//        releaseYoutubePlayer()
         super.onDestroy()
     }
 
@@ -142,5 +147,4 @@ class YoutubePlayerActivity : AppCompatActivity(),
         youtubeWebView?.isPlayerReady = true
         setupYoutubeVideo()
     }
-
 }
