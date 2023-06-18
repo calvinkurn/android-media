@@ -62,11 +62,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 //        setUpWebViewClient()
 //        loadUrl("about:blank")
         val baseUrl = "https://www.journaldev.com"
-//        val data = "Relative Link"
+        val data = "Relative Link"
 //        val mimeType = "text/html"
 //        val encoding = "UTF-8"
 //        val historyUrl = "https://www.journaldev.com"
-//        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
+        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
 //        mainThread.post {
 //            val baseUrl = "https://www.journaldev.com"
 //            val data = "Relative Link"
@@ -81,7 +81,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
 //            "text/html",
 //            "base64"
 //        )
-        loadUrl(baseUrl)
+//        loadUrl(baseUrl)
     }
 
 
