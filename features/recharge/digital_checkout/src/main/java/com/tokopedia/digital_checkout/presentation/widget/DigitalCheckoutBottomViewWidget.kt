@@ -119,6 +119,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
             load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
         }
     }
+
     fun setProductConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
