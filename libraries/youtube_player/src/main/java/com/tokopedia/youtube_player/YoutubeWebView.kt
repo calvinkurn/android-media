@@ -210,8 +210,12 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         """.trimIndent()
     }
 
-    fun release() {
+    private fun release() {
         mainThread.removeCallbacksAndMessages(null)
     }
 
+    override fun destroy() {
+        release()
+        super.destroy()
+    }
 }

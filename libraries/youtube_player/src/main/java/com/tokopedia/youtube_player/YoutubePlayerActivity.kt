@@ -60,14 +60,6 @@ class YoutubePlayerActivity : AppCompatActivity(),
             videoId = it.pathSegments.getOrNull(Int.ONE).toString()
         }
     }
-    override fun onDestroy() {
-        releaseYoutubePlayer()
-        super.onDestroy()
-    }
-
-    private fun releaseYoutubePlayer() {
-        youtubeWebView?.release()
-    }
 
     override fun onEnterFullScreen(view: View) {
         hideSystemUi()
@@ -108,10 +100,6 @@ class YoutubePlayerActivity : AppCompatActivity(),
     private fun showSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         WindowInsetsControllerCompat(window, viewBinding?.activityYoutubePlayer!!).show(WindowInsetsCompat.Type.systemBars())
-    }
-
-    override fun renderProcessKilled() {
-        releaseYoutubePlayer()
     }
 
     override fun onVideoEnded(time: Int) {
