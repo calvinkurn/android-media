@@ -39,12 +39,12 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         SplitCompat.installActivity(context)
     }
     fun initialize(
-        youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
-        youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
-        youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
-        youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
-        youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
-        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
+//        youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
+//        youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
+//        youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
+//        youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
+//        youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
+//        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
     ) {
 //        settings.apply {
 //            javaScriptEnabled = true
