@@ -50,6 +50,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.SaveAddOnState
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
@@ -58,6 +59,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -98,6 +100,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
     val updateOrderProducts: OccMutableLiveData<List<Int>> = OccMutableLiveData(emptyList())
+    val saveAddOnProductState: OccMutableLiveData<SaveAddOnState> = OccMutableLiveData(SaveAddOnState())
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
@@ -129,6 +132,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
     private var dynamicPaymentFeeJob: Job? = null
+    private val saveAddOnProductStateJobs: MutableMap<String, Job> = mutableMapOf()
 
     private var hasSentViewOspEe = false
 
@@ -1296,12 +1300,31 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
+    fun saveAddOnProductState(
+        newAddOnProductData: AddOnsProductDataModel.Data,
+        product: OrderProduct
+    ) {
+        val job = launch(executorDispatchers.immediate) {
+            cartProcessor.saveAddOnProductState(
+                newAddOnProductData = newAddOnProductData,
+                product = product
+            )
+        }
+        job.invokeOnCompletion {
+            saveAddOnProductStateJobs[newAddOnProductData.id]?.cancel()
+            saveAddOnProductStateJobs.remove(newAddOnProductData.id)
+        }
+        saveAddOnProductStateJobs[newAddOnProductData.id] = job
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         dynamicPaymentFeeJob?.cancel()
         eligibleForAddressUseCase.cancelJobs()
+        saveAddOnProductStateJobs.forEach { it.value.cancel() }
+        saveAddOnProductStateJobs.clear()
         super.onCleared()
     }
 
@@ -1331,5 +1354,9 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 
         const val TRANSACTION_ID_KEY = "transaction_id"
+
+        const val ADD_ONS_PRODUCT_DEFAULT_STATUS = 0
+        const val ADD_ONS_PRODUCT_CHECK_STATUS = 1
+        const val ADD_ONS_PRODUCT_UNCHECK_STATUS = 2
     }
 }

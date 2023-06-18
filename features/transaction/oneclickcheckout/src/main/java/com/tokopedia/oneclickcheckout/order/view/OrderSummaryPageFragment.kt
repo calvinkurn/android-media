@@ -127,6 +127,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
@@ -447,6 +448,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         observeUploadPrescription()
 
+        observeSaveAddOnState()
+
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
@@ -554,6 +557,28 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             } else {
                 adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+            }
+        }
+    }
+
+    private fun observeSaveAddOnState() {
+        viewModel.saveAddOnProductState.observe(viewLifecycleOwner) { saveAddOnState ->
+            if (!saveAddOnState.isSuccess) {
+                if (saveAddOnState.message.isBlank()) {
+                    Toaster.build(
+                        view = binding.root,
+                        text = "Ada gangguan yang lagi dibereskan. Coba lagi atau balik lagi nanti, ya.",
+                        type = Toaster.TYPE_ERROR,
+                        actionText = "Oke"
+                    ).show()
+                } else {
+                    Toaster.build(
+                        view = binding.root,
+                        text = saveAddOnState.message,
+                        type = Toaster.TYPE_ERROR,
+                        actionText = "Oke"
+                    ).show()
+                }
             }
         }
     }
@@ -1484,6 +1509,26 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
                 startActivityForResult(intent, REQUEST_CODE_ADD_ON)
             }
+        }
+
+        override fun onCheckAddOnProduct(
+            newAddOnProductData: AddOnsProductDataModel.Data,
+            product: OrderProduct
+        ) {
+            viewModel.saveAddOnProductState(
+                newAddOnProductData = newAddOnProductData,
+                product = product
+            )
+        }
+
+        override fun onClickAddOnProductInfoIcon(
+            url: String
+        ) {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                url
+            )
         }
     }
 

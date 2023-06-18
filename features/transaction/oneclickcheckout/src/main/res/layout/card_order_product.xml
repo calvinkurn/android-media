@@ -354,12 +354,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
 
+    <include
+        layout="@layout/item_shipment_addon_product"
+        android:id="@+id/add_ons_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/space_note"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent" />
+
     <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
         android:id="@+id/button_gifting_addon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space_note" />
+        app:layout_constraintTop_toBottomOf="@+id/add_ons_product" />
+
+    <Space
+        android:id="@+id/space_button_gifting"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_gifting_addon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

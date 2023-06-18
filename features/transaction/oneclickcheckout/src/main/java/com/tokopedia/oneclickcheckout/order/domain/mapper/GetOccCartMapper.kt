@@ -58,6 +58,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.AddOnsProductResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
@@ -254,6 +256,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
+            addOnsProductData = mapAddOnsProduct(product.addOnsProduct)
             ethicalDrug = mapEthicalDrug(product.ethicalDrug)
         }
         return orderProduct
@@ -562,6 +565,26 @@ class GetOccCartMapper @Inject constructor() {
             AddOnGiftingDataModel(status = 0)
         }
     }
+
+    private fun mapAddOnsProduct(addOnsProductResponse: AddOnsProductResponse): AddOnsProductDataModel = AddOnsProductDataModel(
+        title = addOnsProductResponse.title,
+        bottomsheet = AddOnsProductDataModel.Bottomsheet(
+            title = addOnsProductResponse.bottomsheet.title,
+            applink = addOnsProductResponse.bottomsheet.applink,
+            isShown = addOnsProductResponse.bottomsheet.isShown
+        ),
+        data = addOnsProductResponse.data.map { data ->
+            AddOnsProductDataModel.Data(
+                id = data.id,
+                uniqueId = data.uniqueId,
+                price = data.price,
+                infoLink = data.infoLink,
+                name = data.name,
+                status = data.status,
+                type = data.type
+            )
+        }
+    )
 
     private fun mapAddOnDataItem(addOnDataItem: AddOnGiftingResponse.AddOnDataItem): AddOnGiftingDataItemModel {
         return AddOnGiftingDataItemModel(

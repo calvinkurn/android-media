@@ -13,16 +13,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_CHECK_STATUS
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_DEFAULT_STATUS
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_UNCHECK_STATUS
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
@@ -42,7 +50,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
+class OrderProductCard(
+    private val binding: CardOrderProductBinding,
+    private val listener: OrderProductCardListener,
+    private val orderSummaryAnalytics: OrderSummaryAnalytics,
+    private val inflater: LayoutInflater
+): RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
     private var product: OrderProduct = OrderProduct()
     private var shop: OrderShop = OrderShop()
@@ -73,6 +86,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderQuantity()
         renderPurchaseProtection()
         renderAddOn(binding, product, shop)
+        renderAddOnsProduct()
     }
 
     private fun renderDivider() {
@@ -458,6 +472,193 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         }
     }
 
+    private fun renderAddOnsProduct() {
+        product.addOnsProductData = AddOnsProductDataModel(
+            title = "testing dulu",
+            bottomsheet = AddOnsProductDataModel.Bottomsheet(
+                title = "hello",
+                applink = "tokopedia://now",
+                isShown = true
+            ),
+            data = listOf(
+                AddOnsProductDataModel.Data(
+                    id = "12121",
+                    uniqueId = "11111",
+                    price = 100000,
+                    infoLink = "121212",
+                    name = "Jasa Pasang Standar",
+                    status = 2,
+                    type = 1
+                ),
+                AddOnsProductDataModel.Data(
+                    id = "12121",
+                    uniqueId = "11111",
+                    price = 10000,
+                    infoLink = "121212",
+                    name = "Proteksi Rusak",
+                    status = 2,
+                    type = 1
+                )
+            )
+        )
+        val addOnsProductData = product.addOnsProductData
+        binding.addOnsProduct.root.showIfWithBlock(addOnsProductData.data.isNotEmpty()) {
+            binding.addOnsProduct.run {
+                setTitleAddOnsProduct(
+                    binding = this,
+                    addOnsProductData = addOnsProductData
+                )
+                setSeeAllAddOnsProduct(
+                    binding = this,
+                    addOnsProductData = addOnsProductData
+                )
+                setAddOnsProductItem(
+                    binding = this,
+                    addOnsProductData = addOnsProductData
+                )
+            }
+        }
+    }
+
+    private fun setTitleAddOnsProduct(
+        binding: ItemShipmentAddonProductBinding,
+        addOnsProductData: AddOnsProductDataModel
+    ) {
+        binding.tvTitleAddonProduct.text = addOnsProductData.title
+    }
+
+    private fun setSeeAllAddOnsProduct(
+        binding: ItemShipmentAddonProductBinding,
+        addOnsProductData: AddOnsProductDataModel
+    ) {
+        binding.tvSeeAllAddonProduct.showIfWithBlock(
+            predicate = addOnsProductData.bottomsheet.title.isNotBlank()
+                && addOnsProductData.bottomsheet.applink.isNotBlank()
+                && addOnsProductData.bottomsheet.isShown
+        ) {
+            text = addOnsProductData.bottomsheet.title
+            setOnClickListener {
+                RouteManager.route(
+                    binding.root.context,
+                    addOnsProductData.bottomsheet.applink
+                )
+            }
+        }
+    }
+
+    private fun setAddOnsProductItem(
+        binding: ItemShipmentAddonProductBinding,
+        addOnsProductData: AddOnsProductDataModel
+    ) {
+        binding.apply {
+            // show product addons layout
+            icProductAddon.visible()
+            tvTitleAddonProduct.visible()
+            tvSeeAllAddonProduct.visible()
+            llAddonProductItems.visible()
+
+            // hide shimmer
+            loaderIcProductAddon.gone()
+            loaderTvTitle.gone()
+            llAddonProductLoaders.gone()
+
+            addOnsProductData.data.forEach { addOn ->
+                val addOnView = ItemShipmentAddonProductItemBinding.inflate(
+                    inflater,
+                    null,
+                    false
+                )
+
+                addOnView.apply {
+                    // set data on the views
+                    setAddOnProductName(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+                    setAddOnProductName(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+                    setAddOnProductPrice(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+                    setAddOnProductStatus(
+                        binding = addOnView,
+                        addOn = addOn
+                    )
+
+                    // set addon listeners
+                    cbAddonItem.setOnCheckedChangeListener { _, _ ->
+                        changeAddOnProductStatus(
+                            addOn = addOn
+                        )
+                        listener.onCheckAddOnProduct(
+                            newAddOnProductData = addOn,
+                            product = product
+                        )
+                    }
+                    icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
+                        setOnClickListener {
+                            listener.onClickAddOnProductInfoIcon(
+                                url = addOn.infoLink
+                            )
+                        }
+                    }
+                }
+
+                // add addon to the layout
+                llAddonProductItems.addView(addOnView.root)
+            }
+        }
+    }
+
+    private fun setAddOnProductName(
+        binding: ItemShipmentAddonProductItemBinding,
+        addOn: AddOnsProductDataModel.Data
+    ) {
+        binding.tvShipmentAddOnName.text = addOn.name
+    }
+
+    private fun setAddOnProductPrice(
+        binding: ItemShipmentAddonProductItemBinding,
+        addOn: AddOnsProductDataModel.Data
+    ) {
+        binding.tvShipmentAddOnPrice.text = CurrencyFormatUtil
+            .convertPriceValueToIdrFormat(addOn.price, false)
+            .removeDecimalSuffix()
+    }
+
+    private fun setAddOnProductStatus(
+        binding: ItemShipmentAddonProductItemBinding,
+        addOn: AddOnsProductDataModel.Data
+    ) {
+        binding.apply {
+            when (addOn.status) {
+                ADD_ONS_PRODUCT_DEFAULT_STATUS, ADD_ONS_PRODUCT_UNCHECK_STATUS -> {
+                    cbAddonItem.isChecked = false
+                }
+                ADD_ONS_PRODUCT_CHECK_STATUS -> {
+                    cbAddonItem.isChecked = true
+                }
+                else -> {
+                    cbAddonItem.isChecked = true
+                    cbAddonItem.isEnabled = false
+                }
+            }
+        }
+    }
+
+    private fun changeAddOnProductStatus(
+        addOn: AddOnsProductDataModel.Data
+    ) {
+        addOn.status = when (addOn.status) {
+            ADD_ONS_PRODUCT_DEFAULT_STATUS, ADD_ONS_PRODUCT_UNCHECK_STATUS -> ADD_ONS_PRODUCT_CHECK_STATUS
+            ADD_ONS_PRODUCT_CHECK_STATUS -> ADD_ONS_PRODUCT_UNCHECK_STATUS
+            else -> ADD_ONS_PRODUCT_CHECK_STATUS
+        }
+    }
+
     private fun ButtonGiftingAddOnView.setAddOnButtonData(addOn: AddOnGiftingDataModel) {
         title = addOn.addOnsButtonModel.title
         desc = addOn.addOnsButtonModel.description
@@ -478,6 +679,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         fun getLastPurchaseProtectionCheckState(productId: String): Int
 
         fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop)
+
+        fun onCheckAddOnProduct(newAddOnProductData: AddOnsProductDataModel.Data, product: OrderProduct)
+
+        fun onClickAddOnProductInfoIcon(url: String)
     }
 
     companion object {
