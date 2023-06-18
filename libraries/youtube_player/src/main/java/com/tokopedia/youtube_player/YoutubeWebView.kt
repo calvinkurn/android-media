@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.webkit.JsResult
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -38,29 +39,35 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
         playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
     ) {
-        settings.apply {
-            javaScriptEnabled = true
-            mediaPlaybackRequiresUserGesture = false
-        }
-        clearCache(true)
-        clearHistory()
-        setupTouchListener()
-        val youtubeJSInterface = YoutubeWebViewInterface(
-            youtubeEventVideoEnded, youtubeEventVideoPlaying,
-            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
-        )
-        this.youtubeJSInterface = youtubeJSInterface
-        addJavascriptInterface(youtubeJSInterface, jsInterface)
-        setUpWebViewClient()
+//        settings.apply {
+//            javaScriptEnabled = true
+//            mediaPlaybackRequiresUserGesture = false
+//        }
+//        clearCache(true)
+//        clearHistory()
+//        setupTouchListener()
+//        val youtubeJSInterface = YoutubeWebViewInterface(
+//            youtubeEventVideoEnded, youtubeEventVideoPlaying,
+//            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
+//        )
+//        this.youtubeJSInterface = youtubeJSInterface
+//        addJavascriptInterface(youtubeJSInterface, jsInterface)
+//        setUpWebViewClient()
 //        loadUrl("about:blank")
-        mainThread.post {
-            val baseUrl = "https://www.journaldev.com"
-            val data = "Relative Link"
-            val mimeType = "text/html"
-            val encoding = "UTF-8"
-            val historyUrl = "https://www.journaldev.com"
-            loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
-        }
+        val baseUrl = "https://www.journaldev.com"
+        val data = "Relative Link"
+        val mimeType = "text/html"
+        val encoding = "UTF-8"
+        val historyUrl = "https://www.journaldev.com"
+        loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
+//        mainThread.post {
+//            val baseUrl = "https://www.journaldev.com"
+//            val data = "Relative Link"
+//            val mimeType = "text/html"
+//            val encoding = "UTF-8"
+//            val historyUrl = "https://www.journaldev.com"
+//            loadDataWithBaseURL(baseUrl, data, MIME_TYPE, ENCODING, null)
+//        }
     }
 
     private fun setUpWebViewClient() {
@@ -73,6 +80,15 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             override fun onHideCustomView() {
                 super.onHideCustomView()
                 customViewInterface?.onExitFullScreen()
+            }
+
+            override fun onJsAlert(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                result: JsResult?
+            ): Boolean {
+                return false
             }
 
 
