@@ -226,7 +226,6 @@
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
     <string name="goto_kyc_status_rejected_title">Yaah, verifikasinya belum berhasil</string>
-    <string name="goto_kyc_status_rejected_subtitle">Tenang aja, kamu masih bisa verifikasi lagi. Verifikasimu belum berhasil karena:</string>
     <string name="goto_kyc_status_rejected_button_primary">Verifikasi Ulang</string>
     <string name="goto_kyc_status_rejected_button_secondary">Hubungi Tokopedia Care</string>
     <string name="goto_kyc_benefit_detail_shopping_header">Fitur buat belanja</string>
