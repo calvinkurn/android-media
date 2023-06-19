@@ -1918,7 +1918,8 @@ class PlayViewModel @AssistedInject constructor(
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
+                    if (it.key == ExploreWidgetType.Category) it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId, cursor = "")
+                    else it.value
                 }
             }
         }
