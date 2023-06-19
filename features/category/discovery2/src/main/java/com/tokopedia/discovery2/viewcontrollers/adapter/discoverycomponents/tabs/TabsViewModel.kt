@@ -117,4 +117,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     fun getArrowVisibilityStatus() = components.properties?.categoryDetail ?: false
 
+    fun isFromCategory():Boolean {
+        return components.isFromCategory
+    }
 }

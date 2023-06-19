@@ -31,6 +31,6 @@ class QuickReplyViewHolder(
     override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
-        val LAYOUT = R.layout.quick_reply_chat_layout
+        val LAYOUT = R.layout.item_chatbot_quick_reply
     }
 }

@@ -127,7 +127,7 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             binding.root.setOnClickListener {
-                listener.onClicked(this, item)
+                listener.onClicked(this, item, absoluteAdapterPosition)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.text = item.number
@@ -170,7 +170,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
+            fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, position: Int)
             fun onTransactionClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, action: ProductAction)
         }
     }

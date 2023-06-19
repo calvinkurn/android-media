@@ -724,7 +724,7 @@ object TopChatAnalyticsKt {
     }
 
     fun eventViewTicker(
-        tickerType: String,
+        featureId: Long,
         isSeller: Boolean,
         msgId: String,
         lastReplyId: String
@@ -734,7 +734,7 @@ object TopChatAnalyticsKt {
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.CHAT_DETAIL,
                 action = Action.VIEW_TICKER,
-                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                label = "$featureId - ${getRole(isSeller)} - $msgId - $lastReplyId",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "35989"
@@ -743,7 +743,7 @@ object TopChatAnalyticsKt {
     }
 
     fun eventClickLinkTicker(
-        tickerType: String,
+        featureId: Long,
         isSeller: Boolean,
         msgId: String,
         lastReplyId: String
@@ -753,7 +753,7 @@ object TopChatAnalyticsKt {
                 event = Event.CLICK_COMMUNICATION,
                 category = Category.CHAT_DETAIL,
                 action = Action.CLICK_LINK_INSIDE_TICKER,
-                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                label = "$featureId - ${getRole(isSeller)} - $msgId - $lastReplyId",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "35990"
@@ -762,7 +762,7 @@ object TopChatAnalyticsKt {
     }
 
     fun eventClickCloseTicker(
-        tickerType: String,
+        featureId: Long,
         isSeller: Boolean,
         msgId: String,
         lastReplyId: String
@@ -772,7 +772,7 @@ object TopChatAnalyticsKt {
                 event = Event.CLICK_COMMUNICATION,
                 category = Category.CHAT_DETAIL,
                 action = Action.CLICK_CLOSE_TICKER,
-                label = "$tickerType - ${getRole(isSeller)}  - $msgId - $lastReplyId",
+                label = "$featureId - ${getRole(isSeller)}  - $msgId - $lastReplyId",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "35991"

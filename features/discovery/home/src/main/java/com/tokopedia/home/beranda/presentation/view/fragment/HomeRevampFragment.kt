@@ -148,6 +148,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -178,6 +179,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
@@ -386,6 +388,7 @@ open class HomeRevampFragment :
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
+    private var homeCoachmarkListener: HomeCoachmarkListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
@@ -412,7 +415,6 @@ open class HomeRevampFragment :
     private var serverOffsetTime: Long = 0L
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
-    private var coachmark: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
     private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
@@ -440,6 +442,7 @@ open class HomeRevampFragment :
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
+        homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
         requestStatusBarDark()
     }
 
@@ -567,6 +570,9 @@ open class HomeRevampFragment :
             null
         }
     }
+
+    private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
+        if (context is HomeCoachmarkListener) context else null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
@@ -719,6 +725,8 @@ open class HomeRevampFragment :
                 showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark)
             } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
+            } else {
+                homeCoachmarkListener?.onHomeCoachMarkFinished()
             }
         }
     }
@@ -756,13 +764,17 @@ open class HomeRevampFragment :
                     if (coachMarkItemTokonow.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
                         coachmarkTokonow.onDismissListener = {
                             setHomeTokonowCoachmarkShown(it)
+                            homeCoachmarkListener?.onHomeCoachMarkFinished()
                         }
                         coachmarkTokonow.showCoachMark(step = coachMarkItemTokonow, index = COACHMARK_FIRST_INDEX)
                         tokonowCoachmarkIsShowing = true
+                    } else {
+                        homeCoachmarkListener?.onHomeCoachMarkFinished()
                     }
                 } catch (e: Exception) {
                     tokonowCoachmarkIsShowing = false
                     e.printStackTrace()
+                    homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
             }
         }
@@ -1469,7 +1481,8 @@ open class HomeRevampFragment :
             CategoryWidgetV2Callback(context, this),
             MissionWidgetComponentCallback(this, getHomeViewModel()),
             LegoProductCallback(this),
-            TodoWidgetComponentCallback(this, getHomeViewModel())
+            TodoWidgetComponentCallback(this, getHomeViewModel()),
+            FlashSaleWidgetCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1746,7 +1759,6 @@ open class HomeRevampFragment :
 
     override fun onRefresh() {
         refreshQuestWidget()
-        coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
@@ -2803,7 +2815,15 @@ open class HomeRevampFragment :
         getHomeViewModel().getBalanceWidgetData()
     }
 
-    override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
+    override fun showHomeCoachmark(
+        isShowBalanceWidgetCoachmark: Boolean,
+        homeBalanceModel: HomeBalanceModel,
+    ) {
+        if (isShowBalanceWidgetCoachmark) showBalanceWidgetCoachMark(homeBalanceModel)
+        else showTokonowCoachmark()
+    }
+
+    private fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
         val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
         if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true) {
             coachmarkSubscription?.hideCoachMark()

@@ -4,7 +4,6 @@
     <dimen name="sah_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
     <dimen name="sah_status_bar_elevation">4dp</dimen>
-    <dimen name="sah_keyboard_height_estimation">200dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
     <dimen name="sah_dimen_2dp">2dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>
@@ -28,9 +27,7 @@
     <dimen name="setting_white_space_height">10dp</dimen>
     <dimen name="setting_white_space_height_17">17dp</dimen>
     <dimen name="setting_tc_height">58dp</dimen>
-    <dimen name="setting_header_height_extra">58dp</dimen>
     <dimen name="setting_logout_margin_top">-2dp</dimen>
-    <dimen name="setting_topads_icon_margin">5dp</dimen>
     <dimen name="setting_topads_bottomsheet_padding">16dp</dimen>
     <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
     <dimen name="setting_topads_button_margin">20dp</dimen>
@@ -51,7 +48,6 @@
     <dimen name="sah_new_other_item_error_margin">6dp</dimen>
     <dimen name="sah_new_other_item_shop_follower_shimmer_width">62dp</dimen>
     <dimen name="sah_new_other_header_shop_name_margin_bottom">11dp</dimen>
-    <dimen name="sah_new_other_header_share_width">18dp</dimen>
     <dimen name="sah_new_other_layout_animation_start_margin_top">200dp</dimen>
     <dimen name="sah_new_other_balance_info_shimmer_width">112dp</dimen>
 </resources>

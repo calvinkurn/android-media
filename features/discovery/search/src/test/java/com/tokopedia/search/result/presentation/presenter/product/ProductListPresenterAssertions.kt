@@ -154,6 +154,7 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.parentId shouldBe expectedProduct.parentId
         actualProduct.minOrder shouldBe expectedProduct.minOrder
         actualProduct.shopId shouldBe expectedProduct.shop.id
+        actualProduct.warehouseID shouldBe expectedProduct.warehouseIdDefault
         productPosition++
     }
 }

@@ -209,6 +209,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         setDrawGridLines(axisConfig.isGridEnabled)
         setDrawLabels(axisConfig.isLabelEnabled)
         position = axisConfig.getLabelPosition()
+        textColor = axisConfig.textColor
     }
 
     private fun setupYAxis() = binding?.lineChart?.axisLeft?.run {
@@ -221,5 +222,6 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         setDrawGridLines(axisConfig.isGridEnabled)
         setDrawLabels(axisConfig.isLabelEnabled)
         setPosition(axisConfig.getLabelPosition())
+        textColor = axisConfig.textColor
     }
 }

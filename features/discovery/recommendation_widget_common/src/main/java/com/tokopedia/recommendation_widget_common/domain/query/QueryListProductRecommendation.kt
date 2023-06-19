@@ -98,11 +98,15 @@ object QueryListProductRecommendation {
         "                        specificationLabels {\n" +
         "                            key\n" +
         "                            value\n" +
+        "                            type\n" +
+        "                            specificationContent {\n" +
+        "                               url\n" +
+        "                               description\n" +
+        "                            }\n" +
         "                        }\n" +
         "                        parentID\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +
         "                }"
-
 }

@@ -43,7 +43,8 @@ class UploadMultipleMediaUseCase @Inject constructor(
 ) : GraphqlUseCase<List<SubmitPostMedium>>(graphqlRepository) {
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null
-    var tempFilePath = ""
+
+    private val mapTempFilePath = mutableSetOf<String>()
 
     private val _images = MutableStateFlow<UploadMediaDataModel.Media>(UploadMediaDataModel.Media.Unknown)
     private val _videos = MutableStateFlow<UploadMediaDataModel.Media>(UploadMediaDataModel.Media.Unknown)
@@ -123,7 +124,7 @@ class UploadMultipleMediaUseCase @Inject constructor(
                 ?: ""
             postUpdateProgressManager?.addProgress()
             postUpdateProgressManager?.onAddProgress()
-            deleteCacheFile()
+
             medium.videoID = videoId
             medium.mediaURL = videoUrl
 
@@ -167,8 +168,6 @@ class UploadMultipleMediaUseCase @Inject constructor(
                     medium.mediaURL = ""
                     medium.type = SubmitPostMedium.TYPE_MEDIA_IMAGE_UPLOAD_ID
                 }
-
-                deleteCacheFile()
             }
             is UploadResult.Error -> {
                 throw Exception(result.message)
@@ -205,17 +204,22 @@ class UploadMultipleMediaUseCase @Inject constructor(
     }
 
     private fun setTempFilePath(medium: SubmitPostMedium): String {
-        if (medium.mediaURL.contains("${ContentResolver.SCHEME_CONTENT}://")) {
-            tempFilePath = handleUri(medium)
+        val tempFilePath = if (medium.mediaURL.contains("${ContentResolver.SCHEME_CONTENT}://")) {
+            handleUri(medium)
         } else {
-            tempFilePath = medium.mediaURL
+            medium.mediaURL
         }
+
+        mapTempFilePath.add(tempFilePath)
+
         return tempFilePath
     }
 
-    private fun deleteCacheFile() {
-        if (File(tempFilePath).exists()) {
-            File(tempFilePath).delete()
+    fun deleteCacheFile() {
+        mapTempFilePath.forEach { tempFilePath ->
+            if (File(tempFilePath).exists()) {
+                File(tempFilePath).delete()
+            }
         }
     }
 

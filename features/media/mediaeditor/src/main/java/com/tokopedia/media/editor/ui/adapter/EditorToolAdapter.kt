@@ -89,17 +89,7 @@ class EditorToolViewHolder(
 
     fun bind(tool: ToolUiModel, isActive: Boolean = false) {
         txtName.text = context.getString(tool.name)
-        when (tool.id) {
-            EditorToolType.REMOVE_BACKGROUND -> {
-                icTool.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.editor_remove_background
-                    )
-                )
-            }
-            else -> icTool.setImage(tool.icon)
-        }
+        icTool.setImage(tool.icon)
 
         itemView.setOnClickListener {
             listener.onItemClicked(tool.id)

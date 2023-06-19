@@ -61,20 +61,20 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val bgRight = ViewUtil.generateBackgroundWithShadow(
-        view =this,
+        view = this,
         backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN100,
-        topLeftRadius =  com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
         elevation = R.dimen.dp_chatbot_2,
-        shadowRadius =  R.dimen.dp_chatbot_1,
+        shadowRadius = R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
         strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
-    
+
     private val bgLeft = ViewUtil.generateBackgroundWithShadow(
         view = this,
         backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N50,
@@ -83,8 +83,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        elevation =  R.dimen.dp_chatbot_2,
-        shadowRadius =  R.dimen.dp_chatbot_1,
+        elevation = R.dimen.dp_chatbot_2,
+        shadowRadius = R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
         strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
         strokeWidth = getStrokeWidthSenderDimenRes()
@@ -107,22 +107,23 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         replyIcon = findViewById(R.id.reply_icon)
     }
 
-
     fun updateReplyButtonState(toShow: Boolean) {
-        if (toShow)
+        if (toShow) {
             replyIcon?.show()
-        else
+        } else {
             replyIcon?.hide()
-        if (replyIcon?.isVisible==true){
+        }
+        if (replyIcon?.isVisible == true) {
             title?.setMargin(
                 left = 8.toPx(),
                 top = 10.toPx(),
                 right = 15.toPx(),
-                bottom = 0)
+                bottom = 0
+            )
         }
     }
 
-    private fun bindParentReplyData(parentReply: ParentReply, message : String, from : String?) {
+    private fun bindParentReplyData(parentReply: ParentReply, message: String, from: String?) {
         referTo(parentReply)
         setTitle(from)
         setReplyMsg(message)
@@ -130,8 +131,9 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun bindClick(parentReply: ParentReply) {
         setOnClickListener {
-            if(!parentReply.isExpired)
+            if (!parentReply.isExpired) {
                 listener?.goToBubble(parentReply)
+            }
         }
     }
 
@@ -139,13 +141,14 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referredMsg = parentReply
     }
 
-    //Requirement from BE, Changing this value will break the UI
+    // Requirement from BE, Changing this value will break the UI
     private fun setTitle(sender: String?) {
         sender ?: return
-        if (sender == ChatbotConstant.TANYA)
+        if (sender == ChatbotConstant.TANYA) {
             title?.text = ChatbotConstant.TOKOPEDIA_CARE
-        else
+        } else {
             title?.text = sender
+        }
     }
 
     private fun setReplyMsg(msg: String?) {
@@ -174,20 +177,22 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         return R.dimen.dp_chatbot_2
     }
 
-    fun updateBackground(orientation : Int){
-        if(orientation == LEFT_ORIENTATION)
+    fun updateBackground(orientation: Int) {
+        if (orientation == LEFT_ORIENTATION) {
             background = bgLeft
-        else if (orientation == RIGHT_ORIENTATION)
+        } else if (orientation == RIGHT_ORIENTATION) {
             background = bgRight
-        else
+        } else {
             background = bgRight
+        }
     }
 
-    fun composeMsg(title : String?, msg : String?, parentReply: ParentReply?){
+    fun composeMsg(title: String?, msg: String?, parentReply: ParentReply?) {
         setTitle(title)
         setReplyMsg(msg)
-        if (parentReply!=null)
+        if (parentReply != null) {
             bindClick(parentReply)
+        }
     }
 
     fun composeReplyData(
@@ -228,9 +233,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     companion object {
-        val LAYOUT = R.layout.text_reply_bubble
+        val LAYOUT = R.layout.customview_chatbot_reply_bubble
         const val LEFT_ORIENTATION = 0
         const val RIGHT_ORIENTATION = 1
     }
-
 }

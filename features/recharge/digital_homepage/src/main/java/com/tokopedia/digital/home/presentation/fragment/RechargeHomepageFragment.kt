@@ -81,6 +81,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
     private var sliceOpenApp: Boolean = false
+    private var isTripleEntryPointLoaded = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
     var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
@@ -136,6 +137,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
+            isTripleEntryPointLoaded = false
             loadData()
         }
 
@@ -304,6 +306,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun loadRechargeSectionData(sectionID: String) {
+        loadSectionData(sectionID)
+    }
+
+    override fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean) {
+        isTripleEntryPointLoaded = isLoaded
+        loadSectionData(sectionID)
+    }
+
+    private fun loadSectionData(sectionID: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
@@ -516,7 +527,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private fun renderList(sections: List<RechargeHomepageSections.Section>) {
         val mappedData =
-            RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList, platformId)
+            RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList, platformId, isTripleEntryPointLoaded)
         val homeComponentIDs: List<Int> =
             mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
                 homeComponent.visitableId()?.toIntSafely()

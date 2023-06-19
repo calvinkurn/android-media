@@ -11,12 +11,18 @@ import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemote
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -25,7 +31,11 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.*
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -35,8 +45,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +72,7 @@ class ShopPageHeaderViewModelTest {
     lateinit var gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>
 
     @RelaxedMockK
-    lateinit var getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>
+    lateinit var getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>
 
     @RelaxedMockK
     lateinit var gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>
@@ -116,7 +133,7 @@ class ShopPageHeaderViewModelTest {
         shopPageHeaderViewModel = ShopPageHeaderViewModel(
             userSessionInterface,
             gqlGetShopInfoForHeaderUseCase,
-            getBroadcasterShopConfigUseCase,
+            getBroadcasterAuthorConfig,
             gqlGetShopInfobUseCaseCoreAndAssets,
             shopQuestGeneralTrackerUseCase,
             getShopPageP1DataUseCase,
@@ -538,7 +555,7 @@ class ShopPageHeaderViewModelTest {
         val mockShopId = "123"
         every { userSessionInterface.shopId } returns mockShopId
         coEvery {
-            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+            getBroadcasterAuthorConfig.get().executeOnBackground()
         } returns Broadcaster.Config(true)
         shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
@@ -551,7 +568,7 @@ class ShopPageHeaderViewModelTest {
         val mockShopId = "123"
         every { userSessionInterface.shopId } returns mockShopId
         coEvery {
-            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+            getBroadcasterAuthorConfig.get().executeOnBackground()
         } throws Exception()
         shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
@@ -564,7 +581,7 @@ class ShopPageHeaderViewModelTest {
         val mockShopId = "123"
         every { userSessionInterface.shopId } returns mockShopId
         coEvery {
-            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+            getBroadcasterAuthorConfig.get().executeOnBackground()
         } throws Throwable()
         shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
@@ -587,7 +604,7 @@ class ShopPageHeaderViewModelTest {
         val mockShopId = "123"
         every { userSessionInterface.shopId } returns mockShopId
         coEvery {
-            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+            getBroadcasterAuthorConfig.get().executeOnBackground()
         } returns Broadcaster.Config(shortVideoAllowed = true)
         shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
@@ -601,7 +618,7 @@ class ShopPageHeaderViewModelTest {
         val mockShopId = "123"
         every { userSessionInterface.shopId } returns mockShopId
         coEvery {
-            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+            getBroadcasterAuthorConfig.get().executeOnBackground()
         } returns Broadcaster.Config(shortVideoAllowed = true)
         shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
         val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value

@@ -110,3 +110,9 @@ inline fun <reified T> Any.assertType(
 
     whenType(this as T)
 }
+
+fun <T : Any> T.assertNotEqualTo(expected: T) {
+    Assertions
+        .assertThat(this)
+        .isNotEqualTo(expected)
+}

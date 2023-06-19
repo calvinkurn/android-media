@@ -408,9 +408,11 @@ class MultiLineGraphViewHolder(
             shcMlgSuccessState.post {
                 metricsAdapter.setRecyclerViewWidth(shcMlgSuccessState.width)
             }
-            rvShcGraphMetrics.layoutManager =
-                LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
-            rvShcGraphMetrics.adapter = metricsAdapter
+
+            if (rvShcGraphMetrics.layoutManager == null) {
+                rvShcGraphMetrics.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
+                rvShcGraphMetrics.adapter = metricsAdapter
+            }
 
             metricsAdapter.setItems(items)
             rvShcGraphMetrics.post {
@@ -462,7 +464,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -470,7 +472,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

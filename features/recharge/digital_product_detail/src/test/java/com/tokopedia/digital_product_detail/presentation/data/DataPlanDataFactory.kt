@@ -57,6 +57,13 @@ class DataPlanDataFactory {
         )
     }
 
+    fun getMCCMData(): DigitalDigiPersoGetPersonalizedItem {
+        return gson.fromJson(
+            gson.JsonToString(GET_MCCM_DATA),
+            DigitalDigiPersoGetPersonalizedItem::class.java
+        )
+    }
+
     fun getCatalogInputMultiTabData(): DigitalCatalogProductInputMultiTab {
         return gson.fromJson(
             gson.JsonToString(GET_CATALOG_INPUT_MULTITAB),
@@ -228,6 +235,7 @@ class DataPlanDataFactory {
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_RECOMMENDATION = "common_telco/get_recommendation_mock.json"
+        const val GET_MCCM_DATA = "common_telco/get_mccm_product_mock.json"
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
