@@ -41,7 +41,7 @@ class BridgingAccountLinkingViewModelTest {
     }
 
     @Test
-    fun `when get status account then return linked`() {
+    fun `when get status account linking then return linked`() {
         val expected = AccountLinkingStatusResult.Linked()
 
         coEvery { accountLinkingStatusUseCase(Unit) } returns expected
@@ -53,7 +53,7 @@ class BridgingAccountLinkingViewModelTest {
     }
 
     @Test
-    fun `when get status account then return not linked`() {
+    fun `when get status account linking then return not linked`() {
         val expected = AccountLinkingStatusResult.NotLinked()
 
         coEvery { accountLinkingStatusUseCase(Unit) } returns expected
@@ -66,7 +66,7 @@ class BridgingAccountLinkingViewModelTest {
 
 
     @Test
-    fun `when get status account then return failed`() {
+    fun `when get status account linking then return failed`() {
         val throwable = Throwable()
 
         coEvery { accountLinkingStatusUseCase(Unit) } throws throwable
