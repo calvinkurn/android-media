@@ -376,7 +376,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
                 combination = combination,
-                hasDTStock = productVariant.hasDTStock)
+                hasDTStock = productVariant.hasDTStock,
+                isCampaignActive = productVariant.isCampaign)
     }
 
     fun getInputDataValidStatus() = !inputLayoutModelMap.any {

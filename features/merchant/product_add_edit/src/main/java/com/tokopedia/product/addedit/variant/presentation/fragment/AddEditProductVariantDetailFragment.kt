@@ -59,6 +59,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -267,8 +268,21 @@ class AddEditProductVariantDetailFragment :
         setFirstTimeWeightPerVariant(activity, false)
     }
 
-    override fun onDisabledVariantStatusChanged(position: Int) {
+    override fun onDisablingVariantDT(position: Int) {
         showDTNotAllowedChangeStatusDialog(position)
+    }
+
+    override fun onDisablingVariantCampaign(position: Int) {
+        val toaster = Toaster.build(
+            requireView(),
+            getString(R.string.product_add_edit_cannot_deactivate_variant_campaign),
+            actionText = getString(R.string.action_oke),
+            type = Toaster.TYPE_ERROR,
+            duration = Toaster.LENGTH_LONG
+        ).apply {
+            anchorView = buttonSave
+        }
+        toaster.show()
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {

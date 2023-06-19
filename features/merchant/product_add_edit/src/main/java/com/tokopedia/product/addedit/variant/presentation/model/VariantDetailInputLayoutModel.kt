@@ -19,5 +19,6 @@ data class VariantDetailInputLayoutModel(
         var priceEditEnabled: Boolean = true,
         var isPrimary: Boolean = false,
         var combination: List<Int> = listOf(),
-        var hasDTStock: Boolean = false
+        var hasDTStock: Boolean = false,
+        var isCampaignActive: Boolean = false
 )
