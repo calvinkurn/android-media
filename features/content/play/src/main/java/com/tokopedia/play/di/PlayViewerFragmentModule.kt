@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
+import com.tokopedia.play.ui.explorewidget.PlayCategoryWidgetFragment
 import com.tokopedia.play.ui.explorewidget.PlayExploreWidget
 import com.tokopedia.play.view.bottomsheet.PlayFollowBottomSheet
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
@@ -91,4 +92,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayExploreWidget::class)
     abstract fun getNewExploreWidget(fragment: PlayExploreWidget): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayCategoryWidgetFragment::class)
+    abstract fun getCategoryExploreWidget(fragment: PlayCategoryWidgetFragment): Fragment
 }
