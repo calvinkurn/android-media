@@ -69,7 +69,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
                 layoutManager.scrollToPosition(Int.ONE)
             } else if (firstItemVisible != Int.ONE && firstItemVisible > getTotalProductSize() && (firstItemVisible % getTotalProductSize() > Int.ONE)) {
                 layoutManager.scrollToPosition(firstItemVisible % getTotalProductSize())
-            } else if (firstItemVisible == Int.ONE) {
+            } else if (firstItemVisible == Int.ZERO) {
                 layoutManager.scrollToPositionWithOffset(
                     getTotalProductSize(),
                     -recyclerView.computeHorizontalScrollOffset()
