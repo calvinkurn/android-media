@@ -1,6 +1,5 @@
 package com.tokopedia.content.common.util.sidesheet;
 
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static java.lang.Math.min;
 
 import android.content.Context;
@@ -21,7 +20,6 @@ import android.view.ViewParent;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
 import androidx.annotation.StyleableRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -795,7 +793,6 @@ public class SideSheetBehavior<V extends View> extends CoordinatorLayout.Behavio
      *
      * @hide
      */
-    @RestrictTo(LIBRARY_GROUP)
     public boolean shouldSkipSmoothAnimation() {
         return true;
     }
@@ -807,7 +804,6 @@ public class SideSheetBehavior<V extends View> extends CoordinatorLayout.Behavio
      * @hide
      */
     @SheetState
-    @RestrictTo(LIBRARY_GROUP)
     public int getLastStableState() {
         return lastStableState;
     }
@@ -886,12 +882,6 @@ public class SideSheetBehavior<V extends View> extends CoordinatorLayout.Behavio
                 };
     }
 
-    /**
-     * A utility function to get the {@link com.google.android.material.sidesheet.SideSheetBehavior} associated with the {@code view}.
-     *
-     * @param view The {@link View} with {@link com.google.android.material.sidesheet.SideSheetBehavior}.
-     * @return The {@link com.google.android.material.sidesheet.SideSheetBehavior} associated with the {@code view}.
-     */
     @NonNull
     @SuppressWarnings("unchecked")
     public static <V extends View> SideSheetBehavior<V> from(@NonNull V view) {

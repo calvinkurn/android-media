@@ -6,7 +6,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
-import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -141,8 +140,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
     }
-
-    private lateinit var sliderAnimation: SpringAnimation
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(requireView(), viewLifecycleOwner) }
@@ -374,11 +371,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             binding.srExploreWidget.visible()
             binding.viewExploreWidgetEmpty.root.gone()
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (::sliderAnimation.isInitialized) sliderAnimation.cancel()
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {

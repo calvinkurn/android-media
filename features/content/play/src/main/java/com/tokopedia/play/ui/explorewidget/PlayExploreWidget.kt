@@ -14,9 +14,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.sidesheet.SideSheetBehavior
-import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.sidesheet.SideSheetBehavior
+import com.tokopedia.content.common.util.sidesheet.SideSheetCallback
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
