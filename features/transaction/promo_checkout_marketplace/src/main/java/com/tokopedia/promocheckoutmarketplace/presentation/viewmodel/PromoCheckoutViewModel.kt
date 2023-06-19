@@ -1433,8 +1433,10 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
-                    showLoadingMvcSection(promoItem)
-                    delay(CLASH_LOADING_MILLISECONDS)
+                    val affectedPromoCount = showLoadingMvcSection(promoItem)
+                    if (affectedPromoCount > 0) {
+                        delay(CLASH_LOADING_MILLISECONDS)
+                    }
 
                     // Perform clash calculation
                     calculateClash(promoItem)
@@ -1743,15 +1745,18 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel) {
+    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
+        var affectedPromoCount = 0
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
                 it.uiData.shopId > 0 && !it.uiState.isDisabled
             ) {
                 it.uiState.isLoading = true
                 _tmpUiModel.value = Update(it)
+                affectedPromoCount += 1
             }
         }
+        return affectedPromoCount
     }
 
     private fun calculateClash(selectedItem: PromoListItemUiModel) {
