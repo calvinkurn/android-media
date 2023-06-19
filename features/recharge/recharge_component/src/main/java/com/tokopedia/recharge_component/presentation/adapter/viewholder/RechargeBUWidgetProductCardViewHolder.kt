@@ -138,12 +138,14 @@ class RechargeBUWidgetProductCardViewHolder(
             with(rechargeBuProgressStock) {
                 if (element.showSoldPercentage) {
                     setProgressIcon(
-                        icon = if (element.soldPercentage >= MIN_PROGRESS_TO_SHOW_FIRE)
+                        icon = if (element.soldPercentage >= MIN_PROGRESS_TO_SHOW_FIRE) {
                             ContextCompat.getDrawable(
                                 context,
                                 com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
                             )
-                        else null,
+                        } else {
+                            null
+                        },
                         width = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_width)
                             .toInt(),
                         height = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_height)
@@ -177,13 +179,8 @@ class RechargeBUWidgetProductCardViewHolder(
                     hide()
                 }
             }
-
         }
     }
-
-//    override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
-//
-//    override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
 
     fun applyCarousel() {
         setCardHeightMatchParent()
@@ -195,35 +192,4 @@ class RechargeBUWidgetProductCardViewHolder(
         layoutParams?.height = MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams
     }
-
-//    override fun recycle() {
-//        imageProduct?.glideClear(context)
-//        imageFreeOngkirPromo?.glideClear(context)
-//        labelCampaignBackground?.glideClear(context)
-//    }
-
-//    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-//        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-//            progressBarStock.progress = productCardModel.stockBarPercentage
-//        }
-//    }
-//
-//    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-//        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-//            textViewStockLabel.text = productCardModel.stockBarLabel
-//        }
-//    }
-
-//    private fun renderOutOfStockView(productCardModel: ProductCardModel) {
-//        if (productCardModel.isOutOfStock) {
-//            textViewStockLabel?.hide()
-//            progressBarStock?.hide()
-//            outOfStockOverlay?.visible()
-//        } else {
-//            outOfStockOverlay?.gone()
-//        }
-//    }
-
-//    override fun getThreeDotsButton(): View? = null
-
 }
