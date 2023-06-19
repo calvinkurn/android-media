@@ -38,6 +38,8 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
@@ -54,7 +56,6 @@ import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -319,6 +320,12 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     ExploreWidgetInitialState -> scrollListener.resetState()
+                    is ShowInfoEvent -> {
+                        toaster.showToasterInView(
+                            message = getTextFromUiString(event.message),
+                            view = requireView()
+                        )
+                    }
                     else -> {}
                 }
             }
@@ -535,6 +542,13 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
         return emptyMap()
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
     }
 
     companion object {

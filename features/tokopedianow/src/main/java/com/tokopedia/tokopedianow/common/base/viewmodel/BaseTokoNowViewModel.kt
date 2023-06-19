@@ -13,7 +13,9 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -81,6 +83,14 @@ open class BaseTokoNowViewModel(
     open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         setMiniCartData(miniCartData)
     }
+
+    fun isLoggedIn(): Boolean = userSession.isLoggedIn
+
+    fun getUserId(): String = userSession.userId
+
+    fun getDeviceId(): String = userSession.deviceId
+
+    fun getTickerSourcePage(): String = String.EMPTY
 
     fun onCartQuantityChanged(
         productId: String,
@@ -153,11 +163,19 @@ open class BaseTokoNowViewModel(
 
     fun getShopId(): Long = addressData.getShopId()
 
+    fun getWarehouseId(): String = addressData.getWarehouseId().toString()
+
     fun updateAddressData() = addressData.updateLocalData()
+
+    fun getAddressData() = addressData.getAddressData()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
     fun getAffiliateShareInput() = affiliateService.createShareInput()
+
+    fun setAddressData(data: LocalCacheModel) {
+        addressData.setLocalData(data)
+    }
 
     fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
         launchCatchError(block = {
@@ -169,11 +187,14 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(warehouseId: String): Deferred<Pair<Boolean, List<TickerData>>?> {
+    suspend fun getTickerDataAsync(
+        warehouseId: String,
+        page: String
+    ): Deferred<Pair<Boolean, List<TickerData>>?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
-                page = GetTargetedTickerUseCase.HOME_PAGE,
-                warehouseId = warehouseId
+                warehouseId = warehouseId,
+                page = page
             )
             TickerMapper.mapTickerData(tickerList)
         }) {

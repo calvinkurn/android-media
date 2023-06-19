@@ -71,7 +71,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 ImageRatioType.RATIO_1_1 -> autoCrop1to1()
                                 ImageRatioType.RATIO_3_4 -> autoCrop3to4()
                                 ImageRatioType.RATIO_2_1 -> autoCrop2to1()
-                                else -> autoCrop1to1()
+                                else -> {}
                             }
                         }
                     }
