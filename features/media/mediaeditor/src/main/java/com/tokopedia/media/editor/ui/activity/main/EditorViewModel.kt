@@ -4,23 +4,25 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository,
     private val userSession: UserSessionInterface,
-    private val bitmapCreationRepository: BitmapCreationRepository
+    private val bitmapCreationRepository: BitmapCreationRepository,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -31,6 +33,9 @@ class EditorViewModel @Inject constructor(
 
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
+
+    private var _editorResult = MutableLiveData<List<String>>()
+    val editorResult: LiveData<List<String>> = _editorResult
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -97,37 +102,48 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    suspend fun finishPage(
-        dataList: List<EditorUiModel>,
-        onFinish: (result: List<String>?) -> Unit
+    fun finishPage(
+        dataList: List<EditorUiModel>
     ) {
-        val filteredData = dataList.map {
-            if (it.isImageEdited()) {
-                // if use 'add logo' & 'add text' feature then need to flatten image first
-                var flattenBitmap = it.getImageUrl()
-                it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
-                    flattenBitmap = saveImageRepository.flattenImage(
-                        it.getImageUrl(),
-                        textImagePath,
-                        it.getOriginalUrl()
-                    )
-                }
+        var filteredData: List<String>
+        viewModelScope.launch(coroutineDispatchers.io) {
+            filteredData= dataList.map {
+                if (it.isImageEdited()) {
+                    // base image
+                    val flattenBitmap = it.getImageUrl()
 
-                it.getOverlayLogoValue()?.let { overlayData ->
-                    flattenBitmap = saveImageRepository.flattenImage(
-                        flattenBitmap,
-                        overlayData.overlayLogoUrl,
-                        it.getOriginalUrl()
-                    )
-                }
+                    val addTextFlatten = async {
+                        it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
+                            saveImageRepository.flattenImage(
+                                it.getImageUrl(),
+                                textImagePath,
+                                it.getOriginalUrl()
+                            )
+                        } ?: flattenBitmap
+                    }
 
-                flattenBitmap
-            } else {
-                ""
+                    val addLogoFlatten = async {
+                        val addTextOrOriginalResult = addTextFlatten.await()
+
+                        it.getOverlayLogoValue()?.let { overlayData ->
+                            saveImageRepository.flattenImage(
+                                addTextOrOriginalResult,
+                                overlayData.overlayLogoUrl,
+                                it.getOriginalUrl()
+                            )
+                        } ?: addTextOrOriginalResult
+                    }
+
+                    addLogoFlatten.await()
+                } else {
+                    ""
+                }
+            }
+
+            withContext(coroutineDispatchers.main) {
+                _editorResult.value = filteredData
             }
         }
-
-        onFinish(filteredData)
     }
 
     fun saveToCache(

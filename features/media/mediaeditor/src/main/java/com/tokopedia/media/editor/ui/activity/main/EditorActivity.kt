@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
@@ -66,6 +67,24 @@ class EditorActivity : BaseEditorActivity() {
             this,
             getEditorSaveFolderPath()
         )
+
+        viewModel.editorResult.observe(this) { imageResultList ->
+            imageResultList?.let {
+                val listImageEditState = viewModel.editStateList.values.toList()
+                val result = EditorResult(
+                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                    editedImages = imageResultList
+                )
+
+                editorHomeAnalytics.clickUpload()
+
+                val intent = Intent()
+                intent.putExtra(RESULT_INTENT_EDITOR, result)
+                setResult(Activity.RESULT_OK, intent)
+            }
+
+            finish()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -129,27 +148,9 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     private fun finishPage() {
-        val listImageEditState = viewModel.editStateList.values.toList()
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.finishPage(
-                listImageEditState
-            ) { imageResultList ->
-                imageResultList?.let {
-                    val result = EditorResult(
-                        originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                        editedImages = imageResultList
-                    )
-
-                    editorHomeAnalytics.clickUpload()
-
-                    val intent = Intent()
-                    intent.putExtra(RESULT_INTENT_EDITOR, result)
-                    setResult(Activity.RESULT_OK, intent)
-                }
-
-                finish()
-            }
-        }
+        viewModel.finishPage(
+            viewModel.editStateList.values.toList()
+        )
     }
 
     private fun showBackDialogConfirmation() {

@@ -62,54 +62,43 @@ class SaveImageRepositoryImpl @Inject constructor(
         imageAddedUrl: String,
         sourcePath: String
     ): String {
-        val latch = CountDownLatch(1)
-
         var resultBitmap: Bitmap? = null
-        Thread {
-            bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))?.let { baseBitmap ->
-                resultBitmap = baseBitmap
+        bitmapConverter.uriToBitmap(Uri.parse(imageBaseUrl))?.let { baseBitmap ->
+            resultBitmap = baseBitmap
 
-                bitmapConverter.uriToBitmap(Uri.parse(imageAddedUrl))?.let { overlayBitmap ->
-                    val widthValidation = baseBitmap.width != overlayBitmap.width
-                    val heightValidation = baseBitmap.height != overlayBitmap.height
+            bitmapConverter.uriToBitmap(Uri.parse(imageAddedUrl))?.let { overlayBitmap ->
+                val widthValidation = baseBitmap.width != overlayBitmap.width
+                val heightValidation = baseBitmap.height != overlayBitmap.height
 
-                    val finalBitmap = if (widthValidation || heightValidation) {
-                        bitmapCreation.createBitmap(
-                            BitmapCreation.scaledBitmap(
-                                overlayBitmap,
-                                baseBitmap.width,
-                                baseBitmap.height,
-                                true
-                            )
+                val finalBitmap = if (widthValidation || heightValidation) {
+                    bitmapCreation.createBitmap(
+                        BitmapCreation.scaledBitmap(
+                            overlayBitmap,
+                            baseBitmap.width,
+                            baseBitmap.height,
+                            true
                         )
-                    } else {
-                        overlayBitmap
-                    }
+                    )
+                } else {
+                    overlayBitmap
+                }
 
-                    val canvas = Canvas(baseBitmap)
-                    finalBitmap?.let {
-                        canvas.drawBitmap(it,
-                            XY_FLATTEN_COORDINATE,
-                            XY_FLATTEN_COORDINATE,
-                            Paint()
-                        )
-                    }
+                val canvas = Canvas(baseBitmap)
+                finalBitmap?.let {
+                    canvas.drawBitmap(it,
+                        XY_FLATTEN_COORDINATE,
+                        XY_FLATTEN_COORDINATE,
+                        Paint()
+                    )
                 }
             }
-
-            latch.countDown()
-        }.start()
-
-        latch.await()
+        }
         return resultBitmap?.let {
             saveToCache(it, sourcePath = sourcePath)?.path ?: ""
         } ?: ""
     }
 
     companion object {
-        private const val FILE_NAME_PREFIX = "Tkpd"
-        private const val MIME_IMAGE_TYPE = "image/jpeg"
-
         private const val XY_FLATTEN_COORDINATE = 0f
     }
 }
