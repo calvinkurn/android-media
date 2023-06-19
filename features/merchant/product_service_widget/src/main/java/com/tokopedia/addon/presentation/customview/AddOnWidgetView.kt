@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -54,7 +55,7 @@ class AddOnWidgetView : BaseCustomView {
         val lifecycleOwner = context as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.errorThrowable.observe(this) {
-                listener?.onAddonComponentError(it)
+                listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
@@ -73,7 +74,8 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.saveSelectionResult.observe(this) {
                 when (it) {
                     is Fail -> {
-                        listener?.onSaveAddonFailed(it.throwable)
+                        listener?.onSaveAddonFailed(
+                            ErrorHandler.getErrorMessage(context, it.throwable))
                         viewModel.restoreSelection()
                     }
                     is Success -> {

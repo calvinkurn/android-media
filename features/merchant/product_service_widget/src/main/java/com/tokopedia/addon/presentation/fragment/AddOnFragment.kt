@@ -81,8 +81,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         }
     }
 
-    override fun onAddonComponentError(throwable: Throwable) {
-        showErrorToaster(throwable)
+    override fun onAddonComponentError(errorMessage: String) {
+        showErrorToaster(errorMessage)
     }
 
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
@@ -115,14 +115,13 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         binding?.btnSave?.isLoading = true
     }
 
-    override fun onSaveAddonFailed(throwable: Throwable) {
+    override fun onSaveAddonFailed(errorMessage: String) {
         binding?.btnSave?.isLoading = false
-        showErrorToaster(throwable)
+        showErrorToaster(errorMessage)
     }
 
-    private fun showErrorToaster(throwable: Throwable) {
+    private fun showErrorToaster(errorMessage: String) {
         binding?.apply {
-            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
             layoutError.animateExpand()
             tfError.text = errorMessage
             tfErrorAction.setOnClickListener {

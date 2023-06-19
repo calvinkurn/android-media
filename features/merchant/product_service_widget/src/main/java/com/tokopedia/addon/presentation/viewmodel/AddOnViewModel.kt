@@ -13,6 +13,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -84,7 +85,11 @@ class AddOnViewModel @Inject constructor(
         )
         saveAddOnStateUseCase.execute(
             onSuccess = {
-                mSaveSelectionResult.value = Success(getAddOnResult.value.orEmpty())
+                mSaveSelectionResult.value = if (it.saveAddOns.errorMessage.isEmpty()) {
+                    Success(getAddOnResult.value.orEmpty())
+                } else {
+                    Fail(MessageErrorException(it.saveAddOns.errorMessage.joinToString()))
+                }
             },
             onError = { throwable ->
                 mSaveSelectionResult.value = Fail(throwable)

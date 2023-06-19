@@ -6,7 +6,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 
 interface AddOnComponentListener {
 
-    fun onAddonComponentError(throwable: Throwable)
+    fun onAddonComponentError(errorMessage: String)
 
     fun onAddonComponentClick(
         index: Int,
@@ -22,7 +22,7 @@ interface AddOnComponentListener {
 
     fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {}
 
-    fun onSaveAddonFailed(throwable: Throwable) {}
+    fun onSaveAddonFailed(errorMessage: String) {}
 
     fun onSaveAddonSuccess(
         selectedAddonIds: List<String>,
