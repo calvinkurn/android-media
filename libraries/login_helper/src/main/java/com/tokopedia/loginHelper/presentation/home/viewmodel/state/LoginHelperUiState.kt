@@ -18,5 +18,5 @@ data class LoginHelperUiState(
     // From File
     val localLoginDataList: com.tokopedia.usecase.coroutines.Result<UnifiedLoginHelperData>? = null,
     val localFilteredLoginDataList: com.tokopedia.usecase.coroutines.Result<UnifiedLoginHelperData>? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 )

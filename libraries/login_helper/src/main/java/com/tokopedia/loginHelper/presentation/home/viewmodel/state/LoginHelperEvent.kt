@@ -14,7 +14,8 @@ sealed class LoginHelperEvent {
     object GetUserInfo : LoginHelperEvent()
     object GoToLoginPage : LoginHelperEvent()
     object LogOutUser : LoginHelperEvent()
-    object SaveUserDetailsFromAssets : LoginHelperEvent()
     object GoToAccountsSetting : LoginHelperEvent()
     data class ChangeDataSourceType(val dataSourceType: LoginHelperDataSourceType) : LoginHelperEvent()
+
+    data class HandleLoader(val state: Boolean): LoginHelperEvent()
 }

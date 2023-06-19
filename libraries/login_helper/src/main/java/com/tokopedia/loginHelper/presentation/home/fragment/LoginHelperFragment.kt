@@ -36,6 +36,7 @@ import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewMode
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
+import com.tokopedia.loginHelper.util.exception.NoUserInfoException
 import com.tokopedia.loginHelper.util.showToaster
 import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -88,7 +89,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         observeUiAction()
         setEnvValue()
         viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
-        viewModel.processEvent(LoginHelperEvent.SaveUserDetailsFromAssets)
     }
 
     private fun setUpClickListener() {
@@ -130,7 +130,10 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoadingState(state: Boolean) {
-        binding?.progressBar?.showWithCondition(state)
+        binding?.progressBar?.apply {
+            showWithCondition(state)
+            bringToFront()
+        }
     }
 
     private fun goToLoginPage() {
@@ -283,6 +286,16 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataList(state: LoginHelperUiState) {
+        // Edge case for handling success in Persistence Cache with empty user list, and empty user list from remote
+        when (state.loginDataList) {
+            is Success -> {
+                val userData = state.loginDataList.data
+                if (userData.persistentCacheUserData?.users?.isEmpty() == true && userData.remoteUserData?.users == null) {
+                    handleLoginUserDataListFailure(NoUserInfoException())
+                }
+            }
+        }
+
         if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {
             if (state.searchText.isEmpty()) {
                 fillRecyclerViewData(
@@ -364,14 +377,23 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataListFailure(throwable: Throwable) {
-        handleLoader(shouldShow = false)
-        binding?.globalError?.run {
+        viewModel.processEvent(LoginHelperEvent.HandleLoader(false))
+        binding?.footer?.showToasterError(throwable.message.toBlankOrString())
+        binding?.globalError?.apply {
+            errorTitle.text =
+                context?.resources?.getString(
+                    com.tokopedia.loginHelper.R.string.login_helper_empty_data_title
+                )
+            errorDescription.text =
+                context?.resources?.getString(
+                    com.tokopedia.loginHelper.R.string.login_helper_empty_data_description
+                )
             setActionClickListener {
                 viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
             }
             show()
         }
-        binding?.footer?.showToasterError(throwable.message.toBlankOrString())
+
     }
 
     private fun handleLoginToken(loginToken: Result<LoginToken>?) {

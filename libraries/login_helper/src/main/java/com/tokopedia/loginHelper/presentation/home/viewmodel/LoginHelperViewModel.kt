@@ -96,9 +96,6 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.LogOutUser -> {
                 logOutUser()
             }
-            is LoginHelperEvent.SaveUserDetailsFromAssets -> {
-                storeUserDetailsInState()
-            }
             is LoginHelperEvent.GoToAccountsSetting -> {
                 handleGoToAccountSettings()
             }
@@ -108,24 +105,17 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.GetLocalLoginData -> {
                 getLocalUserLoginData(event.userDetails)
             }
+            is LoginHelperEvent.HandleLoader -> {
+                handleLoading(event.state)
+            }
         }
     }
-
-    // Can be directly used when moved to REST endpoints
     private fun getLoginData() {
         handleLoading(true)
         launchCatchError(
             dispatchers.io,
             block = {
                 val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
-//                val loginData = userDetails.body()
-
-//                val userList = LoginDataUiModel(
-//                    loginData?.count?.toRemoteUserHeaderUiModel(),
-//                    loginData?.users?.toUserDataUiModel()
-//                )
-//
-
                 updateUserDataList(Success(userDetails))
             },
             onError = {
@@ -134,30 +124,30 @@ class LoginHelperViewModel @Inject constructor(
         )
     }
 
-    // From Persistent Cache
-    private fun storeUserDetailsInState() {
-        val cacheManager = PersistentCacheManager.instance
-        val savedData = getLocalData(cacheManager)
-
-        val decryptedLocalUserDetails = mutableListOf<UserDataResponse>()
-
-        savedData?.userDataUiModel?.forEach {
-            decryptedLocalUserDetails.add(
-                UserDataResponse(
-                    decrypt(it.email.toBlankOrString()),
-                    decrypt(it.password.toBlankOrString())
-                )
-            )
-        }
-
-        val userList =
-            LoginDataUiModel(
-                decryptedLocalUserDetails.size.toLocalUserHeaderUiModel(),
-                decryptedLocalUserDetails.toUserDataUiModel()
-            )
-
-        updateUserDataListLocal(Success(userList))
-    }
+//    // From Persistent Cache
+//    private fun storeUserDetailsInState() {
+//        val cacheManager = PersistentCacheManager.instance
+//        val savedData = getLocalData(cacheManager)
+//
+//        val decryptedLocalUserDetails = mutableListOf<UserDataResponse>()
+//
+//        savedData?.userDataUiModel?.forEach {
+//            decryptedLocalUserDetails.add(
+//                UserDataResponse(
+//                    decrypt(it.email.toBlankOrString()),
+//                    decrypt(it.password.toBlankOrString())
+//                )
+//            )
+//        }
+//
+//        val userList =
+//            LoginDataUiModel(
+//                decryptedLocalUserDetails.size.toLocalUserHeaderUiModel(),
+//                decryptedLocalUserDetails.toUserDataUiModel()
+//            )
+//
+//        updateUserDataListLocal(Success(userList))
+//    }
 
     // From the File
     private fun getLocalUserLoginData(loginData: LoginDataResponse) {

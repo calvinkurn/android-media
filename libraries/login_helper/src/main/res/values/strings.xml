@@ -38,6 +38,6 @@
     <string name="login_helper_account_removal">Account Removal</string>
     <string name="login_helper_confirm_removal">Are you sure you want to remove %s account from the db?</string>
     <string name="login_helper_btn_remove_account_cancel">Cancel</string>
-
-
+    <string name="login_helper_empty_data_title">No Data Found on Cache and Remote </string>
+    <string name="login_helper_empty_data_description">Switch to Local Data with the switcher</string>
 </resources>
