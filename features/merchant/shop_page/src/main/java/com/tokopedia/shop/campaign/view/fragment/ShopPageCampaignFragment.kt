@@ -768,8 +768,8 @@ class ShopPageCampaignFragment :
     @SuppressLint("ResourceType")
     private fun getDefaultListBackgroundColor(): List<String> {
         return listOf(
-            getString(R.color.clr_dms_shop_campaign_tab_first_color),
-            getString(R.color.clr_dms_shop_campaign_tab_second_color)
+            context?.getString(R.color.clr_dms_shop_campaign_tab_first_color) ?: "",
+            context?.getString(R.color.clr_dms_shop_campaign_tab_second_color) ?: ""
         )
     }
 
