@@ -72,9 +72,6 @@ const val ADD_LOGO_TYPE_PROFILE = "profile"
 const val ADD_TEXT_BEBAS = "bebas"
 const val ADD_TEXT_TEMPLATE = "template"
 
-const val ADD_TEXT_COLOR_WHITE = "white"
-const val ADD_TEXT_COLOR_BLACK = "black"
-
 const val ADD_TEXT_POSITION_TOP = "_top"
 const val ADD_TEXT_POSITION_RIGHT = "_right"
 const val ADD_TEXT_POSITION_BOTTOM = "_bottom"

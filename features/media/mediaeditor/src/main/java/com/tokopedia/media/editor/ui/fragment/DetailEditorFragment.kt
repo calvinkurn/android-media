@@ -35,6 +35,7 @@ import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.AddTextColorProvider
+import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
 import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
@@ -426,12 +427,12 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddFreeText() {
         editorDetailAnalytics.clickAddTextFreeText()
 
-        if (data.addTextValue?.textTemplate == AddTextTemplateMode.BACKGROUND.value) {
+        if (data.addTextValue?.textTemplate == AddTextTemplateMode.BACKGROUND) {
             isEdited = true
         }
 
         data.addTextValue?.let {
-            it.textTemplate = AddTextTemplateMode.FREE.value
+            it.textTemplate = AddTextTemplateMode.FREE
         }
 
         implementAddTextData()
@@ -440,12 +441,12 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddSingleBackgroundText() {
         editorDetailAnalytics.clickAddTextBackgroundText()
         showAddTextBackgroundSelection{ color, model ->
-            if (data.addTextValue?.textTemplate == AddTextTemplateMode.FREE.value) {
+            if (data.addTextValue?.textTemplate == AddTextTemplateMode.FREE) {
                 isEdited = true
             }
 
             data.addTextValue?.let {
-                it.textTemplate = AddTextTemplateMode.BACKGROUND.value
+                it.textTemplate = AddTextTemplateMode.BACKGROUND
                 it.setBackgroundTemplate(BackgroundTemplateDetail(
                     addTextBackgroundColor = color,
                     addTextBackgroundModel = model
@@ -455,6 +456,8 @@ class DetailEditorFragment @Inject constructor(
             }
 
             implementAddTextData()
+            isEdited = true
+
             openAddTextActivity()
         }
     }
@@ -475,6 +478,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -1493,7 +1497,7 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
-    private fun showAddTextBackgroundSelection(onFinish: (color: Int, backgroundModel: Int) -> Unit) {
+    private fun showAddTextBackgroundSelection(onFinish: (color: Int, backgroundModel: AddTextBackgroundTemplate) -> Unit) {
         AddTextBackgroundBottomSheet(
             data.resultUrl,
             onFinish

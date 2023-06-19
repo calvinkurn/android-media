@@ -24,6 +24,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.widget.AddTextColorItemView
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItemView
 import com.tokopedia.media.editor.data.entity.AddTextAlignment
+import com.tokopedia.media.editor.data.entity.AddTextAlignment.Companion.increaseIndex
 import com.tokopedia.media.editor.data.entity.AddTextPosition
 import com.tokopedia.media.editor.data.entity.AddTextStyle
 import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
@@ -58,12 +59,7 @@ class AddTextFragment @Inject constructor(
             viewModel.textData.textStyle = value
         }
 
-    /**
-     * 0 -> center
-     * 1 -> left
-     * 2 -> right
-     */
-    private var alignmentIndex = AddTextAlignment.CENTER.value
+    private var alignmentIndex = AddTextAlignment.CENTER
         set(value) {
             field = value
             viewModel.textData.textAlignment = value
@@ -78,7 +74,7 @@ class AddTextFragment @Inject constructor(
 
     private var isColorState = false
 
-    private var positionIndex = AddTextPosition.BOTTOM.value
+    private var positionIndex = AddTextPosition.BOTTOM
         set(value) {
             field = value
             viewModel.textData.textPosition = value
@@ -170,7 +166,7 @@ class AddTextFragment @Inject constructor(
             renderPositionButton { view, index ->
                 view.setOnClickListener {
                     try {
-                        positionIndex = index
+                        positionIndex = AddTextPosition.getPositionByIndex(index)
                         implementAddTextData()
                         renderPositionButton()
                     } catch (_: Exception) {
@@ -195,12 +191,12 @@ class AddTextFragment @Inject constructor(
             val positionViewContainer = it.positionOverlayContainer
             for (i in 0 until positionViewContainer.childCount) {
                 // skip top & left when template is using background
-                if (viewModel.textData.textTemplate == AddTextTemplateMode.BACKGROUND.value && (i == 0 || i == 2)) {
+                if (viewModel.textData.textTemplate == AddTextTemplateMode.BACKGROUND && (i == 0 || i == 2)) {
                     continue
                 }
 
                 positionViewContainer.getChildAt(i).apply {
-                    if (i == positionIndex) {
+                    if (i == positionIndex.value) {
                         this.hide()
                     } else {
                         this.show()
@@ -241,17 +237,19 @@ class AddTextFragment @Inject constructor(
 
     // alignment click listener
     private fun setAlignment(icon: IconUnify) {
-        alignmentIndex++
-        if (alignmentIndex > AddTextAlignment.LEFT.value) alignmentIndex = 0
+        alignmentIndex = alignmentIndex.increaseIndex()
+//        alignmentIndex++
+
+        if (alignmentIndex > AddTextAlignment.LEFT) alignmentIndex = AddTextAlignment.CENTER
 
         val gravity: Int
         val iconRef = when (alignmentIndex) {
-            AddTextAlignment.CENTER.value -> {
+            AddTextAlignment.CENTER -> {
                 gravity = Gravity.CENTER
                 IconUnify.FORMAT_CENTER
             }
 
-            AddTextAlignment.LEFT.value -> {
+            AddTextAlignment.LEFT -> {
                 gravity = Gravity.START
                 IconUnify.FORMAT_ALIGN_LEFT
             }

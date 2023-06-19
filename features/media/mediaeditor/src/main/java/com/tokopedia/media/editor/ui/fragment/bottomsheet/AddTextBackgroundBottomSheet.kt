@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.editor.databinding.AddTextBackgroundBottomsheetLayoutBinding
 import com.tokopedia.media.editor.data.AddTextColorProvider
+import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
 import com.tokopedia.media.editor.R as editorR
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 class AddTextBackgroundBottomSheet(
     private val imgUrl: String?,
-    val onFinish: (color: Int, backgroundModel: Int) -> Unit
+    val onFinish: (color: Int, backgroundModel: AddTextBackgroundTemplate) -> Unit
 ) : BottomSheetUnify() {
 
     @Inject
@@ -124,7 +125,7 @@ class AddTextBackgroundBottomSheet(
         viewBinding?.btmshtAddTextActionLanjut?.setOnClickListener {
             onFinish(
                 backgroundColorCollection.toList()[colorSelectionIndex].first,
-                modelSelectionIndex
+                AddTextBackgroundTemplate.getBackgroundModelByIndex(modelSelectionIndex)
             )
             dismiss()
         }

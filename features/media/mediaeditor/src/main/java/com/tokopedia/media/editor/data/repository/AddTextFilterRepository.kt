@@ -40,7 +40,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
     private var floatingWidthAdjustment = 0f
     private var paddingFloating = 0f
 
-    private var backgroundModel: Int? = null
+    private var backgroundModel: AddTextBackgroundTemplate? = null
 
     private var fontSize = 0f
         set(value) {
@@ -51,7 +51,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             paddingHorizontal = PADDING_HORIZONTAL_PERCENTAGE * value
             adjustmentPadding = ADJUSTMENT_PADDING_PERCENTAGE * value
 
-            if (backgroundModel == AddTextBackgroundTemplate.FLOATING.value) {
+            if (backgroundModel == AddTextBackgroundTemplate.FLOATING) {
                 // when using template floating need extra space
                 paddingFloating = PADDING_FLOATING_ENABLE * value
 
@@ -90,7 +90,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             var backgroundWidth = originalImageWidth
 
             when (data.textPosition) {
-                AddTextPosition.RIGHT.value -> {
+                AddTextPosition.RIGHT -> {
                     // update font size according to image width since text on side
                     fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
                     mTextPaint.textSize = fontSize
@@ -105,7 +105,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     canvas.rotate(ROTATE_90_DEGREE_COUNTER_CLOCKWISE)
                     canvas.translate(-(canvas.height.toFloat() - paddingHorizontal), yOffset)
                 }
-                AddTextPosition.LEFT.value -> {
+                AddTextPosition.LEFT -> {
                     // update font size according to image width since text on side
                     fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
                     mTextPaint.textSize = fontSize
@@ -117,13 +117,13 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     canvas.rotate(ROTATE_90_DEGREE_CLOCKWISE)
                     canvas.translate(paddingHorizontal, yOffset)
                 }
-                AddTextPosition.BOTTOM.value -> {
+                AddTextPosition.BOTTOM -> {
                     mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
 
                     val yOffset = (canvas.height - mTextLayout.height).toFloat() - (paddingVertical + paddingFloating)
                     canvas.translate(paddingHorizontal, yOffset)
                 }
-                AddTextPosition.TOP.value -> {
+                AddTextPosition.TOP -> {
                     mTextLayout = createStaticLayout(data, (canvas.width - (paddingHorizontal * 2)).toInt(), mTextPaint)
 
                     canvas.translate(paddingHorizontal, paddingVertical)
@@ -132,7 +132,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
             // background only on bottom & right
             getAddTextBackgroundDrawable(data.getBackgroundTemplate())?.let {
-                val backgroundHeight = ceil((mTextLayout!!.height + paddingVertical + adjustmentPadding)).toInt()
+                val backgroundHeight = ceil((mTextLayout.height + paddingVertical + adjustmentPadding)).toInt()
                 backgroundWidth -= floatingWidthAdjustment.toInt()
 
                 it.toBitmap().scale(backgroundWidth, backgroundHeight).apply {
@@ -140,7 +140,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                 }
             }
 
-            mTextLayout!!.draw(canvas)
+            mTextLayout.draw(canvas)
             canvas.restore()
 
             bitmap
@@ -151,12 +151,11 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         if (backgroundDetail == null) return null
 
         when (backgroundDetail.addTextBackgroundModel) {
-            AddTextBackgroundTemplate.FULL.value -> editorR.drawable.add_text_background_full
-            AddTextBackgroundTemplate.FLOATING.value -> editorR.drawable.add_text_background_floating
-            AddTextBackgroundTemplate.SIDE_CUT.value -> editorR.drawable.add_text_background_cut
-            else -> null
+            AddTextBackgroundTemplate.FULL -> editorR.drawable.add_text_background_full
+            AddTextBackgroundTemplate.FLOATING -> editorR.drawable.add_text_background_floating
+            AddTextBackgroundTemplate.SIDE_CUT -> editorR.drawable.add_text_background_cut
         }.apply {
-            this?.let {
+            this.let {
                 ContextCompat.getDrawable(context, it)?.let { backgroundDrawable ->
                     colorProvider.implementDrawableColor(backgroundDrawable, backgroundDetail.addTextBackgroundColor)
                     return backgroundDrawable

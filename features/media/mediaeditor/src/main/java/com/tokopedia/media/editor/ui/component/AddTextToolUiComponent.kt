@@ -35,7 +35,7 @@ class AddTextToolUiComponent constructor(
         mRecycleView.post {
             data?.let {
                 if (it.textValue.isNotEmpty()) {
-                    setSelectedState(it.textTemplate)
+                    setSelectedState(it.textTemplate.value)
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.tokopedia.media.editor.ui.component.AddLogoToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.data.entity.AddTextPosition
+import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
 import com.tokopedia.media.editor.data.entity.AddTextToolId
 import com.tokopedia.picker.common.types.EditorToolType
 
@@ -60,20 +61,20 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
         var text = ""
 
         text += when (textValue.textTemplate) {
-            AddTextToolId.FREE_TEXT_INDEX.value -> ADD_TEXT_BEBAS
+            AddTextTemplateMode.FREE -> ADD_TEXT_BEBAS
             else -> ADD_TEXT_TEMPLATE
         }
 
         text += "_$colorOnText"
 
         textValue.getBackgroundTemplate()?.let {
-            text += "_${it.addTextBackgroundModel}"
+            text += "_${it.addTextBackgroundModel.value}"
         }
 
         text += when (textValue.textPosition) {
-            AddTextPosition.TOP.value -> ADD_TEXT_POSITION_TOP
-            AddTextPosition.RIGHT.value -> ADD_TEXT_POSITION_RIGHT
-            AddTextPosition.BOTTOM.value -> ADD_TEXT_POSITION_BOTTOM
+            AddTextPosition.TOP -> ADD_TEXT_POSITION_TOP
+            AddTextPosition.RIGHT -> ADD_TEXT_POSITION_RIGHT
+            AddTextPosition.BOTTOM -> ADD_TEXT_POSITION_BOTTOM
             else -> ADD_TEXT_POSITION_LEFT
         }
 
