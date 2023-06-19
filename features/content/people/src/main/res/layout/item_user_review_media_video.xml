@@ -25,7 +25,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:alpha="0.68"
-            android:src="@drawable/bg_play_icon"
+            app:srcCompat="@drawable/bg_play_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
