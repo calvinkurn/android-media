@@ -214,7 +214,20 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                         CarouselPlayWidgetDataModel,
-                        PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
+                        PlayWidgetState>(
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    HomePlayRepository.KEY_WIDGET_LAYOUT,
+                                    it.homeChannel.layout
+                                )
+                            }
+                        },
+                        deleteWidgetWhen = {
+                            it?.model?.items?.isEmpty() == true
+                        },
+                        widgetRepository = homePlayRepository
+                    ) { visitableFound, data, position ->
                         visitableFound.copy(widgetState = data)
                     }
 
