@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.R
@@ -32,7 +33,6 @@ import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.util.constant.NumberConstant
-import com.tokopedia.mvc.util.constant.TickerConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
