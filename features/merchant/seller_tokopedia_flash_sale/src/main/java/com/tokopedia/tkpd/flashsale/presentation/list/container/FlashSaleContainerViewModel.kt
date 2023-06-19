@@ -2,6 +2,9 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
@@ -23,6 +26,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase,
     private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val preferenceDataStore: PreferenceDataStore
 ) : BaseViewModel(dispatchers.main) {
 
@@ -33,7 +37,8 @@ class FlashSaleContainerViewModel @Inject constructor(
         val targetTabPosition: Int = 0,
         val showTicker: Boolean = false,
         val error: Throwable? = null,
-        val isEligibleUsingFeature: Boolean = true
+        val isEligibleUsingFeature: Boolean = true,
+        val tickers: List<RemoteTicker> = emptyList()
     )
 
     sealed class UiEvent {
@@ -123,6 +128,19 @@ class FlashSaleContainerViewModel @Inject constructor(
                 _uiEffect.emit(UiEffect.FlashSaleSubmissionProgress(flashSaleSubmissionProgress.listCampaign))
             }
         ) { }
+    }
+
+    fun getTickers() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val tickerParams = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST)
+                val tickers = getTargetedTickerUseCase.execute(tickerParams)
+
+                _uiState.update { it.copy(tickers = tickers) }
+            },
+            onError = {}
+        )
     }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {

@@ -107,6 +107,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         getFilteredRollenceKey()
         applyUnifyBackgroundColor()
         viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+        viewModel.getTickers()
     }
 
     override fun onResume() {
