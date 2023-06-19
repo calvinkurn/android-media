@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.view.bannerenvironment
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import com.tokopedia.abstraction.R
 import com.tokopedia.graphql.interceptor.BannerDebugInterceptor.Companion.isBeta
@@ -67,7 +68,10 @@ class BannerEnvironment {
      * ex: bottomsheet with dim 0 activity
      */
     private fun disableBannerSpecialCase(activity: Activity): Boolean {
-        return activity.window.attributes.dimAmount == 0.0f
+        val backgroundColor = (activity.window.decorView.background as ColorDrawable).color
+        val transparentColor = activity.resources.getColor(android.R.color.transparent)
+
+        return activity.window.attributes.dimAmount == 0.0f || backgroundColor == transparentColor
     }
 
     private fun removeBannerIfVisible() {
