@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
@@ -977,7 +978,16 @@ class MainAddressFragment :
         leavePageJob?.cancel()
         leavePageJob = CoroutineScope(Dispatchers.Main).launch {
             delay(TOAST_SHOWING_TIME)
-            activity?.finish()
+            gotoHome()
+        }
+    }
+
+    private fun gotoHome() {
+        activity?.let {
+            val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            it.startActivity(intentHome)
+            it.finish()
         }
     }
 
