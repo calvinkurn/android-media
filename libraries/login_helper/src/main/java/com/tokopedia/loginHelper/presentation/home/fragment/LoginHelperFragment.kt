@@ -3,6 +3,7 @@ package com.tokopedia.loginHelper.presentation.home.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,7 @@ import com.tokopedia.loginHelper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.presentation.home.adapter.LoginHelperRecyclerAdapter
 import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHelperClickListener
@@ -287,14 +288,13 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 fillRecyclerViewData(
                     state.searchText,
                     state.loginDataList,
-                    state.cachedLoginData,
                     state.dataSourceType
                 )
             } else {
                 fillRecyclerViewData(
                     state.searchText,
                     state.filteredUserList,
-                    dataSourceType = state.dataSourceType
+                    state.dataSourceType
                 )
             }
         } else {
@@ -302,13 +302,13 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 fillRecyclerViewData(
                     state.searchText,
                     state.localLoginDataList,
-                    dataSourceType = state.dataSourceType
+                    state.dataSourceType
                 )
             } else {
                 fillRecyclerViewData(
                     state.searchText,
                     state.localFilteredLoginDataList,
-                    dataSourceType = state.dataSourceType
+                    state.dataSourceType
                 )
             }
         }
@@ -316,15 +316,14 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun fillRecyclerViewData(
         searchText: String,
-        loginDataList: Result<LoginDataUiModel>?,
-        cachedLoginData: Result<LoginDataUiModel>? = null,
+        loginDataList: Result<UnifiedLoginHelperData>?,
         dataSourceType: LoginHelperDataSourceType
     ) {
         if (searchText.isEmpty()) {
             when (val loginDataList = loginDataList) {
                 is Success -> {
-                    if (dataSourceType == LoginHelperDataSourceType.REMOTE && cachedLoginData is Success) {
-                        handleLoginUserDataListSuccess(loginDataList.data, cachedLoginData.data)
+                    if (dataSourceType == LoginHelperDataSourceType.REMOTE) {
+                        handleLoginUserDataListSuccess(loginDataList.data)
                     } else {
                         handleLoginUserDataListSuccess(loginDataList.data)
                     }
@@ -336,9 +335,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         } else {
             when (val loginDataList = loginDataList) {
                 is Success -> {
-                    if (cachedLoginData is Success) {
-                        handleLoginUserDataListSuccess(loginDataList.data, cachedLoginData.data)
-                    }
+                    handleLoginUserDataListSuccess(loginDataList.data)
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
@@ -348,8 +345,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataListSuccess(
-        loginDataList: LoginDataUiModel,
-        cachedLoginData: LoginDataUiModel? = null
+        loginDataList: UnifiedLoginHelperData
     ) {
         loginHelperAdapter = LoginHelperRecyclerAdapter(this@LoginHelperFragment)
 
@@ -360,9 +356,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         )
         binding?.userList?.layoutManager = layoutManager
         loginHelperAdapter?.clearAllElements()
-        cachedLoginData?.let {
-            loginHelperAdapter?.addData(it)
-        }
+        Log.d("FATAL", "handleLoginUserDataListSuccess: $loginDataList")
         loginHelperAdapter?.addData(loginDataList)
         binding?.userList?.apply {
             adapter = loginHelperAdapter
@@ -425,6 +419,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             activity?.finish()
         }
     }
+
     private fun setEnvValue() {
         val currentEnv = getInstance().TYPE
         if (Env.STAGING == currentEnv) {
@@ -460,12 +455,14 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             }
         }
     }
+
     override fun getScreenName(): String {
         return context?.resources?.getString(
             com.tokopedia.loginHelper.R.string.login_helper_header_title
         )
             .toBlankOrString()
     }
+
     override fun initInjector() {
         DaggerLoginHelperComponent.builder()
             .baseAppComponent(

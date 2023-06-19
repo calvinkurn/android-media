@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginHelper.data.mapper.toEnvString
-import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
-import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
@@ -75,12 +73,12 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 handleLoading(true)
-                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
-                val loginData = userDetails.body()
+                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
+                //     val loginData = userDetails.body()
 
                 val userList = LoginDataUiModel(
-                    loginData?.count?.toRemoteUserHeaderUiModel(),
-                    loginData?.users?.toUserDataUiModel()
+                    userDetails?.remoteUserData?.count,
+                    userDetails?.remoteUserData?.users
                 )
 
                 updateUserDataList(Success(userList))

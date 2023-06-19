@@ -8,15 +8,14 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.loginHelper.data.mapper.toEnvString
 import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
-import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
+import com.tokopedia.loginHelper.data.mapper.toSearchResultsUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
 import com.tokopedia.loginHelper.domain.uiModel.users.LocalUsersDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
@@ -118,15 +117,16 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
-                val loginData = userDetails.body()
+                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
+//                val loginData = userDetails.body()
 
-                val userList = LoginDataUiModel(
-                    loginData?.count?.toRemoteUserHeaderUiModel(),
-                    loginData?.users?.toUserDataUiModel()
-                )
+//                val userList = LoginDataUiModel(
+//                    loginData?.count?.toRemoteUserHeaderUiModel(),
+//                    loginData?.users?.toUserDataUiModel()
+//                )
+//
 
-                updateUserDataList(Success(userList))
+                updateUserDataList(Success(userDetails))
             },
             onError = {
                 updateUserDataList(Fail(it))
@@ -180,7 +180,11 @@ class LoginHelperViewModel @Inject constructor(
                 sortedUserList.size.toLocalUserHeaderUiModel(),
                 sortedUserList.toUserDataUiModel()
             )
-        updateLocalUserDataList(Success(userList))
+        val unifiedUserList = UnifiedLoginHelperData(
+            persistentCacheUserData = userList,
+            remoteUserData = null
+        )
+        updateLocalUserDataList(Success(unifiedUserList))
     }
 
     private fun encrypt(text: String): String {
@@ -291,7 +295,7 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserDataList(userDataList: Result<LoginDataUiModel>) {
+    private fun updateUserDataList(userDataList: Result<UnifiedLoginHelperData>) {
         _uiState.update {
             it.copy(
                 loginDataList = userDataList,
@@ -303,13 +307,12 @@ class LoginHelperViewModel @Inject constructor(
     private fun updateUserDataListLocal(userDataList: Result<LoginDataUiModel>) {
         _uiState.update {
             it.copy(
-                cachedLoginData = userDataList,
                 isLoading = false
             )
         }
     }
 
-    private fun updateLocalUserDataList(userDataList: Result<LoginDataUiModel>) {
+    private fun updateLocalUserDataList(userDataList: Result<UnifiedLoginHelperData>) {
         _uiState.update {
             it.copy(
                 localLoginDataList = userDataList
@@ -352,8 +355,7 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun searchForFilteredUser() {
         val searchEmail = _uiState.value.searchText
-        var list: List<UserDataUiModel>?
-        var filteredUserList: Result<LoginDataUiModel>? = null
+        var filteredUserList: Result<UnifiedLoginHelperData>?
 
         if (_uiState.value.dataSourceType == LoginHelperDataSourceType.REMOTE) {
             filteredUserList = getFilteredUserList(searchEmail, _uiState.value.loginDataList)
@@ -372,18 +374,26 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun getFilteredUserList(searchEmail: String, userList: Result<LoginDataUiModel>?): Result<LoginDataUiModel>? {
-        var list: List<UserDataUiModel>?
-        var filteredUserList: Result<LoginDataUiModel>? = null
+    private fun getFilteredUserList(searchEmail: String, userList: Result<UnifiedLoginHelperData>?): Result<UnifiedLoginHelperData>? {
+        var list1: List<UserDataUiModel>?
+        val list2: List<UserDataUiModel>?
+        var filteredUserList: Result<UnifiedLoginHelperData>? = null
         userList.apply {
             when (this) {
                 is Success -> {
-                    list = this.data.users?.filter { userDataUiModel ->
+                    list1 = this.data.remoteUserData?.users?.filter { userDataUiModel ->
+                        userDataUiModel.email?.contains(searchEmail) == true
+                    }
+
+                    list2 = this.data.persistentCacheUserData?.users?.filter { userDataUiModel ->
                         userDataUiModel.email?.contains(searchEmail) == true
                     }
 
                     filteredUserList = Success(
-                        LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list)
+                        UnifiedLoginHelperData(
+                            persistentCacheUserData = LoginDataUiModel(list2?.size?.toSearchResultsUserHeaderUiModel(), list2),
+                            remoteUserData = LoginDataUiModel(list1?.size?.toSearchResultsUserHeaderUiModel(), list1)
+                        )
                     )
                 }
                 is Fail -> Unit

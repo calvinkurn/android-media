@@ -15,7 +15,7 @@ import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 
 fun LoginDataResponse.toLoginUiModel(): LoginDataUiModel {
     return LoginDataUiModel(
-        count = this.count?.toLocalUserHeaderUiModel(),
+        count = this.count?.toRemoteUserHeaderUiModel(),
         users = this.users?.toUserDataUiModel()
     )
 }
@@ -32,6 +32,10 @@ fun Int.toLocalUserHeaderUiModel(): HeaderUiModel {
 
 fun Int.toRemoteUserHeaderUiModel(): HeaderUiModel {
     return HeaderUiModel(this, "Remote Users")
+}
+
+fun Int.toSearchResultsUserHeaderUiModel(): HeaderUiModel {
+    return HeaderUiModel(this, "Search Results")
 }
 
 fun LoginHelperEnvType.toEnvString(): String {
