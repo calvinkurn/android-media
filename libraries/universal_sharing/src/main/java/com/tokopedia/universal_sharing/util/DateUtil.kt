@@ -93,6 +93,6 @@ object DateUtil {
         val formatterHour = SimpleDateFormat(HOUR_FORMAT, locale)
         val date = formatterDate.format(dateTime)
         val hour = formatterHour.format(dateTime)
-        return return String.format("%s %s WIB", date, hour)
+        return return String.format(Locale.getDefault(), "%s %s WIB", date, hour)
     }
 }
