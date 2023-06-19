@@ -29,9 +29,10 @@ internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = nu
             includeFontPadding = false
             rotation = -45f
             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            textSize = 12f
+            textSize = 11.5f
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
+            setPadding(0,0,dip(5),0)
         }
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER)
         addView(textView, layoutParams)
