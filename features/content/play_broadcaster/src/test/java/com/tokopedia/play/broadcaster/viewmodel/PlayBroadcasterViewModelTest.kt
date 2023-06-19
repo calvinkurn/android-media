@@ -987,7 +987,7 @@ class PlayBroadcasterViewModelTest {
     fun `when user click pin product and failed from network` () {
         coEvery { mockRepo.setPinProduct(any(), any()) } returns false
 
-        val product = ProductUiModel(id = "1", "Wafer", "",10L, OriginalPrice("20",20.0), PinProductUiModel(isPinned = false, canPin = true))
+        val product = ProductUiModel(id = "1", "Wafer", false,"", 10L, false, "", 0L, OriginalPrice("20",20.0),  PinProductUiModel(isPinned = false, canPin = true), "")
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1008,7 +1008,7 @@ class PlayBroadcasterViewModelTest {
 
         coEvery { mockRepo.setPinProduct(any(), any()) } throws error
 
-        val product = ProductUiModel(id = "1", "Wafer", "",10L, OriginalPrice("20",20.0), PinProductUiModel(isPinned = false, canPin = true))
+        val product = ProductUiModel(id = "1", "Wafer", false,"", 10L, false, "", 0L, OriginalPrice("20",20.0),  PinProductUiModel(isPinned = false, canPin = true), "")
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,

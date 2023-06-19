@@ -29,6 +29,8 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -236,6 +238,22 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowInfoEvent -> {
+                        toaster.showToasterInView(
+                            message = getTextFromUiString(event.message),
+                            view = requireView()
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderChips(chips: TabMenuUiModel) {
         when (chips.state) {
             ResultState.Success -> {
@@ -383,6 +401,13 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
         return emptyMap()
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
     }
 
     private fun fetchWidget() {

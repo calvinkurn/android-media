@@ -94,4 +94,7 @@ object RollenceKey {
 
     //Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 }

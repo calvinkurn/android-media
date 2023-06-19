@@ -9,7 +9,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.common.util.ContextUtil.getActivityFromContext
@@ -36,7 +38,6 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
         private const val NO_PROGRESS = 0F
-        private const val FINISHED_PROGRESS = 100F
         private const val HIDE_SOFT_INPUT_KEYBOARD_FLAG = 0
         private const val MAX_ALPHA = 1f
         private const val MIN_ALPHA = 0f
@@ -219,6 +220,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
 
         addButton.layoutParams = layoutParams
         addButton.alpha = MAX_ALPHA
+        addButton.show()
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupAddButton() {
@@ -287,7 +289,11 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.transitionToEnd()
 
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
+
         addToCartBtnShimmer.alpha = MAX_ALPHA
+        addToCartBtnShimmer.show()
+
         onQuantityChangedListener?.invoke(minQuantity)
     }
 
@@ -413,7 +419,9 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
             clearFocus()
             setEditTextPadding()
         }
+
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
     }
 
     private fun executeTimer() {
@@ -451,7 +459,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.progress = NO_PROGRESS
 
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addToCartBtnShimmer.gone()
+
         addButton.alpha = MIN_ALPHA
+        addButton.gone()
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.showAddButton() {
@@ -459,7 +470,10 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         root.progress = NO_PROGRESS
 
         addToCartBtnShimmer.alpha = MIN_ALPHA
+        addToCartBtnShimmer.gone()
+
         addButton.alpha = MAX_ALPHA
+        addButton.show()
     }
 
     fun setQuantity(quantity: Int) {

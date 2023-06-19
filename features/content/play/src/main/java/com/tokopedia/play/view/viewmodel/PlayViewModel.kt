@@ -2916,6 +2916,8 @@ class PlayViewModel @AssistedInject constructor(
         authenticated {
             viewModelScope.launchCatchError(block = {
                 val result = repo.updateReminder(channelId, reminderType)
+                val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
+                _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
                     _exploreWidget.update {
                         it.copy(
