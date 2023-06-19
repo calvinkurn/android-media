@@ -105,9 +105,8 @@ class EditorViewModel @Inject constructor(
     fun finishPage(
         dataList: List<EditorUiModel>
     ) {
-        var filteredData: List<String>
         viewModelScope.launch(coroutineDispatchers.io) {
-            filteredData= dataList.map {
+            val filteredData = dataList.map {
                 if (it.isImageEdited()) {
                     // base image
                     val flattenBitmap = it.getImageUrl()
