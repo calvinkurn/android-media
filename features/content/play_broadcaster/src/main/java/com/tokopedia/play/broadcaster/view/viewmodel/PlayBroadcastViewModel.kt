@@ -463,24 +463,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(event.source)
             is PlayBroadcastAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
-            is PlayBroadcastAction.AddBannerPreparation -> handleAddBannerPreparation(event.data)
-            is PlayBroadcastAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(event.data)
             else -> {
                 //no-op
             }
         }
     }
 
-    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
             if (_bannerPreparation.value.contains(data)) return@launchCatchError
-            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+            _bannerPreparation.update { it + data }
         }, onError = {})
     }
 
-    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+            _bannerPreparation.update { it - data }
         }, onError = {})
     }
 
@@ -918,18 +916,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun setupShortEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
         if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
-            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+            addBannerPreparation(banner)
         } else {
-            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+            removeBannerPreparation(banner)
         }
     }
 
     private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
         if (isAllowToSeePerformanceDashboard && config.hasContent) {
-            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+            addBannerPreparation(banner)
         } else {
-            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+            removeBannerPreparation(banner)
         }
     }
 

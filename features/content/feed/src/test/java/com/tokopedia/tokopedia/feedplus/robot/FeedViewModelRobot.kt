@@ -60,7 +60,7 @@ class FeedViewModelRobot(
     doFollowUseCase: ProfileFollowUseCase,
     doUnfollowUseCase: ProfileUnfollowedUseCase,
     profileMutationMapper: ProfileMutationMapper,
-    getFollowingUseCase: GetFollowingUseCase,
+    getFollowingUseCase: GetFollowingUseCase
 ) : Closeable {
 
     val vm = FeedViewModel(
@@ -86,7 +86,7 @@ class FeedViewModelRobot(
         doFollowUseCase = doFollowUseCase,
         doUnfollowUseCase = doUnfollowUseCase,
         profileMutationMapper = profileMutationMapper,
-        getFollowingUseCase = getFollowingUseCase,
+        getFollowingUseCase = getFollowingUseCase
     )
 
     fun setLoggedIn(isUserLoggedIn: Boolean) {
@@ -151,6 +151,6 @@ fun create(
         doUnfollowUseCase = doUnfollowUseCase,
         profileMutationMapper = profileMutationMapper,
         getWhitelistNewUseCase = getWhitelistNewUseCase,
-        getFollowingUseCase = getFollowingUseCase,
+        getFollowingUseCase = getFollowingUseCase
     ).apply(fn)
 }

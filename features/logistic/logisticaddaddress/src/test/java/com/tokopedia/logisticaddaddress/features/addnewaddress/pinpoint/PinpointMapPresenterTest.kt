@@ -19,7 +19,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verifyOrder
-import org.assertj.core.api.SoftAssertions
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Assert
 import org.junit.Before
@@ -41,22 +40,29 @@ class PinpointMapPresenterTest {
     val view: PinpointMapView = mockk(relaxed = true)
     lateinit var presenter: PinpointMapPresenter
 
-    lateinit var timber : MockTimber
+    lateinit var timber: MockTimber
 
     @Before
     fun setup() {
         timber = MockTimber()
         Timber.plant(timber)
-        presenter = PinpointMapPresenter(getDistrictUseCase, revGeoCodeUseCase, districtBoundUseCase, districtBoundMapper)
+        presenter = PinpointMapPresenter(
+            getDistrictUseCase,
+            revGeoCodeUseCase,
+            districtBoundUseCase,
+            districtBoundMapper
+        )
         presenter.attachView(view)
     }
 
     @Test
     fun `get success district`() {
         val successModel = GetDistrictDataUiModel(
-                districtId = 1)
+            districtId = 1
+        )
 
-        every { getDistrictUseCase.execute(any())
+        every {
+            getDistrictUseCase.execute(any())
         } answers {
             Observable.just(successModel)
         }
@@ -71,9 +77,12 @@ class PinpointMapPresenterTest {
     @Test
     fun `get success district negative`() {
         val successModel = GetDistrictDataUiModel(
-            districtId = 1, errorCode = 101)
+            districtId = 1,
+            errorCode = 101
+        )
 
-        every { getDistrictUseCase.execute(any())
+        every {
+            getDistrictUseCase.execute(any())
         } answers {
             Observable.just(successModel)
         }
@@ -85,12 +94,12 @@ class PinpointMapPresenterTest {
         }
     }
 
-
     @Test
     fun `get district error`() {
         val exception = MessageErrorException("hi")
 
-        every { getDistrictUseCase.execute(any())
+        every {
+            getDistrictUseCase.execute(any())
         } returns Observable.error(exception)
 
         presenter.getDistrict("123")
@@ -113,7 +122,8 @@ class PinpointMapPresenterTest {
     fun `autofill succcess`() {
         val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
 
-        every { revGeoCodeUseCase.execute(any())
+        every {
+            revGeoCodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -127,8 +137,12 @@ class PinpointMapPresenterTest {
 
     @Test
     fun `autofill success with foreign country`() {
-        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
-        every { revGeoCodeUseCase.execute(any())
+        val keroMaps = KeroMapsAutofill(
+            data = Data(title = "city test"),
+            messageError = listOf("Lokasi di luar Indonesia.")
+        )
+        every {
+            revGeoCodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -142,8 +156,12 @@ class PinpointMapPresenterTest {
 
     @Test
     fun `autofill success with not found location`() {
-        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
-        every { revGeoCodeUseCase.execute(any())
+        val keroMaps = KeroMapsAutofill(
+            data = Data(title = "city test"),
+            messageError = listOf("Lokasi gagal ditemukan")
+        )
+        every {
+            revGeoCodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -157,8 +175,13 @@ class PinpointMapPresenterTest {
 
     @Test
     fun `autofill success with circuit breaker on code`() {
-        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"), errorCode = 101)
-        every { revGeoCodeUseCase.execute(any())
+        val keroMaps = KeroMapsAutofill(
+            data = Data(title = "city test"),
+            messageError = listOf("Lokasi gagal ditemukan"),
+            errorCode = 101
+        )
+        every {
+            revGeoCodeUseCase.execute(any())
         } answers {
             Observable.just(keroMaps)
         }
@@ -189,15 +212,17 @@ class PinpointMapPresenterTest {
         val anyGql = GraphqlResponse(null, null, false)
         val listBoundaries = mutableListOf(LatLng(12.4, 12.5))
         val response = DistrictBoundaryResponseUiModel(
-                geometry = DistrictBoundaryGeometryUiModel(listBoundaries)
+            geometry = DistrictBoundaryGeometryUiModel(listBoundaries)
         )
 
-        every { districtBoundUseCase.execute(any(), any())
+        every {
+            districtBoundUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<GraphqlResponse>>().onNext(anyGql)
         }
 
-        every { districtBoundMapper.map(anyGql)
+        every {
+            districtBoundMapper.map(anyGql)
         } returns response
 
         presenter.getDistrictBoundary(0, "asdn", 0)
@@ -211,7 +236,8 @@ class PinpointMapPresenterTest {
     fun `district boundary error`() {
         val exception = MessageErrorException("hi")
 
-        every { districtBoundUseCase.execute(any(), any())
+        every {
+            districtBoundUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<GraphqlResponse>>().onError(exception)
         }
@@ -224,8 +250,11 @@ class PinpointMapPresenterTest {
     }
 
     @Test
-    fun `get unnamed road` () {
-        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+    fun `get unnamed road`() {
+        val address = SaveAddressDataModel(
+            formattedAddress = "Unnamed Road, Jl Testimoni",
+            selectedDistrict = "Testimoni"
+        )
         val result: SaveAddressDataModel?
 
         presenter.setAddress(address)
@@ -236,8 +265,11 @@ class PinpointMapPresenterTest {
     }
 
     @Test
-    fun `get save address` () {
-        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+    fun `get save address`() {
+        val address = SaveAddressDataModel(
+            formattedAddress = "Unnamed Road, Jl Testimoni",
+            selectedDistrict = "Testimoni"
+        )
 
         presenter.setAddress(address)
 

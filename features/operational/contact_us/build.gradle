@@ -94,6 +94,8 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.firebase.crashlytics
+
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

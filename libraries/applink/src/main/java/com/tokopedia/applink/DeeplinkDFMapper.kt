@@ -56,6 +56,7 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.ApplinkConst.SellerApp.STATISTIC_DASHBOARD
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
@@ -195,6 +196,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_D
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.TOKOMEMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
@@ -294,6 +296,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
+    const val DF_STATISTIC = "df_statistic"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -852,6 +855,15 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CAMPAIGN_LIST) || it.startsWith(SellerApp.CAMPAIGN_LIST) }, DF_CAMPAIGN_LIST, R.string.title_campaign_list))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
+            add(DFP(
+                {
+                    it.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB) ||
+                        it.startsWith(ApplinkConstInternalSellerapp.SELLER_SHOP_NIB)
+                },
+                DF_BASE_SELLER_APP,
+                R.string.title_seller_shop_nib
+                )
+            )
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))
@@ -883,7 +895,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
                 regexMatcherExternalAppLink.matches(it)
             }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
@@ -977,6 +988,15 @@ object DeeplinkDFMapper : CoroutineScope {
                     { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
+                )
+            )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
+                            MERCHANT_STATISTIC_DASHBOARD
+                        ) || it.startsWithPattern(STATISTIC_DASHBOARD)
+                    }, DF_STATISTIC, R.string.title_statistic
                 )
             )
         }

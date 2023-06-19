@@ -7,6 +7,10 @@
         <attr name="total_review" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="NestedScrollableHost">
+        <attr name="lockScroll" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="ReviewProductItemFilterView">
         <attr name="counter_rating" format="integer" />
         <attr name="isActive" format="boolean"/>

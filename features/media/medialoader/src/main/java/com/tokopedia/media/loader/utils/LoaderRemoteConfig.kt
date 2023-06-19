@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class LoaderRemoteConfig(context: Context) {
+internal class LoaderRemoteConfig(context: Context) {
 
     private var remoteConfig: RemoteConfig
 

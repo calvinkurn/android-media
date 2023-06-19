@@ -16,8 +16,12 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.spyk
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +30,7 @@ import javax.crypto.Cipher
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class KycUploadViewModelTest {
     @get:Rule
@@ -43,6 +48,9 @@ class KycUploadViewModelTest {
     @RelaxedMockK
     private lateinit var serverLogger: KycServerLogger
 
+    @RelaxedMockK
+    private lateinit var imageEncryptionUtil: ImageEncryptionUtil
+
     private lateinit var viewModel: KycUploadViewModel
 
     private val ktpPath = "test ktp path"
@@ -57,12 +65,13 @@ class KycUploadViewModelTest {
         MockKAnnotations.init(this)
         viewModel = spyk(
             KycUploadViewModel(
-            useCase,
-            CoroutineTestDispatchersProvider,
-            sharedPreference,
-            cipherProviderImpl,
-            serverLogger
-        )
+                useCase,
+                CoroutineTestDispatchersProvider,
+                sharedPreference,
+                cipherProviderImpl,
+                serverLogger,
+                imageEncryptionUtil
+            )
         )
     }
 
@@ -295,7 +304,7 @@ class KycUploadViewModelTest {
 
     @Test
     fun `Failed to encrypt Image KTP`() {
-        unmockkObject(ImageEncryptionUtil)
+        every { imageEncryptionUtil.writeEncryptedImage(any(), any(), any()) } throws Exception("failed to encrypt")
         viewModel.encryptImage(ktpPath, KYC_IV_KTP_CACHE)
         val encryptResult = viewModel.encryptImageLiveData.value
         Assert.assertTrue(encryptResult is Fail)
@@ -303,22 +312,22 @@ class KycUploadViewModelTest {
 
     @Test
     fun `Failed to encrypt Image Face`() {
-        unmockkObject(ImageEncryptionUtil)
+        every { imageEncryptionUtil.writeEncryptedImage(any(), any(), any()) } throws Exception("failed to encrypt")
         viewModel.encryptImage(facePath, KYC_IV_FACE_CACHE)
         val encryptResult = viewModel.encryptImageLiveData.value
-        Assert.assertTrue(encryptResult is Fail)
+        assertTrue(encryptResult is Fail)
     }
 
     private fun mockEncryptionUtil() {
         val cipherMock: Cipher = mockk(relaxed = true)
         coEvery {
-            ImageEncryptionUtil.writeDecryptedImage(any(), any(), any())
+            imageEncryptionUtil.writeDecryptedImage(any(), any(), any())
         } answers {
             Unit
         }
 
         coEvery {
-            ImageEncryptionUtil.writeEncryptedImage(any(), any(), any())
+            imageEncryptionUtil.writeEncryptedImage(any(), any(), any())
         } answers {
             Unit
         }
@@ -336,13 +345,13 @@ class KycUploadViewModelTest {
         }
 
         coEvery {
-            ImageEncryptionUtil.renameImageToOriginalFileName(any())
+            imageEncryptionUtil.renameImageToOriginalFileName(any())
         } answers {
             encryptedImagePath
         }
 
         coEvery {
-            ImageEncryptionUtil.createCopyOfOriginalFile(any())
+            imageEncryptionUtil.createCopyOfOriginalFile(any())
         } answers {
             encryptedImagePath
         }
@@ -350,7 +359,6 @@ class KycUploadViewModelTest {
 
     @Test
     fun `Success encrypt KTP Image`() {
-        mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
         viewModel.encryptImage(ktpPath, KYC_IV_KTP_CACHE)
@@ -362,7 +370,6 @@ class KycUploadViewModelTest {
 
     @Test
     fun `Success encrypt Face Image`() {
-        mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
         viewModel.encryptImage(facePath, KYC_IV_FACE_CACHE)
@@ -377,7 +384,6 @@ class KycUploadViewModelTest {
         val kycResponse = KycResponse().apply {
             data.isSuccessRegister = false
         }
-        mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
         coEvery {
@@ -416,7 +422,6 @@ class KycUploadViewModelTest {
 
     @Test
     fun `failed file path krp empty`() {
-        mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
         coEvery { viewModel.decryptImage(ktpPath, any(), any()) } returns ""
@@ -429,7 +434,6 @@ class KycUploadViewModelTest {
 
     @Test
     fun `failed file path face empty`() {
-        mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
         coEvery { viewModel.decryptImage(facePath, any(), any()) } returns ""
