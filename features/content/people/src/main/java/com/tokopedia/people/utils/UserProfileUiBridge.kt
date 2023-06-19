@@ -13,6 +13,6 @@ class UserProfileUiBridge @Inject constructor() {
     val eventBus = EventBus<Event>()
 
     sealed interface Event {
-        object OpenProfileSetingsPage : Event
+        object OpenProfileSettingsPage : Event
     }
 }

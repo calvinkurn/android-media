@@ -230,7 +230,7 @@ class UserProfileReviewFragment @Inject constructor(
                 fullText = getString(R.string.up_profile_self_review_hidden_desc),
                 highlightedText = getString(R.string.up_profile_settings_title),
                 clickablePolicy = getClickableSpan {
-                    userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                    userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
                 }
             )
             binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()

@@ -306,7 +306,7 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun onClickOpenProfileSettingsPage() {
-                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
                     }
                 })
             }
@@ -494,7 +494,7 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             userProfileUiBridge.eventBus.subscribe().collect { event ->
                 when (event) {
-                    is UserProfileUiBridge.Event.OpenProfileSetingsPage -> {
+                    is UserProfileUiBridge.Event.OpenProfileSettingsPage -> {
                         openProfileSettingsPage()
                     }
                 }
@@ -656,7 +656,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
+                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
