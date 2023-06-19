@@ -13,6 +13,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBa
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBannerTimerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
@@ -144,7 +145,7 @@ class ShopCampaignTabAdapterTypeFactory(
     }
 
     override fun type(viewModel: LoadingModel?): Int {
-        return ShopLayoutLoadingShimmerViewHolder.LAYOUT
+        return ShopCampaignLayoutLoadingShimmerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -238,8 +239,8 @@ class ShopCampaignTabAdapterTypeFactory(
                 shopCampaignInterface
             )
 
-            ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
-                ShopLayoutLoadingShimmerViewHolder(parent)
+            ShopCampaignLayoutLoadingShimmerViewHolder.LAYOUT -> {
+                ShopCampaignLayoutLoadingShimmerViewHolder(parent)
             }
 
             else -> return super.createViewHolder(parent, type)
