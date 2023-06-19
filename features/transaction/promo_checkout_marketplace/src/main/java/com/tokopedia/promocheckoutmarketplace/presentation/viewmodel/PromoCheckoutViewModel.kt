@@ -1931,13 +1931,7 @@ class PromoCheckoutViewModel @Inject constructor(
                     promoListItemUiModel.uiState.isDisabled = false
                 }
                 fragmentUiModel.value?.let {
-                    val nonClashingSecondaryCoupon = promoListItemUiModel.uiData.secondaryCoupons
-                        .firstOrNull { secondaryCoupon ->
-                            secondaryCoupon.clashingInfos.all { clashingInfo ->
-                                clashingInfo.code != selectedPromoCode
-                            }
-                        }
-                    it.uiData.benefitAdjustmentMessage = nonClashingSecondaryCoupon?.benefitAdjustmentMessage ?: ""
+                    it.uiData.benefitAdjustmentMessage = promoListItemUiModel.uiData.benefitAdjustmentMessage
                     _fragmentUiModel.value = it
                 }
                 clashResult = false
