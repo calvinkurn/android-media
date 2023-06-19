@@ -237,10 +237,7 @@ class PromoCheckoutViewModel @Inject constructor(
         order: Order,
         promoRequest: PromoRequest
     ) {
-        val useSecondaryPromo = promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty() &&
-            promoListItemUiModel.uiData.currentClashingSecondaryPromo.isEmpty() &&
-            promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()
-        val promoCode = if (useSecondaryPromo) {
+        val promoCode = if (promoListItemUiModel.uiData.useSecondaryPromo) {
             promoListItemUiModel.uiData.secondaryCoupons.first().code
         } else {
             promoListItemUiModel.uiData.promoCode

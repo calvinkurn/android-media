@@ -76,6 +76,10 @@ data class PromoListItemUiModel(
             } else {
                 currentClashingPromo.isNotEmpty()
             }
+
+        val useSecondaryPromo: Boolean
+            get() = currentClashingPromo.isNotEmpty() &&
+                secondaryCoupons.isNotEmpty() && currentClashingSecondaryPromo.isEmpty()
     }
 
     data class UiState(
