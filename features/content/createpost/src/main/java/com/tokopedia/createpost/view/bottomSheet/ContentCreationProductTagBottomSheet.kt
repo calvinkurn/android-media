@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.CreatePostTagAdapter
@@ -13,10 +14,10 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.content_creation_product_tag_bottom_sheet.*
 
 class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
+    private var childView: View? = null
     private val childLayoutRes = R.layout.content_creation_product_tag_bottom_sheet
     private var productData: List<RelatedProductItem>? = null
     private var mediaType: String = ""
@@ -36,12 +37,11 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
+        childView = LayoutInflater.from(context).inflate(childLayoutRes,
             null, false)
         setChild(childView)
         setTitle(getString(com.tokopedia.content.common.R.string.feed_content_product_bottom_sheet_name))
     }
-
 
     private fun setDefaultParams() {
         showCloseIcon = true
@@ -49,14 +49,13 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
-
     private fun initAdapter() {
+        val rvProductTag = childView?.findViewById<RecyclerView>(R.id.rv_product_tag)
         productData?.let {
             createPostTagAdapter.updateProduct(it)
-            rv_product_tag.adapter = createPostTagAdapter
-            rv_product_tag.layoutManager =
+            rvProductTag?.adapter = createPostTagAdapter
+            rvProductTag?.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
         }
     }
 
