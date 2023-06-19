@@ -30,7 +30,7 @@
         android:paddingTop="11dp"
         android:paddingBottom="11dp"
         android:text="@string/not"
-        android:textColor="@color/contact_us_dms_complain_bg"
+        android:textColor="@color/Unify_GN500"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"

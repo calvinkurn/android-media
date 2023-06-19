@@ -353,7 +353,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         onSuccessSubmit(intent)
     }
 
-    fun getSelectedItem(): String {
+    private fun getSelectedItem(): String {
         var filters = ""
         for (filter in selectedOption) {
             filters += "$filter;"
