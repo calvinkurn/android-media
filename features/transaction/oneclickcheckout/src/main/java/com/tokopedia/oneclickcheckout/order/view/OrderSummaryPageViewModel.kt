@@ -1300,7 +1300,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
-    fun saveAddOnProductState(
+    fun updateAddOnProduct(
         newAddOnProductData: AddOnsProductDataModel.Data,
         product: OrderProduct
     ) {
@@ -1315,6 +1315,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             saveAddOnProductStateJobs.remove(newAddOnProductData.id)
         }
         saveAddOnProductStateJobs[newAddOnProductData.id] = job
+
+        calculateTotal()
     }
 
     override fun onCleared() {

@@ -60,6 +60,16 @@
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
+        <LinearLayout
+            android:id="@+id/ll_addons_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_product_addons_price_label"
             android:layout_width="wrap_content"
@@ -68,7 +78,7 @@
             android:text="@string/occ_lbl_total_item_addons_price"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value"
+            app:layout_constraintTop_toBottomOf="@id/ll_addons_product"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -82,7 +92,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_product_addons_price_label"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_product_price_value"
+            app:layout_constraintTop_toBottomOf="@id/ll_addons_product"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 

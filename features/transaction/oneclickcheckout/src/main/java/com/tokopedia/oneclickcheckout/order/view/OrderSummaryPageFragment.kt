@@ -1515,7 +1515,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             newAddOnProductData: AddOnsProductDataModel.Data,
             product: OrderProduct
         ) {
-            viewModel.saveAddOnProductState(
+            viewModel.updateAddOnProduct(
                 newAddOnProductData = newAddOnProductData,
                 product = product
             )

@@ -5,9 +5,11 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemBottomsheetOrderPriceSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemPaymentFeeBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -27,11 +29,12 @@ class OrderPriceSummaryBottomSheet {
                 showKnob = true
                 showHeader = false
                 showCloseIcon = false
-                val binding = BottomSheetOrderPriceSummaryBinding.inflate(LayoutInflater.from(view.context))
+                val inflater = LayoutInflater.from(view.context)
+                val binding = BottomSheetOrderPriceSummaryBinding.inflate(inflater)
                 view.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
-                setupView(binding, orderCost, view)
+                setupView(binding, orderCost, view, inflater)
                 setChild(binding.root)
                 show(it, null)
             }
@@ -39,7 +42,7 @@ class OrderPriceSummaryBottomSheet {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost, view: OrderSummaryPageFragment) {
+    private fun setupView(binding: BottomSheetOrderPriceSummaryBinding, orderCost: OrderCost, view: OrderSummaryPageFragment, inflater: LayoutInflater) {
         binding.tvTotalProductPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
         if (orderCost.hasAddOn) {
@@ -49,6 +52,38 @@ class OrderPriceSummaryBottomSheet {
         } else {
             binding.tvTotalProductAddonsPriceLabel.gone()
             binding.tvTotalProductAddonsPriceValue.gone()
+        }
+
+        if (orderCost.addOnsProductSelectedList.isNotEmpty()) {
+            val installationServiceAddOns = orderCost.addOnsProductSelectedList.filter { it.name == "Jasa Pasang Standar" }
+            val brokenProtectionAddOns = orderCost.addOnsProductSelectedList.filter { it.name == "Proteksi Rusak" }
+            if (installationServiceAddOns.isNotEmpty()) {
+                val itemOrderPriceBinding = ItemBottomsheetOrderPriceSummaryBinding.inflate(
+                    inflater,
+                    null,
+                    false
+                )
+                val totalPrice = installationServiceAddOns.map { it.price }.sum()
+                itemOrderPriceBinding.tvLabel.text = "Total Jasa Pasang (${installationServiceAddOns.size} Jasa)"
+                itemOrderPriceBinding.tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false).removeDecimalSuffix()
+                binding.llAddonsProduct.show()
+                binding.llAddonsProduct.addView(itemOrderPriceBinding.root)
+            }
+
+            if (brokenProtectionAddOns.isNotEmpty()) {
+                val itemOrderPriceBinding = ItemBottomsheetOrderPriceSummaryBinding.inflate(
+                    inflater,
+                    null,
+                    false
+                )
+                val totalPrice = brokenProtectionAddOns.map { it.price }.sum()
+                itemOrderPriceBinding.tvLabel.text = "Total Biaya Proteksi (${brokenProtectionAddOns.size} Polis)"
+                itemOrderPriceBinding.tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false).removeDecimalSuffix()
+                binding.llAddonsProduct.show()
+                binding.llAddonsProduct.addView(itemOrderPriceBinding.root)
+            }
+        } else {
+            binding.llAddonsProduct.gone()
         }
 
         if (orderCost.purchaseProtectionPrice > 0) {

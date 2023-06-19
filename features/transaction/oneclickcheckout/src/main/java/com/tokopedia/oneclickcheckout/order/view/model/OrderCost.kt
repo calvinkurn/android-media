@@ -1,5 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
+
 data class OrderCost(
     val totalPrice: Double = 0.0,
     val totalItemPrice: Double = 0.0,
@@ -14,6 +16,7 @@ data class OrderCost(
     val hasAddOn: Boolean = false,
     val cashbacks: List<OrderCostCashbackData> = emptyList(),
     val installmentData: OrderCostInstallmentData? = null,
+    val addOnsProductSelectedList: List<AddOnsProductDataModel.Data> = emptyList(),
 
     val orderPaymentFees: List<OrderPaymentFee> = emptyList(),
     val isInstallment: Boolean = false,
