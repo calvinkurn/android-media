@@ -605,6 +605,7 @@ class PromoCheckoutViewModel @Inject constructor(
 
             // Initialize promo list header
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
+            val recommendedPromoList = promoRecommendationUiModel.value?.uiData?.promoCodes ?: listOf()
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(
                     couponSubSection,
@@ -629,6 +630,7 @@ class PromoCheckoutViewModel @Inject constructor(
                             couponSectionItem,
                             promoHeader.uiData.identifierId,
                             preSelectedPromoList,
+                            recommendedPromoList,
                             index
                         )
                         if (eligibilityHeader.uiState.isEnabled) {

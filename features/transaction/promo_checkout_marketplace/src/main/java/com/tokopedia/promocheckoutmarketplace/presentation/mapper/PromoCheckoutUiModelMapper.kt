@@ -141,6 +141,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         couponSection: CouponSection,
         headerIdentifierId: Int,
         selectedPromo: List<String>,
+        recommendedPromo: List<String>,
         index: Int = 0
     ): PromoListItemUiModel {
         val promoItem = PromoListItemUiModel(
@@ -237,7 +238,10 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
-
+        if (recommendedPromo.isNotEmpty()) {
+            promoItem.uiState.isRecommended = recommendedPromo.contains(promoItem.uiData.promoCode) ||
+                promoItem.uiData.secondaryCoupons.any { recommendedPromo.contains(it.code) }
+        }
         return promoItem
     }
 
