@@ -34,7 +34,6 @@ internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = nu
             ellipsize = TextUtils.TruncateAt.END
         }
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER)
-        layoutParams.setMargins(dip(5), 0, dip(5), 0)
         addView(textView, layoutParams)
         setBackgroundColor(Color.TRANSPARENT)
         ViewCompat.setElevation(this, 30f)
