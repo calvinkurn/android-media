@@ -51,16 +51,18 @@ class BannerEnvironment {
     }
 
     private fun addBanner(activity: Activity, liveStatus: String) {
-        decorView = activity.window.decorView as ViewGroup
-
-        bannerEnvironmentView = BannerEnvironmentView(activity).apply {
-            updateText(liveStatus, R.color.Unify_NN0)
-            updateBannerColor(R.color.Unify_GN500)
-            bannerGravity = BannerEnvironmentGravity.END
+        if (liveStatus.isNotEmpty()) {
+            decorView = activity.window.decorView as ViewGroup
+            bannerEnvironmentView = BannerEnvironmentView(activity).apply {
+                updateText(liveStatus, R.color.Unify_NN0)
+                updateBannerColor(R.color.Unify_GN500)
+                bannerGravity = BannerEnvironmentGravity.END
+            }
+            val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
+            val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
+            decorView?.addView(bannerEnvironmentView, params)
         }
-        val bannerSize = activity.resources.getDimension(R.dimen.banner_default_size_debug).toInt()
-        val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
-        decorView?.addView(bannerEnvironmentView, params)
+
     }
 
     /**
