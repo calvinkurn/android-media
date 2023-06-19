@@ -125,19 +125,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_primary" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_timer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_secondary"
-        app:typographyType="paragraph_2"
-        tools:text="Meluncur otomatis dalam 7 detik." />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -222,7 +222,6 @@
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
     <string name="goto_kyc_back_to_source">Balik</string>
-    <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam <![CDATA[<b>%s detik</b>]]>.</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
