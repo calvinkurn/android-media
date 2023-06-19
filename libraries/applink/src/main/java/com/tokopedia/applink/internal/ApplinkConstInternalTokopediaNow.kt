@@ -33,8 +33,13 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
+    /* old category applink - TokoNowCategoryActivity */
     @JvmField
-    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
+    val OLD_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
+
+    /* new category applink - TokoNowCategoryActivity */
+    @JvmField
+    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category/l1"
 
     //TokoNowRepurchaseActivity
     @JvmField
