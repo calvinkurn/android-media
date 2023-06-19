@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
@@ -33,15 +34,15 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
+import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
-import com.tokopedia.scp_rewards.detail.domain.model.Benefit
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
-import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
+import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderData
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
@@ -134,6 +135,13 @@ class MedalDetailFragment : BaseDaggerFragment() {
                             safeResult.footerData.appLink,
                             safeResult.footerData.url
                         )
+                        MedalDetailAnalyticsImpl.sendImpressionAutoApplyToaster(
+                            badgeId = medaliSlug,
+                            promoCode = medalDetailViewModel.couponCode,
+                            couponStatus = medalDetailViewModel.couponStatus,
+                            couponNotes = medalDetailViewModel.couponNotes,
+                            isAutoApplySuccess = true
+                        )
                     }
 
                     is MedalDetailViewModel.AutoApplyState.SuccessCouponFailed -> {
@@ -143,13 +151,25 @@ class MedalDetailFragment : BaseDaggerFragment() {
                             safeResult.footerData.appLink,
                             safeResult.footerData.url
                         )
+                        MedalDetailAnalyticsImpl.sendImpressionAutoApplyToaster(
+                            badgeId = medaliSlug,
+                            promoCode = medalDetailViewModel.couponCode,
+                            couponStatus = medalDetailViewModel.couponStatus,
+                            couponNotes = medalDetailViewModel.couponNotes,
+                            isAutoApplySuccess = false
+                        )
                     }
                 }
             }
         }
     }
 
-    private fun showToastAndNavigateToLink(id: Int?, message: String?, appLink: String?, url: String?) {
+    private fun showToastAndNavigateToLink(
+        id: Int?,
+        message: String?,
+        appLink: String?,
+        url: String?
+    ) {
         binding.viewMedalFooter.showLoading(id, false)
         Toaster.apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -168,11 +188,13 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun getNavigationBarHeight(): Int {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view?.windowToken, 0)
         }
         val resources = context?.resources
-        val resourceId: Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        val resourceId: Int =
+            resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
         return if (resourceId > 0) {
             resources?.getDimensionPixelSize(resourceId) ?: 0
         } else {
@@ -190,9 +212,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         setTransparentStatusBar()
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
-                        loadTaskProgress(data.detail?.medaliDetailPage?.mission)
-                        loadCouponWidget(data.detail?.medaliDetailPage?.benefit)
-                        loadFooter(data.detail?.medaliDetailPage?.benefitButton)
+                        loadTaskProgress(data.detail?.medaliDetailPage)
+                        loadCouponWidget(data.detail?.medaliDetailPage)
+                        loadFooter(data.detail?.medaliDetailPage)
+                        MedalDetailAnalyticsImpl.sendImpressionMDP(medaliSlug)
                     }
 
                     is Error -> {
@@ -202,16 +225,20 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
                     is Loading -> {
                         binding.loadContainer.loaderFlipper.visible()
+                        MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
                 }
             }
         }
     }
 
-    private fun loadFooter(listOfButtons: List<BenefitButton>?) {
-        listOfButtons?.let { buttons ->
+    private fun loadFooter(medaliDetailPage: MedaliDetailPage?) {
+        val listOfButtons = medaliDetailPage?.benefitButtons
+        if (listOfButtons.isNullOrEmpty()) {
+            binding.viewMedalFooter.gone()
+        } else {
             binding.viewMedalFooter.bindData(
-                buttons.map {
+                listOfButtons.map {
                     FooterData(
                         text = it.text,
                         url = it.url,
@@ -231,7 +258,49 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 } else {
                     requireContext().launchLink(data.appLink, data.url)
                 }
+                sendClickCtaAnalytics(data)
             }
+            sendViewCtaAnalytics(listOfButtons)
+        }
+    }
+
+    private fun sendViewCtaAnalytics(listOfButtons: List<BenefitButton>) {
+        listOfButtons.find { it.unifiedStyle == "primary" }?.let { applyCouponCta ->
+            MedalDetailAnalyticsImpl.sendImpressionShopCta(
+                medaliSlug,
+                promoCode = medalDetailViewModel.couponCode,
+                couponStatus = medalDetailViewModel.couponStatus,
+                couponNotes = medalDetailViewModel.couponNotes,
+                ctaText = applyCouponCta.text.orEmpty()
+            )
+        }
+
+        listOfButtons.find { it.unifiedStyle == "secondary" }?.let { showCabinetCta ->
+            MedalDetailAnalyticsImpl.sendImpressionCabinetCta(
+                medaliSlug,
+                promoCode = medalDetailViewModel.couponCode,
+                couponStatus = medalDetailViewModel.couponStatus,
+                couponNotes = medalDetailViewModel.couponNotes
+            )
+        }
+    }
+
+    private fun sendClickCtaAnalytics(data: FooterData) {
+        if (data.style == "primary") {
+            MedalDetailAnalyticsImpl.sendClickShopCta(
+                medaliSlug,
+                promoCode = medalDetailViewModel.couponCode,
+                couponStatus = medalDetailViewModel.couponStatus,
+                couponNotes = medalDetailViewModel.couponNotes,
+                ctaText = data.text.orEmpty()
+            )
+        } else if (data.style == "secondary") {
+            MedalDetailAnalyticsImpl.sendClickCabinetCta(
+                medaliSlug,
+                promoCode = medalDetailViewModel.couponCode,
+                couponStatus = medalDetailViewModel.couponStatus,
+                couponNotes = medalDetailViewModel.couponNotes
+            )
         }
     }
 
@@ -249,7 +318,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadHeader(medaliDetailPage: MedaliDetailPage?) {
         binding.viewMedalHeader.bindData(
-            MedalHeader(
+            MedalHeaderData(
                 isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: false,
                 medalIconUrl = medaliDetailPage?.iconImageURL,
                 lottieUrl = medaliDetailPage?.shimmerShutterLottieURL,
@@ -266,24 +335,39 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 shutterText = medaliDetailPage?.shutterText.orEmpty(),
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
+        ) {
+            MedalDetailAnalyticsImpl.sendClickMedali(
+                medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+                medaliDetailPage?.sourceText.orEmpty(),
+                medaliDetailPage?.name.orEmpty(),
+                medaliDetailPage?.description.orEmpty()
+            )
+        }
+
+        MedalDetailAnalyticsImpl.sendImpressionMedali(
+            medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+            medaliDetailPage?.sourceText.orEmpty(),
+            medaliDetailPage?.name.orEmpty(),
+            medaliDetailPage?.description.orEmpty()
         )
         medaliDetailPage?.tncButton?.apply {
             binding.tvTermsConditions.text = text
             binding.tvTermsConditions.setOnClickListener {
+                MedalDetailAnalyticsImpl.sendClickTncCta(medaliSlug)
                 launchWeblink(requireContext(), url.orEmpty())
             }
         }
     }
 
-    private fun loadTaskProgress(mission: Mission?) {
-        mission?.let { safeMission ->
-            if (safeMission.task?.isEmpty() == true) {
+    private fun loadTaskProgress(medaliDetailPage: MedaliDetailPage?) {
+        medaliDetailPage?.mission?.let { safeMission ->
+            if (safeMission.task.isNullOrEmpty()) {
                 binding.viewTasksProgress.gone()
             } else {
                 val taskProgress = TaskProgress(
                     title = safeMission.title,
                     progress = safeMission.progress,
-                    tasks = safeMission.task?.map {
+                    tasks = safeMission.task.map {
                         Task(
                             title = it.title,
                             isCompleted = it.isCompleted,
@@ -294,8 +378,19 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 binding.viewTasksProgress.apply {
                     bindData(taskProgress)
                 }
+                sendTaskProgressAnalytics(safeMission, medaliDetailPage)
             }
         } ?: run { binding.viewTasksProgress.gone() }
+    }
+
+    private fun sendTaskProgressAnalytics(mission: Mission, medaliDetailPage: MedaliDetailPage) {
+        val totalTasks = mission.task?.size.orZero()
+        val completedTasks = mission.task?.count { it.isCompleted }.orZero()
+        MedalDetailAnalyticsImpl.sendImpressionProgressSection(
+            medaliSlug, isLocked = medaliDetailPage.isMedaliGrayScale ?: false,
+            taskProgressPercent = "${mission.progress.orZero()} %",
+            noOfTasksCompleted = "$completedTasks/$totalTasks"
+        )
     }
 
     private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
@@ -402,21 +497,42 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadCouponWidget(benefits: List<Benefit>?) {
-        benefits?.let {
+    private fun loadCouponWidget(medaliDetailPage: MedaliDetailPage?) {
+        val benefits = medaliDetailPage?.benefits
+        if (benefits.isNullOrEmpty()) {
+            binding.couponView.gone()
+        } else {
             val couponList = mutableListOf<MedalRewardsModel>()
-            it.forEach { it1 ->
+            benefits.forEach { benefit ->
                 couponList.add(
                     MedalRewardsModel(
-                        imageUrl = it1.imageUrl ?: "",
-                        status = it1.status ?: "",
-                        statusDescription = it1.statusDescription ?: "",
-                        isActive = it1.isActive
+                        imageUrl = benefit.imageUrl ?: "",
+                        status = benefit.status ?: "",
+                        statusDescription = benefit.statusDescription ?: "",
+                        isActive = benefit.isActive
                     )
                 )
             }
-            binding.couponView.renderCoupons(couponList)
+
+            binding.couponView.renderCoupons(couponList) {
+                MedalDetailAnalyticsImpl.sendImpressionCouponError(
+                    badgeId = medaliSlug,
+                    promoCode = medalDetailViewModel.couponCode
+                )
+            }
+
+            MedalDetailAnalyticsImpl.sendImpressionBonusCoupon(
+                badgeId = medaliSlug,
+                promoCode = medalDetailViewModel.couponCode,
+                couponStatus = medalDetailViewModel.couponStatus,
+                couponNotes = medalDetailViewModel.couponNotes
+            )
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        return super.onFragmentBackPressed()
     }
 
     override fun getScreenName() = ""

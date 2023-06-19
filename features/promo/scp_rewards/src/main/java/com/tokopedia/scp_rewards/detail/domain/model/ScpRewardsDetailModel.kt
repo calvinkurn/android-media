@@ -39,8 +39,8 @@ data class MedaliDetailPage(
     @SerializedName("tncButton") val tncButton: TncButton? = null,
     @SerializedName("coachMark") val coachMark: CoachMark? = null,
     @SerializedName("mission") val mission: Mission? = null,
-    @SerializedName("benefit") val benefit: List<Benefit>? = null,
-    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null
+    @SerializedName("benefit") val benefits: List<Benefit>? = null,
+    @SerializedName("benefitButton") val benefitButtons: List<BenefitButton>? = null
 )
 
 data class TncButton(

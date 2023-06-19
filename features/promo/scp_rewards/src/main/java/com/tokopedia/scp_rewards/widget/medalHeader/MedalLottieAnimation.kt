@@ -27,7 +27,10 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
     private val binding =
         WidgetMedalLottieAnimationBinding.inflate(LayoutInflater.from(context), this)
 
-    fun loadLottie(data: MedalHeader) {
+    private var onClickAction: (() -> Unit)? = null
+
+    fun loadLottie(data: MedalHeaderData, onClickAction: (() -> Unit)? = null) {
+        this.onClickAction = onClickAction
         loadSparks(data.lottieSparklesUrl)
         downloadImages(data, {
             loadMedalBadge(data, it)
@@ -43,7 +46,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         )
     }
 
-    private fun loadMedalBadge(data: MedalHeader, map: Map<String, Bitmap?>) {
+    private fun loadMedalBadge(data: MedalHeaderData, map: Map<String, Bitmap?>) {
         binding.apply {
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
@@ -107,6 +110,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
     }
 
     private fun setupClickListeners() {
+        onClickAction?.invoke()
         var isOpenToClose = true
         binding.lottieView.apply {
             setOnClickListener {
@@ -139,7 +143,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
     }
 
     private fun downloadImages(
-        data: MedalHeader,
+        data: MedalHeaderData,
         onSuccess: (Map<String, Bitmap?>) -> Unit,
         onFailure: () -> Unit
     ) {

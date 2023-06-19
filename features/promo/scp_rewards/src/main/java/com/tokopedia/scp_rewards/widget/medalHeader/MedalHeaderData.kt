@@ -1,6 +1,6 @@
 package com.tokopedia.scp_rewards.widget.medalHeader
 
-data class MedalHeader(
+data class MedalHeaderData(
     val isGrayScale: Boolean = false,
     val medalIconUrl: String? = null,
     val lottieUrl: String? = null,
