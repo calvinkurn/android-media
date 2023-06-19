@@ -24,7 +24,9 @@
       "eventLabel": ".*, .*",
       "pageDestination": ".*",
       "trackerId": "2151|2152",
-      "userId": ".*"
+      "userId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*"
     },
     {
       "eventCategory": "similar product recommendation page",
@@ -34,7 +36,6 @@
       "eventAction": "impression - similar product recommendation|impression - similar product recommendation - non login",
       "sessionIris" : ".*",
       "items": [{
-        "dimension83": ".*",
         "item_id": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
         "dimension40": ".*",
@@ -49,7 +50,9 @@
       "eventLabel": ".*, .*",
       "pageDestination": ".*",
       "trackerId": "2149|2150",
-      "userId": ".*"
+      "userId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*"
     }
   ]
 }
