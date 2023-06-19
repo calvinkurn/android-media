@@ -39,7 +39,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
         tkpdWebView = TkpdWebView(this)
         addWebView()
         getIntentData()
-        tkpdWebView?.loadUrl("www.google.com")
+        tkpdWebView?.loadDataWithBaseURL("", "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\" allowfullscreen></iframe>", "text/html", "utf-8", null)
 //        initYoutubePlayer()
     }
 
