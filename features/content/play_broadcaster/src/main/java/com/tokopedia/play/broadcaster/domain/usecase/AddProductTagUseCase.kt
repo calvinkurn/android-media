@@ -22,9 +22,9 @@ class AddProductTagUseCase @Inject constructor(
         return try {
             val param = generateParams(params)
             repository.request(graphqlQuery(), param)
-        } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-            throw MessageErrorException(e.message)
+        } catch (expected: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(expected)
+            throw MessageErrorException(expected.message)
         }
     }
 
