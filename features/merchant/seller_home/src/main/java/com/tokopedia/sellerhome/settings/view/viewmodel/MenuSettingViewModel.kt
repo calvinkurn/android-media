@@ -93,7 +93,7 @@ class MenuSettingViewModel @Inject constructor(
 
     fun getShopLocEligible(shopId: Long) {
         launchCatchError(block = {
-            val shopLocWhitelist = shopLocWhitelist.get().invoke(shopId).shopLocWhitelist
+            val shopLocWhitelist = shopLocWhitelist.get().invoke(shopId).keroGetRolloutEligibility
             val eligibilityState = shopLocWhitelist.data.eligibilityState
             val isMultilocation = eligibilityState==1
             _shopLocEligible.postValue(Success(isMultilocation))

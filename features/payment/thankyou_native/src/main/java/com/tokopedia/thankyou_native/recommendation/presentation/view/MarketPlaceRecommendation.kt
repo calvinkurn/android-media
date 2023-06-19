@@ -40,6 +40,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
@@ -104,11 +105,15 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     }
 
     override fun loadRecommendation(thanksPageData: ThanksPageData, fragment: BaseDaggerFragment) {
-        this.thanksPageData = thanksPageData
-        this.paymentId = thanksPageData.paymentID
-        this.fragment = fragment
-        startViewModelObserver()
-        viewModel.loadRecommendationData(thanksPageData)
+        try {
+            this.thanksPageData = thanksPageData
+            this.paymentId = thanksPageData.paymentID
+            this.fragment = fragment
+            startViewModelObserver()
+            viewModel.loadRecommendationData(thanksPageData)
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

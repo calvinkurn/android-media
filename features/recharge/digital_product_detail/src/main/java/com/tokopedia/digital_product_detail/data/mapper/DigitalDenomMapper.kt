@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.data.mapper
 
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
 import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationItem
@@ -26,8 +27,6 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
-                dataCollectionMCCM),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.otherComponents ?: emptyList(),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
@@ -60,6 +59,26 @@ class DigitalDenomMapper @Inject constructor() {
             title = data.title,
             recommendations = data.items.map { digiPersoToRecommendationCard(it, isBigRecommendation) }
         )
+    }
+
+    fun mapDigiPersoToMCCMProducts(data: PersoRecommendationData): DenomWidgetModel {
+        return if (!data.items.isNullOrEmpty()) {
+            val firstProduct = data.items.first()
+            val denomList: MutableList<DenomData> = mutableListOf()
+            denomList.addAll(data.items.map {
+                digiPersoToMCCMItems(it)
+            })
+            val denomWidgetModel =  DenomWidgetModel(
+                mainTitle = data.title,
+                isHorizontalMCCM = firstProduct.mediaUrlType.equals(MCCM_LAYOUT_TYPE_HORIZONTAL,true),
+                imageBackgroundUrl = firstProduct.mediaURL,
+                imageBackgroundUrlDarkMode = firstProduct.mediaURLDarkMode,
+                listDenomData = denomList
+            )
+            return denomWidgetModel
+        } else {
+            return DenomWidgetModel()
+        }
     }
 
     private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
@@ -193,7 +212,30 @@ class DigitalDenomMapper @Inject constructor() {
         }
     }
 
+    private fun digiPersoToMCCMItems(perso: PersoRecommendationItem): DenomData {
+        return perso.let {
+            DenomData(
+                id = it.trackingData.productId,
+                categoryId = it.trackingData.categoryId,
+                operatorId = it.trackingData.operatorId,
+                isSpecialPromo = true,
+                title = it.title,
+                price = it.price,
+                pricePlain = it.pricePlain.toInt()
+                ,
+                slashPrice = it.slashedPrice,
+                slashPricePlain = it.slashedPricePlain.toInt(),
+                isShowChevron = !it.descriptions.isNullOrEmpty(),
+                quotaInfo = it.label1,
+                expiredDays = it.label2,
+                discountLabel = it.discount,
+                productDescriptions = it.descriptions
+            )
+        }
+    }
+
     companion object {
+        const val MCCM_LAYOUT_TYPE_HORIZONTAL = "horizontal"
         const val CLUSTER_MCCM_TYPE = "MCCM"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
         const val EMPTY_PRICE = "0"

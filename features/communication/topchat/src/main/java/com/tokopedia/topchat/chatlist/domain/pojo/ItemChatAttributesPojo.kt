@@ -27,7 +27,9 @@ data class ItemChatAttributesPojo(
     @SerializedName("pinStatus")
     var pinStatus: Int = 0,
     @SerializedName("contact")
-    var contact: ItemChatAttributesContactPojo? = null
+    var contact: ItemChatAttributesContactPojo? = null,
+    @SerializedName("labelIconURL")
+    var labelIcon: String = ""
 
 ) {
 

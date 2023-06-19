@@ -463,24 +463,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(event.source)
             is PlayBroadcastAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayBroadcastAction.ResetUploadState -> handleResetUploadState()
-            is PlayBroadcastAction.AddBannerPreparation -> handleAddBannerPreparation(event.data)
-            is PlayBroadcastAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(event.data)
             else -> {
                 //no-op
             }
         }
     }
 
-    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
             if (_bannerPreparation.value.contains(data)) return@launchCatchError
-            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+            _bannerPreparation.update { it + data }
         }, onError = {})
     }
 
-    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+            _bannerPreparation.update { it - data }
         }, onError = {})
     }
 
@@ -504,7 +502,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _accountListState.value = accountList
 
         if (accountList.isNotEmpty()) {
-            updateSelectedAccount(
+            setSelectedAccount(
                 getSelectedAccount(
                     selectedType = selectedType,
                     cacheSelectedType = sharedPref.getLastSelectedAccountType(),
@@ -571,9 +569,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setDurationConfig(configUiModel.durationConfig)
             setScheduleConfig(configUiModel.scheduleConfig)
 
-            setupShortEntryPoint(configUiModel)
-            setupPerformanceDashboardEntryPoint(configUiModel)
-
             broadcastTimer.setupDuration(
                 configUiModel.durationConfig.remainingDuration,
                 configUiModel.durationConfig.maxDuration
@@ -582,7 +577,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            updateSelectedAccount(selectedAccount)
+            setSelectedAccount(selectedAccount)
+
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -917,18 +916,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun setupShortEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS)
         if (playShortsEntryPointRemoteConfig.isShowEntryPoint() && config.shortVideoAllowed) {
-            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+            addBannerPreparation(banner)
         } else {
-            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+            removeBannerPreparation(banner)
         }
     }
 
     private fun setupPerformanceDashboardEntryPoint(config: ConfigurationUiModel) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_DASHBOARD)
         if (isAllowToSeePerformanceDashboard && config.hasContent) {
-            submitAction(PlayBroadcastAction.AddBannerPreparation(banner))
+            addBannerPreparation(banner)
         } else {
-            submitAction(PlayBroadcastAction.RemoveBannerPreparation(banner))
+            removeBannerPreparation(banner)
         }
     }
 
@@ -1008,11 +1007,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if (it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) {
-                    it.copy(endsIn = endTimeInteractive)
-                } else {
-                    it
-                }
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && (_interactive.value as? GameUiModel.Quiz)?.status is GameUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = if (allowChat) null else endTimeInteractive)
+                else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
@@ -1761,7 +1757,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+    private fun setSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)

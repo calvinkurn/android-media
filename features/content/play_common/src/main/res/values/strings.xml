@@ -9,7 +9,7 @@
     <string name="play_interactive_ends_in">Berakhir</string>
     <string name="play_interactive_winner">Pemenang</string>
     <string name="play_interactive_winner_chat">Chat</string>
-    <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini</string>
+    <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini.</string>
     <string name="play_interactive_leaderboard_empty_title">Yaah, gagal menampilkan hasil.</string>
     <string name="play_interactive_leaderboard_empty_desc">Cek notifikasi atau tunggu chat dari toko jika kamu menang.</string>
     <string name="play_interactive_leaderboard_empty_action">Coba Lagi</string>

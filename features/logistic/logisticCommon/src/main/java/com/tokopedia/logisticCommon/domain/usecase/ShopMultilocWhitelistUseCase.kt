@@ -6,19 +6,20 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticCommon.data.query.ShopLocationQuery
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
+import com.tokopedia.logisticCommon.data.request.shoplocation.KeroGetRolloutEligibilityParam
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibilityResponse
 import javax.inject.Inject
 
 class ShopMultilocWhitelistUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Long, ShopLocationWhitelistResponse>(dispatcher.io) {
+) : CoroutineUseCase<Long, KeroGetRolloutEligibilityResponse>(dispatcher.io) {
     override fun graphqlQuery(): String {
-        return ShopLocationQuery.shopLocationWhitelist
+        return ShopLocationQuery.keroGetRolloutEligibility
     }
 
-    override suspend fun execute(params: Long): ShopLocationWhitelistResponse {
-        val param = mapOf("shop_id" to params)
+    override suspend fun execute(params: Long): KeroGetRolloutEligibilityResponse {
+        val param = KeroGetRolloutEligibilityParam(shopId = params)
         return repository.request(graphqlQuery(), param)
     }
 }

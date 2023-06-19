@@ -81,6 +81,8 @@ public interface ShipmentContract {
 
         void showToastError(String message);
 
+        void showToastErrorAkamai(String message);
+
         void renderErrorPage(String message);
 
         void onCacheExpired(String message);

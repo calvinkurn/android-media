@@ -348,8 +348,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
-                            findCustomTopChatComponentsIfAny(it.components)
-                            findBottomTabNavDataComponentsIfAny(it.components)
                             findAnchorTabComponentsIfAny(it.components)
                         }
                     }
@@ -376,17 +374,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
-        }
-    }
-
-    private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {
-        val customTopChatComponent = components?.find {
-            it.name == ComponentNames.CustomTopchat.componentName
-        }
-        if (customTopChatComponent != null) {
-            discoveryFabLiveData.postValue(Success(customTopChatComponent))
-        } else {
-            discoveryFabLiveData.postValue(Fail(Throwable()))
         }
     }
 
@@ -518,16 +505,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return categoryID ?: ""
     }
 
-    private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
-        bottomTabNavDataComponent = components?.find {
-            it.name == ComponentNames.BottomNavigation.componentName && it.renderByDefault
-        }
-        if (bottomTabNavDataComponent != null) {
-            discoveryBottomNavLiveData.postValue(Success(bottomTabNavDataComponent!!))
-        } else {
-            discoveryBottomNavLiveData.postValue(Fail(Throwable()))
-        }
-    }
     private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
         val tabDataComponent = components?.find {
             it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault

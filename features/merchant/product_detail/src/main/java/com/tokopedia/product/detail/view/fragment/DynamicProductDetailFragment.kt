@@ -273,6 +273,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -5834,12 +5835,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
+        ViewToViewTracker.eventImpressViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId,
             trackingQueue
         )
@@ -5851,12 +5852,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventClickViewToView(
+        ViewToViewTracker.eventClickViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId
         )
         val activity = activity ?: return

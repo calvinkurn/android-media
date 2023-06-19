@@ -40,6 +40,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -438,7 +439,8 @@ class ChatbotViewStateImpl(
     }
 
     override fun getNewCommentId(): Int {
-        return R.id.new_comment
+        var textAreaUnify = view.findViewById<TextAreaUnify2>(R.id.new_comment)
+        return textAreaUnify.editText.id
     }
 
     override fun getReplyBoxId(): Int {
