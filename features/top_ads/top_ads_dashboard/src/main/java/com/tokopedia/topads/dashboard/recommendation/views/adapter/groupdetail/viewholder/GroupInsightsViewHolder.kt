@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
@@ -19,7 +19,8 @@ class GroupInsightsViewHolder(
     private val view: View,
     private val onChipClick: (Int) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null,
-    private val onAccordianItemClick: ((clickedItem: Int) -> Unit)
+    private val onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit,
+    private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 
@@ -31,7 +32,7 @@ class GroupInsightsViewHolder(
             removeAllViews()
             val accordionUnifyData = AccordionDataUnify(
                 title = element.title,
-                subtitle = element.subTitle,
+                subtitle = getSubtitle(element, true),
                 isExpanded = element.isExpanded,
                 expandableView = getView(element.expandItemDataModel)
             )
@@ -39,7 +40,15 @@ class GroupInsightsViewHolder(
             addGroup(accordionUnifyData)
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
-                onAccordianItemClick.invoke(element.type)
+                onAccordianItemClick.invoke(element)
+                removeAllViews()
+                val accordionUnifyData = AccordionDataUnify(
+                    title = element.title,
+                    subtitle = if(element.isExpanded) getSubtitle(element, false) else getSubtitle(element, true),
+                    isExpanded = element.isExpanded,
+                    expandableView = getView(element.expandItemDataModel)
+                )
+                addGroup(accordionUnifyData)
             }
         }
     }
@@ -49,10 +58,40 @@ class GroupInsightsViewHolder(
             View.inflate(view.context, R.layout.top_ads_group_insights_accordian_layout, null)
         val rv: RecyclerView = layout.findViewById(R.id.accordianRecyclerview)
         rv.layoutManager = LinearLayoutManager(view.context)
-        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick, { _, _ -> },onInsightTypeChipClick, onAccordianItemClick))
+        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick, { _, _ -> },onInsightTypeChipClick, onAccordianItemClick, onInsightAction = onInsightAction))
         rv.adapter = accordianAdapter
         accordianAdapter.submitList(listOf(expandItemDataModel))
         return layout
+    }
+
+    private fun getSubtitle(element: GroupInsightsUiModel, isTruncated: Boolean): String {
+        val subtitle = when (element.type) {
+            RecommendationConstants.TYPE_POSITIVE_KEYWORD -> String.format(
+                getString(R.string.topads_insight_kata_kunci_accordian_subtitle),
+                element.subTitleValue
+            )
+            RecommendationConstants.TYPE_KEYWORD_BID -> String.format(
+                getString(R.string.topads_insight_biaya_kata_kunci_accordian_subtitle),
+                element.subTitleValue
+            )
+            RecommendationConstants.TYPE_GROUP_BID -> String.format(
+                getString(R.string.topads_insight_biaya_iklan_accordian_subtitle),
+                element.subTitleValue
+            )
+            RecommendationConstants.TYPE_DAILY_BUDGET -> String.format(
+                getString(R.string.topads_insight_daily_budget_accordian_subtitle),
+                element.subTitleValue
+            )
+            RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> String.format(
+                getString(R.string.topads_insight_negative_kata_kunci_accordian_subtitle),
+                element.subTitleValue
+            )
+            else -> ""
+        }
+        return if (isTruncated)
+            "${subtitle.substring(0,subtitle.length/2)}..."
+        else
+            subtitle
     }
 
     companion object {

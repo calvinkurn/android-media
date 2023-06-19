@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -116,7 +118,12 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         return try {
             topAdsGetPricingDetailsUseCase.invoke(utils.convertAdTypeToString(adGroupType))
         } catch (e: Exception) {
-            TopAdsGetPricingDetailsResponse()
+            TopAdsGetPricingDetailsResponse(
+                TopAdsGetPricingDetailsResponse.TopAdsGetPricingDetails(
+                    maxBid = INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE,
+                    minBid = INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE
+                )
+            )
         }
     }
 

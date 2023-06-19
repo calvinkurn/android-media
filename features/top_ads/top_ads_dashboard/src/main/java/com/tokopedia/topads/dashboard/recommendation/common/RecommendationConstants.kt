@@ -12,6 +12,8 @@ object RecommendationConstants {
     const val TYPE_EMPTY_STATE = 8
     const val TYPE_UN_OPTIMIZED_GROUP = 9
 
+    const val PRODUCT_BID_TYPE_SEARCH = "product_search"
+    const val PRODUCT_BID_TYPE_BROWSE = "product_browse"
     const val TYPE_PRODUCT_VALUE = 1
     const val TYPE_SHOP_VALUE = 3
     const val PRODUCT_KEY = "product"
@@ -22,7 +24,16 @@ object RecommendationConstants {
     const val DEFAULT_SELECTED_INSIGHT_TYPE = 0
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
+    const val KEYWORD_TYPE_POSITIVE_BROAD = "positive_broad"
+    const val KEYWORD_TYPE_NEGATIVE_PHRASE = "negative_phrase"
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = "negative_exact"
+    const val KEYWORD_TYPE_NEGATIVE_BROAD = "negative_broad"
+    const val KEYWORD_STATUS_ACTIVE = "active"
+    const val KEYWORD_STATUS_INACTIVE = "inactive"
+    const val KEYWORD_STATUS_DELETED = "deleted"
     const val INVALID_INSIGHT_TYPE = -1
+    const val ACTION_CREATE_PARAM = "create"
+    const val ACTION_EDIT_PARAM = "edit"
     const val INSIGHT_COUNT_PLACE_HOLDER = 10
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
@@ -36,6 +47,11 @@ object RecommendationConstants {
     const val INSIGHT_TYPE_KEY = "insightType"
     const val INSIGHT_TYPE_LIST_KEY = "insightTypeList"
     const val GROUP_DETAIL_BUNDLE_KEY = "groupDetailBundle"
+    const val INSIGHT_MULTIPLIER = 50
+    const val INSIGHT_GROUP_BID_MAX_BID = 5000
+    const val INSIGHT_DAILY_BUDGET_MAX_BID = 10000000
+    const val INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE = 10000
+    const val INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE = 400
     const val PARAM_INSIGHT_TYPE = "insight_type"
     const val PARAM_AD_TYPE = "ad_type"
     const val PARAM_INSIGHT_TYPES = "insightTypes"
@@ -49,6 +65,8 @@ object RecommendationConstants {
     const val PER_PAGE_COUNT_VALUE = 20
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
+    const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
+    const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
     const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
 
     object InsightTypeConstants {

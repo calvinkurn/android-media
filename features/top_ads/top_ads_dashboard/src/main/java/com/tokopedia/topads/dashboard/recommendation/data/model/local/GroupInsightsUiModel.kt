@@ -5,7 +5,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 data class GroupInsightsUiModel(
     var type: Int = 0,
     val title: String = "",
-    val subTitle: String = "",
+    val subTitleValue: String = "",
     val isInsightAvailable: Boolean = false,
     val expandItemDataModel: GroupDetailDataModel? = null,
     var isExpanded: Boolean = false

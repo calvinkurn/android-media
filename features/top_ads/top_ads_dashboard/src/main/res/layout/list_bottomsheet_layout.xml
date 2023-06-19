@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/search_group"
@@ -21,8 +21,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
+        tools:itemCount="5"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/topads_insight_centre_insight_selction_item"
         app:layout_constraintTop_toBottomOf="@id/search_group"
-        />
+        app:layout_constraintBottom_toTopOf="@id/save_cta_button"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="8dp" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/save_cta_button"
@@ -31,7 +36,6 @@
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"
         android:text="@string/topads_common_save_butt"
-        app:layout_constraintTop_toBottomOf="@id/rv_schedule_slot"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
         android:layout_margin="16dp"/>

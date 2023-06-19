@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
@@ -53,9 +54,9 @@ class ListBottomSheet:
             }
 
             rvScheduleSlot.addItemDecoration(
-                DividerItemDecoration(
-                    context,
-                    DividerItemDecoration.VERTICAL
+                RecommendationInsightItemDecoration(
+                    rvScheduleSlot.context,
+                    LinearLayoutManager.VERTICAL
                 )
             )
 

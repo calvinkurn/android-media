@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp">
+    android:layout_marginVertical="16dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkbox"
@@ -59,7 +59,6 @@
         tools:text="Rp350/klik"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/current_cost"
         app:layout_constraintTop_toBottomOf="@id/current_cost" />
 
@@ -93,7 +92,6 @@
         tools:text="Rp500/klik"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/recommended"
         app:layout_constraintTop_toBottomOf="@id/recommended" />
 
@@ -115,7 +113,6 @@
         tools:text="+2.900 kali/hari"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/show_potential"
         app:layout_constraintTop_toBottomOf="@id/show_potential" />
 

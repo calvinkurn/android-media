@@ -1,11 +1,12 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 data class AccordianKeywordBidUiModel(
-    val text: String = "",
-    val existingKeywordsBidRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom>?
+    val existingKeywordsBidRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom>?,
+    val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
 ) : GroupDetailDataModel {
     override fun type(): String {
         return ""

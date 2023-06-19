@@ -33,8 +33,7 @@
         app:layout_constraintTop_toTopOf="@id/video_thumbnail"
         app:layout_constraintBottom_toBottomOf="@id/video_thumbnail"
         app:layout_constraintStart_toStartOf="@id/video_thumbnail"
-        app:layout_constraintEnd_toEndOf="@id/video_thumbnail"
-        app:srcCompat="@drawable/ic_play_button"/>
+        app:layout_constraintEnd_toEndOf="@id/video_thumbnail"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/read_articles_cta"
