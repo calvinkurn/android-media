@@ -60,6 +60,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                                     if (couponListRecommendation.data.promoRecommendation.codes.contains(it.code)) {
                                         totalBenefit += it.benefitAmount
                                     }
+                                    it.secondaryCoupons.forEach {
+                                        if (couponListRecommendation.data.promoRecommendation.codes.contains(it.code)) {
+                                            totalBenefit += it.benefitAmount
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -223,9 +228,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 isParentEnabled = couponSubSection.isEnabled
                 isPreSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
                 isSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
-                isAttempted = couponItem.isAttempted
+                isAttempted = couponItem.isAttempted || couponItem.secondaryCoupons.any { it.isAttempted }
                 isCausingOtherPromoClash = false
-                isHighlighted = couponItem.isHighlighted
+                isHighlighted = couponItem.isHighlighted || couponItem.secondaryCoupons.any { it.isHighlighted }
                 val lastPromo = couponSubSection.coupons.lastOrNull()
                 isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 isBebasOngkir = couponItem.isBebasOngkir
