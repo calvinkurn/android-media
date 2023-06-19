@@ -31,7 +31,6 @@
         android:id="@+id/product_card_shimmering"
         layout="@layout/layout_tokopedianow_product_recommendation_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

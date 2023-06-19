@@ -727,6 +727,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
+                    it.startsWith(TokopediaNow.OLD_CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
@@ -736,6 +737,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TokopediaNow.RECIPE_AUTO_COMPLETE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.OLD_CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||
