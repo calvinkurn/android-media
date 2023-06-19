@@ -8,4 +8,7 @@
     <!-- AddText color -->
     <color name="dms_editor_add_text_black">#000000</color>
     <color name="dms_editor_add_text_white">#FFFFFF</color>
+
+    <!-- Watermark logo color (static color NN200) -->
+    <color name="dms_editor_nn200_logo_color">#D6DFEB</color>
 </resources>

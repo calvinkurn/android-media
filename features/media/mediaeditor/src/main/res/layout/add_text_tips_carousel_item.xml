@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:background="@android:color/holo_blue_bright"
+    tools:background="@color/Unify_BN500"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="16dp"
@@ -18,7 +18,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/carousel_item_img"
-            tools:background="@android:color/darker_gray"
+            tools:background="@color/Unify_NN500"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

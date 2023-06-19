@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"/>
 
             <View
-                tools:background="@color/black"
+                tools:background="@color/Unify_Static_Black"
                 android:id="@+id/btm_item_background"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

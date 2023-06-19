@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
     <size android:width="24dp" android:height="24dp"/>
-    <solid android:color="@android:color/white"/>
-    <stroke android:color="#D6DFEB" android:width="1.5dp"/>
+    <solid android:color="@color/Unify_Static_White"/>
+    <stroke android:color="@color/dms_editor_nn200_logo_color" android:width="1.5dp"/>
 </shape>
