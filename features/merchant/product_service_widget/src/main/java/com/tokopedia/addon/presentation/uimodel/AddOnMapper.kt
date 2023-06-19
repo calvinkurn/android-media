@@ -59,12 +59,15 @@ object AddOnMapper {
         addonGroupList: List<AddOnGroupUIModel>,
         selectedAddonIds: List<String>
     ): List<AddOnGroupUIModel> {
-        addonGroupList.forEach {
-            it.addon.forEach { addon ->
-                if (addon.id in selectedAddonIds) addon.isSelected = true
-            }
+        return addonGroupList.map {
+            it.copy(
+                addon = it.addon.map { addon ->
+                    addon.copy(isSelected =
+                        if (addon.id in selectedAddonIds) true
+                        else addon.isSelected)
+                }
+            )
         }
-        return addonGroupList
     }
 
     fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
@@ -117,5 +120,14 @@ object AddOnMapper {
             featureType = ATC_ADDON_SERVICE_FEATURE_TYPE
         )
     }
+
+    fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
+        return addonGroups.map { group ->
+            group.copy(addon = group.addon.map { addon ->
+                addon.copy()
+            })
+        }
+    }
+
 
 }

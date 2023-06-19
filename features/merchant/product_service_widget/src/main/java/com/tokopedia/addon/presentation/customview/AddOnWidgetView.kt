@@ -11,6 +11,7 @@ import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.adapter.AddOnAdapter
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
 import com.tokopedia.applink.ApplinkConst
@@ -66,11 +67,17 @@ class AddOnWidgetView : BaseCustomView {
             }
             viewModel.saveSelectionResult.observe(this) {
                 when (it) {
-                    is Fail -> { listener?.onSaveAddonFailed(it.throwable) }
+                    is Fail -> {
+                        listener?.onSaveAddonFailed(it.throwable)
+                        viewModel.restoreSelection()
+                    }
                     is Success -> {
-                        if (it.data) {
+                        if (it.data.isNotEmpty()) {
+                            val selectedAddon = viewModel.selectedAddon.value ?: return@observe
+                            val selectedAddonGroup = AddOnMapper.deepCopyAddonGroup(it.data)
                             listener?.onSaveAddonSuccess(viewModel.selectedAddonIds,
-                                viewModel.selectedAddon.value ?: return@observe)
+                                selectedAddon, selectedAddonGroup)
+                            viewModel.lastSelectedAddOn = selectedAddonGroup
                         } else {
                             listener?.onSaveAddonLoading()
                         }

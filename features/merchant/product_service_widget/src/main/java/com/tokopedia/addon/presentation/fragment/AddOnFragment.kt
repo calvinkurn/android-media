@@ -104,7 +104,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
 
     override fun onSaveAddonSuccess(
         selectedAddonIds: List<String>,
-        selectedAddons: List<AddOnUIModel>
+        selectedAddons: List<AddOnUIModel>,
+        selectedAddonGroup: List<AddOnGroupUIModel>
     ) {
         binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)

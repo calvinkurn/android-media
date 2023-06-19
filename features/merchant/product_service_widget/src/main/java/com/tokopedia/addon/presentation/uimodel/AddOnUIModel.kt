@@ -15,12 +15,12 @@ data class AddOnUIModel(
 ): Serializable
 
 data class AddOnGroupUIModel(
-    var title: String = "",
-    var iconUrl: String = "",
-    var iconDarkmodeUrl: String = "",
-    var productId: Long = 0L,
-    var warehouseId: Long = 0L,
-    var addOnLevel: String = "",
+    val title: String = "",
+    val iconUrl: String = "",
+    val iconDarkmodeUrl: String = "",
+    val productId: Long = 0L,
+    val warehouseId: Long = 0L,
+    val addOnLevel: String = "",
     var addon: List<AddOnUIModel> = emptyList()
 )
 

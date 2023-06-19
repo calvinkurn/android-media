@@ -36,15 +36,14 @@ class AddOnViewModel @Inject constructor(
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
-    private var selectedAddonGroup: AddOnGroupUIModel? = null
     private val mSelectedAddOn = MutableLiveData<List<AddOnUIModel>>()
     val selectedAddon: LiveData<List<AddOnUIModel>> get() = mSelectedAddOn
 
     private val mAggregatedData = MutableLiveData<AddOnPageResult.AggregatedData>()
     val aggregatedData: LiveData<AddOnPageResult.AggregatedData> get() = mAggregatedData
 
-    private val mSaveSelectionResult = MutableLiveData<Result<Boolean>>()
-    val saveSelectionResult: LiveData<Result<Boolean>> get() = mSaveSelectionResult
+    private val mSaveSelectionResult = MutableLiveData<Result<List<AddOnGroupUIModel>>>()
+    val saveSelectionResult: LiveData<Result<List<AddOnGroupUIModel>>> get() = mSaveSelectionResult
 
     private val mAutoSave = MutableLiveData<AutoSaveAddonModel>()
     val autoSave: LiveData<AutoSaveAddonModel> get() = mAutoSave
@@ -58,6 +57,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     var selectedAddonIds: List<String> = emptyList()
+    var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
+    private var selectedAddonGroup: AddOnGroupUIModel? = null
 
     fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean) {
         launchCatchError(block = {
@@ -65,7 +66,8 @@ class AddOnViewModel @Inject constructor(
                 getAddOnUseCase.setParams(productId, warehouseId, isTokocabang)
                 getAddOnUseCase.executeOnBackground()
             }
-            mGetAddOnResult.value = AddOnMapper.mapAddonToUiModel(result)
+            val addonGroups = AddOnMapper.mapAddonToUiModel(result)
+            mGetAddOnResult.value = addonGroups
         }, onError = {
             mErrorThrowable.value = it
         })
@@ -76,16 +78,16 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun saveAddOnState(cartId: Long, source: String) {
-        mSaveSelectionResult.value = Success(false)
+        mSaveSelectionResult.value = Success(emptyList())
         saveAddOnStateUseCase.setParams(
             AddOnMapper.mapToSaveAddOnStateRequest(cartId, source, selectedAddonGroup, selectedAddon.value)
         )
         saveAddOnStateUseCase.execute(
             onSuccess = {
-                mSaveSelectionResult.value = Success(true)
+                mSaveSelectionResult.value = Success(getAddOnResult.value.orEmpty())
             },
-            onError = {
-                mSaveSelectionResult.value = Fail(it)
+            onError = { throwable ->
+                mSaveSelectionResult.value = Fail(throwable)
             }
         )
     }
@@ -93,10 +95,9 @@ class AddOnViewModel @Inject constructor(
     fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>, index: Int) {
         mSelectedAddOn.value = AddOnMapper.getSelectedAddons(addOnGroupUIModels)
         selectedAddonGroup = addOnGroupUIModels.getOrNull(index)
-        selectedAddonIds = AddOnMapper.getSelectedAddonsIds(addOnGroupUIModels)
 
-        autoSave.value?.let {
-            if (autoSave.value?.isActive == true) {
+        mAutoSave.value?.let {
+            if (it.isActive) {
                 mAutoSave.value = it.copy(
                     addOnGroupUIModels = addOnGroupUIModels
                 )
@@ -128,6 +129,10 @@ class AddOnViewModel @Inject constructor(
             cartId = cartId,
             atcSource = atcSource
         )
+    }
+
+    fun restoreSelection() {
+        mGetAddOnResult.value = lastSelectedAddOn
     }
 
     data class AutoSaveAddonModel (

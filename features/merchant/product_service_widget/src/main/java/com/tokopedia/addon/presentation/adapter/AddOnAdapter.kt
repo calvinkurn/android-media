@@ -18,20 +18,24 @@ class AddOnAdapter(
         return AddOnViewHolder(rootView, ::onClickListener, onHelpClickListener)
     }
 
-    private fun onClickListener(index: Int, indexChild: Int, addOnUIModels: List<AddOnUIModel>) {
-        items[index].addon = addOnUIModels
-        listener(index, indexChild, items)
-    }
-
     override fun onBindViewHolder(holder: AddOnViewHolder, position: Int) {
-        holder.bind(items[position])
+        items.getOrNull(position)?.let {
+            holder.bind(it)
+        }
     }
 
     override fun getItemCount() = items.size
 
+    private fun onClickListener(index: Int, indexChild: Int, addOnUIModels: List<AddOnUIModel>) {
+        items.getOrNull(index)?.let {
+            items[index].addon = addOnUIModels
+            listener(index, indexChild, items)
+        }
+    }
+
     fun setItems(items: List<AddOnGroupUIModel>) {
         this.items = items.toMutableList()
-        notifyItemRangeInserted(Int.ZERO, items.size)
+        notifyItemRangeChanged(Int.ZERO, items.size)
     }
 
 }
