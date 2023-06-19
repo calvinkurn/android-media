@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.dashboard.R
@@ -76,11 +77,8 @@ class AccordianGroupBidViewHolder(
     }
 
     private fun setViews(element: AccordianGroupBidUiModel?) {
-        searchGroup.visibility =
-            if (getSearchTypeCurrentBid(element) < getSearchTypeSuggestionBid(element)) View.VISIBLE else View.GONE
-
-        recommendationGroup.visibility =
-            if (getBrowseTypeCurrentBid(element) < getBrowseTypeSuggestionBid(element)) View.VISIBLE else View.GONE
+        searchGroup.showWithCondition(getSearchTypeCurrentBid(element) < getSearchTypeSuggestionBid(element))
+        recommendationGroup.showWithCondition(getBrowseTypeCurrentBid(element) < getBrowseTypeSuggestionBid(element))
     }
 
     private fun bindValues(element: AccordianGroupBidUiModel?) {

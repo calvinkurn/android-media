@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
@@ -60,18 +61,14 @@ class ListBottomSheet:
                 )
             )
 
-            if(bottomsheetType == CHOOSE_AD_TYPE_BOTTOMSHEET){
-                searchGroup.visibility = View.GONE
-            } else {
-                searchGroup.visibility = View.VISIBLE
-            }
+            searchGroup.showWithCondition(bottomsheetType == CHOOSE_AD_GROUP_BOTTOMSHEET)
 
             saveCtaButton.setOnClickListener{
                 newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
                 dismiss()
             }
 
-            searchGroup.editText.addTextChangedListener(object : TextWatcher {
+            searchGroup.searchBarTextField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -116,11 +113,7 @@ class ListBottomSheet:
     }
 
     private fun showCtaButton() {
-        if (newAdType != currentAdType || newGroupId != currentGroupId){
-            binding?.saveCtaButton?.visibility = View.VISIBLE
-        } else {
-            binding?.saveCtaButton?.visibility = View.GONE
-        }
+        binding?.saveCtaButton?.showWithCondition(newAdType != currentAdType || newGroupId != currentGroupId)
     }
 
     private fun updateAdGroups(text: String){

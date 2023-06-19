@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.TopadsInsightCentreInsightSelctionItemBinding
 import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
@@ -23,12 +24,7 @@ class ItemListViewHolder(
     }
 
     private fun setView(element: ItemListUiModel) {
-        /* set visibility */
-        viewBinding.tvTitle.visibility = if (element.title.isEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+        viewBinding.tvTitle.showWithCondition(element.title.isNotEmpty())
 
         viewBinding.container.setOnClickListener {
             if(!element.isSelected) {

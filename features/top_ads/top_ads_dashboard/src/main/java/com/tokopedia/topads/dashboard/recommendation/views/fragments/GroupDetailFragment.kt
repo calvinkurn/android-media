@@ -14,12 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -90,7 +85,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit = { element ->
         viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), element.type)
-        saveButton?.visibility = if(element.isExpanded) View.VISIBLE else View.GONE
+        saveButton?.showWithCondition(element.isExpanded)
         saveButton?.tag = element.type
         saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type),false)
         updateButtonTitle(viewModel.getInputDataFromMapper(element.type))
@@ -516,7 +511,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             isSwitchAdType,
             groupName
         )
-        saveButton?.visibility = View.GONE
+        saveButton?.gone()
     }
 
     private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{

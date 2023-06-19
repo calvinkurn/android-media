@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify2
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_text_field_label="Cari grup iklan di sini"
+        app:search_bar_placeholder="@string/mp_ad_group_list_search_hint"
+        app:search_bar_clearable="true"
+        app:search_bar_show_icon="false"
+        app:search_bar_enable="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"/>
 
