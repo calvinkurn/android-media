@@ -2,13 +2,19 @@ package com.tokopedia.youtube_player
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.http.SslError
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.View
+import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.google.android.play.core.splitcompat.SplitCompat
 import java.io.BufferedReader
 import java.io.InputStream
@@ -70,6 +76,32 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             override fun onHideCustomView() {
                 super.onHideCustomView()
                 customViewInterface?.onExitFullScreen()
+            }
+        }
+
+        webViewClient = object: WebViewClient(){
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                val test = 2
+            }
+
+            override fun onReceivedHttpError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                errorResponse: WebResourceResponse?
+            ) {
+                val test=3
+            }
+
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                val test=4
             }
         }
     }
