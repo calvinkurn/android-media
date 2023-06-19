@@ -1,6 +1,8 @@
 package com.tokopedia.kyc_centralized.gotoKyc.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
@@ -24,12 +26,13 @@ class GotoKycTransparentViewModelTest {
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: GotoKycTransparentViewModel
 
+    private val accountLinkingStatusUseCase = mockk<AccountLinkingStatusUseCase>(relaxed = true)
     private val projectInfoUseCase = mockk<ProjectInfoUseCase>(relaxed = true)
     private val checkEligibilityUseCase = mockk<CheckEligibilityUseCase>(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = GotoKycTransparentViewModel(projectInfoUseCase, checkEligibilityUseCase, dispatcher)
+        viewModel = GotoKycTransparentViewModel(projectInfoUseCase, checkEligibilityUseCase, accountLinkingStatusUseCase, dispatcher)
     }
 
     @Test
@@ -168,6 +171,43 @@ class GotoKycTransparentViewModelTest {
 
         val result = viewModel.checkEligibility.getOrAwaitValue()
         assertTrue(result is CheckEligibilityResult.Failed)
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `when get status account linking then return linked`() {
+        val expected = AccountLinkingStatusResult.Linked()
+
+        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
+        viewModel.accountLikingStatus()
+
+        val result = viewModel.accountLinkingStatus.getOrAwaitValue()
+        assertTrue(result is AccountLinkingStatusResult.Linked)
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `when get status account linking then return not linked`() {
+        val expected = AccountLinkingStatusResult.NotLinked()
+
+        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
+        viewModel.accountLikingStatus()
+
+        val result = viewModel.accountLinkingStatus.getOrAwaitValue()
+        assertTrue(result is AccountLinkingStatusResult.NotLinked)
+        assertEquals(expected, result)
+    }
+
+
+    @Test
+    fun `when get status account linking then return failed`() {
+        val throwable = Throwable()
+
+        coEvery { accountLinkingStatusUseCase(Unit) } throws throwable
+        viewModel.accountLikingStatus()
+
+        val result = viewModel.accountLinkingStatus.getOrAwaitValue()
+        assertTrue(result is AccountLinkingStatusResult.Failed)
         assertEquals(throwable, result.throwable)
     }
 }
