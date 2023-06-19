@@ -24,8 +24,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation rootProject.ext.playServicesDependencies.core
-    implementation projectOrAar(rootProject.ext.libraries.webview)
 }
 
 project.ext {

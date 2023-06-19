@@ -15,22 +15,15 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.google.android.play.core.splitcompat.SplitCompat
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
-private const val DELAY_TO_MIMIC_CLICK = 1000
 private const val BASE_URL_YOUTUBE = "https://www.youtube.com"
 
 class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : WebView(context, attrs, defStyleAttr) {
     var videoId: String? = null
     var youtubeJSInterface: YoutubeWebViewInterface? = null
-    private var dispatchDownEvent:Boolean = false
-    private var userDownEvent:Boolean = false
     private var jsInterface: String = "jsInterface"
     var isPlayerReady:Boolean = false
     var customViewInterface: YoutubeCustomViewListener? = null
@@ -48,10 +41,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         settings.apply {
             javaScriptEnabled = true
             mediaPlaybackRequiresUserGesture = false
-            cacheMode = WebSettings.LOAD_NO_CACHE
-            setRenderPriority(WebSettings.RenderPriority.HIGH)
+            cacheMode = WebSettings.LOAD_DEFAULT
         }
-        setWebContentsDebuggingEnabled(true)
         val youtubeJSInterface = YoutubeWebViewInterface(
             youtubeEventVideoEnded, youtubeEventVideoPlaying,
             youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
@@ -78,27 +69,21 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         webViewClient = object: WebViewClient(){
             override fun onReceivedError(
                 view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                val test = 2
-            }
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {}
 
             override fun onReceivedHttpError(
                 view: WebView?,
                 request: WebResourceRequest?,
                 errorResponse: WebResourceResponse?
-            ) {
-                val test=3
-            }
+            ) {}
 
             override fun onReceivedSslError(
                 view: WebView?,
                 handler: SslErrorHandler?,
                 error: SslError?
-            ) {
-                val test=4
-            }
+            ) {}
         }
     }
 
@@ -223,27 +208,10 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         super.destroy()
     }
 
-    internal fun readHTMLFromUTF8File(inputStream: InputStream): String {
-        inputStream.use {
-            try {
-                val bufferedReader = BufferedReader(InputStreamReader(inputStream, "utf-8"))
-                return bufferedReader.readLines().joinToString("\n")
-            } catch (e: Exception) {
-                throw RuntimeException("Can't parse HTML file.")
-            }
-        }
-    }
-
     fun releaseWebView() {
-        destroyWebView()
-    }
-
-    private fun destroyWebView() {
-        clearHistory()
-        clearCache(true)
-        pauseTimers()
         removeAllViews()
         destroy()
         webChromeClient = null
     }
+
 }

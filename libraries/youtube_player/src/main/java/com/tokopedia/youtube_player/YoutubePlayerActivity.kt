@@ -10,20 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.youtube_player.databinding.ActivityYoutubePlayerBinding
 
 class YoutubePlayerActivity : AppCompatActivity(),
     YoutubeWebViewEventListener.EventVideoPaused, YoutubeWebViewEventListener.EventVideoPlaying,
     YoutubeWebViewEventListener.EventVideoEnded, YoutubeWebViewEventListener.EventVideoCued,
-    YoutubeCustomViewListener, YoutubeWebViewEventListener.EventPlayerReady
-{
+    YoutubeCustomViewListener, YoutubeWebViewEventListener.EventPlayerReady {
 
     companion object {
         private const val ROTATION = 90f
@@ -32,29 +28,27 @@ class YoutubePlayerActivity : AppCompatActivity(),
     private val viewBinding: ActivityYoutubePlayerBinding? by viewBinding()
     private var videoId: String = ""
     private var youtubeWebView: YoutubeWebView? = null
-    private var tkpdWebView: TkpdWebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
-        RouteManager.route(
-            this,
-            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "www.google.com")
-        )
-//        youtubeWebView = YoutubeWebView(this)
-//        tkpdWebView = TkpdWebView(this)
-//        addWebView()
-//        getIntentData()
-//        tkpdWebView?.loadDataWithBaseURL("", "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\" allowfullscreen></iframe>", "text/html", "utf-8", null)
-//        initYoutubePlayer()
+        getIntentData()
+        initYoutubePlayer()
     }
 
     private fun addWebView() {
-//        viewBinding?.videoContainer?.addView(youtubeWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        viewBinding?.videoContainer?.addView(tkpdWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        viewBinding?.videoContainer?.addView(
+            youtubeWebView,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
     }
 
     private fun initYoutubePlayer() {
+        youtubeWebView = YoutubeWebView(this)
+        addWebView()
         youtubeWebView?.initialize(
             youtubeEventVideoPlaying = this,
             youtubeEventVideoPaused = this,
@@ -100,9 +94,13 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     private fun hideSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, viewBinding?.activityYoutubePlayer!!).let { controller ->
+        WindowInsetsControllerCompat(
+            window,
+            viewBinding?.activityYoutubePlayer!!
+        ).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 
@@ -115,7 +113,9 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     private fun showSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        WindowInsetsControllerCompat(window, viewBinding?.activityYoutubePlayer!!).show(WindowInsetsCompat.Type.systemBars())
+        WindowInsetsControllerCompat(window, viewBinding?.activityYoutubePlayer!!).show(
+            WindowInsetsCompat.Type.systemBars()
+        )
     }
 
     override fun onVideoEnded(time: Int) {
