@@ -29,6 +29,7 @@ class PlayShortsProductViewModelTest {
             }
 
             state.productSectionList.assertEqualTo(mockProducts)
+            it.productSectionList.assertEqualTo(mockProducts)
         }
     }
 }

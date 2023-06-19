@@ -27,13 +27,16 @@ class PlayShortsConfigViewModelTest {
 
     private val uiModelBuilder = UiModelBuilder()
 
+    private val mockMaxTitleChar = 38
+    private val mockMaxTaggedProduct = 30
+
     private val mockAccountShop = uiModelBuilder.buildAccountListModel(onlyShop = true).first()
     private val mockAccountShopNotEligible = uiModelBuilder.buildAccountListModel(onlyShop = true, tncShop = false).first()
     private val mockAccountUser = uiModelBuilder.buildAccountListModel(onlyBuyer = true).first()
     private val mockAccountUserNoUsername = uiModelBuilder.buildAccountListModel(onlyBuyer = true, usernameBuyer = false, tncBuyer = false).first()
     private val mockAccountUserNoTnc = uiModelBuilder.buildAccountListModel(onlyBuyer = true, usernameBuyer = true, tncBuyer = false).first()
 
-    private val mockConfigAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true)
+    private val mockConfigAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true, maxTitleCharacter = mockMaxTitleChar, maxTaggedProduct = mockMaxTaggedProduct)
     private val mockConfigAllowedNoDraft = uiModelBuilder.buildShortsConfig(shortsId = "", shortsAllowed = true)
     private val mockConfigNotAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = false)
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
@@ -289,6 +292,42 @@ class PlayShortsConfigViewModelTest {
 
             events.last().assertType<PlayShortsUiEvent.AccountBanned>()
             state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_config_maxTitleCharacter() {
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigAllowed
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val state = it.recordState {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            state.config.maxTitleCharacter.assertEqualTo(mockMaxTitleChar)
+            it.maxTitleCharacter.assertEqualTo(mockMaxTitleChar)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_config_maxTaggedProduct() {
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigAllowed
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val state = it.recordState {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            state.config.maxTaggedProduct.assertEqualTo(mockMaxTaggedProduct)
+            it.maxProduct.assertEqualTo(mockMaxTaggedProduct)
         }
     }
 

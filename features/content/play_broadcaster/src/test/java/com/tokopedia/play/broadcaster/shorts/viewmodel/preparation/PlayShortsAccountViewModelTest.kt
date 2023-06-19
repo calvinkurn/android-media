@@ -1,12 +1,15 @@
 package com.tokopedia.play.broadcaster.shorts.viewmodel.preparation
 
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
+import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -33,12 +36,14 @@ class PlayShortsAccountViewModelTest {
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
+    private val productModelBuilder = ProductSetupUiModelBuilder()
 
     private val mockAccountList = uiModelBuilder.buildAccountListModel()
     private val mockAccountShop = mockAccountList.first()
     private val mockAccountUser = mockAccountList.last()
     private val mockAccountListBeforeAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = false, usernameBuyer = false)
     private val mockAccountListAfterAcceptTnc = uiModelBuilder.buildAccountListModel(tncBuyer = true, usernameBuyer = true)
+    private val mockProducts = productModelBuilder.buildProductTagSectionList()
 
     private val mockConfig = uiModelBuilder.buildShortsConfig()
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
@@ -78,6 +83,7 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
+            it.accountList.assertEqualTo(mockAccountList)
         }
     }
 
@@ -99,6 +105,7 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountUser)
+            it.accountList.assertEqualTo(mockAccountList)
         }
     }
 
@@ -123,6 +130,7 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
+            it.accountList.assertEqualTo(mockAccountList)
         }
     }
 
@@ -173,6 +181,25 @@ class PlayShortsAccountViewModelTest {
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
             events.last().assertType<PlayShortsUiEvent.AccountBanned>()
+            it.accountList.assertEqualTo(mockAccountList)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_account_switchAccount_isAllowChangeAccount() {
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+
+            coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
+
+            it.isAllowChangeAccount.assertTrue()
+
+            coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns false
+
+            it.isAllowChangeAccount.assertFalse()
         }
     }
 }

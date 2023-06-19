@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.viewmodel.preparation
 
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -10,6 +11,7 @@ import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,6 +21,7 @@ import org.junit.Test
 class PlayShortsTitleViewModelTest {
 
     private val mockRepo: PlayShortsRepository = mockk(relaxed = true)
+
     private val mockTitle = "Pokemon"
     private val mockException = Exception("Network Error")
 
@@ -55,6 +58,7 @@ class PlayShortsTitleViewModelTest {
 
             state.titleForm.state.assertEqualTo(PlayShortsTitleFormUiState.State.Unknown)
             state.titleForm.title.assertEqualTo(mockTitle)
+            it.title.assertEqualTo(mockTitle)
         }
     }
 
@@ -75,6 +79,7 @@ class PlayShortsTitleViewModelTest {
 
             state.titleForm.state.assertEqualTo(PlayShortsTitleFormUiState.State.Editing)
             state.titleForm.title.assertEqualTo("")
+            it.title.assertEqualTo("")
             events.last().assertType<PlayShortsUiEvent.ErrorUploadTitle>()
         }
     }
