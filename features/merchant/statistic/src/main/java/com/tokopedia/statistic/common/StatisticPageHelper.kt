@@ -3,16 +3,16 @@ package com.tokopedia.statistic.common
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
-import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -22,8 +22,7 @@ import javax.inject.Inject
 
 class StatisticPageHelper @Inject constructor(
     @ApplicationContext
-    private val context: Context,
-    private val remoteConfig: StatisticRemoteConfig
+    private val context: Context
 ) {
 
     companion object {
@@ -52,7 +51,7 @@ class StatisticPageHelper @Inject constructor(
                     iconUnify = IconUnify.HELP
                 )
             ),
-            dateFilters = getShopDateFilters(context, remoteConfig),
+            dateFilters = getShopDateFilters(context),
             exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_shop_exclusive_identifier_desc)
         )
     }
@@ -75,7 +74,7 @@ class StatisticPageHelper @Inject constructor(
                     iconUnify = IconUnify.HELP
                 )
             ),
-            dateFilters = getProductDateFilters(context, remoteConfig),
+            dateFilters = getProductDateFilters(context),
             exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_product_exclusive_identifier_desc)
         )
     }
@@ -151,8 +150,7 @@ class StatisticPageHelper @Inject constructor(
     }
 
     private fun getShopDateFilters(
-        context: Context,
-        remoteConfig: StatisticRemoteConfig
+        context: Context
     ): List<DateFilterItem> {
         val filters = mutableListOf(
             getDateRangeItemToday(context, true),
@@ -178,23 +176,20 @@ class StatisticPageHelper @Inject constructor(
             getFilterPerMonth(context, true, Const.DAYS_365),
         )
 
-        if (remoteConfig.isCustomDateFilterEnabled()) {
-            filters.add(
-                getDateFilterCustom(
-                    context,
-                    Const.DAYS_365,
-                    DateFilterItem.TYPE_CUSTOM
-                )
+        filters.add(
+            getDateFilterCustom(
+                context,
+                Const.DAYS_365,
+                DateFilterItem.TYPE_CUSTOM
             )
-        }
+        )
 
         filters.add(DateFilterItem.ApplyButton)
         return filters
     }
 
     private fun getProductDateFilters(
-        context: Context,
-        remoteConfig: StatisticRemoteConfig
+        context: Context
     ): List<DateFilterItem> {
         val filters = mutableListOf(
             getDateRangeItemToday(context, false),
@@ -220,15 +215,13 @@ class StatisticPageHelper @Inject constructor(
             getFilterPerMonth(context, true, Const.DAYS_365)
         )
 
-        if (remoteConfig.isCustomDateFilterEnabled()) {
-            filters.add(
-                getDateFilterCustom(
-                    context,
-                    Const.DAYS_365,
-                    DateFilterItem.TYPE_CUSTOM_SAME_MONTH
-                )
+        filters.add(
+            getDateFilterCustom(
+                context,
+                Const.DAYS_365,
+                DateFilterItem.TYPE_CUSTOM_SAME_MONTH
             )
-        }
+        )
 
         filters.add(DateFilterItem.ApplyButton)
         return filters
@@ -307,15 +300,13 @@ class StatisticPageHelper @Inject constructor(
             getDateFilterPerWeek(context, true, Const.DAYS_91),
             getFilterPerMonth(context, false, Const.DAYS_91)
         )
-        if (remoteConfig.isCustomDateFilterEnabled()) {
-            filters.add(
-                getDateFilterCustom(
-                    context,
-                    Const.DAYS_365,
-                    DateFilterItem.TYPE_CUSTOM
-                )
+        filters.add(
+            getDateFilterCustom(
+                context,
+                Const.DAYS_365,
+                DateFilterItem.TYPE_CUSTOM
             )
-        }
+        )
         filters.add(DateFilterItem.ApplyButton)
         return filters
     }
