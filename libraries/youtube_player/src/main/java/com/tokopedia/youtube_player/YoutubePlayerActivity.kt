@@ -119,4 +119,9 @@ class YoutubePlayerActivity : AppCompatActivity(),
         setupYoutubeVideo()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        youtubeWebView?.releaseWebView()
+    }
+
 }
