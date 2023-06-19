@@ -37,13 +37,6 @@ class InboxDetailActivity : BaseSimpleActivity() {
         intent?.extras?.getBoolean(IS_OFFICIAL_STORE, false)
     }
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            val fragment = supportFragmentManager.findFragmentById(R.id.container)
-            (fragment as BackTicketListener).onDeviceBackPress()
-        }
-    }
-
     override fun getLayoutRes() = R.layout.contact_us_activity_inbox_detail
     override fun getParentViewResourceID() = R.id.container
 
@@ -62,7 +55,19 @@ class InboxDetailActivity : BaseSimpleActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contact_us_activity_inbox_detail)
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        initOnBackPressCallback()
+    }
+
+    private fun initOnBackPressCallback() {
+        onBackPressedDispatcher.addCallback(this, getBackPressCallback())
+    }
+    private fun getBackPressCallback(): OnBackPressedCallback {
+        return object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val fragment = supportFragmentManager.findFragmentById(R.id.container)
+                (fragment as BackTicketListener).onDeviceBackPress()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

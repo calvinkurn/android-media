@@ -21,22 +21,6 @@ import java.lang.Exception
  */
 class ContactUsHomeActivity : BaseSimpleActivity() {
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            try {
-                val webViewFragment = fragment as? BaseWebViewFragment
-                if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
-                    webViewFragment.getWebView().goBack()
-                } else {
-                    finish()
-                }
-            } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-                finish()
-            }
-        }
-    }
-
     override fun getNewFragment(): Fragment {
         val url = intent.getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL)
         return if (url != null && url.isNotEmpty()) {
@@ -48,7 +32,7 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        initOnBackPressCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -64,6 +48,27 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initOnBackPressCallback() {
+        onBackPressedDispatcher.addCallback(this, getBackPressCallback())
+    }
+    private fun getBackPressCallback() : OnBackPressedCallback {
+        return  object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                try {
+                    val webViewFragment = fragment as? BaseWebViewFragment
+                    if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
+                        webViewFragment.getWebView().goBack()
+                    } else {
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    finish()
+                }
+            }
+        }
     }
 
     companion object {

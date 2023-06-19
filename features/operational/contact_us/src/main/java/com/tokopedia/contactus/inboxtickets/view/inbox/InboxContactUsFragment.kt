@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -80,17 +81,7 @@ class InboxContactUsFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(InboxContactUsViewModel::class.java) }
 
-    private val toTicketFeedBack = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_FINISH) {
-            activity?.startActivity(
-                Intent(
-                    context,
-                    ContactUsHomeActivity::class.java
-                ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            )
-            activity?.finish()
-        }
-    }
+    private val toTicketFeedBack = getInboxDetailResultActivityLauncher()
 
     companion object {
         private const val RAISE_TICKET_TAG = "raiseTicket"
@@ -313,10 +304,8 @@ class InboxContactUsFragment :
                 override fun onClickTicket(index: Int, isOfficialStore: Boolean) {
                     val itemTicket = viewModel.getItemTicketOnPosition(index)
                     val ticketId = itemTicket.id.orEmpty()
-                    val detailIntent =
-                        getIntent(context ?: return, ticketId, isOfficialStore)
-                    toTicketFeedBack.launch(detailIntent)
                     sendTrackingClickToDetailTicketMessage(index)
+                    goToInboxDetail(ticketId, isOfficialStore)
                 }
             })
             adapter = mAdapter
@@ -535,6 +524,26 @@ class InboxContactUsFragment :
 
     private fun hideProgressBar() {
         binding?.progressBarLayout?.gone()
+    }
+
+    private fun goToInboxDetail(ticketId : String, isOfficialStore: Boolean) {
+        val detailIntent =
+            getIntent(context ?: return, ticketId, isOfficialStore)
+        toTicketFeedBack.launch(detailIntent)
+    }
+
+    private fun getInboxDetailResultActivityLauncher() : ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_FINISH) {
+                activity?.startActivity(
+                    Intent(
+                        context,
+                        ContactUsHomeActivity::class.java
+                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                )
+                activity?.finish()
+            }
+        }
     }
 
     override fun onDestroy() {

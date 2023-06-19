@@ -13,6 +13,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -150,32 +151,11 @@ class TicketFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(InboxDetailViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider[InboxDetailViewModel::class.java] }
 
-    private val imagePicker =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val imagePathList = ImagePickerResultExtractor.extract(it.data).imageUrlOrPathList
-                if (imagePathList.size > SIZE_ZERO) {
-                    val imagePath = imagePathList[INDEX_ZERO]
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        val position = imageUploadAdapter?.itemCount.orZero()
-                        val image = ImageUpload()
-                        image.position = position
-                        image.imageId = "image" + UUID.randomUUID().toString()
-                        image.fileLoc = imagePath
-                        onImageSelect(image)
-                    }
-                }
-            }
-        }
+    private val imagePicker= getImagePickerResultActivityLauncher()
 
-    private val csatPageActivityForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                submitCsatRating(it.data)
-            }
-        }
+    private val csatPageActivityForResult= getCSATResultActivityLauncher()
 
     @JvmField
     var mMenu: Menu? = null
@@ -391,6 +371,10 @@ class TicketFragment :
             RouteManager.getIntent(context ?: return, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.INBOX_DETAIL_PAGE)
+        goToImagePicker(intent)
+    }
+
+    private fun goToImagePicker(intent : Intent){
         imagePicker.launch(intent)
     }
 
@@ -786,6 +770,10 @@ class TicketFragment :
             viewModel.getFirstCommentId(),
             viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
         )
+        goToCSATPage(intentToPageCsat)
+    }
+
+    private fun goToCSATPage(intentToPageCsat : Intent){
         csatPageActivityForResult.launch(intentToPageCsat)
     }
 
@@ -1264,7 +1252,32 @@ class TicketFragment :
         )
     }
 
-    fun Int?.orOne(): Int = this ?: 1
+    private fun getImagePickerResultActivityLauncher(): ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val imagePathList = ImagePickerResultExtractor.extract(it.data).imageUrlOrPathList
+                if (imagePathList.size > SIZE_ZERO) {
+                    val imagePath = imagePathList[INDEX_ZERO]
+                    if (!TextUtils.isEmpty(imagePath)) {
+                        val position = imageUploadAdapter?.itemCount.orZero()
+                        val image = ImageUpload()
+                        image.position = position
+                        image.imageId = "image" + UUID.randomUUID().toString()
+                        image.fileLoc = imagePath
+                        onImageSelect(image)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCSATResultActivityLauncher(): ActivityResultLauncher<Intent> {
+         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+             if (it.resultCode == Activity.RESULT_OK) {
+                 submitCsatRating(it.data)
+             }
+         }
+     }
 }
 
 interface BackTicketListener {
