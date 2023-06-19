@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.sidesheet.SideSheetBehavior;
 
 /**
  * A delegate for {@link com.google.android.material.sidesheet.SideSheetBehavior} to handle logic specific to the sheet's edge position.
@@ -25,7 +24,6 @@ abstract class SheetDelegate {
 
     /**
      * Determines whether the sheet is currently settling to a target {@link Sheet.StableSheetState} using
-     * {@link com.google.android.material.sidesheet.SideSheetBehavior.StateSettlingTracker}.
      */
     abstract boolean isSettling(View child, int state, boolean isReleasingView);
 

@@ -18,4 +18,11 @@
         <attr format="reference" name="coplanarSiblingViewId"/>
 
     </declare-styleable>
+    <style name="Widget.Material3.SideSheet" parent="">
+        <item name="enforceMaterialTheme">true</item>
+        <item name="android:background">?attr/colorSurface</item>
+
+        <item name="android:layout_gravity">right</item>
+        <item name="android:elevation">0dp</item>
+    </style>
 </resources>

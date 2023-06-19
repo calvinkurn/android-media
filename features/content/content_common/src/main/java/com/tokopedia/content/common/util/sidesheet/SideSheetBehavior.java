@@ -894,16 +894,16 @@ public class SideSheetBehavior<V extends View> extends CoordinatorLayout.Behavio
      */
     @NonNull
     @SuppressWarnings("unchecked")
-    public static <V extends View> com.google.android.material.sidesheet.SideSheetBehavior<V> from(@NonNull V view) {
+    public static <V extends View> SideSheetBehavior<V> from(@NonNull V view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (!(params instanceof CoordinatorLayout.LayoutParams)) {
             throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
         }
         CoordinatorLayout.Behavior<?> behavior = ((CoordinatorLayout.LayoutParams) params).getBehavior();
-        if (!(behavior instanceof com.google.android.material.sidesheet.SideSheetBehavior)) {
+        if (!(behavior instanceof SideSheetBehavior)) {
             throw new IllegalArgumentException("The view is not associated with SideSheetBehavior");
         }
-        return (com.google.android.material.sidesheet.SideSheetBehavior<V>) behavior;
+        return (SideSheetBehavior<V>) behavior;
     }
 
     private void updateAccessibilityActions() {

@@ -4,9 +4,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-
-import com.google.android.material.sidesheet.SideSheetBehavior;
-
 public abstract class SideSheetCallback implements SheetCallback {
 
     /**
@@ -14,7 +11,6 @@ public abstract class SideSheetCallback implements SheetCallback {
      *
      * @param sheet The sheet view.
      * @param newState The new state. This should be one of {@link com.google.android.material.sidesheet.SideSheetBehavior#STATE_DRAGGING},
-     *     {@link com.google.android.material.sidesheet.SideSheetBehavior#STATE_SETTLING}, {@link com.google.android.material.sidesheet.SideSheetBehavior#STATE_EXPANDED} or
      *     {@link SideSheetBehavior#STATE_HIDDEN}.
      */
     @Override
