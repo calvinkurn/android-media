@@ -213,7 +213,7 @@
     <string name="goto_kyc_benefit_account_title_trouble">Kamu bisa nikmatin keuntungan ini setelah terverifikasi</string>
     <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
-    <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
+    <string name="goto_kyc_status_pending_title">Sebentar ya, dokumen lagi diproses</string>
     <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
@@ -222,7 +222,6 @@
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
     <string name="goto_kyc_back_to_source">Balik</string>
-    <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam <![CDATA[<b>%s detik</b>]]>.</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>

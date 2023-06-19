@@ -9,15 +9,18 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_card"
-        android:layout_width="52dp"
-        android:layout_height="40dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:icon_name="CARD"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_color_night_enable="@color/Unify_G500"
         app:icon_enable_state="true"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/img_item"
+        app:layout_constraintTop_toTopOf="@id/img_item"
+        app:layout_constraintEnd_toEndOf="@id/img_item"
+        app:layout_constraintBottom_toBottomOf="@id/img_item"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_item"

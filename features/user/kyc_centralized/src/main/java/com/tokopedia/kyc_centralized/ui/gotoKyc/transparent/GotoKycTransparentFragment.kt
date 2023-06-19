@@ -12,11 +12,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gojek.OneKycSdk
+import com.gojek.kyc.plus.OneKycConstants
+import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
+import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
+import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
@@ -24,12 +30,15 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -71,6 +80,28 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        removeGotoKycCache()
+    }
+
+    private fun removeGotoKycCache() {
+        val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
+        val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
+        removeGotoKycPreference(
+            context = requireContext(),
+            preferenceName = preferenceName,
+            preferenceKey = preferenceKey
+        )
+
+        val directory1 = getKycSdkDocumentDirectoryPath(requireContext())
+        val directory2 = getKycSdkFrameDirectoryPath(requireContext())
+        val directory3 = getKycSdkLogDirectoryPath(requireContext())
+        removeGotoKycImage(directory1)
+        removeGotoKycImage(directory2)
+        removeGotoKycImage(directory3)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,16 +124,14 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
     private fun validationParameter(projectId: String?, source: String?) {
         if (projectId?.toIntOrNull() == null) {
-            // TODO: set toaster why activity finish
-            kycSharedPreference.removeProjectId()
-            activity?.finish()
+            finishWithResult(Activity.RESULT_CANCELED)
         } else {
             // set value project id
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
 
             if (isReVerify) {
-                viewModel.checkEligibility()
+                viewModel.accountLikingStatus()
             } else {
                 // please, make sure project id already set in viewModel
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
@@ -159,6 +188,25 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        viewModel.accountLinkingStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                is AccountLinkingStatusResult.Loading -> {
+                    binding?.gotoKycLoader?.show()
+                }
+                is AccountLinkingStatusResult.Linked -> {
+                    viewModel.checkEligibility()
+                }
+                is AccountLinkingStatusResult.NotLinked -> {
+                    viewModel.checkEligibility()
+                }
+                is AccountLinkingStatusResult.Failed -> {
+                    binding?.gotoKycLoader?.hide()
+                    showToaster(it.throwable)
+                    finishWithResult(Activity.RESULT_CANCELED)
+                }
+            }
+        }
     }
 
     private fun handleProgressiveFlow(encryptedName: String) {
@@ -185,7 +233,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             val parameter = GotoKycMainParam(
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
-                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true
+                    || viewModel.accountLinkingStatus.value is AccountLinkingStatusResult.Linked,
                 sourcePage = viewModel.source,
                 directShowBottomSheet = directShowBottomSheetInOnboardBenefit
             )

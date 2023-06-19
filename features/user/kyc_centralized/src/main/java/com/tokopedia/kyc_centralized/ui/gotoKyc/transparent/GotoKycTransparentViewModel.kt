@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class GotoKycTransparentViewModel @Inject constructor(
     private val projectInfoUseCase: ProjectInfoUseCase,
     private val checkEligibilityUseCase: CheckEligibilityUseCase,
+    private val accountLinkingStatusUseCase: AccountLinkingStatusUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main)  {
 
@@ -28,6 +31,9 @@ class GotoKycTransparentViewModel @Inject constructor(
 
     private val _checkEligibility = MutableLiveData<CheckEligibilityResult>()
     val checkEligibility: LiveData<CheckEligibilityResult> get() = _checkEligibility
+
+    private val _accountLinkingStatus = MutableLiveData<AccountLinkingStatusResult>()
+    val accountLinkingStatus: LiveData<AccountLinkingStatusResult> get() = _accountLinkingStatus
 
     fun setProjectId(projectId: String) {
         this.projectId = projectId
@@ -53,6 +59,17 @@ class GotoKycTransparentViewModel @Inject constructor(
                 _checkEligibility.value = checkEligibilityUseCase.invoke()
             }, onError = {
                 _checkEligibility.value = CheckEligibilityResult.Failed(it)
+            }
+        )
+    }
+
+    fun accountLikingStatus() {
+        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading()
+        launchCatchError(
+            block = {
+                _accountLinkingStatus.value = accountLinkingStatusUseCase(Unit)
+            }, onError = {
+                _accountLinkingStatus.value = AccountLinkingStatusResult.Failed(it)
             }
         )
     }
