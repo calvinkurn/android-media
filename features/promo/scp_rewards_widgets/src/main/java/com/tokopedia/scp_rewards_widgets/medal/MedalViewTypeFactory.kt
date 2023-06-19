@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-class MedalViewTypeFactory : BaseAdapterTypeFactory() {
+class MedalViewTypeFactory(private val listener: MedalClickListener) : BaseAdapterTypeFactory() {
 
     fun type(model: MedalData) = MedalSectionViewHolder.LAYOUT
 
@@ -13,8 +13,8 @@ class MedalViewTypeFactory : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            MedalSectionViewHolder.LAYOUT -> MedalSectionViewHolder(parent)
-            MedalViewHolder.LAYOUT -> MedalViewHolder(parent)
+            MedalSectionViewHolder.LAYOUT -> MedalSectionViewHolder(parent, listener)
+            MedalViewHolder.LAYOUT -> MedalViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

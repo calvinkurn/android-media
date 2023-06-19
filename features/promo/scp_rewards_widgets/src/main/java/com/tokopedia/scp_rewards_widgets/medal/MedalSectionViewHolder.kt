@@ -12,7 +12,10 @@ import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalSectionBinding
 
-class MedalSectionViewHolder(itemView: View) : AbstractViewHolder<MedalData>(itemView) {
+class MedalSectionViewHolder(
+    itemView: View,
+    private val medalClickListener: MedalClickListener
+) : AbstractViewHolder<MedalData>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_medal_section
@@ -23,7 +26,7 @@ class MedalSectionViewHolder(itemView: View) : AbstractViewHolder<MedalData>(ite
     private var binding: ItemMedalSectionBinding = ItemMedalSectionBinding.bind(itemView)
 
     private val medalsAdapter: BaseAdapter<MedalViewTypeFactory> by lazy {
-        BaseAdapter(MedalViewTypeFactory())
+        BaseAdapter(MedalViewTypeFactory(medalClickListener))
     }
 
     init {
@@ -40,20 +43,41 @@ class MedalSectionViewHolder(itemView: View) : AbstractViewHolder<MedalData>(ite
             tvSectionTitle.text = item.title
             tvSectionTitle.setTextColor(parseColor(item.textColor) ?: Color.BLACK)
         }
-        if ((item.medalList.isNullOrEmpty().not()) and (item.medalList!!.size >= 6)) {
+        if (item.cta?.isShown == true) {
+            binding.btnSeeMore.text = item.cta.text
             binding.btnSeeMore.visible()
+            binding.btnSeeMore.setOnClickListener { medalClickListener.onSeeMoreClick(item) }
         } else {
             binding.btnSeeMore.gone()
         }
-        val remainder = item.medalList.size % 3
-        if (remainder != 0) {
-            val placeHolderList = mutableListOf<MedalItem>()
-            repeat(3 - remainder) {
-                placeHolderList.add(MedalItem(isPlaceHolder = true))
-            }
-            medalsAdapter.setVisitables(item.medalList + placeHolderList)
+        handleList(item.medalList, item.bannerData)
+        handleDivider()
+    }
+
+    private fun handleDivider() {
+        if (bindingAdapterPosition == (this.bindingAdapter?.itemCount?.minus(1) ?: 0)) {
+            binding.divider.gone()
         } else {
-            medalsAdapter.setVisitables(item.medalList)
+            binding.divider.visible()
+        }
+    }
+
+    private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?) {
+        if (medalList.isNullOrEmpty()) {
+            binding.ivEmptyList.setImageUrl(bannerData?.imageUrl.orEmpty())
+            binding.ivEmptyList.visible()
+            binding.rvMedals.gone()
+        } else {
+            val placeHolderList = mutableListOf<MedalItem>().apply { addAll(medalList) }
+            val remainder = medalList.size % 3
+            if (remainder != 0) {
+                repeat(3 - remainder) {
+                    placeHolderList.add(MedalItem(isPlaceHolder = true))
+                }
+            }
+            medalsAdapter.setVisitables(placeHolderList.toList())
+            binding.ivEmptyList.gone()
+            binding.rvMedals.visible()
         }
     }
 }
