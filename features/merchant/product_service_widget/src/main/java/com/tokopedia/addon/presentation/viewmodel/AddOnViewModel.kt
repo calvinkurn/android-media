@@ -132,7 +132,8 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun restoreSelection() {
-        mGetAddOnResult.value = lastSelectedAddOn
+        if (lastSelectedAddOn.isNotEmpty())
+            mGetAddOnResult.value = lastSelectedAddOn
     }
 
     data class AutoSaveAddonModel (
