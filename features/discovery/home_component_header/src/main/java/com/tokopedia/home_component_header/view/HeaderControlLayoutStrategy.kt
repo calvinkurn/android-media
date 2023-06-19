@@ -125,7 +125,7 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
     ) {
         channelTitle?.setTextColor(
             if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
         )
     }
 
@@ -137,7 +137,7 @@ class HeaderControlLayoutStrategy: HeaderLayoutStrategy {
     ) {
         channelSubtitle?.setTextColor(
             if (channelHeader.textColor.isNotEmpty()) Color.parseColor(channelHeader.textColor).invertIfDarkMode(context)
-            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(context)
+            else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(context)
         )
     }
 
