@@ -3,6 +3,7 @@ package com.tokopedia.addon.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.network.utils.ErrorHandler
@@ -36,6 +38,7 @@ class AddOnWidgetView : BaseCustomView {
     lateinit var viewModel: AddOnViewModel
     private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
     private var tfTitle: Typography? = null
+    private var llSeeAll: LinearLayoutCompat? = null
     private var listener: AddOnComponentListener? = null
 
     constructor(context: Context) : super(context) {
@@ -102,9 +105,18 @@ class AddOnWidgetView : BaseCustomView {
         val view = View.inflate(context, R.layout.customview_addon_widget, this)
         val rvAddons: RecyclerView = view.findViewById(R.id.rv_addons)
         tfTitle = view.findViewById(R.id.tf_widget_title)
+        llSeeAll = view.findViewById(R.id.ll_see_all)
         setupItems(rvAddons)
         defineCustomAttributes(attrs)
         initInjector()
+        setupSeeAll()
+    }
+
+    private fun setupSeeAll() {
+        llSeeAll?.setOnClickListener {
+            llSeeAll?.gone()
+            viewModel.desimplifyAddonList()
+        }
     }
 
     private fun setupItems(rvBundles: RecyclerView) {
@@ -156,8 +168,14 @@ class AddOnWidgetView : BaseCustomView {
         this.listener = listener
     }
 
-    fun getAddonData(productId: String, warehouseId: String, isTokocabang: Boolean) {
-        viewModel.getAddOn(productId, warehouseId, isTokocabang)
+    fun getAddonData(
+        productId: String,
+        warehouseId: String,
+        isTokocabang: Boolean,
+        isSimplified: Boolean = false
+    ) {
+        viewModel.getAddOn(productId, warehouseId, isTokocabang, isSimplified)
+        llSeeAll?.isVisible = isSimplified
     }
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {

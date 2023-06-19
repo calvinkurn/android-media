@@ -31,7 +31,8 @@ class AddOnViewModel @Inject constructor(
 
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
     val getAddOnResult = Transformations.map(mGetAddOnResult) {
-        AddOnMapper.mapAddOnWithSelectedIds(it, selectedAddonIds)
+        val addonGroups = AddOnMapper.mapAddOnWithSelectedIds(it, selectedAddonIds)
+        AddOnMapper.simplifyAddonGroup(addonGroups, isSimplified)
     }
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
@@ -59,9 +60,11 @@ class AddOnViewModel @Inject constructor(
 
     var selectedAddonIds: List<String> = emptyList()
     var lastSelectedAddOn: List<AddOnGroupUIModel> = emptyList()
+    var isSimplified = false
     private var selectedAddonGroup: AddOnGroupUIModel? = null
 
-    fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean) {
+    fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean, isSimplified: Boolean) {
+        this.isSimplified = isSimplified
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getAddOnUseCase.setParams(productId, warehouseId, isTokocabang)
@@ -139,6 +142,11 @@ class AddOnViewModel @Inject constructor(
     fun restoreSelection() {
         if (lastSelectedAddOn.isNotEmpty())
             mGetAddOnResult.value = lastSelectedAddOn
+    }
+
+    fun desimplifyAddonList() {
+        isSimplified = false
+        mGetAddOnResult.value = mGetAddOnResult.value
     }
 
     data class AutoSaveAddonModel (

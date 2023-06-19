@@ -39,6 +39,7 @@
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
     <string name="action_choose_package">Beli Paket</string>
     <string name="action_package_chosen">Paket Terpilih</string>
+    <string name="action_see_all">Lihat Semua</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PreOrder %1s</string>

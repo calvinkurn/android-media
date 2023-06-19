@@ -19,4 +19,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_see_all"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:text="@string/action_see_all"
+            android:textColor="@color/Unify_GN500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            app:icon_name="CHEVRON_DOWN"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 </androidx.appcompat.widget.LinearLayoutCompat>

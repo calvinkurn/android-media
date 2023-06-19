@@ -1,7 +1,6 @@
 package com.tokopedia.addon.presentation.uimodel
 
 import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
-import com.tokopedia.addon.domain.model.Source
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -129,5 +128,17 @@ object AddOnMapper {
         }
     }
 
-
+    fun simplifyAddonGroup(addonGroups: List<AddOnGroupUIModel>, isSimplified: Boolean): List<AddOnGroupUIModel> {
+        return if (isSimplified) {
+            addonGroups.map { group ->
+                group.copy(
+                    addon = group.addon.firstOrNull()?.let {
+                        listOf(it)
+                    } ?: emptyList()
+                )
+            }
+        } else {
+            addonGroups
+        }
+    }
 }
