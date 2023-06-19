@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -121,6 +122,8 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
+        val parent = youtubeWebView?.parent as? ViewGroup
+        parent?.removeView(youtubeWebView)
         youtubeWebView?.releaseWebView()
     }
 
