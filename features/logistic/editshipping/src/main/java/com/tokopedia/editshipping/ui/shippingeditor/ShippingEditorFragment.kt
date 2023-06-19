@@ -737,7 +737,7 @@ class ShippingEditorFragment :
             view?.let {
                 Toaster.build(
                     it,
-                    EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                    EditShippingConstant.DEFAULT_ERROR_SHIPPING_EDITOR,
                     Toaster.LENGTH_SHORT,
                     type = Toaster.TYPE_ERROR
                 ).show()

@@ -280,7 +280,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            DEFAULT_ERROR_MESSAGE,
+                            it.errorMessage,
                             Toaster.LENGTH_SHORT,
                             type = Toaster.TYPE_ERROR
                         ).show()

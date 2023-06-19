@@ -4,6 +4,7 @@ object EditShippingConstant {
     const val PARAM_VALIDATE_SHIPPING = "inputShippingEditorMobilePopup"
 
     const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
+    const val DEFAULT_ERROR_SHIPPING_EDITOR = "Kamu harus pilih minimal 1 layanan pengiriman, ya!"
 
     const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
     const val EXTRA_LAT = "EXTRA_LAT"
