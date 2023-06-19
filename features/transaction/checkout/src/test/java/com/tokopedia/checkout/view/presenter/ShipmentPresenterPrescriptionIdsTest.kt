@@ -250,10 +250,22 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         presenter.setPrescriptionIds(prescriptions)
 
         // Then
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds)
-        assertEquals(prescriptions, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds)
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+        )
+        assertEquals(
+            prescriptions,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+        )
     }
 
     @Test
@@ -385,6 +397,38 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     fun `GIVEN null shipment cart data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -405,7 +449,412 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         presenter.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(
+            UploadPrescriptionUiModel(
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf(
+                    "0",
+                    "0"
+                )
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null epharmacy group WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            null,
+                            listOf(
+                                GroupData.EpharmacyGroup(
+                                    null,
+                                    null,
+                                    "1",
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                                )
+                            ),
+                            null,
+                            null
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf(
+                    "0",
+                    "0"
+                )
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null epharmacy products WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            null,
+                            listOf(
+                                GroupData.EpharmacyGroup(
+                                    null,
+                                    null,
+                                    "1",
+                                    null,
+                                    null,
+                                    null,
+                                    listOf(null),
+                                    null
+                                )
+                            ),
+                            null,
+                            null
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                epharmacyGroupIds = arrayListOf("1"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf(
+                    "0",
+                    "0"
+                )
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null epharmacy product id WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            null,
+                            listOf(
+                                GroupData.EpharmacyGroup(
+                                    null,
+                                    null,
+                                    "1",
+                                    null,
+                                    null,
+                                    null,
+                                    listOf(ProductsInfo(null, arrayListOf(ProductsInfo.Product(null, null, null, null, null, null, null)), "6554231", null, null, null, null)),
+                                    null
+                                )
+                            ),
+                            null,
+                            null
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                epharmacyGroupIds = arrayListOf("1"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null epharmacy product WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            null,
+                            listOf(
+                                GroupData.EpharmacyGroup(
+                                    null,
+                                    null,
+                                    "1",
+                                    null,
+                                    null,
+                                    null,
+                                    listOf(ProductsInfo(null, null, "6554231", null, null, null, null)),
+                                    null
+                                )
+                            ),
+                            null,
+                            null
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                epharmacyGroupIds = arrayListOf("1"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN invalid epharmacy shop id WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            )
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            null,
+                            listOf(
+                                GroupData.EpharmacyGroup(
+                                    null,
+                                    null,
+                                    "1",
+                                    null,
+                                    null,
+                                    null,
+                                    listOf(ProductsInfo(null, null, "asdf", null, null, null, null)),
+                                    null
+                                )
+                            ),
+                            null,
+                            null
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                epharmacyGroupIds = arrayListOf("1"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554232"),
+                cartIds = listOf("0", "0")
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
     }
 
     @Test
@@ -539,17 +988,35 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             presenter.uploadPrescriptionUiModel
         )
 
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals(errorWording, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle)
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError)
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            errorWording,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+        )
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
+        )
         assertEquals(
             rejectedWording,
             presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
+        )
     }
 
     @Test
@@ -642,8 +1109,14 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+        )
     }
 
     @Test
@@ -782,20 +1255,56 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            "qwerty",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+        )
+        assertEquals(
+            "123",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+        )
+        assertEquals(
+            "321",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+        )
     }
 
     @Test
@@ -1121,29 +1630,89 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            "qwerty",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+        )
+        assertEquals(
+            "123",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+        )
+        assertEquals(
+            "321",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId)
-        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+        )
+        assertEquals(
+            listOf("1", "2"),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+        )
 
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds)
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+        )
     }
 
 //    @Test
@@ -1519,20 +2088,56 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            "qwerty",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+        )
+        assertEquals(
+            "123",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+        )
+        assertEquals(
+            "321",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+        )
     }
 
     @Test
@@ -1653,19 +2258,40 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             presenter.uploadPrescriptionUiModel
         )
 
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals(errorWording, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle)
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError)
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            errorWording,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+        )
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
+        )
         assertEquals(
             rejectedWording,
             presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+        )
     }
 
     @Test
@@ -1915,29 +2541,89 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             ),
             presenter.uploadPrescriptionUiModel
         )
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError)
-        assertEquals("qwerty", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString)
-        assertEquals("123", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId)
-        assertEquals("321", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+        )
+        assertEquals(
+            "qwerty",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+        )
+        assertEquals(
+            "123",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+        )
+        assertEquals(
+            "321",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId)
-        assertEquals(listOf("1", "2"), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+        )
+        assertEquals(
+            listOf("1", "2"),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+        )
 
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds)
+        assertEquals(
+            true,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+        )
 
-        assertEquals(false, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId)
-        assertEquals("", presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId)
-        assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds)
+        assertEquals(
+            false,
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
+        )
+        assertEquals(
+            "",
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
+        )
+        assertEquals(
+            emptyList<String>(),
+            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+        )
     }
 
     @Test

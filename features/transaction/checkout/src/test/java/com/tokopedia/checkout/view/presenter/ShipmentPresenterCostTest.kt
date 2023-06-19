@@ -1,9 +1,11 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -143,6 +145,40 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                                     addOnPrice = 100.0
                                 )
                             )
+                        )
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(1000.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(1100.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(true, presenter.shipmentCostModel.value.hasAddOn)
+    }
+
+    @Test
+    fun `GIVEN add ons order level cart WHEN update cost THEN should calculate cart with add ons order level price`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = false,
+                        quantity = 1,
+                        price = 1000.0
+                    )
+                ),
+                addOnsOrderLevelModel = AddOnsDataModel(
+                    status = 1,
+                    addOnsDataItemModelList = listOf(
+                        AddOnDataItemModel(
+                            addOnPrice = 100.0
                         )
                     )
                 )
@@ -421,5 +457,139 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         // Then
         assertEquals(2300.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
         assertEquals(2, presenter.shipmentCostModel.value.listCrossSell.size)
+    }
+
+    @Test
+    fun `GIVEN cart with donation WHEN update cost THEN should calculate donation cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                )
+            )
+        )
+        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(5000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(3000.0, presenter.shipmentCostModel.value.donation, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with donation unchecked WHEN update cost THEN should calculate donation cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                )
+            )
+        )
+        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(2000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(0.0, presenter.shipmentCostModel.value.donation, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with donation changed to unchecked WHEN update cost THEN should calculate donation cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                )
+            )
+        )
+        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
+        presenter.updateShipmentCostModel()
+        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(2000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(0.0, presenter.shipmentCostModel.value.donation, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with trade in price WHEN update cost THEN should calculate total cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0,
+                        isValidTradeIn = true,
+                        oldDevicePrice = 1000
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(1000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(1000.0, presenter.shipmentCostModel.value.tradeInPrice, 0.0)
+    }
+
+    @Test
+    fun `GIVEN cart with leasing price WHEN update cost THEN should calculate total cost correctly`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = ""),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        quantity = 2,
+                        price = 1000.0
+                    )
+                ),
+                isLeasingProduct = true,
+                bookingFee = 1000
+            )
+        )
+
+        // When
+        presenter.updateShipmentCostModel()
+
+        // Then
+        assertEquals(3000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(1000, presenter.shipmentCostModel.value.bookingFee)
     }
 }
