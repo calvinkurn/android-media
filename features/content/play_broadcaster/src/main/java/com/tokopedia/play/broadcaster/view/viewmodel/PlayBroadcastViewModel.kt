@@ -1901,24 +1901,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val isLicenseDownloaded = viewModelScope.async {
             try {
                 repo.downloadLicense(beautificationConfig.licenseLink)
-            } catch (e: Exception) {
-                throw DownloadLicenseAssetException(e.message)
+            } catch (expected: Exception) {
+                throw DownloadLicenseAssetException(expected.message)
             }
         }
 
         val isModelDownloaded = viewModelScope.async {
             try {
                 repo.downloadModel(beautificationConfig.modelLink)
-            } catch (e: Exception) {
-                throw DownloadModelAssetException(e.message)
+            } catch (expected: Exception) {
+                throw DownloadModelAssetException(expected.message)
             }
         }
 
         val isCustomFaceDownloaded = viewModelScope.async {
             try {
                 repo.downloadCustomFace(beautificationConfig.customFaceAssetLink)
-            } catch (e: Exception) {
-                throw DownloadCustomFaceAssetException(e.message)
+            } catch (expected: Exception) {
+                throw DownloadCustomFaceAssetException(expected.message)
             }
         }
 

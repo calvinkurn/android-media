@@ -84,7 +84,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private fun mapConfiguration(config: String): Config {
         return try {
             gson.fromJson(config, Config::class.java)
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             Config()
         }
     }
@@ -92,7 +92,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private fun mapBeautificationConfig(beautificationConfig: String): Config.BeautificationConfig {
         return try {
             gson.fromJson(beautificationConfig, Config.BeautificationConfig::class.java)
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             Config.BeautificationConfig()
         }
     }

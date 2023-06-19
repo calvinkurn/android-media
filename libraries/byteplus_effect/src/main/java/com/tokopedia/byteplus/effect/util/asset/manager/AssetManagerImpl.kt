@@ -44,7 +44,7 @@ class AssetManagerImpl @Inject constructor(
                 }
                 else true
             }
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             false
         }
     }
@@ -64,7 +64,7 @@ class AssetManagerImpl @Inject constructor(
                     true
                 }
             }
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             false
         }
     }
