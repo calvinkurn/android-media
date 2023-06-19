@@ -9,15 +9,15 @@
         android:iconTint="@color/Unify_NN900"
         app:itemIconSize="12dp"
         android:title=""
-        android:visible="false"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_overflow_menu"
         android:orderInCategory="100"
-        app:showAsAction="always"
         android:iconTint="@color/Unify_NN900"
         app:itemIconSize="12dp"
+        app:showAsAction="always"
         android:icon="@drawable/ic_toolbar_overflow_level_two_black"
         android:title="" />
+
 </menu>

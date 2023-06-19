@@ -10,6 +10,7 @@
         android:iconTint="@color/Unify_N700_96"
         app:itemIconSize="12dp"
         android:title=""
+        android:visible="false"
         app:showAsAction="always" />
 
     <item

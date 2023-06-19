@@ -12,16 +12,19 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelMapper.mapDppoConsentToHotelModel
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
+import com.tokopedia.hotel.homepage.presentation.model.HotelDppoConsentModel
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,12 +38,13 @@ import javax.inject.Inject
  * @author by furqan on 04/04/19
  */
 class HotelHomepageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val bannerUseCase: GetTravelCollectiveBannerUseCase,
-        private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
-        private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
-        private val travelTickerUseCase: TravelTickerCoroutineUseCase,
-        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+    private val graphqlRepository: GraphqlRepository,
+    private val bannerUseCase: GetTravelCollectiveBannerUseCase,
+    private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
+    private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    private val travelTickerUseCase: TravelTickerCoroutineUseCase,
+    val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
@@ -67,6 +71,10 @@ class HotelHomepageViewModel @Inject constructor(
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
+
+    private val mutableDppoConsent = MutableLiveData<Result<HotelDppoConsentModel>>()
+    val dppoConsent: LiveData<Result<HotelDppoConsentModel>>
+        get() = mutableDppoConsent
 
     fun fetchVideoBannerData() {
         launch(dispatcher.main) {
@@ -115,6 +123,16 @@ class HotelHomepageViewModel @Inject constructor(
             mutableRecentSearch.postValue(Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items)))
         }) {
             mutableRecentSearch.postValue(Fail(it))
+        }
+    }
+
+    fun getDppoConsent(categoryId: Int) {
+        launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(categoryId)
+            val uiData = mapDppoConsentToHotelModel(data)
+            mutableDppoConsent.postValue(Success(uiData))
+        }) {
+            mutableDppoConsent.postValue(Fail(it))
         }
     }
 

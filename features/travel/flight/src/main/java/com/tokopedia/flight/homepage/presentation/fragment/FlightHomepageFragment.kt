@@ -192,6 +192,15 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             }
         })
 
+        flightHomepageViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
