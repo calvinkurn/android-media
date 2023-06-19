@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import androidx.dynamicanimation.animation.SpringAnimation
-import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.*
@@ -31,6 +29,8 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -39,15 +39,12 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
-import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -55,7 +52,6 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * @author by astidhiyaa on 24/11/22
  */
-@Suppress("LateinitUsage")
 class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
     private val trackingQueue: TrackingQueue,
@@ -148,49 +144,9 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private lateinit var sliderAnimation: SpringAnimation
 
-    private val gestureDetector by lazyThreadSafetyNone {
-        GestureDetector(
-            requireContext(),
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onFling(
-                    e1: MotionEvent,
-                    e2: MotionEvent,
-                    velocityX: Float,
-                    velocityY: Float
-                ): Boolean {
-                    var newX = view?.x.orZero()
-                    val diffX = e2.x - e1.x
-                    if (diffX > 0) {
-                        newX += VIEW_TRANSLATION_THRESHOLD
-                    } else {
-                        newX -= VIEW_TRANSLATION_THRESHOLD
-                    }
-
-                    if (newX < 0) return false
-
-                    sliderAnimation = AnimationUtils.addSpringAnim(
-                        view = binding.root,
-                        property = SpringAnimation.TRANSLATION_X,
-                        startPosition = binding.root.x,
-                        finalPosition = newX,
-                        stiffness = SpringForce.STIFFNESS_LOW,
-                        dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
-                        velocity = VIEW_TRANSLATION_VELOCITY
-                    )
-                    sliderAnimation.start()
-                    return true
-                }
-            }
-        )
-    }
-
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(requireView(), viewLifecycleOwner) }
     )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     private var analytic: PlayAnalytic2? = null
 
@@ -282,6 +238,22 @@ class PlayExploreWidgetFragment @Inject constructor(
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowInfoEvent -> {
+                        toaster.showToasterInView(
+                            message = getTextFromUiString(event.message),
+                            view = requireView()
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderChips(chips: TabMenuUiModel) {
         when (chips.state) {
             ResultState.Success -> {
@@ -329,7 +301,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
                         analytic?.clickRetryToaster()
-                        viewModel.submitAction(RefreshWidget)
+                        run { state.onRetry() }
                     }
                 )
             }
@@ -429,6 +401,13 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
         return emptyMap()
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
     }
 
     private fun fetchWidget() {

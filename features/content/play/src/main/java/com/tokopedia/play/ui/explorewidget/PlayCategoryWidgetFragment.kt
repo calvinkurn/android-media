@@ -115,10 +115,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
 
-        // TODO() temp
-        viewModel.submitAction(
-            FetchWidgets(ExploreWidgetType.Category)
-        )
+        viewModel.submitAction(FetchWidgets(ExploreWidgetType.Category))
     }
 
     private fun observeState() {
@@ -133,9 +130,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
-                    ExploreWidgetNextTab -> {
-                        goToNextPage()
-                    }
+                    ExploreWidgetNextTab -> goToNextPage()
                     else -> {}
                 }
             }
@@ -158,7 +153,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
-                        //onRetry
+                        run { result.state.onRetry() }
                     }
                 )
             }

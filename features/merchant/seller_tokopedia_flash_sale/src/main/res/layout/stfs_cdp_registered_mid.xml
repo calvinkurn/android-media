@@ -58,7 +58,7 @@
                 android:gravity="center|start"
                 android:maxLines="2"
                 android:text="@string/product_eligible_for_selection_end_date_placeholder"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:layout_constraintBottom_toBottomOf="@id/image_product_eligible_for_selection"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/image_product_eligible_for_selection"
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stfs_remaining_quota_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:typographyType="small"
                 app:typographyWeight="reguler" />
 
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stfs_proposed_before_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:timer_unify_single_variant="general"
                 app:typographyType="small"
                 app:typographyWeight="reguler" />
@@ -159,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stfs_proposed_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -182,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stfs_accepted_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -205,7 +205,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stfs_rejected_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography

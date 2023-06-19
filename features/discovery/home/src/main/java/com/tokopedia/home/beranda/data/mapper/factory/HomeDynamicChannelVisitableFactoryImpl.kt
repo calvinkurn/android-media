@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
@@ -230,6 +231,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_DEALS_WIDGET -> {
                     createDealsWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_FLASH_SALE_WIDGET -> {
+                    createFlashSaleWidget(channel, position)
                 }
             }
         }
@@ -480,7 +484,23 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     pageName = channel.pageName,
                     widgetParam = channel.widgetParam,
                     dividerType = channel.dividerType,
-                    dividerSize = channel.styleParam.parseDividerSize()
+                    dividerSize = channel.styleParam.parseDividerSize(),
+                    channelHeader = ChannelHeader(
+                        channel.header.id,
+                        channel.header.name,
+                        channel.header.subtitle,
+                        channel.header.expiredTime,
+                        channel.header.serverTimeUnix,
+                        channel.header.applink,
+                        channel.header.url,
+                        channel.header.backColor,
+                        channel.header.backImage,
+                        channel.header.textColor,
+                        channelId = channel.id,
+                        serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
+                            channel.header.serverTimeUnix
+                        )
+                    )
                 )
             )
         }
@@ -858,6 +878,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingFlashSaleWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return FlashSaleDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache,
+            cardInteraction = false
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -1033,6 +1068,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createFlashSaleWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(
+            mappingFlashSaleWidgetComponent(
+                channel,
+                isCache,
+                verticalPosition
+            )
+        )
     }
 
     override fun build(): List<Visitable<*>> = visitableList

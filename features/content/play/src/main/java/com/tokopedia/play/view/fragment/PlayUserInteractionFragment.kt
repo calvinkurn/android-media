@@ -562,6 +562,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * ImmersiveBox View Component Listener
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
+        if (playViewModel.hasNoMedia) return
+
         analytic.clickWatchArea(
             screenOrientation = orientation.orientation
         )
@@ -965,6 +967,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowInfoEvent -> {
+                        if (PlayExploreWidgetFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
