@@ -33,9 +33,14 @@ class YoutubePlayerActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
-        youtubeWebView = viewBinding?.youtubeView
+        youtubeWebView = YoutubeWebView(this)
+        addWebView()
         getIntentData()
         initYoutubePlayer()
+    }
+
+    private fun addWebView() {
+        viewBinding?.videoContainer?.addView(youtubeWebView)
     }
 
     private fun initYoutubePlayer() {

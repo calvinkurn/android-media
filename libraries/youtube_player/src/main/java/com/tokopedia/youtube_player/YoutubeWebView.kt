@@ -37,7 +37,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
     init {
-        SplitCompat.installActivity(context)
+//        SplitCompat.installActivity(context)
     }
 
 
@@ -55,7 +55,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             mediaPlaybackRequiresUserGesture = false
             cacheMode = WebSettings.LOAD_DEFAULT
         }
-//        setupTouchListener()
         val youtubeJSInterface = YoutubeWebViewInterface(
             youtubeEventVideoEnded, youtubeEventVideoPlaying,
             youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
@@ -243,22 +242,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun destroyWebView() {
-        // Make sure you remove the WebView from its parent view before doing anything.
         clearHistory()
-        // NOTE: clears RAM cache, if you pass true, it will also clear the disk cache.
-        // Probably not a great idea to pass true if you have other WebViews still alive.
         clearCache(true)
-        // Loading a blank page is optional, but will ensure that the WebView isn't doing anything when you destroy it.
-        //webView?.loadUrl("about:blank")
-        // NOTE: This pauses JavaScript execution for ALL WebViews,
-        // do not use if you have other WebViews still alive.
-        // If you create another WebView after calling this,
-        // make sure to call mWebView.resumeTimers().
         pauseTimers()
         removeAllViews()
-//        webViewContainerRL?.removeAllViews()
         destroy()
-//        webViewClient = null
         webChromeClient = null
     }
 }
