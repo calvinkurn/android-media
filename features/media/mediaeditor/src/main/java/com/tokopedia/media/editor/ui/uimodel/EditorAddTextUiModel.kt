@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class EditorAddTextUiModel(
     var textValue: String,
-    var textStyle: Int = AddTextStyle.REGULAR.value,
+    var textStyle: AddTextStyle = AddTextStyle.REGULAR,
     var textColor: Int = 0,
     var textAlignment: AddTextAlignment = AddTextAlignment.CENTER,
     var textPosition: AddTextPosition = AddTextPosition.BOTTOM,
@@ -54,8 +54,8 @@ class EditorAddTextUiModel(
      */
     fun getTypeFaceStyle(): Int {
         return when (textStyle) {
-            AddTextStyle.BOLD.value -> Typeface.BOLD
-            AddTextStyle.ITALIC.value -> Typeface.ITALIC
+            AddTextStyle.BOLD -> Typeface.BOLD
+            AddTextStyle.ITALIC -> Typeface.ITALIC
             else -> Typeface.NORMAL
         }
     }

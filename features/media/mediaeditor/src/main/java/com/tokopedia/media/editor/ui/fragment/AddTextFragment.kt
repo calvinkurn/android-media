@@ -47,13 +47,8 @@ class AddTextFragment @Inject constructor(
 
     private var colorList = addTextColorProvider.getListOfTextColor()
 
-    /**
-     * 0 -> regular
-     * 1 -> bold
-     * 2 -> italic
-     */
     private val textStyleItemRef: Array<AddTextStyleItemView?> = Array(3) { null }
-    private var activeStyleIndex = AddTextStyle.REGULAR.value
+    private var activeStyleIndex = AddTextStyle.REGULAR
         set(value) {
             field = value
             viewModel.textData.textStyle = value
@@ -211,20 +206,20 @@ class AddTextFragment @Inject constructor(
     // style item click listener
     private fun changeFontStyle(styleIndex: Int) {
         // set inactive style
-        textStyleItemRef[activeStyleIndex]?.setInactive()
+        textStyleItemRef[activeStyleIndex.value]?.setInactive()
 
         // set active style
         textStyleItemRef[styleIndex]?.setActive()
 
+        activeStyleIndex = AddTextStyle.getStyleByIndex(styleIndex)
+
         viewBinding?.addTextInput?.apply {
-            when (styleIndex) {
-                AddTextStyle.REGULAR.value -> setTypeface(null, Typeface.NORMAL)
-                AddTextStyle.BOLD.value -> setTypeface(null, Typeface.BOLD)
-                AddTextStyle.ITALIC.value -> setTypeface(null, Typeface.ITALIC)
+            when (activeStyleIndex) {
+                AddTextStyle.REGULAR -> setTypeface(null, Typeface.NORMAL)
+                AddTextStyle.BOLD -> setTypeface(null, Typeface.BOLD)
+                AddTextStyle.ITALIC -> setTypeface(null, Typeface.ITALIC)
             }
         }
-
-        activeStyleIndex = styleIndex
     }
 
     // color item click listener
@@ -301,7 +296,7 @@ class AddTextFragment @Inject constructor(
                         changeFontStyle(styleIndex)
                     }
 
-                    if (styleIndex == activeStyleIndex) {
+                    if (styleIndex == activeStyleIndex.value) {
                         styleItem.setActive()
                         changeFontStyle(styleIndex)
                     }
