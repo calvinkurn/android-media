@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,11 +37,15 @@ class YoutubePlayerActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
-        youtubeWebView = YoutubeWebView(this)
-        tkpdWebView = TkpdWebView(this)
-        addWebView()
-        getIntentData()
-        tkpdWebView?.loadDataWithBaseURL("", "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\" allowfullscreen></iframe>", "text/html", "utf-8", null)
+        RouteManager.route(
+            this,
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "www.google.com")
+        )
+//        youtubeWebView = YoutubeWebView(this)
+//        tkpdWebView = TkpdWebView(this)
+//        addWebView()
+//        getIntentData()
+//        tkpdWebView?.loadDataWithBaseURL("", "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\" allowfullscreen></iframe>", "text/html", "utf-8", null)
 //        initYoutubePlayer()
     }
 
