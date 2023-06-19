@@ -311,9 +311,6 @@ open class ShopPageHomeFragment :
     lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
-    lateinit var coachMarkSharedPref: ContentCoachMarkSharedPref
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     var viewModel: ShopHomeViewModel? = null
