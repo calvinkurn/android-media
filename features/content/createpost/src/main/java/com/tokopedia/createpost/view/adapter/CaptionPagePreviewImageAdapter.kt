@@ -3,12 +3,13 @@ package com.tokopedia.createpost.view.adapter
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.android.synthetic.main.content_preview_post_view_item.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * @author by shruti on 01/08/21.
@@ -38,15 +39,15 @@ class CaptionPagePreviewImageAdapter(
 
     inner class ContentCaptionPostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val previewPageImage: ImageUnify = view.findViewById(R.id.content_preview_page_image)
+        private val previewPageProductTag: CardView = view.findViewById(R.id.content_preview_page_product_tag)
+
         fun bind(imageItemData: MediaModel) {
             itemView.setOnClickListener {
                 onItemClick?.invoke(adapterPosition)
             }
-            with(itemView) {
-                content_preview_page_image.setImageUrl(imageItemData.path)
-                content_preview_page_product_tag.showWithCondition(imageItemData.products.isNotEmpty())
-
-            }
+            previewPageImage.setImageUrl(imageItemData.path)
+            previewPageProductTag.showWithCondition(imageItemData.products.isNotEmpty())
         }
     }
 
