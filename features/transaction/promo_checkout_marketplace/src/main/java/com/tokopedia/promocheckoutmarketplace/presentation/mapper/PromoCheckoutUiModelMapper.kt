@@ -221,8 +221,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isParentEnabled = couponSubSection.isEnabled
-                isPreSelected = couponItem.isSelected
-                isSelected = couponItem.isSelected
+                isPreSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
+                isSelected = couponItem.isSelected || couponItem.secondaryCoupons.any { it.isSelected }
                 isAttempted = couponItem.isAttempted
                 isCausingOtherPromoClash = false
                 isHighlighted = couponItem.isHighlighted
