@@ -12,11 +12,13 @@ import com.tokopedia.search.result.mps.shopwidget.MPSButtonDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSProductLabelGroupDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
+import com.tokopedia.search.shouldBe
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+private const val MPSLoadMoreDuplicateJSON = "mps/mps-duplicate-shop.json"
 internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures() {
 
     private val parameter = mapOf(
@@ -209,6 +211,24 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         )
     }
 
+    @Test
+    fun `multi product search load more success will not append duplicate shop widget list`() {
+        val firstPageMPSModel = MPSSuccessJSON.jsonToObject<MPSModel>()
+        val mpsStateAfterFirstPage = MPSState(parameter).success(firstPageMPSModel)
+        val mpsViewModel = mpsViewModel(mpsStateAfterFirstPage)
+
+        val loadMoreMPSModel = MPSLoadMoreDuplicateJSON.jsonToObject<MPSModel>()
+        `Given MPS load more use case success`(loadMoreMPSModel)
+
+        `When load more`(mpsViewModel)
+
+        `Then assert shop widget visitable list load more does not contain duplicate`(
+            mpsViewModel.visitableList,
+            firstPageMPSModel,
+            loadMoreMPSModel,
+        )
+    }
+
     private fun `When load more`(mpsViewModel: MPSViewModel) {
         mpsViewModel.onViewLoadMore()
     }
@@ -232,5 +252,34 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
             val shopItemModel = loadMoreMPSModel.shopList[index]
             assertMPSShopWidgetDataView(mpsShopWidgetDataView, shopItemModel)
         }
+    }
+
+    private fun `Then assert shop widget visitable list load more does not contain duplicate`(
+        mpsVisitableList: List<Visitable<*>>,
+        firstPageMPSModel: MPSModel,
+        loadMoreMPSModel: MPSModel,
+    ) {
+        val firstPageShopListSize = firstPageMPSModel.shopList.size
+        val secondPageShopListNotDuplicate = loadMoreMPSModel.shopList.filterNot {
+                shop -> firstPageMPSModel.shopList.any { it.id == shop.id }
+        }
+        val duplicateShopId = loadMoreMPSModel.shopList.filter {
+                shop -> firstPageMPSModel.shopList.any { it.id == shop.id }
+        }.map { it.id }
+        val secondPageShopListSize = secondPageShopListNotDuplicate.size
+        val totalShopCount = firstPageShopListSize + secondPageShopListSize
+        val allShopWidgetVisitableList = mpsVisitableList.filterIsInstance<MPSShopWidgetDataView>()
+
+        assertEquals(totalShopCount, allShopWidgetVisitableList.size)
+
+        val loadMoreShopWidgetVisitableList = allShopWidgetVisitableList
+            .takeLast(secondPageShopListSize)
+
+        loadMoreShopWidgetVisitableList.forEachIndexed { index, mpsShopWidgetDataView ->
+            val shopItemModel = secondPageShopListNotDuplicate[index]
+            assertMPSShopWidgetDataView(mpsShopWidgetDataView, shopItemModel)
+        }
+
+        loadMoreShopWidgetVisitableList.none { it.id in duplicateShopId } shouldBe true
     }
 }
