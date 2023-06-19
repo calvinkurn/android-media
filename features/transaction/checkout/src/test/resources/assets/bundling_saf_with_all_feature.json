@@ -44,7 +44,7 @@
             "corner_id": 0,
             "is_corner": false
           },
-          "group_shop_v2": [
+          "group_shop": [
             {
               "group_type": 1,
               "ui_group_type": 0,

@@ -2526,6 +2526,9 @@ class ShipmentPresenter @Inject constructor(
                 } catch (t: Throwable) {
                     Timber.d(t)
                     view?.logOnErrorLoadCourier(t, itemPosition, "")
+                    if (t is AkamaiErrorException) {
+                        view?.showToastErrorAkamai(t.message)
+                    }
                 }
             }
         } else {
@@ -2644,6 +2647,9 @@ class ShipmentPresenter @Inject constructor(
                 } catch (t: Throwable) {
                     Timber.d(t)
                     view?.logOnErrorLoadCourier(t, itemPosition, "")
+                    if (t is AkamaiErrorException) {
+                        view?.showToastErrorAkamai(t.message)
+                    }
                 }
             }
         }
@@ -3174,6 +3180,9 @@ class ShipmentPresenter @Inject constructor(
                             shipmentGetCourierHolderData.itemPosition,
                             boPromoCode
                         )
+                        if (t is AkamaiErrorException) {
+                            view?.showToastErrorAkamai(t.message)
+                        }
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
                     }
@@ -3541,6 +3550,9 @@ class ShipmentPresenter @Inject constructor(
                             shipmentGetCourierHolderData.itemPosition,
                             boPromoCode
                         )
+                        if (t is AkamaiErrorException) {
+                            view?.showToastErrorAkamai(t.message)
+                        }
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
                     }
@@ -4031,6 +4043,9 @@ class ShipmentPresenter @Inject constructor(
                     view?.resetCourier(shipmentCartItemModel)
                     view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
                     view?.logOnErrorLoadCourier(t, itemPosition, promoCode)
+                    if (t is AkamaiErrorException) {
+                        view?.showToastErrorAkamai(t.message)
+                    }
                 }
             }
             updateShipmentButtonPaymentModel(loading = false)
