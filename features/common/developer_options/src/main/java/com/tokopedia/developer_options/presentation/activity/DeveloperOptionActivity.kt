@@ -33,6 +33,7 @@ import com.tokopedia.developer_options.presentation.adapter.typefactory.Develope
 import com.tokopedia.developer_options.presentation.di.DaggerDevOptComponent
 import com.tokopedia.developer_options.presentation.di.DevOptModule
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
@@ -57,12 +58,9 @@ import kotlinx.coroutines.yield
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.lang.RuntimeException
 import java.net.HttpURLConnection
 import java.net.URL
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
@@ -432,6 +430,18 @@ class DeveloperOptionActivity :
                 }
             }
         }
+    }
+
+    private fun openResultBranch(result: String) {
+        val dialog = Dialog(this, Dialog.Type.LONG_PROMINANCE)
+        dialog.setTitle("Result branch")
+        dialog.setDesc(result)
+        dialog.setDescMovementMethod()
+        dialog.setBtnCancel("Close")
+        dialog.setOnCancelClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)
