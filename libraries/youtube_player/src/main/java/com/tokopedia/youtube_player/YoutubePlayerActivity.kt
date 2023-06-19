@@ -28,13 +28,12 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     private val viewBinding: ActivityYoutubePlayerBinding? by viewBinding()
     private var videoId: String = ""
-    private val youtubeWebView: YoutubeWebView? by lazy {
-        viewBinding?.youtubeView
-    }
+    private var youtubeWebView: YoutubeWebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
+        youtubeWebView = viewBinding?.youtubeView
         getIntentData()
         initYoutubePlayer()
     }
@@ -125,6 +124,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
         val parent = youtubeWebView?.parent as? ViewGroup
         parent?.removeView(youtubeWebView)
         youtubeWebView?.releaseWebView()
+        youtubeWebView = null
     }
 
 }
