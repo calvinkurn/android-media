@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
@@ -21,6 +22,9 @@ import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -126,23 +130,25 @@ class EditorActivity : BaseEditorActivity() {
 
     private fun finishPage() {
         val listImageEditState = viewModel.editStateList.values.toList()
-        viewModel.finishPage(
-            listImageEditState
-        ) { imageResultList ->
-            imageResultList?.let {
-                val result = EditorResult(
-                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                    editedImages = imageResultList
-                )
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.finishPage(
+                listImageEditState
+            ) { imageResultList ->
+                imageResultList?.let {
+                    val result = EditorResult(
+                        originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                        editedImages = imageResultList
+                    )
 
-                editorHomeAnalytics.clickUpload()
+                    editorHomeAnalytics.clickUpload()
 
-                val intent = Intent()
-                intent.putExtra(RESULT_INTENT_EDITOR, result)
-                setResult(Activity.RESULT_OK, intent)
+                    val intent = Intent()
+                    intent.putExtra(RESULT_INTENT_EDITOR, result)
+                    setResult(Activity.RESULT_OK, intent)
+                }
+
+                finish()
             }
-
-            finish()
         }
     }
 

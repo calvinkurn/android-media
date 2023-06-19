@@ -33,7 +33,7 @@ interface SaveImageRepository {
         sourcePath: String
     ): File?
 
-    fun flattenImage(
+    suspend fun flattenImage(
         imageBaseUrl: String,
         imageAddedUrl: String,
         sourcePath: String
@@ -57,7 +57,7 @@ class SaveImageRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun flattenImage(
+    override suspend fun flattenImage(
         imageBaseUrl: String,
         imageAddedUrl: String,
         sourcePath: String

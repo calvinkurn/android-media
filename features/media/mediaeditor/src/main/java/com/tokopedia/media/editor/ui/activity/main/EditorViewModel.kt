@@ -97,7 +97,7 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun finishPage(
+    suspend fun finishPage(
         dataList: List<EditorUiModel>,
         onFinish: (result: List<String>?) -> Unit
     ) {
