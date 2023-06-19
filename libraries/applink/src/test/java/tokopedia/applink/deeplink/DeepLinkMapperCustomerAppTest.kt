@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 228
+        const val SIZE_MAPPER = 229
     }
 
     override fun setup() {
@@ -2559,5 +2559,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = ApplinkConst.DilayaniTokopedia.HOME
         val expectedDeepLink = ApplinkConstInternalDilayaniTokopedia.HOME
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check youtube player appLink then should return tokopedia internal youtube player in customerapp`() {
+        val expectedInternalDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/youtube-player/123/"
+        val appLink = UriUtil.buildUri(ApplinkConst.YOUTUBE_PLAYER, "123")
+        assertEqualsDeepLinkMapper(appLink, expectedInternalDeepLink)
     }
 }
