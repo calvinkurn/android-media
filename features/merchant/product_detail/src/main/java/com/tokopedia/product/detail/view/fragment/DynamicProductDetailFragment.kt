@@ -136,7 +136,6 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -498,7 +497,6 @@ open class DynamicProductDetailFragment :
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
-    private var alreadyShowMultilocBottomSheet: Boolean = false
     private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
     private var campaignId: String = ""
     private var variantId: String = ""
@@ -688,6 +686,16 @@ open class DynamicProductDetailFragment :
         observeVerticalRecommendation()
         observeOneTimeMethod()
         observeProductMediaRecomData()
+        observeBottomSheetEdu()
+    }
+
+    private fun observeBottomSheetEdu() {
+        viewLifecycleOwner.observe(viewModel.showBottomSheetEdu) {
+            val url = it?.appLink ?: return@observe
+            viewModel.changeOneTimeMethod(
+                event = OneTimeMethodEvent.ImpressGeneralEduBs(appLink = url)
+            )
+        }
     }
 
     private fun observeOneTimeMethod() {
@@ -701,6 +709,9 @@ open class DynamicProductDetailFragment :
                             userId = viewModel.userId,
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
                         )
+                    }
+                    is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                        goToEducational(url = it.event.appLink)
                     }
                     else -> {
                         // noop
@@ -3290,14 +3301,6 @@ open class DynamicProductDetailFragment :
 
         setupProductVideoCoordinator()
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
-        showWarehouseChangeBs(productInfo.basic.productMultilocation)
-    }
-
-    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
-        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
-            goToApplink(productMultiloc.eduLink.applink)
-        }
-        alreadyShowMultilocBottomSheet = true
     }
 
     private fun setupProductVideoCoordinator() {
