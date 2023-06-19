@@ -288,6 +288,8 @@ abstract class BaseSearchCategoryViewModel(
 
     abstract val tokonowSource: String
 
+    abstract val tickerPageSource: String
+
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated(source: MiniCartSource? = null) {
@@ -506,7 +508,8 @@ abstract class BaseSearchCategoryViewModel(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(
                     pageName = TOKONOW_NO_RESULT
-                )
+                ),
+                tickerPageSource = tickerPageSource
             )
         )
         if (feedbackFieldToggle) {
