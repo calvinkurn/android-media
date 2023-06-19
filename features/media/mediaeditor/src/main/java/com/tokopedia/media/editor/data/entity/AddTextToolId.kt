@@ -5,5 +5,11 @@ enum class AddTextToolId(val value: Int) {
     SAVE_TEMPLATE_INDEX(1),
     DIVIDER(2),
     FREE_TEXT_INDEX(3),
-    BACKGROUND_TEXT_INDEX(4)
+    BACKGROUND_TEXT_INDEX(4);
+
+    companion object {
+        fun getToolIdByIndex(index: Int): AddTextToolId {
+            return values().first { it.value == index }
+        }
+    }
 }

@@ -1,7 +1,5 @@
 package com.tokopedia.media.editor.data
 
-import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
-import com.tokopedia.picker.common.EDITOR_ADD_TEXT_TOOL
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import javax.inject.Inject
 
@@ -23,5 +21,10 @@ class FeatureToggleManagerImpl @Inject constructor() : FeatureToggleManager {
             .getInstance()
             .abTestPlatform
             .getString(EDITOR_ADD_TEXT_TOOL) == EDITOR_ADD_TEXT_TOOL
+    }
+
+    companion object {
+        const val EDITOR_ADD_LOGO_TOOL = "android_addlogo"
+        const val EDITOR_ADD_TEXT_TOOL = "android_addtext"
     }
 }

@@ -27,11 +27,12 @@ class AddTextToolAdapter(
 
         mAddTextMenu[position]?.let {
             holder.bind(it){
-                when (position) {
-                    AddTextToolId.CHANGE_POSITION_INDEX.value -> listener.onChangePosition()
-                    AddTextToolId.SAVE_TEMPLATE_INDEX.value -> listener.onTemplateSave(!isLocalTemplateReady)
-                    AddTextToolId.FREE_TEXT_INDEX.value -> listener.onAddFreeText()
-                    AddTextToolId.BACKGROUND_TEXT_INDEX.value -> listener.onAddSingleBackgroundText()
+                when (AddTextToolId.getToolIdByIndex(position)) {
+                    AddTextToolId.CHANGE_POSITION_INDEX -> listener.onChangePosition()
+                    AddTextToolId.SAVE_TEMPLATE_INDEX -> listener.onTemplateSave(!isLocalTemplateReady)
+                    AddTextToolId.FREE_TEXT_INDEX -> listener.onAddFreeText()
+                    AddTextToolId.BACKGROUND_TEXT_INDEX -> listener.onAddSingleBackgroundText()
+                    else -> {}
                 }
             }
         }

@@ -67,8 +67,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         paddingFloating = 0f
         floatingWidthAdjustment = 0f
 
-        val originalImageWidth = size.first
-        val originalImageHeight = size.second
+        val (originalImageWidth, originalImageHeight) = size
 
         return bitmapCreationRepository.createBitmap(
             BitmapCreation.emptyBitmap(

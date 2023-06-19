@@ -59,11 +59,6 @@ class EditorAddTextUiModel(
             else -> Typeface.NORMAL
         }
     }
-
-    companion object {
-//        val TEXT_TEMPLATE_FREE = AddTextToolId.FREE_TEXT_INDEX.value
-//        val TEXT_TEMPLATE_BACKGROUND = AddTextToolId.BACKGROUND_TEXT_INDEX.value
-    }
 }
 
 @Parcelize
