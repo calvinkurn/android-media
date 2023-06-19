@@ -40,7 +40,7 @@ class YoutubePlayerActivity : AppCompatActivity(),
     }
 
     private fun addWebView() {
-        viewBinding?.videoContainer?.addView(youtubeWebView)
+        viewBinding?.videoContainer?.addView(youtubeWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
     private fun initYoutubePlayer() {
