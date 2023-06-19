@@ -32,8 +32,14 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffe
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.di.DaggerDevOptComponent
 import com.tokopedia.developer_options.presentation.di.DevOptModule
-import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
+import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.encryption.security.sha256
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -47,6 +53,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.RuntimeException
 import javax.inject.Inject
 
@@ -54,7 +69,9 @@ import javax.inject.Inject
  * @author Said Faisal on 24/11/2021
  */
 
-class DeveloperOptionActivity : BaseActivity() {
+class DeveloperOptionActivity :
+    BaseActivity(),
+    DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
@@ -70,7 +87,8 @@ class DeveloperOptionActivity : BaseActivity() {
         const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY_SELLER = "key_leakcanary_toggle_seller"
         const val STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle"
-        const val STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER = "key_strict_mode_leak_publisher_toggle_seller"
+        const val STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER =
+            "key_strict_mode_leak_publisher_toggle_seller"
         const val LEAK_CANARY_DEFAULT_TOGGLE = true
         const val STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false
         const val REMOTE_CONFIG_PREFIX = "remote_config_prefix"
@@ -83,8 +101,10 @@ class DeveloperOptionActivity : BaseActivity() {
         const val URI_COACHMARK_DISABLE = "disable"
         const val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
         const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
-        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1"
-        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2"
+        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 =
+            "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1"
+        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 =
+            "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2"
         const val KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN"
         const val PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK"
         const val PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
@@ -114,7 +134,7 @@ class DeveloperOptionActivity : BaseActivity() {
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
                 loginHelperListener = loginHelperListener(),
-                authorizeListener = checkAuthorize(),
+                authorizeListener = this,
                 branchListener = getBranchListener()
             ),
             differ = DeveloperOptionDiffer()
@@ -125,6 +145,51 @@ class DeveloperOptionActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         checkDebuggingModeOrNot()
         inject()
+        autoAuthorized()
+    }
+
+    private fun autoAuthorized() {
+        lifecycleScope.launch(Dispatchers.Default) {
+            val url = URL("https://docs-android.tokopedia.net/api/dev-opt-pass")
+            var connection: HttpURLConnection? = null
+            val result = try {
+                /* starting http request */
+                connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 3000
+                connection.connect()
+
+                /* reading the response */
+                val rd: BufferedReader = if (connection.responseCode != 200) {
+                    BufferedReader(InputStreamReader(connection.errorStream))
+                } else {
+                    BufferedReader(InputStreamReader(connection.inputStream))
+                }
+                val content = StringBuilder()
+                var line: String?
+                while (rd.readLine().also { line = it } != null) {
+                    content.append(line).append('\n')
+                }
+                content.toString()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                ""
+            } finally {
+                connection?.disconnect()
+            }
+            yield()
+            if (result.isEmpty()) {
+                return@launch
+            }
+            withContext(Dispatchers.Main) {
+                onSubmitDevOptsPassword(
+                    result
+                        .replace("\n", "")
+                        .sha256(),
+                    true
+                )
+            }
+        }
     }
 
     override fun getScreenName(): String = getString(R.string.screen_name)
@@ -153,8 +218,10 @@ class DeveloperOptionActivity : BaseActivity() {
             uri = intent.data
             if (uri != null) {
                 isChangeUrlApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == CHANGEURL
-                isCoachmarkApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_COACHMARK
-                isHomeMacrobenchmarkApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
+                isCoachmarkApplink =
+                    uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_COACHMARK
+                isHomeMacrobenchmarkApplink =
+                    uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
             }
         }
         when {
@@ -179,8 +246,22 @@ class DeveloperOptionActivity : BaseActivity() {
                     rvDeveloperOption?.scrollToPosition(RV_DEFAULT_POSITION)
                 }
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no need to implement */ }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) { /* no need to implement */
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { /* no need to implement */
+            }
         })
     }
 
@@ -267,25 +348,36 @@ class DeveloperOptionActivity : BaseActivity() {
                 clipboard.setPrimaryClip(clip)
             }
         }
+
         override fun getAccessToken(): String = userSession?.accessToken.orEmpty()
     }
 
-    private fun clickResetOnBoarding() = object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
-        override fun onClickOnBoardingBtn() {
-            userSession?.isFirstTimeUser = true
-            val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
-            val editor = sharedPref.edit().clear()
-            editor.apply()
-            Toast.makeText(this@DeveloperOptionActivity, getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+    private fun clickResetOnBoarding() =
+        object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
+            override fun onClickOnBoardingBtn() {
+                userSession?.isFirstTimeUser = true
+                val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
+                val editor = sharedPref.edit().clear()
+                editor.apply()
+                Toast.makeText(
+                    this@DeveloperOptionActivity,
+                    getString(R.string.reset_onboarding),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
 
-    private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
-        override fun onClickSkipOnBoardingBtn() {
-            userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity, getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
+    private fun homeAndNavigationListener() =
+        object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
+            override fun onClickSkipOnBoardingBtn() {
+                userSession?.setFirstTimeUserOnboarding(false)
+                Toast.makeText(
+                    this@DeveloperOptionActivity,
+                    getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
 
     private fun selectUrlEnvironment() = object : UrlEnvironmentViewHolder.UrlEnvironmentListener {
         override fun onLogOutUserSession() {
@@ -309,23 +401,6 @@ class DeveloperOptionActivity : BaseActivity() {
             LOGIN_HELPER_REQUEST_CODE -> {
                 this.setResult(Activity.RESULT_OK)
                 this.finish()
-            }
-        }
-    }
-
-    private fun checkAuthorize(): DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
-        return object : DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
-            override fun onSubmitDevOptsPassword(password: String) {
-                val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
-                if (password == serverPassword) {
-                    loginSession.setLoginSession(password)
-                    adapter.setValueIsAuthorized(true)
-                    adapter.initializeList()
-                    adapter.setDefaultItem()
-                    showToaster("You are authorized !!")
-                } else {
-                    showToaster("Wrong password !! Please ask Android representative")
-                }
             }
         }
     }
@@ -359,18 +434,20 @@ class DeveloperOptionActivity : BaseActivity() {
         }
     }
 
-    private fun openResultBranch(result: String) {
-        val dialog = Dialog(this, Dialog.Type.LONG_PROMINANCE)
-        dialog.setTitle("Result branch")
-        dialog.setDesc(result)
-        dialog.setDescMovementMethod()
-        dialog.setBtnCancel("Close")
-        dialog.alertDialog.setCanceledOnTouchOutside(true)
-        dialog.setOnCancelClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
     class DeveloperOptionException(message: String?) : RuntimeException(message)
+
+    override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean) {
+        val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+        if (password == serverPassword) {
+            loginSession.setLoginSession(password)
+            adapter.setValueIsAuthorized(true)
+            adapter.initializeList()
+            adapter.setDefaultItem()
+            showToaster("You are authorized !!")
+        } else {
+            if (!isAuto) {
+                showToaster("Wrong password !! Please ask Android representative")
+            }
+        }
+    }
 }

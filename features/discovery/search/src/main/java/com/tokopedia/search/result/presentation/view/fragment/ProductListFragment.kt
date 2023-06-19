@@ -98,6 +98,7 @@ import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
@@ -134,7 +135,8 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchParameterProvider,
     FragmentProvider,
     ClassNameProvider,
-    ScreenNameProvider {
+    ScreenNameProvider,
+    BackToTopView {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"

@@ -575,6 +575,7 @@ public interface ApplinkConst {
         String SELLER_TOKOPEDIA_FLASH_SALE_ONGOING = "sellerapp://tokopedia-flash-sale/ongoing";
         String SELLER_TOKOPEDIA_FLASH_SALE_FINISHED = "sellerapp://tokopedia-flash-sale/finished";
         String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
+        String SELLER_SHOP_NIB = "sellerapp://shop-nib";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
         String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
@@ -610,7 +611,8 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
-        String CATEGORY = "tokopedia://now/category";
+        String OLD_CATEGORY = "tokopedia://now/category";
+        String CATEGORY = "tokopedia://now/category/l1";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
