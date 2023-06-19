@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
@@ -20,14 +19,10 @@
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
-        android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@id/tv_variant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_product"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="Nike Air Force 1 Low White Red"
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
@@ -35,13 +30,10 @@
         android:id="@+id/tv_variant"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/img_product"
         app:layout_constraintEnd_toEndOf="@id/tv_product"
         app:layout_constraintStart_toStartOf="@id/tv_product"
         app:layout_constraintTop_toBottomOf="@id/tv_product"
-        app:typographyType="display_3"
-        tools:text="Varian: Red White"
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
@@ -50,7 +42,6 @@
         android:layout_width="80dp"
         android:layout_height="16dp"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@id/img_product"
         app:layout_constraintTop_toBottomOf="@id/img_product"
         app:loader_corner_radius="10dp"
@@ -60,13 +51,10 @@
         android:id="@+id/tv_time"
         android:layout_width="40dp"
         android:layout_height="16dp"
-        android:textColor="@color/Unify_NN600"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@id/ll_star"
         app:layout_constraintStart_toEndOf="@id/ll_star"
         app:layout_constraintTop_toTopOf="@id/ll_star"
-        app:typographyType="display_3"
-        android:layout_marginStart="4dp"
-        tools:text="Hari ini"
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
@@ -78,8 +66,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_star"
-        app:typographyType="paragraph_3"
-        tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga dari toko Juragan Sepatu. Agannya ramah banget terus dikasih b... Selengkapnya"
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
@@ -88,7 +74,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="8dp"
-        app:icon_name="THUMB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_review"
         app:loader_corner_radius="10dp"
@@ -102,8 +87,6 @@
         app:layout_constraintBottom_toBottomOf="@id/ic_like"
         app:layout_constraintStart_toEndOf="@id/ic_like"
         app:layout_constraintTop_toTopOf="@id/ic_like"
-        app:typographyType="display_3"
-        tools:text="3"
         app:loader_corner_radius="10dp"
         app:loader_type="rect" />
 
