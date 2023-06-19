@@ -22,10 +22,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.entity.Logs
+import com.tokopedia.nest.principles.NestTypography
 
 @Composable
 fun LogSubItem(log: Logs, modifier: Modifier = Modifier) {
