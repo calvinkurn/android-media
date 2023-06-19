@@ -245,18 +245,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun onClickLocation() {
         locationBottomSheet = SelectLocationBottomSheet.createInstance("", currentLoc, isLandmarkPage)
-//        val callback = object : CurrentLocationCallback {
-//            override fun setCurrentLocation(location: Location) {
-//                locationBottomSheet.dismiss()
-//                this@DealsBaseActivity.setCurrentLocation(location)
-//            }
-//
-//            override fun setChangedLocation() {
-//                locationBottomSheet.dismiss()
-//                this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
-//            }
-//        }
-//        locationBottomSheet.setCallback(callback)
         locationBottomSheet.show(supportFragmentManager, "")
     }
 

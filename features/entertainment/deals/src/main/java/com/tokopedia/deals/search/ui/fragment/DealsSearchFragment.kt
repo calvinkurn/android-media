@@ -275,7 +275,6 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
-        //TODO Need to check again the implementation
         if (childFragment is SelectLocationBottomSheet) {
             childFragment.setCallback(this)
         } else {
