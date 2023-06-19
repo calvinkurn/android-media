@@ -36,11 +36,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
-    init {
-//        SplitCompat.installActivity(context)
-    }
-
-
     @SuppressLint("SetJavaScriptEnabled")
     fun initialize(
         youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
@@ -53,8 +48,10 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         settings.apply {
             javaScriptEnabled = true
             mediaPlaybackRequiresUserGesture = false
-            cacheMode = WebSettings.LOAD_DEFAULT
+            cacheMode = WebSettings.LOAD_NO_CACHE
+            setRenderPriority(WebSettings.RenderPriority.HIGH)
         }
+        setWebContentsDebuggingEnabled(true)
         val youtubeJSInterface = YoutubeWebViewInterface(
             youtubeEventVideoEnded, youtubeEventVideoPlaying,
             youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
