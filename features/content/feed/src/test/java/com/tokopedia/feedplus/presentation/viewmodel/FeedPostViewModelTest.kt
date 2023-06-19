@@ -115,6 +115,7 @@ class FeedPostViewModelTest {
             mvcSummaryUseCase,
             topAdsAddressHelper,
             getCountCommentsUseCase,
+            mockk(),
             testDispatcher
         )
     }
