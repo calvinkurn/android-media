@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.youtube_player.databinding.ActivityYoutubePlayerBinding
 
 class YoutubePlayerActivity : AppCompatActivity(),
@@ -29,18 +30,22 @@ class YoutubePlayerActivity : AppCompatActivity(),
     private val viewBinding: ActivityYoutubePlayerBinding? by viewBinding()
     private var videoId: String = ""
     private var youtubeWebView: YoutubeWebView? = null
+    private var tkpdWebView: TkpdWebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_player)
         youtubeWebView = YoutubeWebView(this)
+        tkpdWebView = TkpdWebView(this)
         addWebView()
         getIntentData()
-        initYoutubePlayer()
+        tkpdWebView?.loadUrl("www.google.com")
+//        initYoutubePlayer()
     }
 
     private fun addWebView() {
-        viewBinding?.videoContainer?.addView(youtubeWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+//        viewBinding?.videoContainer?.addView(youtubeWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        viewBinding?.videoContainer?.addView(tkpdWebView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
     private fun initYoutubePlayer() {
