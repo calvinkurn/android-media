@@ -5,10 +5,14 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
+import com.google.android.play.core.splitcompat.SplitCompat
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
 
 private const val MIME_TYPE = "text/html"
 private const val ENCODING= "UTF-8"
@@ -26,6 +30,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
+    init {
+        SplitCompat.installActivity(context)
+    }
+
+
     @SuppressLint("SetJavaScriptEnabled")
     fun initialize(
         youtubeEventVideoEnded: YoutubeWebViewEventListener.EventVideoEnded? = null,
@@ -38,18 +47,17 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         settings.apply {
             javaScriptEnabled = true
             mediaPlaybackRequiresUserGesture = false
+            cacheMode = WebSettings.LOAD_DEFAULT
         }
-        clearCache(true)
-        clearHistory()
-        setupTouchListener()
+//        setupTouchListener()
         val youtubeJSInterface = YoutubeWebViewInterface(
             youtubeEventVideoEnded, youtubeEventVideoPlaying,
             youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
         )
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
-        setUpWebViewClient()
         loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
+        setUpWebViewClient()
     }
 
     private fun setUpWebViewClient() {
@@ -63,38 +71,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 super.onHideCustomView()
                 customViewInterface?.onExitFullScreen()
             }
-        }
-    }
-
-    private fun setupTouchListener(){
-        setOnTouchListener { v, event ->
-            if(event.actionMasked == MotionEvent.ACTION_DOWN){
-                if(dispatchDownEvent) {
-                    dispatchDownEvent = false
-                    userDownEvent = false
-                    return@setOnTouchListener false
-                }
-                userDownEvent = true
-                return@setOnTouchListener true
-            }else{
-                if(userDownEvent){
-                    if(event.actionMasked == MotionEvent.ACTION_UP) {
-                        dispatchDownEvent = true
-                        val tempEvent = MotionEvent.obtain(event.downTime + DELAY_TO_MIMIC_CLICK,
-                            event.eventTime + DELAY_TO_MIMIC_CLICK,
-                                event.actionMasked, event.x, event.y, event.metaState)
-                        val downEvent = MotionEvent.obtain(event.downTime, event.eventTime,
-                                MotionEvent.ACTION_DOWN, event.x, event.y, event.metaState)
-                        dispatchTouchEvent(downEvent)
-                        dispatchTouchEvent(tempEvent)
-                        v.performClick()
-                        return@setOnTouchListener true
-                    }else if(event.actionMasked == MotionEvent.ACTION_CANCEL) {
-                        userDownEvent = false
-                    }
-                }
-            }
-            return@setOnTouchListener false
         }
     }
 
@@ -217,5 +193,16 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     override fun destroy() {
         release()
         super.destroy()
+    }
+
+    internal fun readHTMLFromUTF8File(inputStream: InputStream): String {
+        inputStream.use {
+            try {
+                val bufferedReader = BufferedReader(InputStreamReader(inputStream, "utf-8"))
+                return bufferedReader.readLines().joinToString("\n")
+            } catch (e: Exception) {
+                throw RuntimeException("Can't parse HTML file.")
+            }
+        }
     }
 }
