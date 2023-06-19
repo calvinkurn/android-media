@@ -17,6 +17,8 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.miscDependencies.coreKtx
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineTest

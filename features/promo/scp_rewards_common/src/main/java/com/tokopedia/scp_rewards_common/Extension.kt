@@ -2,8 +2,14 @@ package com.tokopedia.scp_rewards_common
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifyprinciples.Typography
 
 fun LottieAnimationView.loadLottieFromUrl(
     url: String?,
@@ -38,4 +44,20 @@ fun LottieAnimationView.addAnimationEndListener(action: () -> Unit) {
 
         override fun onAnimationStart(animation: Animator) {}
     })
+}
+
+fun ImageView.grayscale() {
+    val colorMatrix = ColorMatrix()
+    colorMatrix.setSaturation(0F)
+    val filter = ColorMatrixColorFilter(colorMatrix)
+    this.colorFilter = filter
+}
+
+fun Typography.showTextOrHide(text: String?) {
+    if (text.isNullOrEmpty()) {
+        this.hide()
+    } else {
+        this.text = text
+        visible()
+    }
 }

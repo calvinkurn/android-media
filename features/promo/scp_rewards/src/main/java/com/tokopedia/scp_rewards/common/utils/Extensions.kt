@@ -2,12 +2,9 @@ package com.tokopedia.scp_rewards.common.utils
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.net.Uri
 import android.text.TextUtils
 import android.view.View
-import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -60,7 +57,6 @@ suspend fun Context.downloadImage(url: String?) =
             }).submit()
     }
 
-
 fun Long?.isNullOrZero(defaultValue: Long): Long {
     if (this == null || this == 0L) return defaultValue
     return this
@@ -81,13 +77,6 @@ fun View.hide() {
     if (visibility == View.VISIBLE) {
         visibility = View.GONE
     }
-}
-
-fun ImageView.grayscale() {
-    val colorMatrix = ColorMatrix()
-    colorMatrix.setSaturation(0F)
-    val filter = ColorMatrixColorFilter(colorMatrix)
-    this.colorFilter = filter
 }
 
 fun launchWeblink(context: Context, webLink: String) {

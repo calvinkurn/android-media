@@ -4,11 +4,16 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.scp_rewards_common.grayscale
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
+import com.tokopedia.scp_rewards_common.showTextOrHide
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
 
-class MedalViewHolder(itemView: View) : AbstractViewHolder<MedalItem>(itemView) {
+class MedalViewHolder(
+    itemView: View,
+    private val medalClickListener: MedalClickListener
+) : AbstractViewHolder<MedalItem>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_medal_layout
@@ -37,17 +42,22 @@ class MedalViewHolder(itemView: View) : AbstractViewHolder<MedalItem>(itemView) 
     private fun ItemMedalLayoutBinding.showMedal(item: MedalItem) {
         handleLottieCelebration(item)
         tvMedalTitle.visible()
-        tvMedalSubTitle.visible()
         tvMedalCaption.visible()
+        tvMedalSubTitle.showTextOrHide(item.provider)
         tvMedalTitle.text = item.name
-        tvMedalSubTitle.text = item.provider
         tvMedalCaption.text = item.extraInfo
-        ivMedal.setImageUrl(item.imageUrl.orEmpty())
+        if (item.isDisabled == true) {
+            ivMedal.grayscale()
+            ivMedal.setImageUrl(item.imageUrl.orEmpty())
+        } else {
+            this.root.setOnClickListener { medalClickListener.onMedalClick(item) }
+            ivMedal.setImageUrl(item.imageUrl.orEmpty())
+        }
         handleProgressBar(item)
     }
 
     private fun ItemMedalLayoutBinding.handleProgressBar(item: MedalItem) {
-        if (item.isEarned) {
+        if (item.isEarned()) {
             progressMedal.gone()
         } else {
             progressMedal.visible()
@@ -56,11 +66,11 @@ class MedalViewHolder(itemView: View) : AbstractViewHolder<MedalItem>(itemView) 
     }
 
     private fun ItemMedalLayoutBinding.handleLottieCelebration(item: MedalItem) {
-        if (item.isNewMedal == true && item.isEarned) {
+        if (item.isNewlyEarned()) {
             lottieView.visible()
             binding.lottieView.loadLottieFromUrl(
-                    url = item.celebrationUrl,
-                    autoPlay = true,
+                url = item.celebrationUrl,
+                autoPlay = true
             )
         } else {
             lottieView.gone()
