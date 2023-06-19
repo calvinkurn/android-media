@@ -23,14 +23,15 @@
       }],
       "eventLabel": ".*, .*",
       "pageDestination": ".*",
-      "trackerId": "2151|2152"
+      "trackerId": "2151|2152",
+      "userId": ".*"
     },
     {
       "eventCategory": "similar product recommendation page",
       "item_list": ".*",
       "item_list_name": ".*",
       "event": "view_item_list",
-      "eventAction": "impression - similar product recommendation|impression -  similar product recommendation - non login",
+      "eventAction": "impression - similar product recommendation|impression - similar product recommendation - non login",
       "sessionIris" : ".*",
       "items": [{
         "dimension83": ".*",
@@ -47,7 +48,8 @@
       }],
       "eventLabel": ".*, .*",
       "pageDestination": ".*",
-      "trackerId": "2149|2150"
+      "trackerId": "2149|2150",
+      "userId": ".*"
     }
   ]
 }
