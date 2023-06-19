@@ -496,8 +496,8 @@ class OrderProductCard(
                     price = 10000,
                     infoLink = "121212",
                     name = "Proteksi Rusak",
-                    status = 2,
-                    type = 1
+                    status = 1,
+                    type = 2
                 )
             )
         )

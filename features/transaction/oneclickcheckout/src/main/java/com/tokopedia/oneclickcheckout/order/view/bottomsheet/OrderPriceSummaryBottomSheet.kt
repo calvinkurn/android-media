@@ -5,7 +5,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
@@ -52,38 +52,6 @@ class OrderPriceSummaryBottomSheet {
         } else {
             binding.tvTotalProductAddonsPriceLabel.gone()
             binding.tvTotalProductAddonsPriceValue.gone()
-        }
-
-        if (orderCost.addOnsProductSelectedList.isNotEmpty()) {
-            val installationServiceAddOns = orderCost.addOnsProductSelectedList.filter { it.name == "Jasa Pasang Standar" }
-            val brokenProtectionAddOns = orderCost.addOnsProductSelectedList.filter { it.name == "Proteksi Rusak" }
-            if (installationServiceAddOns.isNotEmpty()) {
-                val itemOrderPriceBinding = ItemBottomsheetOrderPriceSummaryBinding.inflate(
-                    inflater,
-                    null,
-                    false
-                )
-                val totalPrice = installationServiceAddOns.map { it.price }.sum()
-                itemOrderPriceBinding.tvLabel.text = "Total Jasa Pasang (${installationServiceAddOns.size} Jasa)"
-                itemOrderPriceBinding.tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false).removeDecimalSuffix()
-                binding.llAddonsProduct.show()
-                binding.llAddonsProduct.addView(itemOrderPriceBinding.root)
-            }
-
-            if (brokenProtectionAddOns.isNotEmpty()) {
-                val itemOrderPriceBinding = ItemBottomsheetOrderPriceSummaryBinding.inflate(
-                    inflater,
-                    null,
-                    false
-                )
-                val totalPrice = brokenProtectionAddOns.map { it.price }.sum()
-                itemOrderPriceBinding.tvLabel.text = "Total Biaya Proteksi (${brokenProtectionAddOns.size} Polis)"
-                itemOrderPriceBinding.tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false).removeDecimalSuffix()
-                binding.llAddonsProduct.show()
-                binding.llAddonsProduct.addView(itemOrderPriceBinding.root)
-            }
-        } else {
-            binding.llAddonsProduct.gone()
         }
 
         if (orderCost.purchaseProtectionPrice > 0) {
@@ -136,6 +104,46 @@ class OrderPriceSummaryBottomSheet {
         renderPaymentFee(view, binding, orderCost)
 
         renderInstallment(binding, orderCost)
+
+        renderAddonsProduct(
+            binding = binding,
+            orderCost = orderCost,
+            inflater = inflater
+        )
+    }
+
+    private fun renderAddonsProduct(
+        binding: BottomSheetOrderPriceSummaryBinding,
+        orderCost: OrderCost,
+        inflater: LayoutInflater
+    ) {
+        //will show addons product layout at least one of the addons is selected
+        binding.llAddonsProduct.showIfWithBlock(orderCost.addOnsProductSelectedList.isNotEmpty()) {
+            //traverse list of summary add ons
+            orderCost.summaryAddOnsProduct.forEach { summaryAddOnProduct ->
+                // addons product selected are filtered based on summary type to know how many total quantities and price
+                val addOnsProductSelectedFiltered = orderCost.addOnsProductSelectedList.filter { it.type == summaryAddOnProduct.type }
+                if (addOnsProductSelectedFiltered.isNotEmpty()) {
+                    ItemBottomsheetOrderPriceSummaryBinding.inflate(
+                        inflater,
+                        null,
+                        false
+                    ).apply {
+                        tvLabel.text = summaryAddOnProduct.wording.replace(
+                            oldValue = SUMMARY_WORD_TO_BE_REPLACED,
+                            newValue = addOnsProductSelectedFiltered.size.toString()
+                        )
+
+                        tvValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            price = addOnsProductSelectedFiltered.sumOf { it.price },
+                            hasSpace = false
+                        ).removeDecimalSuffix()
+
+                        binding.llAddonsProduct.addView(root)
+                    }
+                }
+            }
+        }
     }
 
     private fun renderCashbacks(orderCost: OrderCost, binding: BottomSheetOrderPriceSummaryBinding) {
@@ -278,5 +286,9 @@ class OrderPriceSummaryBottomSheet {
             binding.llPaymentFee.gone()
             binding.tvTransactionFee.gone()
         }
+    }
+
+    internal companion object {
+        const val SUMMARY_WORD_TO_BE_REPLACED = "{{qty}}"
     }
 }

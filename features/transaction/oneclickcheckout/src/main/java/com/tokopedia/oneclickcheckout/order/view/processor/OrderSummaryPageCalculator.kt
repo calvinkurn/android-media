@@ -400,6 +400,7 @@ class OrderSummaryPageCalculator @Inject constructor(
                 purchaseProtectionPrice = cost.purchaseProtectionPrice,
                 addOnPrice = cost.addOnPrice,
                 hasAddOn = cost.hasAddOn,
+                summaryAddOnsProduct = cost.summaryAddOnsProduct,
                 addOnsProductSelectedList = cost.addOnsProductSelectedList,
                 cashbacks = cost.cashbacks,
                 installmentData = installmentData,
@@ -481,11 +482,9 @@ class OrderSummaryPageCalculator @Inject constructor(
                         totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
-                    product.addOnsProductData.data.forEach {
-                        if (it.status == ADD_ONS_PRODUCT_CHECK_STATUS)  {
-                            totalAddOnProductPrice += it.price
-                            addOnsProductSelectedList.add(it)
-                        }
+                    product.addOnsProductData.data.filter {it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.forEach { addOnProductChecked ->
+                        totalAddOnProductPrice += addOnProductChecked.price
+                        addOnsProductSelectedList.add(addOnProductChecked)
                     }
                 }
             }
@@ -509,6 +508,7 @@ class OrderSummaryPageCalculator @Inject constructor(
                 purchaseProtectionPrice = totalPurchaseProtectionPrice,
                 addOnPrice = totalAddOnPrice,
                 hasAddOn = hasAddOn,
+                summaryAddOnsProduct = orderCart.summaryAddOnsProduct,
                 addOnsProductSelectedList = addOnsProductSelectedList,
                 cashbacks = cashbacks,
                 totalPriceWithoutPaymentFees = subtotal,

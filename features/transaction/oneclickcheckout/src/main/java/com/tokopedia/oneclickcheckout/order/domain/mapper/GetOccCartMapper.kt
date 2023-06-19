@@ -59,7 +59,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.SummaryAddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.AddOnsProductResponse
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
@@ -101,6 +103,7 @@ class GetOccCartMapper @Inject constructor() {
             shop.firstProductErrorIndex = firstProductErrorIndex
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
             addOnWordingData = mapAddOnWording(data.addOnWording)
+            summaryAddOnsProduct = mapSummaryAddOnsProduct(data.summaryAddOns)
         }
         return OrderData(
             ticker = mapTicker(data.tickers),
@@ -662,6 +665,15 @@ class GetOccCartMapper @Inject constructor() {
             onlyGreetingCard = addOnWording.onlyGreetingCard,
             invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
         )
+    }
+
+    private fun mapSummaryAddOnsProduct(summaryAddOns: List<SummaryAddOnProductResponse>): List<SummaryAddOnProductDataModel> {
+        return summaryAddOns.map { summaryAddOn ->
+            SummaryAddOnProductDataModel(
+                wording = summaryAddOn.wording,
+                type = summaryAddOn.type
+            )
+        }
     }
 
     private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse): EthicalDrugDataModel {
