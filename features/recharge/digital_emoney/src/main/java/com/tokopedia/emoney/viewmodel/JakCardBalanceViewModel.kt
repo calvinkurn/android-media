@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.domain.request.JakCardRequestMapper
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 class JakCardBalanceViewModel @Inject constructor(
     dispatcher: CoroutineDispatcher,
-    private val jakCardUseCase: GetJakCardUseCase
+    private val jakCardUseCase: GetJakCardUseCase,
+    private val electronicMoneyEncryption: ElectronicMoneyEncryption
 ) : BaseViewModel(dispatcher) {
 
     private var errorCardMessageMutable = SingleLiveEvent<Throwable>()
