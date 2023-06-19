@@ -30,7 +30,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightCountUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.RecommendationViewModel
@@ -42,6 +42,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -193,6 +194,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                 is TopAdsListAllInsightState.Success -> {
                     topLevelWidgetShimmer?.hide()
                     renderTopLevelWidget(it.data)
+                    setTabsCount(it.data)
                 }
                 is TopAdsListAllInsightState.Loading -> {
                     topLevelWidgetShimmer?.show()
@@ -201,6 +203,11 @@ class RecommendationFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun setTabsCount(totalAdGroupsWithInsight: GroupInsightCountUiModel) {
+        saranAdsTypeTab?.getUnifyTabLayout()?.getTabAt(Int.ZERO)?.setCounter(totalAdGroupsWithInsight.productInsightCount)
+        saranAdsTypeTab?.getUnifyTabLayout()?.getTabAt(Int.ONE)?.setCounter(totalAdGroupsWithInsight.headlineInsightCount)
     }
 
     private fun hideShimmerBottom() {
@@ -238,11 +245,10 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderTopLevelWidget(
-        data: TopAdsTotalAdGroupsWithInsightResponse
+        data: GroupInsightCountUiModel
     ) {
         if (context == null) return
-        val count =
-            data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+        val count = data.productInsightCount + data.headlineInsightCount
         if (count == Int.ZERO) {
             insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
             insightWidgetIcon?.loadImage(
@@ -338,8 +344,8 @@ class RecommendationFragment : BaseDaggerFragment() {
         collapseStateCallBack?.setAppBarStateHeadline(state)
     }
 
-    companion object{
-        fun  createInstance():RecommendationFragment{
+    companion object {
+        fun createInstance(): RecommendationFragment {
             return RecommendationFragment()
         }
     }
