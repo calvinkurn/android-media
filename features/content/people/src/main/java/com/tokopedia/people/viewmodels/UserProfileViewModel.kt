@@ -280,14 +280,15 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currReviewContent = _reviewContent.value
 
+            if (currReviewContent.isLoading) return@launchCatchError
+            if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
+
             if (isRefresh) {
                 _reviewSettings.update {
                     repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings()
                 }
             }
             if (!_reviewSettings.value.isEnabled) return@launchCatchError
-            if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
-            if (currReviewContent.isLoading) return@launchCatchError
 
             _reviewContent.update {
                 it.copy(
