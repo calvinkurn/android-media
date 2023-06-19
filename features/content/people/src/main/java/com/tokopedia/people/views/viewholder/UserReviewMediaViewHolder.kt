@@ -58,7 +58,7 @@ class UserReviewMediaViewHolder private constructor() {
 
         fun bind(feedbackID: String, attachment: UserReviewUiModel.Attachment) {
 
-            binding.exoPlayer.player = player
+            binding.playerView.player = player
             val mediaSource = HlsMediaSource.Factory(
                 DefaultDataSourceFactory(
                     itemView.context,
