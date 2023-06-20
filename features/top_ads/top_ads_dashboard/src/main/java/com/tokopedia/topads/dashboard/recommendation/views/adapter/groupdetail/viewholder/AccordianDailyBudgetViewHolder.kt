@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.GroupEditInput
@@ -77,7 +78,7 @@ class AccordianDailyBudgetViewHolder(
                 getString(R.string.topads_insight_max_bid_error_msg_format),
                 INSIGHT_DAILY_BUDGET_MAX_BID
             )
-        else ""
+        else String.EMPTY
     }
 
     private fun setDailyBudgetIntoInputModel(dailyBudgetBid: Double) {

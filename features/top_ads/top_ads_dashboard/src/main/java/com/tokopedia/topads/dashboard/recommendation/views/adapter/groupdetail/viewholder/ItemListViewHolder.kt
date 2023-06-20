@@ -1,12 +1,11 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
-import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.TopadsInsightCentreInsightSelctionItemBinding
-import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
-import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
 
 class ItemListViewHolder(
     private val viewBinding: TopadsInsightCentreInsightSelctionItemBinding,

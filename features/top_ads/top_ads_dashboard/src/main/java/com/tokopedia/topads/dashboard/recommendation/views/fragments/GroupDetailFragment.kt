@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_NAME_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_TYPE_KEY
@@ -44,9 +43,9 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightLis
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel
-import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
@@ -59,11 +58,11 @@ import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
-    private var adType: String? = ""
+    private var adType: String? = String.EMPTY
     private var insightType: Int = TYPE_INSIGHT
     private var insightList: ArrayList<AdGroupUiModel>? = null
-    private var adGroupId: String? = ""
-    private var adGroupName: String? = ""
+    private var adGroupId: String? = String.EMPTY
+    private var adGroupName: String? = String.EMPTY
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var saveButton: UnifyButton? = null
@@ -187,7 +186,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         input.keywordOperation?.size
                     )
                 }
-                else -> ""
+                else -> String.EMPTY
             }
         }
     }
@@ -248,7 +247,15 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun successfulInsightSubmission(){
         confirmationDailog?.dismiss()
-        showSuccessToast(getString(R.string.topads_dashboard_submit_insight_success_toast_msg))
+        val successMsg = when(saveButton?.tag) {
+            TYPE_POSITIVE_KEYWORD -> getString(R.string.topads_insight_kata_kunci_submit_success_toast_msg)
+            TYPE_KEYWORD_BID -> getString(R.string.topads_insight_biaya_kata_kunci_submit_success_toast_msg)
+            TYPE_GROUP_BID -> getString(R.string.topads_insight_biaya_iklan_submit_success_toast_msg)
+            TYPE_DAILY_BUDGET -> getString(R.string.topads_insight_daily_budget_submit_success_toast_msg)
+            TYPE_NEGATIVE_KEYWORD_BID -> getString(R.string.topads_insight_negative_kata_kunci_submit_success_toast_msg)
+            else -> String.EMPTY
+        }
+        showSuccessToast(successMsg)
         loadData(
             utils.convertAdTypeToInt(adType),
             adGroupId
@@ -284,7 +291,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 getString(R.string.topads_dashboard_submit_negative_kata_kunci_insight_fail_title),
                 input?.keywordOperation?.size ?: 0
             )
-            else -> ""
+            else -> String.EMPTY
         }
 
         confirmationDailog?.let {
@@ -409,18 +416,18 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 DialogUnify.WITH_ILLUSTRATION
             )
         val description : String = when(saveButton?.tag){
-            TYPE_POSITIVE_KEYWORD -> String.format("%d kata kunci akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
-            TYPE_KEYWORD_BID -> "Biaya kata kunci baru akan diterapkan ke grup $adGroupName"
-            TYPE_GROUP_BID -> "Biaya iklan baru akan diterapkan ke grup $adGroupName"
-            TYPE_DAILY_BUDGET -> "Anggaran harian baru akan diterapkan ke grup $adGroupName"
-            TYPE_NEGATIVE_KEYWORD_BID -> String.format("%d kata kunci negatif akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
-            else -> ""
+            TYPE_POSITIVE_KEYWORD -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_kata_kunci), input?.keywordOperation?.size ?: 0, adGroupName)
+            TYPE_KEYWORD_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_kata_kunci), adGroupName)
+            TYPE_GROUP_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_iklan), adGroupName)
+            TYPE_DAILY_BUDGET -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_daily_budget), adGroupName)
+            TYPE_NEGATIVE_KEYWORD_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_negative_kata_kunci), input?.keywordOperation?.size ?: 0, adGroupName)
+            else -> String.EMPTY
         }
         confirmationDailog?.setDescription(description)
         confirmationDailog?.setImageUrl(successfulSubmitInsightDialogImageUrl)
-        confirmationDailog?.setTitle("Terapkan perubahan ini untuk iklanmu?")
-        confirmationDailog?.setPrimaryCTAText("Ya, Terapkan")
-        confirmationDailog?.setSecondaryCTAText("Batal")
+        confirmationDailog?.setTitle(getString(R.string.topads_insight_confirmation_dialog_title))
+        confirmationDailog?.setPrimaryCTAText(getString(R.string.topads_yes_apply))
+        confirmationDailog?.setSecondaryCTAText(getString(R.string.top_ads_batal))
         confirmationDailog?.setPrimaryCTAClickListener {
             confirmationDailog?.dialogPrimaryCTA?.isLoading = true
             viewModel.submitInsights(input, adGroupId, adType, saveButton?.tag as? Int, adGroupName)
@@ -454,7 +461,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 ListBottomSheet.CHOOSE_AD_TYPE_BOTTOMSHEET,
                 this,
                 if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
-                "" // don't send group id in case of choose ad type bottomsheet
+                String.EMPTY // don't send group id in case of choose ad type bottomsheet
             )
         } else {
             val list = arrayListOf<ItemListUiModel>()
@@ -503,7 +510,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
-    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = ""){
+    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = String.EMPTY){
         viewModel.loadDetailPageOnAction(
             adType,
             adgroupID,
@@ -520,10 +527,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         else {
             input?.let {
                 return when (saveButton?.tag) {
-                    RecommendationConstants.TYPE_POSITIVE_KEYWORD, RecommendationConstants.TYPE_KEYWORD_BID, RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> {
+                    TYPE_POSITIVE_KEYWORD, TYPE_KEYWORD_BID, TYPE_NEGATIVE_KEYWORD_BID -> {
                         !input.keywordOperation.isNullOrEmpty() && input.keywordOperation?.firstOrNull() != null
                     }
-                    RecommendationConstants.TYPE_GROUP_BID, RecommendationConstants.TYPE_DAILY_BUDGET -> {
+                    TYPE_GROUP_BID, TYPE_DAILY_BUDGET -> {
                         input.groupInput != null
                     }
                     else -> true

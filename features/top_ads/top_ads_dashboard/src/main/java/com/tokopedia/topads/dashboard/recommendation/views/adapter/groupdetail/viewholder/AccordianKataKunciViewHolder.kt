@@ -10,6 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -281,7 +282,7 @@ class AccordianKataKunciViewHolder(
             KEYWORD_TYPE_NEGATIVE_EXACT,
             KEYWORD_TYPE_NEGATIVE_BROAD -> type
             else -> {
-                if (type.split(' ').get(0).length >= 2)
+                if (type.split(' ').first().length >= 2)
                     KEYWORD_TYPE_POSITIVE_EXACT
                 else
                     KEYWORD_TYPE_POSITIVE_PHRASE
@@ -303,7 +304,7 @@ class AccordianKataKunciViewHolder(
             String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull())
         else if(bid % INSIGHT_MULTIPLIER != 0)
             getString(R.string.error_bid_not_multiple_50)
-        else ""
+        else String.EMPTY
     }
 
     private fun validateAllSelectedItems(): Boolean{

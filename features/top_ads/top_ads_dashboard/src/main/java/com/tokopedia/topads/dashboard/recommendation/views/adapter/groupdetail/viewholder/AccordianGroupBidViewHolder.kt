@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GroupEditInput
@@ -203,7 +204,7 @@ class AccordianGroupBidViewHolder(
             )
         else if (inputBid % INSIGHT_MULTIPLIER != 0)
             getString(R.string.error_bid_not_multiple_50)
-        else ""
+        else String.EMPTY
     }
 
     companion object {

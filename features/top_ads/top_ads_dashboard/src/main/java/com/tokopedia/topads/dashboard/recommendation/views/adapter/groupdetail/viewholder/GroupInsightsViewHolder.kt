@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
@@ -86,7 +87,7 @@ class GroupInsightsViewHolder(
                 getString(R.string.topads_insight_negative_kata_kunci_accordian_subtitle),
                 element.subTitleValue
             )
-            else -> ""
+            else -> String.EMPTY
         }
         return if (isTruncated)
             "${subtitle.substring(0,subtitle.length/2)}..."

@@ -40,6 +40,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianG
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase

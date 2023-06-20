@@ -58,6 +58,7 @@ object RecommendationConstants {
     const val PARAM_PAGE_SETTING= "pageSetting"
     const val PARAM_SIZE= "size"
     const val PARAM_START_CURSOR= "startCursor"
+    const val INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG = "InsightsEducationBottomSheet"
 
 
     const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP_LIST"
@@ -68,6 +69,9 @@ object RecommendationConstants {
     const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
     const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
     const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK = "https://seller.tokopedia.com/edu/halaman-rekomendasi-topads/"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL = "https://img.youtube.com/vi/wtXkUUsFSU4/0.jpg"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK = "https://www.youtube.com/watch?v=wtXkUUsFSU4"
 
     object InsightTypeConstants {
         const val INSIGHT_TYPE_ALL = 0

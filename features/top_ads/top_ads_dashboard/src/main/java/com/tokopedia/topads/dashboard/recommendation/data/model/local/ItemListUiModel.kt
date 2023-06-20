@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.recommendation.viewmodel
+package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE

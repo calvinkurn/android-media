@@ -593,7 +593,11 @@
     <string name="topads_dashboard_price_per_click_template"><![CDATA[<b><font size="17">Rp%s</font></b>/klik]]></string>
     <string name="topads_dashboard_increase_times_template"><![CDATA[<b><font size="17">+%s</font></b> kali]]></string>
     <string name="topads_dashboard_price_per_month_template"><![CDATA[<b><font size="17">Rp%s</font></b> /bulan]]></string>
-    <string name="topads_dashboard_submit_insight_success_toast_msg">Berhasil menambahkan kata kunci.</string>
+    <string name="topads_insight_kata_kunci_submit_success_toast_msg">Berhasil menambahkan kata kunci.</string>
+    <string name="topads_insight_biaya_kata_kunci_submit_success_toast_msg">Berhasil mengubah biaya kata kunci.</string>
+    <string name="topads_insight_biaya_iklan_submit_success_toast_msg">Berhasil mengubah biaya iklan.</string>
+    <string name="topads_insight_daily_budget_submit_success_toast_msg">Berhasil mengubah anggaran harian.</string>
+    <string name="topads_insight_negative_kata_kunci_submit_success_toast_msg">Berhasil menambahkan kata kunci negatif.</string>
     <string name="topads_dashboard_submit_insight_fail_dialog_description">Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya.</string>
     <string name="topads_dashboard_submit_kata_kunci_insight_fail_title">%d kata kunci gagal ditambahkan</string>
     <string name="topads_dashboard_submit_biaya_kata_kunci_insight_fail_title">%d biaya kata kunci gagal diubah</string>
@@ -601,5 +605,11 @@
     <string name="topads_dashboard_submit_biaya_iklan_insight_fail_title">Perubahan biaya iklan gagal diterapkan</string>
     <string name="topads_dashboard_submit_daily_budget_insight_fail_title">Perubahan pada anggaran harian gagal diterapkan</string>
     <string name="topads_ads_price_format_1">Rp%s</string>
+    <string name="topads_insight_confirmation_dialog_desc_kata_kunci">%d kata kunci akan ditambahkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_biaya_kata_kunci">Biaya kata kunci baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_biaya_iklan">Biaya iklan baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_daily_budget">Anggaran harian baru akan diterapkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_desc_negative_kata_kunci">%d kata kunci negatif akan ditambahkan ke grup %s</string>
+    <string name="topads_insight_confirmation_dialog_title">Terapkan perubahan ini untuk iklanmu?</string>
+    <string name="topads_yes_apply">Ya, Terapkan</string>
 </resources>
-

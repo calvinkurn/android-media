@@ -95,6 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         app:unify_text_field_append_text="@string/topads_dash_perclick"
-        app:unify_text_field_prepend_text="Rp"/>
+        app:unify_text_field_prepend_text="Rp"
+        app:unify_text_field_input_type="number"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,14 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
-import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.ItemListAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.ItemListTypeFactory
 
