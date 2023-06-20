@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.model.CategoryViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe

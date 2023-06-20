@@ -1,9 +1,9 @@
-package com.tokopedia.core.common.category.data.mapper
+package com.tokopedia.product.manage.common.feature.category.mapper
 
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.core.common.category.domain.model.Category
-import com.tokopedia.core.common.category.domain.model.CategoryModel
-import com.tokopedia.core.common.category.domain.model.CategorySelectedModel
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.model.Category
+import com.tokopedia.product.manage.common.feature.category.model.CategoryModel
+import com.tokopedia.product.manage.common.feature.category.model.CategorySelectedModel
 
 /**
  * @author saidfaisal on 28/7/20.

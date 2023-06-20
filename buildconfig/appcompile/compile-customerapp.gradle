@@ -80,7 +80,6 @@ includeIfEnabled("features:entertainment:common_entertainment")
 
 //includeIfEnabled("features:salam:umrah")
 
-includeIfEnabled("features:discovery:category_common")
 includeIfEnabled("features:discovery:discovery_common")
 includeIfEnabled("features:discovery:productcard")
 includeIfEnabled("features:discovery:productcard_options")

@@ -256,7 +256,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
-    implementation projectOrAar(rootProject.ext.features.categoryCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.settingbank)

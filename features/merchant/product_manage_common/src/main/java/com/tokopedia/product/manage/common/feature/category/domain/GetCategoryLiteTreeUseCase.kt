@@ -1,12 +1,11 @@
-package com.tokopedia.core.common.category.domain.interactor
+package com.tokopedia.product.manage.common.feature.category.domain
 
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.observables.BlockingObservable
 import javax.inject.Inject
 
 class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<CategoriesResponse>() {

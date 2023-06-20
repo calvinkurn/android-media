@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.category.common
 
-import com.tokopedia.core.common.category.domain.model.Category
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
+import com.tokopedia.product.manage.common.feature.category.model.Category
+import com.tokopedia.product.manage.common.feature.category.model.CategoryViewModel
 import com.tokopedia.product.addedit.category.common.Constant.INCREMENT_CATEGORY_LEVEL
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
 

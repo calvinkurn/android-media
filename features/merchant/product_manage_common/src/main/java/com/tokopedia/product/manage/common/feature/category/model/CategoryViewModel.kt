@@ -1,8 +1,7 @@
-package com.tokopedia.core.common.category.view.model
+package com.tokopedia.product.manage.common.feature.category.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
 
 /**
  * @author sebastianuskh on 4/4/17.
