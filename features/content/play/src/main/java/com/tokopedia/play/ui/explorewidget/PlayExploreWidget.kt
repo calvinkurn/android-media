@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.sidesheet.SideSheetBehavior
@@ -22,12 +23,15 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.PlayDialogExploreWidgetBinding
+import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.dialog.PlayExploreWidgetFragment
 import com.tokopedia.play.view.uimodel.action.DismissExploreWidget
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -91,16 +95,34 @@ class PlayExploreWidget @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        observeState()
     }
 
-    fun setupTab(categories: List<String>) {
+    private fun setupTab(categories: List<String>) {
         if(categories.size > 1)
             tabs[categories.first()] = fgCategory
         tabs[categories.last()] = fgExplore
+
+        TabsUnifyMediator(
+            binding.tabPlayExploreWidget,
+            binding.vpPlayExploreWidget
+        ) { tab, position ->
+            tab.setCustomText(tabs.keys.elementAtOrNull(position).orEmpty())
+        }
     }
 
     fun moveTab(position: Int) {
         binding.vpPlayExploreWidget.setCurrentItem(position, true)
+    }
+
+    private fun observeState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.withCache().collectLatest { cachedState ->
+                if (cachedState.isChanged { it.channel.exploreWidgetConfig } && cachedState.value.channel.exploreWidgetConfig.hasCategory) {
+                    setupTab(viewModel.exploreWidgetTabs)
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -121,12 +143,7 @@ class PlayExploreWidget @Inject constructor(
             dismiss()
         }
         binding.vpPlayExploreWidget.adapter = vpAdapter
-        TabsUnifyMediator(
-            binding.tabPlayExploreWidget,
-            binding.vpPlayExploreWidget
-        ) { tab, position ->
-            tab.setCustomText(tabs.keys.elementAtOrNull(position).orEmpty())
-        }
+        setupTab(viewModel.exploreWidgetTabs)
         binding.tabPlayExploreWidget.showWithCondition(tabs.size > 1)
         val sheetBehavior = SideSheetBehavior.from(binding.clSheetExploreWidget)
         sheetBehavior.addCallback(sheetCallback)
