@@ -219,9 +219,6 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
     private fun handleLoginUserDataListFailure(throwable: Throwable) {
         handleLoader(shouldShow = false)
         binding?.globalError?.run {
-            setActionClickListener {
-                //      viewModel.processEvent(LoginHelperEvent.GetLoginData)
-            }
             show()
         }
         binding?.footer?.showToasterError(throwable.message.toBlankOrString())

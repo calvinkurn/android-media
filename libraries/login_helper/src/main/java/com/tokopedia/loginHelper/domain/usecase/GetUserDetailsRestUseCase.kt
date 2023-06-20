@@ -1,6 +1,5 @@
 package com.tokopedia.loginHelper.domain.usecase
 
-import android.util.Log
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.data.api.LoginHelperApiService
@@ -41,12 +40,10 @@ class GetUserDetailsRestUseCase @Inject constructor(private val api: LoginHelper
                     decryptedLocalUserDetails.toUserDataUiModel()
                 )
 
-            //   val response = api.getUserData(envType.toEnvString()).body()?.toLoginUiModel()
             val response = api.getUserData(envType.toEnvString()).body()
-            var decryptedRemoteUserDetails = response?.toLoginUiModel()
+            val decryptedRemoteUserDetails = response?.toLoginUiModel()
             UnifiedLoginHelperData(persistantCachedUserData, decryptedRemoteUserDetails)
         } catch (e: Exception) {
-            Log.d("FATAL", "makeNetworkCall: $e ")
             UnifiedLoginHelperData(persistantCachedUserData, LoginDataUiModel())
         }
     }
