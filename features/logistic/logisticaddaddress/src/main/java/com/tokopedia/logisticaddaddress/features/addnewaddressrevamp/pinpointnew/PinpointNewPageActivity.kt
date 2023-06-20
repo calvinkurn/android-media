@@ -16,6 +16,12 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
+    companion object {
+        fun createIntent(content: Context, bundle: Bundle): Intent {
+            return Intent(content, PinpointNewPageActivity::class.java).putExtra(EXTRA_BUNDLE, bundle)
+        }
+    }
+
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
@@ -37,24 +43,5 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
             fragment = PinpointNewPageFragment.newInstance(bundle)
         }
         return fragment
-    }
-
-    pindahin ke activity
-    override fun onBackPressed() {
-        super.onBackPressed()
-        if (isGetPinPointOnly == false) {
-            if (isEdit == true) {
-                EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
-            } else {
-                AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
-            }
-        }
-    }
-
-    companion object {
-
-        fun createIntent(content: Context, bundle: Bundle): Intent {
-            return Intent(content, PinpointNewPageActivity::class.java).putExtra(EXTRA_BUNDLE, bundle)
-        }
     }
 }

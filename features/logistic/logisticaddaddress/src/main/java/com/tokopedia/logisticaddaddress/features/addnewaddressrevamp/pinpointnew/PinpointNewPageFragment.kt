@@ -196,10 +196,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isEdit) {
-                        EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
-                    } else {
-                        AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                    if (!isGetPinPointOnly) {
+                        if (isEdit) {
+                            EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+                        } else {
+                            AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                        }
                     }
                     activity?.finish()
                 }
@@ -272,9 +274,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 REQUEST_ADDRESS_FORM_PAGE -> {
                     onResultFromAddressForm(data)
                 }
+
                 REQUEST_SEARCH_PAGE -> {
                     onResultFromSearchPage(data)
                 }
+
                 REQUEST_CODE_PINPOINT_LITE -> {
                     data?.let { it -> handlePinpointLite(it) }
                 }
@@ -344,11 +348,13 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
                 }
             }
+
             PERMISSION_DENIED -> {
                 if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
             }
+
             PERMISSION_DONT_ASK_AGAIN -> {
                 if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
@@ -582,6 +588,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
                     requestPermissionLocation()
                 }
+
                 PERMISSION_DONT_ASK_AGAIN -> {
                     showBottomSheetLocUndefined(true)
                 }
@@ -615,6 +622,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         else -> showNotFoundLocation()
                     }
                 }
+
                 else -> {
                     // no-op
                 }
@@ -639,6 +647,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         }
                     }
                 }
+
                 else -> {
                     // no-op
                 }
@@ -651,6 +660,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     moveMap(getLatLng(it.data.latitude, it.data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(it.data.latitude, it.data.longitude)
                 }
+
                 else -> {
                     // no-op
                 }
@@ -662,6 +672,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 is Success -> {
                     showBoundaries(it.data.geometry.listCoordinates)
                 }
+
                 else -> {
                     // no-op
                 }
@@ -674,6 +685,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     moveMap(getLatLng(it.location.lat, it.location.lng), ZOOM_LEVEL)
                     viewModel.getLocationFromLatLong()
                 }
+
                 is MapsGeocodeState.Fail -> {
                     when {
                         it.errorMessage.orEmpty().contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
@@ -878,11 +890,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                    ContextCompat.checkSelfPermission(
+                ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-                } != PackageManager.PERMISSION_GRANTED
+            } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }

@@ -159,10 +159,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     private fun hitAnalyticOnBackPress() {
-        if (isEdit) {
-            EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+        if (!isFromPinpoint) {
+            if (isEdit) {
+                EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            }
         }
     }
 
@@ -225,6 +227,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 REQUEST_PINPOINT_PAGE -> {
                     onResultFromPinpoint(data)
                 }
+
                 REQUEST_ADDRESS_FORM_PAGE -> {
                     onResultFromAddressForm(data)
                 }
@@ -291,7 +294,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
+                if (!isEdit && !isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
                 }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -302,14 +305,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
 
             PERMISSION_DENIED -> {
-                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
+                if (!isEdit && !isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
 
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
-                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
+                if (!isEdit && !isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
@@ -385,8 +388,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!viewModel.isGetPinPointOnly) {
-                        if (!viewModel.isEdit) {
+                    if (!isGetPinPointOnly) {
+                        if (!isEdit) {
                             AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
                         } else {
                             EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
@@ -459,6 +462,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
                         requestPermissionLocation()
                     }
+
                     PERMISSION_DONT_ASK_AGAIN -> {
                         showBottomSheetLocUndefined(true)
                     }
@@ -582,6 +586,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 is Success -> {
                     loadListLocation(it.data)
                 }
+
                 is Fail -> {
                     Timber.d(it.throwable)
                     hideListLocation()
@@ -670,8 +675,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
     override fun onItemClicked(placeId: String) {
-        if (!viewModel.isGetPinPointOnly) {
-            if (!viewModel.isEdit) {
+        if (!isGetPinPointOnly) {
+            if (!isEdit) {
                 AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
             } else {
                 EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
