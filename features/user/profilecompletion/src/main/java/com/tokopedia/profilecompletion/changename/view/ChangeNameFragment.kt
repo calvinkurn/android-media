@@ -22,18 +22,21 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.databinding.FragmentChangeFullnameBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_change_fullname.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
  * created by rival 23/10/19
  */
 class ChangeNameFragment : BaseDaggerFragment() {
+
+    private val binding: FragmentChangeFullnameBinding? by viewBinding()
 
     @Inject
     lateinit var infoTracker: ProfileInfoTracker
@@ -76,9 +79,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (oldName.isNotEmpty()) {
-            changeNameTextName?.editText?.setText(oldName)
-            changeNameTextName?.editText?.text?.length?.let {
-                changeNameTextName?.editText?.setSelection(it)
+            binding?.changeNameTextName?.editText?.setText(oldName)
+            binding?.changeNameTextName?.editText?.text?.length?.let {
+                binding?.changeNameTextName?.editText?.setSelection(it)
             }
         }
 
@@ -93,18 +96,18 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        changeNameTextName?.icon2?.setOnClickListener {
-            changeNameTextName?.editText?.text?.clear()
+        binding?.changeNameTextName?.icon2?.setOnClickListener {
+            binding?.changeNameTextName?.editText?.text?.clear()
         }
 
-        changeNameTextName?.editText?.addTextChangedListener(object : TextWatcher {
+        binding?.changeNameTextName?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                changeNameTextName.isInputError = false
-                changeNameTextName.setMessage("")
+                binding?.changeNameTextName?.isInputError = false
+                binding?.changeNameTextName?.setMessage("")
                 if (s != null) {
                     when {
                         s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
@@ -131,34 +134,34 @@ class ChangeNameFragment : BaseDaggerFragment() {
                                     )
                                 )
                             }
-                            changeNameButtonSave?.isEnabled = false
+                            binding?.changeNameButtonSave?.isEnabled = false
                         }
                         s.toString() == oldName -> {
-                            changeNameButtonSave?.isEnabled = false
+                            binding?.changeNameButtonSave?.isEnabled = false
                         }
                         else -> {
-                            changeNameButtonSave?.isEnabled = true
+                            binding?.changeNameButtonSave?.isEnabled = true
                         }
                     }
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (changeNameTextName?.editText?.text?.isNotEmpty() == true) {
-                    changeNameTextName?.icon2?.show()
+                if (binding?.changeNameTextName?.editText?.text?.isNotEmpty() == true) {
+                    binding?.changeNameTextName?.icon2?.show()
                 } else {
-                    changeNameTextName?.icon2?.gone()
+                    binding?.changeNameTextName?.icon2?.gone()
                 }
 
             }
         })
 
-        changeNameButtonSave?.setOnClickListener {
+        binding?.changeNameButtonSave?.setOnClickListener {
             infoTracker.trackOnClickBtnSimpanChangeNameClick()
-            val fullName = changeNameTextName?.editText?.text
+            val fullName = binding?.changeNameTextName?.editText?.text
             if (fullName != null) {
                 showLoading()
-                viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
+                viewModel.changePublicName(binding?.changeNameTextName?.editText?.text.toString())
             } else {
                 onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_too_short)))
             }
@@ -187,7 +190,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     private fun updateChangesCounter(counter: String) {
         activity?.getString(R.string.change_name_note)?.let { changeNameHint ->
-            changeNameTextNote?.text = changeNameHint
+            binding?.changeNameTextNote?.text = changeNameHint
         }
     }
 
@@ -211,23 +214,23 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     private fun onErrorChangeName(throwable: Throwable) {
         hideLoading()
-        changeNameTextName.isInputError = true
+        binding?.changeNameTextName?.isInputError = true
         throwable.message?.let { message ->
             infoTracker.trackOnClickBtnSimpanChangeNameFailed(message)
             activity?.let {
-                changeNameTextName.setMessage(message)
+                binding?.changeNameTextName?.setMessage(message)
             }
         }
     }
 
     private fun showLoading() {
-        changeNameViewMain?.hide()
-        changeNameProgressBar?.show()
+        binding?.changeNameViewMain?.hide()
+        binding?.changeNameProgressBar?.show()
     }
 
     private fun hideLoading() {
-        changeNameViewMain?.show()
-        changeNameProgressBar?.hide()
+        binding?.changeNameViewMain?.show()
+        binding?.changeNameProgressBar?.hide()
     }
 
     companion object {

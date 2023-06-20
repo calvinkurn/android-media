@@ -14,8 +14,9 @@ import com.tokopedia.profilecompletion.addpin.view.activity.PinCompleteActivity
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Screen.SCREEN_POPUP_PIN_SUCCESS
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.databinding.FragmentCompletePinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import kotlinx.android.synthetic.main.fragment_complete_pin.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -24,6 +25,8 @@ import javax.inject.Inject
  */
 
 class PinCompleteFragment : BaseDaggerFragment() {
+
+    private val binding: FragmentCompletePinBinding? by viewBinding()
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -44,8 +47,8 @@ class PinCompleteFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ImageHandler.LoadImage(completeImage, COMPLETE_PICT_URL)
-        btnComplete.setOnClickListener {
+        ImageHandler.LoadImage(binding?.completeImage, COMPLETE_PICT_URL)
+        binding?.btnComplete?.setOnClickListener {
             trackingPinUtil.trackClickFinishButton()
             activity?.let {
                 if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
@@ -65,11 +68,11 @@ class PinCompleteFragment : BaseDaggerFragment() {
         context?.run {
             when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
                 SOURCE_CHANGE_PIN -> {
-                    titleComplete.text = getString(R.string.change_pin_success)
+                    binding?.titleComplete?.text = getString(R.string.change_pin_success)
                     setToolbarTitle(getString(R.string.title_change_pin))
                 }
                 SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
-                    titleComplete.text = getString(R.string.change_pin_success)
+                    binding?.titleComplete?.text = getString(R.string.change_pin_success)
                     setToolbarTitle(getString(R.string.change_pin_title_setting))
                 }
             }
