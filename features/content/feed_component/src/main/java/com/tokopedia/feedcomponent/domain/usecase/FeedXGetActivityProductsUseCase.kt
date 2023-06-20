@@ -26,49 +26,49 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
             query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
               feedXGetActivityProducts(req:${'$'}req){
                 hasVoucher
-                products{
-                      id
-                      shopID
-                      name
-                      coverURL
-                      webLink
-                      appLink
-                      star
-                      price
-                      priceFmt
-                      isDiscount
-                      discount
-                      discountFmt
-                      priceOriginal
-                      priceOriginalFmt
-                      priceDiscount
-                      priceDiscountFmt
-                      priceMasked
-                      priceMaskedFmt
-                      stockWording
-                      stockSoldPercentage
-                      cartable
-                      totalSold
-                      isBebasOngkir
-                      bebasOngkirStatus
-                      bebasOngkirURL
-                      mods
+                products {
+                    id
+                    shopID
+                    name
+                    coverURL
+                    webLink
+                    appLink
+                    star
+                    price
+                    priceFmt
+                    isDiscount
+                    discount
+                    discountFmt
+                    priceOriginal
+                    priceOriginalFmt
+                    priceDiscount
+                    priceDiscountFmt
+                    priceMasked
+                    priceMaskedFmt
+                    stockWording
+                    stockSoldPercentage
+                    cartable
+                    totalSold
+                    isBebasOngkir
+                    bebasOngkirStatus
+                    bebasOngkirURL
+                    mods
+                }
+                isFollowed
+                contentType
+                campaign {
+                    id
+                    status
+                    name
+                    shortName
+                    startTime
+                    endTime
+                    restrictions {
+                        label
+                        isActive
+                        __typename
                     }
-                    isFollowed
-                    contentType
-                    campaign{
-                      id
-                      status
-                      name
-                      shortName
-                      startTime
-                      endTime
-                      restrictions{
-                      label
-                      isActive
-                      __typename
-                      }
-                    }
+                }
                 nextCursor
               }
             }
@@ -87,7 +87,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         private const val PARAM_ACTIVITY_ID = "activityID"
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
-        private const val LIMIT_DETAIL = 30
+        private const val LIMIT_DETAIL = 99
 
     }
 }
