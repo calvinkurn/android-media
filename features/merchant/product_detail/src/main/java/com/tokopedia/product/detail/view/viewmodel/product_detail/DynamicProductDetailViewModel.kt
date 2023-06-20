@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -48,6 +49,7 @@ import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
@@ -259,6 +261,17 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
+
+    val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
+        val edu = it.bottomSheetEdu
+        val showEdu = edu.isShow && edu.appLink.isNotBlank()
+
+        if (showEdu) {
+            edu
+        } else {
+            null
+        }
+    }
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -1248,6 +1261,12 @@ class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+            is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                if (_oneTimeMethod.value.impressGeneralEduBS) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressGeneralEduBS = true)
+                }
+            }
             else -> {
                 // noop
             }
@@ -1260,21 +1279,23 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         isTokoNow: Boolean
     ) {
-        launchCatchError(dispatcher.main, block = {
-            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                if (
-                    productMediaRecomBottomSheetData?.pageName == pageName &&
-                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                ) {
-                    productMediaRecomBottomSheetData
-                } else {
-                    setProductMediaRecomBottomSheetLoading(title)
-                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+        launch(context = dispatcher.main) {
+            runCatching {
+                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                    if (
+                        productMediaRecomBottomSheetData?.pageName == pageName &&
+                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                    ) {
+                        productMediaRecomBottomSheetData
+                    } else {
+                        setProductMediaRecomBottomSheetLoading(title)
+                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                    }
                 }
+                setProductMediaRecomBottomSheetData(title, data)
+            }.onFailure {
+                setProductMediaRecomBottomSheetError(title = title, error = it)
             }
-            setProductMediaRecomBottomSheetData(title, data)
-        }) {
-            setProductMediaRecomBottomSheetError(title = title, error = it)
         }
     }
 

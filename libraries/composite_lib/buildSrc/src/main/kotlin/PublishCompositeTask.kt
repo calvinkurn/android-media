@@ -286,21 +286,11 @@ open class PublishCompositeTask : DefaultTask() {
 
         var gitCommandAssembleString = ""
         var gitCommandAssembleResultString = ""
-        try {
-            gitCommandAssembleString = "gradle $command  -p $module -PhanselEnableDebug --stacktrace --no-build-cache"
-            print("$gitCommandAssembleString\n")
-            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                ?: ""
-        } catch (e: Exception) {
-            try {
-                gitCommandAssembleString = "../.././gradlew $command  -p $module  -PhanselEnableDebug --stacktrace --no-build-cache"
-                print("$gitCommandAssembleString\n")
-                gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                    ?: ""
-            } catch (e: Exception) {
-                println(e.stackTrace.toString())
-            }
-        }
+
+        gitCommandAssembleString = "../.././gradlew $command  -p $module -PhanselEnableDebug --stacktrace --no-build-cache"
+        print("$gitCommandAssembleString\n")
+        gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+            ?: ""
 
         println(gitCommandAssembleResultString)
 
@@ -317,19 +307,10 @@ open class PublishCompositeTask : DefaultTask() {
 
         var gitCommandString = ""
         var gitResultLog = ""
-        try {
-            gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
-            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                ?: ""
-        } catch (e: Exception) {
-            try {
-                gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
-                gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                    ?: ""
-            } catch (e: Exception) {
-                println(e.stackTrace.toString())
-            }
-        }
+        gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
+        gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+            ?: ""
+        print("gitResultLog")
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }

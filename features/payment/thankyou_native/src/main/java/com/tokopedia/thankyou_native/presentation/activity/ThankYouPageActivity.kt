@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -327,8 +328,8 @@ class ThankYouPageActivity :
 
     private fun isWidgetOrderingEnabled(): Boolean {
         return try {
-            return getAbTestPlatform()
-                ?.getBoolean(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, true) ?: false
+            return (getAbTestPlatform()
+                ?.getString(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, String.EMPTY) ?: String.EMPTY).isNotEmpty()
         } catch (e: Exception) {
             Timber.e(e)
             true

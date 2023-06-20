@@ -93,7 +93,7 @@
                 android:gravity="center"
                 android:maxLines="2"
                 android:text="@string/stfs_empty_desc_label"
-                android:textColor="@color/gr_700"
+                android:textColor="@color/Unify_NN700"
                 android:visibility="gone"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="reguler" />
@@ -181,7 +181,7 @@
                         android:gravity="center|start"
                         android:maxLines="2"
                         android:text="@string/product_eligible_card_description_label"
-                        android:textColor="@color/gr_700"
+                        android:textColor="@color/Unify_NN700"
                         app:layout_constraintBottom_toBottomOf="@id/image_product_eligible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/image_product_eligible"
