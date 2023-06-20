@@ -4,6 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: "com.google.devtools.ksp"
 
 buildscript {
     repositories {
@@ -147,4 +148,5 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.libraries.gqlKspProcessor)
 }
