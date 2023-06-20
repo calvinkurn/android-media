@@ -15,8 +15,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
@@ -43,9 +43,9 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
@@ -91,9 +91,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit = { element ->
         viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), element.type)
-        saveButton?.visibility = if(element.isExpanded) View.VISIBLE else View.GONE
+        saveButton?.visibility = if (element.isExpanded) View.VISIBLE else View.GONE
         saveButton?.tag = element.type
-        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type),false)
+        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type), false)
         updateButtonTitle(viewModel.getInputDataFromMapper(element.type))
     }
 
@@ -166,7 +166,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun updateButtonTitle(input: TopadsManagePromoGroupProductInput?){
+    private fun updateButtonTitle(input: TopadsManagePromoGroupProductInput?) {
         input?.let {
             saveButton?.text = when (saveButton?.tag) {
                 TYPE_POSITIVE_KEYWORD -> {
@@ -240,7 +240,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }
         }
 
-        viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner){
+        viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     successfulInsightSubmission()
@@ -252,7 +252,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun successfulInsightSubmission(){
+    private fun successfulInsightSubmission() {
         confirmationDailog?.dismiss()
         showSuccessToast(getString(R.string.topads_dashboard_submit_insight_success_toast_msg))
         loadData(
@@ -298,15 +298,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
             it.setDescription(description)
 
-            if (it.dialogPrimaryCTA.isLoading)
+            if (it.dialogPrimaryCTA.isLoading) {
                 it.dialogPrimaryCTA.isLoading = false
+            }
 
             it.setPrimaryCTAText(getString(R.string.title_try_again))
             it.setSecondaryCTAText(getString(R.string.label_close))
         }
     }
 
-    private fun showSuccessToast(text: String){
+    private fun showSuccessToast(text: String) {
         view?.let {
             Toaster.build(
                 it,
@@ -355,7 +356,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             loadDetailPageOnAction(
                 utils.convertAdTypeToInt(item.adGroupType),
                 item.adGroupID,
-                item.insightType
+                item.insightType,
+                groupName = item.adGroupName
             )
         }
 
@@ -363,7 +365,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
         groupDetailsRecyclerView?.adapter = groupDetailAdapter
         handleStickyView()
-
     }
 
     private fun handleStickyView() {
@@ -400,7 +401,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         saveButton = view?.findViewById(R.id.saveButton)
     }
 
-    private fun attachViewClickListeners(){
+    private fun attachViewClickListeners() {
         saveButton?.setOnClickListener {
             val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
             showConfirmationDialog(input)
@@ -408,14 +409,14 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun showConfirmationDialog(input: TopadsManagePromoGroupProductInput?) {
-        confirmationDailog?.dismiss() //if already showing
+        confirmationDailog?.dismiss() // if already showing
         confirmationDailog =
             DialogUnify(
                 requireContext(),
                 DialogUnify.HORIZONTAL_ACTION,
                 DialogUnify.WITH_ILLUSTRATION
             )
-        val description : String = when(saveButton?.tag){
+        val description: String = when (saveButton?.tag) {
             TYPE_POSITIVE_KEYWORD -> String.format("%d kata kunci akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
             TYPE_KEYWORD_BID -> "Biaya kata kunci baru akan diterapkan ke grup $adGroupName"
             TYPE_GROUP_BID -> "Biaya iklan baru akan diterapkan ke grup $adGroupName"
@@ -510,12 +511,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    val onInsightAction = {hasErrors: Boolean ->
-        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
+    private val onInsightAction = { hasErrors: Boolean ->
+        saveButton?.isEnabled =
+            checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
         updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
-    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = ""){
+    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = "") {
         viewModel.loadDetailPageOnAction(
             adType,
             adgroupID,
@@ -526,10 +528,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         saveButton?.visibility = View.GONE
     }
 
-    private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
-        if(hasErrors)
+    private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean {
+        if (hasErrors) {
             return false
-        else {
+        } else {
             input?.let {
                 return when (saveButton?.tag) {
                     RecommendationConstants.TYPE_POSITIVE_KEYWORD, RecommendationConstants.TYPE_KEYWORD_BID, RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> {

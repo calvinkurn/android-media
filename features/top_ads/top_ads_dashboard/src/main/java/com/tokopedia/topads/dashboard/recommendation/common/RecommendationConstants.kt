@@ -60,7 +60,7 @@ object RecommendationConstants {
     const val PARAM_SIZE = "size"
     const val PARAM_START_CURSOR = "startCursor"
 
-    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP_LIST"
+    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP"
     const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"
     const val PER_PAGE_COUNT_VALUE = 20
 

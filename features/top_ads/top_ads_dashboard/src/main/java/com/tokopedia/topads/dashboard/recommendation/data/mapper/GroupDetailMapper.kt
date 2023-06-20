@@ -175,6 +175,8 @@ class GroupDetailMapper @Inject constructor() {
             } else {
                 detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] = GroupDetailInsightListUiModel(adGroups = adGroups)
             }
+        } else if (isAnyInsightAvailable) {
+            detailPageDataMap.remove(TYPE_UN_OPTIMIZED_GROUP)
         }
     }
 
