@@ -20,7 +20,7 @@ import org.junit.Test
 import org.junit.jupiter.api.AfterEach
 
 @ExperimentalCoroutinesApi
-class AddEditProductCategoryViewModelTest {
+class AddEditProductCategoryUIModelTest {
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
