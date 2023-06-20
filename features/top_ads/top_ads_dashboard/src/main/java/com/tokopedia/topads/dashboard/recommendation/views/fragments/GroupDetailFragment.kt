@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
@@ -35,10 +36,10 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
@@ -58,8 +59,8 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
@@ -344,8 +345,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
-            clickedItem = TYPE_PRODUCT_VALUE
+            clickedChips = position + CONST_2
         )
+        changeTagOnChipsClick(position)
     }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
@@ -439,8 +441,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private val onChipsClick: (Int) -> Unit = {
         viewModel.reSyncDetailPageData(
             adGroupType = utils.convertAdTypeToInt(adType),
-            clickedItem = TYPE_PRODUCT_VALUE
+            clickedChips = it + CONST_2
         )
+        changeTagOnChipsClick(it)
+    }
+
+    private fun changeTagOnChipsClick(chipsType: Int) {
+        saveButton?.tag = chipsType + CONST_2
     }
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {

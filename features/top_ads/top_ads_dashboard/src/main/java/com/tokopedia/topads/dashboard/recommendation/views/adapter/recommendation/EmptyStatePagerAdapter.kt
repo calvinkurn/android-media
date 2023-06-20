@@ -11,12 +11,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_PRODUK_IKLAN
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStatesUiModel
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.util.Locale
@@ -40,8 +42,8 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val emptyStateTitle: Typography = view.findViewById(R.id.emptyStateTitle)
-        private val emptyStateAnimation: LottieAnimationView =
-            view.findViewById(R.id.emptyStateAnimation)
+        private val emptyStateImage: ImageUnify =
+            view.findViewById(R.id.emptyStateImage)
         private val stateType: Typography = view.findViewById(R.id.stateType)
         private val stateTypeDescription: Typography = view.findViewById(R.id.stateTypeDescription)
         private val btnEmptyState: UnifyButton = view.findViewById(R.id.btnEmptyState)
@@ -49,7 +51,7 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
             emptyStateTitle.text = item.heading
             stateType.text = item.stateType
             stateTypeDescription.text = item.stateTypeDescription
-            emptyStateAnimation.setAnimationFromUrl(item.lottieUrl)
+            emptyStateImage.loadImage(item.imageUrl)
             if (item.buttonText.isEmpty()) {
                 btnEmptyState.invisible()
             } else {

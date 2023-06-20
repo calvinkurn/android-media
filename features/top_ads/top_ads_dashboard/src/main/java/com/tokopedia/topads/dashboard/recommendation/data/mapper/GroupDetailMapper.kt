@@ -13,14 +13,14 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
@@ -65,7 +65,7 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_SHOP_VALUE to CONST_0
     )
 
-    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips:Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
         val position = chipsList.findPositionOfSelected { it.isSelected }
         return if (position == TYPE_INSIGHT || adGroupType == TYPE_SHOP_VALUE) {
             reshuffleInsightExpansionIfRequired(clickedItem)
@@ -73,11 +73,11 @@ class GroupDetailMapper @Inject constructor() {
             handleChipsData(adGroupType)
             detailPageDataMap.toSortedMap()
         } else {
-            reSyncDataForGroupInsight(position)
+            reSyncDataForGroupInsight(position, clickedChips)
         }
     }
 
-    private fun reSyncDataForGroupInsight(position: Int): SortedMap<Int, GroupDetailDataModel> {
+    private fun reSyncDataForGroupInsight(position: Int, clickedChips: Int): SortedMap<Int, GroupDetailDataModel> {
         val map = mutableMapOf<Int, GroupDetailDataModel>()
         val selectedIndex = position + CONST_2
         for (index in TYPE_INSIGHT..TYPE_CHIPS) {
@@ -85,7 +85,14 @@ class GroupDetailMapper @Inject constructor() {
         }
         for (index in TYPE_POSITIVE_KEYWORD until detailPageDataMap.size) {
             if (index == selectedIndex) {
-                detailPageDataMap[index]?.let { map.put(index, it) }
+                detailPageDataMap[index]?.let {
+                    expandedModel(it, clickedChips)?.let { expandedModel ->
+                        map.put(
+                            index,
+                            expandedModel
+                        )
+                    }
+                }
                 if (detailPageDataMap[index]?.isAvailable() == false) {
                     map[TYPE_EMPTY_STATE] = getEmptyStateData(position)
                 } else {
@@ -97,6 +104,14 @@ class GroupDetailMapper @Inject constructor() {
             }
         }
         return map.toSortedMap()
+    }
+
+    private fun expandedModel(
+        groupDetailDataModel: GroupDetailDataModel,
+        clickedChips: Int
+    ): GroupInsightsUiModel? {
+        return if (clickedChips == INVALID_INSIGHT_TYPE) (groupDetailDataModel as? GroupInsightsUiModel)
+        else (groupDetailDataModel as? GroupInsightsUiModel)?.copy(isExpanded = true)
     }
 
     private fun handleChipsData(adGroupType: Int) {

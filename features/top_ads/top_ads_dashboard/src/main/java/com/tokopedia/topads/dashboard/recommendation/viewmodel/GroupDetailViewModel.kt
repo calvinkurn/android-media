@@ -93,9 +93,9 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE) {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips:Int = INVALID_INSIGHT_TYPE) {
         _detailPageLiveData.value =
-            TopAdsListAllInsightState.Success(groupDetailMapper.reSyncDetailPageData(adGroupType, clickedItem))
+            TopAdsListAllInsightState.Success(groupDetailMapper.reSyncDetailPageData(adGroupType, clickedItem, clickedChips))
     }
 
     fun loadInsightTypeChips(
