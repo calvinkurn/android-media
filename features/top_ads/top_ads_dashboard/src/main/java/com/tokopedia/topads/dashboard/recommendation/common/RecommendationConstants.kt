@@ -35,6 +35,8 @@ object RecommendationConstants {
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
     const val INSIGHT_COUNT_PLACE_HOLDER = 10
+    const val DEFAULT_PRICE_BID = 0.0
+    const val DEFAULT_SUGGESTION_BID = 0.0
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"

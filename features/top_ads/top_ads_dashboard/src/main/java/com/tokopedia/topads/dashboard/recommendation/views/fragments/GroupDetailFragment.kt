@@ -225,7 +225,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    successfulInsightSubmission()
+                    if(it.data.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty() && it.data.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty())
+                        successfulInsightSubmission()
+                    else
+                        showFailedInsightApplyDialog()
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
@@ -236,7 +239,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner){
             when (it) {
                 is Success -> {
-                    successfulInsightSubmission()
+                    if(it.data.topadsManageHeadlineAd.errors.isNullOrEmpty())
+                        successfulInsightSubmission()
+                    else
+                        showFailedInsightApplyDialog()
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
