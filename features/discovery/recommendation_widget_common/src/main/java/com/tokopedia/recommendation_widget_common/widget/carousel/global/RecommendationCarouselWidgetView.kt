@@ -50,6 +50,9 @@ class RecommendationCarouselWidgetView :
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
     }
 
+    override val layoutId: Int
+        get() = LAYOUT
+
     override fun bind(model: RecommendationCarouselModel) {
         binding?.recommendationHeaderView?.bindData(model.widget, this)
 
