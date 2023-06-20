@@ -28,7 +28,7 @@ object EmptyStateData {
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
                 imageUrl = "https://images.tokopedia.net/img/img/img/android/topads/insight_center_page/insight_centre_empty_state_three.png",
                 stateType = "Biaya Iklan di Pencarian dan Rekomendasi",
-                stateTypeDescription = "Biaya Iklan di Pencarian dan Rekomendasi",
+                stateTypeDescription = "Maksimalkan performa iklan dengan atur Biaya Iklan di Pencarian & Biaya Iklan di Rekomendasi.",
                 buttonText = "Coba Fitur",
                 landingUrl = "$PARAM_PRODUK_IKLAN"
             ),
