@@ -42,7 +42,6 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculationBottomSheet
-import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
@@ -53,6 +52,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.old.bottomsheet.PenaltyDateFilterBottomSheetOld
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +61,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
-    PenaltyDateFilterBottomSheet.CalenderListener,
+    PenaltyDateFilterBottomSheetOld.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
     ItemHeaderCardPenaltyListener,
@@ -186,7 +186,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheetOld.newInstance(
             viewModelShopPenalty.getStartDate(),
             viewModelShopPenalty.getEndDate(),
             viewModelShopPenalty.getMaxStartDate(),

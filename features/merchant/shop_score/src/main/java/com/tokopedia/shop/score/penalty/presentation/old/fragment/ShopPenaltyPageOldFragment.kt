@@ -33,9 +33,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenal
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
-import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.old.bottomsheet.PenaltyDateFilterBottomSheetOld
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailFragment
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
@@ -54,7 +53,7 @@ import javax.inject.Inject
 
 open class ShopPenaltyPageOldFragment :
     BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
-    PenaltyDateFilterBottomSheet.CalenderListener,
+    PenaltyDateFilterBottomSheetOld.CalenderListener,
     PenaltyFilterBottomSheetOld.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
     ItemHeaderCardPenaltyListener,
@@ -350,7 +349,7 @@ open class ShopPenaltyPageOldFragment :
     }
 
     override fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheetOld.newInstance(
             viewModelShopPenalty.getStartDate(),
             viewModelShopPenalty.getEndDate()
         )
