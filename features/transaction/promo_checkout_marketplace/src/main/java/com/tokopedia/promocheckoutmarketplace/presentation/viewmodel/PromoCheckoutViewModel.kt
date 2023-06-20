@@ -1453,9 +1453,10 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
-                    val affectedPromoCount = showLoadingMvcSection(promoItem)
-                    if (affectedPromoCount > 0) {
-                        delay(CLASH_LOADING_MILLISECONDS)
+                    setLoadingMvcSection(promoItem).also { count ->
+                        if (count > 0) {
+                            delay(CLASH_LOADING_MILLISECONDS)
+                        }
                     }
 
                     // Perform clash calculation
@@ -1705,16 +1706,10 @@ class PromoCheckoutViewModel @Inject constructor(
             if (model is PromoListItemUiModel && model.uiState.isParentEnabled &&
                 !model.uiData.hasClashingPromo && model.uiState.isSelected
             ) {
-                val benefitAmount = if (model.uiData.currentClashingPromo.isEmpty()) {
-                    model.uiData.benefitAmount
+                val benefitAmount = if (model.uiData.useSecondaryPromo) {
+                    model.uiData.secondaryCoupons.first().benefitAmount
                 } else {
-                    val nonClashingSecondaryCoupon = model.uiData.secondaryCoupons
-                        .firstOrNull { secondaryCoupon ->
-                            secondaryCoupon.clashingInfos.all { clashingInfo ->
-                                !model.uiData.currentClashingPromo.contains(clashingInfo.code)
-                            }
-                        }
-                    nonClashingSecondaryCoupon?.benefitAmount ?: 0
+                    model.uiData.benefitAmount
                 }
                 totalBenefit += benefitAmount
                 usedPromoCount++
@@ -1773,7 +1768,7 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun showLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
+    private fun setLoadingMvcSection(selectedItem: PromoListItemUiModel): Int {
         var affectedPromoCount = 0
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
