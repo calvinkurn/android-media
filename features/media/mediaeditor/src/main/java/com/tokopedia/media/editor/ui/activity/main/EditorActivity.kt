@@ -1,16 +1,11 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
@@ -23,9 +18,6 @@ import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
