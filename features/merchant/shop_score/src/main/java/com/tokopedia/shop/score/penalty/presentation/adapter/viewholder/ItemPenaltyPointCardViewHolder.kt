@@ -40,7 +40,7 @@ class ItemPenaltyPointCardViewHolder(
     }
 
     private fun setButtonClickListener(element: ItemPenaltyPointCardUiModel) {
-        binding?.tvPenaltyCardPoint?.setOnClickListener {
+        binding?.btnPenaltyCardPoint?.setOnClickListener {
             listener?.onPenaltyPointsButtonClicked(element)
         }
     }
