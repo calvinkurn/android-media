@@ -27,10 +27,10 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountViewModel @Inject constructor(
-    private val aesEncryptorCBC: AESEncryptorCBC,
-    private val gson: Gson,
     private val addUserRestUseCase: AddUserRestUseCase,
     private val editUserRestCaseUse: EditUserRestUseCase,
+    private val aesEncryptorCBC: AESEncryptorCBC,
+    private val gson: Gson,
     val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 

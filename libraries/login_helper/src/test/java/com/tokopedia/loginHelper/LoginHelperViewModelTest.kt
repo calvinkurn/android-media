@@ -2,7 +2,11 @@ package com.tokopedia.loginHelper
 
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.loginHelper.data.response.LoginDataResponse
+import com.tokopedia.loginHelper.data.response.UserDataResponse
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
@@ -49,6 +53,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import javax.crypto.SecretKey
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -65,6 +70,8 @@ class LoginHelperViewModelTest {
     private lateinit var generatePublicKeyUseCase: GeneratePublicKeyUseCase
     private lateinit var getProfileUseCase: GetProfileUseCase
     private lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
+    private lateinit var aesEncryptorCBC: AESEncryptorCBC
+    private lateinit var secretKey: SecretKey
 
     private lateinit var viewModel: LoginHelperViewModel
     private lateinit var userSession: UserSessionInterface
@@ -85,6 +92,8 @@ class LoginHelperViewModelTest {
         getProfileUseCase = mockk(relaxed = true)
         getAdminTypeUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+        aesEncryptorCBC = mockk(relaxed = true)
+        secretKey = mockk(relaxed = true)
         viewModel =
             LoginHelperViewModel(
                 testRule.dispatchers,
@@ -93,7 +102,8 @@ class LoginHelperViewModelTest {
                 generatePublicKeyUseCase,
                 userSession,
                 getProfileUseCase,
-                getAdminTypeUseCase
+                getAdminTypeUseCase,
+                aesEncryptorCBC, secretKey
             )
     }
 
@@ -159,9 +169,10 @@ class LoginHelperViewModelTest {
     }
 
     @Test
-    fun `processEvent with QueryEmail throws exception`() {
+    fun `processEvent with QueryEmail with DataSource Local`() {
         runBlockingTest {
-            coEvery { getUserDetailsRestCase.executeOnBackground() } throws throwable
+            viewModel.processEvent(LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.LOCAL))
+            viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
 
             viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
             val result = viewModel.uiState.value.searchText
@@ -283,7 +294,10 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Login Email V2 Success - has errors`() {
-        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val loginToken = LoginToken(
+            accessToken = "abc123",
+            errors = arrayListOf(Error("msg", "error"))
+        )
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -334,7 +348,10 @@ class LoginHelperViewModelTest {
 
     @Test
     fun `on Login Email V2 Success - activation error`() {
-        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val loginToken = LoginToken(
+            accessToken = "",
+            errors = arrayListOf(Error(message = "belum diaktivasi"))
+        )
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -408,6 +425,76 @@ class LoginHelperViewModelTest {
     }
 
     @Test
+    fun `On Log out user`() {
+        viewModel.processEvent(LoginHelperEvent.LogOutUser)
+
+        verify {
+            userSession.logoutSession()
+        }
+    }
+
+    @Test
+    fun `On GoToAccountSettings`() {
+        runBlockingTest {
+            val emittedValues = arrayListOf<LoginHelperAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+            viewModel.processEvent(LoginHelperEvent.GoToAccountsSetting)
+            val actualEvent = emittedValues.last()
+            val goToAccountSettings = actualEvent is LoginHelperAction.GoToAccountSettings
+            assertEquals(true, goToAccountSettings)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `processEvent with Change Data Source Type = Remote`() {
+        viewModel.processEvent(
+            LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.REMOTE)
+        )
+        val result = viewModel.uiState.value.dataSourceType
+        assertEquals(result, LoginHelperDataSourceType.REMOTE)
+    }
+
+    @Test
+    fun `processEvent with Change Data Source Type = Local`() {
+        viewModel.processEvent(
+            LoginHelperEvent.ChangeDataSourceType(LoginHelperDataSourceType.LOCAL)
+        )
+        val result = viewModel.uiState.value.dataSourceType
+        assertEquals(result, LoginHelperDataSourceType.LOCAL)
+    }
+
+    @Test
+    fun `processEvent with GetLocalLoginData with no data`() {
+        viewModel.processEvent(LoginHelperEvent.GetLocalLoginData(LoginDataResponse()))
+
+        assertTrue(viewModel.uiState.value.localLoginDataList is Success)
+    }
+
+    @Test
+    fun `processEvent with GetLocalLoginData`() {
+        viewModel.processEvent(
+            LoginHelperEvent.GetLocalLoginData(
+                LoginDataResponse(
+                    count = 1,
+                    users = listOf(
+                        UserDataResponse(
+                            email = "test_email",
+                            password = "test_password",
+                            tribe = "test_tribe",
+                            id = 0
+                        )
+                    )
+                )
+            )
+        )
+
+        assertTrue(viewModel.uiState.value.localLoginDataList is Success)
+    }
+
+    @Test
     fun `onCleared success`() {
         every {
             getProfileUseCase.unsubscribe()
@@ -418,9 +505,6 @@ class LoginHelperViewModelTest {
         every {
             generatePublicKeyUseCase.cancelJobs()
         } just runs
-        every {
-            getUserDetailsRestCase.cancelJobs()
-        } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")
         method.isAccessible = true
@@ -429,6 +513,5 @@ class LoginHelperViewModelTest {
         verify { getProfileUseCase.unsubscribe() }
         verify { loginTokenV2UseCase.cancelJobs() }
         verify { generatePublicKeyUseCase.cancelJobs() }
-        verify { getUserDetailsRestCase.cancelJobs() }
     }
 }
