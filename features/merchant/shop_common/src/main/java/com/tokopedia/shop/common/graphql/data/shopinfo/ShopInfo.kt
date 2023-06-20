@@ -3,6 +3,8 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
@@ -29,6 +31,10 @@ data class ShopInfo(
     @SerializedName("location")
     @Expose
     val location: String = "",
+
+    @SerializedName("shipmentInfo")
+    @Expose
+    val shipments: List<ShopShipment> = listOf(),
 
     @SerializedName("shopAssets")
     @Expose
@@ -120,6 +126,34 @@ data class ShopInfo(
 ) {
     fun isShopInfoNotEmpty(): Boolean {
         return shopCore.shopID.isNotEmpty()
+    }
+
+    fun mapToShopInfoData(): ShopInfoData {
+        val shipmentsData = shipments.map {
+            it.mapToShipmentData()
+        }
+
+        return ShopInfoData(
+            shopId = shopCore.shopID,
+            name = shopCore.name,
+            description = shopCore.description,
+            url = shopCore.url,
+            location = location,
+            imageCover = shopAssets.cover,
+            tagLine = shopCore.tagLine,
+            isOfficial = goldOS.isOfficial,
+            isGold = goldOS.isGold,
+            openSince = createdInfo.openSince,
+            shipments = shipmentsData,
+            shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
+            siaNumber = epharmacyInfo.siaNumber,
+            sipaNumber = epharmacyInfo.sipaNumber,
+            apj = epharmacyInfo.apj,
+            partnerLabel = partnerLabel,
+            fsType = partnerInfo.firstOrNull()?.fsType.orZero(),
+            partnerName = partnerInfo.firstOrNull()?.partnerName.orEmpty()
+        )
     }
 
     companion object {
