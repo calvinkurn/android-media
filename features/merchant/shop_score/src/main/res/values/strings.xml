@@ -379,5 +379,6 @@
     <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>
     <string name="title_penalty_filter_see_all">Lihat Semua</string>
     <string name="title_penalty_types">Jenis Pelanggaran</string>
+    <string name="desc_penalty_shop_level"><![CDATA[Level Toko adalah penilaian terhadap skala bisnis tokomu berdasarkan jumlah pendapatan dan produk terjual selama <b>90 hari terakhir.</b>]]></string>
 
 </resources>

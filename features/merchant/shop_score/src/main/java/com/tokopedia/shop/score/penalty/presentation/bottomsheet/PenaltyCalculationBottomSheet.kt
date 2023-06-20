@@ -44,7 +44,7 @@ class PenaltyCalculationBottomSheet :
     }
 
     override fun onIconClicked() {
-
+        PenaltyShopLevelBottomSheet().show(childFragmentManager)
     }
 
     private fun setupView() {

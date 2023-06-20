@@ -23,14 +23,14 @@ class ItemPenaltyPointCardViewHolder(
         val score = element.result.penaltyDynamic
         binding?.tvPenaltyCardPoint?.text = score.toString()
         binding?.tvPenaltyCardDate?.text = element.date
-        binding?.btnPenaltyCardPoint?.showWithCondition(score > Int.ZERO)
+        binding?.btnPenaltyCardPoint?.showWithCondition(score < Int.ZERO)
         setImageBackground(score)
         setButtonClickListener(element)
     }
 
     private fun setImageBackground(score: Int) {
         val imageUrl =
-            if (score > Int.ZERO) {
+            if (score < Int.ZERO) {
                 TokopediaImageUrl.IMG_SHOP_SCORE_PENALTY_RED
             } else {
                 TokopediaImageUrl.IMG_SHOP_SCORE_PENALTY_GREEN
