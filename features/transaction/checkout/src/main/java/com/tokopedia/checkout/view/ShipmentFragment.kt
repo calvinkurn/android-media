@@ -4255,21 +4255,12 @@ class ShipmentFragment :
         updateCost()
     }
 
-    fun showAddOnProductSkeletonLoading(position: Int) {
-        val addOnProductDataModel = AddOnProductDataModel()
-        addOnProductDataModel.isLoading = true
-        onNeedUpdateViewItem(position)
-        showLoaderTotalPayment()
-    }
-
     fun handleOnSuccessSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        // hideLoaderTotalPayment()
         shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
 
     }
 
     fun handleOnErrorSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        // hideLoaderTotalPayment()
         shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
     }
 

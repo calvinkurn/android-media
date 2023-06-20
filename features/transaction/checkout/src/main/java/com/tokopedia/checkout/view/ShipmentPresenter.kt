@@ -5576,10 +5576,6 @@ class ShipmentPresenter @Inject constructor(
     }
 
     fun saveAddOnsProduct(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, position: Int, isFireAndForget: Boolean) {
-        println("++ masuk saveAddOnsProduct")
-        // show loader based on cartId
-        // view?.showAddOnProductSkeletonLoading(position)
-
         // generate param based on addOnProductData
         val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel)
         saveAddOnProductUseCase.setParams(params, isFireAndForget)
