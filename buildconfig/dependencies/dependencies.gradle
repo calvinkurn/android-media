@@ -95,7 +95,7 @@ ext {
     robolectricVersion = "4.4"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '5.19.0'
+    embraceVersion = '5.20.0'
     newRelicVersion = '6.11.1'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
