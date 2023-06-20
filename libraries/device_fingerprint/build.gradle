@@ -46,7 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    ksp project(rootProject.ext.libraries.gqlKspProcessor)
+    ksp projectOrAar(rootProject.ext.libraries.gqlKspProcessor)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.json
