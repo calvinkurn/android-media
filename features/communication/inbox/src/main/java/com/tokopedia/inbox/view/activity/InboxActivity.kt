@@ -581,12 +581,6 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
                             updateToolbarIcon(true)
                             InboxConfig.page = InboxFragmentType.CHAT
                         }
-                        R.id.menu_inbox_discussion -> {
-                            cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
-                            onBottomNavSelected(InboxFragmentType.DISCUSSION)
-                            updateToolbarIcon()
-                            InboxConfig.page = InboxFragmentType.DISCUSSION
-                        }
                         R.id.menu_inbox_review -> {
                             cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
                             onBottomNavSelected(InboxFragmentType.REVIEW)

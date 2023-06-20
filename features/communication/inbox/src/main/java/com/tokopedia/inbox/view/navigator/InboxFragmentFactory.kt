@@ -4,13 +4,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
 import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
-import com.tokopedia.talk.feature.inbox.presentation.fragment.TalkInboxFragment
 import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 
 interface InboxFragmentFactory {
     fun createChatListFragment(): Fragment
     fun createNotificationFragment(): Fragment
-    fun createTalkInboxFragment(): Fragment
     fun createReviewInboxFragment(): Fragment
 }
 
@@ -31,14 +29,6 @@ class InboxFragmentFactoryImpl(
     override fun createNotificationFragment(): Fragment {
         return if (eligibleToOpen(InboxFragmentType.NOTIFICATION)) {
             NotificationFragment()
-        } else {
-            Fragment()
-        }
-    }
-
-    override fun createTalkInboxFragment(): Fragment {
-        return if (eligibleToOpen(InboxFragmentType.DISCUSSION)) {
-            TalkInboxFragment.createNewInstance()
         } else {
             Fragment()
         }
