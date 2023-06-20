@@ -73,8 +73,8 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.let { viewModel ->
-                viewModel?.getCarouselItemsListData()?.observe(it) { item ->
+            viewModel?.let { viewModel ->
+                viewModel.getCarouselItemsListData().observe(it) { item ->
                     if (fragment.view != null) {
                         mDiscoveryRecycleAdapter.addDataList(item)
                         anchorRV.post {
@@ -93,7 +93,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
                     }
                 }
 
-                viewModel?.getUpdatePositionsLD()?.observe(it) { shouldUpdate ->
+                viewModel.getUpdatePositionsLD().observe(it) { shouldUpdate ->
                     if (shouldUpdate) {
                         updatePositionChanged()
                     }
@@ -101,7 +101,7 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
 
                 (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
 
-                viewModel?.shouldShowMissingSectionToaster()?.observe(it) { shouldShowToast ->
+                viewModel.shouldShowMissingSectionToaster().observe(it) { shouldShowToast ->
                     if (shouldShowToast) {
                         fragment.activity?.let { activity ->
                             SnackbarManager.getContentView(activity)

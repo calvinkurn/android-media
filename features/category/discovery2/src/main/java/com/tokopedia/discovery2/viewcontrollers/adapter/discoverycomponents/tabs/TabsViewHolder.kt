@@ -205,8 +205,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun sendTabTrackingData(tab: TabLayout.Tab) {
-        tabsViewModel.let { tabsViewModel ->
-            tabsViewModel?.components?.data?.let { it ->
+        tabsViewModel?.let { tabsViewModel ->
+            tabsViewModel.components.data?.let { it ->
                 if (it.size >= tab.position) {
                     (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                         ?.let { discoAnalytics ->

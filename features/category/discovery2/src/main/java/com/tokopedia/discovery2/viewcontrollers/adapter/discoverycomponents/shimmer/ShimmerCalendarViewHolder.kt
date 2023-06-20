@@ -48,6 +48,11 @@ class ShimmerCalendarViewHolder(itemView: View, private val fragment: Fragment) 
                 itemView.findViewById<ConstraintLayout>(R.id.constraint_layout_calendar).show()
                 itemView.findViewById<ConstraintLayout>(R.id.constraint_layout_calendar_single).gone()
             }
+            else -> {
+                layoutParams.width = (width / 2.5).roundToInt()
+                itemView.findViewById<ConstraintLayout>(R.id.constraint_layout_calendar).show()
+                itemView.findViewById<ConstraintLayout>(R.id.constraint_layout_calendar_single).gone()
+            }
         }
         layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
         parentLayout.layoutParams = layoutParams

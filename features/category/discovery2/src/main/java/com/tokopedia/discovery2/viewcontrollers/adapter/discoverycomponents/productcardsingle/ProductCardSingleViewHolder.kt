@@ -41,7 +41,7 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
             ComponentsList.ProductCardSingleItem.ordinal,
             fragment
         ) as AbstractViewHolder
-    lateinit var productViewModel: DiscoveryBaseViewModel
+    private var productViewModel: DiscoveryBaseViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as ProductCardSingleViewModel
@@ -112,8 +112,10 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
                         productData,
                         0
                     )
-                productViewHolder.bindView(productViewModel)
-                productViewModel.onAttachToViewHolder()
+                productViewModel?.let {
+                    productViewHolder.bindView(it)
+                }
+                productViewModel?.onAttachToViewHolder()
                 productViewHolder.onViewAttachedToWindow()
                 productViewHolder.setUpObservers(fragment.viewLifecycleOwner)
             }
@@ -142,7 +144,7 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
             viewModel?.getMixLeftData()?.removeObservers(it)
             viewModel?.showErrorState?.removeObservers(it)
             viewModel?.hideView?.removeObservers(it)
-            if (::productViewModel.isInitialized) {
+            if (productViewModel != null) {
                 productViewHolder.removeObservers(it)
             }
         }
