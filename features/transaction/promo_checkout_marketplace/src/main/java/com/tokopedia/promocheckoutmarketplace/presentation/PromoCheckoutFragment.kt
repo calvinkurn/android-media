@@ -1166,12 +1166,21 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
-        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), element.uiData.promoCode)
+        val promoCode: String
+        val couponAppLink: String
+        if (element.uiData.useSecondaryPromo) {
+            promoCode = element.uiData.secondaryCoupons.first().code
+            couponAppLink = element.uiData.secondaryCoupons.first().couponAppLink
+        } else {
+            promoCode = element.uiData.promoCode
+            couponAppLink = element.uiData.couponAppLink
+        }
+        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), promoCode)
         if (!element.uiState.isParentEnabled) {
-            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), element.uiData.promoCode, element.uiData.errorMessage)
+            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), promoCode, element.uiData.errorMessage)
         }
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
+            val promoCodeLink = couponAppLink + promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
