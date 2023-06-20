@@ -1149,6 +1149,7 @@ open class HomeRevampFragment :
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
+        refreshLayout?.setEnableSwipeRefreshDistancePx(navToolbar?.height ?: 0)
         refreshLayout?.setOnRefreshListener { onRefresh() }
 
         refreshLayoutOld?.post {
