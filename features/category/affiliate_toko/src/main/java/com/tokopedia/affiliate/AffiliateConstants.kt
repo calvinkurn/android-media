@@ -24,6 +24,7 @@ const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
 const val PAGE_SEGMENT_PROMO_PAGE = "promosikan"
+const val PAGE_SEGMENT_PERFORMA = "performa"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"
