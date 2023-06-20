@@ -22,4 +22,10 @@ class FilterPenaltyTypesAdapter(adapterFactory: FilterPenaltyTypesAdapterFactory
         }
     }
 
+    fun getSelectedFilter(): List<Int> {
+        return visitables.filterIsInstance<ItemPenaltyFilterTypesChecklistUiModel>()
+            .filter { it.isSelected }
+            .map { it.filterId }
+    }
+
 }

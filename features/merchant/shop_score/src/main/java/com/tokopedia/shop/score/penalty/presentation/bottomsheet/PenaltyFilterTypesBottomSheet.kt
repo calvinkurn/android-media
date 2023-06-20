@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomsheetFilterPenaltyTypesBinding
@@ -32,7 +32,7 @@ class PenaltyFilterTypesBottomSheet :
         FilterPenaltyTypesAdapter(adapterTypeFactory)
     }
 
-    private val selectedFilterList = mutableSetOf<Int>()
+    private var selectedFilterList = mutableSetOf<Int>()
     private var isAnyFilterSelected = false
     private var listener: FilterPenaltyTypesBottomSheetListener? = null
 
@@ -66,13 +66,10 @@ class PenaltyFilterTypesBottomSheet :
     }
 
     override fun onChecklistClicked(filterId: Int, isSelected: Boolean) {
-        if (isSelected) {
-            selectedFilterList.add(filterId)
-        } else {
-            selectedFilterList.remove(filterId)
-        }
+        selectedFilterList = penaltyTypesAdapter.getSelectedFilter().toMutableSet()
         isAnyFilterSelected = selectedFilterList.size > Int.ZERO
         setBottomSheetAction()
+        setApplyButton()
     }
 
     fun setListener(listener: FilterPenaltyTypesBottomSheetListener) {
@@ -83,6 +80,7 @@ class PenaltyFilterTypesBottomSheet :
         setupButton()
         setupRecyclerView()
         setAdapterData()
+        setupAction()
     }
 
     private fun setupButton() {
@@ -114,12 +112,17 @@ class PenaltyFilterTypesBottomSheet :
         penaltyTypesAdapter.updateData(penaltyTypes)
     }
 
+    private fun setupAction() {
+        selectedFilterList = penaltyTypesAdapter.getSelectedFilter().toMutableSet()
+        isAnyFilterSelected = selectedFilterList.size > Int.ZERO
+        setBottomSheetAction()
+    }
+
     private fun setApplyButton() {
-        binding?.btnPenaltyFilterTypes?.showWithCondition(isAnyFilterSelected)
+        binding?.btnPenaltyFilterTypes?.show()
     }
 
     private fun setBottomSheetAction() {
-        setApplyButton()
         val resetText = getString(R.string.reset_filter_penalty)
         setAction(resetText) {
             resetAllFilters()
@@ -128,7 +131,6 @@ class PenaltyFilterTypesBottomSheet :
 
     private fun resetAllFilters() {
         isAnyFilterSelected = false
-        setApplyButton()
         selectedFilterList.clear()
         penaltyTypesAdapter.resetData()
         clearAction()

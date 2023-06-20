@@ -1,17 +1,13 @@
 package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -32,7 +28,6 @@ import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiMo
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.filtertypes.PenaltyTypesUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -54,12 +49,18 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     private var penaltyFilterFinishListener: PenaltyFilterFinishListener? = null
 
+    init {
+        showCloseIcon = true
+        clearContentPadding = true
+        isFullpage = true
+    }
+
     override fun bind(view: View) = BottomsheetFilterPenaltyBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_filter_penalty
 
     override fun getTitleBottomSheet(): String =
-        getString(R.string.title_penalty_filter_bottom_sheet)
+        getString(R.string.title_penalty_filter_penalty_bottom_sheet)
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
@@ -71,21 +72,6 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     override fun initInjector() {
         getComponent(PenaltyComponent::class.java)?.inject(this)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        showKnob = true
-        isDragable = true
-        isHideable = true
-        showCloseIcon = false
-        clearContentPadding = true
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyFilterDialogStyle)
-        customPeekHeight = (getScreenHeight() / 2).toDp()
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

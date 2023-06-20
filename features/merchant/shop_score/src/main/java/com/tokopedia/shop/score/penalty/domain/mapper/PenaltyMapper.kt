@@ -101,14 +101,12 @@ class PenaltyMapper @Inject constructor(
         typeIds: List<Int>
     ): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         return mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>().apply {
-            penaltyTypes.map {
-                add(
-                    ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
-                        title = it.name,
-                        isSelected = typeIds.contains(it.id.toIntOrZero()),
-                        idFilter = it.id.toIntOrZero()
+            penaltyTypes.forEachIndexed { index, result ->
+                if (index < MAX_SHOWN_FILTER_CHIPS || typeIds.contains(result.id.toIntOrZero())) {
+                    add(
+                        result.mapToSortFilterWrapper(typeIds)
                     )
-                )
+                }
             }
         }
     }
@@ -443,15 +441,18 @@ class PenaltyMapper @Inject constructor(
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<BaseFilterPenaltyPage>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
-        penaltyFilterList.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
-            mapItemSortFilterWrapper.add(
-                ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
-                    title = it.title,
-                    isSelected = it.isSelected,
-                    idFilter = it.value
-                )
-            )
-        }
+        penaltyFilterList.filterIsInstance<PenaltyFilterUiModel>()
+            .find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+                if (index < MAX_SHOWN_FILTER_CHIPS || chipsFilterPenaltyUiModel.isSelected) {
+                    mapItemSortFilterWrapper.add(
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = chipsFilterPenaltyUiModel.title,
+                            isSelected = chipsFilterPenaltyUiModel.isSelected,
+                            idFilter = chipsFilterPenaltyUiModel.value
+                        )
+                    )
+                }
+            }
         return mapItemSortFilterWrapper
     }
 
@@ -478,7 +479,7 @@ class PenaltyMapper @Inject constructor(
             if (model is PenaltyFilterUiModel) {
                 model.takeIf { it.title == titleFilter }?.run {
                     var selectedId: Int? = null
-                    chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
+                    shownFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
                         if (index == position) {
                             selectedId = chipsFilterPenaltyUiModel.value
                             chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
@@ -490,7 +491,7 @@ class PenaltyMapper @Inject constructor(
                             }
                         }
                     }
-                    shownFilterList.map {
+                    chipsFilterList.map {
                         if (selectedId == it.value) {
                             it.isSelected = !updateChipsSelected
                         }
@@ -506,7 +507,7 @@ class PenaltyMapper @Inject constructor(
         itemSortFilterWrapperList: MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>,
         titleFilter: String,
         updateChipsSelected: Boolean
-    ): Pair<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
+    ): Triple<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>, List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
         penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.run {
             chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
                 if (chipsFilterPenaltyUiModel.title == titleFilter) {
@@ -515,21 +516,26 @@ class PenaltyMapper @Inject constructor(
                 }
             }
 
-            val selectedFilterList = chipsFilterList.filter { it.isSelected }
-            shownFilterList =
-                when {
-                    chipsFilterList.size < MAX_SHOWN_FILTER_CHIPS -> chipsFilterList
-                    selectedFilterList.size <= Int.ZERO -> chipsFilterList.take(MAX_SHOWN_FILTER_CHIPS)
-                    else -> chipsFilterList.filter { it.isSelected }
+            shownFilterList = mutableListOf<ChipsFilterPenaltyUiModel>().apply {
+                chipsFilterList.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+                    if (index < MAX_SHOWN_FILTER_CHIPS || chipsFilterPenaltyUiModel.isSelected) {
+                        add(chipsFilterPenaltyUiModel)
+                    }
                 }
+            }
         }
-        return Pair(penaltyFilterUiModel, itemSortFilterWrapperList)
+        return Triple(
+            penaltyFilterUiModel,
+            itemSortFilterWrapperList,
+            getShownSortFilterChips(itemSortFilterWrapperList)
+        )
     }
 
     fun transformUpdateSortFilterSelected(
         penaltyFilterUiModel: MutableList<BaseFilterPenaltyPage>,
         typeIds: List<Int>
-    ): Pair<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
+    ):
+        Triple<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>, List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
         var itemSortFilterWrapperList = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.run {
             chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
@@ -537,13 +543,13 @@ class PenaltyMapper @Inject constructor(
                 chipsFilterPenaltyUiModel.isSelected = isFilterTypeSelected
             }
 
-            val selectedFilterList = chipsFilterList.filter { it.isSelected }
-            shownFilterList =
-                when {
-                    chipsFilterList.size < MAX_SHOWN_FILTER_CHIPS -> chipsFilterList
-                    selectedFilterList.size <= Int.ZERO -> chipsFilterList.take(MAX_SHOWN_FILTER_CHIPS)
-                    else -> chipsFilterList.filter { it.isSelected }
+            shownFilterList = mutableListOf<ChipsFilterPenaltyUiModel>().apply {
+                chipsFilterList.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+                    if (index < MAX_SHOWN_FILTER_CHIPS || chipsFilterPenaltyUiModel.isSelected) {
+                        add(chipsFilterPenaltyUiModel)
+                    }
                 }
+            }
             itemSortFilterWrapperList = chipsFilterList.map {
                 ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
                     title = it.title,
@@ -552,7 +558,7 @@ class PenaltyMapper @Inject constructor(
                 )
             }.toMutableList()
         }
-        return Pair(penaltyFilterUiModel, itemSortFilterWrapperList)
+        return Triple(penaltyFilterUiModel, itemSortFilterWrapperList, getShownSortFilterChips(itemSortFilterWrapperList))
     }
 
     fun transformDateFilter(
@@ -579,8 +585,28 @@ class PenaltyMapper @Inject constructor(
             .find { it.title == titleFilter }?.chipsFilterList ?: emptyList()
     }
 
+    private fun getShownSortFilterChips(
+        filterList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>
+    ): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
+        return mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>().apply {
+            filterList.forEachIndexed { index, itemSortFilterWrapper ->
+                if (index < MAX_SHOWN_FILTER_CHIPS || itemSortFilterWrapper.isSelected) {
+                    add(itemSortFilterWrapper)
+                }
+            }
+        }
+    }
+
+    private fun ShopScorePenaltyTypes.Result.mapToSortFilterWrapper(typeIds: List<Int>): ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper {
+        return ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+            title = name,
+            isSelected = typeIds.contains(id.toIntOrZero()),
+            idFilter = id.toIntOrZero()
+        )
+    }
+
     companion object {
-        private const val MAX_SHOWN_FILTER_CHIPS = 4
+        const val MAX_SHOWN_FILTER_CHIPS = 4
     }
 
 }

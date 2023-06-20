@@ -28,6 +28,7 @@ import com.tokopedia.shop.score.common.plt.ShopPenaltyMonitoringContract
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPerformanceMonitoringListener
 import com.tokopedia.shop.score.databinding.FragmentPenaltyPageBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
+import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyNotYetDeductedActivity
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
@@ -42,6 +43,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculationBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
@@ -52,7 +54,6 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.old.bottomsheet.PenaltyDateFilterBottomSheetOld
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +62,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
-    PenaltyDateFilterBottomSheetOld.CalenderListener,
+    PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
     ItemHeaderCardPenaltyListener,
@@ -186,7 +187,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheetOld.newInstance(
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
             viewModelShopPenalty.getStartDate(),
             viewModelShopPenalty.getEndDate(),
             viewModelShopPenalty.getMaxStartDate(),
@@ -459,14 +460,16 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     private fun List<ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val itemSortFilterWrapperList =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
-        this?.map {
-            itemSortFilterWrapperList.add(
-                ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
-                    title = it.title,
-                    isSelected = it.isSelected,
-                    idFilter = it.value
+        this?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+            if (index < PenaltyMapper.MAX_SHOWN_FILTER_CHIPS || chipsFilterPenaltyUiModel.isSelected) {
+                itemSortFilterWrapperList.add(
+                    ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                        title = chipsFilterPenaltyUiModel.title,
+                        isSelected = chipsFilterPenaltyUiModel.isSelected,
+                        idFilter = chipsFilterPenaltyUiModel.value
+                    )
                 )
-            )
+            }
         }
         return itemSortFilterWrapperList
     }

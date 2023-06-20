@@ -57,7 +57,16 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         val chipsIndex = visitables.indexOf(updateIndex)
         visitables.filterIsInstance<PenaltyFilterUiModel>()
             .find { it.title == TITLE_TYPE_PENALTY }?.run {
-                chipsFilterList = wrapperList.map {
+                chipsFilterList = chipsFilterList.map {
+                    ChipsFilterPenaltyUiModel(
+                        title = it.title,
+                        isSelected = wrapperList.find { sortFilter ->
+                            sortFilter.idFilter == it.value
+                        }?.isSelected ?: it.isSelected,
+                        value = it.value
+                    )
+                }
+                shownFilterList = wrapperList.map {
                     ChipsFilterPenaltyUiModel(
                         title = it.title,
                         isSelected = it.isSelected,

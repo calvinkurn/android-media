@@ -264,7 +264,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 )
             penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first
             itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second
-            _updateSortFilterSelected.value = Success(itemSortFilterWrapperList)
+            _updateSortFilterSelected.value = Success(mapTransformUpdateSortFilterSelected.third)
         }
     }
 
@@ -277,7 +277,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 )
             penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first
             itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second
-            _updateSortFilterSelected.value = Success(itemSortFilterWrapperList)
+            _updateSortFilterSelected.value = Success(mapTransformUpdateSortFilterSelected.third)
         }
     }
 

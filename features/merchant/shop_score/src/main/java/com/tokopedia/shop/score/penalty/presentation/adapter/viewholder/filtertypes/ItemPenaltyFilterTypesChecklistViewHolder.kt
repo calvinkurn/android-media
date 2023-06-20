@@ -14,7 +14,11 @@ class ItemPenaltyFilterTypesChecklistViewHolder(view: View, private val listener
 
     override fun bind(element: ItemPenaltyFilterTypesChecklistUiModel) {
         binding?.tvPenaltyFilterTypeChecklist?.text = element.title
-        binding?.cbPenaltyFilterTypeChecklist?.isChecked = element.isSelected
+        binding?.cbPenaltyFilterTypeChecklist?.run {
+            setOnCheckedChangeListener(null)
+            isChecked = element.isSelected
+            skipAnimation()
+        }
         setupRootClickListener()
         setupCheckboxClickListener(element)
     }
