@@ -2389,6 +2389,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    override fun onReviewRatingClicked(appLink: String) {
+        handleRouting(appLink)
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""

@@ -20,6 +20,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
+import com.tokopedia.unifyorderhistory.view.widget.UohReviewRatingWidget
 
 /**
  * Created by fwidjaja on 25/07/20.
@@ -27,7 +28,12 @@ import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 class UohOrderListViewHolder(
     private val binding: UohListItemBinding,
     private val actionListener: UohItemAdapter.ActionListener?
-) : RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root), UohReviewRatingWidget.Listener {
+
+    override fun onReviewRatingClicked(appLink: String) {
+        actionListener?.onReviewRatingClicked(appLink)
+    }
+
     fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
@@ -191,6 +197,11 @@ class UohOrderListViewHolder(
                     )
                 }
             }
+
+            binding.layoutReviewRating.updateUi(
+                data = item.dataObject.metadata.getReviewRatingComponent(),
+                listener = this
+            )
 
             actionListener?.trackViewOrderCard(item.dataObject, position)
         }
