@@ -9,6 +9,7 @@ import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
@@ -17,31 +18,38 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
+import io.mockk.coEvery
 import org.junit.Rule
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
 
 @RunWith(RobolectricTestRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class EditorViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+
     private val saveImageRepo = mockk<SaveImageRepository>()
     private val userSession = mockk<UserSessionInterface>()
-    private val addLogoRepository = mockk<AddLogoFilterRepository>()
     private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = EditorViewModel(
         saveImageRepo,
-        addLogoRepository,
         userSession,
-        bitmapCreationRepository
+        bitmapCreationRepository,
+        coroutineScopeRule.dispatchers
     )
 
     @Test
@@ -205,12 +213,10 @@ class EditorViewModelTest {
 
         // When
         viewModel.finishPage(
-            dataList,
-            onFinish = { finalUrlList ->
-                // Then
-                assertNotNull(finalUrlList)
-            }
+            dataList
         )
+
+        assertNotNull(viewModel.editorResult.getOrAwaitValue())
     }
 
     @Test
@@ -220,15 +226,15 @@ class EditorViewModelTest {
         dataList[0].editList[0].addLogoValue.overlayLogoUrl = "overlay.png"
 
         // When
-        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
         viewModel.finishPage(
-            dataList,
-            onFinish = { finalUrlList ->
-                // Then
-                assertNotNull(finalUrlList)
-                assertEquals(dataList.size, finalUrlList?.size)
-            }
+            dataList
         )
+
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
+        }
     }
 
     @Test
@@ -241,15 +247,16 @@ class EditorViewModelTest {
         )
 
         // When
-        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
         viewModel.finishPage(
-            dataList,
-            onFinish = { finalUrlList ->
-                // Then
-                assertNotNull(finalUrlList)
-                assertEquals(dataList.size, finalUrlList?.size)
-            }
+            dataList
         )
+
+        // Then
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
+        }
     }
 
     @Test
@@ -261,15 +268,17 @@ class EditorViewModelTest {
         )
 
         // When
-        every { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
+        coEvery { saveImageRepo.flattenImage(any(), any(), any()) } returns "result_overlay.png"
         viewModel.finishPage(
-            dataList,
-            onFinish = { finalUrlList ->
-                // Then
-                assertNotNull(finalUrlList)
-                assertEquals(dataList.size, finalUrlList?.size)
-            }
+            dataList
         )
+
+        // Then
+        viewModel.editorResult.getOrAwaitValue().let { finalUrlList ->
+            // Then
+            assertNotNull(finalUrlList)
+            assertEquals(dataList.size, finalUrlList.size)
+        }
     }
 
     @Test
