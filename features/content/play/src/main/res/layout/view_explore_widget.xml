@@ -19,7 +19,7 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHOPPING_BAG"
+        app:icon_name="FIRE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/iv_explore"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_explore_arrow"
