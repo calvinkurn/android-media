@@ -52,7 +52,8 @@ class ItemPenaltyViewHolder(
             tvDateStatusPenalty.text = element.startDate
             tvTitleTypePenalty.text = element.typePenalty
 
-            tvInvoiceTransactionPenalty.text = element.invoicePenalty
+            tvInvoiceTransactionPenalty.text =
+                element.productName ?: element.invoicePenalty
 
             icTransactionPenaltyToDetail.setOnClickListener {
                 itemDetailPenaltyListener.onItemPenaltyClick(element)

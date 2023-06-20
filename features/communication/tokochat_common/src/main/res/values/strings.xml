@@ -45,4 +45,14 @@
     <string name="tokochat_consent_desc">Kami perlu beberapa datamu agar komunikasi kamu dengan driver lewat Chat bisa lancar.</string>
     <string name="tokochat_consent_button">Mulai Chat Driver</string>
 
+    <string name="tokochat_bubbles_awareness_bottomsheet_title">Chat driver makin sat-set ⚡️</string>
+    <string name="tokochat_bubbles_awareness_bottomsheet_desc_1"><![CDATA[Bisa dong! Kini kamu bisa chat driver buat detail, catatan atau lokasi antar pesanan <b>lebih cepet tanpa buka aplikasi</b> Tokopedia.]]></string>
+    <string name="tokochat_bubbles_awareness_bottomsheet_desc_2"><![CDATA[Caranya tinggal klik ikon seperti di gambar <b>pas dapet notifikasi chat</b> dari driver. (Pastikan notifikasi HP-mu aktif, ya)]]></string>
+    <string name="tokochat_bubbles_awareness_bottomsheet_desc_3">Bubbles-nya bakal muncul di layar HP kamu, bikin akses dan balas chat dari driver makin cepet deh. Kuy, aktifin sekarang~ 😉</string>
+    <string name="tokochat_bubbles_awareness_bottomsheet_desc_info_3"><![CDATA[Mau cari tau seputar Bubbles? <a href="">Pelajari</a>]]></string>
+    <string name="tokochat_bubbles_awareness_ticker_info">Tampilannya bisa beragam tergantung HP-nya.</string>
+    <string name="tokochat_bubbles_awareness_next_button">Oke, Lanjut</string>
+    <string name="tokochat_bubbles_awareness_activate_setting_button">Mau Aktifin!</string>
+
+    <string name="tokochat_bubbles_ticker_desc"><![CDATA[Akses chat sama driver jadi makin mudah dan cepet, lho. <a href="#">Cobain Bubbles, Yuk!</a>]]>.</string>
 </resources>

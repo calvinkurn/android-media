@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
@@ -19,9 +20,7 @@ import com.tokopedia.usecase.RequestParams
 
 @GqlQuery("GetLayoutGqlQuery", GetLayoutUseCase.QUERY)
 class GetLayoutUseCase(
-    gqlRepository: GraphqlRepository,
-    mapper: LayoutMapper,
-    dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository, mapper: LayoutMapper, dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, WidgetLayoutUiModel>(
     gqlRepository, mapper, dispatchers, GetLayoutGqlQuery()
 ) {
@@ -51,7 +50,7 @@ class GetLayoutUseCase(
 
     companion object {
         internal const val QUERY = """
-            query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
+            query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!, ) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
                   ID
@@ -103,11 +102,17 @@ class GetLayoutUseCase(
         """
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_PAGE = "page"
+        private const val KEY_EVENT = "event"
 
-        fun getRequestParams(shopId: String, pageName: String): RequestParams {
+        fun getRequestParams(
+            shopId: String, pageName: String, trigger: String = String.EMPTY
+        ): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_PAGE, pageName)
+                if (trigger.isNotBlank()) {
+                    putString(KEY_EVENT, trigger)
+                }
             }
         }
     }
