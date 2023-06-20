@@ -3865,10 +3865,16 @@ class ShipmentFragment :
         }
     }
 
-    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+    override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
         // TODO: save addons
         // TODO: adjust calculation
-        shipmentPresenter.saveAddOnsProduct(addOnProductDataItemModel, cartItemModel, isChecked, bindingAdapterPosition, true)
+        if (isChecked) {
+            addOnProductDataItemModel.addOnDataStatus = 1
+        } else {
+            addOnProductDataItemModel.addOnDataStatus = 2
+        }
+        shipmentPresenter.saveAddOnsProduct(addOnProductDataItemModel, cartItemModel, bindingAdapterPosition, true)
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
 
     override fun onClickAddonProductInfoIcon() {
@@ -4257,12 +4263,13 @@ class ShipmentFragment :
     }
 
     fun handleOnSuccessSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        hideLoaderTotalPayment()
+        // hideLoaderTotalPayment()
         shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+
     }
 
     fun handleOnErrorSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        hideLoaderTotalPayment()
+        // hideLoaderTotalPayment()
         shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
     }
 

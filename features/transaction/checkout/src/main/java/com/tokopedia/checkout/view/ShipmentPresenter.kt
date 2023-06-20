@@ -67,6 +67,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
@@ -307,6 +308,12 @@ class ShipmentPresenter @Inject constructor(
 
     var isTradeIn: Boolean = false
 
+    // add ons product
+    // list summary add on - ready to render
+    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+    // list summary default
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
+
     val isTradeInByDropOff: Boolean
         get() {
             val recipientAddressModel = this.recipientAddressModel
@@ -364,7 +371,8 @@ class ShipmentPresenter @Inject constructor(
         var insuranceFee = 0.0
         var totalBookingFee = 0
         var hasAddOnSelected = false
-        var totalAddOnPrice = 0.0
+        var totalAddOnGiftingPrice = 0.0
+        var totalAddOnProductServicePrice = 0.0
         for (shipmentData in shipmentCartItemModelList) {
             if (shipmentData is ShipmentCartItemModel) {
                 val cartItemModels = shipmentData.cartItemModels
@@ -389,8 +397,15 @@ class ShipmentPresenter @Inject constructor(
                         if (cartItem.addOnGiftingProductLevelModel.status == 1) {
                             if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                                 for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
-                                    totalAddOnPrice += addOnsData.addOnPrice
+                                    totalAddOnGiftingPrice += addOnsData.addOnPrice
                                     hasAddOnSelected = true
+                                }
+                            }
+                        }
+                        if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                            for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
+                                if (addOnProductService.addOnDataStatus == 1) {
+                                    totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
                                 }
                             }
                         }
@@ -431,7 +446,7 @@ class ShipmentPresenter @Inject constructor(
                 val addOnsDataModel = shipmentData.addOnsOrderLevelModel
                 if (addOnsDataModel.status == 1 && addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
                     for ((addOnPrice) in addOnsDataModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnPrice
+                        totalAddOnGiftingPrice += addOnPrice
                         hasAddOnSelected = true
                     }
                 }
@@ -444,7 +459,7 @@ class ShipmentPresenter @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnPrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
         shipmentCost.totalWeight = totalWeight
         shipmentCost.additionalFee = additionalFee
         shipmentCost.totalItemPrice = totalItemPrice
@@ -454,7 +469,7 @@ class ShipmentPresenter @Inject constructor(
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice
-        shipmentCost.totalAddOnPrice = totalAddOnPrice
+        shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
         shipmentCost.hasAddOn = hasAddOnSelected
         if (shipmentDonationModel != null && shipmentDonationModel!!.isChecked) {
             shipmentCost.donation = shipmentDonationModel!!.donation.nominal.toDouble()
@@ -1000,6 +1015,9 @@ class ShipmentPresenter @Inject constructor(
         cartDataForRates = cartShipmentAddressFormData.cartData
         shippingCourierViewModelsState = hashMapOf()
         mapRequestSaveAddonProductService(cartShipmentAddressFormData)
+        summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
+        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons, cartShipmentAddressFormData)
+        setSummaryAddOnProduct(listSummaryAddOnModel)
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -5510,8 +5528,13 @@ class ShipmentPresenter @Inject constructor(
         shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
     }
 
+    fun setSummaryAddOnProduct(listSummaryAddOnModel: List<ShipmentAddOnSummaryModel>) {
+        shipmentCostModel.value = shipmentCostModel.value.copy(
+                listAddOnSummary = listSummaryAddOnModel
+        )
+    }
+
     private fun mapRequestSaveAddonProductService(cartShipmentAddressFormData: CartShipmentAddressFormData) {
-        val listAddOns: List<AddOnRequest> = emptyList()
         val listCartProduct: ArrayList<CartProduct> = arrayListOf()
         val listAddOnDataRequest: ArrayList<AddOnDataRequest> = arrayListOf()
         cartShipmentAddressFormData.groupAddress.forEach { groupAddress ->
@@ -5552,25 +5575,18 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    private fun updateParamRequestSaveAddOns(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        paramRequestSaveAddOnProductService.addOns.first().cartProducts.forEach { cartProduct ->
-            if (cartProduct.cartId == cartItemModel.cartId) {
-
-            }
-        }
-    }
-
-    fun saveAddOnsProduct(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, isChecked: Boolean, position: Int, isFireAndForget: Boolean) {
+    fun saveAddOnsProduct(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, position: Int, isFireAndForget: Boolean) {
+        println("++ masuk saveAddOnsProduct")
         // show loader based on cartId
-        view?.showAddOnProductSkeletonLoading(position)
+        // view?.showAddOnProductSkeletonLoading(position)
 
         // generate param based on addOnProductData
-        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel, isChecked)
-        saveAddOnProductUseCase.setParams(params)
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel)
+        saveAddOnProductUseCase.setParams(params, isFireAndForget)
         saveAddOnProductUseCase.execute(
                 onSuccess = {
                     // success : recalculate + show summary transaction
-                    updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
+                    // updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
                     view?.handleOnSuccessSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
                     if (!isFireAndForget && it.saveAddOns.status.equals(statusOK, true)) {
                         // continue to hit update DDP

@@ -465,7 +465,7 @@ class ShipmentCartItemViewHolder(
                         cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                                listener?.onCheckboxAddonProductListener(addon, isChecked, cartItemModel, bindingAdapterPosition)
+                                listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                             }
                         }
                         icProductAddonInfo.setOnClickListener {
@@ -542,7 +542,7 @@ class ShipmentCartItemViewHolder(
                     addOnView.apply {
                         cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
-                            listener?.onCheckboxAddonProductListener(addon, isChecked, cartItemModel, bindingAdapterPosition)
+                            listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }
                         icProductAddonInfo.setOnClickListener {
                             listener?.onClickAddonProductInfoIcon()
@@ -564,7 +564,7 @@ class ShipmentCartItemViewHolder(
 
         fun onImpressionAddOnProductLevel(productId: String)
 
-        fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
+        fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
         fun onClickAddonProductInfoIcon()
 

@@ -792,7 +792,7 @@ object CartUiModelMapper {
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
         var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
+        var totalPriceAddOn: Double
         shopLoop@ for (groupShop in availableGroupGroups) {
             groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
                 cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {

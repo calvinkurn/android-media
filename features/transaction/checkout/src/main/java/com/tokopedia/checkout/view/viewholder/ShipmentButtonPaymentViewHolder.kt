@@ -25,17 +25,19 @@ class ShipmentButtonPaymentViewHolder(private val binding: ItemShipmentButtonPay
     }
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
+        TextAndContentDescriptionUtil.setTextAndContentDescription(
+                binding.tvTotalPayment,
+                model.totalPrice,
+                itemView.context.getString(R.string.content_desc_tv_total_payment)
+        )
         if (model.loading) {
             binding.tvTotalPayment.gone()
             binding.loaderTotalPayment.type = LoaderUnify.TYPE_RECT
             binding.loaderTotalPayment.visible()
-            binding.loaderTotalPayment.visible()
-            binding.tvTotalPayment.gone()
         } else {
             binding.loaderTotalPayment.gone()
             binding.tvTotalPayment.visible()
             binding.loaderBtnPayment.gone()
-            binding.loaderTotalPayment.gone()
             binding.btnSelectPaymentMethod.visible()
             binding.btnSelectPaymentMethod.isEnabled = model.enable
             binding.btnSelectPaymentMethod.let {
@@ -55,12 +57,6 @@ class ShipmentButtonPaymentViewHolder(private val binding: ItemShipmentButtonPay
                     })
                 )
             }
-            binding.tvTotalPayment.gone()
-            TextAndContentDescriptionUtil.setTextAndContentDescription(
-                    binding.tvTotalPayment,
-                    model.totalPrice,
-                    itemView.context.getString(R.string.content_desc_tv_total_payment)
-            )
         }
     }
 }

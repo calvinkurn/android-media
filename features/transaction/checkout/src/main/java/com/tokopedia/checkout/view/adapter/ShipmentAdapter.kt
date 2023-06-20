@@ -1352,8 +1352,8 @@ class ShipmentAdapter @Inject constructor(
 //        return index
 //    }
 
-    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel, isChecked: Boolean, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
-        shipmentAdapterActionListener.onCheckboxAddonProductListener(addOnProductDataItemModel, isChecked, cartItemModel, bindingAdapterPosition)
+    override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        shipmentAdapterActionListener.onCheckboxAddonProductListener(isChecked, addOnProductDataItemModel, cartItemModel, bindingAdapterPosition)
     }
 
     override fun onClickAddonProductInfoIcon() {
@@ -1369,20 +1369,27 @@ class ShipmentAdapter @Inject constructor(
     }
 
     fun updateAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        val shipmentCartItemModel: ShipmentCartItemModel?
+        val cartItemModelData: CartItemModel?
         val currentShipmentData = shipmentDataList[position]
-        if (currentShipmentData is ShipmentCartItemModel) {
-            shipmentCartItemModel = currentShipmentData
-            shipmentCartItemModel.cartItemModels.forEach { item ->
-                if (item.cartId == cartItemModel.cartId) {
-                    item.addOnProduct.listAddOnProductData.forEach { addOnData ->
-                        if (addOnData.addOnDataId == addOnProductDataItemModel.addOnDataId) {
-                            addOnData.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
-                        }
+        if (currentShipmentData is CartItemModel) {
+            cartItemModelData = currentShipmentData
+            if (cartItemModel.cartId == cartItemModelData.cartId) {
+                cartItemModelData.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+                    if (addOnItem.addOnDataId == addOnProductDataItemModel.addOnDataId) {
+                        addOnItem.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
                     }
                 }
             }
         }
         notifyItemChanged(position)
+    }
+
+    fun updateAddOnSummary(shipmentCostModel: ShipmentCostModel): Boolean {
+        val item = shipmentDataList.getOrNull(shipmentCostPosition)
+        if (item is ShipmentCostModel) {
+            shipmentDataList[shipmentCostPosition] = shipmentCostModel
+            return true
+        }
+        return false
     }
 }
