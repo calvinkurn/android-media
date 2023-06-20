@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.CategoryTestFixtures
+import com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel.CategoryTestFixtures
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -14,7 +14,7 @@ import org.mockito.ArgumentMatchers.anyString
 
 class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
 
-    private val categoryModelJSON = "category/first-page-products-variant-and-non-variant.json"
+    private val categoryModelJSON = "oldcategory/first-page-products-variant-and-non-variant.json"
     private val categoryModel = categoryModelJSON.jsonToObject<CategoryModel>()
 
     private lateinit var addToCartTestHelper: AddToCartNonVariantTestHelper

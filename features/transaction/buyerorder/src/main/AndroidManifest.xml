@@ -28,11 +28,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".detail.view.activity.OrderListwebViewActivity"
-            android:configChanges="uiMode"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".detail.revamp.activity.RevampOrderListDetailActivity"
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
