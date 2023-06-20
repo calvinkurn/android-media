@@ -69,6 +69,9 @@ class PlayShortsViewModelRobot(
     val tncList: List<TermsAndConditionUiModel>
         get() = viewModel.tncList
 
+    val isSelectedAccountAffiliate: Boolean
+        get() = viewModel.isSelectedAccountAffiliate
+
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()
         return this

@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -27,10 +28,8 @@ class PlayShortsAffiliateViewModelTest {
 
     private val mockAccountList = uiModelBuilder.buildAccountListModel()
     private val mockConfig = uiModelBuilder.buildShortsConfig()
-    private val mockAccountShop = mockAccountList.first()
     private val mockAccountUser = mockAccountList.last()
     private val mockSubmitOnboardAffiliateResponseSuccess = uiModelBuilder.buildSubmitOnboardAffiliate()
-    private val mockSubmitOnboardAffiliateResponseError = uiModelBuilder.buildSubmitOnboardAffiliate("error")
     private val mockCheckAffiliateTrue = uiModelBuilder.buildBroadcasterCheckAffiliate()
     private val mockCheckAffiliateFalse = uiModelBuilder.buildBroadcasterCheckAffiliate(affiliateName = "", isAffiliate = false)
     private val mockException = uiModelBuilder.buildException()
@@ -59,6 +58,7 @@ class PlayShortsAffiliateViewModelTest {
 
             state.isAffiliate.assertTrue()
             events.last().assertEqualTo(PlayShortsUiEvent.SuccessOnboardAffiliate)
+            it.isSelectedAccountAffiliate.assertTrue()
         }
     }
 
@@ -67,7 +67,7 @@ class PlayShortsAffiliateViewModelTest {
         coEvery { mockRepo.getAccountList() } returns mockAccountList
         coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.submitOnboardAffiliateTnc(any()) } throws mockException
-        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockCheckAffiliateTrue
+        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockCheckAffiliateFalse
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
 
         PlayShortsViewModelRobot(
@@ -75,12 +75,13 @@ class PlayShortsAffiliateViewModelTest {
             accountManager = mockAccountManager,
             dispatchers = coroutineScopeRule.dispatchers
         ).use {
-            val (state, events) = it.recordStateAndEvent {
+            val events = it.recordEvent {
                 submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
                 submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
             }
 
             events.last().assertEqualTo(PlayShortsUiEvent.ErrorOnboardAffiliate(mockException))
+            it.isSelectedAccountAffiliate.assertFalse()
         }
     }
 }
