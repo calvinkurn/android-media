@@ -6,7 +6,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianKataKunciUiModel(
     val newPositiveKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom>?,
-    val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput(),
+    val input: TopadsManagePromoGroupProductInput?,
     val maxBid: Int,
     val minBid: Int
 ) : GroupDetailDataModel {

@@ -85,10 +85,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit = { element ->
         viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), element.type)
-        saveButton?.showWithCondition(element.isExpanded)
-        saveButton?.tag = element.type
-        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type),false)
-        updateButtonTitle(viewModel.getInputDataFromMapper(element.type))
+        updateApplyInsightCtaTag(element.type)
+        showApplyInsightCta(element.isExpanded)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(element.type))
+        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(element.type),false))
     }
 
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
@@ -160,7 +160,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun updateButtonTitle(input: TopadsManagePromoGroupProductInput?){
+    private fun updateApplyInsightCtaTitle(input: TopadsManagePromoGroupProductInput?){
         input?.let {
             saveButton?.text = when (saveButton?.tag) {
                 TYPE_POSITIVE_KEYWORD -> {
@@ -355,7 +355,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedChips = position + CONST_2
         )
-        changeTagOnChipsClick(position)
+        updateApplyInsightCtaTag(position + CONST_2)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(position + CONST_2))
+        showApplyInsightCta(viewModel.getInputDataFromMapper(saveButton?.tag as? Int) != null)
     }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
@@ -451,11 +453,21 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedChips = it + CONST_2
         )
-        changeTagOnChipsClick(it)
+        updateApplyInsightCtaTag(it + CONST_2)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(it + CONST_2))
+        showApplyInsightCta(viewModel.getInputDataFromMapper(saveButton?.tag as? Int) != null)
     }
 
-    private fun changeTagOnChipsClick(chipsType: Int) {
-        saveButton?.tag = chipsType + CONST_2
+    private fun updateApplyInsightCtaTag(tag: Int){
+        saveButton?.tag = tag
+    }
+
+    private fun setApplyInsightCtaState(isEnabled: Boolean){
+        saveButton?.isEnabled = isEnabled
+    }
+
+    private fun showApplyInsightCta(isVisible: Boolean){
+        saveButton?.showWithCondition(isVisible)
     }
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {
@@ -519,8 +531,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     val onInsightAction = {hasErrors: Boolean ->
-        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
-        updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
+        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors))
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
     private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = String.EMPTY){
@@ -531,10 +543,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             isSwitchAdType,
             groupName
         )
-        saveButton?.gone()
+        showApplyInsightCta(false)
     }
 
-    private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
+    private fun validateInsightData(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
         if(hasErrors)
             return false
         else {
@@ -549,7 +561,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                     else -> true
                 }
             }
-            return true
+            return false
         }
     }
 
