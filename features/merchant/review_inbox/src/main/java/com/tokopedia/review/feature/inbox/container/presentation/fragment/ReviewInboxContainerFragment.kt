@@ -44,7 +44,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         const val SELLER_TAB_INDEX = 2
         const val HIDE_TAB_COUNTER = -1
 
-        fun createNewInstance(tab: String = "", source: String = "") : ReviewInboxContainerFragment{
+        fun createNewInstance(tab: String, source: String) : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewApplinkConst.PARAM_TAB, tab)
