@@ -170,7 +170,7 @@ class AccordianKeywordBidViewHolder(
                 status = element.keywordStatus,
                 tag = element.keywordTag,
                 suggestionPriceBid = element.suggestionBid.toDouble(),
-                price_bid = element.currentBid.toDouble(),
+                price_bid = element.suggestionBid.toDouble(),
                 source = element.suggestionBidSource,
                 id = element.keywordID
             )
@@ -192,7 +192,7 @@ class AccordianKeywordBidViewHolder(
                     status = it.keywordStatus,
                     tag = it.keywordTag,
                     suggestionPriceBid = it.suggestionBid.toDouble(),
-                    price_bid = it.currentBid.toDouble(),
+                    price_bid = it.suggestionBid.toDouble(),
                     source = it.suggestionBidSource,
                     id = it.keywordID
                 )
