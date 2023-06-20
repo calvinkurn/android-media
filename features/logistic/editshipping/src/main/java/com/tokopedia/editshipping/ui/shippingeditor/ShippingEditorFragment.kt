@@ -12,7 +12,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,12 +43,14 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.FeatureInfoAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperProductItemAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperValidationBoAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorItemAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -503,10 +504,11 @@ class ShippingEditorFragment :
             })
         }
         if (uiContentModel.body.isNotEmpty()) {
-            context?.let {
-                child.pointOne.text = HtmlLinkHelper(it, uiContentModel.body[0]).spannedString
-                child.pointTwo.text = HtmlLinkHelper(it, uiContentModel.body[1]).spannedString
-                child.pointThree.text = HtmlLinkHelper(it, uiContentModel.body[2]).spannedString
+            child.rvValidationBo.run {
+                val shipperAdapter = ShipperValidationBoAdapter()
+                shipperAdapter.setData(uiContentModel.body)
+                adapter = shipperAdapter
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
         child.btnNonaktifkan.setOnClickListener {
@@ -707,21 +709,11 @@ class ShippingEditorFragment :
 
     private fun setupBottomSheetShipperInfoChild(child: BottomsheetShipperInfoBinding) {
         if (bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
-            child.imgInfoCourier.setImageDrawable(
-                ContextCompat.getDrawable(
-                    child.root.context,
-                    R.drawable.ic_awb_otomatis
-                )
-            )
+            child.imgInfoCourier.setImageUrl(TokopediaImageUrl.IMG_EDITSHIPPING_AWB_OTOMATIS)
             child.tvInfoCourier.text = getString(R.string.awb_otomatis_title)
             child.tvInfoCourierDetail.text = getString(R.string.awb_otomatis_detail)
         } else {
-            child.imgInfoCourier.setImageDrawable(
-                ContextCompat.getDrawable(
-                    child.root.context,
-                    R.drawable.ic_non_tunai
-                )
-            )
+            child.imgInfoCourier.setImageUrl(TokopediaImageUrl.IMG_EDITSHIPPING_NON_TUNAI)
             child.tvInfoCourier.text = getString(R.string.non_tunai_title)
             child.tvInfoCourierDetail.text = getString(R.string.non_tunai_detail)
         }
