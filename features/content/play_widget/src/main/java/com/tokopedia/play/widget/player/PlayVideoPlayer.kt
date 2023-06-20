@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -18,7 +19,8 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play_common.util.PlayConnectionCommon
-
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by mzennis on 09/10/20.
@@ -30,7 +32,8 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
     var videoUrl: String? = null
     var shouldCache: Boolean = false
 
-    var maxDurationCellularInSeconds: Int? = null
+    var maxDurationCellularInSeconds: Int = 0
+    var maxDurationWifiInSeconds: Int = 0
 
     private val shouldForceLowest = cardType != PlayWidgetType.Jumbo
 
@@ -48,13 +51,14 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
-                    Player.STATE_ENDED -> if (PlayConnectionCommon.isConnectCellular(context)) whenIsPlayingChanged(isPlaying = false)
+                    Player.STATE_ENDED -> {
+                        whenIsPlayingChanged(isPlaying = false)
+                    }
                     Player.STATE_READY -> {
-                        if (playWhenReady && PlayConnectionCommon.isConnectCellular(context)) {
-                            configureAutoStop(maxDurationCellularInSeconds)
-                        }
-
                         whenIsPlayingChanged(isPlaying = true)
+                    }
+                    Player.STATE_BUFFERING -> {
+                        // don't do anything when buffering, just follow the previous state
                     }
                     else -> whenIsPlayingChanged(isPlaying = false)
                 }
@@ -69,10 +73,29 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
     fun start() {
         if (videoUrl == null || videoUrl?.isBlank() == true) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
+        val mediaSource = getMediaSourceBySource(
+            context,
+            Uri.parse(videoUrl),
+            shouldCache,
+            Duration.ofSeconds(
+                if (PlayConnectionCommon.isConnectCellular(context)) {
+                    maxDurationCellularInSeconds
+                } else {
+                    maxDurationWifiInSeconds
+                }.toLong()
+            )
+        )
 
         exoPlayer.playWhenReady = true
-        exoPlayer.prepare(mediaSource,true, false)
+        exoPlayer.prepare(mediaSource, true, false)
+    }
+
+    fun mute(shouldMute: Boolean) {
+        exoPlayer.volume = if (shouldMute) 0f else 100f
+    }
+
+    fun repeat(shouldRepeat: Boolean) {
+        exoPlayer.repeatMode = if (shouldRepeat) ExoPlayer.REPEAT_MODE_ONE else ExoPlayer.REPEAT_MODE_OFF
     }
 
     fun stop() {
@@ -97,11 +120,19 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
         fun onIsPlayingChanged(isPlaying: Boolean)
     }
 
-    private fun getMediaSourceBySource(context: Context, uri: Uri, shouldCache: Boolean): MediaSource {
+    private fun getMediaSourceBySource(
+        context: Context,
+        uri: Uri,
+        shouldCache: Boolean,
+        durationToPlay: Duration
+    ): MediaSource {
         val defaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val dataSourceFactory = if (shouldCache) {
             CacheDataSourceFactory(PlayWidgetVideoCache.getInstance(context), defaultDataSourceFactory)
-        } else defaultDataSourceFactory
+        } else {
+            defaultDataSourceFactory
+        }
+
         val mediaSourceFactory = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
@@ -109,7 +140,19 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
             C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
-        return mediaSourceFactory.createMediaSource(uri)
+
+        return if (durationToPlay.isZero || durationToPlay.isNegative) {
+            mediaSourceFactory.createMediaSource(uri)
+        } else {
+            ClippingMediaSource(
+                mediaSourceFactory.createMediaSource(uri),
+                0,
+                TimeUnit.NANOSECONDS.toMicros(durationToPlay.toNanos()),
+                true,
+                true,
+                true
+            )
+        }
     }
 
     private fun configureAutoStop(durationLimit: Int?) {

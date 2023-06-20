@@ -39,13 +39,13 @@ object TokoNowUniversalShareUtil {
         context?.startActivity(Intent.createChooser(share, shareTxt))
     }
 
-    fun shareRequest(context: Context?, shareHomeTokonow: ShareTokonow?): LinkerShareRequest<*>? {
-        return LinkerUtils.createShareRequest(0, linkerDataMapper(shareHomeTokonow), object : ShareCallback {
+    fun shareRequest(context: Context?, shareTokonow: ShareTokonow?): LinkerShareRequest<*>? {
+        return LinkerUtils.createShareRequest(0, linkerDataMapper(shareTokonow), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
                 if (linkerShareData.url != null) {
                     shareData(
                         context = context,
-                        shareTxt = String.format(Locale.getDefault(), "%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
+                        shareTxt = String.format(Locale.getDefault(), "%s %s", shareTokonow?.sharingText, linkerShareData.shareUri),
                         pageUri = linkerShareData.url
                     )
                 }
@@ -54,8 +54,8 @@ object TokoNowUniversalShareUtil {
             override fun onError(linkerError: LinkerError) {
                 shareData(
                     context = context,
-                    shareTxt = shareHomeTokonow?.sharingText.orEmpty(),
-                    pageUri = shareHomeTokonow?.sharingUrl.orEmpty()
+                    shareTxt = shareTokonow?.sharingText.orEmpty(),
+                    pageUri = shareTokonow?.sharingUrl.orEmpty()
                 )
             }
         })

@@ -346,7 +346,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupRecommendationLabelListener(position: Int) {
-        if (videoPictureAdapter?.isFirstPicture(position) == true) {
+        if (videoPictureAdapter?.isPicture(position) == true) {
             binding.txtAnimLabelRecommendation.setOnClickListener {
                 mListener?.onShowProductMediaRecommendationClicked()
             }
@@ -356,7 +356,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun shouldShowRecommendationLabel(position: Int) {
-        if (videoPictureAdapter?.isFirstPicture(position) == true) {
+        if (videoPictureAdapter?.isPicture(position) == true) {
             binding.txtAnimLabelRecommendation.showView()
         } else {
             binding.txtAnimLabelRecommendation.hideView()
