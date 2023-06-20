@@ -7,7 +7,7 @@
         android:id="@+id/action_dppo_consent"
         android:orderInCategory="100"
         android:icon="@drawable/iconunify_information"
-        android:iconTint="@color/Unify_N700_96"
+        android:iconTint="@color/Unify_NN900"
         app:itemIconSize="12dp"
         android:title=""
         android:visible="false"
@@ -17,7 +17,7 @@
         android:id="@+id/action_more"
         android:icon="@drawable/ent_ic_more_vert"
         android:orderInCategory="200"
-        android:iconTint="@color/Unify_N700_96"
+        android:iconTint="@color/Unify_NN900"
         app:itemIconSize="12dp"
         android:title="More"
         app:showAsAction="always" />
