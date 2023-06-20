@@ -4,15 +4,15 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by mzennis on 14/10/20.
  */
 data class CarouselPlayWidgetDataModel(
-        val homeChannel: DynamicHomeChannel.Channels,
+        val homeChannel: ChannelModel,
         val widgetState: PlayWidgetState = PlayWidgetState(isLoading = true)
 ) : HomeVisitable {
 
@@ -49,8 +49,8 @@ data class CarouselPlayWidgetDataModel(
         if (obj is CarouselPlayWidgetDataModel) {
             return homeChannel.id == obj.homeChannel.id
                     && homeChannel.name == obj.homeChannel.name
-                    && homeChannel.header.name == obj.homeChannel.header.name
-                    && homeChannel.header.applink == obj.homeChannel.header.applink
+                    && homeChannel.channelHeader.name == obj.homeChannel.channelHeader.name
+                    && homeChannel.channelHeader.applink == obj.homeChannel.channelHeader.applink
                     && widgetState == obj.widgetState
         }
         return false
