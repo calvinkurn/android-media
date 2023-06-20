@@ -280,6 +280,8 @@ data class DynamicHomeChannel(
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT: String = "play_widget_v2"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT: String = "play_widget_v2_product"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
@@ -310,6 +312,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
+            const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0

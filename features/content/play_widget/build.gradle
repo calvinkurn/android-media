@@ -6,6 +6,21 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 }
 
 buildscript {
@@ -21,6 +36,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 
@@ -41,6 +57,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -60,6 +77,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    coreLibraryDesugaring rootProject.ext.miscDependencies.desugarJdk
 }
 
 project.ext {
