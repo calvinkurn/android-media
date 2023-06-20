@@ -21,12 +21,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelCostTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `GIVEN mixed error cart WHEN update cost THEN should calculate not error cart only`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -48,16 +48,16 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1000.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.totalItemPrice, 0.0)
     }
 
     @Test
     fun `GIVEN mixed ppp cart WHEN update cost THEN should calculate cart with ppp price`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -81,18 +81,18 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(3000.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
-        assertEquals(200.0, presenter.shipmentCostModel.value.purchaseProtectionFee, 0.0)
-        assertEquals(2, presenter.shipmentCostModel.value.totalPurchaseProtectionItem)
+        assertEquals(3000.0, viewModel.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(200.0, viewModel.shipmentCostModel.value.purchaseProtectionFee, 0.0)
+        assertEquals(2, viewModel.shipmentCostModel.value.totalPurchaseProtectionItem)
     }
 
     @Test
     fun `GIVEN bundling cart WHEN update cost THEN should calculate cart with bundle price`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -119,17 +119,17 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1500.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
-        assertEquals(2, presenter.shipmentCostModel.value.totalItem)
+        assertEquals(1500.0, viewModel.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(2, viewModel.shipmentCostModel.value.totalItem)
     }
 
     @Test
     fun `GIVEN add ons product level cart WHEN update cost THEN should calculate cart with add ons product level price`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -152,18 +152,18 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1000.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
-        assertEquals(1100.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(true, presenter.shipmentCostModel.value.hasAddOn)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(1100.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(true, viewModel.shipmentCostModel.value.hasAddOn)
     }
 
     @Test
     fun `GIVEN add ons order level cart WHEN update cost THEN should calculate cart with add ons order level price`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -186,18 +186,18 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1000.0, presenter.shipmentCostModel.value.totalItemPrice, 0.0)
-        assertEquals(1100.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(true, presenter.shipmentCostModel.value.hasAddOn)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.totalItemPrice, 0.0)
+        assertEquals(1100.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(true, viewModel.shipmentCostModel.value.hasAddOn)
     }
 
     @Test
     fun `GIVEN has loading item WHEN update checkout button THEN should return disabled`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -214,16 +214,16 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateCheckoutButtonData()
+        viewModel.updateCheckoutButtonData()
 
         // Then
-        assertEquals(false, presenter.shipmentButtonPayment.value.enable)
+        assertEquals(false, viewModel.shipmentButtonPayment.value.enable)
     }
 
     @Test
     fun `WHEN reset promo benefit THEN should return empty promo benefit`() {
         // Given
-        presenter.shipmentCostModel.value = ShipmentCostModel(
+        viewModel.shipmentCostModel.value = ShipmentCostModel(
             isHasDiscountDetails = true,
             discountAmount = 1,
             discountLabel = "discount",
@@ -236,18 +236,18 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.resetPromoBenefit()
+        viewModel.resetPromoBenefit()
 
         // Then
-        assertEquals(false, presenter.shipmentCostModel.value.isHasDiscountDetails)
-        assertEquals(0, presenter.shipmentCostModel.value.discountAmount)
-        assertEquals("", presenter.shipmentCostModel.value.discountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.shippingDiscountAmount)
-        assertEquals("", presenter.shipmentCostModel.value.shippingDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.productDiscountAmount)
-        assertEquals("", presenter.shipmentCostModel.value.productDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.cashbackAmount)
-        assertEquals("", presenter.shipmentCostModel.value.cashbackLabel)
+        assertEquals(false, viewModel.shipmentCostModel.value.isHasDiscountDetails)
+        assertEquals(0, viewModel.shipmentCostModel.value.discountAmount)
+        assertEquals("", viewModel.shipmentCostModel.value.discountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.shippingDiscountAmount)
+        assertEquals("", viewModel.shipmentCostModel.value.shippingDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.productDiscountAmount)
+        assertEquals("", viewModel.shipmentCostModel.value.productDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.cashbackAmount)
+        assertEquals("", viewModel.shipmentCostModel.value.cashbackLabel)
     }
 
     @Test
@@ -277,18 +277,18 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.setPromoBenefit(summariesUiModels)
+        viewModel.setPromoBenefit(summariesUiModels)
 
         // Then
-        assertEquals(true, presenter.shipmentCostModel.value.isHasDiscountDetails)
-        assertEquals(0, presenter.shipmentCostModel.value.discountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.discountLabel)
-        assertEquals(1000, presenter.shipmentCostModel.value.shippingDiscountAmount)
-        assertEquals("ship_discount", presenter.shipmentCostModel.value.shippingDiscountLabel)
-        assertEquals(2000, presenter.shipmentCostModel.value.productDiscountAmount)
-        assertEquals("prod_discount", presenter.shipmentCostModel.value.productDiscountLabel)
-        assertEquals(3000, presenter.shipmentCostModel.value.cashbackAmount)
-        assertEquals("cashback", presenter.shipmentCostModel.value.cashbackLabel)
+        assertEquals(true, viewModel.shipmentCostModel.value.isHasDiscountDetails)
+        assertEquals(0, viewModel.shipmentCostModel.value.discountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.discountLabel)
+        assertEquals(1000, viewModel.shipmentCostModel.value.shippingDiscountAmount)
+        assertEquals("ship_discount", viewModel.shipmentCostModel.value.shippingDiscountLabel)
+        assertEquals(2000, viewModel.shipmentCostModel.value.productDiscountAmount)
+        assertEquals("prod_discount", viewModel.shipmentCostModel.value.productDiscountLabel)
+        assertEquals(3000, viewModel.shipmentCostModel.value.cashbackAmount)
+        assertEquals("cashback", viewModel.shipmentCostModel.value.cashbackLabel)
     }
 
     @Test
@@ -301,23 +301,23 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 description = "disc"
             )
         )
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "")
         )
 
         // When
-        presenter.setPromoBenefit(summariesUiModels)
+        viewModel.setPromoBenefit(summariesUiModels)
 
         // Then
-        assertEquals(false, presenter.shipmentCostModel.value.isHasDiscountDetails)
-        assertEquals(0, presenter.shipmentCostModel.value.discountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.discountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.shippingDiscountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.shippingDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.productDiscountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.productDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.cashbackAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.cashbackLabel)
+        assertEquals(false, viewModel.shipmentCostModel.value.isHasDiscountDetails)
+        assertEquals(0, viewModel.shipmentCostModel.value.discountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.discountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.shippingDiscountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.shippingDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.productDiscountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.productDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.cashbackAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.cashbackLabel)
     }
 
     @Test
@@ -330,7 +330,7 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 description = "disc"
             )
         )
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 selectedShipmentDetailData = ShipmentDetailData()
@@ -338,24 +338,24 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.setPromoBenefit(summariesUiModels)
+        viewModel.setPromoBenefit(summariesUiModels)
 
         // Then
-        assertEquals(false, presenter.shipmentCostModel.value.isHasDiscountDetails)
-        assertEquals(1000, presenter.shipmentCostModel.value.discountAmount)
-        assertEquals("disc", presenter.shipmentCostModel.value.discountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.shippingDiscountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.shippingDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.productDiscountAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.productDiscountLabel)
-        assertEquals(0, presenter.shipmentCostModel.value.cashbackAmount)
-        assertEquals(null, presenter.shipmentCostModel.value.cashbackLabel)
+        assertEquals(false, viewModel.shipmentCostModel.value.isHasDiscountDetails)
+        assertEquals(1000, viewModel.shipmentCostModel.value.discountAmount)
+        assertEquals("disc", viewModel.shipmentCostModel.value.discountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.shippingDiscountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.shippingDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.productDiscountAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.productDiscountLabel)
+        assertEquals(0, viewModel.shipmentCostModel.value.cashbackAmount)
+        assertEquals(null, viewModel.shipmentCostModel.value.cashbackLabel)
     }
 
     @Test
     fun `GIVEN cart with mixed shipment WHEN update cost THEN should calculate shipment cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -394,20 +394,20 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1000.0, presenter.shipmentCostModel.value.shippingFee, 0.0)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.shippingFee, 0.0)
     }
 
     @Test
     fun `GIVEN cart tradein dropoff with no shipment WHEN update cost THEN should calculate shipment cost correctly`() {
         // Given
-        presenter.isTradeIn = true
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.isTradeIn = true
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             selectedTabIndex = 1
         }
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -423,16 +423,16 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(0.0, presenter.shipmentCostModel.value.shippingFee, 0.0)
+        assertEquals(0.0, viewModel.shipmentCostModel.value.shippingFee, 0.0)
     }
 
     @Test
     fun `GIVEN cart with cross sell WHEN update cost THEN should calculate cross sell cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -445,24 +445,24 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.listShipmentCrossSellModel = arrayListOf(
+        viewModel.listShipmentCrossSellModel = arrayListOf(
             ShipmentCrossSellModel(isChecked = true, crossSellModel = CrossSellModel(price = 100.0)),
             ShipmentCrossSellModel(isChecked = false, crossSellModel = CrossSellModel(price = 100.0))
         )
-        presenter.shipmentNewUpsellModel = ShipmentNewUpsellModel(isShow = true, isSelected = true, price = 200)
+        viewModel.shipmentNewUpsellModel = ShipmentNewUpsellModel(isShow = true, isSelected = true, price = 200)
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(2300.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(2, presenter.shipmentCostModel.value.listCrossSell.size)
+        assertEquals(2300.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(2, viewModel.shipmentCostModel.value.listCrossSell.size)
     }
 
     @Test
     fun `GIVEN cart with donation WHEN update cost THEN should calculate donation cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -475,20 +475,20 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
+        viewModel.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(5000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(3000.0, presenter.shipmentCostModel.value.donation, 0.0)
+        assertEquals(5000.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(3000.0, viewModel.shipmentCostModel.value.donation, 0.0)
     }
 
     @Test
     fun `GIVEN cart with donation unchecked WHEN update cost THEN should calculate donation cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -501,20 +501,20 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
+        viewModel.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(2000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(0.0, presenter.shipmentCostModel.value.donation, 0.0)
+        assertEquals(2000.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(0.0, viewModel.shipmentCostModel.value.donation, 0.0)
     }
 
     @Test
     fun `GIVEN cart with donation changed to unchecked WHEN update cost THEN should calculate donation cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -527,22 +527,22 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
-        presenter.updateShipmentCostModel()
-        presenter.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
+        viewModel.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = true)
+        viewModel.updateShipmentCostModel()
+        viewModel.shipmentDonationModel = ShipmentDonationModel(Donation(nominal = 3000), isChecked = false)
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(2000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(0.0, presenter.shipmentCostModel.value.donation, 0.0)
+        assertEquals(2000.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(0.0, viewModel.shipmentCostModel.value.donation, 0.0)
     }
 
     @Test
     fun `GIVEN cart with trade in price WHEN update cost THEN should calculate total cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -559,17 +559,17 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(1000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(1000.0, presenter.shipmentCostModel.value.tradeInPrice, 0.0)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(1000.0, viewModel.shipmentCostModel.value.tradeInPrice, 0.0)
     }
 
     @Test
     fun `GIVEN cart with leasing price WHEN update cost THEN should calculate total cost correctly`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(cartStringGroup = ""),
             ShipmentCartItemModel(
                 cartStringGroup = "",
@@ -586,10 +586,10 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(3000.0, presenter.shipmentCostModel.value.totalPrice, 0.0)
-        assertEquals(1000, presenter.shipmentCostModel.value.bookingFee)
+        assertEquals(3000.0, viewModel.shipmentCostModel.value.totalPrice, 0.0)
+        assertEquals(1000, viewModel.shipmentCostModel.value.bookingFee)
     }
 }

@@ -28,7 +28,7 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 import rx.Observable
 
-class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelGetShippingRatesTest : BaseShipmentViewModelTest() {
 
     private var shippingDurationConverter = ShippingDurationConverter()
 
@@ -76,7 +76,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -133,7 +133,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -191,7 +191,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -250,7 +250,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -313,7 +313,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -373,7 +373,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -388,7 +388,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN get shipping rates success with auto courier selection THEN should render success`() {
         // Given
-        presenter.isBoUnstackEnabled = false
+        viewModel.isBoUnstackEnabled = false
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
@@ -441,11 +441,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -460,7 +460,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN get shipping rates success with auto courier selection & disabled change courier THEN should hit validate use`() {
         // Given
-        presenter.isBoUnstackEnabled = false
+        viewModel.isBoUnstackEnabled = false
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
@@ -531,11 +531,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -550,7 +550,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN get shipping rates success with bo unstack disabled & matching bo sp id THEN should hit validate use`() {
         // Given
-        presenter.isBoUnstackEnabled = false
+        viewModel.isBoUnstackEnabled = false
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
@@ -619,11 +619,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -638,7 +638,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN get shipping rates success with bo code THEN should hit validate use`() {
         // Given
-        presenter.isBoUnstackEnabled = true
+        viewModel.isBoUnstackEnabled = true
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
 
@@ -707,11 +707,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -726,7 +726,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN get shipping rates got error courier with bo code THEN should not hit validate use`() {
         // Given
-        presenter.isBoUnstackEnabled = true
+        viewModel.isBoUnstackEnabled = true
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }.productData.error =
@@ -781,11 +781,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -854,11 +854,11 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
-        presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.recipientAddressModel = RecipientAddressModel()
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -926,7 +926,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -997,7 +997,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -1064,7 +1064,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -1130,7 +1130,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -1196,7 +1196,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -1267,7 +1267,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = true
 
         // When
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel
@@ -1283,7 +1283,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1331,7 +1331,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1347,7 +1347,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc success with ui hidden and no bo promo THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1399,7 +1399,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1416,7 +1416,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc return error THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1466,7 +1466,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1482,7 +1482,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc return empty data THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1527,7 +1527,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1543,7 +1543,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc failed THEN should render nothing`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1588,7 +1588,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1604,7 +1604,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates with mvc failed with akamai THEN should render nothing`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1650,7 +1650,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1670,7 +1670,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1718,7 +1718,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1734,7 +1734,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc success with ui hidden and no promo code THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1786,7 +1786,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1803,7 +1803,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc return error THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1853,7 +1853,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1869,7 +1869,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc return empty data THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1914,7 +1914,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1930,7 +1930,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc return empty courier data THEN should render failed`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -1975,7 +1975,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -1991,7 +1991,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc failed THEN should render nothing`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -2034,7 +2034,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -2050,7 +2050,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates api with mvc failed with akamai THEN should render nothing`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -2094,7 +2094,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -2114,7 +2114,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates schedule with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -2165,7 +2165,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -2181,7 +2181,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     fun `WHEN get shipping rates schedule with mvc failed with akamai THEN should render nothing`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
-        presenter.validateUsePromoRevampUiModel =
+        viewModel.validateUsePromoRevampUiModel =
             ValidateUsePromoCheckoutMapper
                 .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
 
@@ -2225,7 +2225,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val skipMvc = false
 
         // When
-        presenter.processGetCourierRecommendationMvc(
+        viewModel.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
             recipientAddressModel, skipMvc
@@ -2291,7 +2291,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
 //        }
 
         // When get first shipping
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId,
             spId,
             itemPosition,
@@ -2307,7 +2307,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         itemPosition++
 
         // When get second shipping
-        presenter.processGetCourierRecommendation(
+        viewModel.processGetCourierRecommendation(
             shipperId,
             spId,
             itemPosition,
@@ -2321,15 +2321,15 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         )
 
         // Then
-        assertNotNull(presenter.getShippingCourierViewModelsState(itemPosition))
-        assertNotNull(presenter.getShippingCourierViewModelsState(itemPosition - 1))
+        assertNotNull(viewModel.getShippingCourierViewModelsState(itemPosition))
+        assertNotNull(viewModel.getShippingCourierViewModelsState(itemPosition - 1))
 
-        assertNull(presenter.getShippingCourierViewModelsState(itemPosition - 2))
-        assertNull(presenter.getShippingCourierViewModelsState(itemPosition + 1))
+        assertNull(viewModel.getShippingCourierViewModelsState(itemPosition - 2))
+        assertNull(viewModel.getShippingCourierViewModelsState(itemPosition + 1))
     }
 
     @Test
     fun `WHEN get shipping courier view model state before get rates THEN should return null`() {
-        assertNull(presenter.getShippingCourierViewModelsState(0))
+        assertNull(viewModel.getShippingCourierViewModelsState(0))
     }
 }

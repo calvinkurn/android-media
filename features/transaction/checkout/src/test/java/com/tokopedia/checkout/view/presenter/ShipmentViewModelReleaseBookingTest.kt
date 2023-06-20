@@ -8,14 +8,14 @@ import io.mockk.coVerify
 import org.junit.Test
 import java.io.IOException
 
-class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelReleaseBookingTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN release booking THEN should hit release booking use case with first productId`() {
         // Given
         coEvery { releaseBookingUseCase(any()) } returns ReleaseBookingResponse()
         val productId = 300L
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -32,7 +32,7 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.releaseBooking()
+        viewModel.releaseBooking()
 
         // Then
         coVerify { releaseBookingUseCase(productId) }
@@ -43,7 +43,7 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
         // Given
         coEvery { releaseBookingUseCase(any()) } throws IOException()
         val productId = 300L
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -60,7 +60,7 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.releaseBooking()
+        viewModel.releaseBooking()
 
         // Then
         coVerify { releaseBookingUseCase(productId) }
@@ -70,10 +70,10 @@ class ShipmentPresenterReleaseBookingTest : BaseShipmentPresenterTest() {
     fun `GIVEN no cart item WHEN release booking THEN should not hit release booking use case`() {
         // Given
         coEvery { releaseBookingUseCase(any()) } returns ReleaseBookingResponse()
-        presenter.shipmentCartItemModelList = emptyList()
+        viewModel.shipmentCartItemModelList = emptyList()
 
         // When
-        presenter.releaseBooking()
+        viewModel.releaseBooking()
 
         // Then
         coVerify(inverse = true) { releaseBookingUseCase(any()) }

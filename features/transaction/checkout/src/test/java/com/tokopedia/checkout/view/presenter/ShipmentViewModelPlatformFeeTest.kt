@@ -14,7 +14,7 @@ import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelPlatformFeeTest : BaseShipmentViewModelTest() {
 
     private var platformFeeParams = PaymentFeeCheckoutRequest()
 
@@ -38,14 +38,14 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(presenter.getShipmentPlatformFeeData().isEnable)
+        assert(viewModel.getShipmentPlatformFeeData().isEnable)
     }
 
     @Test
@@ -62,14 +62,14 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(!presenter.getShipmentPlatformFeeData().isEnable)
+        assert(!viewModel.getShipmentPlatformFeeData().isEnable)
     }
 
     @Test
@@ -87,7 +87,7 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.getDynamicPaymentFee(platformFeeParams)
+        viewModel.getDynamicPaymentFee(platformFeeParams)
 
         // Then
         verifyOrder {
@@ -106,10 +106,10 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.setPlatformFeeData(paymentFee)
+        viewModel.setPlatformFeeData(paymentFee)
 
         // Then
-        assertEquals(paymentFee, presenter.shipmentCostModel.value.dynamicPlatformFee)
+        assertEquals(paymentFee, viewModel.shipmentCostModel.value.dynamicPlatformFee)
     }
 
     @Test
@@ -125,7 +125,7 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
             firstArg<(PaymentFeeGqlResponse) -> Unit>().invoke(platformFee)
         }
 
-        presenter.getDynamicPaymentFee(platformFeeParams)
+        viewModel.getDynamicPaymentFee(platformFeeParams)
         // When
 
         // Then
@@ -146,7 +146,7 @@ class ShipmentPresenterPlatformFeeTest : BaseShipmentPresenterTest() {
             secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
-        presenter.getDynamicPaymentFee(platformFeeParams)
+        viewModel.getDynamicPaymentFee(platformFeeParams)
         // When
 
         // Then

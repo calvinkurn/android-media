@@ -178,8 +178,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-// TODO: rename
-class ShipmentPresenter @Inject constructor(
+class ShipmentViewModel @Inject constructor(
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
@@ -1485,7 +1484,7 @@ class ShipmentPresenter @Inject constructor(
                         return@launch
                     }
                     if (view != null) {
-                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                        this@ShipmentViewModel.validateUsePromoRevampUiModel =
                             validateUsePromoRevampUiModel
                         couponStateChanged = true
                         showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
@@ -1898,7 +1897,7 @@ class ShipmentPresenter @Inject constructor(
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel
     ) {
         if (view != null) {
-            this@ShipmentPresenter.validateUsePromoRevampUiModel =
+            this@ShipmentViewModel.validateUsePromoRevampUiModel =
                 validateUsePromoRevampUiModel
             val isValidatePromoRevampSuccess =
                 validateUsePromoRevampUiModel.status.equals(
@@ -1914,7 +1913,7 @@ class ShipmentPresenter @Inject constructor(
                     shipmentValidatePromoHolderData.cartPosition,
                     false
                 )
-                this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                this@ShipmentViewModel.validateUsePromoRevampUiModel =
                     validateUsePromoRevampUiModel
                 updateTickerAnnouncementData(validateUsePromoRevampUiModel)
                 showErrorValidateUseIfAny(validateUsePromoRevampUiModel)

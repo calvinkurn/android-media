@@ -31,7 +31,7 @@ import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelUpdateDynamicDataTest : BaseShipmentViewModelTest() {
 
     private var updateDynamicDataParams = DynamicDataPassingParamRequest()
 
@@ -50,11 +50,11 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.validateDynamicData()
-        presenter.updateDynamicData(updateDynamicDataParams, true)
+        viewModel.validateDynamicData()
+        viewModel.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
-        assertEquals("data", presenter.dynamicData)
+        assertEquals("data", viewModel.dynamicData)
     }
 
     @Test
@@ -72,8 +72,8 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.validateDynamicData()
-        presenter.updateDynamicData(updateDynamicDataParams, false)
+        viewModel.validateDynamicData()
+        viewModel.updateDynamicData(updateDynamicDataParams, false)
 
         // Then
         verify {
@@ -94,8 +94,8 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.validateDynamicData()
-        presenter.updateDynamicData(updateDynamicDataParams, true)
+        viewModel.validateDynamicData()
+        viewModel.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
         verify {
@@ -115,8 +115,8 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.validateDynamicData()
-        presenter.updateDynamicData(updateDynamicDataParams, true)
+        viewModel.validateDynamicData()
+        viewModel.updateDynamicData(updateDynamicDataParams, true)
 
         // Then
         verify {
@@ -127,7 +127,7 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
         // When
-        presenter.detachView()
+        viewModel.detachView()
 
         // Then
         verify {
@@ -164,18 +164,18 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
                 addOnKey = "239594-0-301643-88"
             }
         )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
-        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        viewModel.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
+        assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
         verify {
             view.updateAddOnsData(
                 0,
@@ -213,15 +213,15 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
                 addOnKey = "239594-0-301643-88"
             }
         )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
-        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        viewModel.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
         verify {
@@ -269,18 +269,18 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
                 addOnKey = "239594-0-301643-88"
             }
         )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
+        assert(viewModel.getDynamicDataParam().data.isNotEmpty())
+        assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -360,18 +360,18 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         )
 
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
+        assert(viewModel.getDynamicDataParam().data.isNotEmpty())
+        assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -471,18 +471,18 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
             )
         )
 
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(presenter.getDynamicDataParam().data.isNotEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
+        assert(viewModel.getDynamicDataParam().data.isNotEmpty())
+        assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
     }
 
     @Test
@@ -519,18 +519,18 @@ class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
                 addOnKey = "239594-0-301643-88"
             }
         )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        viewModel.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assert(presenter.getDynamicDataParam().data.isEmpty())
-        assert(presenter.getDynamicDataParam().data.isEmpty())
-        assertEquals(isDdp, presenter.isUsingDynamicDataPassing())
+        assert(viewModel.getDynamicDataParam().data.isEmpty())
+        assert(viewModel.getDynamicDataParam().data.isEmpty())
+        assertEquals(isDdp, viewModel.isUsingDynamicDataPassing())
     }
 }

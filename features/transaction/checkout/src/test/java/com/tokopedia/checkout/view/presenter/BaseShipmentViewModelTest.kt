@@ -11,7 +11,7 @@ import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentFragment
-import com.tokopedia.checkout.view.ShipmentPresenter
+import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -36,7 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @OptIn(ExperimentalCoroutinesApi::class)
-open class BaseShipmentPresenterTest {
+open class BaseShipmentViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -114,12 +114,12 @@ open class BaseShipmentPresenterTest {
 
     private val shipmentDataConverter = ShipmentDataConverter()
 
-    lateinit var presenter: ShipmentPresenter
+    lateinit var viewModel: ShipmentViewModel
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
+        viewModel = ShipmentViewModel(
             getShipmentAddressFormV4UseCase,
             saveShipmentStateGqlUseCase,
             changeShippingAddressGqlUseCase,
@@ -147,6 +147,6 @@ open class BaseShipmentPresenterTest {
             gson,
             CoroutineTestDispatchers
         )
-        presenter.attachView(view)
+        viewModel.attachView(view)
     }
 }

@@ -10,7 +10,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelDisableFeatureTest : BaseShipmentViewModelTest() {
 
     companion object {
         const val PATH_JSON_SAF_DISABLE_DROPSHIPPER = "assets/saf_disable_dropshipper.json"
@@ -36,15 +36,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     true,
@@ -52,7 +52,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -60,8 +60,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        assertNotNull(viewModel.egoldAttributeModel)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -71,7 +71,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNotNull(presenter.shipmentDonationModel)
+        assertNotNull(viewModel.shipmentDonationModel)
     }
 
     @Test
@@ -86,15 +86,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -102,7 +102,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     true,
@@ -110,8 +110,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        assertNotNull(viewModel.egoldAttributeModel)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -121,7 +121,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNotNull(presenter.shipmentDonationModel)
+        assertNotNull(viewModel.shipmentDonationModel)
     }
 
     @Test
@@ -136,15 +136,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -152,7 +152,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -160,8 +160,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNull(presenter.egoldAttributeModel.value)
-        presenter.shipmentCartItemModelList.each {
+        assertNull(viewModel.egoldAttributeModel.value)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -171,7 +171,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNotNull(presenter.shipmentDonationModel)
+        assertNotNull(viewModel.shipmentDonationModel)
     }
 
     @Test
@@ -186,15 +186,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -202,7 +202,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -210,8 +210,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        assertNotNull(viewModel.egoldAttributeModel)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -221,7 +221,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNotNull(presenter.shipmentDonationModel)
+        assertNotNull(viewModel.shipmentDonationModel)
     }
 
     @Test
@@ -236,15 +236,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -252,7 +252,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     false,
@@ -260,8 +260,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNotNull(presenter.egoldAttributeModel)
-        presenter.shipmentCartItemModelList.each {
+        assertNotNull(viewModel.egoldAttributeModel)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -271,7 +271,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNull(presenter.shipmentDonationModel)
+        assertNull(viewModel.shipmentDonationModel)
     }
 
     @Test
@@ -286,15 +286,15 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
         )
 
         // Then
-        assertEquals(true, presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
-        presenter.shipmentCartItemModelList.each {
+        assertEquals(true, viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java).isNotEmpty())
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     true,
@@ -302,7 +302,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        presenter.shipmentCartItemModelList.each {
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 assertEquals(
                     true,
@@ -310,8 +310,8 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 )
             }
         }
-        assertNull(presenter.egoldAttributeModel.value)
-        presenter.shipmentCartItemModelList.each {
+        assertNull(viewModel.egoldAttributeModel.value)
+        viewModel.shipmentCartItemModelList.each {
             if (this is ShipmentCartItemModel) {
                 cartItemModels.each {
                     assertEquals(
@@ -321,7 +321,7 @@ class ShipmentPresenterDisableFeatureTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        assertNull(presenter.shipmentDonationModel)
+        assertNull(viewModel.shipmentDonationModel)
     }
 }
 

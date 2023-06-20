@@ -37,7 +37,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest() {
+class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentViewModelTest() {
 
     private var shipmentMapper = ShipmentMapper()
 
@@ -47,7 +47,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData =
             shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        presenter.shipmentButtonPayment.value = ShipmentButtonPaymentModel()
+        viewModel.shipmentButtonPayment.value = ShipmentButtonPaymentModel()
 
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns cartShipmentAddressFormData
         every {
@@ -57,7 +57,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         } just Runs
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
@@ -78,7 +78,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false)
+        viewModel.processInitialLoadCheckoutPage(false, false, false)
 
         // Then
         verifyOrder {
@@ -98,7 +98,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
@@ -124,7 +124,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
@@ -144,7 +144,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
@@ -165,7 +165,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             false,
             false,
             false
@@ -189,7 +189,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -218,7 +218,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -248,7 +248,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -280,7 +280,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -316,7 +316,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -344,7 +344,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -382,7 +382,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -419,7 +419,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -458,7 +458,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -491,14 +491,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(lastApplyUiModel, presenter.lastApplyData.value)
+        assertEquals(lastApplyUiModel, viewModel.lastApplyData.value)
     }
 
     @Test
@@ -518,14 +518,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(codData, presenter.codData)
+        assertEquals(codData, viewModel.codData)
     }
 
     @Test
@@ -542,14 +542,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(ineligiblePromoDialog, presenter.isIneligiblePromoDialogEnabled)
+        assertEquals(ineligiblePromoDialog, viewModel.isIneligiblePromoDialogEnabled)
     }
 
     @Test
@@ -566,14 +566,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(showOnboarding, presenter.isShowOnboarding)
+        assertEquals(showOnboarding, viewModel.isShowOnboarding)
     }
 
     @Test
@@ -593,7 +593,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -622,7 +622,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -651,7 +651,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -677,7 +677,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -686,7 +686,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         // Then
         assertEquals(
             listOf(ShipmentCrossSellModel(index = 0)),
-            presenter.listShipmentCrossSellModel
+            viewModel.listShipmentCrossSellModel
         )
     }
 
@@ -704,14 +704,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertTrue(presenter.listShipmentCrossSellModel.size == 0)
+        assertTrue(viewModel.listShipmentCrossSellModel.size == 0)
     }
 
     @Test
@@ -747,7 +747,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -769,7 +769,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
     @Test
     fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
         // Given
-        presenter.shipmentButtonPayment.value =
+        viewModel.shipmentButtonPayment.value =
             ShipmentButtonPaymentModel(
                 totalPrice = "Rp1.000"
 //                quantity = 1
@@ -777,7 +777,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
 
         // Then
 //        assertEquals(1, presenter.shipmentButtonPayment.value.quantity)
-        assertEquals("Rp1.000", presenter.shipmentButtonPayment.value.totalPrice)
+        assertEquals("Rp1.000", viewModel.shipmentButtonPayment.value.totalPrice)
     }
 
     @Test
@@ -786,30 +786,30 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         val shipmentCostModel = ShipmentCostModel(
             totalPrice = 1000.0
         )
-        presenter.shipmentCostModel.value = shipmentCostModel
+        viewModel.shipmentCostModel.value = shipmentCostModel
 
         // Then
-        assertEquals(shipmentCostModel, presenter.shipmentCostModel.value)
+        assertEquals(shipmentCostModel, viewModel.shipmentCostModel.value)
     }
 
     @Test
     fun `GIVEN coupon state not changed WHEN get coupon state data THEN should return coupon state not changed`() {
-        assertEquals(false, presenter.couponStateChanged)
+        assertEquals(false, viewModel.couponStateChanged)
     }
 
     @Test
     fun `GIVEN coupon state changed WHEN get coupon state data THEN should return coupon state changed`() {
         // Given
-        presenter.couponStateChanged = true
+        viewModel.couponStateChanged = true
 
         // Then
-        assertEquals(true, presenter.couponStateChanged)
+        assertEquals(true, viewModel.couponStateChanged)
     }
 
     @Test
     fun `GIVEN null campaign timer WHEN get campaign timer data THEN should return null`() {
         // Then
-        assertEquals(null, presenter.getCampaignTimer())
+        assertEquals(null, viewModel.getCampaignTimer())
     }
 
     @Test
@@ -824,14 +824,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 groupAddress = listOf(groupAddress),
                 campaignTimerUi = campaignTimerUi
             )
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(null, presenter.getCampaignTimer())
+        assertEquals(null, viewModel.getCampaignTimer())
     }
 
     @Test
@@ -846,14 +846,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 groupAddress = listOf(groupAddress),
                 campaignTimerUi = campaignTimerUi
             )
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assertEquals(campaignTimerUi, presenter.getCampaignTimer())
+        assertEquals(campaignTimerUi, viewModel.getCampaignTimer())
     }
 
     @Test
@@ -868,7 +868,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -897,7 +897,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -930,17 +930,17 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
         // Then
-        assert(presenter.shipmentTickerErrorModel.errorMessage == errorTicker)
-        assert(presenter.shipmentTickerErrorModel.isError)
-        assert(!presenter.shipmentDonationModel!!.isEnabled)
-        assert(!presenter.egoldAttributeModel.value!!.isEnabled)
+        assert(viewModel.shipmentTickerErrorModel.errorMessage == errorTicker)
+        assert(viewModel.shipmentTickerErrorModel.isError)
+        assert(!viewModel.shipmentDonationModel!!.isEnabled)
+        assert(!viewModel.egoldAttributeModel.value!!.isEnabled)
     }
 
     @Test
@@ -950,7 +950,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
         coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -985,7 +985,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             )
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -1000,7 +1000,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 appLink = "applink",
                 image = "image"
             ),
-            presenter.shipmentUpsellModel
+            viewModel.shipmentUpsellModel
         )
     }
 
@@ -1027,10 +1027,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -1055,7 +1055,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
                 summaryInfo = "wording",
                 buttonText = "button"
             ),
-            presenter.shipmentNewUpsellModel
+            viewModel.shipmentNewUpsellModel
         )
     }
 
@@ -1069,10 +1069,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
             CartShipmentAddressFormData(
                 groupAddress = listOf(groupAddress)
             )
-        presenter.detachView()
+        viewModel.detachView()
 
         // When
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
@@ -1088,7 +1088,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
     @Test
     fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
         // When
-        presenter.detachView()
+        viewModel.detachView()
 
         // Then
         verify {

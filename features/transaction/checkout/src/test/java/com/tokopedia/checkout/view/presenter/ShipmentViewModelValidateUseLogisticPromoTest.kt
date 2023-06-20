@@ -27,7 +27,7 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import rx.subjects.PublishSubject
 
-class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelValidateUseLogisticPromoTest : BaseShipmentViewModelTest() {
 
     @Test
     fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
@@ -50,7 +50,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -96,11 +96,11 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         val shipmentCartItemModel2 = ShipmentCartItemModel(
             cartStringGroup = cartString + "2"
         )
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(
+        viewModel.doValidateUseLogisticPromoNew(
             cartPosition,
             cartString,
             ValidateUsePromoRequest(),
@@ -146,11 +146,11 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartStringGroup = cartString
         )
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(
+        viewModel.doValidateUseLogisticPromoNew(
             cartPosition,
             cartString,
             ValidateUsePromoRequest(),
@@ -200,7 +200,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartStringGroup = cartString
         )
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
         val cartPosition = 0
@@ -211,8 +211,8 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
                 )
             )
         )
-        presenter.setLastValidateUseRequest(validateUsePromoRequest)
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", validateUsePromoRequest, "", true, CourierItemData())
+        viewModel.setLastValidateUseRequest(validateUsePromoRequest)
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", validateUsePromoRequest, "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -220,7 +220,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.updateButtonPromoCheckout(promoUiModel, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
         }
-        assertEquals(validateUsePromoRequest, presenter.lastValidateUseRequest)
+        assertEquals(validateUsePromoRequest, viewModel.lastValidateUseRequest)
     }
 
     @Test
@@ -233,7 +233,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -254,19 +254,19 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         val throwable = Throwable(errorMessage)
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             throwable
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 boCode = "bo123",
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
             )
         )
-        every { view.getShipmentCartItemModel(any()) } returns presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel
+        every { view.getShipmentCartItemModel(any()) } returns viewModel.shipmentCartItemModelList[0] as ShipmentCartItemModel
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -278,8 +278,8 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             view.getShipmentCartItemModel(cartPosition)
             view.logOnErrorApplyBo(match { it.message == throwable.message }, cartPosition, "")
         }
-        assertEquals("", (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).boCode)
-        assertEquals("", (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).boUniqueId)
+        assertEquals("", (viewModel.shipmentCartItemModelList[0] as ShipmentCartItemModel).boCode)
+        assertEquals("", (viewModel.shipmentCartItemModelList[0] as ShipmentCartItemModel).boUniqueId)
     }
 
     @Test
@@ -292,7 +292,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -321,7 +321,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -347,7 +347,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -383,7 +383,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -423,7 +423,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -463,11 +463,11 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             shouldStopInClearCache = false,
             shouldStopInValidateUsePromo = true
         )
-        presenter.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
+        viewModel.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -494,11 +494,11 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
             shouldStopInClearCache = false,
             shouldStopInValidateUsePromo = true
         )
-        presenter.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
+        viewModel.setScheduleDeliveryMapData(cartString, shipmentScheduleDeliveryMapData)
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -531,7 +531,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -552,7 +552,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, cartString, ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verifySequence {
@@ -569,10 +569,10 @@ class ShipmentPresenterValidateUseLogisticPromoTest : BaseShipmentPresenterTest(
     fun `WHEN validate use with detached view THEN should do nothing`() {
         // Given
         val cartPosition = 1
-        presenter.detachView()
+        viewModel.detachView()
 
         // When
-        presenter.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
+        viewModel.doValidateUseLogisticPromoNew(cartPosition, "", ValidateUsePromoRequest(), "", true, CourierItemData())
 
         // Then
         verify(inverse = true) {

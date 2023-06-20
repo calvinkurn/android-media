@@ -17,14 +17,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 
-class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
+class ShipmentPresenterSaveShipmentStateTest : BaseShipmentViewModelTest() {
 
     @Test
     fun checkParamsFromPresenter() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -42,7 +42,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -51,7 +51,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
             SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =
@@ -75,7 +75,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -98,7 +98,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -106,7 +106,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =
@@ -130,7 +130,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns true
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -150,7 +150,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -158,7 +158,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =
@@ -198,7 +198,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         }
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -206,7 +206,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState(shipmentCartItemModel)
+        viewModel.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
         val params =
@@ -241,7 +241,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         }
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -249,7 +249,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState(shipmentCartItemModel)
+        viewModel.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
 //        assertEquals(false, capturedRequestParam.isCaptured)
@@ -287,7 +287,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         }
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -295,7 +295,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState(shipmentCartItemModel)
+        viewModel.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
         val params =
@@ -352,7 +352,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         }
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -360,7 +360,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState(shipmentCartItemModel)
+        viewModel.processSaveShipmentState(shipmentCartItemModel)
 
         // Then
         val params =
@@ -392,14 +392,14 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         every { view.isTradeInByDropOff } returns false
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
         coEvery { saveShipmentStateGqlUseCase(any()) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         coVerify(inverse = true) { saveShipmentStateGqlUseCase(any()) }
@@ -424,17 +424,17 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
                 }
             }
         }
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
         coEvery { saveShipmentStateGqlUseCase(any()) } throws IOException()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
@@ -447,7 +447,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
 
         val dropshipName = "dropship"
         val dropshipPhone = "dropship123"
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -470,7 +470,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -478,7 +478,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =
@@ -505,7 +505,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -524,7 +524,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -532,7 +532,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =
@@ -557,7 +557,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         // Given
         every { view.isTradeInByDropOff } returns false
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(
                     CartItemModel(
@@ -576,7 +576,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         )
 
         val addressId = "123"
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = addressId
         }
 
@@ -584,7 +584,7 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
 
         // When
-        presenter.processSaveShipmentState()
+        viewModel.processSaveShipmentState()
 
         // Then
         val params =

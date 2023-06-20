@@ -19,12 +19,12 @@ import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelEnhancedEcommerceTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN generate enhanced ecommerce data with no Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be none other`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
@@ -32,7 +32,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer("2", "")
+            viewModel.generateCheckoutAnalyticsDataLayer("2", "")
 
         // Then
         val checkoutData =
@@ -45,7 +45,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be bebas ongkir`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR))
             }
@@ -53,7 +53,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer("2", "")
+            viewModel.generateCheckoutAnalyticsDataLayer("2", "")
 
         // Then
         val checkoutData =
@@ -66,7 +66,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir Extra THEN enhanced ecommerce product data dimension83 should be bebas ongkir ekstra`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA))
             }
@@ -74,7 +74,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer("2", "")
+            viewModel.generateCheckoutAnalyticsDataLayer("2", "")
 
         // Then
         val checkoutData =
@@ -87,7 +87,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate enhanced ecommerce data with courier data THEN enhanced ecommerce product data dimension83 should contains courier data`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "", freeShippingName = VALUE_BEBAS_ONGKIR_EXTRA))
                 selectedShipmentDetailData = ShipmentDetailData(selectedCourier = CourierItemData(shipperPrice = 1000, serviceId = 1, shipperProductId = 1))
@@ -96,7 +96,7 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
 
         // When
         val enhancedEcommerceData =
-            presenter.generateCheckoutAnalyticsDataLayer("3", "")
+            viewModel.generateCheckoutAnalyticsDataLayer("3", "")
 
         // Then
         val checkoutData =
@@ -117,17 +117,17 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventAction = "eventAction"
         val eventLabel = "eventLabel"
         val step = "4"
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        viewModel.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
-        presenter.setUploadPrescriptionData(uploadModel)
+        viewModel.setUploadPrescriptionData(uploadModel)
 
         // When
-        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+        viewModel.triggerSendEnhancedEcommerceCheckoutAnalytics(
             tradeInCustomDimension,
             step,
             eventCategory,
@@ -161,21 +161,21 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventAction = "eventAction"
         val eventLabel = "eventLabel"
         val step = "2"
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        viewModel.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
-        presenter.lastApplyData.value = LastApplyUiModel(
+        viewModel.lastApplyData.value = LastApplyUiModel(
             additionalInfo = LastApplyAdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied)
         )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
-        presenter.setUploadPrescriptionData(uploadModel)
+        viewModel.setUploadPrescriptionData(uploadModel)
 
         // When
-        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+        viewModel.triggerSendEnhancedEcommerceCheckoutAnalytics(
             tradeInCustomDimension,
             step,
             eventCategory,
@@ -209,17 +209,17 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventAction = "eventAction"
         val eventLabel = "eventLabel"
         val step = "2"
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        viewModel.listShipmentCrossSellModel = arrayListOf()
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
-        presenter.setUploadPrescriptionData(uploadModel)
+        viewModel.setUploadPrescriptionData(uploadModel)
 
         // When
-        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+        viewModel.triggerSendEnhancedEcommerceCheckoutAnalytics(
             tradeInCustomDimension,
             step,
             eventCategory,
@@ -253,21 +253,21 @@ class ShipmentPresenterEnhancedEcommerceTest : BaseShipmentPresenterTest() {
         val eventAction = "eventAction"
         val eventLabel = "eventLabel"
         val step = "4"
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = ""))
             }
         )
-        presenter.listShipmentCrossSellModel = arrayListOf()
+        viewModel.listShipmentCrossSellModel = arrayListOf()
         val pomlAutoApplied = true
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+        viewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             PromoUiModel(additionalInfoUiModel = AdditionalInfoUiModel(pomlAutoApplied = pomlAutoApplied))
         )
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
-        presenter.setUploadPrescriptionData(uploadModel)
+        viewModel.setUploadPrescriptionData(uploadModel)
 
         // When
-        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+        viewModel.triggerSendEnhancedEcommerceCheckoutAnalytics(
             tradeInCustomDimension,
             step,
             eventCategory,

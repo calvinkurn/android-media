@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterFieldTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelFieldTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN set checkout leasing id THEN should set checkout leasing id`() {
@@ -11,10 +11,10 @@ class ShipmentPresenterFieldTest : BaseShipmentPresenterTest() {
         val checkoutLeasingId = "123321"
 
         // When
-        presenter.checkoutLeasingId = checkoutLeasingId
+        viewModel.checkoutLeasingId = checkoutLeasingId
 
         // Then
-        assertEquals(checkoutLeasingId, presenter.checkoutLeasingId)
+        assertEquals(checkoutLeasingId, viewModel.checkoutLeasingId)
     }
 
     @Test
@@ -23,10 +23,10 @@ class ShipmentPresenterFieldTest : BaseShipmentPresenterTest() {
         val deviceId = "123321"
 
         // When
-        presenter.deviceId = deviceId
+        viewModel.deviceId = deviceId
 
         // Then
-        assertEquals(deviceId, presenter.deviceId)
+        assertEquals(deviceId, viewModel.deviceId)
     }
 
     @Test
@@ -35,10 +35,10 @@ class ShipmentPresenterFieldTest : BaseShipmentPresenterTest() {
         val isOneClickShipment = true
 
         // When
-        presenter.isOneClickShipment = isOneClickShipment
+        viewModel.isOneClickShipment = isOneClickShipment
 
         // Then
-        assertEquals(isOneClickShipment, presenter.isOneClickShipment)
+        assertEquals(isOneClickShipment, viewModel.isOneClickShipment)
     }
 
     @Test
@@ -47,9 +47,9 @@ class ShipmentPresenterFieldTest : BaseShipmentPresenterTest() {
         val isTradeIn = true
 
         // When
-        presenter.isTradeIn = isTradeIn
+        viewModel.isTradeIn = isTradeIn
 
         // Then
-        assertEquals(isTradeIn, presenter.isTradeIn)
+        assertEquals(isTradeIn, viewModel.isTradeIn)
     }
 }

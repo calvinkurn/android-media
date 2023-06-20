@@ -8,20 +8,20 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelEgoldTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `GIVEN eligible egold WHEN set shipment cost model THEN should update egold value`() {
         // Given
         val expectedEgoldValue = 250L
-        presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+        viewModel.egoldAttributeModel.value = EgoldAttributeModel().apply {
             isEligible = true
             isTiering = false
             minEgoldRange = 50
             maxEgoldRange = 1000
             isChecked = true
         }
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -35,24 +35,24 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
-        assertEquals(presenter.shipmentCostModel.value.emasPrice, presenter.egoldAttributeModel.value!!.buyEgoldValue.toDouble(), 0.0)
+        assertEquals(expectedEgoldValue, viewModel.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(viewModel.shipmentCostModel.value.emasPrice, viewModel.egoldAttributeModel.value!!.buyEgoldValue.toDouble(), 0.0)
     }
 
     @Test
     fun `GIVEN ineligible egold WHEN set shipment cost model THEN should update egold value`() {
         // Given
         val expectedEgoldValue = 0L
-        presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+        viewModel.egoldAttributeModel.value = EgoldAttributeModel().apply {
             isEligible = false
             isTiering = false
             minEgoldRange = 50
             maxEgoldRange = 1000
         }
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -66,17 +66,17 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(expectedEgoldValue, viewModel.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value without tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 250L
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -88,7 +88,7 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+        viewModel.egoldAttributeModel.value = EgoldAttributeModel().apply {
             isEligible = true
             isTiering = false
             minEgoldRange = 50
@@ -96,17 +96,17 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(expectedEgoldValue, viewModel.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
     fun `WHEN calculate egold value with tiering THEN should correctly calculated`() {
         // Given
         val expectedEgoldValue = 5700L
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 cartItemModels = listOf(
@@ -118,7 +118,7 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+        viewModel.egoldAttributeModel.value = EgoldAttributeModel().apply {
             isEligible = true
             isTiering = true
             minEgoldRange = 50
@@ -152,21 +152,21 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(expectedEgoldValue, viewModel.egoldAttributeModel.value!!.buyEgoldValue)
     }
 
     @Test
     fun `GIVEN no match minimum total amount WHEN calculate egold value with tiering THEN should result 0 egold value`() {
         // Given
         val expectedEgoldValue = 0L
-        presenter.shipmentCostModel.value =
+        viewModel.shipmentCostModel.value =
             ShipmentCostModel().apply {
                 totalPrice = 300.0
             }
-        presenter.egoldAttributeModel.value = EgoldAttributeModel().apply {
+        viewModel.egoldAttributeModel.value = EgoldAttributeModel().apply {
             isEligible = true
             isTiering = true
             minEgoldRange = 50
@@ -200,9 +200,9 @@ class ShipmentPresenterEgoldTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.updateShipmentCostModel()
+        viewModel.updateShipmentCostModel()
 
         // Then
-        assertEquals(expectedEgoldValue, presenter.egoldAttributeModel.value!!.buyEgoldValue)
+        assertEquals(expectedEgoldValue, viewModel.egoldAttributeModel.value!!.buyEgoldValue)
     }
 }

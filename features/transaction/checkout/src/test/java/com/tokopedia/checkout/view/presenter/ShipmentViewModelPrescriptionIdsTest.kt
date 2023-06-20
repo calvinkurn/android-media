@@ -20,7 +20,7 @@ import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
 
     companion object {
         const val CHECKOUT_ID = "100"
@@ -41,8 +41,8 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                     )
                 )
             )
-        presenter.shipmentCartItemModelList = listOf()
-        presenter.setUploadPrescriptionData(
+        viewModel.shipmentCartItemModelList = listOf()
+        viewModel.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false,
                 "",
@@ -53,7 +53,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.fetchPrescriptionIds(
+        viewModel.fetchPrescriptionIds(
             EpharmacyData(
                 showImageUpload = true,
                 checkoutId = CHECKOUT_ID,
@@ -72,7 +72,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         val checkoutId = ""
 
         // When
-        presenter.fetchPrescriptionIds(
+        viewModel.fetchPrescriptionIds(
             EpharmacyData(
                 showImageUpload = true,
                 checkoutId = checkoutId,
@@ -134,7 +134,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     fun `GIVEN error item WHEN fetch prescription THEN should not update prescription data`() {
         // Given
         coEvery { prescriptionIdsUseCase.setParams(any()).executeOnBackground() } throws Throwable()
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             UploadPrescriptionUiModel(
                 false,
                 "",
@@ -145,7 +145,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.fetchPrescriptionIds(
+        viewModel.fetchPrescriptionIds(
             EpharmacyData(
                 showImageUpload = true,
                 checkoutId = CHECKOUT_ID,
@@ -178,17 +178,17 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN set prescription ids THEN should set upload prescription image count`() {
         // Given
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(cartStringGroup = "")
         )
         val prescriptions = arrayListOf("123", "456")
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setPrescriptionIds(prescriptions)
+        viewModel.setPrescriptionIds(prescriptions)
 
         // Then
-        assertEquals(prescriptions.size, presenter.uploadPrescriptionUiModel.uploadedImageCount)
+        assertEquals(prescriptions.size, viewModel.uploadPrescriptionUiModel.uploadedImageCount)
     }
 
 //    @Test
@@ -222,7 +222,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN set prescription ids THEN should set prescription ids to each cart with ethical products and not error`() {
         // Given
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 isError = true,
@@ -245,27 +245,27 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             )
         )
         val prescriptions = arrayListOf("123", "456")
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setPrescriptionIds(prescriptions)
+        viewModel.setPrescriptionIds(prescriptions)
 
         // Then
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
         )
         assertEquals(
             prescriptions,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
         )
     }
 
@@ -277,16 +277,16 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(UploadPrescriptionUiModel(), viewModel.uploadPrescriptionUiModel)
     }
 
     @Test
     fun `GIVEN null epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(null)
@@ -294,10 +294,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(UploadPrescriptionUiModel(), viewModel.uploadPrescriptionUiModel)
     }
 
 //    @Test
@@ -324,7 +324,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN null view WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -335,19 +335,19 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             )
         }
         every { epharmacyUseCase.cancelJobs() } just Runs
-        presenter.detachView()
+        viewModel.detachView()
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(UploadPrescriptionUiModel(), viewModel.uploadPrescriptionUiModel)
     }
 
     @Test
     fun `GIVEN null epharmacy group data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -357,19 +357,19 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf()
+        viewModel.shipmentCartItemModelList = arrayListOf()
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(UploadPrescriptionUiModel(), viewModel.uploadPrescriptionUiModel)
     }
 
     @Test
     fun `GIVEN null epharmacy groups WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -385,20 +385,20 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf()
+        viewModel.shipmentCartItemModelList = arrayListOf()
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
-        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+        assertEquals(UploadPrescriptionUiModel(), viewModel.uploadPrescriptionUiModel)
     }
 
     @Test
     fun `GIVEN null shipment cart data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -447,7 +447,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -459,15 +459,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                     "0"
                 )
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
     @Test
     fun `GIVEN null epharmacy group WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -527,7 +527,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -539,15 +539,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                     "0"
                 )
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
     @Test
     fun `GIVEN null epharmacy products WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -607,7 +607,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -620,15 +620,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                     "0"
                 )
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
     @Test
     fun `GIVEN null epharmacy product id WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -688,7 +688,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -698,15 +698,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554232"),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
     @Test
     fun `GIVEN null epharmacy product WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -766,7 +766,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -776,15 +776,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554232"),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
     @Test
     fun `GIVEN invalid epharmacy shop id WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -844,7 +844,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         }
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -854,7 +854,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554232"),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -939,7 +939,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -971,10 +971,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             )
         )
         val rejectedWording = "rejectedWording"
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -986,37 +986,37 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554232"),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
 
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             errorWording,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
         )
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
         )
         assertEquals(
             rejectedWording,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
         )
     }
 
@@ -1080,7 +1080,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -1095,10 +1095,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             )
         )
         val rejectedWording = "rejectedWording"
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -1108,15 +1108,15 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 enablerNames = listOf(""),
                 cartIds = listOf("0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
         )
     }
 
@@ -1189,7 +1189,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -1239,10 +1239,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -1254,57 +1254,57 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231"),
                 cartIds = listOf("0", "0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             "qwerty",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
         )
         assertEquals(
             "123",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
         )
         assertEquals(
             "321",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
         )
     }
 
@@ -1507,7 +1507,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 )
             )
         }
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -1609,10 +1609,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = false
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.fetchEpharmacyData()
+        viewModel.fetchEpharmacyData()
 
         // Then
         assertEquals(
@@ -1629,90 +1629,90 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 ),
                 cartIds = listOf("0", "0", "0", "0", "0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             "qwerty",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
         )
         assertEquals(
             "123",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
         )
         assertEquals(
             "321",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
         )
         assertEquals(
             listOf("1", "2"),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
         )
 
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
         )
     }
 
@@ -1763,18 +1763,18 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = listOf()
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.shipmentCartItemModelList = listOf()
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
         every { epharmacyUseCase.cancelJobs() } just Runs
-        presenter.detachView()
+        viewModel.detachView()
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
             UploadPrescriptionUiModel(),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -1825,7 +1825,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemTopModel(
                 cartStringGroup = ""
             ),
@@ -1877,10 +1877,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = false
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -1889,7 +1889,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 enablerNames = listOf(""),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -1909,7 +1909,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -1995,10 +1995,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -2010,7 +2010,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554234"),
                 cartIds = listOf("0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -2050,7 +2050,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -2136,10 +2136,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -2151,7 +2151,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554234"),
                 cartIds = listOf("0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -2181,7 +2181,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -2267,10 +2267,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -2282,7 +2282,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554234"),
                 cartIds = listOf("0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -2322,7 +2322,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -2408,10 +2408,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -2423,7 +2423,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554234"),
                 cartIds = listOf("0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
     }
 
@@ -2463,7 +2463,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 null
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -2549,10 +2549,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = true
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(results)
+        viewModel.setMiniConsultationResult(results)
 
         // Then
         assertEquals(
@@ -2564,57 +2564,57 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554234"),
                 cartIds = listOf("0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             "qwerty",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
         )
         assertEquals(
             "123",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
         )
         assertEquals(
             "321",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
         )
     }
 
@@ -2675,7 +2675,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 prescription = listOf()
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -2718,10 +2718,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             )
         )
         val rejectedWording = "rejectedWording"
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
 
         // When
-        presenter.setMiniConsultationResult(result)
+        viewModel.setMiniConsultationResult(result)
 
         // Then
         assertEquals(
@@ -2733,42 +2733,42 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554232"),
                 cartIds = listOf("0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
 
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             errorWording,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].errorTitle
         )
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isCustomEpharmacyError
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].isError
         )
         assertEquals(
             rejectedWording,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[0].errorMessage
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].cartItemModels[1].isError
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
         )
     }
 
@@ -2927,7 +2927,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 prescription = listOf()
             )
         )
-        presenter.shipmentCartItemModelList = arrayListOf(
+        viewModel.shipmentCartItemModelList = arrayListOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 shopId = 6554231,
@@ -3002,10 +3002,10 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 hasEthicalProducts = false
             )
         )
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
 
         // When
-        presenter.setMiniConsultationResult(result)
+        viewModel.setMiniConsultationResult(result)
 
         // Then
         assertEquals(
@@ -3017,90 +3017,90 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
                 shopIds = listOf("6554231", "6554231", "6554232"),
                 cartIds = listOf("0", "0", "0", "0", "0", "0")
             ),
-            presenter.uploadPrescriptionUiModel
+            viewModel.uploadPrescriptionUiModel
         )
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].isError
         )
         assertEquals(
             "qwerty",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].consultationDataString
         )
         assertEquals(
             "123",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].tokoConsultationId
         )
         assertEquals(
             "321",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[0].prescriptionIds
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].partnerConsultationId
         )
         assertEquals(
             listOf("1", "2"),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[1].prescriptionIds
         )
 
         assertEquals(
             true,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[2].prescriptionIds
         )
 
         assertEquals(
             false,
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].isError
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].consultationDataString
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].tokoConsultationId
         )
         assertEquals(
             "",
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].partnerConsultationId
         )
         assertEquals(
             emptyList<String>(),
-            presenter.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
+            viewModel.shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java)[3].prescriptionIds
         )
     }
 
@@ -3111,13 +3111,13 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             showImageUpload = true,
             uploadedImageCount = 1
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(false, result)
@@ -3133,13 +3133,13 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             showImageUpload = true,
             hasInvalidPrescription = true
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(false, result)
@@ -3156,13 +3156,13 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             hasInvalidPrescription = true,
             uploadedImageCount = 1
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(false, result)
@@ -3179,13 +3179,13 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             hasInvalidPrescription = false,
             uploadedImageCount = 0
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(true, result)
@@ -3202,13 +3202,13 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             hasInvalidPrescription = true,
             uploadedImageCount = 1
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(true, result)
@@ -3267,14 +3267,14 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
             hasInvalidPrescription = true,
             uploadedImageCount = 1
         )
-        presenter.setUploadPrescriptionData(
+        viewModel.setUploadPrescriptionData(
             uploadPrescriptionUiModel
         )
-        presenter.shipmentCartItemModelList = listOf()
-        presenter.detachView()
+        viewModel.shipmentCartItemModelList = listOf()
+        viewModel.detachView()
 
         // When
-        val result = presenter.validatePrescriptionOnBackPressed()
+        val result = viewModel.validatePrescriptionOnBackPressed()
 
         // Then
         assertEquals(true, result)

@@ -24,12 +24,12 @@ import rx.observers.TestSubscriber
 import rx.subjects.PublishSubject
 import java.io.IOException
 
-class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelClearPromoTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN clear BBO promo failed THEN should not render success`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
@@ -38,7 +38,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "",
@@ -59,7 +59,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo success THEN should render success`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
@@ -73,7 +73,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "",
@@ -94,13 +94,13 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
             )
         )
-        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
+        viewModel.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
@@ -111,7 +111,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "",
@@ -133,14 +133,14 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and it's last applied promo THEN should render success and flag last applied promo is true`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
             )
         )
         val promoCode = "code"
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+        viewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>().apply {
                     add(
@@ -158,7 +158,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
             "",
@@ -174,20 +174,20 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         verifySequence {
             view.onSuccessClearPromoLogistic(0, true)
         }
-        assertNull(presenter.validateUsePromoRevampUiModel)
+        assertNull(viewModel.validateUsePromoRevampUiModel)
     }
 
     @Test
     fun `WHEN clear BBO promo and still has applied merchant promo THEN should render success and flag last applied promo is false`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
             )
         )
         val promoCode = "code"
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+        viewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>().apply {
                     add(PromoCheckoutVoucherOrdersItemUiModel(promoCode))
@@ -204,7 +204,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
             "",
@@ -225,14 +225,14 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear BBO promo and it's last applied global promo THEN should render success and flag last applied promo is true`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
             )
         )
         val promoCode = "code"
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+        viewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 codes = ArrayList<String>().apply {
                     add(promoCode)
@@ -248,7 +248,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
             "",
@@ -264,20 +264,20 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         verifySequence {
             view.onSuccessClearPromoLogistic(0, true)
         }
-        assertNull(presenter.validateUsePromoRevampUiModel)
+        assertNull(viewModel.validateUsePromoRevampUiModel)
     }
 
     @Test
     fun `WHEN clear BBO promo and still has applied global promo THEN should render success and flag last applied promo is false`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
             )
         )
         val promoCode = "code"
-        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+        viewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 codes = ArrayList<String>().apply {
                     add("promo code")
@@ -293,7 +293,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             promoCode,
             "",
@@ -330,7 +330,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelNotEligiblePromo(notEligilePromoList)
+        viewModel.cancelNotEligiblePromo(notEligilePromoList)
 
         // Then
         verify {
@@ -392,7 +392,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 )
             )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "1",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(boType = 1)),
@@ -404,7 +404,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.cancelNotEligiblePromo(notEligiblePromos)
+        viewModel.cancelNotEligiblePromo(notEligiblePromos)
 
         // Then
         verify {
@@ -429,14 +429,14 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 )
             )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "2"
             )
         )
 
         // When
-        presenter.cancelNotEligiblePromo(notEligiblePromos)
+        viewModel.cancelNotEligiblePromo(notEligiblePromos)
 
         // Then
         verify(inverse = true) {
@@ -462,10 +462,10 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
                 )
             )
 
-        presenter.shipmentCartItemModelList = listOf()
+        viewModel.shipmentCartItemModelList = listOf()
 
         // When
-        presenter.cancelNotEligiblePromo(notEligiblePromos)
+        viewModel.cancelNotEligiblePromo(notEligiblePromos)
 
         // Then
         verify(inverse = true) {
@@ -477,7 +477,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear non eligible promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
+        viewModel.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
             add(
@@ -497,7 +497,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.cancelNotEligiblePromo(notEligilePromoList)
+        viewModel.cancelNotEligiblePromo(notEligilePromoList)
 
         // Then
         verifySequence {
@@ -509,7 +509,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN clear non eligible promo failed THEN should render success`() {
         // Given
-        presenter.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
+        viewModel.tickerAnnouncementHolderData.value = TickerAnnouncementHolderData("0", "", "message")
 
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
             add(
@@ -523,7 +523,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
 
         // When
-        presenter.cancelNotEligiblePromo(notEligilePromoList)
+        viewModel.cancelNotEligiblePromo(notEligilePromoList)
 
         // Then
         verifySequence {
@@ -568,7 +568,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN hit clear all BO with cart list with valid voucher logistic promo THEN call clear cache auto apply use case`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "111-111-111",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
@@ -614,7 +614,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.hitClearAllBo()
+        viewModel.hitClearAllBo()
 
         // Then
         coVerify {
@@ -625,7 +625,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     @Test
     fun `GIVEN clear promo failed WHEN hit clear all BO with cart list with valid voucher logistic promo THEN call clear cache auto apply use case`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "111-111-111",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
@@ -665,7 +665,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
 
         // When
-        presenter.hitClearAllBo()
+        viewModel.hitClearAllBo()
 
         // Then
         coVerify {
@@ -677,7 +677,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     fun `WHEN hit clear all BO with invalid cart item THEN don't call clear cache auto apply use case`() {
         // Given
         // Test negative branch
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             // Test shipmentCartItemModel == null
 //            null,
             // Test shipmentCartData == null
@@ -735,7 +735,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.hitClearAllBo()
+        viewModel.hitClearAllBo()
 
         // Then
         coVerify(inverse = true) {
@@ -756,7 +756,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
 
         // When
-        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+        val result = viewModel.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
 
         // Then
         assert(result != null)
@@ -773,7 +773,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
 
         // When
-        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+        val result = viewModel.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
 
         // Then
         assert(result == null)
@@ -786,7 +786,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = "111-111-111"
 
         // When
-        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+        val result = viewModel.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
 
         // Then
         assert(result == null)
@@ -802,7 +802,7 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
         val uniqueId = ""
 
         // When
-        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+        val result = viewModel.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
 
         // Then
         assert(result == null)
@@ -832,11 +832,11 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123")),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "123",
@@ -874,11 +874,11 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "123",
@@ -913,11 +913,11 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123")),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "code")
         )
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(
+        viewModel.cancelAutoApplyPromoStackLogistic(
             0,
             "code",
             "123",

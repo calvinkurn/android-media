@@ -18,12 +18,12 @@ import io.mockk.every
 import io.mockk.just
 import org.junit.Test
 
-class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelUpsellTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN cancel upsell THEN should try clear all BO`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -42,10 +42,10 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 any()
             )
         } just Runs
-        presenter.isPlusSelected = false
+        viewModel.isPlusSelected = false
 
         // When
-        presenter.cancelUpsell(
+        viewModel.cancelUpsell(
             true,
             true,
             false
@@ -81,15 +81,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -110,7 +110,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify {
@@ -142,15 +142,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -170,7 +170,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify(inverse = true) {
@@ -201,15 +201,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -230,7 +230,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify(inverse = true) {
@@ -261,15 +261,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
             }
@@ -288,7 +288,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify(inverse = true) {
@@ -319,15 +319,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -348,7 +348,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify(inverse = true) {
@@ -379,15 +379,15 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
                 groupAddress = listOf(groupAddress),
                 newUpsell = upsell
             )
-        presenter.isPlusSelected = true
+        viewModel.isPlusSelected = true
 
-        presenter.processInitialLoadCheckoutPage(
+        viewModel.processInitialLoadCheckoutPage(
             true,
             false,
             false
         )
 
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(cartStringGroup = "cartString").apply {
                 cartItemModels = listOf(CartItemModel(cartStringGroup = "cartString"))
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
@@ -408,7 +408,7 @@ class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
         } just Runs
 
         // When
-        presenter.clearAllBoOnTemporaryUpsell()
+        viewModel.clearAllBoOnTemporaryUpsell()
 
         // Then
         coVerify(inverse = true) {

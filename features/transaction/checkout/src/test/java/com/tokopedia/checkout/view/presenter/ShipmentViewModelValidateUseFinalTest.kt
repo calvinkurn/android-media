@@ -35,7 +35,7 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import rx.subjects.PublishSubject
 
-class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelValidateUseFinalTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN validate use success THEN should update promo button`() {
@@ -56,7 +56,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verify {
@@ -89,7 +89,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifyOrder {
@@ -104,7 +104,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         val message = "error"
         val tmpCartString = "123-abc"
         val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = tmpCartString)
-        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+        viewModel.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
         val promoUiModel = PromoUiModel(
@@ -124,7 +124,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifyOrder {
@@ -140,7 +140,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         val shipmentCartItemModel = ShipmentCartItemModel(
             cartStringGroup = tmpCartString
         )
-        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+        viewModel.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
         val message = "error"
@@ -161,7 +161,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifyOrder {
@@ -180,7 +180,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             cartStringGroup = tmpCartString,
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = code)
         )
-        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+        viewModel.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(shipmentCartItemModel)
         }
         val message = "error"
@@ -193,7 +193,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifyOrder {
@@ -228,7 +228,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verify {
@@ -243,7 +243,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN validate use success with ticker data and current ticker exist THEN should update promo button and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData.value =
+        viewModel.tickerAnnouncementHolderData.value =
             TickerAnnouncementHolderData(id = "0", message = "")
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
@@ -267,7 +267,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verify {
@@ -309,7 +309,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(
+        viewModel.checkPromoCheckoutFinalShipment(
             ValidateUsePromoRequest(),
             lastSelectedCourierOrderIndex,
             cartString
@@ -351,7 +351,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(
+        viewModel.checkPromoCheckoutFinalShipment(
             ValidateUsePromoRequest(),
             lastSelectedCourierOrderIndex,
             cartString
@@ -381,7 +381,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             ClearPromoUiModel()
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verify {
@@ -401,7 +401,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifySequence {
@@ -422,7 +422,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifySequence {
@@ -440,7 +440,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             ResponseErrorException()
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verifySequence {
@@ -460,7 +460,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
                 }
             )
         }
-        presenter.setLastValidateUseRequest(validateUsePromoRequest)
+        viewModel.setLastValidateUseRequest(validateUsePromoRequest)
         val message = "error"
         coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             AkamaiErrorException(message)
@@ -468,7 +468,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             ClearPromoUiModel()
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
 
         // Then
         verifySequence {
@@ -479,7 +479,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
         assertEquals(
             ValidateUsePromoRequest(orders = listOf(OrdersItem())),
-            presenter.lastValidateUseRequest
+            viewModel.lastValidateUseRequest
         )
     }
 
@@ -510,11 +510,11 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123"))
         )
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        presenter.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.setScheduleDeliveryMapData(shipmentCartItemModel.cartStringGroup, shipmentScheduleDeliveryMapData)
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        viewModel.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
 
         // Then
         verify {
@@ -531,10 +531,10 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
             cartItemModels = listOf(CartItemModel(cartStringGroup = "123", cartStringOrder = "1"), CartItemModel(cartStringGroup = "123", cartStringOrder = "2"))
         )
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        viewModel.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(2, couponListRecommendationRequest.orders.size)
@@ -543,7 +543,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with shipping but no courier THEN should return with no courier info`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -553,7 +553,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(false, couponListRecommendationRequest.orders[0].freeShippingMetadata.isNotEmpty())
@@ -563,7 +563,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with shipping & bo THEN should return with correct number of order & shipping & bo`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -580,7 +580,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(3, couponListRecommendationRequest.orders.size)
@@ -592,8 +592,8 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with trade in THEN should return with trade in true`() {
         // Given
-        presenter.isTradeIn = true
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.isTradeIn = true
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -602,7 +602,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(1, couponListRecommendationRequest.isTradeIn)
@@ -611,11 +611,11 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with trade in dropoff courier THEN should return with trade in dropoff courier`() {
         // Given
-        presenter.isTradeIn = true
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.isTradeIn = true
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             selectedTabIndex = 1
         }
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -625,7 +625,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(1, couponListRecommendationRequest.isTradeIn)
@@ -636,11 +636,11 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request without trade in dropoff courier THEN should return without trade in dropoff courier`() {
         // Given
-        presenter.isTradeIn = true
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.isTradeIn = true
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             selectedTabIndex = 1
         }
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -650,7 +650,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(1, couponListRecommendationRequest.isTradeIn)
@@ -661,8 +661,8 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request ocs THEN should return cart type ocs`() {
         // Given
-        presenter.isOneClickShipment = true
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.isOneClickShipment = true
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -672,7 +672,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals("ocs", couponListRecommendationRequest.cartType)
@@ -681,7 +681,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with last apply THEN should return with global promo codes`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
                 cartStringGroup = "234",
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
@@ -690,10 +690,10 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
             )
         )
         val codes = listOf("code")
-        presenter.lastApplyData.value = LastApplyUiModel(codes = codes)
+        viewModel.lastApplyData.value = LastApplyUiModel(codes = codes)
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(codes, couponListRecommendationRequest.codes)
@@ -702,7 +702,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
     @Test
     fun `WHEN generate coupon list recommendation request with insurance THEN should return with insurance price true`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(
+        viewModel.shipmentCartItemModelList = listOf(
             ShipmentCartItemTopModel(
                 cartStringGroup = "234"
             ),
@@ -716,7 +716,7 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+        val couponListRecommendationRequest = viewModel.generateCouponListRecommendationRequest()
 
         // Then
         assertEquals(1, couponListRecommendationRequest.orders.first().isInsurancePrice)

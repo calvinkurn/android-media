@@ -7,12 +7,12 @@ import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
 
-class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
     @Test
     fun pinpointSuccess_ShouldRenderEditAddressSuccess() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             addressName = "address 1"
             street = "street 1"
@@ -38,7 +38,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, LocationPass())
+        viewModel.editAddressPinpoint(latitude, longitude, LocationPass())
 
         // Then
         verifyOrder {
@@ -53,7 +53,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
     @Test
     fun pinpointFailed_ShouldNavigateToSetPinpointWithErrorMessage() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             addressName = "address 1"
             street = "street 1"
@@ -83,7 +83,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, locationPass)
+        viewModel.editAddressPinpoint(latitude, longitude, locationPass)
 
         // Then
         verifyOrder {
@@ -98,7 +98,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
     @Test
     fun pinpointFailedWithoutErrorMessage_ShouldNavigateToSetPinpointWithDefaultErrorMessage() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             addressName = "address 1"
             street = "street 1"
@@ -132,7 +132,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         } returns errorMessage
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, locationPass)
+        viewModel.editAddressPinpoint(latitude, longitude, locationPass)
 
         // Then
         verifyOrder {
@@ -147,7 +147,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
     @Test
     fun pinpointError_ShouldShowToastError() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
+        viewModel.recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
             addressName = "address 1"
             street = "street 1"
@@ -165,7 +165,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, LocationPass())
+        viewModel.editAddressPinpoint(latitude, longitude, LocationPass())
 
         // Then
         verifyOrder {

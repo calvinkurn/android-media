@@ -11,7 +11,7 @@ import io.mockk.coEvery
 import io.mockk.verifySequence
 import org.junit.Test
 
-class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
+class ShipmentViewModelChangeShippingAddressTest : BaseShipmentViewModelTest() {
 
     @Test
     fun `WHEN change shipping address for normal checkout flow success THEN should render success`() {
@@ -20,7 +20,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         val recipientAddressModel = RecipientAddressModel().apply {
             id = "1"
         }
-        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+        viewModel.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
                 ShipmentCartItemModel(cartStringGroup = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
@@ -40,7 +40,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = true)
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             recipientAddressModel,
             chosenAddress,
             false,
@@ -68,7 +68,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = false)
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             RecipientAddressModel(),
             chosenAddress,
             false,
@@ -96,7 +96,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } throws Throwable()
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             RecipientAddressModel(),
             chosenAddress,
             false,
@@ -127,7 +127,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
                 addrId = "1"
             }
         }
-        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+        viewModel.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
             add(
                 ShipmentCartItemModel(cartStringGroup = "").apply {
                     cartItemModels = ArrayList<CartItemModel>().apply {
@@ -147,7 +147,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = true)
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             recipientAddressModel,
             chosenAddress,
             false,
@@ -178,7 +178,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } returns SetShippingAddressData(isSuccess = false, messages = errorMessages)
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             RecipientAddressModel(),
             chosenAddress,
             false,
@@ -205,7 +205,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
         coEvery { changeShippingAddressGqlUseCase(any()) } throws AkamaiErrorException("error")
 
         // When
-        presenter.changeShippingAddress(
+        viewModel.changeShippingAddress(
             RecipientAddressModel(),
             chosenAddress,
             false,
