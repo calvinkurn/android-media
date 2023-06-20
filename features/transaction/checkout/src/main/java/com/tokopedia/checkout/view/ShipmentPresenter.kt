@@ -768,12 +768,14 @@ class ShipmentPresenter @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHinger: Boolean
     ) {
-        if (isReloadData) {
-            view?.setShipmentNewUpsellLoading(true)
-            view?.setHasRunningApiCall(true)
-            view?.showLoading()
-        } else {
-            view?.showInitialLoading()
+        view?.let { v ->
+            if (isReloadData) {
+                v.setShipmentNewUpsellLoading(true)
+                v.setHasRunningApiCall(true)
+                v.showLoading()
+            } else {
+                v.showInitialLoading()
+            }
         }
         viewModelScope.launch(dispatchers.immediate) {
             try {
@@ -1113,9 +1115,11 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         } else {
-            view?.hideLoading()
-            view?.setHasRunningApiCall(false)
-            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
+            view?.let { v ->
+                v.hideLoading()
+                v.setHasRunningApiCall(false)
+                v.showToastError(v.getStringResource(R.string.message_error_checkout_empty))
+            }
         }
     }
 
@@ -1852,7 +1856,6 @@ class ShipmentPresenter @Inject constructor(
             ticker.message =
                 validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message
             tickerAnnouncementHolderData.value = ticker
-//            view?.updateTickerAnnouncementMessage()
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 ticker.id
             )
@@ -2261,7 +2264,6 @@ class ShipmentPresenter @Inject constructor(
         }
         doApplyBoNew(toBeAppliedVoucherOrders)
         for (voucherOrders in toBeAppliedVoucherOrders) {
-//            doApplyBo(voucherOrders)
             reloadedUniqueIds.add(voucherOrders.cartStringGroup)
         }
         return Pair(reloadedUniqueIds, unappliedBoPromoUniqueIds)
@@ -2524,10 +2526,13 @@ class ShipmentPresenter @Inject constructor(
                         boPromoCode
                     )
                 } catch (t: Throwable) {
-                    Timber.d(t)
-                    view?.logOnErrorLoadCourier(t, itemPosition, "")
-                    if (t is AkamaiErrorException) {
-                        view?.showToastErrorAkamai(t.message)
+                    val exception = getActualThrowableForRx(t)
+                    Timber.d(exception)
+                    view?.let { v ->
+                        v.logOnErrorLoadCourier(exception, itemPosition, "")
+                        if (exception is AkamaiErrorException) {
+                            v.showToastErrorAkamai(exception.message)
+                        }
                     }
                 }
             }
@@ -2645,10 +2650,13 @@ class ShipmentPresenter @Inject constructor(
                         boPromoCode
                     )
                 } catch (t: Throwable) {
-                    Timber.d(t)
-                    view?.logOnErrorLoadCourier(t, itemPosition, "")
-                    if (t is AkamaiErrorException) {
-                        view?.showToastErrorAkamai(t.message)
+                    val exception = getActualThrowableForRx(t)
+                    Timber.d(exception)
+                    view?.let { v ->
+                        v.logOnErrorLoadCourier(exception, itemPosition, "")
+                        if (exception is AkamaiErrorException) {
+                            v.showToastErrorAkamai(exception.message)
+                        }
                     }
                 }
             }
@@ -2778,12 +2786,15 @@ class ShipmentPresenter @Inject constructor(
                         boPromoCode
                     )
                 } catch (t: Throwable) {
-                    Timber.d(t)
+                    val exception = getActualThrowableForRx(t)
+                    Timber.d(exception)
                     val boPromoCode = getBoPromoCode(shipmentCartItemModel)
-                    view?.renderCourierStateFailed(itemPosition, true, false)
-                    view?.logOnErrorLoadCourier(t, itemPosition, boPromoCode)
-                    if (t is AkamaiErrorException) {
-                        view?.showToastErrorAkamai(t.message)
+                    view?.let { v ->
+                        v.renderCourierStateFailed(itemPosition, true, false)
+                        v.logOnErrorLoadCourier(exception, itemPosition, boPromoCode)
+                        if (exception is AkamaiErrorException) {
+                            v.showToastErrorAkamai(exception.message)
+                        }
                     }
                 }
             }
@@ -3166,22 +3177,25 @@ class ShipmentPresenter @Inject constructor(
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
                     } catch (t: Throwable) {
-                        Timber.d(t)
+                        val exception = getActualThrowableForRx(t)
+                        Timber.d(exception)
                         val boPromoCode = getBoPromoCode(
                             shipmentGetCourierHolderData.shipmentCartItemModel
                         )
-                        view?.renderCourierStateFailed(
-                            shipmentGetCourierHolderData.itemPosition,
-                            false,
-                            false
-                        )
-                        view?.logOnErrorLoadCourier(
-                            t,
-                            shipmentGetCourierHolderData.itemPosition,
-                            boPromoCode
-                        )
-                        if (t is AkamaiErrorException) {
-                            view?.showToastErrorAkamai(t.message)
+                        view?.let { v ->
+                            v.renderCourierStateFailed(
+                                shipmentGetCourierHolderData.itemPosition,
+                                false,
+                                false
+                            )
+                            v.logOnErrorLoadCourier(
+                                exception,
+                                shipmentGetCourierHolderData.itemPosition,
+                                boPromoCode
+                            )
+                            if (exception is AkamaiErrorException) {
+                                v.showToastErrorAkamai(exception.message)
+                            }
                         }
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
@@ -3536,22 +3550,25 @@ class ShipmentPresenter @Inject constructor(
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
                     } catch (t: Throwable) {
-                        Timber.d(t)
+                        val exception = getActualThrowableForRx(t)
+                        Timber.d(exception)
                         val boPromoCode = getBoPromoCode(
                             shipmentGetCourierHolderData.shipmentCartItemModel
                         )
-                        view?.renderCourierStateFailed(
-                            shipmentGetCourierHolderData.itemPosition,
-                            false,
-                            false
-                        )
-                        view?.logOnErrorLoadCourier(
-                            t,
-                            shipmentGetCourierHolderData.itemPosition,
-                            boPromoCode
-                        )
-                        if (t is AkamaiErrorException) {
-                            view?.showToastErrorAkamai(t.message)
+                        view?.let { v ->
+                            v.renderCourierStateFailed(
+                                shipmentGetCourierHolderData.itemPosition,
+                                false,
+                                false
+                            )
+                            v.logOnErrorLoadCourier(
+                                exception,
+                                shipmentGetCourierHolderData.itemPosition,
+                                boPromoCode
+                            )
+                            if (exception is AkamaiErrorException) {
+                                v.showToastErrorAkamai(exception.message)
+                            }
                         }
                         ratesQueue.remove()
                         itemToProcess = ratesQueue.peek()
@@ -3665,17 +3682,17 @@ class ShipmentPresenter @Inject constructor(
         spId: Int,
         shippingDurationUiModel: ShippingDurationUiModel
     ): Int {
-//        val currentServiceId =
-//            shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.serviceId
-//        return if (currentServiceId != null &&
-//            currentServiceId > 0 &&
-//            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
-//            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
-//        ) {
-//            shippingDurationUiModel.serviceData.selectedShipperProductId
-//        } else {
-        return spId
-//        }
+        val currentServiceId =
+            shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier?.serviceId
+        return if (currentServiceId != null &&
+            currentServiceId > 0 &&
+            shippingDurationUiModel.serviceData.serviceId == currentServiceId &&
+            shippingDurationUiModel.serviceData.selectedShipperProductId > 0
+        ) {
+            shippingDurationUiModel.serviceData.selectedShipperProductId
+        } else {
+            return spId
+        }
     }
 
     private fun generateCourierItemData(
@@ -3932,19 +3949,21 @@ class ShipmentPresenter @Inject constructor(
                                                     cartString,
                                                     promoCode
                                                 )
-                                                view?.resetCourier(shipmentCartItemModel)
-                                                view?.renderCourierStateFailed(
-                                                    itemPosition,
-                                                    isTradeInDropOff,
-                                                    true
-                                                )
-                                                view?.logOnErrorLoadCourier(
-                                                    MessageErrorException(
-                                                        shippingCourierUiModel.productData.error?.errorMessage
-                                                    ),
-                                                    itemPosition,
-                                                    promoCode
-                                                )
+                                                view?.let { v ->
+                                                    v.resetCourier(shipmentCartItemModel)
+                                                    v.renderCourierStateFailed(
+                                                        itemPosition,
+                                                        isTradeInDropOff,
+                                                        true
+                                                    )
+                                                    v.logOnErrorLoadCourier(
+                                                        MessageErrorException(
+                                                            shippingCourierUiModel.productData.error?.errorMessage
+                                                        ),
+                                                        itemPosition,
+                                                        promoCode
+                                                    )
+                                                }
                                                 continue@loopProcess
                                             } else {
                                                 shippingCourierUiModel.isSelected = true
@@ -4032,6 +4051,7 @@ class ShipmentPresenter @Inject constructor(
                     }
                     throw MessageErrorException(errorReason)
                 } catch (t: Throwable) {
+                    val exception = getActualThrowableForRx(t)
                     cancelAutoApplyPromoStackLogistic(
                         itemPosition,
                         promoCode,
@@ -4040,17 +4060,21 @@ class ShipmentPresenter @Inject constructor(
                         shipmentCartItemModel
                     )
                     clearOrderPromoCodeFromLastValidateUseRequest(cartString, promoCode)
-                    view?.resetCourier(shipmentCartItemModel)
-                    view?.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
-                    view?.logOnErrorLoadCourier(t, itemPosition, promoCode)
-                    if (t is AkamaiErrorException) {
-                        view?.showToastErrorAkamai(t.message)
+                    view?.let { v ->
+                        v.resetCourier(shipmentCartItemModel)
+                        v.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
+                        v.logOnErrorLoadCourier(exception, itemPosition, promoCode)
+                        if (exception is AkamaiErrorException) {
+                            v.showToastErrorAkamai(exception.message)
+                        }
                     }
                 }
             }
             updateShipmentButtonPaymentModel(loading = false)
         }
     }
+
+    private fun getActualThrowableForRx(t: Throwable) = t.cause?.cause ?: t.cause ?: t
 
     private fun generateCourierItemDataWithLogisticPromo(
         shippingCourierUiModel: ShippingCourierUiModel,
@@ -4235,8 +4259,9 @@ class ShipmentPresenter @Inject constructor(
                 generateEditAddressRequestParams(latitude, longitude)
             viewModelScope.launch(dispatchers.immediate) {
                 try {
-                    val stringResponse =
+                    val stringResponse = withContext(dispatchers.io) {
                         editAddressUseCase.createObservable(requestParams).toBlocking().single()
+                    }
                     if (view != null) {
                         view!!.setHasRunningApiCall(false)
                         view!!.hideLoading()
@@ -4270,14 +4295,15 @@ class ShipmentPresenter @Inject constructor(
                         }
                     }
                 } catch (t: Throwable) {
-                    Timber.d(t)
+                    val exception = getActualThrowableForRx(t)
+                    Timber.d(exception)
                     if (view != null) {
                         view!!.setHasRunningApiCall(false)
                         view!!.hideLoading()
                         view!!.showToastError(
                             getErrorMessage(
                                 view!!.activity,
-                                t
+                                exception
                             )
                         )
                     }

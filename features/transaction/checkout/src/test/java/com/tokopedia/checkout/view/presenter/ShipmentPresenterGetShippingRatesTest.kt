@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -84,6 +85,65 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         // Then
         verify {
             view.renderCourierStateFailed(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates failed with akamai THEN should render failed`() {
+        // Given
+        val exception = AkamaiErrorException("akamai")
+        every { getRatesUseCase.execute(any()) } returns Observable.error(exception)
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(any(), any(), any())
+            view.logOnErrorLoadCourier(exception, any(), any())
+            view.showToastErrorAkamai("akamai")
         }
     }
 
@@ -1017,6 +1077,74 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN get shipping rates for trade in indopaket failed with akamai THEN should render failed and show toaster`() {
+        // Given
+        val throwable = AkamaiErrorException("akamai")
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.error(
+            throwable
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            locationDataModel = LocationDataModel().apply {
+                district = "1"
+                postalCode = "1"
+                latitude = "1"
+                longitude = "1"
+            }
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+            view.logOnErrorLoadCourier(throwable, itemPosition, any())
+            view.showToastErrorAkamai("akamai")
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates for trade in indopaket return empty data THEN should render failed`() {
         // Given
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(
@@ -1473,6 +1601,72 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN get shipping rates with mvc failed with akamai THEN should render nothing`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val exception = AkamaiErrorException("akamai")
+        every { getRatesUseCase.execute(any()) } returns Observable.error(
+            exception
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+        verify {
+            view.logOnErrorLoadCourier(exception, itemPosition, any())
+            view.showToastErrorAkamai("akamai")
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates api with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
@@ -1853,6 +2047,70 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `WHEN get shipping rates api with mvc failed with akamai THEN should render nothing`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val exception = AkamaiErrorException("akamai")
+        every { getRatesApiUseCase.execute(any()) } returns Observable.error(exception)
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+        }
+        verify {
+            view.logOnErrorLoadCourier(exception, itemPosition, any())
+            view.showToastErrorAkamai("akamai")
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates schedule with mvc success THEN should render success`() {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
@@ -1916,6 +2174,70 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates schedule with mvc failed with akamai THEN should render nothing`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val exception = AkamaiErrorException("akamai")
+        every { getRatesWithScheduleUseCase.execute(any(), any()) } returns Observable.error(exception)
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "", ratesValidationFlow = true)
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+        verify {
+            view.logOnErrorLoadCourier(exception, itemPosition, any())
+            view.showToastErrorAkamai("akamai")
         }
     }
 

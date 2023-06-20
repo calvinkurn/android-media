@@ -4130,15 +4130,6 @@ class ShipmentFragment :
 
     private fun updateCost() {
         shipmentPresenter.updateShipmentCostModel()
-//        if (rvShipment!!.isComputingLayout) {
-//            rvShipment!!.post {
-//                shipmentAdapter.updateShipmentCostModel()
-//                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
-//            }
-//        } else {
-//            shipmentAdapter.updateShipmentCostModel()
-//            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
-//        }
     }
 
     override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
@@ -4196,18 +4187,12 @@ class ShipmentFragment :
         updateCost()
     }
 
-    fun showLoaderTotalPayment() {
+    private fun showLoaderTotalPayment() {
         shipmentPresenter.updateShipmentButtonPaymentModel(loading = true)
-//        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
-//        shipmentButtonPaymentModel.isLoading = true
-//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
-    fun hideLoaderTotalPayment() {
+    private fun hideLoaderTotalPayment() {
         shipmentPresenter.updateShipmentButtonPaymentModel(loading = false)
-//        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
-//        shipmentButtonPaymentModel.isLoading = false
-//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     fun showPaymentFeeTickerFailedToLoad(ticker: String) {

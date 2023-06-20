@@ -2015,6 +2015,278 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `GIVEN null shop id WHEN set mini consultation result THEN should set correct data`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        arrayListOf(
+                            ProductsInfo.Product(
+                                false,
+                                0.0,
+                                "",
+                                2150389388,
+                                "",
+                                "",
+                                "1"
+                            )
+                        ),
+                        null,
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389389
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554233,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554234,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = true
+            )
+        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                hasInvalidPrescription = false,
+                uploadedImageCount = 0,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554234"),
+                cartIds = listOf("0", "0", "0")
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null products WHEN set mini consultation result THEN should set correct data`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        null,
+                        "123",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389388,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389389
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389387,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554233,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "",
+                shopId = 6554234,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389385,
+                        ethicalDrugDataModel = EthicalDrugDataModel(true)
+                    ),
+                    CartItemModel(
+                        cartStringGroup = "",
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = true
+            )
+        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                hasInvalidPrescription = false,
+                uploadedImageCount = 0,
+                epharmacyGroupIds = arrayListOf("123"),
+                enablerNames = listOf(""),
+                shopIds = listOf("6554231", "6554231", "6554234"),
+                cartIds = listOf("0", "0", "0")
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
     fun `GIVEN invalid shop id WHEN set mini consultation result THEN should set correct data`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1

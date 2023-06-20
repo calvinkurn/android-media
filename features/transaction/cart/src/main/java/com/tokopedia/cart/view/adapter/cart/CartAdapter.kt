@@ -2,7 +2,6 @@ package com.tokopedia.cart.view.adapter.cart
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
@@ -1367,7 +1366,6 @@ class CartAdapter constructor(
     }
 
     fun setAllAvailableItemCheck(checked: Boolean) {
-        val indices = ArraySet<Int>()
         getData().forEachIndexed { index, data ->
             when (data) {
                 is CartGroupHolderData -> {
@@ -1405,10 +1403,6 @@ class CartAdapter constructor(
                 }
             }
         }
-
-//        indices.forEach {
-//            notifyItemChanged(it)
-//        }
     }
 
     fun isAllAvailableItemCheked(): Boolean {
