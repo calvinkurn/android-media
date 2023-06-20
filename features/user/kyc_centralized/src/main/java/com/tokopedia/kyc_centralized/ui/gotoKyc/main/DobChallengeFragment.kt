@@ -90,7 +90,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
             GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
             viewModel.submitChallenge(
                 challengeId = args.parameter.challengeId,
-                questionId = viewModel.getChallenge.value?.questionId.orEmpty(),
+                questionId = viewModel.questionId,
                 selectedDate = selectedDate
             )
         }

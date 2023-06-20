@@ -51,7 +51,7 @@ class SubmitChallengeUseCase @Inject constructor(
                     )
                 }
                 else -> {
-                    SubmitChallengeResult.Success()
+                    SubmitChallengeResult.Success
                 }
             }
         }
@@ -63,24 +63,15 @@ class SubmitChallengeUseCase @Inject constructor(
     }
 }
 
-sealed class SubmitChallengeResult(
-    val attemptsRemaining: String = "",
-    val maximumAttemptsAllowed: String = "",
-    val cooldownTimeInSeconds: String = "",
-    val throwable: Throwable? = null
-) {
-    class Loading: SubmitChallengeResult()
-    class Success: SubmitChallengeResult()
-    class WrongAnswer(
-        attemptsRemaining: String
-    ): SubmitChallengeResult(
-        attemptsRemaining = attemptsRemaining
-    )
-    class Exhausted(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String): SubmitChallengeResult(
-        maximumAttemptsAllowed = maximumAttemptsAllowed,
-        cooldownTimeInSeconds = cooldownTimeInSeconds
-    )
-    class Failed(throwable: Throwable): SubmitChallengeResult(throwable = throwable)
+sealed class SubmitChallengeResult {
+    object Loading : SubmitChallengeResult()
+    object Success : SubmitChallengeResult()
+    class WrongAnswer(val attemptsRemaining: String): SubmitChallengeResult()
+    class Exhausted(
+        val cooldownTimeInSeconds: String,
+        val maximumAttemptsAllowed: String
+    ): SubmitChallengeResult()
+    data class Failed(val throwable: Throwable): SubmitChallengeResult()
 }
 
 data class SubmitChallengeParam (

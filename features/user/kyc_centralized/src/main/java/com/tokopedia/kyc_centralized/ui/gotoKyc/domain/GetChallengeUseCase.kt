@@ -52,11 +52,8 @@ class GetChallengeUseCase @Inject constructor(
     }
 }
 
-sealed class GetChallengeResult(
-    val questionId: String = "",
-    val throwable: Throwable? = null
-) {
-    class Loading(): GetChallengeResult()
-    class Success(questionId: String): GetChallengeResult(questionId = questionId)
-    class Failed(throwable: Throwable): GetChallengeResult(throwable = throwable)
+sealed class GetChallengeResult {
+    object Loading : GetChallengeResult()
+    data class Success(val questionId: String): GetChallengeResult()
+    data class Failed(val throwable: Throwable): GetChallengeResult()
 }

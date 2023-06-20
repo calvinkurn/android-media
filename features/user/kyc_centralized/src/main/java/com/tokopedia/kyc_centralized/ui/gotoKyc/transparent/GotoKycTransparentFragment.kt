@@ -158,7 +158,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                 encryptedName = encryptedName,
-                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source
             )
             gotoOnboardBenefit(parameter)
@@ -175,7 +175,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             val parameter = GotoKycMainParam(
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
-                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
+                isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source
             )
             gotoOnboardBenefit(parameter)
@@ -183,7 +183,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             showNonProgressiveBottomSheet(
                 projectId = viewModel.projectId,
                 source = viewModel.source,
-                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true
+                isAccountLinked = viewModel.isAccountLinked
             )
         }
     }

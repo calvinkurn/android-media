@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.RegisterProgressiveKYC
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.RegisterProgressiveResponse
-import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class RegisterProgressiveUseCase @Inject constructor(
@@ -48,16 +47,11 @@ class RegisterProgressiveUseCase @Inject constructor(
     }
 }
 
-sealed class RegisterProgressiveResult(
-    val status: Int = 0,
-    val challengeId: String = "",
-    val throwable: Throwable? = null,
-    val rejectionReason: String = ""
-) {
-    class Loading : RegisterProgressiveResult()
-    class RiskyUser(challengeId: String) : RegisterProgressiveResult(challengeId = challengeId)
-    class NotRiskyUser(status: Int, rejectionReason: String = "") : RegisterProgressiveResult(status = status, rejectionReason = rejectionReason)
-    class Failed(throwable: Throwable) : RegisterProgressiveResult(throwable = throwable)
+sealed class RegisterProgressiveResult {
+    object Loading : RegisterProgressiveResult()
+    data class RiskyUser(val challengeId: String) : RegisterProgressiveResult()
+    data class NotRiskyUser(val status: Int, val rejectionReason: String = "") : RegisterProgressiveResult()
+    data class Failed(val throwable: Throwable) : RegisterProgressiveResult()
 }
 
 data class RegisterProgressiveParam (
