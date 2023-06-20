@@ -51,3 +51,12 @@ class GetChallengeUseCase @Inject constructor(
         private const val KEY_CHALLENGE_ID = "challengeID"
     }
 }
+
+sealed class GetChallengeResult(
+    val questionId: String = "",
+    val throwable: Throwable? = null
+) {
+    class Loading(): GetChallengeResult()
+    class Success(questionId: String): GetChallengeResult(questionId = questionId)
+    class Failed(throwable: Throwable): GetChallengeResult(throwable = throwable)
+}

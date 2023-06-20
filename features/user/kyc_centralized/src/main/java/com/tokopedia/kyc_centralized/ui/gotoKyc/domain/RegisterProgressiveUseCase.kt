@@ -1,9 +1,11 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.RegisterProgressiveKYC
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.RegisterProgressiveResponse
@@ -45,3 +47,28 @@ class RegisterProgressiveUseCase @Inject constructor(
         }
     }
 }
+
+sealed class RegisterProgressiveResult(
+    val status: Int = 0,
+    val challengeId: String = "",
+    val throwable: Throwable? = null,
+    val rejectionReason: String = ""
+) {
+    class Loading : RegisterProgressiveResult()
+    class RiskyUser(challengeId: String) : RegisterProgressiveResult(challengeId = challengeId)
+    class NotRiskyUser(status: Int, rejectionReason: String = "") : RegisterProgressiveResult(status = status, rejectionReason = rejectionReason)
+    class Failed(throwable: Throwable) : RegisterProgressiveResult(throwable = throwable)
+}
+
+data class RegisterProgressiveParam (
+    @SerializedName("param")
+    val param: RegisterProgressiveData = RegisterProgressiveData()
+): GqlParam
+
+data class RegisterProgressiveData (
+    @SerializedName("projectID")
+    val projectID: Int = 0,
+
+    @SerializedName("challengeID")
+    val challengeID: String = ""
+)

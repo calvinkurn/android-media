@@ -1,9 +1,11 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitChallengeResponse
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitKYCChallenge
@@ -60,3 +62,44 @@ class SubmitChallengeUseCase @Inject constructor(
         private const val KEY_EXHAUSTED = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
     }
 }
+
+sealed class SubmitChallengeResult(
+    val attemptsRemaining: String = "",
+    val maximumAttemptsAllowed: String = "",
+    val cooldownTimeInSeconds: String = "",
+    val throwable: Throwable? = null
+) {
+    class Loading: SubmitChallengeResult()
+    class Success: SubmitChallengeResult()
+    class WrongAnswer(
+        attemptsRemaining: String
+    ): SubmitChallengeResult(
+        attemptsRemaining = attemptsRemaining
+    )
+    class Exhausted(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String): SubmitChallengeResult(
+        maximumAttemptsAllowed = maximumAttemptsAllowed,
+        cooldownTimeInSeconds = cooldownTimeInSeconds
+    )
+    class Failed(throwable: Throwable): SubmitChallengeResult(throwable = throwable)
+}
+
+data class SubmitChallengeParam (
+    @SerializedName("param")
+    val param: SubmitChallengeData = SubmitChallengeData()
+): GqlParam
+
+data class SubmitChallengeData (
+    @SerializedName("challengeID")
+    val challengeID: String = "",
+
+    @SerializedName("answers")
+    val answers: List<KycSubmitGoToChallengeAnswer> = listOf()
+)
+
+data class KycSubmitGoToChallengeAnswer (
+    @SerializedName("questionId")
+    val questionId: String = "",
+
+    @SerializedName("answer")
+    val answer: String = ""
+): GqlParam

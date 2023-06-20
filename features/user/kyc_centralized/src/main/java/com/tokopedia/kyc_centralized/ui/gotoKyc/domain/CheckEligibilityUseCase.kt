@@ -47,3 +47,13 @@ class CheckEligibilityUseCase @Inject constructor(
         private const val REASON_CODE = "reasonCode"
     }
 }
+
+sealed class CheckEligibilityResult(
+    val encryptedName: String = "",
+    val throwable: Throwable? = null
+) {
+    class Progressive(encryptedName: String): CheckEligibilityResult(encryptedName = encryptedName)
+    class NonProgressive: CheckEligibilityResult()
+    class AwaitingApprovalGopay: CheckEligibilityResult()
+    class Failed(throwable: Throwable): CheckEligibilityResult(throwable = throwable)
+}
