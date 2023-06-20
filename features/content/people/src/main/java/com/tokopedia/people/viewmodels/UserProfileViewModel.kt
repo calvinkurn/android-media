@@ -106,6 +106,11 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileTab: ProfileTabUiModel
         get() = _profileTab.value
 
+    val isFirstTimeSeeReviewTab: Boolean
+        get() = isSelfProfile &&
+            _reviewSettings.value.isEnabled &&
+            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -314,10 +319,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 )
             }
 
-            if (isSelfProfile &&
-                _reviewSettings.value.isEnabled &&
-                !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-            ) {
+            if (isFirstTimeSeeReviewTab) {
                 viewModelScope.launch {
                     delay(DELAY_SHOW_REVIEW_ONBOARDING)
 

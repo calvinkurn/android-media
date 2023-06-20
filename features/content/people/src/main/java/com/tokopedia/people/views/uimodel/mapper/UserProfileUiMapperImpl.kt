@@ -125,7 +125,7 @@ class UserProfileUiMapperImpl @Inject constructor(
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
             val expectedTabs = tabs.filter {
-                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO || it.key == TAB_KEY_REVIEW)
+                it.isActive && ProfileTabUiModel.mapToKey(it.key) != ProfileTabUiModel.Key.Unknown
             }
             ProfileTabUiModel(
                 showTabs = expectedTabs.size > 1,
@@ -133,8 +133,9 @@ class UserProfileUiMapperImpl @Inject constructor(
                     expectedTabs.map {
                         ProfileTabUiModel.Tab(
                             title = it.title,
-                            key = it.key,
+                            key = ProfileTabUiModel.mapToKey(it.key),
                             position = it.position,
+                            isNew = false,
                         )
                     }.sortedBy { it.position }
                 } else {

@@ -68,8 +68,6 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
-import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
-import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -153,9 +151,11 @@ class UserProfileFragment @Inject constructor(
             mainBinding.profileTabs.tabLayout,
             mainBinding.profileTabs.viewPager
         ) {
-            if (it == FRAGMENT_KEY_FEEDS) {
+            if (it == ProfileTabUiModel.Key.Feeds.value) {
                 userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
-            } else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            } else if (it == ProfileTabUiModel.Key.Video.value) {
+                userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            }
         }
     }
 
@@ -740,7 +740,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setupAutoSelectTabIfAny(selectedTabKey: String) {
-        val idx = viewModel.profileTab.tabs.indexOfFirst { it.key == selectedTabKey }
+        val idx = viewModel.profileTab.tabs.indexOfFirst { it.key.value == selectedTabKey }
         if(idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }

@@ -18,6 +18,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomIcon
+import com.tokopedia.unifycomponents.setNew
 
 /**
  * created by fachrizalmrsln on 11/11/2022
@@ -44,11 +45,11 @@ class UserProfilePagerAdapter(
 
     fun getTabs() = listFragment
 
-    fun getFeedsTabs() = listFragment.filter { it.key == FRAGMENT_KEY_FEEDS }
+    fun getFeedsTabs() = listFragment.filter { it.key == ProfileTabUiModel.Key.Feeds }
 
-    fun getVideoTabs() = listFragment.filter { it.key == FRAGMENT_KEY_VIDEO }
+    fun getVideoTabs() = listFragment.filter { it.key == ProfileTabUiModel.Key.Video }
 
-    fun getReviewTabs() = listFragment.filter { it.key == FRAGMENT_KEY_REVIEW }
+    fun getReviewTabs() = listFragment.filter { it.key == ProfileTabUiModel.Key.Review }
 
     private fun attachTab() {
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
@@ -77,32 +78,42 @@ class UserProfilePagerAdapter(
     }
 
     private fun addNewTab(tab: TabLayout.Tab, position: Int) {
-        when (listFragment[position].key) {
-            FRAGMENT_KEY_FEEDS -> {
+        val selectedFragment = listFragment[position]
+        when (selectedFragment.key) {
+            ProfileTabUiModel.Key.Feeds -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE))
+                    .setNew(selectedFragment.isNew)
             }
-            FRAGMENT_KEY_VIDEO -> {
+            ProfileTabUiModel.Key.Video -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO))
+                    .setNew(selectedFragment.isNew)
             }
-            FRAGMENT_KEY_REVIEW -> {
+            ProfileTabUiModel.Key.Review -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR))
+                    .setNew(selectedFragment.isNew)
             }
+            else -> {}
         }
     }
 
     private fun addSelectedTab(tab: TabLayout.Tab) {
-        val key = listFragment[tab.position].key
-        onOpenTab(key)
+        val selectedFragment = listFragment[tab.position]
+        val key = selectedFragment.key
+        onOpenTab(key.value)
         when (key) {
-            FRAGMENT_KEY_FEEDS -> {
+            ProfileTabUiModel.Key.Feeds -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                    .setNew(selectedFragment.isNew)
             }
-            FRAGMENT_KEY_VIDEO -> {
+            ProfileTabUiModel.Key.Video -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                    .setNew(selectedFragment.isNew)
             }
-            FRAGMENT_KEY_REVIEW -> {
+            ProfileTabUiModel.Key.Review -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                    .setNew(selectedFragment.isNew)
             }
+            else -> {}
         }
     }
 
@@ -111,28 +122,22 @@ class UserProfilePagerAdapter(
     override fun createFragment(position: Int): Fragment {
         val currentFragment = listFragment[position]
         return when (currentFragment.key) {
-            FRAGMENT_KEY_FEEDS -> UserProfileFeedFragment.getFragment(
+            ProfileTabUiModel.Key.Feeds -> UserProfileFeedFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
                 bundle = Bundle(),
             )
-            FRAGMENT_KEY_VIDEO -> UserProfileVideoFragment.getFragment(
+            ProfileTabUiModel.Key.Video -> UserProfileVideoFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
                 bundle = Bundle(),
             )
-            FRAGMENT_KEY_REVIEW -> UserProfileReviewFragment.getFragment(
+            ProfileTabUiModel.Key.Review -> UserProfileReviewFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
                 bundle = Bundle(),
             )
             else -> Fragment()
         }
-    }
-
-    companion object {
-        const val FRAGMENT_KEY_FEEDS = "feeds"
-        const val FRAGMENT_KEY_VIDEO = "video"
-        const val FRAGMENT_KEY_REVIEW = "review"
     }
 }
