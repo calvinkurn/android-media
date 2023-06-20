@@ -81,12 +81,11 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             dispatchers.io,
             {
-                // TODO re-add this
-//                val encryptedEmail = encrypt(email)
-//                val encryptedPassword = encrypt(password)
+                val encryptedEmail = encrypt(email)
+                val encryptedPassword = encrypt(password)
                 val addUserResponse = addUserRestUseCase.makeApiCall(
-                    email,
-                    password,
+                    encryptedEmail,
+                    encryptedPassword,
                     tribe,
                     _uiState.value.envType.toEnvString()
                 )
@@ -104,7 +103,15 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
 
     private fun editUserFromRemote(email: String, password: String, tribe: String, id: Long) {
         viewModelScope.launchCatchError(dispatchers.io, {
-            val editResponse = editUserRestCaseUse.makeApiCall(email, password, tribe, _uiState.value.envType.toEnvString(), id)
+            val encryptedEmail = encrypt(email)
+            val encryptedPassword = encrypt(password)
+            val editResponse = editUserRestCaseUse.makeApiCall(
+                encryptedEmail,
+                encryptedPassword,
+                tribe,
+                _uiState.value.envType.toEnvString(),
+                id
+            )
             if (editResponse?.code == OK_STATUS) {
                 _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnSuccessEditUserData)
             } else {

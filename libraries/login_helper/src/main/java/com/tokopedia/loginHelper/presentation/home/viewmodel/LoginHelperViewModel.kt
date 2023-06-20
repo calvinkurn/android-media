@@ -2,7 +2,6 @@ package com.tokopedia.loginHelper.presentation.home.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
@@ -16,14 +15,12 @@ import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
-import com.tokopedia.loginHelper.domain.uiModel.users.LocalUsersDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
-import com.tokopedia.loginHelper.util.CacheConstants
 import com.tokopedia.loginHelper.util.exception.ErrorGetAdminTypeException
 import com.tokopedia.loginHelper.util.exception.GoToActivationPageException
 import com.tokopedia.loginHelper.util.exception.GoToSecurityQuestionException
@@ -110,44 +107,58 @@ class LoginHelperViewModel @Inject constructor(
             }
         }
     }
+
     private fun getLoginData() {
         handleLoading(true)
         launchCatchError(
             dispatchers.io,
             block = {
-                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
-                updateUserDataList(Success(userDetails))
+                var userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
+
+                val persistanceData = mutableListOf<UserDataUiModel>()
+                userDetails.persistentCacheUserData?.users?.forEach {
+                    persistanceData.add(
+                        UserDataUiModel(
+                            decrypt(it.email),
+                            decrypt(it.password),
+                            it.tribe,
+                            it.id
+                        )
+                    )
+                }
+
+                val remoteData = mutableListOf<UserDataUiModel>()
+                userDetails.remoteUserData?.users?.forEach {
+                    remoteData.add(
+                        UserDataUiModel(
+                            decrypt(it.email),
+                            decrypt(it.password),
+                            it.tribe,
+                            it.id
+                        )
+                    )
+                }
+                val result = UnifiedLoginHelperData(
+                    LoginDataUiModel(
+                        userDetails.persistentCacheUserData?.count,
+                        persistanceData
+                    ),
+                    LoginDataUiModel(
+                        userDetails.remoteUserData?.count,
+                        remoteData
+                    )
+                )
+                updateUserDataList(
+                    Success(
+                        result
+                    )
+                )
             },
             onError = {
                 updateUserDataList(Fail(it))
             }
         )
     }
-
-//    // From Persistent Cache
-//    private fun storeUserDetailsInState() {
-//        val cacheManager = PersistentCacheManager.instance
-//        val savedData = getLocalData(cacheManager)
-//
-//        val decryptedLocalUserDetails = mutableListOf<UserDataResponse>()
-//
-//        savedData?.userDataUiModel?.forEach {
-//            decryptedLocalUserDetails.add(
-//                UserDataResponse(
-//                    decrypt(it.email.toBlankOrString()),
-//                    decrypt(it.password.toBlankOrString())
-//                )
-//            )
-//        }
-//
-//        val userList =
-//            LoginDataUiModel(
-//                decryptedLocalUserDetails.size.toLocalUserHeaderUiModel(),
-//                decryptedLocalUserDetails.toUserDataUiModel()
-//            )
-//
-//        updateUserDataListLocal(Success(userList))
-//    }
 
     // From the File
     private fun getLocalUserLoginData(loginData: LoginDataResponse) {
@@ -177,28 +188,11 @@ class LoginHelperViewModel @Inject constructor(
         updateLocalUserDataList(Success(unifiedUserList))
     }
 
-    private fun encrypt(text: String): String {
-        return aesEncryptorCBC.encrypt(text, secretKey)
-    }
-
-    private fun decrypt(text: String): String {
-        return aesEncryptorCBC.decrypt(text, secretKey)
-    }
-
-    private fun getLocalData(cacheManager: PersistentCacheManager): LocalUsersDataUiModel? {
-        return if (_uiState.value.envType == LoginHelperEnvType.STAGING) {
-            cacheManager.get(
-                CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_STAGING,
-                LocalUsersDataUiModel::class.java,
-                LocalUsersDataUiModel()
-            )
-        } else {
-            cacheManager.get(
-                CacheConstants.LOGIN_HELPER_LOCAL_USER_DATA_PROD,
-                LocalUsersDataUiModel::class.java,
-                LocalUsersDataUiModel()
-            )
+    private fun decrypt(text: String?): String {
+        text?.let {
+            return aesEncryptorCBC.decrypt(text, secretKey)
         }
+        return ""
     }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
@@ -294,14 +288,6 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserDataListLocal(userDataList: Result<LoginDataUiModel>) {
-        _uiState.update {
-            it.copy(
-                isLoading = false
-            )
-        }
-    }
-
     private fun updateLocalUserDataList(userDataList: Result<UnifiedLoginHelperData>) {
         _uiState.update {
             it.copy(
@@ -364,25 +350,39 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
-    private fun getFilteredUserList(searchEmail: String, userList: Result<UnifiedLoginHelperData>?): Result<UnifiedLoginHelperData>? {
-        var list1: List<UserDataUiModel>?
-        val list2: List<UserDataUiModel>?
+    private fun getFilteredUserList(
+        searchEmail: String,
+        userList: Result<UnifiedLoginHelperData>?
+    ): Result<UnifiedLoginHelperData>? {
+        var remoteUserList: List<UserDataUiModel>?
+        val cachedUserList: List<UserDataUiModel>?
         var filteredUserList: Result<UnifiedLoginHelperData>? = null
         userList.apply {
             when (this) {
                 is Success -> {
-                    list1 = this.data.remoteUserData?.users?.filter { userDataUiModel ->
-                        userDataUiModel.email?.contains(searchEmail) == true
+                    remoteUserList = this.data.remoteUserData?.users?.filter { userDataUiModel ->
+                        userDataUiModel.email?.contains(searchEmail) == true || userDataUiModel.tribe?.contains(
+                            searchEmail
+                        ) == true
                     }
 
-                    list2 = this.data.persistentCacheUserData?.users?.filter { userDataUiModel ->
-                        userDataUiModel.email?.contains(searchEmail) == true
-                    }
+                    cachedUserList =
+                        this.data.persistentCacheUserData?.users?.filter { userDataUiModel ->
+                            userDataUiModel.email?.contains(searchEmail) == true || userDataUiModel.tribe?.contains(
+                                searchEmail
+                            ) == true
+                        }
 
                     filteredUserList = Success(
                         UnifiedLoginHelperData(
-                            persistentCacheUserData = LoginDataUiModel(list2?.size?.toSearchResultsUserHeaderUiModel(), list2),
-                            remoteUserData = LoginDataUiModel(list1?.size?.toSearchResultsUserHeaderUiModel(), list1)
+                            persistentCacheUserData = LoginDataUiModel(
+                                cachedUserList?.size?.toSearchResultsUserHeaderUiModel(),
+                                cachedUserList
+                            ),
+                            remoteUserData = LoginDataUiModel(
+                                remoteUserList?.size?.toSearchResultsUserHeaderUiModel(),
+                                remoteUserList
+                            )
                         )
                     )
                 }

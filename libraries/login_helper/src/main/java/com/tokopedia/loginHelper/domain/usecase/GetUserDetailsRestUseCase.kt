@@ -18,9 +18,6 @@ import javax.inject.Inject
 
 class GetUserDetailsRestUseCase @Inject constructor(private val api: LoginHelperApiService) {
 
-    // TODO Refactor it
-    // Use it as a repository . make the api call , make the call of Local Persistance
-    // Make two objects
     suspend fun makeNetworkCall(envType: LoginHelperEnvType): UnifiedLoginHelperData {
         var persistantCachedUserData: LoginDataUiModel? = null
         return try {
@@ -44,8 +41,10 @@ class GetUserDetailsRestUseCase @Inject constructor(private val api: LoginHelper
                     decryptedLocalUserDetails.toUserDataUiModel()
                 )
 
-            val response = api.getUserData(envType.toEnvString()).body()?.toLoginUiModel()
-            UnifiedLoginHelperData(persistantCachedUserData, response)
+            //   val response = api.getUserData(envType.toEnvString()).body()?.toLoginUiModel()
+            val response = api.getUserData(envType.toEnvString()).body()
+            var decryptedRemoteUserDetails = response?.toLoginUiModel()
+            UnifiedLoginHelperData(persistantCachedUserData, decryptedRemoteUserDetails)
         } catch (e: Exception) {
             Log.d("FATAL", "makeNetworkCall: $e ")
             UnifiedLoginHelperData(persistantCachedUserData, LoginDataUiModel())

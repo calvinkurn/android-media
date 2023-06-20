@@ -74,11 +74,19 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             block = {
                 handleLoading(true)
                 val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType)
-                //     val loginData = userDetails.body()
-
+                val decryptedUsers = mutableListOf<UserDataUiModel>()
+                userDetails.remoteUserData?.users?.forEach {
+                    decryptedUsers.add(
+                        UserDataUiModel(
+                            decrypt(it.email),
+                            decrypt(it.password),
+                            it.tribe
+                        )
+                    )
+                }
                 val userList = LoginDataUiModel(
-                    userDetails?.remoteUserData?.count,
-                    userDetails?.remoteUserData?.users
+                    userDetails.remoteUserData?.count,
+                    decryptedUsers
                 )
 
                 updateUserDataList(Success(userList))
@@ -92,7 +100,8 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
     private fun deleteUser(id: Long) {
         viewModelScope.launchCatchError(dispatchers.io, {
             handleLoading(true)
-            val response = deleteUserRestUseCase.makeApiCall(_uiState.value.envType.toEnvString(), id)
+            val response =
+                deleteUserRestUseCase.makeApiCall(_uiState.value.envType.toEnvString(), id)
             if (response?.code == SUCCESS_RESPONSE) {
                 _uiAction.tryEmit(LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction)
             } else {
@@ -140,7 +149,8 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
                 is Success -> {
                     list = this.data.users?.filter { userDataUiModel ->
                         (
-                            userDataUiModel.email?.lowercase()?.contains(searchEmail.lowercase()) == true ||
+                            userDataUiModel.email?.lowercase()
+                                ?.contains(searchEmail.lowercase()) == true ||
                                 userDataUiModel.tribe?.lowercase()?.contains(
                                 searchEmail.lowercase()
                             ) == true
@@ -162,8 +172,9 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
         }
     }
 
-    private fun decrypt(text: String): String {
-        return aesEncryptorCBC.decrypt(text, secretKey)
+    private fun decrypt(text: String?): String {
+        text?.let { return aesEncryptorCBC.decrypt(text, secretKey) }
+        return ""
     }
 
     private fun handleBackButtonTap() {

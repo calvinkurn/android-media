@@ -3,7 +3,6 @@ package com.tokopedia.loginHelper.presentation.home.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -290,8 +289,8 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         when (state.loginDataList) {
             is Success -> {
                 val userData = state.loginDataList.data
-                if (userData.persistentCacheUserData?.users?.isEmpty() == true && userData.remoteUserData?.users == null) {
-                    handleLoginUserDataListFailure(NoUserInfoException())
+                if (userData.persistentCacheUserData?.users?.isEmpty() == true && (userData.remoteUserData?.users == null || userData.remoteUserData.users.isEmpty())) {
+                    handleLoginUserDataListFailure(NoUserInfoException(), state.dataSourceType)
                 }
             }
         }
@@ -342,7 +341,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                     }
                 }
                 is Fail -> {
-                    handleLoginUserDataListFailure(loginDataList.throwable)
+                    handleLoginUserDataListFailure(loginDataList.throwable, dataSourceType)
                 }
             }
         } else {
@@ -351,7 +350,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                     handleLoginUserDataListSuccess(loginDataList.data)
                 }
                 is Fail -> {
-                    handleLoginUserDataListFailure(loginDataList.throwable)
+                    handleLoginUserDataListFailure(loginDataList.throwable, dataSourceType)
                 }
             }
         }
@@ -369,31 +368,34 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         )
         binding?.userList?.layoutManager = layoutManager
         loginHelperAdapter?.clearAllElements()
-        Log.d("FATAL", "handleLoginUserDataListSuccess: $loginDataList")
         loginHelperAdapter?.addData(loginDataList)
         binding?.userList?.apply {
             adapter = loginHelperAdapter
         }
     }
 
-    private fun handleLoginUserDataListFailure(throwable: Throwable) {
+    private fun handleLoginUserDataListFailure(
+        throwable: Throwable,
+        dataSourceType: LoginHelperDataSourceType
+    ) {
         viewModel.processEvent(LoginHelperEvent.HandleLoader(false))
-        binding?.footer?.showToasterError(throwable.message.toBlankOrString())
-        binding?.globalError?.apply {
-            errorTitle.text =
-                context?.resources?.getString(
-                    com.tokopedia.loginHelper.R.string.login_helper_empty_data_title
-                )
-            errorDescription.text =
-                context?.resources?.getString(
-                    com.tokopedia.loginHelper.R.string.login_helper_empty_data_description
-                )
-            setActionClickListener {
-                viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
+        if (dataSourceType == LoginHelperDataSourceType.REMOTE) {
+            binding?.footer?.showToasterError(throwable.message.toBlankOrString())
+            binding?.globalError?.apply {
+                errorTitle.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_empty_data_title
+                    )
+                errorDescription.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_empty_data_description
+                    )
+                setActionClickListener {
+                    viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
+                }
+                show()
             }
-            show()
         }
-
     }
 
     private fun handleLoginToken(loginToken: Result<LoginToken>?) {
