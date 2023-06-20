@@ -59,7 +59,8 @@ import java.net.URL
  * @author Said Faisal on 24/11/2021
  */
 
-class DeveloperOptionActivity : BaseActivity(),
+class DeveloperOptionActivity :
+    BaseActivity(),
     DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
 
     companion object {
@@ -169,7 +170,8 @@ class DeveloperOptionActivity : BaseActivity(),
                 onSubmitDevOptsPassword(
                     result
                         .replace("\n", "")
-                        .sha256(), true
+                        .sha256(),
+                    true
                 )
             }
         }

@@ -46,7 +46,7 @@ import com.tokopedia.unifycomponents.setNew
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.resources.isAppDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -365,7 +365,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            setLightStatusBar(!isAppDarkMode())
+            setLightStatusBar(!isDarkMode())
         }
     }
 
