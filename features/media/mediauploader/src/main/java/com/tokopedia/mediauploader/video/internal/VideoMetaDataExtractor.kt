@@ -2,8 +2,8 @@ package com.tokopedia.mediauploader.video.internal
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
+import androidx.core.net.toUri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import timber.log.Timber
 import javax.inject.Inject
