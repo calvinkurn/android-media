@@ -11,14 +11,14 @@ object EmptyStateData {
         return listOf(
             EmptyStatesUiModel(
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
-                lottieUrl = "https://assets.tokopedia.net/asts/ta/insight/empty-state-1-saran-topads.json",
+                imageUrl = "https://images.tokopedia.net/img/img/android/res/singleDpi/top_ads_saran_top_ads_empty_state.png",
                 stateType = "Saran TopAds",
                 stateTypeDescription = "Fitur yang menyediakan rekomendasi saat iklanmu masih bisa dimaksimalkan untuk hasil yang lebih baik.",
                 buttonText = ""
             ),
             EmptyStatesUiModel(
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
-                lottieUrl = "https://assets.tokopedia.net/asts/ta/insight/empty-state-2-laporan-pencarian.json",
+                imageUrl = "https://images.tokopedia.net/img/img/android/topads/insight_center_page/insight_center_empty_state_two.png",
                 stateType = "Laporan Pencarian",
                 stateTypeDescription = "Temukan kata pencarian apa saja yang menampilkan produkmu dengan fitur ini.",
                 buttonText = "Pelajari Fitur",
@@ -26,7 +26,7 @@ object EmptyStateData {
             ),
             EmptyStatesUiModel(
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
-                lottieUrl = "https://assets.tokopedia.net/asts/ta/insight/empty-state-3-split-bid.json",
+                imageUrl = "https://images.tokopedia.net/img/img/img/android/topads/insight_center_page/insight_centre_empty_state_three.png",
                 stateType = "Biaya Iklan di Pencarian dan Rekomendasi",
                 stateTypeDescription = "Biaya Iklan di Pencarian dan Rekomendasi",
                 buttonText = "Coba Fitur",
@@ -34,7 +34,7 @@ object EmptyStateData {
             ),
             EmptyStatesUiModel(
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
-                lottieUrl = "https://assets.tokopedia.net/asts/ta/insight/empty-state-4-auto-bid.json",
+                imageUrl = "https://images.tokopedia.net/img/android/topads/insight_center_page/insight_centre_empty_state_four.png",
                 stateType = "Biaya Iklan Otomatis",
                 stateTypeDescription = "TopAds akan membantu mengatur biaya iklan dan kata kunci untuk memaksimalkan penjualanmu.",
                 buttonText = "Coba Fitur",
@@ -42,7 +42,7 @@ object EmptyStateData {
             ),
             EmptyStatesUiModel(
                 heading = "Tetap cek secara rutin atau coba gunakan fitur ini:",
-                lottieUrl = "https://assets.tokopedia.net/asts/ta/insight/empty-state-5-auto-topup.json",
+                imageUrl = "https://images.tokopedia.net/img/android/topads/insight_center_page/insight_centre_empty_state_five.png",
                 stateType = "Tambah Kredit Otomatis",
                 stateTypeDescription = "Agar iklan terus tampil, Kredit TopAds akan diisi secara otomatis saat sisa kredit tinggal sedikit.",
                 buttonText = "Coba Fitur",
