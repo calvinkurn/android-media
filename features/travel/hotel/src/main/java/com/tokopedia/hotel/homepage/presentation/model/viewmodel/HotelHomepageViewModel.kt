@@ -44,7 +44,8 @@ class HotelHomepageViewModel @Inject constructor(
     private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
     private val getDppoConsentUseCase: GetDppoConsentUseCase,
     private val travelTickerUseCase: TravelTickerCoroutineUseCase,
-    val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
@@ -126,9 +127,9 @@ class HotelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getDppoConsent(categoryId: Int) {
+    fun getDppoConsent() {
         launchCatchError(block = {
-            val data = getDppoConsentUseCase.execute(categoryId)
+            val data = getDppoConsentUseCase.execute(DPPO_CATEGORY_ID)
             val uiData = mapDppoConsentToHotelModel(data)
             mutableDppoConsent.postValue(Success(uiData))
         }) {
@@ -148,5 +149,9 @@ class HotelHomepageViewModel @Inject constructor(
         }) {
             mutableDeleteRecentSearch.postValue(Fail(it))
         }
+    }
+
+    companion object {
+        const val DPPO_CATEGORY_ID = 51
     }
 }

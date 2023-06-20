@@ -1,7 +1,5 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -36,7 +34,6 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import com.tokopedia.hotel.common.util.HotelCommonConst.DPPO_CATEGORY_ID
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.MutationDeleteRecentSearch
 import com.tokopedia.hotel.common.util.QueryHotelHomepageDefaultParameter
@@ -60,6 +57,7 @@ import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -67,7 +65,6 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -738,7 +735,7 @@ class HotelHomepageFragment :
     }
 
     private fun loadDppoConsent() {
-        homepageViewModel.getDppoConsent(DPPO_CATEGORY_ID)
+        homepageViewModel.getDppoConsent()
     }
 
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()

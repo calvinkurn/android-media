@@ -26,10 +26,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EventHomeViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatcher,
-        private val getDppoConsentUseCase: GetDppoConsentUseCase,
-        private val graphqlRepository: GraphqlRepository
-): BaseViewModel(dispatcher){
+    private val dispatcher: CoroutineDispatcher,
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    private val graphqlRepository: GraphqlRepository
+) : BaseViewModel(dispatcher) {
 
     private val mutableEventHomeListData = MutableLiveData<Result<List<HomeEventItem>>>()
     val eventHomeListData: LiveData<Result<List<HomeEventItem>>>
@@ -44,28 +44,28 @@ class EventHomeViewModel @Inject constructor(
         mutableEventHomeListData.value = Success(list)
     }
 
-    fun getHomeData(isLoadFromCloud: Boolean){
+    fun getHomeData(isLoadFromCloud: Boolean) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    EventQuery.getEventHomeQuery(),
-                    EventHomeDataResponse.Data::class.java,
-                    mapOf(CATEGORY to "event")
+                EventQuery.getEventHomeQuery(),
+                EventHomeDataResponse.Data::class.java,
+                mapOf(CATEGORY to "event")
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRY_TIME).build()
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRY_TIME).build()
             val data = withContext(dispatcher) {
                 graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
             }.getSuccessData<EventHomeDataResponse.Data>()
 
             mutableEventHomeListData.postValue(Success(mappingItem(data)))
-        }){
+        }) {
             mutableEventHomeListData.postValue(Fail(it))
         }
     }
 
-    fun getDppoConsent(categoryId: Int) {
+    fun getDppoConsent() {
         launchCatchError(block = {
-            val data = getDppoConsentUseCase.execute(categoryId)
+            val data = getDppoConsentUseCase.execute(DPPO_CATEGORY_ID)
             val eventModel = mapDppoConsentToEventModel(data)
             mutableDppoConsent.postValue(Success(eventModel))
         }) {
@@ -80,5 +80,6 @@ class EventHomeViewModel @Inject constructor(
     companion object {
         private const val CATEGORY = "category"
         private const val EXPIRY_TIME = 5
+        private const val DPPO_CATEGORY_ID = 23
     }
 }

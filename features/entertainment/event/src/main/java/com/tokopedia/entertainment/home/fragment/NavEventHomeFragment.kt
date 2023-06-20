@@ -20,7 +20,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.common.EventCommonConst
 import com.tokopedia.entertainment.common.util.EventGlobalError.errorEventHandlerGlobalError
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
@@ -48,9 +47,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_home_event.*
 import javax.inject.Inject
 
-class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>(),
-        MenuSheet.ItemClickListener, TrackingListener, EventGridEventViewHolder.ClickGridListener,
-        EventCarouselEventViewHolder.ClickCarouselListener{
+class NavEventHomeFragment :
+    BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>(),
+    MenuSheet.ItemClickListener,
+    TrackingListener,
+    EventGridEventViewHolder.ClickGridListener,
+    EventCarouselEventViewHolder.ClickCarouselListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -71,9 +73,9 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     override fun initInjector() {
         DaggerEventHomeComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,18 +103,21 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         renderToolbar()
-        viewModel.eventHomeListData.observe(viewLifecycleOwner, Observer {
-            clearAllData()
-            when(it){
-                is Success -> {
-                    onSuccessGetData(it.data)
-                }
+        viewModel.eventHomeListData.observe(
+            viewLifecycleOwner,
+            Observer {
+                clearAllData()
+                when (it) {
+                    is Success -> {
+                        onSuccessGetData(it.data)
+                    }
 
-                is Fail -> {
-                    onErrorGetData(it.throwable)
+                    is Fail -> {
+                        onErrorGetData(it.throwable)
+                    }
                 }
             }
-        })
+        )
 
         viewModel.dppoConsent.observe(viewLifecycleOwner) {
             when (it) {
@@ -135,12 +140,12 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         loadAllData()
     }
 
-    private fun requestData(isLoadFromCloud: Boolean = false){
+    private fun requestData(isLoadFromCloud: Boolean = false) {
         viewModel.getHomeData(isLoadFromCloud)
-        viewModel.getDppoConsent(EventCommonConst.DPPO_CATEGORY_ID)
+        viewModel.getDppoConsent()
     }
 
-    private fun loadAllData(){
+    private fun loadAllData() {
         viewModel.getIntialList()
         requestData(true)
     }
@@ -159,8 +164,13 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         swipe_refresh_layout_home?.isRefreshing = false
         performanceMonitoring.stopTrace()
         context?.let {
-            errorEventHandlerGlobalError(it, throwable, container_error_home,
-                    global_error_home_event, { loadAllData() })
+            errorEventHandlerGlobalError(
+                it,
+                throwable,
+                container_error_home,
+                global_error_home_event,
+                { loadAllData() }
+            )
         }
     }
 
@@ -178,11 +188,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         }
     }
 
-    private fun renderToolbar(){
+    private fun renderToolbar() {
         (activity as EventNavigationActivity).setSupportActionBar(toolbar_home)
         (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as EventNavigationActivity).supportActionBar?.title =
-                getString(R.string.ent_home_page_event_hiburan)
+            getString(R.string.ent_home_page_event_hiburan)
 
         val navIcon = toolbar_home.navigationIcon
 
@@ -193,7 +203,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
         txt_search_home.searchBarTextField.inputType = 0
         txt_search_home.searchBarTextField.setOnTouchListener { v, event ->
-            when(event.action){
+            when (event.action) {
                 MotionEvent.ACTION_DOWN -> openEventSearch()
             }
             return@setOnTouchListener true
@@ -228,15 +238,17 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun getAdapterTypeFactory(): HomeTypeFactoryImpl =
-            HomeTypeFactoryImpl(this,
-                    this, this)
+        HomeTypeFactoryImpl(
+            this,
+            this,
+            this
+        )
 
     override fun loadData(page: Int) {
         viewModel.getIntialList()
     }
 
     override fun onItemClicked(t: HomeEventItem?) {
-
     }
 
     override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
@@ -291,7 +303,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         redirectPdp(applink)
     }
 
-    private fun redirectPdp(applink: String){
+    private fun redirectPdp(applink: String) {
         val destination = NavEventHomeFragmentDirections.actionHomeEventFragmentToPdpEventFragment(applink)
         NavigationEventController.navigate(this, destination)
     }

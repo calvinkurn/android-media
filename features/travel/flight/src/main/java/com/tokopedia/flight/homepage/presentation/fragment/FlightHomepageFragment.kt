@@ -29,7 +29,6 @@ import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoC
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
-import com.tokopedia.flight.common.constant.FlightCommonConst.DPPO_CATEGORY_ID
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.view.BaseFlightActivity
@@ -71,11 +70,11 @@ import javax.inject.Inject
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightHomepageFragment : BaseDaggerFragment(),
+class FlightHomepageFragment :
+    BaseDaggerFragment(),
     FlightSearchFormView.FlightSearchFormListener,
     TravelVideoBannerWidget.ActionListener,
-    TravelMenuBottomSheet.TravelMenuListener
-{
+    TravelMenuBottomSheet.TravelMenuListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -117,80 +116,96 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
             arguments?.let {
                 if (it.getString(EXTRA_TRIP, "").isNotEmpty() &&
-                        it.getString(EXTRA_ADULT, "").isNotEmpty() &&
-                        it.getString(EXTRA_CHILD, "").isNotEmpty() &&
-                        it.getString(EXTRA_INFANT, "").isNotEmpty() &&
-                        it.getString(EXTRA_CLASS, "").isNotEmpty() &&
-                        it.getString(EXTRA_AUTO_SEARCH, "").isNotEmpty()) {
+                    it.getString(EXTRA_ADULT, "").isNotEmpty() &&
+                    it.getString(EXTRA_CHILD, "").isNotEmpty() &&
+                    it.getString(EXTRA_INFANT, "").isNotEmpty() &&
+                    it.getString(EXTRA_CLASS, "").isNotEmpty() &&
+                    it.getString(EXTRA_AUTO_SEARCH, "").isNotEmpty()
+                ) {
                     applinkErrorTextResource = flightHomepageViewModel.setupApplinkParams(
-                            it.getString(EXTRA_TRIP, ""),
-                            it.getString(EXTRA_ADULT, ""),
-                            it.getString(EXTRA_CHILD, ""),
-                            it.getString(EXTRA_INFANT, ""),
-                            it.getString(EXTRA_CLASS, ""),
-                            it.getString(EXTRA_AUTO_SEARCH, "")
+                        it.getString(EXTRA_TRIP, ""),
+                        it.getString(EXTRA_ADULT, ""),
+                        it.getString(EXTRA_CHILD, ""),
+                        it.getString(EXTRA_INFANT, ""),
+                        it.getString(EXTRA_CLASS, ""),
+                        it.getString(EXTRA_AUTO_SEARCH, "")
                     )
                 }
             }
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
-            flightHomepageViewModel.getDppoConsent(DPPO_CATEGORY_ID)
+            flightHomepageViewModel.getDppoConsent()
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
-            flightHomepageViewModel.fetchVideoBannerData()
-            when (it) {
-                is Success -> {
-                    renderBannerTitle(it.data.meta.label)
-                    renderBannerView(it.data.banners)
+        flightHomepageViewModel.bannerList.observe(
+            viewLifecycleOwner,
+            Observer {
+                flightHomepageViewModel.fetchVideoBannerData()
+                when (it) {
+                    is Success -> {
+                        renderBannerTitle(it.data.meta.label)
+                        renderBannerView(it.data.banners)
+                    }
+                    is Fail -> {
+                        hideBannerView()
+                    }
                 }
-                is Fail -> {
-                    hideBannerView()
+                stopTrace()
+            }
+        )
+
+        flightHomepageViewModel.videoBanner.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        renderVideoBannerView(it.data)
+                    }
+                    is Fail -> {
+                        hideVideoBannerView()
+                    }
                 }
             }
-            stopTrace()
-        })
+        )
 
-        flightHomepageViewModel.videoBanner.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderVideoBannerView(it.data)
-                }
-                is Fail -> {
-                    hideVideoBannerView()
-                }
+        flightHomepageViewModel.homepageData.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderSearchForm(it)
             }
-        })
+        )
 
-        flightHomepageViewModel.homepageData.observe(viewLifecycleOwner, Observer {
-            renderSearchForm(it)
-        })
-
-        flightHomepageViewModel.tickerData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.message.isNotEmpty()) {
-                        renderTickerView(it.data)
-                    } else {
+        flightHomepageViewModel.tickerData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.message.isNotEmpty()) {
+                            renderTickerView(it.data)
+                        } else {
+                            hideTickerView()
+                        }
+                    }
+                    is Fail -> {
                         hideTickerView()
                     }
                 }
-                is Fail -> {
-                    hideTickerView()
+            }
+        )
+
+        flightHomepageViewModel.autoSearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it) {
+                    isSearchFromWidget = true
+                    binding?.flightHomepageSearchForm?.autoSearch()
                 }
             }
-        })
-
-        flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                isSearchFromWidget = true
-                binding?.flightHomepageSearchForm?.autoSearch()
-            }
-        })
+        )
 
         flightHomepageViewModel.dppoConsent.observe(viewLifecycleOwner) {
             when (it) {
@@ -200,7 +215,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                 is Fail -> {}
             }
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -218,8 +232,9 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             showMessageErrorInSnackbar(applinkErrorTextResource)
         }
 
-        if (::flightHomepageViewModel.isInitialized)
+        if (::flightHomepageViewModel.isInitialized) {
             flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalyticsScreenName.HOMEPAGE)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -238,9 +253,15 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
-        flightHomepageViewModel.sendTrackingRoundTripSwitchChanged(getString(
-                if (isRoundTrip) R.string.flight_dashboard_analytic_round_trip
-                else R.string.flight_dashboard_analytic_one_way))
+        flightHomepageViewModel.sendTrackingRoundTripSwitchChanged(
+            getString(
+                if (isRoundTrip) {
+                    R.string.flight_dashboard_analytic_round_trip
+                } else {
+                    R.string.flight_dashboard_analytic_one_way
+                }
+            )
+        )
     }
 
     override fun onDepartureAirportClicked() {
@@ -272,29 +293,35 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
     }
 
-    override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
-                                        departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
+    override fun onDepartureDateClicked(
+        departureAirport: String,
+        arrivalAirport: String,
+        flightClassId: Int,
+        departureDate: Date,
+        returnDate: Date,
+        isRoundTrip: Boolean
+    ) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
         if (isRoundTrip) {
             // if round trip, use selected date as a mindate and return date as selected date
             setCalendarDatePicker(
-                    returnDate,
-                    departureDate,
-                    minMaxDate.second,
-                    getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
-                    TAG_DEPARTURE_CALENDAR,
-                    departureAirport,
-                    arrivalAirport,
-                    flightClassId
+                returnDate,
+                departureDate,
+                minMaxDate.second,
+                getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
+                TAG_DEPARTURE_CALENDAR,
+                departureAirport,
+                arrivalAirport,
+                flightClassId
             )
         } else {
             val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
-                    minMaxDate.first.toString(DateUtil.YYYY_MM_DD),
-                    minMaxDate.second.toString(DateUtil.YYYY_MM_DD),
-                    departureDate.toString(DateUtil.YYYY_MM_DD),
-                    departureAirport,
-                    arrivalAirport,
-                    flightClassId
+                minMaxDate.first.toString(DateUtil.YYYY_MM_DD),
+                minMaxDate.second.toString(DateUtil.YYYY_MM_DD),
+                departureDate.toString(DateUtil.YYYY_MM_DD),
+                departureAirport,
+                arrivalAirport,
+                flightClassId
             )
             flightCalendarDialog.setListener(object : SinglePickCalendarWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
@@ -305,23 +332,28 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                         showMessageErrorInSnackbar(errorResourceId)
                     }
                 }
-
             })
             flightCalendarDialog.show(requireFragmentManager(), TAG_DEPARTURE_CALENDAR)
         }
     }
 
-    override fun onReturnDateClicked(departureDate: Date, returnDate: Date,
-                                     departureAirport: String, arrivalAirport: String, flightClassId: Int) {
+    override fun onReturnDateClicked(
+        departureDate: Date,
+        returnDate: Date,
+        departureAirport: String,
+        arrivalAirport: String,
+        flightClassId: Int
+    ) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
-        setCalendarDatePicker(null,
-                minMaxDate.first,
-                minMaxDate.second,
-                getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
-                TAG_RETURN_CALENDAR,
-                departureAirport,
-                arrivalAirport,
-                flightClassId
+        setCalendarDatePicker(
+            null,
+            minMaxDate.first,
+            minMaxDate.second,
+            getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
+            TAG_RETURN_CALENDAR,
+            departureAirport,
+            arrivalAirport,
+            flightClassId
         )
     }
 
@@ -363,7 +395,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         if (requestCode == REQUEST_CODE_SEARCH) {
             binding?.flightHomepageSearchForm?.init()
         }
-
     }
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
@@ -461,7 +492,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             }
 
             override fun onDismiss() {}
-
         })
         if (travelTickerModel.url.isNotEmpty()) {
             binding?.flightHomepageTicker?.setOnClickListener {
@@ -521,26 +551,33 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String,
-                                      departureCode: String, arrivalCode: String,
-                                      classFlight: Int) {
+    private fun setCalendarDatePicker(
+        selectedDate: Date?,
+        minDate: Date,
+        maxDate: Date,
+        title: String,
+        tag: String,
+        departureCode: String,
+        arrivalCode: String,
+        classFlight: Int
+    ) {
         val minDateStr = minDate.toString(DateUtil.YYYY_MM_DD)
         val maxDateStr = maxDate.toString(DateUtil.YYYY_MM_DD)
 
         val selectedDateStr = selectedDate?.toString(DateUtil.YYYY_MM_DD)
 
         val flightCalendarDialog = FlightCalendarRoundTripWidget.getInstance(
-                minDateStr, selectedDateStr,
-                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
-                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
-                getString(R.string.flight_min_date_label),
-                getString(R.string.flight_max_date_label),
-                SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
-                true,
-                departureCode,
-                arrivalCode,
-                classFlight,
-                maxDateStr
+            minDateStr, selectedDateStr,
+            SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+            SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
+            getString(R.string.flight_min_date_label),
+            getString(R.string.flight_max_date_label),
+            SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
+            true,
+            departureCode,
+            arrivalCode,
+            classFlight,
+            maxDateStr
         )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
@@ -564,11 +601,13 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
         view?.let {
-            Toaster.build(it,
-                    getString(resourceId),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR,
-                    getString(R.string.flight_booking_action_okay)).show()
+            Toaster.build(
+                it,
+                getString(resourceId),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)
+            ).show()
         }
     }
 
@@ -579,39 +618,43 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-
     private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
         var isValid = true
 
         if (flightSearchData.departureAirport.cityCode != null &&
-                flightSearchData.departureAirport.cityCode.isNotEmpty() &&
-                flightSearchData.arrivalAirport.cityCode != null &&
-                flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
-                flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
+            flightSearchData.departureAirport.cityCode.isNotEmpty() &&
+            flightSearchData.arrivalAirport.cityCode != null &&
+            flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
+            flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode
+        ) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         } else if (flightSearchData.departureAirport.cityAirports != null &&
-                flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
-                flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)) {
+            flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
+            flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)
+        ) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         } else if (flightSearchData.arrivalAirport.cityAirports != null &&
-                flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
-                flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
+            flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
+            flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)
+        ) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         } else if (flightSearchData.departureAirport.airportCode != null &&
-                flightSearchData.departureAirport.airportCode.isNotEmpty() &&
-                flightSearchData.arrivalAirport.airportCode != null &&
-                flightSearchData.arrivalAirport.airportCode.isNotEmpty() &&
-                flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+            flightSearchData.departureAirport.airportCode.isNotEmpty() &&
+            flightSearchData.arrivalAirport.airportCode != null &&
+            flightSearchData.arrivalAirport.airportCode.isNotEmpty() &&
+            flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode
+        ) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         } else if (flightSearchData.departureAirport.cityName != null &&
-                flightSearchData.departureAirport.cityName.isNotEmpty() &&
-                flightSearchData.arrivalAirport.cityName != null &&
-                flightSearchData.arrivalAirport.cityName.isNotEmpty() &&
-                flightSearchData.departureAirport.cityName == flightSearchData.arrivalAirport.cityName) {
+            flightSearchData.departureAirport.cityName.isNotEmpty() &&
+            flightSearchData.arrivalAirport.cityName != null &&
+            flightSearchData.arrivalAirport.cityName.isNotEmpty() &&
+            flightSearchData.departureAirport.cityName == flightSearchData.arrivalAirport.cityName
+        ) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         }
@@ -620,8 +663,10 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
-                REQUEST_CODE_SEARCH)
+        startActivityForResult(
+            FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
+            REQUEST_CODE_SEARCH
+        )
     }
 
     private fun measureBannerHeightBasedOnRatio(): Int =
@@ -735,30 +780,31 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         private const val FLIGHT_HOMEPAGE_TRACE = "tr_flight_homepage"
 
         fun getInstance(linkUrl: String): FlightHomepageFragment =
-                FlightHomepageFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_FROM_DEEPLINK_URL, linkUrl)
-                    }
+            FlightHomepageFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_FROM_DEEPLINK_URL, linkUrl)
                 }
+            }
 
-        fun getInstance(extrasTrip: String,
-                        extrasAdultPassenger: String,
-                        extrasChildPassenger: String,
-                        extrasInfantPassenger: String,
-                        extrasClass: String,
-                        extrasAutoSearch: String,
-                        linkUrl: String): FlightHomepageFragment =
-                FlightHomepageFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_TRIP, extrasTrip)
-                        putString(EXTRA_ADULT, extrasAdultPassenger)
-                        putString(EXTRA_CHILD, extrasChildPassenger)
-                        putString(EXTRA_INFANT, extrasInfantPassenger)
-                        putString(EXTRA_CLASS, extrasClass)
-                        putString(EXTRA_AUTO_SEARCH, extrasAutoSearch)
-                        putString(EXTRA_FROM_DEEPLINK_URL, linkUrl)
-                    }
+        fun getInstance(
+            extrasTrip: String,
+            extrasAdultPassenger: String,
+            extrasChildPassenger: String,
+            extrasInfantPassenger: String,
+            extrasClass: String,
+            extrasAutoSearch: String,
+            linkUrl: String
+        ): FlightHomepageFragment =
+            FlightHomepageFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_TRIP, extrasTrip)
+                    putString(EXTRA_ADULT, extrasAdultPassenger)
+                    putString(EXTRA_CHILD, extrasChildPassenger)
+                    putString(EXTRA_INFANT, extrasInfantPassenger)
+                    putString(EXTRA_CLASS, extrasClass)
+                    putString(EXTRA_AUTO_SEARCH, extrasAutoSearch)
+                    putString(EXTRA_FROM_DEEPLINK_URL, linkUrl)
                 }
+            }
     }
-
 }
