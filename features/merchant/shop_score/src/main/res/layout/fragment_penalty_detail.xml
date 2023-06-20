@@ -48,27 +48,86 @@
             app:typographyType="display_3"
             tools:text="@string/example_date_penalty_detail" />
 
+        <View
+            android:id="@+id/view_space_penalty_detail"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tvStartDateDetailPenalty"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTypeTitlePenaltyDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/Unify_NN950"
+            android:text="@string/title_penalty_type"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/view_space_penalty_detail"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSummaryDetailPenalty"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_NN900"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStartDateDetailPenalty"
+            app:layout_constraintTop_toBottomOf="@id/tvTypeTitlePenaltyDetail"
             app:typographyType="display_3"
             tools:text="@string/example_summary_detail_penalty" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSummaryCtaDetailPenalty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/Unify_GN500"
+            android:text="@string/cta_penalty_detail_summary"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSummaryDetailPenalty"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_product_detail_penalty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/Unify_NN50"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSummaryCtaDetailPenalty">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_product_detail_penalty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="@string/product_name_detail" />
+
+        </androidx.cardview.widget.CardView>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/separatorDetailPenalty"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSummaryDetailPenalty" />
+            app:layout_constraintTop_toBottomOf="@+id/card_product_detail_penalty" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleResultDetailPenalty"
@@ -131,7 +190,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
-            app:icon_color_light_enable="@color/Unify_N500"
+            app:icon_color_light_enable="@color/Unify_NN950"
             app:icon_name="INFORMATION"
             app:layout_constraintBottom_toBottomOf="@id/tvTitleStatusPenalty"
             app:layout_constraintStart_toEndOf="@id/tvTitleStatusPenalty"

@@ -30,7 +30,7 @@
         android:ellipsize="end"
         android:maxWidth="240dp"
         android:maxLines="1"
-        android:textColor="@color/Unify_NN0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/product_tag_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/product_tag_icon"

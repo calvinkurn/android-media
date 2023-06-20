@@ -47,7 +47,8 @@ object PayloadConverter {
         model.type = data.getString(NOTIFICATION_TYPE, "")
         model.pushPayloadExtra = PushPayloadExtra(
             isReviewNotif = isBooleanTrue(data, IS_REVIEW),
-            replyType = data.getString(REPLY_TYPE, "")
+            replyType = data.getString(REPLY_TYPE, ""),
+            userType = data.getString(USER_TYPE, "")
         )
 
         setNotificationSound(model = model, extras = data)
@@ -135,7 +136,8 @@ object PayloadConverter {
         model.type = data.type
         model.pushPayloadExtra = PushPayloadExtra(
             isReviewNotif = data.isReviewNotif,
-            replyType = data.replyType ?: ""
+            replyType = data.replyType ?: "",
+            userType = data.userType ?: ""
         )
 
         setNotificationSound(model, data)

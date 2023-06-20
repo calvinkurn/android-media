@@ -291,7 +291,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
                 }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -300,14 +300,16 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     showBottomSheetLocUndefined(false)
                 }
             }
+
             PERMISSION_DENIED -> {
-                if (!isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
+
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
-                if (!isEdit) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
@@ -383,19 +385,23 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    if (!viewModel.isGetPinPointOnly) {
+                        if (!viewModel.isEdit) {
+                            AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        } else {
+                            EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        }
                     }
                 }
             }
 
             setOnClickListener {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                if (!isGetPinPointOnly) {
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    }
                 }
             }
 
@@ -434,10 +440,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
         binding?.rlSearchCurrentLocation?.setOnClickListener {
-            if (!isEdit) {
-                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            } else {
-                EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            if (!isGetPinPointOnly) {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                }
             }
             if (allPermissionsGranted()) {
                 permissionState = PERMISSION_GRANTED
@@ -467,7 +475,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!isEdit) {
+                if (!isEdit && !isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 }
                 dismiss()
@@ -492,7 +500,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!isEdit) {
+                if (!isEdit && !isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -662,10 +670,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
     override fun onItemClicked(placeId: String) {
-        if (!isEdit) {
-            AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-        } else {
-            EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+        if (!viewModel.isGetPinPointOnly) {
+            if (!viewModel.isEdit) {
+                AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+            } else {
+                EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            }
         }
         isPolygon = false
         if (!isPositiveFlow && isFromPinpoint) {
