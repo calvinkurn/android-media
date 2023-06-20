@@ -1,5 +1,6 @@
 package com.tokopedia.sellerpersona.view.activity
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -66,6 +68,11 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         return DaggerSellerPersonaComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
