@@ -44,7 +44,9 @@ class RecommendationVerticalView :
     }
 
     private fun setupProductCards(widget: RecommendationWidget) {
-        binding.rvRecommendationVertical.adapter = recomAdapter
+        if (binding.rvRecommendationVertical.adapter != recomAdapter) {
+            binding.rvRecommendationVertical.adapter = recomAdapter
+        }
         recomAdapter.submitList(mapVisitableList(widget = widget))
     }
 
