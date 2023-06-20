@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder.recharge.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
@@ -84,7 +83,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
                 titleRes = R.string.recharge_order_detail_sbm_label,
                 subtitle = "",
                 subtitleRes = R.string.recharge_order_detail_sbm_detail,
-                actionUrl = ApplinkConst.DIGITAL_SMARTBILLS
+                actionUrl = ACTION_URL_BAYAR_SEKALIGUS
         ))
         addDivider()
     }
@@ -144,7 +143,9 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             }
 
     companion object {
-        private const val ACTION_URL_LANGGANAN = "tokopedia://webview?titlebar=false&url=https://m.tokopedia.com/langganan"
+        private const val ACTION_URL_LANGGANAN =
+            "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills/?show=subscription"
+        private const val ACTION_URL_BAYAR_SEKALIGUS =
+            "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills/?show=bills"
     }
-
 }
