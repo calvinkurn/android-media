@@ -34,9 +34,9 @@ class AccountLinkingStatusUseCase @Inject constructor(
         val linkedStatus = response.accountsLinkerStatus.linkStatus
 
         return if (linkedStatus.isNotEmpty() && linkedStatus.first().status == KEY_ACCOUNT_LINKED) {
-            AccountLinkingStatusResult.Linked()
+            AccountLinkingStatusResult.Linked
         } else {
-            AccountLinkingStatusResult.NotLinked()
+            AccountLinkingStatusResult.NotLinked
         }
     }
 
@@ -45,5 +45,12 @@ class AccountLinkingStatusUseCase @Inject constructor(
         private const val PARAM_LINKING = "linking_type"
         private const val ACCOUNT_LINKING_TYPE = "account_linking"
     }
+}
+
+sealed class AccountLinkingStatusResult {
+    object Loading : AccountLinkingStatusResult()
+    object Linked : AccountLinkingStatusResult()
+    object NotLinked : AccountLinkingStatusResult()
+    data class Failed(val throwable: Throwable) : AccountLinkingStatusResult()
 }
 
