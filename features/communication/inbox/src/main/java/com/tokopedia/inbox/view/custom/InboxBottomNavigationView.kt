@@ -44,7 +44,6 @@ class InboxBottomNavigationView : BottomNavigationView {
     fun setSelectedPage(@InboxFragmentType page: Int) {
         val pageId = when (page) {
             InboxFragmentType.NOTIFICATION -> R.id.menu_inbox_notification
-            InboxFragmentType.CHAT -> R.id.menu_inbox_chat
             else -> throw UnsupportedOperationException("Unsupported fragment type")
         }
         selectedItemId = pageId
