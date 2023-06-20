@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -40,6 +41,9 @@ class PlayShortsConfigViewModelTest {
     private val mockConfigAllowedNoDraft = uiModelBuilder.buildShortsConfig(shortsId = "", shortsAllowed = true)
     private val mockConfigNotAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = false)
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
+
+    private val mockUserAffiliateTrue = uiModelBuilder.buildBroadcasterCheckAffiliate()
+    private val mockUserAffiliateFalse = uiModelBuilder.buildBroadcasterCheckAffiliate(affiliateName = "", isAffiliate = false,)
 
     private val mockException = Exception("Network Error")
 
@@ -91,6 +95,7 @@ class PlayShortsConfigViewModelTest {
 
             state.config.assertEqualTo(mockConfigAllowed)
             state.selectedAccount.assertEqualTo(mockAccountShop)
+            state.bannerPreparation.assertEqualTo(listOf())
         }
     }
 
@@ -295,6 +300,7 @@ class PlayShortsConfigViewModelTest {
         }
     }
 
+    /** Constant */
     @Test
     fun playShorts_preparation_config_maxTitleCharacter() {
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
@@ -328,6 +334,49 @@ class PlayShortsConfigViewModelTest {
 
             state.config.maxTaggedProduct.assertEqualTo(mockMaxTaggedProduct)
             it.maxProduct.assertEqualTo(mockMaxTaggedProduct)
+        }
+    }
+
+    /** Banner */
+    @Test
+    fun playShorts_preparation_config_ugc_isAffiliate_noBannerOnboardingAffiliate() {
+
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigAllowed
+        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockUserAffiliateTrue
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val state = it.recordState {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            state.config.assertEqualTo(mockConfigAllowed)
+            state.selectedAccount.assertEqualTo(mockAccountUser)
+            state.bannerPreparation.assertEqualTo(listOf())
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_config_ugc_notAffiliate_bannerOnboardingAffiliateExists() {
+
+        coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfigAllowed
+        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockUserAffiliateFalse
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+            val state = it.recordState {
+                submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
+            }
+
+            state.config.assertEqualTo(mockConfigAllowed)
+            state.selectedAccount.assertEqualTo(mockAccountUser)
+            state.bannerPreparation.assertEqualTo(listOf(PlayBroadcastPreparationBannerModel(PlayBroadcastPreparationBannerModel.TYPE_SHORTS_AFFILIATE)))
         }
     }
 
