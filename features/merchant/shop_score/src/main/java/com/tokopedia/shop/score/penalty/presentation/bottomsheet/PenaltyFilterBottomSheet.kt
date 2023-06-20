@@ -8,10 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
@@ -83,7 +81,6 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         observeUpdateFilterSelected()
         observeResetFilter()
         clickBtnApplied()
-        clickBtnReset()
     }
 
     override fun onDestroy() {
@@ -221,8 +218,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         observe(viewModelShopPenalty.filterPenaltyData) {
             when (it) {
                 is Success -> {
-                    filterPenaltyAdapter.updateData(it.data)
-                    showHideBottomSheetReset()
+                    binding?.rvPenaltyFilterBottomSheet?.post {
+                        filterPenaltyAdapter.updateData(it.data)
+                        showHideBottomSheetReset()
+                    }
                 }
                 else -> {
                 }
@@ -233,8 +232,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     private fun observeUpdateFilterSelected() = observe(viewModelShopPenalty.updateFilterSelected) {
         when (it) {
             is Success -> {
-                filterPenaltyAdapter.updateFilterSelected(it.data.first, it.data.second)
-                showHideBottomSheetReset()
+                binding?.rvPenaltyFilterBottomSheet?.post {
+                    filterPenaltyAdapter.updateFilterSelected(it.data.first, it.data.second)
+                    showHideBottomSheetReset()
+                }
             }
             is Fail -> {
             }
@@ -243,46 +244,50 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     private fun observeUpdateSortSelectedPeriod() = observe(viewModelShopPenalty.updateSortSelectedPeriod) {
         if (it is Success) {
-            filterPenaltyAdapter.updateFilterSelected(it.data)
+            binding?.rvPenaltyFilterBottomSheet?.post {
+                filterPenaltyAdapter.updateFilterSelected(it.data)
+                showHideBottomSheetReset()
+            }
         }
     }
 
     private fun observeResetFilter() = observe(viewModelShopPenalty.resetFilterResult) {
         when (it) {
             is Success -> {
-                filterPenaltyAdapter.resetFilterSelected(it.data)
-                showHideBottomSheetReset()
+                binding?.rvPenaltyFilterBottomSheet?.post {
+                    filterPenaltyAdapter.resetFilterSelected(it.data)
+                    showHideBottomSheetReset()
+                }
             }
             else -> {
             }
         }
     }
 
-    private fun clickBtnReset() {
-        context?.let {
-            bottomSheetAction.text = it.resources.getString(R.string.reset_filter_penalty)
-        }
-        bottomSheetAction.setOnClickListener {
+    private fun setClickBtnReset() {
+        setAction(getString(R.string.reset_filter_penalty)) {
             viewModelShopPenalty.resetFilterSelected()
         }
     }
 
     private fun showHideBottomSheetReset() {
         if (checkIsSelected()) {
-            bottomSheetAction.show()
+            setClickBtnReset()
         } else {
-            bottomSheetAction.hide()
+            clearAction()
         }
     }
 
     private fun checkIsSelected(): Boolean {
-        viewModelShopPenalty.getPenaltyFilterUiModelList().filterIsInstance<PenaltyFilterUiModel>().forEach {
-            it.chipsFilterList.forEach { chips ->
-                if (chips.isSelected) {
-                    return true
+        viewModelShopPenalty.getPenaltyFilterUiModelList().filterIsInstance<PenaltyFilterUiModel>()
+            .filter { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }
+            .forEach {
+                it.chipsFilterList.forEach { chips ->
+                    if (chips.isSelected) {
+                        return true
+                    }
                 }
             }
-        }
         return false
     }
 
