@@ -6,9 +6,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.mediauploader.ui.DebugScreen
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
