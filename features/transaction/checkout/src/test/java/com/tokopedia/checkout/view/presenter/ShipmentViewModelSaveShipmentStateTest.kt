@@ -17,7 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 
-class ShipmentPresenterSaveShipmentStateTest : BaseShipmentViewModelTest() {
+class ShipmentViewModelSaveShipmentStateTest : BaseShipmentViewModelTest() {
 
     @Test
     fun checkParamsFromPresenter() {
