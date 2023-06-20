@@ -270,17 +270,12 @@ class ProductManageViewModel @Inject constructor(
 
     fun editProductsByStatus(
         productIds: List<String>,
-        productDTNeedConfirm: List<ProductUiModel> = listOf(),
-        status: ProductStatus,
-        withDelay: Boolean = false
+        status: ProductStatus
     ) {
         launchCatchError(block = {
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
-                if (withDelay) {
-                    delay(REQUEST_DELAY_BULK_EDIT)
-                }
                 val warehouseResponse = async {
                     getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
                 }.await()
@@ -309,7 +304,7 @@ class ProductManageViewModel @Inject constructor(
             }.orEmpty()
 
             _multiEditProductResult.value =
-                Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct, productDTNeedConfirm))
+                Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
 
             hideProgressDialog()
         }, onError = {
