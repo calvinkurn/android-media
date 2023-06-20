@@ -96,7 +96,8 @@ ext {
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
     embraceVersion = '5.20.0'
-    newRelicVersion = '6.11.1'
+    newRelicVersion = '7.+'
+    newRelicSnapshotId = '2718'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
@@ -269,7 +270,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             hansel                : "io.hansel.preprocessor:preprocessor:9.3.2",
-            protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
+            protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.9.1",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",

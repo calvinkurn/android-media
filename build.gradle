@@ -30,6 +30,7 @@ buildscript {
             allowInsecureProtocol = true
         }
         maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url uri("https://oss.sonatype.org/content/repositories/comnewrelic-$newRelicSnapshotId") }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.4.2"
