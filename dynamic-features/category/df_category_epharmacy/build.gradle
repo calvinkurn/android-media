@@ -49,5 +49,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
+    implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
 }
