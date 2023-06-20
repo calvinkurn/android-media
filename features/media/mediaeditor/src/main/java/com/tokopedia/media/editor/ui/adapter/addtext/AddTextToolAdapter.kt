@@ -79,9 +79,7 @@ class AddTextToolAdapter(
         mAddTextMenu.add(
             AddTextToolId.SAVE_TEMPLATE_INDEX.value,
             AddTextAction(
-                editorR.string.add_text_save_template,
-                iconRef = editorR.drawable.editor_icon_template
-            )
+                editorR.string.add_text_save_template, IconUnify.TEMPLATE)
         )
 
         mAddTextMenu.add(
