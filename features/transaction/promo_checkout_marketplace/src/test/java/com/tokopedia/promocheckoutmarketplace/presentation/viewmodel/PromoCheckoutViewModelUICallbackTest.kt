@@ -154,6 +154,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
@@ -440,6 +441,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(selectedPromoItem)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         val lastModifiedData = viewModel.tmpUiModel.value as? Update<*>

@@ -1447,11 +1447,13 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
+                    PromoCheckoutIdlingResource.increment()
                     setLoadingMvcSection(promoItem).also { count ->
                         if (count > 0) {
                             delay(CLASH_LOADING_MILLISECONDS)
                         }
                     }
+                    PromoCheckoutIdlingResource.decrement()
 
                     // Perform clash calculation
                     calculateClash(promoItem)
