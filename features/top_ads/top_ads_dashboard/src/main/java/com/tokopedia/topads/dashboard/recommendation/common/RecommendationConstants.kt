@@ -95,6 +95,6 @@ object RecommendationConstants {
     object InsightGqlInputSource {
         const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center_landing_page"
         const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center_group_detail_page"
-        const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
+        const val SOURCE_TOP_ADS_DASHBOARD = "android.topads_dashboard"
     }
 }
