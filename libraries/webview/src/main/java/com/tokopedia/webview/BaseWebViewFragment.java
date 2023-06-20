@@ -1223,7 +1223,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.KTP)) {
             applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
         } else {
-            applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
+            applink = ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE;
         }
 
         Intent intent = RouteManager.getIntent(getActivity(), applink);
