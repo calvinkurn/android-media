@@ -70,6 +70,9 @@ class ComparisonBpcWidgetView :
 
     private var lifecycleOwner: LifecycleOwner? = null
 
+    override val layoutId: Int
+        get() = LAYOUT
+
     override fun bind(model: RecommendationComparisonBpcModel) {
         setupRecyclerView()
         setComparisonWidgetData(model.recommendationWidget, model)
