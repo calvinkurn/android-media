@@ -469,13 +469,15 @@ object WebViewHelper {
             context?.let {
                 val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it.applicationContext)
                 val whiteListedScpDomains = firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
-                val domainArray = JSONArray(whiteListedScpDomains)
-                if(domainArray.length() > 0 && !TextUtils.isEmpty(url)){
-                    for(i in 0 until domainArray.length()){
-                        val domainObj = domainArray.get(i)
-                        val domainStr = domainObj?.toString()
-                        if(!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())){
-                            return true
+                if(!TextUtils.isEmpty(whiteListedScpDomains)){
+                    val domainArray = JSONArray(whiteListedScpDomains)
+                    if(domainArray.length() > 0 && !TextUtils.isEmpty(url)){
+                        for(i in 0 until domainArray.length()){
+                            val domainObj = domainArray.get(i)
+                            val domainStr = domainObj?.toString()
+                            if(!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())){
+                                return true
+                            }
                         }
                     }
                 }
