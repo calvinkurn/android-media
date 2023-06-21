@@ -71,13 +71,13 @@ class ProfileModelBuilder {
                 var position = 1
 
                 if (isShowFeedTab) {
-                    add(ProfileTabUiModel.Tab(title = "Feeds", key = "feeds", position = position++))
+                    add(ProfileTabUiModel.Tab(title = "Feeds", key = ProfileTabUiModel.Key.Feeds, position = position++))
                 }
                 if (isShowVideoTab) {
-                    add(ProfileTabUiModel.Tab(title = "Video", key = "video", position = position++))
+                    add(ProfileTabUiModel.Tab(title = "Video", key = ProfileTabUiModel.Key.Video, position = position++))
                 }
                 if (isShowReviewTab) {
-                    add(ProfileTabUiModel.Tab(title = "Review", key = "review", position = position++))
+                    add(ProfileTabUiModel.Tab(title = "Review", key = ProfileTabUiModel.Key.Review, position = position++))
                 }
             }
         )
