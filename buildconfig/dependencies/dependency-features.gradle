@@ -211,6 +211,7 @@ ext {
             additional_check                : ":features:user:additional_check",
             tokopoints                      : ":features:promo:tokopoints",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
+            scpRewardsTouchpoints           : ":features:promo:scp_rewards_touchpoints",
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
