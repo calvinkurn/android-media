@@ -242,8 +242,10 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private fun setTimerNonUnify(dateCampaign: Date) {
         timerUnify?.gone()
         timerMoreThanOneDay?.apply {
-            text =
-                dateCampaign.toString(SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT)
+            val dateStringFormatted = dateCampaign.toString(
+                SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT
+            )
+            text = getString(R.string.shop_campaign_tab_banner_timer_date_format, dateStringFormatted)
             show()
         }
     }
