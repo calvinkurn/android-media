@@ -1,7 +1,10 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.text.Editable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +34,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.unifyprinciples.UnifyColorRef
 
 class AccordianKataKunciViewHolder(
     private val itemView: View,
@@ -69,10 +73,25 @@ class AccordianKataKunciViewHolder(
                         val errorMsg = validateKataKunciBid(bid)
                         if(errorMsg.isEmpty()){
                             keywordCost.isInputError = false
-                            if(bid == element.suggestionBid)
+                            if(bid == element.suggestionBid) {
                                 keywordCost.setMessage(getString(R.string.biaya_optimal))
-                            else
-                                keywordCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply),element.suggestionBid))
+                            } else {
+                                val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), bid)
+                                val ss = SpannableString(msg)
+                                val cs = object : ClickableSpan() {
+                                    override fun onClick(p0: View) {
+                                        keywordCost.editText.setText(element.suggestionBid.toString())
+                                    }
+
+                                    override fun updateDrawState(ds: TextPaint) {
+                                        ds.isUnderlineText = false
+                                        ds.color = ContextCompat.getColor(keywordCost.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                                        ds.isFakeBoldText = true
+                                    }
+                                }
+                                ss.setSpan(cs, msg.length-8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                keywordCost.setMessage(ss)
+                            }
 
                             if(checkbox.isChecked){
                                 topadsManagePromoGroupProductInput?.keywordOperation?.firstOrNull { it?.keyword?.tag == element.keywordTag }?.keyword?.price_bid = bid.toDouble()
@@ -81,6 +100,7 @@ class AccordianKataKunciViewHolder(
                             keywordCost.isInputError = true
                             keywordCost.setMessage(errorMsg)
                         }
+                        onInsightAction.invoke(validateAllSelectedItems())
                     }
                 })
             }
