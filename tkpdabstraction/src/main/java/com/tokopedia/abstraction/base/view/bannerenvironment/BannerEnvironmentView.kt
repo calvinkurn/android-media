@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -32,7 +33,7 @@ internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = nu
             textSize = 11.5f
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
-            setPadding(0,0,dip(5),0)
+            setPadding(0, 0, dip(5), 0)
         }
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER)
         addView(textView, layoutParams)
@@ -70,4 +71,6 @@ internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = nu
             paint
         )
     }
+
+    private fun View.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

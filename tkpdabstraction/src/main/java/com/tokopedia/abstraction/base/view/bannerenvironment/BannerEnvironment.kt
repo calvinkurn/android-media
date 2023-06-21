@@ -5,7 +5,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import com.tokopedia.abstraction.R
-import com.tokopedia.graphql.interceptor.BannerDebugInterceptor.Companion.isBeta
+import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor.Companion.isBeta
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
@@ -62,7 +62,6 @@ class BannerEnvironment {
             val params = ViewGroup.MarginLayoutParams(bannerSize, bannerSize)
             decorView?.addView(bannerEnvironmentView, params)
         }
-
     }
 
     /**

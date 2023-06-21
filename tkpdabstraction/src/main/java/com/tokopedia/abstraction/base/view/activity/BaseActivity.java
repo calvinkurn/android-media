@@ -16,6 +16,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -94,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        if(GlobalConfig.isAllowDebuggingTools()){
+        if (GlobalConfig.isAllowDebuggingTools()) {
             bannerEnv = new BannerEnvironment();
         }
     }
@@ -346,9 +347,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
         }
         super.onBackPressed();
     }
-
-    private void bannerEnvironmentVisibility(){
-        if(bannerEnv!=null){
+    private void bannerEnvironmentVisibility() {
+        if (bannerEnv != null) {
             bannerEnv.initializeBannerEnvironment(this);
         }
     }
