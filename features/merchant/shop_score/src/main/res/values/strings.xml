@@ -365,17 +365,17 @@
     <string name="title_penalty_calculation_conversion_table">Tabel Konversi</string>
     <string name="title_penalty_calculation_score">Potongan Skor Performa Toko</string>
     <string name="title_penalty_calculation_ongoing">Total Poin Penalti Sedang Berlangsung</string>
-    <string name="title_penalty_calculation_total_order">Total Pesanan Minggu Ini</string>
+    <string name="title_penalty_calculation_total_order">Total Pesanan 4 Minggu Terakhir</string>
     <string name="title_penalty_calculation_shop_level">Level Toko</string>
     <string name="title_penalty_calculation_formula_ongoing">Total Poin Penalti Sedang Berlangsung</string>
-    <string name="title_penalty_calculation_formula_this_week">Total Pesanan Minggu Ini</string>
+    <string name="title_penalty_calculation_formula_this_week">Total Pesanan 4 Minggu Terakhir</string>
     <string name="title_penalty_calculation_formula_x">x</string>
     <string name="title_penalty_calculation_formula_equal_sign">=</string>
     <string name="title_penalty_calculation_formula_hundred_percent">100%</string>
     <string name="desc_penalty_calculation_fraction_info">(Lihat Tabel Konversi)</string>
     <string name="title_penalty_calculation_percentage">Persentase</string>
     <string name="title_penalty_calculation_score_deduction">Potongan Skor</string>
-    <string name="desc_penalty_calculation_information"><![CDATA[Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena total pesananmu minggu ini 0.]]></string>
+    <string name="desc_penalty_calculation_information"><![CDATA[Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena kamu tidak memiliki pesanan selama 4 minggu terakhir.]]></string>
     <string name="title_penalty_tab_latest">Penalti Terbaru</string>
     <string name="title_penalty_tab_history">Riwayat Penalti</string>
     <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>

@@ -453,7 +453,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     private fun showStatusPenaltyBottomSheet() {
-        val bottomSheet = PenaltyStatusBottomSheet.newInstance()
+        val bottomSheet = PenaltyStatusBottomSheet.newInstance(pageType)
         bottomSheet.show(childFragmentManager)
     }
 
