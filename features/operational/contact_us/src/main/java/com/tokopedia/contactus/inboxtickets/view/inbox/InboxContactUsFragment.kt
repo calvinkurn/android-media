@@ -79,7 +79,7 @@ class InboxContactUsFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(InboxContactUsViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider[InboxContactUsViewModel::class.java] }
 
     private val toTicketFeedBack = getInboxDetailResultActivityLauncher()
 
@@ -547,15 +547,19 @@ class InboxContactUsFragment :
     private fun getInboxDetailResultActivityLauncher() : ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_FINISH) {
-                activity?.startActivity(
-                    Intent(
-                        context,
-                        ContactUsHomeActivity::class.java
-                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                )
-                activity?.finish()
+                routeToHomeContactUs()
             }
         }
+    }
+
+    private fun routeToHomeContactUs(){
+        activity?.startActivity(
+            Intent(
+                context,
+                ContactUsHomeActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        )
+        activity?.finish()
     }
 
     override fun onDestroy() {

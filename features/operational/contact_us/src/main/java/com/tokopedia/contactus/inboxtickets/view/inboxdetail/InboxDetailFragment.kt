@@ -13,6 +13,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -553,11 +554,14 @@ class TicketFragment :
         }
     }
 
-    private fun submitCsatRating(data: Intent?) {
-        showProgressBar()
-        val rating = data?.getLongExtra(BaseFragmentProvideRating.EMOJI_STATE, 0L).orZero()
-        val reason = data?.getStringExtra(BaseFragmentProvideRating.SELECTED_ITEM).orEmpty()
-        viewModel.submitCsatRating(reason, rating.toInt())
+    private fun handlingSubmitCsatRating(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            showProgressBar()
+            val dataResult = result.data
+            val rating = dataResult?.getLongExtra(BaseFragmentProvideRating.EMOJI_STATE, 0L).orZero()
+            val reason = dataResult?.getStringExtra(BaseFragmentProvideRating.SELECTED_ITEM).orEmpty()
+            viewModel.submitCsatRating(reason, rating.toInt())
+        }
     }
 
     private fun sendGTMEventClickSubmitCsatRating(number: String, rating: Int, reason: String) {
@@ -1254,18 +1258,22 @@ class TicketFragment :
 
     private fun getImagePickerResultActivityLauncher(): ActivityResultLauncher<Intent> {
         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val imagePathList = ImagePickerResultExtractor.extract(it.data).imageUrlOrPathList
-                if (imagePathList.size > SIZE_ZERO) {
-                    val imagePath = imagePathList[INDEX_ZERO]
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        val position = imageUploadAdapter?.itemCount.orZero()
-                        val image = ImageUpload()
-                        image.position = position
-                        image.imageId = "image" + UUID.randomUUID().toString()
-                        image.fileLoc = imagePath
-                        onImageSelect(image)
-                    }
+            handleImageResult(it)
+        }
+    }
+
+    private fun handleImageResult(it: ActivityResult){
+        if (it.resultCode == Activity.RESULT_OK) {
+            val imagePathList = ImagePickerResultExtractor.extract(it.data).imageUrlOrPathList
+            if (imagePathList.size > SIZE_ZERO) {
+                val imagePath = imagePathList[INDEX_ZERO]
+                if (!TextUtils.isEmpty(imagePath)) {
+                    val position = imageUploadAdapter?.itemCount.orZero()
+                    val image = ImageUpload()
+                    image.position = position
+                    image.imageId = "image" + UUID.randomUUID().toString()
+                    image.fileLoc = imagePath
+                    onImageSelect(image)
                 }
             }
         }
@@ -1273,9 +1281,7 @@ class TicketFragment :
 
     private fun getCSATResultActivityLauncher(): ActivityResultLauncher<Intent> {
          return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-             if (it.resultCode == Activity.RESULT_OK) {
-                 submitCsatRating(it.data)
-             }
+                 handlingSubmitCsatRating(it)
          }
      }
 }
