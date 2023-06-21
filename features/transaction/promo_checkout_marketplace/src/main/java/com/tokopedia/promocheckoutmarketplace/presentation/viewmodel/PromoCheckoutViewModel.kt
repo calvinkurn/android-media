@@ -1647,12 +1647,17 @@ class PromoCheckoutViewModel @Inject constructor(
         } else {
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
+                    val promoCode = if (it.uiData.useSecondaryPromo) {
+                        it.uiData.secondaryCoupons.first().code
+                    } else {
+                        it.uiData.promoCode
+                    }
                     // CASE 1
-                    if (preAppliedPromoCodes.contains(it.uiData.promoCode) && !it.uiState.isSelected) {
+                    if (preAppliedPromoCodes.contains(promoCode) && !it.uiState.isSelected) {
                         return true
                     }
                     // CASE 2
-                    if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                    if (!preAppliedPromoCodes.contains(promoCode) && it.uiState.isSelected) {
                         return true
                     }
                 }
