@@ -106,7 +106,7 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileTab: ProfileTabUiModel
         get() = _profileTab.value
 
-    val isFirstTimeSeeReviewTab: Boolean
+    private val isFirstTimeSeeReviewTab: Boolean
         get() = isSelfProfile &&
             _reviewSettings.value.isEnabled &&
             !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
@@ -317,15 +317,6 @@ class UserProfileViewModel @AssistedInject constructor(
                     hasNext = response.hasNext,
                     status = response.status,
                 )
-            }
-
-            if (isFirstTimeSeeReviewTab) {
-                viewModelScope.launch {
-                    delay(DELAY_SHOW_REVIEW_ONBOARDING)
-
-                    userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-                    _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
-                }
             }
         }) {
             _reviewContent.update { userReview ->
@@ -669,10 +660,33 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun loadProfileTab() {
         viewModelScope.launchCatchError(
             block = {
+                _reviewSettings.update { repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings() }
+
                 val result = repo.getUserProfileTab(_profileInfo.value.userID)
                 val isEmpty = result == ProfileTabUiModel()
-                _profileTab.update { result }
+
+                _profileTab.update {
+                    result.copy(
+                        tabs = if (isFirstTimeSeeReviewTab) {
+                            result.tabs.map { tab ->
+                                tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
+                            }
+                        } else {
+                            result.tabs
+                        },
+                        showTabs = result.showTabs
+                    )
+                }
                 _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(isEmpty))
+
+                if (isFirstTimeSeeReviewTab) {
+                    viewModelScope.launch {
+                        delay(DELAY_SHOW_REVIEW_ONBOARDING)
+
+                        userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+                        _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
+                    }
+                }
 
                 if (isEmpty && isSelfProfile) loadShopRecom()
             },

@@ -37,10 +37,30 @@ class UserProfilePagerAdapter(
     fun insertFragment(tabs: List<ProfileTabUiModel.Tab>) {
         if (tabs.isEmpty()) return
 
-        listFragment.clear()
-        listFragment.addAll(tabs)
+        if (isTabCountAndOrderStillSame(tabs)) {
+            for (i in 0 until tabLayout.getUnifyTabLayout().tabCount) {
+                tabLayout.getUnifyTabLayout().getTabAt(i)?.let { tab ->
+                    setupTab(tab, tab.isSelected)
+                }
+            }
+        } else {
+            listFragment.clear()
+            listFragment.addAll(tabs)
 
-        attachTab()
+            attachTab()
+        }
+    }
+
+    private fun isTabCountAndOrderStillSame(newTabs: List<ProfileTabUiModel.Tab>): Boolean {
+        return if (newTabs.size != listFragment.size) {
+            false
+        } else {
+            var isSame = true
+            newTabs.forEachIndexed { idx, e ->
+                if (e.key != listFragment[idx].key) isSame = false
+            }
+            isSame
+        }
     }
 
     fun getTabs() = listFragment
@@ -53,7 +73,7 @@ class UserProfilePagerAdapter(
 
     private fun attachTab() {
         TabsUnifyMediator(tabLayout, viewPager) { tab, position ->
-            addNewTab(tab, position)
+            setupTab(tab, isSelected = false)
         }
         tabSelectedListener()
     }
@@ -62,59 +82,43 @@ class UserProfilePagerAdapter(
         tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab == null) return
-                addSelectedTab(tab)
+                setupTab(tab, isSelected = true)
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 if (tab == null) return
-                addSelectedTab(tab)
+                setupTab(tab, isSelected = true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 if (tab == null) return
-                addNewTab(tab, tab.position)
+                setupTab(tab, isSelected = false)
             }
-        },)
+        })
     }
 
-    private fun addNewTab(tab: TabLayout.Tab, position: Int) {
-        val selectedFragment = listFragment[position]
-        when (selectedFragment.key) {
-            ProfileTabUiModel.Key.Feeds -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE))
-                    .setNew(selectedFragment.isNew)
-            }
-            ProfileTabUiModel.Key.Video -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO))
-                    .setNew(selectedFragment.isNew)
-            }
-            ProfileTabUiModel.Key.Review -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR))
-                    .setNew(selectedFragment.isNew)
-            }
-            else -> {}
-        }
-    }
+    private fun setupTab(tab: TabLayout.Tab, isSelected: Boolean) {
+        val currentFragment = listFragment[tab.position]
+        val key = currentFragment.key
 
-    private fun addSelectedTab(tab: TabLayout.Tab) {
-        val selectedFragment = listFragment[tab.position]
-        val key = selectedFragment.key
-        onOpenTab(key.value)
-        when (key) {
-            ProfileTabUiModel.Key.Feeds -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
-                    .setNew(selectedFragment.isNew)
-            }
-            ProfileTabUiModel.Key.Video -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
-                    .setNew(selectedFragment.isNew)
-            }
-            ProfileTabUiModel.Key.Review -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.STAR, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
-                    .setNew(selectedFragment.isNew)
-            }
-            else -> {}
+        if (isSelected) {
+            onOpenTab(key.value)
         }
+
+        val color = when (isSelected) {
+            true -> ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            false -> null
+        }
+
+        val icon = when (key) {
+            ProfileTabUiModel.Key.Feeds -> IconUnify.IMAGE
+            ProfileTabUiModel.Key.Video -> IconUnify.VIDEO
+            ProfileTabUiModel.Key.Review -> IconUnify.STAR
+            else -> 0
+        }
+
+        tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, icon, color))
+            .setNew(currentFragment.isNew)
     }
 
     override fun getItemCount(): Int = listFragment.size
