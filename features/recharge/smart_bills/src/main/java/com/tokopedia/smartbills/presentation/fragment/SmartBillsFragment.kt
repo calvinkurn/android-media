@@ -1,6 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,6 +79,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by resakemal on 17/05/20
@@ -666,9 +669,20 @@ class SmartBillsFragment :
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
         smartBillsAnalytics.viewBottomsheetCatalog()
-        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(this)
-        catalogBottomSheet.showSBMCatalog(catalogList)
-        catalogBottomSheet.show(requireFragmentManager(), "")
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(ArrayList(catalogList))
+        catalogBottomSheet.setListener(this)
+        catalogBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if (childFragment is SmartBillsCatalogBottomSheet) {
+            childFragment.setListener(this)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
