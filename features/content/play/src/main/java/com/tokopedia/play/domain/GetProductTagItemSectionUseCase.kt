@@ -72,11 +72,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     }
                     product_number: ProductNumber
                     rating: Rating
-                    sold_quantity: SoldQuantity
-                    SocialProofRank
-                    SocialProofTagColor
-                    SocialProofRawValue
-                    SocialProofTypeValue
+                    sold_quantity: SoldQuantity 
                   }
                 }
                 vouchers{

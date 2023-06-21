@@ -27,9 +27,6 @@ sealed class PlayProductUiModel {
         val isNumerationShown: Boolean,
         val rating: String,
         val soldQuantity: String,
-        val rankColors: List<String>,
-        val rankFmt: String,
-        val rankType: String,
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
@@ -55,9 +52,6 @@ sealed class PlayProductUiModel {
                     isNumerationShown = false,
                     rating = "",
                     soldQuantity = "",
-                    rankColors = emptyList(),
-                    rankFmt = "",
-                    rankType = "",
                 )
         }
     }

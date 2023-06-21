@@ -152,9 +152,6 @@ class PlayUiModelMapper @Inject constructor(
             isNumerationShown = prevDetail.isNumerationShown,
             rating = prevDetail.rating,
             soldQuantity = prevDetail.soldQuantity,
-            rankType = prevDetail.rankType,
-            rankFmt = prevDetail.rankFmt,
-            rankColors = prevDetail.rankColors,
         )
     }
 }
