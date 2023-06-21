@@ -86,4 +86,7 @@
 
     <string name="title_module_seller_front_funnel">Seller Front Funnel</string>
 
+    <!-- Content -->
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
+
 </resources>
