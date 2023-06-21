@@ -50,7 +50,7 @@ ext {
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    constraintLayoutVersion = '2.0.0-beta4'
+    constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.2.1'
     swipeRefreshVersion = '1.0.0'
 
