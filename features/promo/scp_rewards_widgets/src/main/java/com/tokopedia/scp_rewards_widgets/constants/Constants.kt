@@ -8,3 +8,10 @@ object CouponState {
     const val ERROR = "error"
 }
 
+
+sealed class MedalType {
+    object Earned : MedalType()
+    object InProgress : MedalType()
+    object None : MedalType()
+}
+

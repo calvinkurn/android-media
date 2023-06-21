@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/dp_20">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_section_title"
@@ -22,6 +23,19 @@
         tools:text="Medali kamu" />
 
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_160"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_18"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_section_title"
+        tools:src="@drawable/error_drawable"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_medals"
         android:layout_width="0dp"
@@ -30,13 +44,15 @@
         android:layout_marginTop="@dimen/dp_18"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_section_title"
         tools:itemCount="6"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_medal_layout"
-        tools:spanCount="3" />
+        tools:spanCount="3"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_see_more"
@@ -51,11 +67,19 @@
         app:unifyButtonVariant="ghost"
         tools:text="Lihat Medali Kamu" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_empty_list,btn_see_more, rv_medals" />
+
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_see_more" />
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
 </androidx.constraintlayout.widget.ConstraintLayout>
