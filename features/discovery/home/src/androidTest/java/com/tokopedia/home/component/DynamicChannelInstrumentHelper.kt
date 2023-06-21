@@ -53,11 +53,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET = "tracker/home/cat
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET = "tracker/home/bu_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB = "tracker/home/recommendation_tab.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER = "tracker/home/recom_feed_banner.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN = "tracker/home/recom_feed_product_login.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED = "tracker/home/recom_feed.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECHARGE_BU_WIDGET = "tracker/home/recharge_bu_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "tracker/home/reminder_widget_recharge_close.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
@@ -196,44 +192,6 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
     clickSingleItemOnRecyclerView(R.id.recycleList)
-}
-
-fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder, position: Int) {
-    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
-
-    val rvCount = recyclerView.adapter?.itemCount ?: 0
-    for (i in 0 until rvCount) {
-        try {
-//            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-//                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
-//                    actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem())))
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
-    }
-}
-
-fun clickHomeRecommendationItem(): ViewAction? {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View>? {
-            return null
-        }
-
-        override fun getDescription(): String {
-            return "Click home recommendation item"
-        }
-
-        override fun perform(uiController: UiController?, view: View) {
-            val bannerView: View? = view.findViewById(R.id.bannerImageView)
-            if (bannerView != null) {
-                bannerView.performClick()
-            } else {
-                view.performClick()
-            }
-        }
-    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView) {
