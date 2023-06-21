@@ -117,8 +117,9 @@ public class DeepLinkActivity extends AppCompatActivity implements
     }
 
     private void sendCampaignTrack(Uri uriData, boolean isOriginalUrlAmp) {
+        Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
-        presenter.sendAuthenticatedEvent(uriData, campaign, AppScreen.SCREEN_DEEP_LINK);
+        presenter.sendAuthenticatedEvent(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
     }
 
     private void setupURIPass(Uri data) {
