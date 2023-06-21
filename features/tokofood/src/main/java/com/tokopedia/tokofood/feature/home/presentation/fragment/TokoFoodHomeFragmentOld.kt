@@ -282,7 +282,6 @@ class TokoFoodHomeFragmentOld :
     override fun onPause() {
         searchCoachMark?.dismissCoachMark()
         super.onPause()
-        trackingQueue.sendAll()
     }
 
     override fun onStop() {

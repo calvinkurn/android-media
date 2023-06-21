@@ -284,9 +284,4 @@ class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryLis
             trackingSet.add(uniqueTrackingKey)
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue?.sendAll()
-    }
 }
