@@ -90,7 +90,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         val intent = Intent()
         categories?.let {
             val modelCategories = CategoryMapper.mapCategoryUiModelToCategoryModel(categories)
-            intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, modelCategories as ArrayList<CategoryUIModel?>?)
+            intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, modelCategories as? ArrayList<CategoryUIModel?>)
             val chosenCategory: CategoryUIModel = modelCategories[categories.size - 1]
             intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.id)
             intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.name)
