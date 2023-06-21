@@ -1456,7 +1456,7 @@ class PromoCheckoutViewModel @Inject constructor(
                     PromoCheckoutIdlingResource.decrement()
 
                     // Perform clash calculation
-                    calculateClash(promoItem)
+                    calculateClash(promoItem, false)
 
                     // Calculate total benefit
                     calculateAndRenderTotalBenefit()
@@ -1554,7 +1554,7 @@ class PromoCheckoutViewModel @Inject constructor(
                                 }
                                 _tmpUiModel.value = Update(tmpPromoItem)
                                 // Calculate clash after uncheck
-                                calculateClash(tmpPromoItem)
+                                calculateClash(tmpPromoItem, false)
                                 break
                             }
                         }
@@ -1587,7 +1587,7 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
-                        calculateClash(it)
+                        calculateClash(it, true)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(
                             getPageSource(),
@@ -1775,7 +1775,7 @@ class PromoCheckoutViewModel @Inject constructor(
         return affectedPromoCount
     }
 
-    private fun calculateClash(selectedItem: PromoListItemUiModel) {
+    private fun calculateClash(selectedItem: PromoListItemUiModel, isApplyRecommendedPromo: Boolean) {
         // Return clash result for analytics purpose
         var clashResult = false
         if (selectedItem.uiState.isSelected) {
@@ -1783,7 +1783,7 @@ class PromoCheckoutViewModel @Inject constructor(
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
-                        val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
+                        val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem, isApplyRecommendedPromo)
                         if (!clashResult) clashResult = tmpClashResult
                     }
                     it.uiState.isLoading = false
@@ -1806,7 +1806,7 @@ class PromoCheckoutViewModel @Inject constructor(
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.secondaryCoupons.isNotEmpty() && it.uiState.isSelected) {
                     if (selectedItem.uiData.clashingInfos.isNotEmpty()) {
-                        checkAndSetClashOnSelectionEvent(selectedItem, it)
+                        checkAndSetClashOnSelectionEvent(selectedItem, it, isApplyRecommendedPromo)
                     }
                     _tmpUiModel.value = Update(selectedItem)
                 }
@@ -1891,7 +1891,8 @@ class PromoCheckoutViewModel @Inject constructor(
 
     private fun checkAndSetClashOnSelectionEvent(
         promoListItemUiModel: PromoListItemUiModel,
-        selectedItem: PromoListItemUiModel
+        selectedItem: PromoListItemUiModel,
+        isApplyRecommendedPromo: Boolean
     ): Boolean {
         var clashResult = false
         val selectedPromoCode = if (selectedItem.uiData.useSecondaryPromo) {
@@ -1943,9 +1944,12 @@ class PromoCheckoutViewModel @Inject constructor(
                 if (promoListItemUiModel.uiState.isParentEnabled) {
                     promoListItemUiModel.uiState.isDisabled = false
                 }
-                fragmentUiModel.value?.let {
-                    it.uiData.benefitAdjustmentMessage = promoListItemUiModel.uiData.benefitAdjustmentMessage
-                    _fragmentUiModel.value = it
+                if (!isApplyRecommendedPromo) {
+                    fragmentUiModel.value?.let {
+                        it.uiData.benefitAdjustmentMessage =
+                            promoListItemUiModel.uiData.benefitAdjustmentMessage
+                        _fragmentUiModel.value = it
+                    }
                 }
                 clashResult = false
             }
