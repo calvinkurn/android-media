@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
@@ -238,6 +240,16 @@ object Utils {
             stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
         } catch (t: Throwable) {
             defaultColor
+        }
+    }
+
+    @JvmStatic
+    fun isEnableOperationalGuideline(): Boolean {
+        return try {
+            val remoteConfigImpl = RemoteConfigInstance.getInstance().abTestPlatform
+            remoteConfigImpl.getString(RollenceKey.KEY_SOM_OPERATIONAL_GUIDELINE, "") == RollenceKey.KEY_SOM_OPERATIONAL_GUIDELINE
+        } catch (e: Exception) {
+            true
         }
     }
 }
