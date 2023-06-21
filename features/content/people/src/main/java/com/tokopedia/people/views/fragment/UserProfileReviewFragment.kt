@@ -205,7 +205,7 @@ class UserProfileReviewFragment @Inject constructor(
                         showError(event.throwable)
                     }
                     is UserProfileUiEvent.ErrorLikeDislike -> {
-                        showError(event.throwable)
+                        showError(event.error)
                     }
                     is UserProfileUiEvent.OpenProductDetailPage -> {
                         router.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)

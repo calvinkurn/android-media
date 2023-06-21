@@ -106,6 +106,11 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileTab: ProfileTabUiModel
         get() = _profileTab.value
 
+    private val isFirstTimeSeeReviewTab: Boolean
+        get() = isSelfProfile &&
+            _reviewSettings.value.isEnabled &&
+            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -282,6 +287,9 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currReviewContent = _reviewContent.value
 
+            if (currReviewContent.isLoading) return@launchCatchError
+            if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
+
             if (isRefresh) {
                 _reviewSettings.update {
                     repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings()
@@ -290,8 +298,6 @@ class UserProfileViewModel @AssistedInject constructor(
                 _uiEvent.emit(UserProfileUiEvent.SendPendingTracker)
             }
             if (!_reviewSettings.value.isEnabled) return@launchCatchError
-            if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError
-            if (currReviewContent.isLoading) return@launchCatchError
 
             _reviewContent.update {
                 it.copy(
@@ -315,18 +321,6 @@ class UserProfileViewModel @AssistedInject constructor(
                     hasNext = response.hasNext,
                     status = response.status,
                 )
-            }
-
-            if (isSelfProfile &&
-                _reviewSettings.value.isEnabled &&
-                !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-            ) {
-                viewModelScope.launch {
-                    delay(DELAY_SHOW_REVIEW_ONBOARDING)
-
-                    userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
-                    _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
-                }
             }
         }) {
             _reviewContent.update { userReview ->
@@ -694,9 +688,32 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun loadProfileTab() {
         viewModelScope.launchCatchError(
             block = {
+                _reviewSettings.update { repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings() }
+
                 val result = repo.getUserProfileTab(_profileInfo.value.userID)
                 val isEmpty = result == ProfileTabUiModel()
-                _profileTab.update { result }
+
+                _profileTab.update {
+                    result.copy(
+                        tabs = if (isFirstTimeSeeReviewTab) {
+                            result.tabs.map { tab ->
+                                tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
+                            }
+                        } else {
+                            result.tabs
+                        },
+                        showTabs = result.showTabs
+                    )
+                }
+
+                if (isFirstTimeSeeReviewTab) {
+                    viewModelScope.launch {
+                        delay(DELAY_SHOW_REVIEW_ONBOARDING)
+
+                        userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+                        _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
+                    }
+                }
 
                 if (isEmpty && isSelfProfile) loadShopRecom()
             },
