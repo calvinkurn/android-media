@@ -82,6 +82,8 @@ class UserProfilePagerAdapter(
         tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab == null) return
+
+                onOpenTab(listFragment[tab.position].key.value)
                 setupTab(tab, isSelected = true)
             }
 
@@ -100,10 +102,6 @@ class UserProfilePagerAdapter(
     private fun setupTab(tab: TabLayout.Tab, isSelected: Boolean) {
         val currentFragment = listFragment[tab.position]
         val key = currentFragment.key
-
-        if (isSelected) {
-            onOpenTab(key.value)
-        }
 
         val color = when (isSelected) {
             true -> ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
