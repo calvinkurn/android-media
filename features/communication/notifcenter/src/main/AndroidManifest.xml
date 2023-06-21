@@ -6,7 +6,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".presentation.activity.NotificationSellerActivity"
+            android:name=".ui.seller.NotificationSellerActivity"
             android:exported="false"
             android:label="@string/title_seller_info"
             android:screenOrientation="portrait"
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.activity.NotificationAffiliateActivity"
+            android:name=".ui.affiliate.NotificationAffiliateActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Green">
@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.notificationbuyer.NotificationActivity"
+            android:name=".ui.buyer.NotificationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:exported="false">

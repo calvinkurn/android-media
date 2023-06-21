@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.inboxcommon.NotificationFragmentContainer
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -62,7 +61,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var source = ""
 
     private var counter = 0
-    private var containerListener: NotificationFragmentContainer? = null
 
     private var binding by autoClearedNullable<FragmentReviewInboxContainerBinding>()
 
@@ -147,12 +145,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun reloadCounter() {
         getCounterData()
-    }
-
-    override fun onAttachActivity(context: Context?) {
-        if (context is NotificationFragmentContainer) {
-            containerListener = context
-        }
     }
 
     private fun getCounterData() {

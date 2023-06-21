@@ -32,7 +32,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.inboxcommon.NotificationFragmentContainer
+import com.tokopedia.notifcenter.ui.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -138,7 +138,7 @@ open class ChatListInboxFragment :
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var broadCastButton: FloatingActionButton? = null
-    private var containerListener: NotificationFragmentContainer? = null
+    private var containerListener: com.tokopedia.notifcenter.ui.NotificationFragmentContainer? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
 
@@ -149,7 +149,7 @@ open class ChatListInboxFragment :
     override fun getScreenName(): String = "chatlist"
 
     override fun onAttachActivity(context: Context?) {
-        if (context is NotificationFragmentContainer) {
+        if (context is com.tokopedia.notifcenter.ui.NotificationFragmentContainer) {
             containerListener = context
         }
     }
@@ -809,7 +809,7 @@ open class ChatListInboxFragment :
                 )
             }
             webSocket.activeRoom = element.msgId
-            if (context is NotificationFragmentContainer) {
+            if (context is com.tokopedia.notifcenter.ui.NotificationFragmentContainer) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)

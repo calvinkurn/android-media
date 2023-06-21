@@ -6,11 +6,11 @@ import com.tokopedia.notifcenter.di.module.NotificationModule
 import com.tokopedia.notifcenter.di.module.NotificationQueryModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.di.scope.NotificationScope
-import com.tokopedia.notifcenter.presentation.notificationbuyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
-import com.tokopedia.notifcenter.presentation.notificationbuyer.NotificationActivity
-import com.tokopedia.notifcenter.presentation.activity.NotificationAffiliateActivity
-import com.tokopedia.notifcenter.presentation.fragment.NotificationAffiliateFragment
-import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
+import com.tokopedia.notifcenter.ui.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
+import com.tokopedia.notifcenter.ui.buyer.NotificationActivity
+import com.tokopedia.notifcenter.ui.affiliate.NotificationAffiliateActivity
+import com.tokopedia.notifcenter.ui.affiliate.NotificationAffiliateFragment
+import com.tokopedia.notifcenter.ui.NotificationFragment
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import dagger.Component
 

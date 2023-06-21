@@ -20,7 +20,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.review.ReviewApplinkConst
-import com.tokopedia.inboxcommon.NotificationFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
@@ -94,7 +93,6 @@ class ReviewPendingFragment :
     private var ovoIncentiveBottomSheet: IncentiveOvoBottomSheet? = null
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
-    private var containerListener: NotificationFragmentContainer? = null
     private var reviewPendingPreference: ReviewPendingPreference? = null
 
     private var binding by autoClearedNullable<FragmentReviewPendingBinding>()
@@ -368,12 +366,6 @@ class ReviewPendingFragment :
         super.onCreate(savedInstanceState)
         getSourceData()
         loadInitialData()
-    }
-
-    override fun onAttachActivity(context: Context?) {
-        if (context is NotificationFragmentContainer) {
-            containerListener = context
-        }
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
