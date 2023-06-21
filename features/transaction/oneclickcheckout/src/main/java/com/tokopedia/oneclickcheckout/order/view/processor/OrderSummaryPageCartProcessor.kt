@@ -18,6 +18,7 @@ import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
+import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
@@ -295,6 +296,41 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                     saveAddOnStateRequest = generateSaveAddOnStateRequestParams(
                         newAddOnProductData = newAddOnProductData,
                         product = product
+                    )
+                )
+                val response = saveAddOnStateUseCase.executeOnBackground()
+                val errorMessage: String = response.saveAddOns.errorMessage.joinToString(separator = ", ")
+                return@withContext if (errorMessage.isBlank() && response.saveAddOns.status == STATUS_OK) {
+                    SaveAddOnState(
+                        isSuccess = true,
+                        message = errorMessage
+                    )
+                } else {
+                    SaveAddOnState(
+                        isSuccess = false,
+                        message = errorMessage
+                    )
+                }
+            } catch (e: Throwable) {
+                return@withContext SaveAddOnState(
+                    isSuccess = false,
+                    message = String.EMPTY
+                )
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun saveAllAddOnsAllProductsState(
+        products: List<OrderProduct>
+    ): SaveAddOnState {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                saveAddOnStateUseCase.setParams(
+                    saveAddOnStateRequest = generateSaveAllAddOnsStateRequestParams(
+                        products = products
                     )
                 )
                 val response = saveAddOnStateUseCase.executeOnBackground()

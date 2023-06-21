@@ -988,11 +988,40 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (validateSelectedTerm()) {
                         finalUpdateJob?.cancel()
                         finalUpdateJob = launch(executorDispatchers.immediate) {
-                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
-                            if (isSuccess) {
-                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
+                            // before save all addons of all products making sure all jobs canceled
+                            saveAddOnProductStateJobs.values.forEach { it.cancel() }
+                            saveAddOnProductStateJobs.clear()
+
+                            // save all addons of all products
+                            val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
+                                products = orderProducts.value
+                            )
+
+                            // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
+                            if (!saveAddOnState.isSuccess) {
+                                globalEvent.value = OccGlobalEvent.ToasterAction(
+                                    toast = OccToasterAction(
+                                        message = saveAddOnState.message,
+                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
+                                    )
+                                )
                                 return@launch
                             }
+
+                            // if save all addons of all products is successful then do final validation
+                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
+                            if (isSuccess) {
+                                finalValidateUse(
+                                    products = orderCart.products,
+                                    shop = shop,
+                                    profile = orderProfile.value,
+                                    onSuccessCheckout = onSuccessCheckout,
+                                    skipCheckIneligiblePromo = skipCheckIneligiblePromo
+                                )
+                                return@launch
+                            }
+
+                            // if final update to cart is failed then show global error
                             globalEvent.value = errorGlobalEvent
                         }
                     }
@@ -1313,10 +1342,25 @@ class OrderSummaryPageViewModel @Inject constructor(
         job.invokeOnCompletion {
             saveAddOnProductStateJobs[newAddOnProductData.id]?.cancel()
             saveAddOnProductStateJobs.remove(newAddOnProductData.id)
+            changeProductStatus(
+                productId = product.productId,
+                addOnProductId = newAddOnProductData.id,
+                status = newAddOnProductData.status
+            )
         }
         saveAddOnProductStateJobs[newAddOnProductData.id] = job
 
         calculateTotal()
+    }
+
+    private fun changeProductStatus(
+        productId: String,
+        addOnProductId: String,
+        status: Int
+    ) {
+        orderProducts.value.find { it.productId == productId }?.apply {
+            addOnsProductData.data.find { it.id == addOnProductId }?.status = status
+        }
     }
 
     override fun onCleared() {
@@ -1352,6 +1396,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val MAXIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu melebihi limit transaksi"
 
         const val CHANGE_PAYMENT_METHOD_MESSAGE = "Ubah"
+        const val ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT = "Oke"
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

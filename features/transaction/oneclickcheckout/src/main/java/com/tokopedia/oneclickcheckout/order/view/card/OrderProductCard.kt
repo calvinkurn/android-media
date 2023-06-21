@@ -556,6 +556,7 @@ class OrderProductCard(
             tvTitleAddonProduct.visible()
             tvSeeAllAddonProduct.visible()
             llAddonProductItems.visible()
+            llAddonProductItems.removeAllViews()
 
             // hide shimmer
             loaderIcProductAddon.gone()

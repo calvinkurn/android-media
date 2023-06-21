@@ -62,4 +62,39 @@ internal object SaveAddOnStateMapper {
             featureType = SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE
         )
     }
+
+    fun generateSaveAllAddOnsStateRequestParams(
+        products: List<OrderProduct>
+    ): SaveAddOnStateRequest {
+        return SaveAddOnStateRequest(
+            addOns = products.filter { it.addOnsProductData.data.isNotEmpty() }.map { product ->
+                AddOnRequest(
+                    addOnKey = String.EMPTY,
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                    cartProducts = listOf(
+                        CartProduct(
+                            cartId = product.cartId.toLongOrZero(),
+                            productId = product.productId.toLongOrZero(),
+                            warehouseId = product.warehouseId.toLongOrZero(),
+                            productName = product.productName,
+                            productImageUrl = product.productImageUrl,
+                            productParentId = product.parentId
+                        )
+                    ),
+                    addOnData = product.addOnsProductData.data.map { addOnProductData ->
+                        AddOnDataRequest(
+                            addOnId = addOnProductData.id.toLongOrZero(),
+                            addOnQty = SAVE_ADD_ON_STATE_QUANTITY,
+                            addOnMetadata = AddOnMetadataRequest(),
+                            addOnUniqueId = addOnProductData.uniqueId,
+                            addOnType = addOnProductData.type,
+                            addOnStatus = addOnProductData.status
+                        )
+                    }
+                )
+            },
+            source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
+            featureType = SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE
+        )
+    }
 }
