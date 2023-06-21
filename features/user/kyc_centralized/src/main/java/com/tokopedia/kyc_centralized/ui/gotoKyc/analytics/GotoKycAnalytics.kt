@@ -44,7 +44,7 @@ object GotoKycAnalytics {
     private const val ACTION_CLICK_SELFIE_IMAGE = "click on selfie image"
     private const val ACTION_CLICK_KIRIM_ULANG = "click on button kirim ulang"
     private const val ACTION_CLICK_CLOSE_PENDING_PAGE = "click on close button gopay pending"
-    private const val ACTION_CLICK_COUNTDOWN_SELFIE = "click on countdown selfie"
+    private const val ACTION_CLICK_GET_READY_FIRST = "click on button siap siap dulu"
     private const val ACTION_VIEW_MANUAL_FOTO_QUESTION = "view on manual foto question"
     private const val ACTION_VIEW_STATUS_PAGE = "view on kyc status page"
     private const val ACTION_VIEW_DOB_PAGE = "view on kyc dob page"
@@ -502,7 +502,7 @@ object GotoKycAnalytics {
     fun sendClickNeedTimeGuideSelfiePage(projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
-            .setEventAction(ACTION_CLICK_COUNTDOWN_SELFIE)
+            .setEventAction(ACTION_CLICK_GET_READY_FIRST)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)

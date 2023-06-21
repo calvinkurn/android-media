@@ -50,16 +50,18 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_OK)
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_CANCELED)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_CANCELED)
             }
         }
+    }
+
+    private fun finishWithResult(result: Int) {
+        kycSharedPreference.removeProjectId()
+        activity?.setResult(result)
+        activity?.finish()
     }
 
     @Inject
@@ -137,13 +139,17 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun initListener() {
-        binding?.btnSubmit?.setOnClickListener {
-            GotoKycAnalytics.sendClickButtonPakaiKtpIni(
-                projectId = projectId,
-                kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
-            )
-            binding?.consentGotoKycProgressive?.submitConsent()
-            viewModel.registerProgressiveUseCase(projectId)
+        binding?.btnSubmit?.apply {
+            setOnClickListener {
+                if (!isLoading) {
+                    GotoKycAnalytics.sendClickButtonPakaiKtpIni(
+                        projectId = projectId,
+                        kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+                    )
+                    binding?.consentGotoKycProgressive?.submitConsent()
+                    viewModel.registerProgressiveUseCase(projectId)
+                }
+            }
         }
     }
 
@@ -200,7 +206,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private fun showToasterError(throwable: Throwable?) {
         val message = throwable.getGotoKycErrorMessage(requireContext())
-        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        binding?.root?.rootView?.apply {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun setTokopediaCareView() {

@@ -14,6 +14,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class BridgingAccountLinkingViewModel @Inject constructor(
@@ -26,7 +27,7 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     private val _checkEligibility = MutableLiveData<CheckEligibilityResult>()
     val checkEligibility: LiveData<CheckEligibilityResult> get() = _checkEligibility
 
-    private val _registerProgressive = MutableLiveData<RegisterProgressiveResult>()
+    private val _registerProgressive = SingleLiveEvent<RegisterProgressiveResult>()
     val registerProgressive : LiveData<RegisterProgressiveResult> get() = _registerProgressive
 
     private val _accountLinkingStatus = MutableLiveData<AccountLinkingStatusResult>()

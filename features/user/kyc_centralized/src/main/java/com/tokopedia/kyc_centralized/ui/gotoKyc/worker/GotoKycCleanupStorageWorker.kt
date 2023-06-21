@@ -11,32 +11,32 @@ import com.gojek.kyc.plus.OneKycConstants
 import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
 import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
 import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
-import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import java.util.concurrent.TimeUnit
 
 class GotoKycCleanupStorageWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        removeGotoKycImage()
-        removeGotoKycPreference()
+        removePreference()
+        removeImageCache()
         return Result.success()
     }
 
-    private fun removeGotoKycPreference() {
-        try {
-            val preferenceName = inputData.getString(INPUT_PREFERENCE_NAME_TO_CLEAN)
-            applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE).edit().clear().apply()
-        } catch (ignored: Exception) {}
+    private fun removePreference() {
+        val preferenceName = inputData.getString(INPUT_PREFERENCE_NAME_TO_CLEAN).orEmpty()
+        val preferenceKey = inputData.getString(INPUT_PREFERENCE_KEY_TO_CLEAN).orEmpty()
+        removeGotoKycPreference(applicationContext, preferenceName, preferenceKey)
     }
 
-    private fun removeGotoKycImage() {
-        val directoryToClean1 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_1)
-        val directoryToClean2 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_2)
-        val directoryToClean3 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_3)
-        FileUtil.deleteFolder(directoryToClean1)
-        FileUtil.deleteFolder(directoryToClean2)
-        FileUtil.deleteFolder(directoryToClean3)
+    private fun removeImageCache() {
+        val directoryToClean1 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_1).orEmpty()
+        val directoryToClean2 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_2).orEmpty()
+        val directoryToClean3 = inputData.getString(INPUT_DIRECTORY_TO_CLEAN_3).orEmpty()
+        removeGotoKycImage(directoryToClean1)
+        removeGotoKycImage(directoryToClean2)
+        removeGotoKycImage(directoryToClean3)
     }
 
     companion object {
@@ -45,7 +45,8 @@ class GotoKycCleanupStorageWorker(context: Context, params: WorkerParameters) :
         private const val INPUT_DIRECTORY_TO_CLEAN_2 = "GOTO_KYC_DIR_2"
         private const val INPUT_DIRECTORY_TO_CLEAN_3 = "GOTO_KYC_DIR_3"
         private const val INPUT_PREFERENCE_NAME_TO_CLEAN = "GOTO_KYC_PREF"
-        private const val THRESHOLD_LAST_MODIFICATION_TIME = 86_400_000L //1 day
+        private const val INPUT_PREFERENCE_KEY_TO_CLEAN = "GOTO_KYC_STATE_KEY"
+        private const val THRESHOLD_LAST_MODIFICATION_TIME = 3_600_000L //1 hour
 
         fun scheduleWorker(context: Context) {
             try {
@@ -53,11 +54,13 @@ class GotoKycCleanupStorageWorker(context: Context, params: WorkerParameters) :
                 val directory2 = getKycSdkFrameDirectoryPath(context)
                 val directory3 = getKycSdkLogDirectoryPath(context)
                 val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
+                val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
                 val data = Data.Builder().apply {
                     putString(INPUT_DIRECTORY_TO_CLEAN_1, directory1)
                     putString(INPUT_DIRECTORY_TO_CLEAN_2, directory2)
                     putString(INPUT_DIRECTORY_TO_CLEAN_3, directory3)
                     putString(INPUT_PREFERENCE_NAME_TO_CLEAN, preferenceName)
+                    putString(INPUT_PREFERENCE_KEY_TO_CLEAN, preferenceKey)
                 }.build()
                 val worker = OneTimeWorkRequest
                     .Builder(GotoKycCleanupStorageWorker::class.java)

@@ -213,8 +213,8 @@
     <string name="goto_kyc_benefit_account_title_trouble">Kamu bisa nikmatin keuntungan ini setelah terverifikasi</string>
     <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
-    <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
-    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>%s</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_title">Sebentar ya, dokumen lagi diproses</string>
+    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
@@ -222,12 +222,10 @@
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
     <string name="goto_kyc_back_to_source">Balik</string>
-    <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam <![CDATA[<b>%s detik</b>]]>.</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
     <string name="goto_kyc_status_rejected_title">Yaah, verifikasinya belum berhasil</string>
-    <string name="goto_kyc_status_rejected_subtitle">Tenang aja, kamu masih bisa verifikasi lagi. Verifikasimu belum berhasil karena:</string>
     <string name="goto_kyc_status_rejected_button_primary">Verifikasi Ulang</string>
     <string name="goto_kyc_status_rejected_button_secondary">Hubungi Tokopedia Care</string>
     <string name="goto_kyc_benefit_detail_shopping_header">Fitur buat belanja</string>
@@ -251,15 +249,14 @@
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto e-KTP</string>
-    <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken">Mantap, kamu udah ambil foto e-KTP.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken">Siapin e-KTP asli kamu dan pastikan masih berlaku, ya.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_view_image">Lihat Foto e-KTP</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_title">Ambil selfie</string>
-    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken">Kamu udah ambil selfie, lanjutin yuk!</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
     <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
     <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">e-KTP di GoPay</string>
+    <string name="goto_kyc_bridging_progressive_item_title">Nama e-KTP</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
     <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_onboard_benefit_button_verification">Ambil Keuntungannya</string>
@@ -295,5 +292,6 @@
     <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
+    <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
 
 </resources>

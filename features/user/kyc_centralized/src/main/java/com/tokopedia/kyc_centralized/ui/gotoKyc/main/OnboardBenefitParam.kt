@@ -11,5 +11,6 @@ data class OnboardBenefitParam(
     val isAccountLinked: Boolean = false,
     val isKtpTaken: Boolean = false,
     val isSelfieTaken: Boolean = false,
-    val sourcePage: String = ""
+    val sourcePage: String = "",
+    val directShowBottomSheet: Boolean = false
 ): Parcelable

@@ -18,7 +18,6 @@ import com.gojek.kyc.sdk.core.extensions.isKtpExist
 import com.gojek.kyc.sdk.core.extensions.isSelfieExist
 import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -48,31 +47,29 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var projectId = ""
     private var source = ""
     private var isAccountLinked = false
-    private var isWaitingApprovalGopay = false
+    private var isReload = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
+                finishWithResult(Activity.RESULT_OK)
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
-                kycSharedPreference.removeProjectId()
-                activity?.setResult(Activity.RESULT_CANCELED)
-                activity?.finish()
+                finishWithResult(KYCConstant.ActivityResult.RESULT_FINISH)
             }
-            KYCConstant.ActivityResult.AWAITING_APPROVAL_GOPAY -> {
-                isWaitingApprovalGopay = true
+            KYCConstant.ActivityResult.RELOAD -> {
+                isReload = true
                 dismiss()
             }
-            KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED -> {}
-            else -> {
-                binding?.layoutAccountLinking?.root?.hide()
-            }
         }
+    }
+
+    private fun finishWithResult(result: Int) {
+        kycSharedPreference.removeProjectId()
+        activity?.setResult(result)
+        activity?.finish()
     }
 
     private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -117,16 +114,12 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
-        setUpViewAccountLinking()
-        initListener()
-        initUserConsent()
-    }
-
-    override fun onResume() {
-        super.onResume()
         setUpViewKtp()
         setUpViewSelfie()
         setUpButton()
+        setUpViewAccountLinking()
+        initListener()
+        initUserConsent()
     }
 
     private fun initUserConsent() {
@@ -194,7 +187,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewKtp() {
-        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_ktp)
@@ -202,55 +194,24 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
             tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
 
-            val compoundDrawable = if (isKtpTaken) { R.drawable.ic_checklist_circle_green } else { 0 }
-            tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                compoundDrawable,
-                0
-            )
-
-            tvItemSubtitle.text = if (isKtpTaken) {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
-            }
+            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
         }
     }
 
     private fun setUpViewSelfie() {
-        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
         binding?.layoutSelfie?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_selfie)
             )
 
             tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
-            val compoundDrawable = if (isSelfieTaken) { R.drawable.ic_checklist_circle_green } else { 0 }
-            tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                compoundDrawable,
-                0
-            )
 
-            tvItemSubtitle.text = if (isSelfieTaken) {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
-            }
+            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
         }
     }
 
     private fun setUpButton() {
-        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
-        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
-
-        binding?.btnSubmit?.text = if (isKtpTaken || isSelfieTaken) {
-            getString(R.string.goto_kyc_continue_verification)
-        } else {
-            getString(R.string.goto_kyc_start_verification)
-        }
+        binding?.btnSubmit?.text = getString(R.string.goto_kyc_start_verification)
     }
 
     private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
@@ -293,7 +254,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(isWaitingApprovalGopay)
+        dismissDialogWithDataListener(isReload)
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -301,8 +262,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         )
     }
 
-    fun setOnDismissWithDataListener(isAwaitingApprovalGopay: (Boolean) -> Unit) {
-        dismissDialogWithDataListener = isAwaitingApprovalGopay
+    fun setOnDismissWithDataListener(isReload: (Boolean) -> Unit) {
+        dismissDialogWithDataListener = isReload
     }
 
     companion object {

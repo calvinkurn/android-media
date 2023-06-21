@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
@@ -31,10 +30,6 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFr
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class StatusSubmissionFragment : BaseDaggerFragment() {
 
@@ -46,8 +41,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var status: String = ""
     private var rejectionReason: String = ""
     private var isAccountPage: Boolean = false
-    //TODO: check are this code unused
-    private var waitTimeInSeconds: Int = 0
     private var waitMessage: String = ""
     private var projectId: String = ""
 
@@ -125,11 +118,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     status = GotoKycAnalytics.SUCCESS,
                     projectId = projectId
                 )
-                if (kycFlowType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
-                    onVerifiedProgressive()
-                } else {
-                    onVerifiedNonProgressive()
-                }
+                onVerified()
             }
             KycStatus.BLACKLISTED.code.toString() -> {
                 onBlackListed()
@@ -181,10 +170,9 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_rejected_title)
-            tvDescription.text = getString(R.string.goto_kyc_status_rejected_subtitle)
+            tvDescription.hide()
             btnPrimary.text = getString(R.string.goto_kyc_status_rejected_button_primary)
             btnSecondary.text = getString(R.string.goto_kyc_status_rejected_button_secondary)
-            tvTimer.hide()
             cardReason.show()
             tvReason.text = rejectionReason
         }
@@ -208,11 +196,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             tvDescription.text = getString(R.string.goto_kyc_status_blacklisted_subtitle)
             btnPrimary.text = getString(R.string.goto_kyc_status_blacklisted_button)
             btnSecondary.hide()
-            tvTimer.hide()
         }
     }
 
-    private fun onVerifiedProgressive() {
+    private fun onVerified() {
         loadInitImage(
             imageUrl = getString(R.string.img_url_goto_kyc_status_submission_verified),
             usingLottie = true
@@ -228,7 +215,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             }
             btnSecondary.hide()
             btnPrimary.showWithCondition(!isAccountPage)
-            tvTimer.showWithCondition(!isAccountPage)
         }
 
         binding?.apply {
@@ -238,59 +224,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             layoutBenefitAccount.tvTitle.text = getString(R.string.goto_kyc_benefit_account_title_verified)
         }
 
-        if (!isAccountPage) {
-            startTimerThenFinish()
-        }
-
-    }
-
-    private fun startTimerThenFinish() {
-        val maxTimeSecond = 7
-        binding?.layoutStatusSubmission?.tvTimer?.text = HtmlCompat.fromHtml(
-                getString(R.string.goto_kyc_status_verified_timer, maxTimeSecond.toString()),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-        lifecycleScope.launch(Dispatchers.Default) {
-            for (i in 1 .. maxTimeSecond) {
-                delay(1000)
-                val remainingTime = maxTimeSecond - i
-                withContext(Dispatchers.Main) {
-                    binding?.layoutStatusSubmission?.tvTimer?.text = HtmlCompat.fromHtml(
-                            getString(R.string.goto_kyc_status_verified_timer, remainingTime.toString()),
-                            HtmlCompat.FROM_HTML_MODE_COMPACT
-                        )
-                    if (remainingTime == 0) {
-                        activity?.setResult(Activity.RESULT_OK)
-                        activity?.finish()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun onVerifiedNonProgressive() {
-        loadInitImage(
-            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_verified),
-            usingLottie = true
-        )
-
-        binding?.layoutStatusSubmission?.apply {
-            tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
-            tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = if (sourcePage.isEmpty()) {
-                getString(R.string.goto_kyc_back_to_source)
-            } else {
-                getString(R.string.goto_kyc_status_pending_button, sourcePage)
-            }
-            btnSecondary.hide()
-            tvTimer.hide()
-        }
-
-        binding?.apply {
-            layoutBenefitNonAccount.root.showWithCondition(!isAccountPage)
-            layoutBenefitAccount.root.showWithCondition(isAccountPage)
-            layoutBenefitAccount.tvTitle.text = getString(R.string.goto_kyc_benefit_account_title_verified)
-        }
     }
 
     private fun onPending() {
@@ -304,16 +237,16 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             tvDescription.text =
                 waitMessage.ifEmpty {
                     HtmlCompat.fromHtml(
-                        getString(
-                            R.string.goto_kyc_status_pending_subtitle,
-                            convertTimePending(waitTimeInSeconds)
-                        ),
+                        getString(R.string.goto_kyc_status_pending_subtitle),
                         HtmlCompat.FROM_HTML_MODE_COMPACT
                     )
                 }
-            btnPrimary.text = getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            btnPrimary.text = if (sourcePage.isEmpty()) {
+                getString(R.string.goto_kyc_back_to_source)
+            } else {
+                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            }
             btnSecondary.hide()
-            tvTimer.hide()
 
             btnPrimary.showWithCondition(!isAccountPage)
         }
@@ -321,36 +254,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutBenefitNonAccount?.root?.showWithCondition(!isAccountPage)
         binding?.layoutBenefitAccount?.root?.showWithCondition(isAccountPage)
         binding?.layoutBenefitAccount?.tvTitle?.text = getString(R.string.goto_kyc_benefit_account_title_pending)
-    }
-
-    private fun convertTimePending(totalSeconds: Int): String {
-        return if (totalSeconds == 0) {
-            getString(R.string.goto_kyc_status_pending_minutes, THREE)
-        } else {
-            val hours = totalSeconds / 3600
-            val minutes = (totalSeconds % 3600) / 60
-            val seconds = totalSeconds % 60
-
-            val textHours = if (hours != 0) {
-                "${getString(R.string.goto_kyc_status_pending_hours, hours.toString())} "
-            } else {
-                ""
-            }
-
-            val textMinutes = if (minutes != 0) {
-                "${getString(R.string.goto_kyc_status_pending_minutes, minutes.toString())} "
-            } else {
-                ""
-            }
-
-            val textSeconds = if (seconds != 0) {
-                getString(R.string.goto_kyc_status_pending_seconds, seconds.toString())
-            } else {
-                ""
-            }
-
-            textHours.plus(textMinutes).plus(textSeconds).trim()
-        }
     }
 
     private fun showBottomSheetDetailBenefit() {
@@ -399,6 +302,5 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     companion object {
         private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
-        private const val THREE = "3"
     }
 }

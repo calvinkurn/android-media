@@ -84,7 +84,6 @@ object KYCConstant {
 
     object ActivityResult {
         const val RESULT_FINISH = 99
-        const val ACCOUNT_NOT_LINKED = 98
-        const val AWAITING_APPROVAL_GOPAY = 97
+        const val RELOAD = 98
     }
 }

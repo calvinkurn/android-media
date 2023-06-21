@@ -50,6 +50,7 @@ import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.file.FileUtil
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -314,15 +315,28 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun clearCacheGotoKyc() {
         try {
             val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
-            applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE).edit().clear().apply()
+            val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
+            val preference = applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
+
+            val state = preference.getString(preferenceKey, "").orEmpty()
+            if (state.isNotEmpty()) {
+                preference.edit().remove(preferenceKey).apply()
+            }
 
             val directory1 = getKycSdkDocumentDirectoryPath(this)
             val directory2 = getKycSdkFrameDirectoryPath(this)
             val directory3 = getKycSdkLogDirectoryPath(this)
-            FileUtil.deleteFolder(directory1)
-            FileUtil.deleteFolder(directory2)
-            FileUtil.deleteFolder(directory3)
+            removeGotoKycImage(directory1)
+            removeGotoKycImage(directory2)
+            removeGotoKycImage(directory3)
         } catch (ignored: Exception) {}
+    }
+
+    private fun removeGotoKycImage(directory: String) {
+        val file = File(directory)
+        if (file.isDirectory) {
+            FileUtil.deleteFolder(directory)
+        }
     }
 
     companion object {

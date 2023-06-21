@@ -20,6 +20,7 @@ class GotoKycInterceptor @Inject constructor(
         val requestBuilder: Request.Builder = request.newBuilder()
         requestBuilder.apply {
             addHeader(KEY_X_PROJECT_ID, kycSharedPreference.getProjectId())
+            addHeader(KEY_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName())
             addHeader(KEY_X_DEVICE, "$VALUE_ANDROID-${GlobalConfig.VERSION_NAME}")
             addHeader(KEY_ACCOUNTS_AUTHORIZATION, "$VALUE_BEARER ${userSessionInterface.accessToken}")
         }
@@ -29,6 +30,7 @@ class GotoKycInterceptor @Inject constructor(
     companion object {
         private const val VALUE_ANDROID = "android"
         private const val VALUE_BEARER = "Bearer"
+        private const val KEY_X_TKPD_APP_NAME = "X-Tkpd-App-Name"
         private const val KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization"
         private const val KEY_X_DEVICE = "X-Device"
         private const val KEY_X_PROJECT_ID = "x-project-id"
