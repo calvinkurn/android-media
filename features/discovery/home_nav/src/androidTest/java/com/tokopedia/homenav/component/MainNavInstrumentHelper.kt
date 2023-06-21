@@ -26,6 +26,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REVIEW = "tracker/home_nav/review.j
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE = "tracker/home_nav/shop_affiliate.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL = "tracker/home_nav/section_title_view_all.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS = "tracker/home_nav/tokopedia_plus.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_USER_MENU = "tracker/home_nav/user_menu.json"
 
 fun clickOnWishlist(viewHolder: RecyclerView.ViewHolder) {
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.wishlist_rv, 0)
@@ -161,11 +162,11 @@ fun clickOnTokopediaPlus() {
     )
 }
 
-fun clickSectionTitle(recyclerViewId: Int, cardPosition: Int) {
+fun clickUserMenu(recyclerViewId: Int, cardPosition: Int) {
     Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
         RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             cardPosition,
-            clickOnViewChild(R.id.container_home_nav_title)
+            ViewActions.click()
         )
     )
 }

@@ -5,12 +5,18 @@ import android.app.Instrumentation
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
+import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
@@ -75,10 +81,34 @@ class MainNavAnalyticsTest {
     }
 
     @Test
+    fun testClickAllMenu() {
+        mainNavCassavaTest {
+            login()
+            val recyclerView =
+                activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+            val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+            for (i in 0 until itemCount) {
+                Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(
+                    RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+                        i
+                    )
+                )
+                checkMenuViewHolderOnRecyclerView(recyclerView, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_USER_MENU
+            )
+        }
+    }
+
+    @Test
     fun testComponentOrderHistory() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = TransactionListItemDataModel::class
@@ -98,7 +128,6 @@ class MainNavAnalyticsTest {
     fun testComponentShopAndAffiliate() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = AccountHeaderDataModel::class
@@ -118,7 +147,6 @@ class MainNavAnalyticsTest {
     fun testComponentTokopediaPlus() {
         mainNavCassavaTest {
             login()
-            waitForData()
             doActivityTestByModelClass(
                 delayBeforeRender = 2000,
                 dataModelClass = AccountHeaderDataModel::class
@@ -131,6 +159,21 @@ class MainNavAnalyticsTest {
                 cassavaTestRule,
                 ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS
             )
+        }
+    }
+
+    private fun checkMenuViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
+        val list = (recyclerView.adapter as? MainNavListAdapter)?.currentList
+        val dataModel = list?.get(position)
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
+        if (viewHolder is HomeNavMenuViewHolder &&
+            dataModel is HomeNavMenuDataModel &&
+            (
+                dataModel.sectionId == MainNavConst.Section.ORDER ||
+                    dataModel.sectionId == MainNavConst.Section.USER_MENU
+                )
+        ) {
+            clickUserMenu(recyclerView.id, position)
         }
     }
 
