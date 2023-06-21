@@ -223,23 +223,28 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
-        setContactUsIcon(trackingDataModel)
+        setHeader(trackingDataModel)
     }
 
-    private fun setContactUsIcon(model: TrackingDataModel) {
+    private fun setHeader(model: TrackingDataModel) {
         binding?.headerTrackingPage?.let { header ->
-            header.addRightIcon(0).apply {
-                clearImage()
-                setImageDrawable(
-                    getIconUnifyDrawable(
-                        context,
-                        IconUnify.CALL_CENTER,
-                        assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+            model.page.contactUsUrl.takeIf { it.isNotEmpty() }?.let { url ->
+                header.addRightIcon(0).apply {
+                    clearImage()
+                    setImageDrawable(
+                        getIconUnifyDrawable(
+                            context,
+                            IconUnify.CALL_CENTER,
+                            assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                        )
                     )
-                )
 
-                setOnClickListener {
-                    RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${model.page.contactUsUrl}")
+                    setOnClickListener {
+                        RouteManager.route(
+                            activity,
+                            "${ApplinkConst.WEBVIEW}?url=$url"
+                        )
+                    }
                 }
             }
             header.setNavigationOnClickListener {
