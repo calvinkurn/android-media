@@ -1,5 +1,10 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,7 +25,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import com.tokopedia.unifyorderhistory.view.widget.UohReviewRatingWidget
+import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidget
+import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidgetConfig
 
 /**
  * Created by fwidjaja on 25/07/20.
@@ -28,11 +34,7 @@ import com.tokopedia.unifyorderhistory.view.widget.UohReviewRatingWidget
 class UohOrderListViewHolder(
     private val binding: UohListItemBinding,
     private val actionListener: UohItemAdapter.ActionListener?
-) : RecyclerView.ViewHolder(binding.root), UohReviewRatingWidget.Listener {
-
-    override fun onReviewRatingClicked(appLink: String) {
-        actionListener?.onReviewRatingClicked(appLink)
-    }
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
@@ -198,12 +200,40 @@ class UohOrderListViewHolder(
                 }
             }
 
-            binding.layoutReviewRating.updateUi(
-                data = item.dataObject.metadata.getReviewRatingComponent(),
-                listener = this
-            )
+            setupReviewRatingWidget(item.dataObject.metadata)
 
             actionListener?.trackViewOrderCard(item.dataObject, position)
+        }
+    }
+
+    private fun setupReviewRatingWidget(metadata: UohListOrder.UohOrders.Order.Metadata) {
+        binding.layoutReviewRating.setContent {
+            val componentData = remember(metadata.extraComponents) {
+                mutableStateOf(metadata.getReviewRatingComponent())
+            }
+            val config = remember { mutableStateOf(UohReviewRatingWidgetConfig()) }
+            SetupConfigUpdater(componentData, config)
+            UohReviewRatingWidget(config = config.value)
+        }
+    }
+
+    @Composable
+    private fun SetupConfigUpdater(
+        componentData: MutableState<UohListOrder.UohOrders.Order.Metadata.ExtraComponent?>,
+        config: MutableState<UohReviewRatingWidgetConfig>
+    ) {
+        LaunchedEffect(componentData, actionListener) {
+            componentData.value.let { componentDataValue ->
+                config.value = if (componentDataValue == null) {
+                    config.value.copy(show = false)
+                } else {
+                    UohReviewRatingWidgetConfig(
+                        show = true,
+                        componentData = componentDataValue,
+                        onRatingChanged = { actionListener?.onReviewRatingClicked(it) }
+                    )
+                }
+            }
         }
     }
 

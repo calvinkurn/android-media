@@ -208,7 +208,7 @@
             tools:visibility="visible"
             tools:text="action 2" />
 
-        <com.tokopedia.unifyorderhistory.view.widget.UohReviewRatingWidget
+        <androidx.compose.ui.platform.ComposeView
             android:id="@+id/layout_review_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

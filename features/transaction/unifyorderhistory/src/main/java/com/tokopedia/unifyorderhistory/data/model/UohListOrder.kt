@@ -251,13 +251,13 @@ data class UohListOrder(
 
                 data class ExtraComponent(
                     @SerializedName("type")
-                    val type: String,
+                    val type: String = "",
 
                     @SerializedName("action")
-                    val action: Action,
+                    val action: Action = Action(),
 
                     @SerializedName("label")
-                    val label: String
+                    val label: String = ""
                 ) {
 
                     companion object {
@@ -268,10 +268,10 @@ data class UohListOrder(
 
                     data class Action(
                         @SerializedName("actionType")
-                        val actionType: String,
+                        val actionType: String = "",
 
                         @SerializedName("appURL")
-                        val appUrl: String
+                        val appUrl: String = ""
                     )
                 }
             }

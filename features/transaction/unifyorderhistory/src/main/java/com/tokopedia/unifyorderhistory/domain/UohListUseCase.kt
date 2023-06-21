@@ -120,6 +120,14 @@ class UohListUseCase @Inject constructor(
                           textColor
                           bgColor
                         }
+                        extraComponents {
+                          type
+                          action {
+                            actionType
+                            appURL
+                          }
+                          label
+                        }
                         queryParams
                         listProducts
                       }
