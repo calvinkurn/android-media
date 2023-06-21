@@ -3,12 +3,13 @@ package com.tokopedia.recommendation_widget_common.widget.global
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
-import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -54,19 +55,23 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     private fun bind(visitableList: List<RecommendationVisitable>?) {
-        removeAllViews()
+        val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
+            parentView = this,
+            visitableList = visitableList,
+            typeFactory = typeFactory
+        )
 
-        visitableList?.forEach { visitable ->
-            try { tryBindView(visitable) }
-            catch (_: Exception) { }
-        }
-    }
+        val listUpdateCallback = RecommendationWidgetListUpdateCallback(
+            parentView = this,
+            visitableList = visitableList,
+            typeFactory = typeFactory,
+        )
 
-    private fun tryBindView(visitable: RecommendationVisitable) {
-        val widget = typeFactory.createView(context, visitable)
-        widget.layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        addView(widget)
+        DiffUtil
+            .calculateDiff(diffUtilCallback, false)
+            .dispatchUpdatesTo(listUpdateCallback)
 
-        (widget as? IRecommendationWidgetView<RecommendationVisitable>)?.bind(visitable)
+        if (visitableList.isNullOrEmpty()) hide()
+        else show()
     }
 }
