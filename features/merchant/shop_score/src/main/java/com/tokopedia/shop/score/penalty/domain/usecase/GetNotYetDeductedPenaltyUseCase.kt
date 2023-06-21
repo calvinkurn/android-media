@@ -39,6 +39,7 @@ class GetNotYetDeductedPenaltyUseCase @Inject constructor(
             ShopScorePenaltyDetailParam(
                 startDate = startDate,
                 endDate = endDate,
+                total = MAX_ITEMS_PER_HIT,
                 status = ShopScoreConstant.STATUS_NOT_YET_DEDUCTED,
             )
         )
@@ -49,6 +50,7 @@ class GetNotYetDeductedPenaltyUseCase @Inject constructor(
     companion object {
 
         private const val SHOP_SCORE_PENALTY_DETAIL_INPUT = "input"
+        private const val MAX_ITEMS_PER_HIT = 1000
 
         @JvmStatic
         fun createParams(shopScorePenaltyDetailParam: ShopScorePenaltyDetailParam): Map<String, Any> =

@@ -77,6 +77,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _typeFilterData = MutableLiveData<List<Int>>()
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, List<Int>>>()
     private val _dateFilterData = MutableLiveData<Pair<String, String>>()
+    private val _pageTypeData = MutableLiveData<String>()
 
     private var startDate = String.EMPTY
     private var endDate = String.EMPTY
@@ -139,6 +140,8 @@ class ShopPenaltyViewModel @Inject constructor(
 
             startDateSummary = getInitialStartDate(pageType)
             endDateSummary = getInitialEndDate(pageType)
+
+            _pageTypeData.value = pageType
 
             val penaltyDetailMergeDeffered =
                 withContext(dispatchers.io) {
@@ -232,7 +235,10 @@ class ShopPenaltyViewModel @Inject constructor(
                         startDate = startDate,
                         endDate = endDate,
                         typeIDs = typeIds,
-                        sort = sortBy
+                        sort = sortBy,
+                        status = getStatusFromPageType(
+                            getCurrentPageType()
+                        )
                     )
                 )
                 penaltyMapper.mapToItemPenaltyList(
@@ -340,6 +346,10 @@ class ShopPenaltyViewModel @Inject constructor(
                 Date(getNowTimeStamp())
             }
         return format(timeStamp.time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    }
+
+    private fun getCurrentPageType(): String {
+        return _pageTypeData.value.orEmpty()
     }
 }
 
