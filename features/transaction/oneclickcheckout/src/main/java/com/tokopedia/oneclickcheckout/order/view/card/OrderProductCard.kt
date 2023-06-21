@@ -24,6 +24,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_CHECK_STATUS
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_DEFAULT_STATUS
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_MANDATORY_STATUS
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_UNCHECK_STATUS
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
@@ -491,8 +492,8 @@ class OrderProductCard(
                     type = 1
                 ),
                 AddOnsProductDataModel.Data(
-                    id = "12121",
-                    uniqueId = "11111",
+                    id = "12122",
+                    uniqueId = "11113",
                     price = 10000,
                     infoLink = "121212",
                     name = "Proteksi Rusak",
@@ -656,7 +657,7 @@ class OrderProductCard(
         addOn.status = when (addOn.status) {
             ADD_ONS_PRODUCT_DEFAULT_STATUS, ADD_ONS_PRODUCT_UNCHECK_STATUS -> ADD_ONS_PRODUCT_CHECK_STATUS
             ADD_ONS_PRODUCT_CHECK_STATUS -> ADD_ONS_PRODUCT_UNCHECK_STATUS
-            else -> ADD_ONS_PRODUCT_CHECK_STATUS
+            else -> ADD_ONS_PRODUCT_MANDATORY_STATUS
         }
     }
 

@@ -50,7 +50,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.SaveAddOnState
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
@@ -100,7 +99,6 @@ class OrderSummaryPageViewModel @Inject constructor(
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
     val updateOrderProducts: OccMutableLiveData<List<Int>> = OccMutableLiveData(emptyList())
-    val saveAddOnProductState: OccMutableLiveData<SaveAddOnState> = OccMutableLiveData(SaveAddOnState())
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
@@ -1333,27 +1331,29 @@ class OrderSummaryPageViewModel @Inject constructor(
         newAddOnProductData: AddOnsProductDataModel.Data,
         product: OrderProduct
     ) {
+        changeAddOnProductStatus(
+            productId = product.productId,
+            addOnProductId = newAddOnProductData.id,
+            status = newAddOnProductData.status
+        )
+
         val job = launch(executorDispatchers.immediate) {
             cartProcessor.saveAddOnProductState(
                 newAddOnProductData = newAddOnProductData,
                 product = product
             )
         }
+
         job.invokeOnCompletion {
             saveAddOnProductStateJobs[newAddOnProductData.id]?.cancel()
             saveAddOnProductStateJobs.remove(newAddOnProductData.id)
-            changeProductStatus(
-                productId = product.productId,
-                addOnProductId = newAddOnProductData.id,
-                status = newAddOnProductData.status
-            )
         }
         saveAddOnProductStateJobs[newAddOnProductData.id] = job
 
         calculateTotal()
     }
 
-    private fun changeProductStatus(
+    private fun changeAddOnProductStatus(
         productId: String,
         addOnProductId: String,
         status: Int
@@ -1369,7 +1369,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         getCartJob?.cancel()
         dynamicPaymentFeeJob?.cancel()
         eligibleForAddressUseCase.cancelJobs()
-        saveAddOnProductStateJobs.forEach { it.value.cancel() }
+        saveAddOnProductStateJobs.values.forEach { it.cancel() }
         saveAddOnProductStateJobs.clear()
         super.onCleared()
     }
@@ -1405,5 +1405,6 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val ADD_ONS_PRODUCT_DEFAULT_STATUS = 0
         const val ADD_ONS_PRODUCT_CHECK_STATUS = 1
         const val ADD_ONS_PRODUCT_UNCHECK_STATUS = 2
+        const val ADD_ONS_PRODUCT_MANDATORY_STATUS = 3
     }
 }
