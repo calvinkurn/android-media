@@ -143,18 +143,18 @@ fun enableChooseAddressCoachmark(context: Context) {
 }
 
 fun waitForData() {
-    Thread.sleep(4000)
+    Thread.sleep(1000)
 }
 fun waitForPopularKeywordData() {
-    Thread.sleep(4000)
+    Thread.sleep(1000)
 }
 
 fun waitForLoadCassavaAssert() {
-    Thread.sleep(2000)
+    Thread.sleep(1000)
 }
 
 fun addDebugEnd() {
-    Thread.sleep(2000)
+    Thread.sleep(1000)
 }
 
 fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
@@ -198,13 +198,15 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
     clickSingleItemOnRecyclerView(R.id.recycleList)
 }
 
-fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
-    waitForData()
-    clickRecommendationFeedTab()
+fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder, position: Int) {
     val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
-    val rvCount = recyclerView.adapter!!.itemCount
+
+    val rvCount = recyclerView.adapter?.itemCount ?: 0
     for (i in 0 until rvCount) {
         try {
+//            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+//                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position,
+//                    actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem())))
             Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
         } catch (e: PerformException) {

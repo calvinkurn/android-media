@@ -85,8 +85,8 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             login()
+            waitForData()
             doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                waitForData()
                 actionOnMissionWidget(viewHolder)
             }
         } validateAnalytics {
@@ -101,8 +101,8 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         waitForData()
         onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
+            waitForData()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                waitForData()
                 actionOnBalanceWidget(viewHolder)
             }
         } validateAnalytics {
@@ -116,8 +116,8 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             login()
+            waitForData()
             doActivityTestByModelClass(dataModelClass = TodoWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                waitForData2()
                 actionOnTodoWidget(viewHolder, i)
             }
         } validateAnalytics {

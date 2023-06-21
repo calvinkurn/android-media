@@ -22,7 +22,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 12/04/21.
  */
-@Ignore
+@Ignore("Ignored due to time-consuming when ran on automation. Comment this annotation if need to run locally")
 @ScreenshotTest
 class HomeScreenshotNonLoggedInTest {
     private val TAG = "HomeScreenshotTest"

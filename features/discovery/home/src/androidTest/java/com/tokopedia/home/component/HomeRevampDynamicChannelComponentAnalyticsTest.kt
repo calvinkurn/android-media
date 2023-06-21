@@ -98,7 +98,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testBalanceWidgetLogin() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             login()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -210,11 +209,11 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedBanner() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
+                onView(withId(R.id.home_fragment_recycler_view)).perform(ViewActions.swipeUp())
+                clickOnRecommendationFeedSection(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
@@ -224,7 +223,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedTab() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             login()
@@ -239,16 +237,29 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testRecommendationFeedProductLogin() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             login()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
+                clickOnRecommendationFeedSection(viewHolder, i)
             }
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
+        }
+    }
+
+    @Test
+    fun testRecommendationFeedProductNonLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN)
         }
     }
 
@@ -376,20 +387,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testRecommendationFeedProductNonLogin() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN)
-        }
-    }
-
-    @Test
     fun testComponentCategoryWidget() {
         HomeDCCassavaTest {
             initTest()
@@ -449,7 +446,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                waitForData()
                 actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {

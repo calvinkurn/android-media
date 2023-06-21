@@ -146,6 +146,7 @@ class HomeFragmentRefreshTest {
          * Partial refresh will only trigger 1 data changes
          * - Dynamic channel
          */
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_RESUME_COUNT)
     }
 
@@ -170,6 +171,7 @@ class HomeFragmentRefreshTest {
          * - Get Home Balance Widget
          * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
          */
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
     }
 
@@ -202,6 +204,7 @@ class HomeFragmentRefreshTest {
          *
          * Address data changed in other page will change home page choose address in onResume
          */
+        waitForAssertion()
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
     }
@@ -258,5 +261,9 @@ class HomeFragmentRefreshTest {
             }
         }
         return adapterDataObserver
+    }
+
+    private fun waitForAssertion() {
+        Thread.sleep(1000)
     }
 }
