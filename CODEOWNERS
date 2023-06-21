@@ -55,7 +55,6 @@
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
 
-/features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
