@@ -59,7 +59,7 @@ open class UniversalInboxMenuMapper @Inject constructor(
             UniversalInboxMenuUiModel(
                 type = MenuItemType.CHAT_BUYER,
                 title = resourceProvider.getMenuChatBuyerTitle(),
-                icon = IconUnify.CHAT,
+                icon = IconUnify.CHAT_BUYER,
                 counter = Int.ZERO,
                 applink = getChatBuyerApplink()
             )
@@ -69,7 +69,7 @@ open class UniversalInboxMenuMapper @Inject constructor(
                 UniversalInboxMenuUiModel(
                     type = MenuItemType.CHAT_SELLER,
                     title = resourceProvider.getMenuChatSellerTitle(),
-                    icon = IconUnify.SHOP,
+                    icon = IconUnify.CHAT_SELLER,
                     counter = Int.ZERO,
                     applink = getChatSellerApplink(),
                     additionalInfo = UniversalInboxShopInfoUiModel(
