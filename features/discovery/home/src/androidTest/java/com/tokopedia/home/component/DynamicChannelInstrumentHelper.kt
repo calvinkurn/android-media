@@ -139,18 +139,18 @@ fun enableChooseAddressCoachmark(context: Context) {
 }
 
 fun waitForData() {
-    Thread.sleep(1000)
+    Thread.sleep(4000)
 }
 fun waitForPopularKeywordData() {
-    Thread.sleep(1000)
+    Thread.sleep(4000)
 }
 
 fun waitForLoadCassavaAssert() {
-    Thread.sleep(1000)
+    Thread.sleep(2000)
 }
 
 fun addDebugEnd() {
-    Thread.sleep(1000)
+    Thread.sleep(2000)
 }
 
 fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")

@@ -72,7 +72,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(2000)
+        Thread.sleep(8000)
     }
 
     fun ViewInteraction.isDisplayed(): Boolean {

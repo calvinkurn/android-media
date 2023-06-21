@@ -264,6 +264,6 @@ class HomeFragmentRefreshTest {
     }
 
     private fun waitForAssertion() {
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 }
