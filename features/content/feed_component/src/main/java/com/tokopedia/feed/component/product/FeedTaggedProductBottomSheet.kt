@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -71,6 +70,10 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -98,22 +101,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onResume() {
         super.onResume()
         showLoading()
-        binding.root.let {
-            it.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    if (it.layoutParams.height > maxHeight) {
-                        it.layoutParams = getLayoutParams(it.layoutParams)
-                    }
-                }
-            })
-        }
-    }
-
-    private fun getLayoutParams(layoutParams: LayoutParams) = layoutParams.apply {
-        if (height > maxHeight) {
-            height = maxHeight
-        }
     }
 
     private fun observeProducts() {
@@ -122,6 +109,21 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     mAdapter.setItemsAndAnimateChanges(it.data)
+                    binding.root.let { view ->
+                        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+                                OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    view.layoutParams = view.layoutParams.apply {
+                                        if (view.measuredHeight > maxHeight) {
+                                            height = maxHeight
+                                        } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+                                            height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                        }
+                                    }
+                                }
+                            })
+                    }
                 }
                 is Fail -> {}
             }
