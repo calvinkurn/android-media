@@ -38,14 +38,14 @@ class SelectLocationBottomSheet : BottomSheetUnify() {
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
         if (childFragment is DealsSelectLocationFragment) {
             callback?.let { callback->
                 childFragment.setCallback(callback)
             }
-        } else {
-            super.onAttachFragment(childFragment)
         }
     }
+
     private fun initBottomSheet() {
         isFullpage = true
         context?.let { context ->

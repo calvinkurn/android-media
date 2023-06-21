@@ -270,15 +270,14 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         binding2.tvLocation.setOnClickListener {
             bottomSheet = SelectLocationBottomSheet.createInstance(binding2.tvLocation.text.toString(), currentLocation, false)
             bottomSheet?.setCallback(this)
-            fragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
+            childFragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
         }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
         if (childFragment is SelectLocationBottomSheet) {
             childFragment.setCallback(this)
-        } else {
-            super.onAttachFragment(childFragment)
         }
     }
 

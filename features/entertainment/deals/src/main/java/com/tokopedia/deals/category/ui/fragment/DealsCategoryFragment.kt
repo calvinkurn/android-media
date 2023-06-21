@@ -351,10 +351,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
 
     override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
         if (childFragment is DealsCategoryFilterBottomSheet) {
             childFragment.setListener(this)
-        } else {
-            super.onAttachFragment(childFragment)
         }
     }
     /** DealsBrandActionListener **/
@@ -371,6 +370,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
         val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
+        filterBottomSheet.setListener(this)
         filterBottomSheet.show(childFragmentManager, "")
     }
 

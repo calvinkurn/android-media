@@ -218,10 +218,9 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
         if (childFragment is DealsCategoryBottomSheet) {
             childFragment.setListener(this)
-        } else {
-            super.onAttachFragment(childFragment)
         }
     }
 
@@ -269,6 +268,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
         analytics.eventClickViewAllProductCardInHomepage()
         val categoriesBottomSheet = DealsCategoryBottomSheet.newInstance(ArrayList(categories))
+        categoriesBottomSheet.setListener(this)
         categoriesBottomSheet.show(childFragmentManager, "")
     }
 
