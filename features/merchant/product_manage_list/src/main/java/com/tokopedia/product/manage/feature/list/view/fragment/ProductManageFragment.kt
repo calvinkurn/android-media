@@ -2916,10 +2916,12 @@ open class ProductManageFragment :
                     val productIds = itemsChecked.filter {
                         !it.isDTInbound
                     }.map { item -> item.id }
-                    viewModel.editProductsByStatus(
-                        productIds = productIds,
-                        status = INACTIVE
-                    )
+                    if (productIds.isNotEmpty()) {
+                        viewModel.editProductsByStatus(
+                            productIds = productIds,
+                            status = INACTIVE
+                        )
+                    }
                     dismiss()
                 }
             }.show()
