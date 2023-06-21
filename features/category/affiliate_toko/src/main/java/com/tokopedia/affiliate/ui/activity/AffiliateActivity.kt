@@ -182,6 +182,7 @@ class AffiliateActivity :
     }
 
     private fun showAffiliatePortal() {
+        updateHomeTab()
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
@@ -448,23 +449,26 @@ class AffiliateActivity :
         }
     }
 
-    companion object MenuItems {
-        fun isAffiliatePromoteHomeEnabled() =
-            RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
-                AFFILIATE_PROMOTE_HOME,
-                ""
-            ) == AFFILIATE_PROMOTE_HOME
+    private fun isAffiliatePromoteHomeEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMOTE_HOME,
+            ""
+        ) == AFFILIATE_PROMOTE_HOME
 
-        val PROMO_MENU = if (isAffiliatePromoteHomeEnabled()) {
-            FIRST_TAB
+    private fun updateHomeTab() {
+        if (isAffiliatePromoteHomeEnabled()) {
+            PROMO_MENU = FIRST_TAB
+            ADP_MENU = SECOND_TAB
         } else {
-            SECOND_TAB
+            ADP_MENU = FIRST_TAB
+            PROMO_MENU = SECOND_TAB
         }
-        val ADP_MENU = if (isAffiliatePromoteHomeEnabled()) {
-            SECOND_TAB
-        } else {
-            FIRST_TAB
-        }
+    }
+
+    companion object MenuItems {
+
+        var ADP_MENU = FIRST_TAB
+        var PROMO_MENU = SECOND_TAB
         const val INCOME_MENU = THIRD_TAB
         const val EDUKASI_MENU = FOURTH_TAB
     }
