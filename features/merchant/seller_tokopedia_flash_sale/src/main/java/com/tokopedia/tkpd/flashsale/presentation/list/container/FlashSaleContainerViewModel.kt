@@ -58,11 +58,11 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = this._uiEffect.asSharedFlow()
 
-    fun processEvent(event: UiEvent) {
+    fun processEvent(event: UiEvent, rollenceValueList: List<String>) {
         when (event) {
             is UiEvent.GetPrerequisiteData -> {
                 _uiState.update { it.copy(isLoading = true, error = null) }
-                getPrerequisiteData()
+                getPrerequisiteData(rollenceValueList)
             }
             UiEvent.DismissMultiLocationTicker -> {
                 preferenceDataStore.markMultiLocationTickerAsDismissed()
@@ -70,12 +70,27 @@ class FlashSaleContainerViewModel @Inject constructor(
         }
     }
 
-    private fun getPrerequisiteData() {
+    private fun getPrerequisiteData(rollenceValueList: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val sellerEligibilityDeferred = async { getFlashSaleSellerStatusUseCase.execute() }
                 val tabMetadataDeferred = async { getFlashSaleListForSellerMetaUseCase.execute() }
+
+                // TODO
+                // Should hit targetedTicker async here
+                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                    GetTargetedTickerUseCase.Param.Target(
+                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                        values = rollenceValueList
+                    )
+                )
+                val tickerParams = GetTargetedTickerUseCase.Param(
+                    page = TickerConstantt.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+                    targets = targetParams
+                )
+                val tickersDeffered = async { getTargetedTickerUseCase.execute(tickerParams) }
+                val tickers = tickersDeffered.await()
 
                 val sellerEligibility = sellerEligibilityDeferred.await()
                 val tabMetadata = tabMetadataDeferred.await()
@@ -130,14 +145,14 @@ class FlashSaleContainerViewModel @Inject constructor(
         ) { }
     }
 
-    fun getTickers(keyList: List<String>) {
+    fun getTickers(valueList: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
                     GetTargetedTickerUseCase.Param.Target(
                         type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
-                        values = keyList
+                        values = valueList
                     )
                 )
                 val tickerParams = GetTargetedTickerUseCase.Param(
@@ -146,7 +161,11 @@ class FlashSaleContainerViewModel @Inject constructor(
                 )
                 val tickers = getTargetedTickerUseCase.execute(tickerParams)
 
-                _uiState.update { it.copy(tickers = tickers) }
+                _uiState.update {
+                    it.copy(
+                        tickers = tickers
+                    )
+                }
             },
             onError = {}
         )
