@@ -118,3 +118,4 @@ object EmptyPageWidget : PlayViewerNewAction()
 data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()
 
 data class ShowVariantAction(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewAction()
+object HideBottomSheet: PlayViewerNewAction()

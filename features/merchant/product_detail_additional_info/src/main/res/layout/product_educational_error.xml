@@ -23,7 +23,7 @@
         android:gravity="center"
         android:text="@string/pdp_educational_error_desc"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         tools:text="Coba muat ulang untuk lihat infonya, yuk. Pastikan juga internetmu lancar, ya." />
 
     <com.tokopedia.unifycomponents.UnifyButton
