@@ -25,8 +25,7 @@ data class TrackOrderModel(
     var noHistory: Int = -1,
     var receiverName: String = "",
     var shippingRefNum: String = "",
-    var invalid: Boolean = false,
-    var contactUsUrl: String = ""
+    var invalid: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -62,7 +61,8 @@ data class TrackHistoryModel(
 
 @Parcelize
 data class PageModel(
-    var additionalInfo: List<AdditionalInfoModel> = listOf()
+    var additionalInfo: List<AdditionalInfoModel> = listOf(),
+    var contactUsUrl: String = ""
 ) : Parcelable
 
 @Parcelize

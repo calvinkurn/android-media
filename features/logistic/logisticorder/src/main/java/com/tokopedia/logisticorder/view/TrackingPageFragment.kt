@@ -223,10 +223,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
-        setContactUsIcon(model)
+        setContactUsIcon(trackingDataModel)
     }
 
-    private fun setContactUsIcon(model: TrackOrderModel) {
+    private fun setContactUsIcon(model: TrackingDataModel) {
         binding?.headerTrackingPage?.let { header ->
             header.addRightIcon(0).apply {
                 clearImage()
@@ -239,7 +239,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 )
 
                 setOnClickListener {
-                    RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${model.contactUsUrl}")
+                    RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${model.page.contactUsUrl}")
                 }
             }
             header.setNavigationOnClickListener {
@@ -262,8 +262,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun setDeliveryDate(sendDate: String) {
         var date: String = sendDate
-        if (sendDate.isNotEmpty()) date =
-            DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", sendDate)
+        if (sendDate.isNotEmpty()) {
+            date =
+                DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", sendDate)
+        }
         binding?.deliveryDate?.text = date.toHyphenIfEmptyOrNull()
     }
 
