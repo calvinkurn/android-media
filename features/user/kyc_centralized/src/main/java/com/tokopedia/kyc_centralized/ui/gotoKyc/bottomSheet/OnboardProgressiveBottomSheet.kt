@@ -139,13 +139,17 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun initListener() {
-        binding?.btnSubmit?.setOnClickListener {
-            GotoKycAnalytics.sendClickButtonPakaiKtpIni(
-                projectId = projectId,
-                kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
-            )
-            binding?.consentGotoKycProgressive?.submitConsent()
-            viewModel.registerProgressiveUseCase(projectId)
+        binding?.btnSubmit?.apply {
+            setOnClickListener {
+                if (!isLoading) {
+                    GotoKycAnalytics.sendClickButtonPakaiKtpIni(
+                        projectId = projectId,
+                        kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+                    )
+                    binding?.consentGotoKycProgressive?.submitConsent()
+                    viewModel.registerProgressiveUseCase(projectId)
+                }
+            }
         }
     }
 
