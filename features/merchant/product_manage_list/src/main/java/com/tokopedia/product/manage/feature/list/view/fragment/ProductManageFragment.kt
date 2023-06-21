@@ -1811,7 +1811,12 @@ open class ProductManageFragment :
                     getString(R.string.label_oke)
                 val retryMessage = getRetryMessage(context, result)
 
-                showErrorToast(retryMessage, okeLabel, Snackbar.LENGTH_INDEFINITE) {
+                val duration = if (result.success.isNotEmpty()) {
+                    Snackbar.LENGTH_INDEFINITE
+                } else {
+                    Snackbar.LENGTH_LONG
+                }
+                showErrorToast(retryMessage, okeLabel, duration) {
                     if (result.success.isNotEmpty()) {
                         val message = getSuccessMessage(context, result, itemsChecked)
                         showMessageToast(message)
@@ -2786,6 +2791,7 @@ open class ProductManageFragment :
                         onSuccessEditStock(productId, productName, stock, status)
                     }
                 }
+
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2867,7 +2873,8 @@ open class ProductManageFragment :
                 setPrimaryCTAClickListener {
                     val productIds =
                         itemsChecked.map { item -> item.id }
-                    val productDTNeedConfirm = itemsChecked.filter { it.isDTInbound && !it.isCampaign }
+                    val productDTNeedConfirm =
+                        itemsChecked.filter { it.isDTInbound && !it.isCampaign }
                     if (productDTNeedConfirm.isEmpty()) {
                         viewModel.editProductsByStatus(productIds, INACTIVE)
                     } else {
