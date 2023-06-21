@@ -114,16 +114,12 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
-        setUpViewAccountLinking()
-        initListener()
-        initUserConsent()
-    }
-
-    override fun onResume() {
-        super.onResume()
         setUpViewKtp()
         setUpViewSelfie()
         setUpButton()
+        setUpViewAccountLinking()
+        initListener()
+        initUserConsent()
     }
 
     private fun initUserConsent() {
@@ -191,7 +187,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewKtp() {
-        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_ktp)
@@ -199,55 +194,24 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
             tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_title)
 
-            val compoundDrawable = if (isKtpTaken) { R.drawable.ic_checklist_circle_green } else { 0 }
-            tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                compoundDrawable,
-                0
-            )
-
-            tvItemSubtitle.text = if (isKtpTaken) {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
-            }
+            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken)
         }
     }
 
     private fun setUpViewSelfie() {
-        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
         binding?.layoutSelfie?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
                 getString(R.string.img_url_goto_kyc_onboard_selfie)
             )
 
             tvItemTitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_title)
-            val compoundDrawable = if (isSelfieTaken) { R.drawable.ic_checklist_circle_green } else { 0 }
-            tvItemTitle.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                compoundDrawable,
-                0
-            )
 
-            tvItemSubtitle.text = if (isSelfieTaken) {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken)
-            } else {
-                getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
-            }
+            tvItemSubtitle.text = getString(R.string.goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken)
         }
     }
 
     private fun setUpButton() {
-        val isKtpTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isKtpExist()
-        val isSelfieTaken = oneKycSdk.getKycPlusPreferencesProvider().getKycUploadProgressState().isSelfieExist()
-
-        binding?.btnSubmit?.text = if (isKtpTaken || isSelfieTaken) {
-            getString(R.string.goto_kyc_continue_verification)
-        } else {
-            getString(R.string.goto_kyc_start_verification)
-        }
+        binding?.btnSubmit?.text = getString(R.string.goto_kyc_start_verification)
     }
 
     private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {

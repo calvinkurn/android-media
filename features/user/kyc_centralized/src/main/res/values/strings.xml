@@ -249,11 +249,9 @@
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_title">Ambil foto e-KTP</string>
-    <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_taken">Mantap, kamu udah ambil foto e-KTP.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken">Siapin e-KTP asli kamu dan pastikan masih berlaku, ya.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_view_image">Lihat Foto e-KTP</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_title">Ambil selfie</string>
-    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken">Kamu udah ambil selfie, lanjutin yuk!</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
     <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
     <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
