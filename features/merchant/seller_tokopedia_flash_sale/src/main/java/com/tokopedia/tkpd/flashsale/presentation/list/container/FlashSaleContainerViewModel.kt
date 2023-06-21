@@ -130,11 +130,20 @@ class FlashSaleContainerViewModel @Inject constructor(
         ) { }
     }
 
-    fun getTickers() {
+    fun getTickers(keyList: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val tickerParams = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST)
+                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                    GetTargetedTickerUseCase.Param.Target(
+                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                        values = keyList
+                    )
+                )
+                val tickerParams = GetTargetedTickerUseCase.Param(
+                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+                    targets = targetParams
+                )
                 val tickers = getTargetedTickerUseCase.execute(tickerParams)
 
                 _uiState.update { it.copy(tickers = tickers) }

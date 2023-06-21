@@ -104,10 +104,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
-        getFilteredRollenceKey()
         applyUnifyBackgroundColor()
         viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
-        viewModel.getTickers()
     }
 
     override fun onResume() {
@@ -121,6 +119,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             header.setNavigationOnClickListener { activity?.finish() }
         }
         addToolbarIcon()
+        setupTickers()
     }
 
     private fun observeUiState() {
@@ -170,6 +169,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun navigateToFlashSaleDetailPage(campaignId: Long) {
         CampaignDetailActivity.start(context ?: return, campaignId)
+    }
+
+    private fun setupTickers() {
+        val listOfFilteredRollenceKey : List<String> = getFilteredRollenceKey()
+        viewModel.getTickers(listOfFilteredRollenceKey)
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {

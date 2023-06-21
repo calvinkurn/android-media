@@ -80,4 +80,8 @@ class GetTargetedTickerUseCase @Inject constructor(
         data class Target(val type: String, val values: List<String>)
     }
 
+    companion object {
+        const val KEY_TYPE_ROLLENCE_NAME = "rollence_name"
+    }
+
 }
