@@ -31,7 +31,6 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
-import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
@@ -48,8 +47,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.assertTrue
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import java.lang.reflect.Field
@@ -125,6 +124,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {
             isAccessible = true
         }
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
     }
 
     protected fun verifyShowLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {

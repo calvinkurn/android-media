@@ -21,6 +21,7 @@ data class ProductCardCompactCarouselItemUiModel(
     val headerName: String = "",
     val recommendationType: String = "",
     val categoryBreadcrumbs: String = "",
+    val index: Int = 0,
 
     /**
      * Mandatory params

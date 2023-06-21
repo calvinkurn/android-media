@@ -64,8 +64,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -126,6 +124,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
+
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
@@ -159,7 +158,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
-    protected lateinit var viewModel : TokoNowHomeViewModel
+    protected lateinit var viewModel: TokoNowHomeViewModel
 
     private val privateHomeLayoutItemList by lazy {
         viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel?>>("homeLayoutItemList")
@@ -191,8 +190,10 @@ abstract class TokoNowHomeViewModelTestFixture {
             deleteCartUseCase,
             affiliateService,
             getTargetedTickerUseCase,
-            addressData,
+            addressData
         )
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
     }
 
     protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
@@ -472,7 +473,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetProductBundleRecom_thenReturn(errorThrowable: Throwable) {
-        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws  errorThrowable
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws errorThrowable
     }
 
     protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {

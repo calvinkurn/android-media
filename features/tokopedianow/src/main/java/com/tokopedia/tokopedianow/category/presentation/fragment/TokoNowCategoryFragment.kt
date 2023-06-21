@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -35,6 +36,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -47,6 +49,7 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductCardAdsCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
@@ -56,10 +59,12 @@ import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardComp
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -137,7 +142,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
                 tokoNowProductRecommendationListener = createProductRecommendationCallback(),
                 productCardCompactListener = createProductCardCompactCallback(),
-                productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback()
+                productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
+                productAdsCarouselListener = createProductCardAdsCallback()
             ),
             differ = CategoryDiffer()
         )
@@ -705,6 +711,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         observeRefreshState()
         observeOosState()
         observeOpenScreenTracker()
+        observeOpenLoginPage()
     }
 
     private fun observeCategoryHeader() {
@@ -873,19 +880,18 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeOpenLoginPage() {
+        observe(viewModel.openLoginPage) {
+            openLoginPage()
+        }
+    }
+
     private fun observeAtcDataTracker() {
         viewModel.atcDataTracker.observe(viewLifecycleOwner) { model ->
-            analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
-                categoryIdL1 = categoryIdL1,
-                index = model.index,
-                productId = model.productId,
-                warehouseId = model.warehouseId,
-                isOos = model.isOos,
-                name = model.name,
-                price = model.price,
-                headerName = model.headerName,
-                quantity = model.quantity
-            )
+            when(model.layoutType) {
+                CATEGORY_SHOWCASE.name -> trackCategoryShowcaseAddToCart(model)
+                PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(model)
+            }
         }
     }
 
@@ -1059,6 +1065,28 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         )
     }
 
+    private fun trackCategoryShowcaseAddToCart(model: CategoryAtcTrackerModel) {
+        analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
+            categoryIdL1 = categoryIdL1,
+            index = model.index,
+            productId = model.productId,
+            warehouseId = model.warehouseId,
+            isOos = model.isOos,
+            name = model.name,
+            price = model.price,
+            headerName = model.headerName,
+            quantity = model.quantity
+        )
+    }
+
+    private fun trackProductAdsAddToCart(model: CategoryAtcTrackerModel) {
+        val data = model.data
+        if (data is ProductCardCompactCarouselItemUiModel) {
+            val title = getString(R.string.tokopedianow_product_ads_carousel_title)
+            analytic.productAdsAnalytic.trackProductAddToCart(title, model.quantity, data)
+        }
+    }
+
     private fun changeProductCardQuantity(
         position: Int,
         product: CategoryShowcaseItemUiModel,
@@ -1078,7 +1106,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 categoryIdL1 = categoryIdL1,
                 price = product.productCardModel.price.getDigits().orZero(),
                 headerName = product.headerName,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+                layoutType = CATEGORY_SHOWCASE.name,
             )
         }
     }
@@ -1284,5 +1312,15 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun createProductCardCompactSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic)
+    }
+
+    private fun createProductCardAdsCallback(): CategoryProductCardAdsCallback {
+        return CategoryProductCardAdsCallback(
+            context = context,
+            viewModel = viewModel,
+            analytic = analytic.productAdsAnalytic,
+            categoryIdL1 = categoryIdL1,
+            startActivityResult = ::startActivityForResult
+        )
     }
 }

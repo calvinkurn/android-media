@@ -141,6 +141,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
@@ -152,7 +153,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
@@ -959,8 +959,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.addItemToCart) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         actionText = getString(R.string.tokopedianow_toaster_see),
@@ -997,8 +996,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.removeCartItem) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.second,
                         actionText = getString(R.string.tokopedianow_toaster_ok),
@@ -1981,7 +1979,7 @@ class TokoNowHomeFragment :
         return HomeCategoryMenuCallback(
             analytics = analytics,
             warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-            viewModel = viewModelTokoNow,
+            viewModel = viewModelTokoNow
         )
     }
 

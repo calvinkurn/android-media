@@ -52,6 +52,7 @@ class CategoryAnalytic @Inject constructor(
     }
 
     internal object CATEGORY {
+        const val EVENT_CATEGORY_PAGE = "tokonow - category page"
         const val EVENT_CATEGORY_PAGE_L1 = "tokonow - category page - l1"
         const val EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1 = "tokonow - top nav - category page - l1"
     }
@@ -106,6 +107,9 @@ class CategoryAnalytic @Inject constructor(
 
     val categoryOosProductAnalytic: CategoryOosProductAnalytic
         get() = CategoryOosProductAnalytic()
+
+    val productAdsAnalytic: CategoryProductAdsAnalytic
+        get() = CategoryProductAdsAnalytic(userSession)
 
     fun sendOpenScreenEvent(slug: String, id: String, name: String, isLoggedInStatus: Boolean) {
         TokoNowCommonAnalytics.onOpenScreen(

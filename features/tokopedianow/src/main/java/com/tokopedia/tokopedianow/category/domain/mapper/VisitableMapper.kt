@@ -17,8 +17,14 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.updateProductAdsQuantity
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -171,20 +177,22 @@ internal object VisitableMapper {
      * -- Product Section --
      */
 
-    private fun MutableList<Visitable<*>>.removeShowcaseProductAtc(
+    private fun removeProductAtcQuantity(
         productId: String,
         parentProductId: String,
-        miniCartData: MiniCartSimplifiedData
+        miniCartData: MiniCartSimplifiedData,
+        updateProductQuantity: (String, Int) -> Unit
     ) {
         if (parentProductId != DEFAULT_PRODUCT_PARENT_ID) {
-            val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(parentProductId)?.totalQuantity.orZero()
+            val totalQuantity = miniCartData.miniCartItems
+                .getMiniCartItemParentProduct(parentProductId)?.totalQuantity.orZero()
             if (totalQuantity == DEFAULT_PRODUCT_QUANTITY) {
-                updateShowcaseProductQuantity(productId, HomeLayoutMapper.DEFAULT_QUANTITY)
+                updateProductQuantity(productId, DEFAULT_QUANTITY)
             } else {
-                updateShowcaseProductQuantity(productId, totalQuantity)
+                updateProductQuantity(productId, totalQuantity)
             }
         } else {
-            updateShowcaseProductQuantity(productId, HomeLayoutMapper.DEFAULT_QUANTITY)
+            updateProductQuantity(productId, DEFAULT_QUANTITY)
         }
     }
 
@@ -193,7 +201,7 @@ internal object VisitableMapper {
         quantity: Int
     ) {
         filterIsInstance<CategoryShowcaseUiModel>().forEach { uiModel ->
-            val productUiModel = uiModel.productListUiModels?.firstOrNull { it.productCardModel.productId == productId }
+            val productUiModel = uiModel.productListUiModels.firstOrNull { it.productCardModel.productId == productId }
 
             productUiModel?.apply {
                 if (productCardModel.orderQuantity != quantity) {
@@ -214,9 +222,20 @@ internal object VisitableMapper {
         }
     }
 
+    private fun MutableList<Visitable<*>>.updateProductAdsQuantity(
+        productId: String,
+        quantity: Int
+    ) {
+        filterIsInstance<TokoNowAdsCarouselUiModel>().forEach { item ->
+            updateItemById(item.id) {
+                item.updateProductAdsQuantity(productId, quantity)
+            }
+        }
+    }
+
     private fun MutableList<Visitable<*>>.updateAllProductQuantity(
         miniCartData: MiniCartSimplifiedData,
-        layoutType: CategoryLayoutType
+        layoutType: String
     ) {
         miniCartData.miniCartItems.values.map { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
@@ -230,39 +249,65 @@ internal object VisitableMapper {
     fun MutableList<Visitable<*>>.updateProductQuantity(
         productId: String,
         quantity: Int,
-        layoutType: CategoryLayoutType
+        layoutType: String
     ) {
         when (layoutType) {
-            CategoryLayoutType.CATEGORY_SHOWCASE -> updateShowcaseProductQuantity(
-                productId = productId,
-                quantity = quantity
-            )
-            else -> { /* no more layout type */ }
+            CATEGORY_SHOWCASE.name -> updateShowcaseProductQuantity(productId, quantity)
+            PRODUCT_ADS_CAROUSEL -> updateProductAdsQuantity(productId, quantity)
         }
     }
 
     private fun MutableList<Visitable<*>>.updateDeletedProductQuantity(
         miniCartData: MiniCartSimplifiedData,
-        layoutType: CategoryLayoutType
+        layoutType: String
     ) {
-        when (layoutType) {
-            CategoryLayoutType.CATEGORY_SHOWCASE -> {
-                filterIsInstance<CategoryShowcaseUiModel>().forEach { uiModel ->
-                    val cartProductIds = miniCartData.miniCartItems.values.mapNotNull { if (it is MiniCartItem.MiniCartItemProduct) it.productId else null }
-                    val deletedProducts = uiModel.productListUiModels?.filter { it.productCardModel.productId !in cartProductIds }
+        val cartProductIds = miniCartData.miniCartItems.values.mapNotNull {
+            if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
+        }
 
-                    deletedProducts?.forEach { item ->
-                        removeShowcaseProductAtc(item.productCardModel.productId, item.parentProductId, miniCartData)
-                    }
+        when (layoutType) {
+            CATEGORY_SHOWCASE.name -> updateDeletedShowcaseProduct(cartProductIds, miniCartData)
+            PRODUCT_ADS_CAROUSEL -> updateDeletedProductAds(cartProductIds, miniCartData)
+        }
+    }
+
+    private fun MutableList<Visitable<*>>.updateDeletedShowcaseProduct(
+        cartProductIds: List<String>,
+        miniCartData: MiniCartSimplifiedData
+    ) {
+        filterIsInstance<CategoryShowcaseUiModel>().forEach { uiModel ->
+            uiModel.productListUiModels.filter { it.getProductId() !in cartProductIds }.forEach {
+                removeProductAtcQuantity(
+                    productId = it.getProductId(),
+                    parentProductId = it.parentProductId,
+                    miniCartData = miniCartData
+                ) { productId, quantity ->
+                    updateShowcaseProductQuantity(productId, quantity)
                 }
             }
-            else -> { /* no more layout type */ }
+        }
+    }
+
+    private fun MutableList<Visitable<*>>.updateDeletedProductAds(
+        cartProductIds: List<String>,
+        miniCartData: MiniCartSimplifiedData
+    ) {
+        filterIsInstance<TokoNowAdsCarouselUiModel>().forEach { uiModel ->
+            uiModel.items.filter { it.getProductId() !in cartProductIds }.forEach {
+                removeProductAtcQuantity(
+                    productId = it.getProductId(),
+                    parentProductId = it.parentId,
+                    miniCartData = miniCartData
+                ) { productId, quantity ->
+                    updateProductAdsQuantity(productId, quantity)
+                }
+            }
         }
     }
 
     fun MutableList<Visitable<*>>.updateProductQuantity(
         miniCartData: MiniCartSimplifiedData,
-        layoutType: CategoryLayoutType
+        layoutType: String
     ) {
         updateAllProductQuantity(
             miniCartData = miniCartData,
@@ -296,6 +341,20 @@ internal object VisitableMapper {
         }
     }
 
+    fun MutableList<Visitable<*>>.mapProductAdsCarousel(
+        response: ProductAdsResponse,
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
+    ) {
+        updateItemById(PRODUCT_ADS_CAROUSEL) {
+            ProductAdsMapper.mapProductAdsCarousel(
+                response,
+                miniCartData,
+                hasBlockedAddToCart
+            )
+        }
+    }
+
     /**
      * -- Others Section --
      */
@@ -318,6 +377,7 @@ internal object VisitableMapper {
             is CategoryShowcaseUiModel -> id
             is TokoNowProgressBarUiModel -> id
             is TokoNowProductRecommendationUiModel -> id
+            is TokoNowAdsCarouselUiModel -> id
             else -> null
         }
     }

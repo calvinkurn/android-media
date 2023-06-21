@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
+import com.tokopedia.tokopedianow.category.presentation.util.ProductAdsMapper.createProductAdsCarousel
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -14,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
 
-class CategoryViewCreatedTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `onViewCreated should return success result with loading showcase`() {
@@ -58,6 +59,8 @@ class CategoryViewCreatedTest: TokoNowCategoryMainViewModelTestFixture() {
             categoryIds = listOf(categoryIdL1)
         )
 
+        val productAdsCarouselUiModel = createProductAdsCarousel()
+
         val resultList = mutableListOf(
             headerSpaceUiModel,
             chooseAddressUiModel,
@@ -65,6 +68,7 @@ class CategoryViewCreatedTest: TokoNowCategoryMainViewModelTestFixture() {
             titleUiModel,
             categoryNavigationUiModel,
             productRecommendationUiModel,
+            productAdsCarouselUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -113,12 +117,15 @@ class CategoryViewCreatedTest: TokoNowCategoryMainViewModelTestFixture() {
             categoryIds = listOf(categoryIdL1)
         )
 
+        val productAdsCarouselUiModel = createProductAdsCarousel()
+
         val resultList = mutableListOf(
             headerSpaceUiModel,
             chooseAddressUiModel,
             titleUiModel,
             categoryNavigationUiModel,
             productRecommendationUiModel,
+            productAdsCarouselUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()

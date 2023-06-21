@@ -76,10 +76,10 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
-        //verify data
+        // verify data
         viewModel.addItemToCart
             .getOrAwaitValue()
         viewModel.addItemToCart
@@ -103,24 +103,26 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                     name = categoryShowcaseItemUiModel.productCardModel.name,
                     price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
                     headerName = categoryShowcaseItemUiModel.headerName,
-                    quantity = newProductOrderQuantity
+                    quantity = newProductOrderQuantity,
+                    layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
                 )
             )
 
         viewModel.categoryPage
             .getOrAwaitValue()
         viewModel.categoryPage
-            .verifyValueEquals(mockLayout.map {
-                it.copy(
-                    productListUiModels = listOf(
-                        categoryShowcaseItemUiModel.copy(
-                            productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
-                                orderQuantity = newProductOrderQuantity
+            .verifyValueEquals(
+                mockLayout.map {
+                    it.copy(
+                        productListUiModels = listOf(
+                            categoryShowcaseItemUiModel.copy(
+                                productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
+                                    orderQuantity = newProductOrderQuantity
+                                )
                             )
                         )
                     )
-                )
-            }
+                }
             )
     }
 
@@ -191,7 +193,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
         viewModel.updateToolbarNotification
@@ -199,7 +201,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.updateToolbarNotification
             .verifyValueEquals(true)
 
-        //verify data
+        // verify data
         viewModel.updateCartItem
             .getOrAwaitValue()
         viewModel.updateCartItem
@@ -229,7 +231,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                     )
                 }
             )
-
     }
 
     @Test
@@ -299,7 +300,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
         viewModel.updateToolbarNotification
@@ -307,7 +308,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.updateToolbarNotification
             .verifyValueEquals(true)
 
-        //verify data
+        // verify data
         viewModel.removeCartItem
             .getOrAwaitValue()
         viewModel.removeCartItem
@@ -323,17 +324,18 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.categoryPage
             .getOrAwaitValue()
         viewModel.categoryPage
-            .verifyValueEquals(mockLayout.map {
-                it.copy(
-                    productListUiModels = listOf(
-                        categoryShowcaseItemUiModel.copy(
-                            productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
-                                orderQuantity = newProductOrderQuantity
+            .verifyValueEquals(
+                mockLayout.map {
+                    it.copy(
+                        productListUiModels = listOf(
+                            categoryShowcaseItemUiModel.copy(
+                                productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
+                                    orderQuantity = newProductOrderQuantity
+                                )
                             )
                         )
                     )
-                )
-            }
+                }
             )
     }
 
@@ -393,10 +395,10 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
-        //verify data
+        // verify data
         viewModel.addItemToCart
             .getOrAwaitValue()
         viewModel.addItemToCart
@@ -405,17 +407,18 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.categoryPage
             .getOrAwaitValue()
         viewModel.categoryPage
-            .verifyValueEquals(mockLayout.map {
-                it.copy(
-                    productListUiModels = listOf(
-                        categoryShowcaseItemUiModel.copy(
-                            productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
-                                orderQuantity = newProductOrderQuantity
+            .verifyValueEquals(
+                mockLayout.map {
+                    it.copy(
+                        productListUiModels = listOf(
+                            categoryShowcaseItemUiModel.copy(
+                                productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(
+                                    orderQuantity = newProductOrderQuantity
+                                )
                             )
                         )
                     )
-                )
-            }
+                }
             )
     }
 
@@ -487,10 +490,10 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
-        //verify data
+        // verify data
         viewModel.updateCartItem
             .getOrAwaitValue()
         viewModel.updateCartItem
@@ -582,10 +585,10 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             categoryIdL1 = categoryIdL1,
             price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
             headerName = categoryShowcaseItemUiModel.headerName,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
-        //verify data
+        // verify data
         viewModel.removeCartItem
             .getOrAwaitValue()
         viewModel.removeCartItem
@@ -607,7 +610,5 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                     )
                 }
             )
-
     }
-
 }

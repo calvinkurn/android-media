@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProd
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
@@ -38,8 +39,14 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProduct
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -51,16 +58,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
+    private val getProductAdsUseCase: GetProductAdsUseCase,
+    private val addressData: TokoNowLocalAddress,
     @Named(NOW_CATEGORY_L1)
     val categoryIdL1: String,
-    addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
@@ -69,7 +76,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     affiliateService: NowAffiliateService,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     dispatchers: CoroutineDispatchers
-): BaseTokoNowViewModel(
+) : BaseTokoNowViewModel(
     userSession = userSession,
     getMiniCartUseCase = getMiniCartUseCase,
     addToCartUseCase = addToCartUseCase,
@@ -135,7 +142,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         super.onSuccessGetMiniCartData(miniCartData)
         layout.updateProductQuantity(
             miniCartData = miniCartData,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            layoutType = CATEGORY_SHOWCASE.name
         )
         _categoryPage.postValue(layout)
     }
@@ -212,6 +219,29 @@ class TokoNowCategoryViewModel @Inject constructor(
         _categoryPage.postValue(layout)
     }
 
+    private fun getProductAds() {
+        launchCatchError(block = {
+            val params = GetProductAdsParam(
+                warehouseIds = addressData.getWarehouseIds(),
+                src = GetProductAdsParam.SRC_DIRECTORY_TOKONOW,
+                userId = getUserId()
+            )
+
+            val response = getProductAdsUseCase.execute(params)
+
+            if (response.productList.isNotEmpty()) {
+                layout.mapProductAdsCarousel(response, miniCartData, hasBlockedAddToCart)
+            } else {
+                layout.removeItem(PRODUCT_ADS_CAROUSEL)
+            }
+
+            _categoryPage.postValue(layout)
+        }) {
+            layout.removeItem(PRODUCT_ADS_CAROUSEL)
+            _categoryPage.postValue(layout)
+        }
+    }
+
     /**
      * -- private function section --
      */
@@ -247,7 +277,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     private fun getMoreShowcases() {
         moreShowcaseJob = launchCatchError(
-            block =  {
+            block = {
                 getBatchShowcase(
                     hasAdded = false
                 )
@@ -282,7 +312,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private fun updateProductCartQuantity(
         productId: String,
         quantity: Int,
-        layoutType: CategoryLayoutType
+        layoutType: String
     ) {
         layout.updateProductQuantity(
             productId = productId,
@@ -348,6 +378,7 @@ class TokoNowCategoryViewModel @Inject constructor(
                 layout.addProductRecommendation(
                     categoryId = listOf(categoryIdL1)
                 )
+                layout.addProductAdsCarousel()
 
                 addCategoryShowcases(
                     categoryNavigationUiModel = categoryNavigationUiModel
@@ -365,10 +396,11 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     fun getFirstPage() {
         launchCatchError(
-            block =  {
+            block = {
                 getBatchShowcase(
                     hasAdded = true
                 )
+                getProductAds()
             },
             onError = { /* nothing to do */ }
         )
@@ -391,7 +423,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     fun removeProductRecommendation() {
         launchCatchError(
-            block =  {
+            block = {
                 layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
                 _categoryPage.postValue(layout)
             },
@@ -404,7 +436,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         hasBeenWishlist: Boolean
     ) {
         launchCatchError(
-            block =  {
+            block = {
                 layout.updateWishlistStatus(
                     productId = productId,
                     hasBeenWishlist = hasBeenWishlist
@@ -426,7 +458,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         categoryIdL1: String,
         price: Int,
         headerName: String,
-        layoutType: CategoryLayoutType,
+        layoutType: String
     ) {
         onCartQuantityChanged(
             isVariant = false,
@@ -437,18 +469,16 @@ class TokoNowCategoryViewModel @Inject constructor(
             onSuccessAddToCart = {
                 updateProductCartQuantity(productId, quantity, layoutType)
                 updateToolbarNotification()
-                _atcDataTracker.postValue(
-                    CategoryAtcTrackerModel(
-                        categoryIdL1 = categoryIdL1,
-                        index = position,
-                        productId = productId,
-                        warehouseId = getWarehouseId(),
-                        isOos = isOos,
-                        name = name,
-                        price = price,
-                        headerName = headerName,
-                        quantity = quantity
-                    )
+                trackAddToCart(
+                    categoryIdL1,
+                    position,
+                    productId,
+                    isOos,
+                    name,
+                    price,
+                    headerName,
+                    quantity,
+                    layoutType
                 )
             },
             onSuccessUpdateCart = { _, _ ->
@@ -463,5 +493,64 @@ class TokoNowCategoryViewModel @Inject constructor(
                 updateProductCartQuantity(productId, quantity, layoutType)
             }
         )
+    }
+
+    private fun trackAddToCart(
+        categoryIdL1: String,
+        position: Int,
+        productId: String,
+        isOos: Boolean,
+        name: String,
+        price: Int,
+        headerName: String,
+        quantity: Int,
+        layoutType: String
+    ) {
+        when (layoutType) {
+            CATEGORY_SHOWCASE.name -> trackCategoryShowCase(
+                categoryIdL1, position, productId,
+                isOos, name, price, headerName, quantity, layoutType
+            )
+            PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(productId, quantity)
+        }
+    }
+
+    private fun trackCategoryShowCase(
+        categoryIdL1: String,
+        position: Int,
+        productId: String,
+        isOos: Boolean,
+        name: String,
+        price: Int,
+        headerName: String,
+        quantity: Int,
+        layoutType: String
+    ) {
+        _atcDataTracker.postValue(
+            CategoryAtcTrackerModel(
+                categoryIdL1 = categoryIdL1,
+                index = position,
+                productId = productId,
+                warehouseId = getWarehouseId(),
+                isOos = isOos,
+                name = name,
+                price = price,
+                headerName = headerName,
+                quantity = quantity,
+                layoutType = layoutType
+            )
+        )
+    }
+
+    private fun trackProductAdsAddToCart(productId: String, quantity: Int) {
+        layout.findAdsProduct(productId)?.let { product ->
+            _atcDataTracker.postValue(
+                CategoryAtcTrackerModel(
+                    quantity = quantity,
+                    layoutType = PRODUCT_ADS_CAROUSEL,
+                    data = product
+                )
+            )
+        }
     }
 }

@@ -19,4 +19,6 @@ data class CategoryShowcaseItemUiModel(
             else -> null
         }
     }
+
+    fun getProductId() = productCardModel.productId
 }
