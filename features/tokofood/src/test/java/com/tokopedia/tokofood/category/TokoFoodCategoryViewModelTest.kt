@@ -18,7 +18,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -28,7 +29,7 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
     @Test
     fun `when getting error state should run and give the error result`() {
-        runBlockingTest {
+        runTest {
             val throwable = Throwable("Error Timeout")
 
             val result = async {
@@ -58,8 +59,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
         )
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -81,8 +82,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             TokoFoodListUiModel(items = viewModel.categoryLayoutItemList, TokoFoodLayoutState.SHOW)
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -98,7 +99,7 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
     @Test
     fun `when check is page showing error should return true`() {
-        runBlockingTest {
+        runTest {
             val throwable = Throwable("Error Timeout")
 
             val result = async {
@@ -131,8 +132,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
         )
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -174,8 +175,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -204,8 +205,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -234,8 +235,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -264,8 +265,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -290,8 +291,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -317,8 +318,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -349,8 +350,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -371,8 +372,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }
@@ -396,8 +397,8 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
         var actualResponse: Pair<Result<TokoFoodListUiModel>, Boolean>? = null
 
-        runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.flowLayoutList.collectLatest {
                     actualResponse = it
                 }

@@ -17,6 +17,8 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -24,6 +26,9 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +40,7 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: DigitalPDPTokenListrikViewModel
 
@@ -428,16 +433,16 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         Assert.assertEquals(expected.idemPotencyKey, actual.idemPotencyKey)
     }
 
-    protected fun TestCoroutineScope.skipValidatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
+    protected fun TestScope.skipValidatorDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipMultitabDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipMultitabDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipRecommendationDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipRecommendationDelay() {
+        advanceUntilIdle()
     }
 
     companion object {

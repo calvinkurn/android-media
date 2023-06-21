@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common
 
 import android.content.Context
+import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
@@ -20,15 +21,32 @@ object PostAtcHelper {
         cartId: String = "",
         pageSource: Source = Source.Default
     ) {
-        val intent = RouteManager.getIntent(
+        val intent = getIntent(
+            context,
+            productId,
+            layoutId,
+            cartId,
+            pageSource
+        )
+        context.startActivity(intent)
+    }
+
+    fun getIntent(
+        context: Context,
+        productId: String,
+        layoutId: String = "",
+        cartId: String = "",
+        pageSource: Source = Source.Default
+    ): Intent {
+        return RouteManager.getIntent(
             context,
             ApplinkConstInternalMarketplace.POST_ATC,
             productId
-        )
-        intent.putExtra(PARAM_CART_ID, cartId)
-        intent.putExtra(PARAM_LAYOUT_ID, layoutId)
-        intent.putExtra(PARAM_PAGE_SOURCE, pageSource.name)
-        context.startActivity(intent)
+        ).apply {
+            putExtra(PARAM_CART_ID, cartId)
+            putExtra(PARAM_LAYOUT_ID, layoutId)
+            putExtra(PARAM_PAGE_SOURCE, pageSource.name)
+        }
     }
 
     sealed class Source(
@@ -37,5 +55,4 @@ object PostAtcHelper {
         object PDP : Source("product detail page")
         object Default : Source("")
     }
-
 }

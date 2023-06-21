@@ -24,8 +24,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
@@ -237,7 +235,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private fun setupRecyclerView(cartPosition: Int) {
         shippingDurationAdapter?.setShippingDurationAdapterListener(this)
         shippingDurationAdapter?.setCartPosition(cartPosition)
-        shippingDurationAdapter?.setToggleYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
@@ -301,18 +298,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     override fun getActivity(): Activity {
         return activity!!
-    }
-
-    override fun isToogleYearEndPromotionOn(): Boolean {
-        if (isOcc) {
-            return false
-        } else {
-            if (activity != null) {
-                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
-            }
-            return false
-        }
     }
 
     override fun onShippingDurationAndRecommendCourierChosen(

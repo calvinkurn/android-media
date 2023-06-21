@@ -28,7 +28,6 @@ interface ShippingDurationContract {
         fun getActivity(): Activity
         fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>)
         fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>)
-        fun isToogleYearEndPromotionOn(): Boolean
         fun onShippingDurationAndRecommendCourierChosen(
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
             courierData: ShippingCourierUiModel?,

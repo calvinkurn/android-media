@@ -629,13 +629,15 @@ internal class SearchProductInspirationWidgetTest: ProductListPresenterTestFixtu
     ) {
         data.assertInspirationWidgetDataView(inspirationWidget)
 
-        optionSizeData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
+        optionFilterData.size shouldBe inspirationWidget.inspirationWidgetOptions.size
 
         inspirationWidget.inspirationWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
-            optionSizeData[index].assertInspirationFilterOptionViewModel(
+            optionFilterData[index].assertInspirationFilterOptionViewModel(
                 inspirationWidgetOption, data.type,
             )
         }
+
+        isTypeRadio shouldBe inspirationWidget.isTypeRadio()
     }
 
     private fun InspirationFilterOptionDataView.assertInspirationFilterOptionViewModel(

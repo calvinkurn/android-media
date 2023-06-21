@@ -61,6 +61,7 @@ import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
@@ -116,7 +117,8 @@ fun createHomeViewModel(
     getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
     homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true),
     homeTodoWidgetUseCase: HomeTodoWidgetUseCase = mockk(relaxed = true),
-    homeDismissTodoWidgetUseCase: DismissTodoWidgetUseCase = mockk(relaxed = true)
+    homeDismissTodoWidgetUseCase: DismissTodoWidgetUseCase = mockk(relaxed = true),
+    homeRateLimit: RateLimiter<String> = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -141,7 +143,8 @@ fun createHomeViewModel(
             getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
             homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
             homeTodoWidgetUseCase = Lazy { homeTodoWidgetUseCase },
-            homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase }
+            homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase },
+            homeRateLimit = homeRateLimit
         ),
         recordPrivateCalls = true
     )
@@ -236,20 +239,20 @@ fun HomePlayUseCase.givenOnGetPlayWidgetUiModelReturn(playWidgetState: PlayWidge
     coEvery { onGetPlayWidgetUiModel(any(), any(), any()) } returns playWidgetState
 }
 
-fun HomePlayUseCase.givenOnUpdatePlayTotalViewReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(DynamicHomeChannel.Channels())) {
+fun HomePlayUseCase.givenOnUpdatePlayTotalViewReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(ChannelModel("", ""))) {
     coEvery { onUpdatePlayTotalView(any(), any(), any()) } returns carouselPlayWidgetDataModel
 }
 
-fun HomePlayUseCase.givenOnUpdateActionReminderReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(DynamicHomeChannel.Channels())) {
+fun HomePlayUseCase.givenOnUpdateActionReminderReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(ChannelModel("", ""))) {
     coEvery { onUpdateActionReminder(any(), any(), any()) } returns carouselPlayWidgetDataModel
 }
 
 fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true)) {
-    coEvery { onGetPlayWidgetWhenShouldRefresh() } returns playWidgetState
+    coEvery { onGetPlayWidgetWhenShouldRefresh(any()) } returns playWidgetState
 }
 
 fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshError() {
-    coEvery { onGetPlayWidgetWhenShouldRefresh() } throws Exception()
+    coEvery { onGetPlayWidgetWhenShouldRefresh(any()) } throws Exception()
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {

@@ -23,7 +23,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.data.MediaException
@@ -71,7 +71,7 @@ class EditorViewPagerAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val layout = container.inflateLayout(R.layout.viewpager_main_editor)
+        val layout = container.inflateLayout(editorR.layout.viewpager_main_editor)
         layout.tag = viewPagerTag(position)
 
         val uiModel = editorList[position]
@@ -79,7 +79,7 @@ class EditorViewPagerAdapter(
         val logoOverlay = uiModel.getOverlayLogoValue()
 
         if (isVideoFormat(filePath)) {
-            val vidPreviewRef = layout.findViewById<PlayerView>(R.id.vid_main_preview)
+            val vidPreviewRef = layout.findViewById<PlayerView>(editorR.id.vid_main_preview)
             vidPreviewRef.visible()
 
             val exoplayer = SimpleExoPlayer.Builder(context).build()
@@ -91,7 +91,7 @@ class EditorViewPagerAdapter(
 
             vidPreviewRef.controllerShowTimeoutMs = 0
         } else {
-            val imgPreviewRef = layout.findViewById<ImageView>(R.id.img_main_preview)
+            val imgPreviewRef = layout.findViewById<ImageView>(editorR.id.img_main_preview)
             imgPreviewRef.visible()
 
             imgPreviewRef.loadImage(filePath) {
@@ -108,7 +108,7 @@ class EditorViewPagerAdapter(
             }
 
             if (logoOverlay != null) {
-                val imgOverlayAddLogoRef = layout.findViewById<ImageView>(R.id.img_main_overlay)
+                val imgOverlayAddLogoRef = layout.findViewById<ImageView>(editorR.id.img_main_overlay)
                 imgOverlayAddLogoRef.visible()
                 imgOverlayAddLogoRef.loadImage(logoOverlay.overlayLogoUrl)
             }

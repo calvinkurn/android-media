@@ -54,11 +54,20 @@ import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
-import com.tokopedia.universal_sharing.model.*
+import com.tokopedia.universal_sharing.model.BroadcastChannelModel
+import com.tokopedia.universal_sharing.model.CampaignStatus
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
+import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.universal_sharing.model.ShopPageParamModel
+import com.tokopedia.universal_sharing.model.TickerShareModel
+import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
@@ -81,8 +90,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import com.tokopedia.iconunify.R as unifyIconR
 
 /**
@@ -97,7 +104,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.universal_share_bottomsheet
-        private val TAG = UniversalShareBottomSheet::class.java.simpleName
+        val TAG = UniversalShareBottomSheet::class.java.simpleName
         private const val TYPE_TEXT = "text/plain"
         private const val TYPE_IMAGE = "image/*"
         private const val TYPE_ALL = "*/*"
@@ -376,6 +383,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     // Variable to set personalized campaign
     private var personalizedMessage = ""
+    private var personalizedImage = ""
+    private var personalizedCampaignModel: PersonalizedCampaignModel? = null
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -1242,6 +1251,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      * this function is used to set personalized campaign message and output
      */
     fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        personalizedCampaignModel = model
         val context = LinkerManager.getInstance().context
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
@@ -1255,10 +1265,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 } else {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_upcoming_without_discount,
-                        model.getStartDateCampaign(),
+                        model.getStartDateCampaign()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.startTime)
+                )
             }
             CampaignStatus.ON_GOING -> {
                 if (model.discountPercentage != 0F) {
@@ -1269,12 +1282,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.getEndDateCampaign()
                     )
                 } else {
-                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
                         model.price,
                         model.getEndDateCampaign()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.END_SOON -> {
                 if (model.discountPercentage != 0F) {
@@ -1291,7 +1308,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.getDiscountString()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
@@ -1299,11 +1319,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun isPersonalizedCampaignActive(): Boolean = personalizedCampaignModel != null
+
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = transformOgImageURL(ogImageUrl)
+
+            if (isPersonalizedCampaignActive()) {
+                val campaignName = personalizedCampaignModel?.getCampaignName() ?: ""
+                imageGeneratorParam = this.copy(campaignInfo = personalizedImage, campaignName = campaignName, hasRibbon = true)
+            }
         }
 
         lifecycleScope.launchCatchError(block = {

@@ -33,7 +33,8 @@ import java.util.*
 const val LAGITEXT = "x lagi "
 
 class QuestWidgetItemView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null
 ) : CardUnify(context, attrs), ProgressCompletionListener {
 
     private lateinit var status: String
@@ -102,9 +103,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         val progress = calculateProgress((item.task?.get(0)?.progress))
 
         when (item.questUser?.status) {
-
             QuestUserStatus.IDLE -> {
-
                 status = QuestUserStatus.IDLE
                 appLink = QuestUrls.QUEST_DETAIL_URL + questId
 
@@ -119,14 +118,11 @@ class QuestWidgetItemView @JvmOverloads constructor(
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
             QuestUserStatus.COMPLETED -> {
-
                 item.actionButton?.cta?.applink?.let {
                     appLink = it
                 }
-
             }
             QuestUserStatus.CLAIMED -> {
-
                 item.actionButton?.cta?.applink?.let {
                     appLink = it
                 }
@@ -141,7 +137,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         }
 
         this.setOnClickListener {
-            //tracker event
+            // tracker event
             item.id?.let { it1 -> this.questTracker.clickQuestCard(source, it1) }
 
             try {
@@ -150,14 +146,15 @@ class QuestWidgetItemView @JvmOverloads constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
 
-        val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
-            item.task[0]?.progress?.target?.minus(
-                it
+        val desc = item.actionButton?.shortText + " " + (
+            item.task?.get(0)?.progress?.current?.let {
+                item.task[0]?.progress?.target?.minus(
+                    it
+                )
+            }
             )
-        })
 
         if (item.questUser?.status == QuestUserStatus.CLAIMED || progress == 100F) {
             tvBannerDesc.text = context.resources.getString(R.string.quest_widget_finished_desc)
@@ -174,7 +171,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
     private fun checkIfLessThan5Days(title: String?): Boolean {
         var num = ""
         title?.toCharArray()?.forEach {
-            if(it.isDigit()){
+            if (it.isDigit()) {
                 num += it
             }
         }
@@ -210,10 +207,11 @@ class QuestWidgetItemView @JvmOverloads constructor(
         }
     }
 
-
     @SuppressLint("Recycle")
     private fun scaleUpIconCompleted(
-        icon: ImageUnify, iconContainer: ImageUnify, completion: (() -> Unit)? = null
+        icon: ImageUnify,
+        iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
     ) {
         progressBar.hide()
         icon.show()
@@ -249,14 +247,15 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
             override fun onAnimationRepeat(p0: Animator) {
             }
-
         })
         animator.start()
     }
 
     @SuppressLint("Recycle")
     private fun scaleDownIconCompleted(
-        icon: ImageUnify, iconContainer: ImageUnify, completion: (() -> Unit)? = null
+        icon: ImageUnify,
+        iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
     ) {
         icon.show()
         iconContainer.show()
@@ -298,7 +297,9 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
     @SuppressLint("Recycle")
     private fun scaleUpIconProgress(
-        icon: ImageUnify, iconContainer: ImageUnify, completion: (() -> Unit)? = null
+        icon: ImageUnify,
+        iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
     ) {
         progressBar.hide()
         icon.show()
@@ -332,14 +333,15 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
             override fun onAnimationRepeat(p0: Animator) {
             }
-
         })
         animator.start()
     }
 
     @SuppressLint("Recycle")
     private fun scaleDownIconProgress(
-        icon: ImageUnify, iconContainer: ImageUnify, completion: (() -> Unit)? = null
+        icon: ImageUnify,
+        iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
     ) {
         icon.show()
         iconContainer.show()
@@ -380,7 +382,6 @@ class QuestWidgetItemView @JvmOverloads constructor(
     }
 
     private fun translationAnimation(viewOne: ImageUnify, viewTwo: ImageUnify) {
-
         val durationTranslation = 600L
         val animator = AnimatorSet()
         val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
@@ -423,24 +424,26 @@ class QuestWidgetItemView @JvmOverloads constructor(
     private fun startTranslationAnimation() {
         val START_DELAY = 3000L
         val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                ivBannerIcon.post {
-                    if (showBox) {
-                        showBox = false
-                        translationAnimation(ivBannerIconSecond, ivBannerIcon)
-                        // To repeat animation if first position and IDLE status
-                        if(position != 0 || status != QuestUserStatus.IDLE){
-                            timer.cancel()
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    ivBannerIcon.post {
+                        if (showBox) {
+                            showBox = false
+                            translationAnimation(ivBannerIconSecond, ivBannerIcon)
+                            // To repeat animation if first position and IDLE status
+                            if (position != 0 || status != QuestUserStatus.IDLE) {
+                                timer.cancel()
+                            }
+                        } else {
+                            showBox = true
+                            translationAnimation(ivBannerIcon, ivBannerIconSecond)
                         }
-                    } else {
-                        showBox = true
-                        translationAnimation(ivBannerIcon, ivBannerIconSecond)
                     }
                 }
-            }
-        }, START_DELAY, START_DELAY)
-
+            },
+            START_DELAY, START_DELAY
+        )
     }
 
     private fun dpToPx(dp: Int): Float {
@@ -454,4 +457,3 @@ class QuestWidgetItemView @JvmOverloads constructor(
         }
     }
 }
-

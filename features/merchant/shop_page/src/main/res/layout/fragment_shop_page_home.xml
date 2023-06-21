@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <View
         android:id="@+id/top_view"
@@ -45,7 +46,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="0" />
+        app:unify_image_corner_radius="0"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <com.tokopedia.shop.product.view.widget.StickySingleHeaderView
         android:id="@+id/stickySingleHeaderView"

@@ -12,7 +12,7 @@ import com.tokopedia.applink.RouteManager
  */
 class OpenLogin : ActivityResultContract<Unit, Boolean>() {
 
-    override fun createIntent(context: Context, input: Unit?): Intent {
+    override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(RouteManager.getIntent(context, ApplinkConst.LOGIN))
     }
 

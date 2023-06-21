@@ -359,7 +359,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     if (it.data == null) {
                         renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     } else {
-                        val code = it.data?.gamiCrack.resultStatus.code
+                        val code = it.data.gamiCrack.resultStatus.code
                         if (code == HTTP_STATUS_OK) {
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
@@ -422,6 +422,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.ERROR -> {
                     disableGiftBoxTap = false
                     renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

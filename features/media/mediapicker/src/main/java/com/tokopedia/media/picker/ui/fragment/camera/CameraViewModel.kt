@@ -27,7 +27,7 @@ class CameraViewModel @Inject constructor(
     private val _videoTaken = MutableSharedFlow<File?>()
     val videoTaken: Flow<File?> get() = _videoTaken
 
-    fun onPictureTaken(cameraSize: Size?, data: ByteArray) {
+    fun onPictureTaken(cameraSize: Size?, data: ByteArray?) {
         createMediaRepository.image(cameraSize, data)
             .flowOn(dispatcher.computation)
             .onStart { _isLoading.value = true }

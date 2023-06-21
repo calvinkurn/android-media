@@ -103,6 +103,9 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.ERROR -> {
 
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
     }

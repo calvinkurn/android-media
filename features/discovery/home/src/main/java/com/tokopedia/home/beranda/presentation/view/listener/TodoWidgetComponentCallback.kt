@@ -16,30 +16,30 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 class TodoWidgetComponentCallback(
     val homeCategoryListener: HomeCategoryListener,
-    val homeRevampViewModel: HomeRevampViewModel
+    private val homeRevampViewModel: HomeRevampViewModel
 ) : TodoWidgetComponentListener {
 
-    override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
+    override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel) {
+        TodoWidgetTracking.sendTodoWidgetCardClicked(element)
         if (element.cardApplink.isNotBlank()) {
             homeCategoryListener.onDynamicChannelClicked(element.cardApplink)
         }
     }
 
-    override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
-        TodoWidgetTracking.sendTodoWidgetCTAClicked(element, horizontalPosition, homeCategoryListener.userId)
+    override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel) {
+        TodoWidgetTracking.sendTodoWidgetCTAClicked(element, homeCategoryListener.userId)
         homeCategoryListener.onDynamicChannelClicked(element.ctaApplink)
     }
 
-    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
+    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam)
+        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.dataSource, element.feParam)
     }
 
-    override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
+    override fun onTodoImpressed(element: CarouselTodoWidgetDataModel) {
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
             TodoWidgetTracking.getTodoWidgetView(
                 element,
-                horizontalPosition,
                 homeCategoryListener.userId
             ) as HashMap<String, Any>
         )

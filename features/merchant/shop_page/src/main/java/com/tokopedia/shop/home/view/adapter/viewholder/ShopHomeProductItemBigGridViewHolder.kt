@@ -48,7 +48,8 @@ open class ShopHomeProductItemBigGridViewHolder(
             isHasAddToCartButton = false,
             hasThreeDots = isShowTripleDot,
             shopHomeProductViewModel = shopHomeProductViewModel,
-            isWideContent = true
+            isWideContent = true,
+            productRating = shopHomeProductViewModel.averageRating
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

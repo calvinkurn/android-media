@@ -9,8 +9,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiSt
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -25,6 +27,9 @@ class PlayShortsUploadViewModelTest {
 
     private val mockTagsSize5 = uiModelBuilder.buildTags(size = 5)
     private val mockException = Exception("Network Error")
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_summary_upload_uploadSuccess() {

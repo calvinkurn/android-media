@@ -22,6 +22,12 @@ data class GetRepurchaseResponse(
         @SerializedName("title")
         val title: String = "",
         @Expose
+        @SerializedName("subtitle")
+        val subtitle: String = "",
+        @Expose
+        @SerializedName("subtitleColor")
+        val subtitleColor: String = "",
+        @Expose
         @SerializedName("listProduct")
         val products: List<RepurchaseProduct> = emptyList()
     )

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -51,6 +52,7 @@ private const val EVENT_CLICK_LAJUKTAN = "kata kunci pilihan dari rekomendasi"
 private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
 private const val CLICK_ON_SEARCH_CREATE = "click - search box kata kunci"
 private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
+private const val VALID_CHARACTERS_REGEX = "^[0-9a-zA-Z\\s()+\"'-.,&*%/:]*$"
 
 
 class KeywordAdsListFragment : BaseDaggerFragment() {
@@ -330,7 +332,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>) {
-        if (listKeywords.find { key -> searchBar?.searchBarTextField?.text.toString() == key } == null) {
+        if (keywordListAdapter.items.find { keywordDataItem -> searchBar?.searchBarTextField?.text.toString() == keywordDataItem.keyword } == null
+            && listKeywords.find { key -> searchBar?.searchBarTextField?.text.toString() == key } == null) {
             manualAd?.visible()
             manualAdTxt?.visible()
             dividerManual?.visible()
@@ -338,11 +341,17 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
                     searchBar?.searchBarTextField?.text.toString()
             ))
+            manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_NN700)
             manualAd?.setOnClickListener {
                 addManualKeyword()
                 searchBar?.searchBarTextField?.text?.clear()
             }
-        }
+        } else {
+                manualAdTxt?.visible()
+                dividerManual?.visible()
+                manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_already_exists_alert_msg)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
+            }
     }
 
     private fun addManualKeyword() {
@@ -390,11 +399,29 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        setSearchLayout()
         if (searchBar?.searchBarTextField?.text.toString().isNotEmpty()) {
-            viewModel.searchKeyword(searchBar?.searchBarTextField?.text.toString(),
-                getProductIds(),
-                ::showSearchResult)
+            if(searchBar?.searchBarTextField?.text.toString().length > 70){
+                manualAdTxt?.visible()
+                dividerManual?.visible()
+                manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_max_length_alert_msg)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
+                manualAd?.gone()
+            } else if(!Regex(VALID_CHARACTERS_REGEX).matches(searchBar?.searchBarTextField?.text.toString())){
+                manualAdTxt?.visible()
+                dividerManual?.visible()
+                manualAdTxt?.text = getString(com.tokopedia.topads.common.R.string.topads_common_manual_key_invalid_characters_alert_msg)
+                manualAdTxt?.setTextColorCompat(com.tokopedia.topads.common.R.color.Unify_RN500)
+                manualAd?.gone()
+            } else {
+                manualAdTxt?.gone()
+                dividerManual?.gone()
+                setSearchLayout()
+                viewModel.searchKeyword(
+                    searchBar?.searchBarTextField?.text.toString(),
+                    getProductIds(),
+                    ::showSearchResult
+                )
+            }
         }
     }
 

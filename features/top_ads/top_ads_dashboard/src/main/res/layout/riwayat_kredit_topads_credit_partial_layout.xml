@@ -37,7 +37,7 @@
         android:id="@+id/hari_ini"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:chipText="@string/topads_hari_ini"
+        app:chipText="@string/topads_common_date_today"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintTop_toTopOf="parent" />
 

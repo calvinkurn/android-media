@@ -9,26 +9,26 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ViewToViewProductViewHolder(
     private val listener: ViewToViewListener,
-    view: View,
+    view: View
 ) : RecyclerView.ViewHolder(view) {
 
     private var binding: ItemViewToViewBinding? by viewBinding()
 
     fun bind(data: ViewToViewDataModel) {
-        itemView.addOnImpressionListener(data.recommendationItem) {
-            listener.onProductImpressed(data, bindingAdapterPosition, className)
-        }
         val binding = binding ?: return
         with(binding.root) {
             setProductModel(data.productModel)
             setOnClickListener {
-                listener.onProductClicked(data, bindingAdapterPosition, className)
+                listener.onProductClicked(data, data.recommendationItem.position, className)
             }
             setAddToCartOnClickListener {
-                listener.onAddToCartClicked(data, bindingAdapterPosition)
+                listener.onAddToCartClicked(data, data.recommendationItem.position)
             }
             setAddVariantClickListener {
-                listener.onAddToCartClicked(data, bindingAdapterPosition)
+                listener.onAddToCartClicked(data, data.recommendationItem.position)
+            }
+            addOnImpressionListener(data.recommendationItem) {
+                listener.onProductImpressed(data, data.recommendationItem.position, className)
             }
         }
     }

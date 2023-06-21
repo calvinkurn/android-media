@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.setup
 
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -46,6 +47,7 @@ fun parentBroViewModel(
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
+    playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ): PlayBroadcastViewModel {
     return PlayBroadcastViewModel(
         handle = handle,
@@ -63,7 +65,8 @@ fun parentBroViewModel(
         interactiveMapper = interactiveMapper,
         repo = repo,
         logger = logger,
-        broadcastTimer = broadcastTimer
+        broadcastTimer = broadcastTimer,
+        playShortsEntryPointRemoteConfig = playShortsEntryPointRemoteConfig,
     )
 }
 

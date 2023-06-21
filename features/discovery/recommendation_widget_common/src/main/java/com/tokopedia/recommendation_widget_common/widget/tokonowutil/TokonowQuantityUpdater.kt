@@ -19,7 +19,7 @@ object TokonowQuantityUpdater {
         val newdata = mutableListOf<RecommendationItem>()
         data.recommendationData.recommendationItemList.forEach {
             val recomItem = it.copy()
-            if (recomItem.isRecomProductShowVariantAndCart) {
+            if (recomItem.addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(
@@ -72,5 +72,4 @@ object TokonowQuantityUpdater {
         }
         data.recommendationData.recommendationItemList = newdata
     }
-
 }

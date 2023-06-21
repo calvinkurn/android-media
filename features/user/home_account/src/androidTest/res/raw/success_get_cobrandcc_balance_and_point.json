@@ -8,6 +8,7 @@
     "weblink": "weblink",
     "icon": "icon",
     "is_active": true,
-    "is_hidden": false
+    "is_hidden": false,
+    "type": "text"
   }
 }

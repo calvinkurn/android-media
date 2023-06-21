@@ -11,7 +11,8 @@ interface SendablePreview {
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): Any
     fun notEnoughRequiredData(): Boolean
     fun generatePreviewMessage(

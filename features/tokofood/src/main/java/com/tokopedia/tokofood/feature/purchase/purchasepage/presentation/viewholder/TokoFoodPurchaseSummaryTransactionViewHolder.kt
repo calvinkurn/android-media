@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
+import com.tokopedia.tokofood.common.domain.response.CartListAddOnsCustomResponseInfo
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.feature.purchase.goneAllChildren
@@ -52,7 +52,7 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
         }
     }
 
-    private fun ImageUnify.setDetailInfo(detailInfo: CheckoutTokoFoodSummaryItemDetailInfo?) {
+    private fun ImageUnify.setDetailInfo(detailInfo: CartListAddOnsCustomResponseInfo?) {
         if (detailInfo == null || detailInfo.imageUrl.isBlank()) {
             hide()
             setOnClickListener(null)

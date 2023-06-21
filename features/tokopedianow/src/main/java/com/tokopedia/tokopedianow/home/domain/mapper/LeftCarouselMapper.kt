@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
@@ -34,7 +34,8 @@ object LeftCarouselMapper {
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData? = null,
         warehouseId: String,
-        layoutType: String
+        layoutType: String,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
@@ -57,7 +58,7 @@ object LeftCarouselMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
-                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, layoutType),
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, layoutType, hasBlockedAddToCart),
                     categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             )
@@ -113,8 +114,9 @@ object LeftCarouselMapper {
     private fun mapChannelGridToProductCard(
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null,
-        layoutType: String
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        layoutType: String,
+        hasBlockedAddToCart: Boolean
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
@@ -138,6 +140,7 @@ object LeftCarouselMapper {
                 imageUrl = it.url
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 

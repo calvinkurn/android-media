@@ -14,12 +14,14 @@ import javax.inject.Inject
 
 @GqlQuery("GyroRecommendationQuery", GQL_GYRO_RECOMMENDATION)
 class GyroEngineRequestUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository,
+    val userSession: UserSessionInterface,
     val gson: Gson
 ) : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
     fun getFeatureEngineData(
-        thanksPageData: ThanksPageData, walletBalance: WalletBalance?,
+        thanksPageData: ThanksPageData,
+        walletBalance: WalletBalance?,
         onSuccess: (ValidateEngineResponse) -> Unit
     ) {
         try {
@@ -29,7 +31,8 @@ class GyroEngineRequestUseCase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result.validateEngineResponse)
-                }, {
+                },
+                {
                     it.printStackTrace()
                 }
             )
@@ -42,7 +45,6 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData: ThanksPageData,
         walletBalance: WalletBalance?
     ): Map<String, Any> {
-
         val mainGatewayCode = thanksPageData.paymentDetails?.find {
             it.gatewayName.equals(thanksPageData.gatewayName, true)
         }?.gatewayCode ?: ""
@@ -57,8 +59,11 @@ class GyroEngineRequestUseCase @Inject constructor(
     private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
         gson.toJson(
             FeatureEngineRequest(
-                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                concatMap(thanksPageData,mainGatewayCode),
+                thanksPageData.merchantCode,
+                thanksPageData.profileCode,
+                1,
+                5,
+                concatMap(thanksPageData, mainGatewayCode),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )
@@ -77,7 +82,6 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData.gyroData?.put(IS_ENJOY_PLUS_BENEFIT, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
         thanksPageData.gyroData?.put(IS_PLUS_TRANSACTION, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
         return thanksPageData.gyroData
-
     }
 
     private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
@@ -86,8 +90,9 @@ class GyroEngineRequestUseCase @Inject constructor(
             try {
                 val parameterObj = (jsonObj[PARAM_WALLET_PARAMETERS] as JSONObject)
                 walletBalance.balanceList.forEach { item ->
-                    if (item.whitelisted == true)
+                    if (item.whitelisted == true) {
                         parameterObj.put(item.walletCode, item.isActive.toString())
+                    }
                 }
                 if (walletBalance.balanceList.isEmpty()) {
                     parameterObj.put(GATEWAY_CODE_PEMUDA, VALUE_FALSE)
@@ -146,6 +151,5 @@ class GyroEngineRequestUseCase @Inject constructor(
         const val IS_PLUS_TRANSACTION = "is_plus_transaction"
         const val GATEWAY_CODE_PEMUDA = "PEMUDA"
         const val VALUE_FALSE = "false"
-
     }
 }

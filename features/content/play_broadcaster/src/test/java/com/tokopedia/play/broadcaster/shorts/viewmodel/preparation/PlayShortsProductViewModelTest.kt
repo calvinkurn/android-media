@@ -4,6 +4,8 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -13,6 +15,9 @@ class PlayShortsProductViewModelTest {
 
     private val productModelBuilder = ProductSetupUiModelBuilder()
     private val mockProducts = productModelBuilder.buildProductTagSectionList()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_preparation_product_setProduct() {

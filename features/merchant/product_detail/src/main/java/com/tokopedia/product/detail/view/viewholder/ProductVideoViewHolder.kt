@@ -22,10 +22,12 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class ProductVideoViewHolder(val view: View,
-                             private val listener: DynamicProductDetailListener?)
+class ProductVideoViewHolder(
+    val view: View,
+    private val listener: DynamicProductDetailListener?
+) :
 
-    : AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
+    AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
 
     private var mPlayer: ProductExoPlayer? = null
     private var mVideoId: String = ""
@@ -80,7 +82,6 @@ class ProductVideoViewHolder(val view: View,
 
             override fun onAnimationRepeat(animation: Animator) {
             }
-
         }).duration = FADE_IN_VIDEO_THUMBNAIL_DURATION
     }
 

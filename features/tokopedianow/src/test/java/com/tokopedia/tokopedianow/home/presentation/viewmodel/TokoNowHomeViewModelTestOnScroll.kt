@@ -49,12 +49,16 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         val homeLayoutResponse = listOf(firstBanner)
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(secondBanner))
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
+        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0"),
@@ -105,9 +109,13 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(index, LocalCacheModel(), listOf())
+        viewModel.onScroll(index, LocalCacheModel(), listOf(), true)
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 1)
     }
@@ -128,7 +136,11 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val loadMoreLayoutResponse = listOf(
@@ -145,9 +157,9 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(loadMoreLayoutResponse)
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
-        viewModel.onScroll(0, LocalCacheModel(), listOf())
-        viewModel.onScroll(0, LocalCacheModel(), listOf())
+        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(0, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(0, LocalCacheModel(), listOf(), true)
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
@@ -184,7 +196,11 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val progressBar = HomeLayoutItemUiModel(
@@ -193,7 +209,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         )
         addHomeLayoutItem(progressBar)
 
-        viewModel.onScroll(4, LocalCacheModel(), listOf())
+        viewModel.onScroll(4, LocalCacheModel(), listOf(), true)
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 1)
     }
@@ -202,12 +218,16 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
     fun `when scroll home error should do nothing`() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(MessageErrorException())
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
+        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }

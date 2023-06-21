@@ -104,7 +104,6 @@ class TopadsTopupView @JvmOverloads constructor(
 
                     override fun onAnimationRepeat(p0: Animator) {}
                 })
-
         }
     }
 
@@ -161,7 +160,6 @@ class TopadsTopupView @JvmOverloads constructor(
         isAnimating = false
         onAnimationFinished.invoke(isValueShowing)
     }
-
 }
 
 data class TopadsTopupAlphaTransition(val startAlpha: Float,

@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 data class ProductItemDataView(
@@ -11,7 +11,7 @@ data class ProductItemDataView(
         val parentId: String = "",
         val sourceEngine: String = "",
         val boosterList: String = "",
-        var productCardModel: TokoNowProductCardViewUiModel
+        var productCardModel: ProductCardCompactUiModel
 ): Visitable<BaseSearchCategoryTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =

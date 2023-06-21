@@ -6,10 +6,12 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companio
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_ECOMMERCE
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.EventKeys.Companion.KEY_PROMOTIONS
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.TrackerId.Companion.CLICK_CATALOG_ENTRY_POINT
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -318,6 +320,8 @@ object CatalogDetailAnalytics {
             const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
             const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
 
+            const val IMPRESS_CATALOG_ENTRY_POINT = "impress catalog library entry point"
+            const val CLICK_CATALOG_ENTRY_POINT = "click catalog library entry point"
         }
     }
 
@@ -354,6 +358,8 @@ object CatalogDetailAnalytics {
             const val CLICK_NEXT_CATALOG_PAGE = "28893"
             const val CLICK_DROP_UP_BUTTON = "35721"
             const val CLICK_DROP_DOWN_BUTTON = "35722"
+            const val IMPRESS_CATALOG_ENTRY_POINT = "42951"
+            const val CLICK_CATALOG_ENTRY_POINT = "42952"
 
         }
     }
@@ -365,5 +371,37 @@ object CatalogDetailAnalytics {
             }
         }
         return ""
+    }
+
+    fun sendWidgetTracking(userId: String, catalogId: String, catalogName: String,actionName: String, trackerId: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.EVENT_VIEW_PG_IRIS)
+            .setEventAction(actionName)
+            .setEventCategory(CategoryKeys.PAGE_EVENT_CATEGORY)
+            .setEventLabel("$catalogName - $catalogId")
+            .setCustomProperty(EventKeys.KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCustomProperty(EventKeys.KEY_CATALOG_ID, catalogId)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty("pagePath", "tokopedia://catalog/$catalogId")
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickCatalogLibraryEntryPointEvent (catalogId: String, catalogName: String, userId: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.EVENT_NAME_CLICK_PG)
+            .setEventAction(ActionKeys.CLICK_CATALOG_ENTRY_POINT)
+            .setEventCategory(CategoryKeys.PAGE_EVENT_CATEGORY)
+            .setEventLabel("$catalogName - $catalogId")
+            .setCustomProperty(EventKeys.KEY_TRACKER_ID, CLICK_CATALOG_ENTRY_POINT)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCustomProperty(EventKeys.KEY_CATALOG_ID, catalogId)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .setCustomProperty("pagePath", "tokopedia://catalog/$catalogId")
+            .setUserId(userId)
+            .build()
+            .send()
     }
 }

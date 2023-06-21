@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -20,7 +21,7 @@ class BroadMatchViewHolder(
     itemView: View,
     private val listener: BroadMatchListener
 ): AbstractViewHolder<BroadMatchDataView>(itemView),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselBasicListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 {
     companion object {
@@ -76,7 +77,7 @@ class BroadMatchViewHolder(
     }
 
     private fun ItemTokopedianowBroadmatchBinding.setListener(
-        productCardCarouselListener: ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+        productCardCarouselListener: ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
         headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
     ) {
         productCardCarousel.setListener(
@@ -126,7 +127,14 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onSeeAllClicked(headerName: String, appLink: String) {
+    override fun onProductCardAddToCartBlocked() = listener.onBroadMatchAddToCartBlocked()
+
+    override fun onSeeAllClicked(
+        context: Context,
+        headerName: String,
+        appLink: String,
+        widgetId: String
+    ) {
         listener.onBroadMatchSeeAllClicked(
             title = headerName,
             appLink = appLink

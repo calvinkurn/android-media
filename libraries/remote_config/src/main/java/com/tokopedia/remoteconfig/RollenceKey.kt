@@ -3,11 +3,11 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
+    const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
 
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
@@ -25,9 +25,10 @@ object RollenceKey {
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
     const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
     const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
-    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -39,9 +40,6 @@ object RollenceKey {
     // end of Recommendation page section
 
     // Auto Complete
-    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
-    const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
-
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
@@ -68,9 +66,6 @@ object RollenceKey {
     const val ME_PAGE_VARIANT_1 = "Mepage_1"
     const val ME_PAGE_VARIANT_2 = "Mepage_2"
 
-    // TokoChat
-    const val KEY_ROLLENCE_TOKOCHAT = "gofood_chat_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
@@ -82,10 +77,24 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
 
-    //DG SBM Transition
+    // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
+
+    // Payment
+    const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+
+    // TokopediaNOW
+    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
+
+    //Feed
+    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 }

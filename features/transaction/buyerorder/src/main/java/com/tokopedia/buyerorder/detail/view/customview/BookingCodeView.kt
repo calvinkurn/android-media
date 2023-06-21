@@ -52,7 +52,7 @@ class BookingCodeView : RelativeLayout {
     private fun initView() {
         val binding = BookingCodeLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
-        with(binding){
+        with(binding) {
             bookingCodeTitle.text = bookingCodeLabel
             bookingCode.text = bookingCodeValue
 

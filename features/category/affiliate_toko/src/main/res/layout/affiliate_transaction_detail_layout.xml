@@ -25,7 +25,7 @@
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,promotion_link_header,promotion_link,divider"/>
+        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,promotion_link_header,promotion_link,redirection_link,divider"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/transaction_card"
         android:layout_width="match_parent"
@@ -169,13 +169,27 @@
         app:typographyType="body_2"
         tools:text="Toko" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/redirection_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:visibility="visible"
+        android:text="@string/affiliate_lihat_semua"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promotion_link"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="24dp"
         android:background="@color/affiliate_dms_divider"
-        app:layout_constraintTop_toBottomOf="@id/promotion_link_header" />
+        app:layout_constraintTop_toBottomOf="@id/redirection_link" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingBottom="64dp"

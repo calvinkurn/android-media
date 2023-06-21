@@ -8,8 +8,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -42,6 +44,9 @@ class PlayShortsAccountViewModelTest {
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
 
     private val mockException = Exception("Network Error")
+
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
 
     @Test
     fun playShorts_preparation_account_clickSwitchAccount() {

@@ -17,6 +17,6 @@ object FlightUrl {
 
     const val FLIGHT_HOMEPAGE_HELP_URL = "https://www.tokopedia.com/help/article/pertanyaan-seputar-tiket-pesawat"
     const val FLIGHT_PASSENGER_HELP_URL = "https://www.tokopedia.com/help/article/saya-tidak-dapat-mengisi-nama-lengkap-penumpang-sesuai-dengan-kartu-identitas-pada-kolom-nama-penumpang-apa-yang-harus-saya-lakukan"
-    const val FLIGHT_PROMO_APPLINK = "tokopedia://promoNative?menuID=4&categoryID=615"
+    const val FLIGHT_PROMO_APPLINK = "tokopedia://discovery/deals?activeTab=7&componentID=588"
 
 }

@@ -13,7 +13,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 
 class GetTemplateUseCaseTest {
     @get:Rule
@@ -77,34 +76,29 @@ class GetTemplateUseCaseTest {
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_error_when_fail_to_get_template_buyer() {
-        // Given
-        assertThrows<Throwable> {
+        // When
+        repository.stubRepositoryAsThrow(
+            throwable = testException
+        )
+
+        // Then
+        runBlocking {
+            getTemplateUseCase(GetTemplateUseCase.Param(false))
+        }
+    }
+
+    @Test(expected = Throwable::class)
+    fun should_get_error_when_fail_to_get_template_seller() {
+        runBlocking {
             // When
             repository.stubRepositoryAsThrow(
                 throwable = testException
             )
 
             // Then
-            runBlocking {
-                getTemplateUseCase(GetTemplateUseCase.Param(false))
-            }
-        }
-    }
-
-    @Test
-    fun should_get_error_when_fail_to_get_template_seller() {
-        assertThrows<Throwable> {
-            runBlocking {
-                // When
-                repository.stubRepositoryAsThrow(
-                    throwable = testException
-                )
-
-                // Then
-                getTemplateUseCase(GetTemplateUseCase.Param(true))
-            }
+            getTemplateUseCase(GetTemplateUseCase.Param(true))
         }
     }
 }

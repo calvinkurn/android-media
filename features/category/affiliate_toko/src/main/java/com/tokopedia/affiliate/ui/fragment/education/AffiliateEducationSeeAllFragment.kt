@@ -44,7 +44,8 @@ class AffiliateEducationSeeAllFragment :
     AffiliateEduCategoryChipClick {
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
@@ -134,12 +135,11 @@ class AffiliateEducationSeeAllFragment :
         educationVM?.getEducationCategoryChip()?.observe(viewLifecycleOwner) {
             categoryChipAdapter.setVisitables(it)
             view?.findViewById<RecyclerView>(R.id.rv_education_category_chip)?.let { rv ->
-                rv.post {
-                    rv.smoothScrollToPosition(
-                        categoryChipAdapter.list.indexOfFirst { visitable ->
-                            (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
-                        }
-                    )
+                val index = categoryChipAdapter.list.indexOfFirst { visitable ->
+                    (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
+                }
+                if (index >= 0) {
+                    rv.post { rv.smoothScrollToPosition(index) }
                 }
                 sendEducationSeeAllImpressions(categoryChipAdapter.list)
             }
@@ -315,7 +315,7 @@ class AffiliateEducationSeeAllFragment :
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }
@@ -333,7 +333,7 @@ class AffiliateEducationSeeAllFragment :
             id,
             position = 0,
             id,
-            userSessionInterface.userId,
+            userSessionInterface?.userId.orEmpty(),
             creativeName
         )
     }

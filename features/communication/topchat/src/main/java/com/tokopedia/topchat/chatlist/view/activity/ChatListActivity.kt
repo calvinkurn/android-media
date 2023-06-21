@@ -3,17 +3,17 @@ package com.tokopedia.topchat.chatlist.view.activity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment
 
-open class ChatListActivity : BaseSimpleActivity(), HasComponent<ChatListComponent>,
+open class ChatListActivity :
+    BaseSimpleActivity(),
+    HasComponent<ChatListComponent>,
     ChatTabListFragment.Listener {
 
     override fun getLayoutRes(): Int = R.layout.activity_chat_tab_list
@@ -42,14 +42,12 @@ open class ChatListActivity : BaseSimpleActivity(), HasComponent<ChatListCompone
     }
 
     override fun getComponent(): ChatListComponent {
-        return chatListComponent?: initializeChatListComponent()
+        return chatListComponent ?: initializeChatListComponent()
     }
 
     protected open fun initializeChatListComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .chatListContextModule(ChatListContextModule(this))
-            .build().also {
+        return ActivityComponentFactory.instance.createChatListComponent(application, this)
+            .also {
                 chatListComponent = it
             }
     }

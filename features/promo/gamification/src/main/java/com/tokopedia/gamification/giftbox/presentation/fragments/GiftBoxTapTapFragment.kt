@@ -82,7 +82,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var viewDim: View
     var fmCoupons: FrameLayout? = null
 
-    //Inactive views
+    // Inactive views
     lateinit var tvInactiveTitle: Typography
     lateinit var tvInactiveMessage: Typography
     lateinit var imageInactive: AppCompatImageView
@@ -134,9 +134,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         super.onCreate(savedInstanceState)
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
-                    .activityContextModule(ActivityContextModule(it))
-                    .appModule(AppModule((context as AppCompatActivity).application))
-                    .build()
+                .activityContextModule(ActivityContextModule(it))
+                .appModule(AppModule((context as AppCompatActivity).application))
+                .build()
             component.inject(this)
 
             if (it is AppCompatActivity) {
@@ -186,7 +186,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         when (rewardState) {
             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-
                 val pairAnim1 = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay) // 1 second
 
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
@@ -206,7 +205,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }, startDelay + pairAnim1.second + NEGATIVE_DURATION)
             }
             RewardContainer.RewardState.POINTS_ONLY -> {
-
                 val pairAnim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay) // 1second
 
                 val animatorSet = AnimatorSet()
@@ -266,203 +264,211 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
         }
 
-        viewModel.giftHomeLiveData.observe(viewLifecycleOwner, Observer {
-
-            when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-                    showLoader()
-                }
-                LiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data != null) {
-
-                        fun renderUi(state: String?, gamiTapEggHome: GamiTapEggHome) {
-                            state?.let { tokenUserState ->
-                                oldTokenUserState = tokenUserState
-                                viewModel.canShowLoader = false
-
-                                when (tokenUserState) {
-                                    EMPTY -> {
-                                        renderEmptyState(gamiTapEggHome)
-                                    }
-                                    LOBBY -> {
-                                        setupLobbyUi(gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
-
-                                    }
-                                    CRACK_UNLIMITED -> {
-                                        setupCrackUnlimitedUi(gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
-                                    }
-                                    else -> {
-                                        activity?.finish()
-                                    }
-                                }
-                            }
-                        }
-
-                        if (oldTokenUserState == DEFAULT) {
-                            val gamiTapEggHome = it.data.gamiTapEggHome
-
-                            if (gamiTapEggHome != null) {
-                                backButton = gamiTapEggHome.backButton
-
-                                //toolbar
-                                val toolbarTitle = gamiTapEggHome.tokensUser?.title
-                                toolbarTitle?.let { title ->
-                                    tvTapHint.text = title
-                                }
-                                val tokenUser = gamiTapEggHome.tokensUser
-                                tokenUser?.apply {
-                                    viewModel.campaignId = campaignID
-
-                                    if (!tokenUserID.isNullOrEmpty())
-                                        viewModel.tokenId = tokenUserID
-                                }
-
-                                rewardSummary.apply {
-                                    setButtons(gamiTapEggHome.rewardButton)
-                                    imageBoxUrl = gamiTapEggHome.tokenAsset?.rewardImgURL
-                                }
-
-                                //for empty state
-                                val state = gamiTapEggHome.tokensUser?.state
-                                renderUi(state, gamiTapEggHome)
-                            }
-
-                            getTapTapView().fmGiftBox.setOnClickListener {
-                                handleGiftBoxTap()
-                                if (fmCoupons != null) {
-                                    fmParent.removeView(fmCoupons)
-                                    fmCoupons = null
-                                }
-                            }
-                        } else {
-                            //2nd time api call only check for state
-                            val state = it.data.gamiTapEggHome?.tokensUser?.state
-                            state?.let { tokenUserState ->
-                                when (tokenUserState) {
-                                    EMPTY -> {
-                                        renderEmptyState(it.data.gamiTapEggHome)
-                                    }
-                                    LOBBY -> {
-                                        setupLobbyUiSecondTime(it.data.gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
-                                    }
-                                    CRACK_UNLIMITED -> {
-                                        setupCrackUnlimitedUiSecondTime(it.data.gamiTapEggHome)
-                                        GtmGiftTapTap.impressionGiftBox(userSession?.userId)
-                                    }
-                                }
-                            }
-
-                        }
+        viewModel.giftHomeLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.LOADING -> {
+                        showLoader()
                     }
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    hideLoader()
-                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
-                }
-            }
-        })
-        viewModel.giftCrackLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-                }
-                LiveDataResult.STATUS.SUCCESS -> {
-                    val responseCrackResultEntity = it.data
-                    if (it.data != null) {
-                        val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
-                        if (!resultCode.isNullOrEmpty()) {
-                            when (resultCode) {
-                                STATUS_OK -> {
-                                    boxState = OPEN
-                                    toggleInActiveHint(false)
-                                    getTapTapView().disableConfettiAnimation = true
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        if (it.data != null) {
+                            fun renderUi(state: String?, gamiTapEggHome: GamiTapEggHome) {
+                                state?.let { tokenUserState ->
+                                    oldTokenUserState = tokenUserState
+                                    viewModel.canShowLoader = false
 
-                                    val benefits = responseCrackResultEntity.crackResultEntity?.benefits
+                                    when (tokenUserState) {
+                                        EMPTY -> {
+                                            renderEmptyState(gamiTapEggHome)
+                                        }
+                                        LOBBY -> {
+                                            setupLobbyUi(gamiTapEggHome)
+                                            GtmGiftTapTap.impressionGiftBox(userSession?.userId)
+                                        }
+                                        CRACK_UNLIMITED -> {
+                                            setupCrackUnlimitedUi(gamiTapEggHome)
+                                            GtmGiftTapTap.impressionGiftBox(userSession?.userId)
+                                        }
+                                        else -> {
+                                            activity?.finish()
+                                        }
+                                    }
+                                }
+                            }
 
-                                    if (responseCrackResultEntity.crackResultEntity != null) {
-                                        updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl, responseCrackResultEntity.crackResultEntity.returnButton)
+                            if (oldTokenUserState == DEFAULT) {
+                                val gamiTapEggHome = it.data.gamiTapEggHome
 
-                                        if (!isTimeOut) {
-                                            if (!getTapTapView().isBoxAlreadyOpened) {
-                                                getTapTapView().firstTimeBoxOpenAnimation()
-                                                getTapTapView().isBoxAlreadyOpened = true
-                                            } else {
-                                                getTapTapView().boxBounceAnimation().start()
-                                                showRewardAnimation(rewardState, 0L, false)
-                                            }
+                                if (gamiTapEggHome != null) {
+                                    backButton = gamiTapEggHome.backButton
+
+                                    // toolbar
+                                    val toolbarTitle = gamiTapEggHome.tokensUser?.title
+                                    toolbarTitle?.let { title ->
+                                        tvTapHint.text = title
+                                    }
+                                    val tokenUser = gamiTapEggHome.tokensUser
+                                    tokenUser?.apply {
+                                        viewModel.campaignId = campaignID
+
+                                        if (!tokenUserID.isNullOrEmpty()) {
+                                            viewModel.tokenId = tokenUserID
                                         }
                                     }
 
-                                }
-                                SERVER_LIMIT_REACHED_CODE -> {
-                                    serverLimitReached = true
+                                    rewardSummary.apply {
+                                        setButtons(gamiTapEggHome.rewardButton)
+                                        imageBoxUrl = gamiTapEggHome.tokenAsset?.rewardImgURL
+                                    }
 
-                                    viewModel.waitingForCrackResult = false
-                                    getTapTapView().isGiftTapAble = true
-                                    return@Observer
+                                    // for empty state
+                                    val state = gamiTapEggHome.tokensUser?.state
+                                    renderUi(state, gamiTapEggHome)
                                 }
-                                else -> {
-                                    getTapTapView().isGiftTapAble = true
-                                    val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
-                                    val messageList = status?.message
-                                    if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
-                                    } else {
-                                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+
+                                getTapTapView().fmGiftBox.setOnClickListener {
+                                    handleGiftBoxTap()
+                                    if (fmCoupons != null) {
+                                        fmParent.removeView(fmCoupons)
+                                        fmCoupons = null
+                                    }
+                                }
+                            } else {
+                                // 2nd time api call only check for state
+                                val state = it.data.gamiTapEggHome?.tokensUser?.state
+                                state?.let { tokenUserState ->
+                                    when (tokenUserState) {
+                                        EMPTY -> {
+                                            renderEmptyState(it.data.gamiTapEggHome)
+                                        }
+                                        LOBBY -> {
+                                            setupLobbyUiSecondTime(it.data.gamiTapEggHome)
+                                            GtmGiftTapTap.impressionGiftBox(userSession?.userId)
+                                        }
+                                        CRACK_UNLIMITED -> {
+                                            setupCrackUnlimitedUiSecondTime(it.data.gamiTapEggHome)
+                                            GtmGiftTapTap.impressionGiftBox(userSession?.userId)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                    viewModel.waitingForCrackResult = false
-
-                    if (isTimeOut) {
-                        dimBackground()
-                        showRewardSummary()
-                    }
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    viewModel.waitingForCrackResult = false
-
-                    if (isTimeOut) {
-                        dimBackground()
-                        showRewardSummary()
-                    } else {
-                        getTapTapView().isGiftTapAble = true
-                        renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                    LiveDataResult.STATUS.ERROR -> {
+                        hideLoader()
+                        renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     }
                 }
             }
-        })
+        )
+        viewModel.giftCrackLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.LOADING -> {
+                    }
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        val responseCrackResultEntity = it.data
+                        if (it.data != null) {
+                            val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
+                            if (!resultCode.isNullOrEmpty()) {
+                                when (resultCode) {
+                                    STATUS_OK -> {
+                                        boxState = OPEN
+                                        toggleInActiveHint(false)
+                                        getTapTapView().disableConfettiAnimation = true
 
-        viewModel.couponLiveData.observe(viewLifecycleOwner, Observer { result ->
-            when (result.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    if (result.data?.couponDetailList != null) {
-                        benefitItems.forEach {
-                            if (it.first.benefitType == BenefitType.COUPON && !it.first.referenceID.isNullOrEmpty()) {
-                                val refId = it.first.referenceID
-                                val couponDetail = result.data.couponDetailList.find { coupon->coupon.referenceId == refId }
-                                if(couponDetail!=null) {
-                                    rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                        val benefits = responseCrackResultEntity.crackResultEntity?.benefits
+
+                                        if (responseCrackResultEntity.crackResultEntity != null) {
+                                            updateRewardStateAndRewards(benefits, responseCrackResultEntity.crackResultEntity.imageUrl, responseCrackResultEntity.crackResultEntity.returnButton)
+
+                                            if (!isTimeOut) {
+                                                if (!getTapTapView().isBoxAlreadyOpened) {
+                                                    getTapTapView().firstTimeBoxOpenAnimation()
+                                                    getTapTapView().isBoxAlreadyOpened = true
+                                                } else {
+                                                    getTapTapView().boxBounceAnimation().start()
+                                                    showRewardAnimation(rewardState, 0L, false)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    SERVER_LIMIT_REACHED_CODE -> {
+                                        serverLimitReached = true
+
+                                        viewModel.waitingForCrackResult = false
+                                        getTapTapView().isGiftTapAble = true
+                                        return@Observer
+                                    }
+                                    else -> {
+                                        getTapTapView().isGiftTapAble = true
+                                        val status = responseCrackResultEntity?.crackResultEntity?.resultStatus
+                                        val messageList = status?.message
+                                        if (!messageList.isNullOrEmpty()) {
+                                            renderGiftBoxOpenError(messageList[0], getString(R.string.gami_oke))
+                                        } else {
+                                            renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                                        }
+                                    }
                                 }
-                            } else if (it.first.benefitType == OVO) {
-                                rewardItems.add(RewardSummaryItem(null, it.first))
                             }
                         }
+                        viewModel.waitingForCrackResult = false
+
+                        if (isTimeOut) {
+                            dimBackground()
+                            showRewardSummary()
+                        }
                     }
+                    LiveDataResult.STATUS.ERROR -> {
+                        viewModel.waitingForCrackResult = false
 
-                    fadeOutWaktuHabisAndShowReward()
-                }
-
-                LiveDataResult.STATUS.ERROR -> {
-                    rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
-                    fadeOutWaktuHabisAndShowReward()
+                        if (isTimeOut) {
+                            dimBackground()
+                            showRewardSummary()
+                        } else {
+                            getTapTapView().isGiftTapAble = true
+                            renderGiftBoxOpenError(defaultErrorMessage, getString(R.string.gami_oke))
+                        }
+                    }
                 }
             }
-        })
+        )
+
+        viewModel.couponLiveData.observe(
+            viewLifecycleOwner,
+            Observer { result ->
+                when (result.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        if (result.data?.couponDetailList != null) {
+                            benefitItems.forEach {
+                                if (it.first.benefitType == BenefitType.COUPON && !it.first.referenceID.isNullOrEmpty()) {
+                                    val refId = it.first.referenceID
+                                    val couponDetail = result.data.couponDetailList.find { coupon -> coupon.referenceId == refId }
+                                    if (couponDetail != null) {
+                                        rewardItems.add(RewardSummaryItem(couponDetail, it.first, it.second))
+                                    }
+                                } else if (it.first.benefitType == OVO) {
+                                    rewardItems.add(RewardSummaryItem(null, it.first))
+                                }
+                            }
+                        }
+
+                        fadeOutWaktuHabisAndShowReward()
+                    }
+
+                    LiveDataResult.STATUS.ERROR -> {
+                        rewardItems.addAll(benefitItems.map { RewardSummaryItem(null, it.first) })
+                        fadeOutWaktuHabisAndShowReward()
+                    }
+                    else -> {
+                        // no-op
+                    }
+                }
+            }
+        )
     }
 
     private fun renderEmptyState(gamiTapEggHome: GamiTapEggHome) {
@@ -484,7 +490,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             loadInactiveContainer()
         }
 
-
         gamiTapEggHome.actionButton?.let { items ->
             if (!items.isNullOrEmpty()) {
                 btnInactiveFirst.text = items[0].text
@@ -504,7 +509,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     private fun handleGiftBoxTap() {
         if (isTimeOut) {
-            //Do nothing
+            // Do nothing
         } else if (getTapTapView().isGiftTapAble && !isRewardAnimationGoingOn) {
             playTapSound()
             getTapTapView().isGiftTapAble = false
@@ -513,13 +518,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 crackGiftBox()
                 getTapTapView().resetTapCount()
                 getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
-                if (boxState == OPEN)
+                if (boxState == OPEN) {
                     getTapTapView().showConfettiAnimation()
+                }
             } else {
-                if (boxState == OPEN)
+                if (boxState == OPEN) {
                     getTapTapView().showConfettiAnimation()
-                else
+                } else {
                     getTapTapView().isGiftTapAble = true
+                }
             }
             getTapTapView().incrementTapCount()
             GtmGiftTapTap.clickGiftBox(userSession?.userId)
@@ -527,7 +534,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun setupCrackUnlimitedUiSecondTime(gamiTapEggHome: GamiTapEggHome) {
-
         (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
         val anim1 = (giftBoxDailyView as GiftBoxTapTapView).fadeOutGlowingAndFadeInGiftBoxAnimation()
         anim1.addListener(onEnd = {
@@ -544,7 +550,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun setupCrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {
-
         val tokenAsset = gamiTapEggHome.tokenAsset
         var imageFrontUrl = ""
         val bgImageUrl = tokenAsset?.backgroundImgURL
@@ -557,19 +562,19 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
         if (!bgImageUrl.isNullOrEmpty() && imageFrontUrl.isNotEmpty()) {
             getTapTapView().loadFilesForTapTap(
-                    null,
-                    null,
-                    imageFrontUrl,
-                    bgImageUrl,
-                    lidImages,
-                    viewLifecycleOwner,
-                    imageCallback = { isLoaded ->
-                        giftBoxDailyView.imagesLoaded.lazySet(0)
-                        setPositionOfViewsAtBoxOpen()
-                        hideLoader()
-                        fadeInActiveStateViews()
-                        showMinuteTimer(gamiTapEggHome)
-                    }
+                null,
+                null,
+                imageFrontUrl,
+                bgImageUrl,
+                lidImages,
+                viewLifecycleOwner,
+                imageCallback = { isLoaded ->
+                    giftBoxDailyView.imagesLoaded.lazySet(0)
+                    setPositionOfViewsAtBoxOpen()
+                    hideLoader()
+                    fadeInActiveStateViews()
+                    showMinuteTimer(gamiTapEggHome)
+                }
             )
         }
     }
@@ -601,12 +606,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun setupLobbyUi(gamiTapEggHome: GamiTapEggHome) {
-        //timer
+        // timer
         val timeLeftHours = gamiTapEggHome.timeRemaining?.unixFetch
         val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
         val showTimer = gamiTapEggHome.timeRemaining?.isShow
 
-        //glowing mode
+        // glowing mode
         val tokenAsset = gamiTapEggHome.tokenAsset
         val glowImageUrl = tokenAsset?.glowImgURL
         val glowShadowImageUrl = tokenAsset?.glowShadowImgURL
@@ -616,7 +621,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         var imageFrontUrl = ""
         val bgImageUrl = tokenAsset?.backgroundImgURL
         if (!glowShadowImageUrl.isNullOrEmpty() && !bgImageUrl.isNullOrEmpty()) {
-
             if (imageUrlList != null && imageUrlList.isNotEmpty()) {
                 imageFrontUrl = imageUrlList[0]
                 lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
@@ -629,19 +633,19 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 playLoopSound()
 
                 getTapTapView().loadFilesForTapTap(
-                        glowImageUrl,
-                        glowShadowImageUrl,
-                        imageFrontUrl,
-                        bgImageUrl,
-                        lidImages,
-                        viewLifecycleOwner,
-                        imageCallback = { isLoaded ->
-                            giftBoxDailyView.imagesLoaded.lazySet(0)
-                            setPositionOfViewsAtBoxOpen()
-                            hideLoader()
-                            fadeInActiveStateViews()
-                            getTapTapView().startInitialAnimation()?.start()
-                        }
+                    glowImageUrl,
+                    glowShadowImageUrl,
+                    imageFrontUrl,
+                    bgImageUrl,
+                    lidImages,
+                    viewLifecycleOwner,
+                    imageCallback = { isLoaded ->
+                        giftBoxDailyView.imagesLoaded.lazySet(0)
+                        setPositionOfViewsAtBoxOpen()
+                        hideLoader()
+                        fadeInActiveStateViews()
+                        getTapTapView().startInitialAnimation()?.start()
+                    }
                 )
             }
         }
@@ -653,23 +657,25 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun setPositionOfViewsAtBoxOpen() {
-
         fmCoupons?.doOnLayout { fmCoupon ->
             giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
 
-                val heightOfRvCoupons = if (isTablet)
+                val heightOfRvCoupons = if (isTablet) {
                     fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height).toInt()
-                else
+                } else {
                     fmCoupon.height
+                }
 
                 val lidTop = fmGiftBox.top
-                val clTransactionHeight = if (isTablet)
+                val clTransactionHeight = if (isTablet) {
                     0
-                else fmGiftBox.context.resources.getDimension(R.dimen.gami_cl_transaction_height).toInt()
+                } else {
+                    fmGiftBox.context.resources.getDimension(R.dimen.gami_cl_transaction_height).toInt()
+                }
                 val translationY = lidTop - heightOfRvCoupons + clTransactionHeight + fmGiftBox.dpToPx(3)
 
                 val sideMargin = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt()
-                val ratio = 3 //coming from R.layout.list_item_coupons
+                val ratio = 3 // coming from R.layout.list_item_coupons
 
                 tvTapHint.doOnLayout { tapHint ->
                     if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
@@ -682,7 +688,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
                     rewardContainer.rvCoupons.translationY = (translationY + (2 * sideMargin / ratio)) - fmGiftBox.context.resources.getDimension(R.dimen.gami_box_coupon_padding)
-
                 } else {
                     rewardContainer.rvCoupons.translationY = translationY + (2 * sideMargin / ratio)
                 }
@@ -697,7 +702,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     lp.height = (giftBoxDailyView.height - giftBoxDailyView.height * REWARD_TABLET_DIMEN_PERCENT).toInt()
                     lp.width = (giftBoxDailyView.width - giftBoxDailyView.width * REWARD_TABLET_DIMEN_PERCENT).toInt()
                 }
-
             }
         }
 
@@ -710,15 +714,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
             val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
-
         }
     }
 
     private fun clientLimitReached() = MAX_REWARD_LIMIT == benefitItems.size || serverLimitReached
 
     private fun crackGiftBox() {
-        if (!clientLimitReached())
+        if (!clientLimitReached()) {
             viewModel.crackGiftBox()
+        }
     }
 
     private fun renderGiftBoxOpenError(message: String, actionText: String) {
@@ -757,7 +761,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         progressBarTimer.alpha = 0f
         tvProgressCount.alpha = 0f
         lottieTimeUp.gone()
-
     }
 
     override fun initViews(v: View) {
@@ -839,7 +842,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     private fun startOneMinuteCounter(totalSeconds: Long) {
-
         MAX_REWARD_LIMIT = (totalSeconds.toInt() / CAPPING.toFloat()).roundToInt()
 
         fun onTimeUp() {
@@ -866,7 +868,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-
                 var seconds = (millisUntilFinished / 1000f).roundToInt()
                 tvProgressCount.text = "$seconds"
                 progressBarTimer.progress = 100 - (seconds / totalSeconds.toFloat() * 100).toInt()
@@ -911,7 +912,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val hourText = if (hour < 10) "0$hour" else hour.toString()
                 val minuteText = if (minutes < 10) "0$minutes" else minutes.toString()
                 val secondText = if (seconds < 10) "0$seconds" else seconds.toString()
-                tvTimer.text = "${hourText}:${minuteText}:${secondText}"
+                tvTimer.text = "$hourText:$minuteText:$secondText"
             }
         }
         hourCountDownTimer?.start()
@@ -959,7 +960,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         tapHintAnim.start()
     }
 
-
     fun getTapTapView(): GiftBoxTapTapView {
         return giftBoxDailyView as GiftBoxTapTapView
     }
@@ -982,7 +982,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         rewardContainer.tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
                     GtmGiftTapTap.viewRewards(benefit.text, userSession?.userId)
-
                 } else if (benefit.benefitType == COUPON) {
                     hasCoupons = true
                     benefit.referenceID?.let { refId ->
@@ -998,14 +997,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
             rewardContainer.imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
-
         } else if (hasPoints) {
-            //only points
+            // only points
 
             rewardState = RewardContainer.RewardState.POINTS_ONLY
             rewardContainer.imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
             rewardContainer.imageCircleReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
-
         } else if (hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_ONLY
         }
@@ -1045,8 +1042,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun showTimeupAnimation() {
         val task = prepareLoaderLottieTask(Constants.TIME_UP_ZIP_FILE)
-        if (task != null)
+        if (task != null) {
             addLottieAnimationToView(task)
+        }
     }
 
     private fun prepareLoaderLottieTask(fileName: String): LottieTask<LottieComposition>? {

@@ -80,7 +80,11 @@ class SearchPageViewModel @Inject constructor(
 
     private fun getAutoCompleteList(keyword: String, latlng: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword, latlng)
+            val autoComplete = repo.getAutoComplete(
+                keyword = keyword,
+                latlng = latlng,
+                isManageAddressFlow = true
+            )
             _autoCompleteList.value = Success(autoCompleteMapper.mapAutoComplete(autoComplete))
         }
     }

@@ -9,15 +9,15 @@ import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiMod
  */
 open class TokoChatImageBubbleUiModel protected constructor(
     builder: Builder
-): TokoChatSendableBaseUiModel(builder) {
+) : TokoChatSendableBaseUiModel(builder) {
 
     var imageId: String = builder.imageId
         private set
-    var imagePath: String = builder.imagePath
+    var imagePath: String = ""
         private set
-    var shouldRetry: Boolean = builder.shouldRetry
+    var state: ImageState = ImageState.LOADING_LOAD // Image state, default is loading
         private set
-    var isImageReady: Boolean = builder.isImageReady
+    var isImageReady: Boolean = false // Flag for open image with image preview
         private set
     val impressHolder = ImpressHolder()
 
@@ -26,29 +26,20 @@ open class TokoChatImageBubbleUiModel protected constructor(
         this.isImageReady = status
     }
 
-    fun updateShouldRetry(shouldRetry: Boolean) {
-        this.shouldRetry = shouldRetry
+    fun updateImageState(state: ImageState) {
+        this.state = state
+    }
+
+    enum class ImageState {
+        LOADING_LOAD, LOADING_UPLOAD, ERROR_LOAD, ERROR_UPLOAD, SUCCESS
     }
 
     open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatImageBubbleUiModel>() {
 
         internal var imageId = ""
-        internal var imagePath = ""
-        internal var shouldRetry = false
-        internal var isImageReady = false
 
         fun withImageId(imageId: String): Builder {
             this.imageId = imageId
-            return self()
-        }
-
-        fun withImageUrl(imagePath: String): Builder {
-            this.imagePath = imagePath
-            return self()
-        }
-
-        fun withShouldRetry(shouldRetry: Boolean): Builder {
-            this.shouldRetry = shouldRetry
             return self()
         }
 

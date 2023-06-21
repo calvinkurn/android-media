@@ -11,7 +11,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
@@ -27,11 +32,11 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -43,13 +48,18 @@ import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.isNetworkError
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
@@ -78,7 +88,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
@@ -95,12 +104,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
     PlayBroadcastSetupTitleBottomSheet.Listener,
-    PlayBroadcastSetupCoverBottomSheet.Listener {
+    PlayBroadcastSetupCoverBottomSheet.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -115,11 +124,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter(this)
+    }
+    private val mLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(context, HORIZONTAL, false)
+    }
+    private val snapHelper = PagerSnapHelper()
+
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var earlyLiveStreamDialog: DialogUnify? = null
     private var switchAccountConfirmationDialog: DialogUnify? = null
 
+    private var isShortsEntryPointCoachMarkShown = false
+    private var isPerformanceDashboardEntryPointCoachMarkShown = false
+    private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
     private var productSetupPendingToaster: String? = null
 
@@ -164,6 +184,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         fragment
     }
 
+    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+
+                val position = mLayoutManager.getPosition(snappedView)
+                binding.pcBannerPreparation.setCurrentIndicator(position)
+            }
+        }
+    }
+
     /** Lifecycle */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -179,7 +211,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupInsets()
         setupListener()
         setupObserver()
-        setupCoachMark()
 
         binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
@@ -192,6 +223,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
+        binding.rvBannerPreparation.removeOnScrollListener(scrollListener)
         coachMark?.dismissCoachMark()
         coachMark = null
 
@@ -224,6 +256,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                     override fun maxProduct(): Int {
                         return parentViewModel.maxProduct
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
                     }
                 })
 
@@ -276,7 +316,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun clickAcceptTnc(isChecked: Boolean) {
-                        if(isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
+                        if (isChecked) analytic.onClickCheckBoxCompleteOnboardingUGC()
                     }
 
                     override fun clickNextOnCompleteOnboarding() {
@@ -324,28 +364,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupListener(listener = this)
-                childFragment.setupDataSource(dataSource = object : DataSource {
-                    override fun getEntryPoint(): String {
-                        return PAGE_NAME
-                    }
+                childFragment.setupDataSource(
+                    dataSource = object : DataSource {
+                        override fun getEntryPoint(): String {
+                            return PAGE_NAME
+                        }
 
-                    override fun getContentAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
-                    }
+                        override fun getContentAccount(): ContentAccountUiModel {
+                            return parentViewModel.selectedAccount
+                        }
 
-                    override fun getChannelId(): String {
-                        return parentViewModel.channelId
-                    }
+                        override fun getChannelId(): String {
+                            return parentViewModel.channelId
+                        }
 
-                    override fun getChannelTitle(): String {
-                        return parentViewModel.channelTitle
-                    }
+                        override fun getChannelTitle(): String {
+                            return parentViewModel.channelTitle
+                        }
 
-                    override fun getDataStore(): PlayBroadcastDataStore {
-                        return parentViewModel.mDataStore
+                        override fun getDataStore(): PlayBroadcastDataStore {
+                            return parentViewModel.mDataStore
+                        }
                     }
-
-                })
+                )
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -356,7 +397,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQ_PLAY_SHORTS && resultCode == Activity.RESULT_OK) {
             activity?.finish()
         }
     }
@@ -389,11 +430,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_title)
-            description = getString(R.string.play_bro_banner_shorts_description)
-            bannerIcon = IconUnify.SHORT_VIDEO
+        binding.rvBannerPreparation.apply {
+            layoutManager = mLayoutManager
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
+            addOnScrollListener(scrollListener)
         }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
 
     private fun setupInsets() {
@@ -448,15 +493,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickSwitchCameraOnPreparation()
                 broadcaster.flip()
             }
-
-            bannerShorts.setOnClickListener {
-                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-
-                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
-                startActivityForResult(intent, REQ_PLAY_SHORTS)
-            }
         }
     }
 
@@ -494,62 +530,91 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeViewEvent()
     }
 
-    private fun setupCoachMark() {
+    private fun getCoachMarkSwitchAccount(): CoachMark2Item? {
+        val isSwitchAccountCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.SwitchAccount, userSession.userId)
+        if (!isSwitchAccountCoachMarkShown) return null
 
-        var isShortsEntryPointCoachMarkShown = false
+        val coachMarkSwitchAccount = CoachMark2Item(
+            anchorView = binding.toolbarContentCommon,
+            title = getString(contentCommonR.string.sa_coach_mark_title),
+            description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
 
+        coachMarkSharedPref.setHasBeenShown(Key.SwitchAccount, userSession.userId)
+        return coachMarkSwitchAccount
+    }
+
+    private fun getCoachMarkShortsEntryPoint(): CoachMark2Item? {
+        isShortsEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        if (!isShortsEntryPointCoachMarkShown) return null
+
+        val coachMarkShortsEntryPoint = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+            description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+
+        coachMarkSharedPref.setHasBeenShown(Key.PlayShortsEntryPoint, userSession.userId)
+        return coachMarkShortsEntryPoint
+    }
+
+    private fun getCoachMarkPerformanceDashboardEntryPoint(): CoachMark2Item? {
+        isPerformanceDashboardEntryPointCoachMarkShown = !coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
+        if (!isPerformanceDashboardEntryPointCoachMarkShown) return null
+
+        val coachMarkPerformanceDashboard = CoachMark2Item(
+            anchorView = binding.rvBannerPreparation,
+            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+
+        coachMarkSharedPref.setHasBeenShown(Key.PerformanceDashboardEntryPointBanner, PAGE_NAME + userSession.userId)
+        return coachMarkPerformanceDashboard
+    }
+
+    private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
         fun onDismissCoachMark() {
-            if(isShortsEntryPointCoachMarkShown)
-                analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
-
+            if (isShortsEntryPointCoachMarkShown) {
+                analytic.clickCloseShortsEntryPointCoachMark(
+                    parentViewModel.authorId,
+                    parentViewModel.authorType
+                )
+            }
+            if (isPerformanceDashboardEntryPointCoachMarkShown) {
+                analytic.onClickCloseCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+            }
             coachMark?.dismissCoachMark()
         }
 
-        if(coachMark != null) return
+        if (coachMarkItems.contains(coachMarkItem)) return
 
-        val coachMarkItems = mutableListOf<CoachMark2Item>().apply {
-            isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        coachMarkItems.add(coachMarkItem)
 
-            if(isShortsEntryPointCoachMarkShown) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.bannerShorts,
-                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
-                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-            }
+        if (coachMark == null) coachMark = CoachMark2(requireContext())
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
-            if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.toolbarContentCommon,
-                        title = getString(contentCommonR.string.sa_coach_mark_title),
-                        description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
-                viewModel.setNotFirstSwitchAccount()
-            }
+        autoScrollToPerformanceDashBoardBanner()
+
+        if (coachMarkItems.size == 1) {
+            coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
+        } else {
+            coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
         }
+    }
 
-        if(coachMarkItems.isNotEmpty()) {
-
-            if(coachMark == null) {
-                coachMark = CoachMark2(requireContext())
+    private fun autoScrollToPerformanceDashBoardBanner() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+                    val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
+                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
+                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                }
             }
-
-            coachMark?.showCoachMark(ArrayList(coachMarkItems))
-
-            if(coachMarkItems.size == 1) {
-                coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-            else {
-                coachMark?.stepCloseIcon?.setOnClickListener { onDismissCoachMark() }
-            }
-        }
+        })
     }
 
     private fun observeConfigInfo() {
@@ -558,6 +623,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 is NetworkResult.Loading -> showMainComponent(false)
                 is NetworkResult.Success -> showMainComponent(true)
                 is NetworkResult.Fail -> showMainComponent(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -619,6 +687,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
                 NetworkResult.Loading -> showLoading(true)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -631,7 +702,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
-                renderShortsEntryPoint(prevState?.channel, state.channel)
+                renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
             }
         }
     }
@@ -729,6 +800,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS -> {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+                startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+            TYPE_DASHBOARD -> {
+                analytic.onClickPerformanceDashboardEntryPointPrepPage(parentViewModel.authorId)
+                RouteManager.route(requireContext(), PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
+            }
+        }
+    }
+
     private fun renderAccountInfo(
         prevState: ContentAccountUiModel?,
         state: ContentAccountUiModel
@@ -739,6 +824,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             title = getString(contentCommonR.string.feed_content_live_sebagai)
             subtitle = state.name
             icon = state.iconUrl
+        }
+
+        if (parentViewModel.isAllowChangeAccount) {
+            val coachMark = getCoachMarkSwitchAccount()
+            if (coachMark != null) setupCoachMark(coachMark)
         }
     }
 
@@ -803,18 +893,39 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderShortsEntryPoint(
-        prev: PlayChannelUiState?,
-        curr: PlayChannelUiState,
+    private fun renderBannerPreparationPage(
+        prev: List<PlayBroadcastPreparationBannerModel>?,
+        curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+        if (prev == null || prev == curr) return
 
-        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-            binding.bannerShorts.show()
-            analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+        adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
+
+        curr.forEachIndexed { index, model ->
+            if (model.type == TYPE_DASHBOARD) {
+                analytic.onViewPerformanceDashboardEntryPointPrepPage(
+                    parentViewModel.authorId,
+                    creativeSlot = index + 1,
+                )
+            }
         }
-        else {
-            binding.bannerShorts.gone()
+
+        val containsShorts = curr.find { it.type == TYPE_SHORTS } != null
+        val containsDashboard = curr.find { it.type == TYPE_DASHBOARD } != null
+
+        if (containsShorts) {
+            val coachMark = getCoachMarkShortsEntryPoint()
+            if (coachMark != null) setupCoachMark(coachMark)
+        }
+
+        if (containsDashboard) {
+            val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
+            if (coachMark != null) {
+                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                setupCoachMark(coachMark)
+            }
         }
     }
 

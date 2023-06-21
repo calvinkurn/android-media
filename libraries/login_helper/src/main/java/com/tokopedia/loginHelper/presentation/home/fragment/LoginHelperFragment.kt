@@ -343,6 +343,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable, dataSourceType)
                 }
+                else -> {
+                    // no op
+                }
             }
         } else {
             when (val loginDataList = loginDataList) {
@@ -351,6 +354,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable, dataSourceType)
+                }
+                else -> {
+                    // no op
                 }
             }
         }
@@ -406,6 +412,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             is Fail -> {
                 handleFailure(loginToken.throwable)
             }
+            else -> {
+                // no op
+            }
         }
     }
 
@@ -420,6 +429,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             }
             is Fail -> {
                 handleFailure(profilePojo.throwable)
+            }
+            else -> {
+                // no op
             }
         }
     }

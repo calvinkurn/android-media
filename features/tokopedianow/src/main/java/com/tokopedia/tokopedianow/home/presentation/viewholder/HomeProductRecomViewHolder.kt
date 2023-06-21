@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,7 +21,7 @@ class HomeProductRecomViewHolder(
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
-    ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
@@ -72,8 +73,10 @@ class HomeProductRecomViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         listener?.onSeeAllClicked(
             channelId = channelId,
@@ -90,6 +93,10 @@ class HomeProductRecomViewHolder(
             appLink = seeMoreUiModel.appLink,
             headerName = seeMoreUiModel.headerName
         )
+    }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
     }
 
     override fun onProductCardClicked(
@@ -172,5 +179,6 @@ class HomeProductRecomViewHolder(
             product: ProductCardCompactCarouselItemUiModel,
             position: Int
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

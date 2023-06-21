@@ -10,8 +10,11 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -34,6 +37,9 @@ class PlayShortsCoverViewModelTest {
             croppedCover = mockCover,
             state = SetupDataState.Draft
         )
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_preparation_cover_openForm() {

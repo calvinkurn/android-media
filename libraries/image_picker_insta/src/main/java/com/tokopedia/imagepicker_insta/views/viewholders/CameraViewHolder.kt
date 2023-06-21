@@ -20,6 +20,8 @@ class CameraViewHolder(val listItemView: View, val onCameraIconClick:Function0<U
     }
 
     fun setData() {
+        listItemView.findViewById<AppCompatImageView>(R.id.item_view_image_camera)
+            .setImageResource(R.drawable.imagepicker_insta_ic_camera)
         listItemView.setOnClickListener {
             onCameraIconClick.invoke()
         }

@@ -53,7 +53,7 @@ class ShareAddressRobot {
             .perform(ViewActions.click())
     }
 
-    private fun waitForData(millis: Long = 1000L) {
+    private fun waitForData(millis: Long = 500L) {
         Thread.sleep(millis)
     }
 

@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.iconunify.IconUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:background="@color/play_dms_N700">
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_play_share_experience"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHARE_MOBILE" />
-
-</FrameLayout>
+    android:id="@+id/ic_play_share_experience"
+    android:padding="@dimen/unify_space_4"
+    android:layout_width="@dimen/layout_lvl5"
+    android:layout_height="@dimen/layout_lvl5"
+    app:icon_color_light_enable="@color/Unify_Static_White"
+    app:icon_color_night_enable="@color/Unify_Static_White"
+    app:icon_name="SHARE"
+    app:unify_image_type="circle"
+    tools:background="@color/play_dms_N700" />

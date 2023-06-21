@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
-apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -18,7 +17,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 

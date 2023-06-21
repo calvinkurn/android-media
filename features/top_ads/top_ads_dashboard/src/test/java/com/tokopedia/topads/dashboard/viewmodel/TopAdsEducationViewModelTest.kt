@@ -11,7 +11,7 @@ import io.mockk.every
 import io.mockk.mockkConstructor
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -43,7 +43,7 @@ class TopAdsEducationViewModelTest {
     }
 
     @Test
-    fun `fetchArticles success test`() = runBlockingTest {
+    fun `fetchArticles success test`() = runTest {
 
         val expectedObj = ListArticle()
 
@@ -57,7 +57,7 @@ class TopAdsEducationViewModelTest {
     }
 
     @Test
-    fun `fetchArticles onError block test`() = runBlockingTest {
+    fun `fetchArticles onError block test`() = runTest {
 
         mockkConstructor(Gson::class)
         every {

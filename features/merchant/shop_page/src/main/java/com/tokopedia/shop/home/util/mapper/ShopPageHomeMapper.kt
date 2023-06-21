@@ -14,15 +14,19 @@ import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
+import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
+import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
@@ -52,6 +56,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -101,6 +106,7 @@ object ShopPageHomeMapper {
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
                 it.parentId = parentId
+                it.averageRating = stats.averageRating
             }
         }
 
@@ -203,7 +209,8 @@ object ShopPageHomeMapper {
         isHasAddToCartButton: Boolean,
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        isWideContent: Boolean
+        isWideContent: Boolean,
+        productRating: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -225,7 +232,7 @@ object ShopPageHomeMapper {
             discountPercentage = discountPercentage,
             slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
             formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-            countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
+            countSoldRating = productRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                 mapToProductCardLabelGroup(it)
@@ -443,12 +450,27 @@ object ShopPageHomeMapper {
                 }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout)
-            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(
-                widgetResponse,
-                isMyOwnProduct,
-                isEnableDirectPurchase,
-                widgetLayout
-            )
+            PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
+                when (widgetResponse.name) {
+                    BUY_AGAIN, RECENT_ACTIVITY, REMINDER, ADD_ONS, TRENDING -> {
+                        mapToProductPersonalizationUiModel(
+                            widgetResponse,
+                            isMyOwnProduct,
+                            isEnableDirectPurchase,
+                            widgetLayout
+                        )
+                    }
+                    PERSO_PRODUCT_COMPARISON -> {
+                        mapToPersoProductComparisonUiModel(
+                            widgetResponse,
+                            widgetLayout
+                        )
+                    }
+                    else -> {
+                        null
+                    }
+                }
+            }
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse, widgetLayout)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout)
             BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout)
@@ -471,6 +493,18 @@ object ShopPageHomeMapper {
         header = mapToHeaderModel(widgetResponse.header),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase)
+    )
+
+    private fun mapToPersoProductComparisonUiModel(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetLayoutUiModel?
+    ) = ShopHomePersoProductComparisonUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = mapToHeaderModel(widgetResponse.header),
+        isFestivity = widgetLayout?.isFestivity.orFalse()
     )
 
     private fun mapToShowcaseListUiModel(

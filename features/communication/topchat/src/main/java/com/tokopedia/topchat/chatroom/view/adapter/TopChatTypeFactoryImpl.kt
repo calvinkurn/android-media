@@ -63,6 +63,7 @@ open class TopChatTypeFactoryImpl constructor(
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,
+    private val censorListener: BannedChatMessageViewHolder.TopChatMessageCensorListener,
     private val userSession: UserSessionInterface
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
@@ -230,7 +231,7 @@ open class TopChatTypeFactoryImpl constructor(
                 chatMsgListener, replyBubbleListener
             )
             BannedChatMessageViewHolder.LAYOUT -> BannedChatMessageViewHolder(
-                parent, chatLinkHandlerListener, commonListener, adapterListener
+                parent, censorListener, adapterListener
             )
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(
                 parent, productAttachmentListener, deferredAttachment,

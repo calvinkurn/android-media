@@ -11,6 +11,7 @@ import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -81,6 +82,7 @@ class ManageProductVariantFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        applyUnifyBackgroundColor()
         product?.let { viewModel.setupInitiateProductData(it) }
         viewModel.setCampaignId(campaignId)
         super.onViewCreated(view, savedInstanceState)

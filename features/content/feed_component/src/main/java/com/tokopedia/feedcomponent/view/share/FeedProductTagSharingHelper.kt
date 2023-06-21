@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.share
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.linker.LinkerManager
@@ -15,6 +14,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Jonathan Darwin on October 18, 2022
@@ -42,7 +42,7 @@ class FeedProductTagSharingHelper(
 
                             val shareLink = linkerShareData?.url ?: shareData.uri
                             val shareString = getString(
-                                R.string.feed_product_tag_share_template,
+                                contentCommonR.string.feed_product_tag_share_template,
                                 productTagShareModel.productName,
                                 shareLink,
                                 productTagShareModel.shopName,

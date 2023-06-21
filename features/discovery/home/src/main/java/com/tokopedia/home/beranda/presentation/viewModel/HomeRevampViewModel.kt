@@ -65,10 +65,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @FlowPreview
@@ -95,7 +93,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
     private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
     private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
-    private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>
+    private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
+    private val homeRateLimit: RateLimiter<String>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -148,8 +147,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
-
-    val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
     private var homeFlowStarted = false
@@ -596,7 +593,13 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(
+                    playWidget.copy(
+                        widgetState = homePlayUseCase.get()
+                            .onGetPlayWidgetWhenShouldRefresh(playWidget.homeChannel.layout)
+                    ),
+                    index
+                )
             }) {
                 deleteWidget(playWidget, index)
             }

@@ -1,6 +1,6 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
-data class TokoNowProductCardViewUiModel(
+data class ProductCardCompactUiModel(
     val productId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
@@ -22,6 +22,7 @@ data class TokoNowProductCardViewUiModel(
     val needToShowQuantityEditor: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
+    val hasBlockedAddToCart: Boolean = false,
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */

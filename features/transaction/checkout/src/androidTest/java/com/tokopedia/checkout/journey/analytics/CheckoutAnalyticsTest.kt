@@ -40,6 +40,7 @@ class CheckoutAnalyticsTest {
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.get_payment_fee_checkout_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -71,6 +72,7 @@ class CheckoutAnalyticsTest {
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
         private const val CHECKOUT_KEY = "checkout"
+        private const val GET_PAYMENT_FEE_CHECKOUT = "getPaymentFeeCheckout"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }

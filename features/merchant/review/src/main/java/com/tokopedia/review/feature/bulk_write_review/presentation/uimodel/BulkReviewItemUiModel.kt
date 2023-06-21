@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.bulk_write_review.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.bulk_write_review.presentation.adapter.typefactory.BulkReviewAdapterTypeFactory
 import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryUiState
@@ -198,6 +199,29 @@ data class BulkReviewItemUiModel(
                 emptyList()
             }
         }
+    }
+
+    fun isMediaUploadFailed(): Boolean {
+        return uiState.mediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload
+    }
+
+    fun isUploadingMedia(): Boolean {
+        return uiState.mediaPickerUiState is CreateReviewMediaPickerUiState.Uploading
+    }
+
+    fun hasEmptyOtherReasonTestimony(): Boolean {
+        val isOtherBadRatingCategorySelected =
+            uiState.badRatingCategoriesUiState.let { badRatingCategoriesUiState ->
+                badRatingCategoriesUiState is BulkReviewBadRatingCategoryUiState.Showing &&
+                    badRatingCategoriesUiState.badRatingCategory.any {
+                        it.selected && it.id == ReviewConstants.BAD_RATING_OTHER_ID
+                    }
+            }
+        return isReviewItemHasEmptyReview() && isOtherBadRatingCategorySelected
+    }
+
+    fun getMediaUploadErrorCode(): String {
+        return (uiState.mediaPickerUiState as? CreateReviewMediaPickerUiState.FailedUpload)?.errorCode.orEmpty()
     }
 
     private fun isOverlayVisibilityChanged(other: BulkReviewItemUiModel): Boolean {

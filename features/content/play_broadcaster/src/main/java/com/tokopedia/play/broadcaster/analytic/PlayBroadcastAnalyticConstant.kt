@@ -27,6 +27,8 @@ internal const val KEY_TRACK_BUSINESS_UNIT = "play"
 internal const val KEY_TRACK_CATEGORY = "seller broadcast"
 internal const val KEY_TRACK_CATEGORY_PLAY = "play broadcast"
 internal const val KEY_TRACK_CATEGORY_SELLER = "seller"
+internal const val KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER = "shop page - seller"
+internal const val KEY_TRACK_CATEGORY_GROUP_CHAT_ROOM = "groupchat room"
 internal const val KEY_TRACKER_ID = "trackerId"
 
 internal const val KEY_TRACK_CLICK_EVENT_SELLER = "clickContent"

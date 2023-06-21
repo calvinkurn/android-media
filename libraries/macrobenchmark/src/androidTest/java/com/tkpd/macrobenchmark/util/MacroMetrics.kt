@@ -8,7 +8,7 @@ object MacroMetrics {
     const val PLT_NETWORK_REQUEST = "PageLoadTime.AsyncNetworkRequest"
     const val PLT_RENDER = "PageLoadTime.AsyncRenderPage"
 
-    @OptIn(ExperimentalMetricApi::class)
+    @ExperimentalMetricApi
     fun getPltMetrics(tracePageName: String): List<TraceSectionMetric> {
         return listOf(
             TraceSectionMetric("$PLT_PREPARE_PAGE${tracePageName}"),
