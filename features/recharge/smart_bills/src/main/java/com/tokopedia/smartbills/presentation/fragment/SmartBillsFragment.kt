@@ -96,7 +96,8 @@ class SmartBillsFragment :
     SmartBillsAccordionViewHolder.SBMAccordionListener,
     SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
     SmartBillsCatalogBottomSheet.CatalogCallback,
-    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener {
+    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener,
+    SmartBillsDeleteBottomSheet.DeleteProductSBMListener {
 
     private var binding by autoClearedNullable<FragmentSmartBillsBinding>()
 
@@ -678,11 +679,9 @@ class SmartBillsFragment :
         super.onAttachFragment(childFragment)
         if (childFragment is SmartBillsCatalogBottomSheet) {
             childFragment.setListener(this)
+        } else if (childFragment is SmartBillsDeleteBottomSheet) {
+            childFragment.setListener(this)
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -751,22 +750,20 @@ class SmartBillsFragment :
     }
 
     override fun onDeleteClicked(bill: RechargeBills) {
-        fragmentManager?.let {
+        childFragmentManager?.let {
             smartBillsAnalytics.clickKebab(bill.categoryName)
-            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
-                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener {
-                    override fun onDeleteProductClicked() {
-                        smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
-                        showDeleteDialog(bill)
-                    }
-
-                    override fun onCloseBottomSheet() {
-                        smartBillsAnalytics.viewCloseBottomSheet()
-                    }
-                })
-
+            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet.newInstance(bill)
+            smartBillsDeleteBottomSheet.setListener(this)
             smartBillsDeleteBottomSheet.show(it, "")
         }
+    }
+    override fun onDeleteProductClicked(bill: RechargeBills) {
+        smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
+        showDeleteDialog(bill)
+    }
+
+    override fun onCloseBottomSheet() {
+        smartBillsAnalytics.viewCloseBottomSheet()
     }
 
     private fun showDeleteDialog(bill: RechargeBills) {
