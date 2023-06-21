@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -71,6 +73,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -78,6 +81,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -108,6 +112,10 @@ class FeedFragment :
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var currentTrackerData: FeedTrackerDataModel? = null
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
 
@@ -1234,11 +1242,26 @@ class FeedFragment :
 
             if (userSession.isLoggedIn) {
                 feedPostViewModel.addProductToCart(product)
+//                if (product.hasVariant) openVariantBottomSheet(product)
+//                else feedPostViewModel.addProductToCart(product)
             } else {
                 feedPostViewModel.suspendAddProductToCart(product)
                 addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
             }
         }
+    }
+
+    private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                productId = product.id,
+                shopId = product.shop.id,
+                dismissAfterTransaction = false,
+            )
+        )
+
+        val atcVariantBottomSheet = AtcVariantBottomSheet()
+        atcVariantBottomSheet.showNow(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG)
     }
 
     override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
@@ -1398,6 +1421,8 @@ class FeedFragment :
     }
 
     companion object {
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bs"
+
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
 
