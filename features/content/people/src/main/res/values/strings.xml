@@ -37,7 +37,7 @@
     <string name="up_title_following">%s Following</string>
 
     <string name="up_share_text_with_username_template">Lihat konten menarik dari %1s (%2s), yuk!😍\n%3s</string>
-    <string name="up_share_text_template">Lihat konten menarik dari %1s, yuk!😍\n%3s</string>
+    <string name="up_share_text_template">Lihat konten menarik dari %1s, yuk!😍\n%2s</string>
     
     <!--Block-->
     <string name="up_block_user">Blokir pengguna</string>
