@@ -12,7 +12,7 @@ import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
 
 class MedalViewHolder(
     itemView: View,
-    private val medalClickListener: MedalClickListener
+    private val medalClickListener: MedalClickListener? = null
 ) : AbstractViewHolder<MedalItem>(itemView) {
 
     companion object {
@@ -50,7 +50,7 @@ class MedalViewHolder(
             ivMedal.grayscale()
             ivMedal.setImageUrl(item.imageUrl.orEmpty())
         } else {
-            this.root.setOnClickListener { medalClickListener.onMedalClick(item) }
+            this.root.setOnClickListener { medalClickListener?.onMedalClick(item) }
             ivMedal.setImageUrl(item.imageUrl.orEmpty())
         }
         handleProgressBar(item)
