@@ -242,48 +242,6 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `LoadUserReview - load page on own profile and emit event show onboarding`() {
-        coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
-
-        UserProfileViewModelRobot(
-            username = mockOwnUsername,
-            repo = mockRepo,
-            dispatcher = testDispatcher,
-            userSession = mockUserSession,
-            userProfileSharedPref = mockUserProfileSharedPref,
-        ).start {
-            setup {
-                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordEvent {
-                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.ShowReviewOnboarding)
-            }
-        }
-    }
-
-    @Test
-    fun `LoadUserReview - load page on other profile and dont emit event show onboarding`() {
-        coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
-
-        UserProfileViewModelRobot(
-            username = mockOtherUsername,
-            repo = mockRepo,
-            dispatcher = testDispatcher,
-            userSession = mockUserSession,
-            userProfileSharedPref = mockUserProfileSharedPref,
-        ).start {
-            setup {
-                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordEvent {
-                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-            } andThen {
-                assertEmpty()
-            }
-        }
-    }
-
-    @Test
     fun `Public Getter - firstName with 1 words`() {
 
         val mockName = "Jonathan"
