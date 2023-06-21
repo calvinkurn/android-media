@@ -2384,7 +2384,19 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun getTabActive_shouldReturnOrderStatusFilterFromAppLinkWhenFilterResultIsNull() {
         viewModel.setTabActiveFromAppLink("new_order")
-        assertEquals("new_order", viewModel.getTabActive())
+        assertEquals("new_order", viewModel.getTabActiveFromAppLink())
+    }
+
+    @Test
+    fun getIsFirstPageOpened_shouldReturnSuccessWhenFirstPageOpenedIsTrue() {
+        viewModel.setFirstPageOpened(true)
+        assertEquals(true, viewModel.getIsFirstPageOpened())
+    }
+
+    @Test
+    fun getIsFirstPageOpened_shouldReturnSuccessWhenFirstPageOpenedIsFalse() {
+        viewModel.setFirstPageOpened(false)
+        assertEquals(false, viewModel.getIsFirstPageOpened())
     }
 
     private fun doSuccessBulkAcceptOrder(
