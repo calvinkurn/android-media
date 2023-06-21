@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
@@ -12,6 +13,7 @@ import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
+import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import javax.inject.Inject
@@ -20,10 +22,6 @@ class MedalDetailViewModel @Inject constructor(
     private val medalDetailUseCase: MedalDetailUseCase,
     private val couponAutoApplyUseCase: CouponAutoApplyUseCase
 ) : ViewModel() {
-
-    private companion object {
-        private const val SUCCESS_CODE = "200"
-    }
 
     var couponCode: String = ""
         private set
@@ -46,17 +44,14 @@ class MedalDetailViewModel @Inject constructor(
                     sourceName = sourceName,
                     pageName = MEDALI_DETAIL_PAGE
                 )
-                if (response.detail?.resultStatus?.code == SUCCESS_CODE) {
-                    _badgeLiveData.postValue(Success(response))
-
-                    couponCode = response.detail.medaliDetailPage?.benefitButtons
-                        ?.firstOrNull { it.couponCode.isNullOrEmpty().not() }?.couponCode.orEmpty()
-                    couponStatus =
-                        response.detail.medaliDetailPage?.benefits?.first()?.status.orEmpty()
-                    couponNotes =
-                        response.detail.medaliDetailPage?.benefits?.first()?.statusDescription.orEmpty()
-                } else {
-                    throw Throwable()
+                when (val responseCode = response.detail?.resultStatus?.code) {
+                    SUCCESS_CODE -> {
+                        _badgeLiveData.postValue(Success(response))
+                        setupAnalyticsData(response)
+                    }
+                    else -> {
+                        _badgeLiveData.postValue(Error(Throwable(), responseCode.orEmpty()))
+                    }
                 }
             },
             onError = {
@@ -84,6 +79,15 @@ class MedalDetailViewModel @Inject constructor(
                 _autoApplyCoupon.postValue(AutoApplyState.Error(footerData, it))
             }
         )
+    }
+
+    private fun setupAnalyticsData(response: MedalDetailResponseModel) {
+        couponCode = response.detail?.medaliDetailPage?.benefitButtons
+            ?.firstOrNull { it.couponCode.isNullOrEmpty().not() }?.couponCode.orEmpty()
+        couponStatus =
+            response.detail?.medaliDetailPage?.benefits?.first()?.status.orEmpty()
+        couponNotes =
+            response.detail?.medaliDetailPage?.benefits?.first()?.statusDescription.orEmpty()
     }
 
     sealed class AutoApplyState {

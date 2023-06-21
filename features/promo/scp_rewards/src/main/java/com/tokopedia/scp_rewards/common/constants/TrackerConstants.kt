@@ -31,6 +31,12 @@ object TrackerConstants {
         const val SOURCE_OTHER_PAGE = "medali_other_page"
         const val MDP_EVENT_ACTION = "medali detail page"
         const val BACK_BUTTON_CLICK = "click back"
+        const val CTA_CLICK = "click cta"
+    }
+
+    object Category {
+        const val MDP_NON_WHITELISTED = "medali detail page - non whitelisted"
+        const val MEDAL_CELEBRATION_NON_WHITELISTED = "goto medali - celebration - non whitelisted"
     }
 
     object Tracker {
@@ -48,5 +54,11 @@ object TrackerConstants {
         const val MDP_VIEW_COUPON_SUCCESS_TOASTER = "44021"
         const val MDP_VIEW_COUPON_LOAD_ERROR = "44023"
         const val MDP_VIEW_PAGE_SHIMMER = "44024"
+        const val MDP_VIEW_PAGE_NON_WHITELISTED = "44787"
+        const val MDP_NON_WHITELISTED_CTA_CLICK = "44788"
+        const val MDP_NON_WHITELISTED_BACK_CLICK = "44789"
+        const val MEDAL_CELEBRATION_VIEW_PAGE_NON_WHITELISTED = "44769"
+        const val MEDAL_CELEBRATION_NON_WHITELISTED_CTA_CLICK = "44776"
+        const val MEDAL_CELEBRATION_NON_WHITELISTED_BACK_CLICK = "44777"
     }
 }

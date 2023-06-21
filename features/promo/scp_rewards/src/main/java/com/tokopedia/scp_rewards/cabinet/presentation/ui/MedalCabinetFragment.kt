@@ -17,12 +17,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -98,7 +101,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 }
 
                 is Error -> {
-                    handleError(it.error)
+                    handleError(it)
                 }
 
                 else -> {}
@@ -120,13 +123,15 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 override fun onMedalClick(medalItem: MedalItem) {
                     requireContext().launchLink(
                         appLink = medalItem.cta?.appLink,
-                        webLink = medalItem.cta?.deepLink)
+                        webLink = medalItem.cta?.deepLink
+                    )
                 }
 
                 override fun onSeeMoreClick(medalData: MedalData) {
                     requireContext().launchLink(
                         appLink = medalData.cta?.appLink,
-                        webLink = medalData.cta?.deepLink)
+                        webLink = medalData.cta?.deepLink
+                    )
                 }
             })
         }
@@ -199,18 +204,38 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(error: Throwable) {
+    private fun handleError(scpError: Error) {
         setWhiteStatusBar()
         setToolbarBackButtonTint(R.color.Unify_NN900)
         binding.loadContainer.loaderFlipper.displayedChild = 1
-        if (error is UnknownHostException || error is SocketTimeoutException) {
-            binding.loadContainer.medalCabinetError.setType(GlobalError.NO_CONNECTION)
-        } else {
-            binding.loadContainer.medalCabinetError.apply {
-                setType(GlobalError.SERVER_ERROR)
-                errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
-                setSecondaryActionClickListener {
-                    activity?.finish()
+
+        val error = scpError.error
+        when {
+            error is UnknownHostException || error is SocketTimeoutException -> {
+                binding.loadContainer.medalCabinetError.setType(GlobalError.NO_CONNECTION)
+            }
+            scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                binding.loadContainer.medalCabinetError.apply {
+                    setType(GlobalError.PAGE_NOT_FOUND)
+                    errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
+                    errorDescription.text =
+                        context.getText(R.string.error_non_whitelisted_user_description)
+                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    setActionClickListener {
+//                        MedalCabinetAnalyticsImpl.sendNonWhitelistedUserCtaClick()
+                        RouteManager.route(context, ApplinkConst.HOME)
+                        activity?.finish()
+                    }
+                }
+//                MedalCabinetAnalyticsImpl.sendImpressionNonWhitelistedError()
+            }
+            else -> {
+                binding.loadContainer.medalCabinetError.apply {
+                    setType(GlobalError.SERVER_ERROR)
+                    errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
+                    setSecondaryActionClickListener {
+                        activity?.finish()
+                    }
                 }
             }
         }
