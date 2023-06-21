@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.viewmodel
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.Error
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.Loading
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.RewardsGetMedaliCelebrationPageUseCase
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.ScpResult
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.Success
+import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.common.Loading
+import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
+import com.tokopedia.scp_rewards_touchpoints.common.Success
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.domain.RewardsGetMedaliCelebrationPageUseCase
 
 class MedalCelebrationViewModel @Inject constructor(
     private val rewardsGetMedaliCelebrationPageUseCase: RewardsGetMedaliCelebrationPageUseCase

@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.view
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.view
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -18,8 +18,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -33,33 +31,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationFragmentLayoutBinding
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.constants.EASE_IN
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di.CelebrationComponent
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.di.DaggerCelebrationComponent
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.Loading
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain.Success
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.model.ScpRewardsCelebrationModel
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils.AudioFactory
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils.DeviceInfo
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils.dpToPx
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils.isNullOrZero
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils.parseColor
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.viewmodel.MedalCelebrationViewModel
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.constants.EASE_IN
+import com.tokopedia.scp_rewards_touchpoints.common.Loading
+import com.tokopedia.scp_rewards_touchpoints.common.Success
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCelebrationModel
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.AudioFactory
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.DeviceInfo
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.dpToPx
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.isNullOrZero
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
+import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.celebration_main_layout.*
 import kotlinx.android.synthetic.main.celebration_main_layout.view.*
-import kotlinx.android.synthetic.main.celebration_main_layout.view.container
 import kotlinx.android.synthetic.main.layout_scp_coupon_view.view.*
 import javax.inject.Inject
 
@@ -158,7 +151,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                     showErrorView()
                 }
                 is Loading -> {
-                    binding?.mainFlipper?.displayedChild = MedalCelebrationFragment.LOADING_STATE
+                    binding?.mainFlipper?.displayedChild = LOADING_STATE
                 }
 
                 else -> {}
@@ -322,7 +315,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     private fun showAnimatedView() {
         binding?.mainView?.animationViewFlipper?.displayedChild =
-            MedalCelebrationFragment.HAPPY_STATE
+            HAPPY_STATE
         initViewSetup()
         handler.postDelayed(
             {
@@ -413,6 +406,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.mainView?.backgroundImage?.apply {
                 show()
+                cornerRadius = 16
                 setImageDrawable(bgImage)
             }
         }

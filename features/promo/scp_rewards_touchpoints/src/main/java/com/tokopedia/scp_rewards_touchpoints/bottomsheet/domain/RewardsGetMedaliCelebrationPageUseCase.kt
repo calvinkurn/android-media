@@ -1,13 +1,13 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.model.ScpRewardsCelebrationModel
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCelebrationModel
 import javax.inject.Inject
 
 @GqlQuery("ScpRewardsCelebrationPage", SCP_REWARDS_QUERY)
 class RewardsGetMedaliCelebrationPageUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsCelebrationModel>() {
-    suspend fun getRewards(medaliSlug:String,pageName:String) : ScpRewardsCelebrationModel{
+    suspend fun getRewards(medaliSlug:String,pageName:String) : ScpRewardsCelebrationModel {
         setTypeClass(ScpRewardsCelebrationModel::class.java)
         setGraphqlQuery(ScpRewardsCelebrationPage())
         setRequestParams(getRequestParams(medaliSlug,pageName))

@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         />
+
     <ViewFlipper
         android:id="@+id/animation_view_flipper"
         android:layout_width="match_parent"
@@ -160,6 +161,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ViewFlipper>
+
 </FrameLayout>
 
 

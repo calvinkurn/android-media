@@ -5,13 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/test_root"
-    tools:context="com.tokopedia.scp_rewards_touchpoints.view.TestActivity">
+    tools:context="com.tokopedia.scp_rewards_touchpoints.TestActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Sample text hai ye!"
-        android:gravity="center"
-        android:id="@+id/tv_test"/>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_bs"
+        android:text="Open Bottomsheet"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btn_toaster"
+        android:text="Show Toaster"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/btn_bs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

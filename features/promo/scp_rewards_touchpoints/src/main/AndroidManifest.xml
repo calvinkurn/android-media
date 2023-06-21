@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.TestActivity"
+            android:name=".TestActivity"
             android:exported="false" />
     </application>
 

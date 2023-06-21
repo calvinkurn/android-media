@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.model
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

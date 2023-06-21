@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.domain
+package com.tokopedia.scp_rewards_touchpoints.common
 
 sealed interface ScpResult
 

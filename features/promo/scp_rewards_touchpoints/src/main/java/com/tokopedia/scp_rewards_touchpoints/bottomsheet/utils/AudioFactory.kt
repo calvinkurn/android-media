@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.utils
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils
 
 import android.media.MediaPlayer
 import android.util.Log
@@ -45,7 +45,7 @@ class AudioFactory private constructor(){
         }
     }
 
-    fun withTimeout(timeout:Long = BASE_TIMEOUT) : AudioFactory{
+    fun withTimeout(timeout:Long = BASE_TIMEOUT) : AudioFactory {
         CoroutineScope(Dispatchers.Main).launch {
             delay(timeout)
             if (isAudioLoading) {

@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_touchpoints.view.bottomsheet.view
+package com.tokopedia.scp_rewards_touchpoints.bottomsheet.view
 
 import android.content.Context
 import android.graphics.Canvas
