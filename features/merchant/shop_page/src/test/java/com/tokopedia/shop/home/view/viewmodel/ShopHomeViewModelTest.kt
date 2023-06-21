@@ -36,6 +36,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -192,7 +193,7 @@ class ShopHomeViewModelTest {
     lateinit var getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>
 
     @RelaxedMockK
-    lateinit var getComparisonProductUseCase: Provider<GetRecommendationUseCase>
+    lateinit var  getComparisonProductUseCase: Provider<GetRecommendationUseCase>
 
     @RelaxedMockK
     lateinit var gqlShopPageGetHomeType: GqlShopPageGetHomeType
@@ -1345,7 +1346,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
-                        products = emptyList()
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             ),
@@ -1439,7 +1442,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
-                        products = emptyList()
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             )
@@ -1511,7 +1516,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
-                        products = emptyList()
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             ),
@@ -1566,17 +1573,15 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every {
-                ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1629,17 +1634,15 @@ class ShopHomeViewModelTest {
             )
 
             mockkObject(ShopPageHomeMapper)
-            every {
-                ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 resultWidget
             )
 
@@ -1671,17 +1674,15 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
 
             mockkObject(ShopPageHomeMapper)
-            every {
-                ShopPageHomeMapper.mapToListShopHomeWidget(
-                    any(),
-                    any(),
-                    any(),
-                    false,
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(
+                any(),
+                any(),
+                any(),
+                false,
+                any(),
+                any(),
+                any()
+            ) } returns listOf(
                 ProductCardUiModel()
             )
 
@@ -2284,11 +2285,9 @@ class ShopHomeViewModelTest {
     @Test
     fun `when calling checkShowConfetti with widget festivity and showConfetti is true, live data value should be true`() {
         val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            add(
-                ShopHomeCarousellProductUiModel(
-                    isFestivity = true
-                )
-            )
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
             add(ShopHomeCarousellProductUiModel())
         }
         viewModel.checkShowConfetti(listShopHomeWidgetUiModel, true)
@@ -2299,11 +2298,9 @@ class ShopHomeViewModelTest {
     @Test
     fun `when calling checkShowConfetti with widget festivity and showConfetti is false, live data value should be false`() {
         val listShopHomeWidgetUiModel = mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            add(
-                ShopHomeCarousellProductUiModel(
-                    isFestivity = true
-                )
-            )
+            add(ShopHomeCarousellProductUiModel(
+                isFestivity = true
+            ))
             add(ShopHomeCarousellProductUiModel())
         }
         viewModel.checkShowConfetti(listShopHomeWidgetUiModel, false)
@@ -2320,7 +2317,7 @@ class ShopHomeViewModelTest {
         viewModel.getProductComparisonData(mockShopId, ShopHomePersoProductComparisonUiModel())
         val liveDataValue = viewModel.productComparisonLiveData.value
         assert(liveDataValue is Success)
-        assert((liveDataValue as Success).data.recommendationWidget == mockRecommendationWidget)
+        assert((liveDataValue as Success).data.recommendationWidget == mockRecommendationWidget )
     }
 
     @Test
@@ -2332,4 +2329,5 @@ class ShopHomeViewModelTest {
         val liveDataValue = viewModel.productComparisonLiveData.value
         assert(liveDataValue is Fail)
     }
+
 }

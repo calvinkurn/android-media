@@ -2,18 +2,20 @@ package com.tokopedia.product.detail.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.databinding.ActivityProductYoutubePlayerBinding
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import timber.log.Timber
+import java.util.*
 
 class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
     YouTubePlayer.PlayerStateChangeListener{
@@ -27,6 +29,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_DATA = "EXTRA_YOUTUBE_VIDEO_DATA"
         private const val EXTRA_YOUTUBE_VIDEO_INDEX = "EXTRA_YOUTUBE_VIDEO_INDEX"
+        private const val URL_YOUTUBE_WATCH = "https://www.youtube.com/watch?v="
 
         fun createIntent(context: Context, videoUrls: List<String>, selectedIndex: Int)
                 = Intent(context, ProductYoutubePlayerActivity::class.java).apply {
@@ -86,8 +89,14 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.youtube.com/watch?v=" + videoUrls[selectedIndex])))
+            val videoUrl = URL_YOUTUBE_WATCH + (videoUrls.getOrNull(selectedIndex) ?: "")
+            val webviewUrl = String.format(
+                Locale.getDefault(),
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                videoUrl
+            )
+            RouteManager.route(this, webviewUrl)
             finish()
         } catch (e: Throwable) {
             Timber.d(e)
