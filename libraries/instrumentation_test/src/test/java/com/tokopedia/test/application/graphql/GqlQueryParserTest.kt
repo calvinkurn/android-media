@@ -10,29 +10,29 @@ class GqlQueryParserTest {
     fun `parse multiple query test`() {
         val cases = listOf(
             """
-            query fetchAnnouncementWidgetData(${'$'}dataKeys: [dataKey!]!) {
-              fetchAnnouncementWidgetData(dataKeys:${'$'}dataKeys) {
-                data {
-                  dataKey
+                query fetchAnnouncementWidgetData(${'$'}dataKeys: [dataKey!]!) {
+                  fetchAnnouncementWidgetData(dataKeys:${'$'}dataKeys) {
+                    data {
+                      dataKey
+                    }
+                  }
                 }
-              }
-            }
             """.trimIndent() to listOf("fetchAnnouncementWidgetData"),
             """
                 query getPMInterruptData(${'$'}shopId: Int!, ${'$'}source: String!) {
-              goldGetPMShopInfo(shop_id: ${'$'}shopId, source: ${'$'}source) {
-                is_new_seller
-              }
-              goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: true) {
-                data {
-                  power_merchant {
-                    status
+                  goldGetPMShopInfo(shop_id: ${'$'}shopId, source: ${'$'}source) {
+                    is_new_seller
                   }
-                  official_store {
-                    status
+                  goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: true) {
+                    data {
+                      power_merchant {
+                        status
+                      }
+                      official_store {
+                        status
+                      }
+                    }
                   }
-                }
-              }
             }
             """.trimIndent() to listOf("goldGetPMShopInfo", "goldGetPMOSStatus"),
             """
@@ -42,7 +42,17 @@ class GqlQueryParserTest {
                         isPending
                     }
                 }
-            """.trimIndent() to listOf("registerCheck")
+            """.trimIndent() to listOf("registerCheck"),
+            """
+                query get_chat_notif(${'$'}shop_id: String) {
+                   notifications(input: {shop_id: ${'$'}shop_id}) {
+                     chat {
+                       unreadsSeller
+                       unreadsUser
+                     }
+                   }
+                 }
+            """.trimIndent() to listOf("notifications")
         )
 
         val actual = cases.map { GqlQueryParser.parse(it.first) }

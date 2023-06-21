@@ -8,7 +8,6 @@ interface PostAtcListener {
     fun onClickLihatKeranjang(cartId: String, componentTrackData: ComponentTrackData)
 
     fun goToAppLink(appLink: String)
-    fun goToProduct(productId: String)
     fun refreshPage()
 
     fun fetchRecommendation(pageName: String, uniqueId: Int)

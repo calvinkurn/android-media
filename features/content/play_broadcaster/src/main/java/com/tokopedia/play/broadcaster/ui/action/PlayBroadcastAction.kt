@@ -37,7 +37,7 @@ sealed interface PlayBroadcastAction {
     object GiveawayOngoingEnded : PlayBroadcastAction
     data class CreateGiveaway(
         val title: String,
-        val durationInMs: Long
+        val durationInMs: Long,
     ) : PlayBroadcastAction
 
     /** Quiz */

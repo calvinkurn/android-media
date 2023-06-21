@@ -14,6 +14,7 @@ interface ProductDetailInfoListener {
     fun goToSpecification(annotation: List<ProductDetailInfoContent>)
     fun goToImagePreview(url: String)
     fun goToApplink(url: String)
+    fun goToWebView(url: String)
     fun goToCategory(url: String)
     fun goToEtalase(url: String)
     fun goToCatalog(url: String, catalogName: String)

@@ -28,7 +28,7 @@ class NotificationFilterView : LinearLayout {
         fun onFilterChanged(filterType: Long, filterName: String)
     }
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         initView(context)
     }
 
@@ -37,7 +37,9 @@ class NotificationFilterView : LinearLayout {
     }
 
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
         initView(context)
     }
@@ -55,6 +57,9 @@ class NotificationFilterView : LinearLayout {
             Status.LOADING -> rvFilterAdapter?.showLoading(dataState.data)
             Status.SUCCESS -> rvFilterAdapter?.successLoading(dataState.data, dataState.needUpdate)
             Status.ERROR -> rvFilterAdapter?.errorLoading(dataState.data)
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -87,7 +92,9 @@ class NotificationFilterView : LinearLayout {
         rvFilter?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(
-                    context, LinearLayoutManager.HORIZONTAL, false
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
             )
             adapter = rvFilterAdapter
         }
@@ -97,5 +104,4 @@ class NotificationFilterView : LinearLayout {
         settingBtn = view.findViewById(R.id.iv_setting_notif)
         rvFilter = view.findViewById(R.id.rv_filter)
     }
-
 }

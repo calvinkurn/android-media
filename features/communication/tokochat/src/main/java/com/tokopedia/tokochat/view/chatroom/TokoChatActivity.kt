@@ -2,13 +2,12 @@ package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokochat.di.DaggerTokoChatComponent
+import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
@@ -40,10 +39,9 @@ open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     private fun initializeTokoChatComponent(): TokoChatComponent {
-        return DaggerTokoChatComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
-            .build().also {
+        return TokoChatActivityComponentFactory
+            .instance
+            .createTokoChatComponent(application).also {
                 tokoChatComponent = it
             }
     }
@@ -80,12 +78,14 @@ open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
         val isFromTokoFoodPostPurchase = intent?.getBooleanExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, false) ?: false
         val pushNotifTemplateKey = intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY) ?: ""
+        val isFromBubble = intent?.getBooleanExtra(IS_FROM_BUBBLE_KEY, false) ?: false
         return Bundle().apply {
             putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
             putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
             putString(ApplinkConst.TokoChat.ORDER_ID_TKPD, tkpdOrderId)
             putBoolean(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, isFromTokoFoodPostPurchase)
             putString(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY, pushNotifTemplateKey)
+            putBoolean(IS_FROM_BUBBLE_KEY, isFromBubble)
         }
     }
 

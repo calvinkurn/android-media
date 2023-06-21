@@ -9,8 +9,10 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.fail
 
@@ -26,6 +28,9 @@ class PlayShortsTagViewModelTest {
     private val mockTagsSize5 = uiModelBuilder.buildTags(size = 5)
     private val mockTagsSize10 = uiModelBuilder.buildTags(size = 10)
     private val mockException = Exception("Network Error")
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_summary_tag_loadTagSuccess() {

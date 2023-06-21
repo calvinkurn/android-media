@@ -1,0 +1,60 @@
+{
+  "readme": "VPS widget impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "lego banner 4 image auto v2 impression",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - content_card - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - lego banner 4 image auto v2 - .*",
+          "creative_url": ""
+        }
+      ],
+      "channelId": ".*",
+      "trackerId": "31870",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "lego banner 4 image auto v2 click",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - content_card - .*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - lego banner 4 image auto v2 - .*"
+        }
+      ],
+      "channelId": ".*",
+      "trackerId": "31871",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all on lego banner 4 image auto v2",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - content_card - .*",
+      "trackerId": "43643",
+      "businessUnit": "home & browse",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    }
+  ]
+}

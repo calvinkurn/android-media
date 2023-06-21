@@ -5,18 +5,20 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
+import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.ROLLENCE_MVC_ICON
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
-import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
+import com.tokopedia.topchat.stub.chatlist.di.FakeActivityComponentFactory
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
-import com.tokopedia.topchat.stub.common.UserSessionStub
-import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -25,13 +27,15 @@ import javax.inject.Inject
 
 abstract class ChatListTest {
     @get:Rule
-    var activityTestRule = IntentsTestRule(ChatListActivityStub::class.java,
-        false, false)
+    var activityTestRule = IntentsTestRule(
+        ChatListActivity::class.java,
+        false,
+        false
+    )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
+
+    lateinit var fakeComponent: FakeActivityComponentFactory
 
     @Inject
     protected lateinit var chatListUseCase: GetChatListMessageUseCaseStub
@@ -45,7 +49,10 @@ abstract class ChatListTest {
     @Inject
     protected lateinit var userSession: UserSessionInterface
 
-    protected lateinit var activity: ChatListActivityStub
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
+    protected lateinit var activity: ChatListActivity
 
     protected val exEmptyChatListPojo = ChatListPojo()
     protected var exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
@@ -56,22 +63,16 @@ abstract class ChatListTest {
         "success_get_chat_list_size_5.json",
         ChatListPojo::class.java
     )
+    protected var exBroadcastChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+        "broadcast/success_get_chat_list_broadcast.json",
+        ChatListPojo::class.java
+    )
 
     @Before
     fun setup() {
-        setupDaggerComponent()
-        setUserSessionData()
-    }
-
-    private fun setupDaggerComponent() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatListComponentStub = DaggerChatListComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatListContextModule(ChatListContextModule(context))
-            .build()
-        chatListComponentStub!!.inject(this)
+        fakeComponent = FakeActivityComponentFactory()
+        ActivityComponentFactory.instance = fakeComponent
+        fakeComponent.chatListComponent.inject(this)
     }
 
     @After
@@ -86,6 +87,8 @@ abstract class ChatListTest {
     ) {
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        } else {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         }
         val intent = Intent()
         intentModifier(intent)
@@ -93,10 +96,23 @@ abstract class ChatListTest {
         activity = activityTestRule.activity
     }
 
-    private fun setUserSessionData() {
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
+    protected fun setRollenceMVCIcon(isActive: Boolean) {
+        abTestPlatform.setString(ROLLENCE_MVC_ICON, if (isActive) ROLLENCE_MVC_ICON else "")
+    }
+
+    protected fun setLastSeenTab(isSellerTab: Boolean) {
+        context.getSharedPreferences(
+            ChatTabCounterViewModel.PREF_CHAT_LIST_TAB,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .apply {
+                putInt(
+                    ChatTabCounterViewModel.KEY_LAST_POSITION,
+                    if (isSellerTab) Int.ZERO else Int.ONE
+                )
+                apply()
+            }
     }
 
     companion object {

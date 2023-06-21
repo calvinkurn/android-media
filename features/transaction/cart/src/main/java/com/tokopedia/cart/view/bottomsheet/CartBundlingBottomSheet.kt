@@ -120,9 +120,14 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
 
             override fun onSingleBundleActionButtonClicked(
                 selectedBundle: BundleDetailUiModel,
-                bundleProducts: BundleProductUiModel
+                bundleProducts: BundleProductUiModel,
+                bundlePosition: Int
             ) {
-                super.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
+                super.onSingleBundleActionButtonClicked(
+                    selectedBundle,
+                    bundleProducts,
+                    bundlePosition
+                )
                 listener?.onSingleBundleActionButtonClicked(selectedBundle)
             }
 
@@ -137,13 +142,23 @@ class CartBundlingBottomSheet : BottomSheetUnify() {
             override fun impressionSingleBundle(
                 selectedBundle: BundleDetailUiModel,
                 selectedProduct: BundleProductUiModel,
-                bundleName: String
+                bundleName: String,
+                bundlePosition: Int
             ) {
-                super.impressionSingleBundle(selectedBundle, selectedProduct, bundleName)
+                super.impressionSingleBundle(
+                    selectedBundle,
+                    selectedProduct,
+                    bundleName,
+                    bundlePosition
+                )
                 listener?.impressionSingleBundle(selectedBundle)
             }
 
             override fun onError(it: Throwable) {
+                renderError()
+            }
+
+            override fun onBundleEmpty() {
                 renderError()
             }
         })

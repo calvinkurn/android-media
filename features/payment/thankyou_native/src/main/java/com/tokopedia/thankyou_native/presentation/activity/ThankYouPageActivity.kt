@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -16,6 +17,7 @@ import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -33,10 +35,10 @@ import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import timber.log.Timber
 import javax.inject.Inject
 
 var idlingResource: TkpdIdlingResource? = null
-
 
 const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
@@ -46,8 +48,10 @@ private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 
-class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
-        ThankYouPageDataLoadCallback {
+class ThankYouPageActivity :
+    BaseSimpleActivity(),
+    HasComponent<ThankYouPageComponent>,
+    ThankYouPageDataLoadCallback {
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
@@ -93,15 +97,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     override fun sendScreenAnalytics() {
-        //Empty to remove double open screen events
+        // Empty to remove double open screen events
     }
 
     private fun sendOpenScreenEvent(data: Uri?) {
         data?.apply {
             thankYouPageAnalytics.get().sendScreenAuthenticatedEvent(
-                    getQueryParameter(ARG_PAYMENT_ID),
-                    getQueryParameter(ARG_MERCHANT),
-                    SCREEN_NAME)
+                getQueryParameter(ARG_PAYMENT_ID),
+                getQueryParameter(ARG_MERCHANT),
+                SCREEN_NAME
+            )
         }
     }
 
@@ -111,8 +116,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragmentByPaymentMode?.let {
             showToolbarAfterLoading(fragmentByPaymentMode.title)
             supportFragmentManager.beginTransaction()
-                    .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
-                    .commit()
+                .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
+                .commit()
             showAppFeedbackBottomSheet(thanksPageData)
         } ?: run { gotoHomePage() }
         postEventOnThankPageDataLoaded(thanksPageData)
@@ -141,10 +146,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     override fun getComponent(): ThankYouPageComponent {
-        if (!::thankYouPageComponent.isInitialized)
+        if (!::thankYouPageComponent.isInitialized) {
             thankYouPageComponent = DaggerThankYouPageComponent.builder()
-                    .baseAppComponent((applicationContext as BaseMainApplication)
-                            .baseAppComponent).build()
+                .baseAppComponent(
+                    (applicationContext as BaseMainApplication)
+                        .baseAppComponent
+                ).build()
+        }
         return thankYouPageComponent
     }
 
@@ -155,29 +163,52 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                FragmentByPaymentMode(ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                        ProcessingPaymentFragment.SCREEN_NAME)
+                FragmentByPaymentMode(
+                    ProcessingPaymentFragment.getFragmentInstance(
+                        bundle,
+                        thanksPageData,
+                        isWidgetOrderingEnabled()
+                    ),
+                    ProcessingPaymentFragment.SCREEN_NAME
+                )
             }
             is InstantPaymentPage -> {
-                FragmentByPaymentMode(InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                        InstantPaymentFragment.SCREEN_NAME)
+                FragmentByPaymentMode(
+                    InstantPaymentFragment.getFragmentInstance(
+                        bundle,
+                        thanksPageData,
+                        isWidgetOrderingEnabled()
+                    ),
+                    InstantPaymentFragment.SCREEN_NAME
+                )
             }
             is WaitingPaymentPage -> {
                 return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
                     is PaymentWaitingCOD -> {
-                        FragmentByPaymentMode(CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData),
-                                CashOnDeliveryFragment.SCREEN_NAME)
+                        FragmentByPaymentMode(
+                            CashOnDeliveryFragment.getFragmentInstance(
+                                bundle,
+                                thanksPageData,
+                                isWidgetOrderingEnabled()
+                            ),
+                            CashOnDeliveryFragment.SCREEN_NAME
+                        )
                     }
                     is PaymentWaiting -> {
-                        FragmentByPaymentMode(DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData),
-                                DeferredPaymentFragment.SCREEN_NAME)
+                        FragmentByPaymentMode(
+                            DeferredPaymentFragment.getFragmentInstance(
+                                bundle,
+                                thanksPageData,
+                                isWidgetOrderingEnabled()
+                            ),
+                            DeferredPaymentFragment.SCREEN_NAME
+                        )
                     }
                     else -> null
                 }
             }
             else -> null
         }
-
     }
 
     private fun showToolbarBeforeLoading() {
@@ -198,7 +229,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
-    private fun setupOldToolbar(title: String){
+    private fun setupOldToolbar(title: String) {
         thank_header.isShowBackButton = true
         toolbar = thank_header
         setSupportActionBar(toolbar)
@@ -210,9 +241,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun isGlobalNavEnable(): Boolean {
-        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
-                false)
-        if(isNewNavigationEnabled) {
+        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(
+            KEY_CONFIG_NEW_NAVIGATION,
+            false
+        )
+        if (isNewNavigationEnabled) {
             return true
         }
         return false
@@ -226,14 +259,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
-
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
             var hideSearchBar = false
             var hideGlobalMenu = false
             if (::thanksPageData.isInitialized) {
                 hideSearchBar = thanksPageData.configFlagData?.shouldHideSearchBar ?: false
-                hideGlobalMenu= thanksPageData.configFlagData?.shouldHideGlobalMenu ?: false
+                hideGlobalMenu = thanksPageData.configFlagData?.shouldHideGlobalMenu ?: false
             }
             this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -244,7 +276,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
-
     private fun updateHeaderTitle(screenName: String) {
         thank_header.title = screenName
     }
@@ -254,10 +285,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        if (::thanksPageData.isInitialized)
-            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
+        if (::thanksPageData.isInitialized) {
+            thankYouPageAnalytics.get().sendBackPressedEvent(
+                thanksPageData.profileCode,
                 thanksPageData.paymentID
             )
+        }
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -281,7 +314,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     companion object {
-        const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
+        private const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
     }
 
     private fun isGratifDisabled(): Boolean {
@@ -293,6 +326,15 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
-    data class FragmentByPaymentMode(val fragment: Fragment, val title : String)
-}
+    private fun isWidgetOrderingEnabled(): Boolean {
+        return try {
+            return (getAbTestPlatform()
+                ?.getString(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, String.EMPTY) ?: String.EMPTY).isNotEmpty()
+        } catch (e: Exception) {
+            Timber.e(e)
+            true
+        }
+    }
 
+    data class FragmentByPaymentMode(val fragment: Fragment, val title: String)
+}

@@ -2,11 +2,19 @@ package com.tokopedia.play.broadcaster.shorts.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
+import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import kotlinx.coroutines.withContext
@@ -16,18 +24,20 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsRepositoryImpl @Inject constructor(
-    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
+    private val getWhiteListUseCase: GetWhiteListUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val mapper: PlayShortsMapper,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val broadcasterCheckAffiliateUseCase: BroadcasterCheckIsAffiliateUseCase,
+    private val onboardAffiliateUseCase: OnBoardAffiliateUseCase,
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+        val response = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
         return@withContext mapper.mapAuthorList(response)
     }
@@ -85,4 +95,19 @@ class PlayShortsRepositoryImpl @Inject constructor(
             setParams(shortsId, tags)
         }.executeOnBackground().recommendedTags.success
     }
+
+    override suspend fun getBroadcasterCheckAffiliate(): BroadcasterCheckAffiliateResponseUiModel {
+        return withContext(dispatchers.io) {
+            mapper.mapBroadcasterCheckAffiliate(broadcasterCheckAffiliateUseCase(Unit))
+        }
+    }
+
+    override suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
+        return withContext(dispatchers.io) {
+            val response = mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request))
+            if (response.errorMessage.isNotEmpty()) throw Throwable(response.errorMessage)
+            response
+        }
+    }
+
 }

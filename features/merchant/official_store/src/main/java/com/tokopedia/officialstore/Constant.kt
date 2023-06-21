@@ -26,9 +26,6 @@ object FirebasePerformanceMonitoringConstant {
 object ApplinkConstant {
 
     const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?shop_tier=2&navsource=os"
-
-    val OFFICIAL_PROMO_NATIVE = "${ApplinkConst.PROMO_LIST}?categoryID=8&menuID=363"
-
     const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 }
 

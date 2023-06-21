@@ -120,7 +120,7 @@ data class GetBuyerOrderDetailResponse(
                     val consultationPatientName: String = String.EMPTY,
                     @SerializedName("consultation_prescription_number")
                     @Expose
-                    val consultationPrescriptionNumber: String = String.EMPTY,
+                    val consultationPrescriptionNumber: String = String.EMPTY
                 )
             }
 
@@ -343,7 +343,9 @@ data class GetBuyerOrderDetailResponse(
                 val etaIsUpdated: Boolean = false,
                 @Expose
                 @SerializedName("user_updated_info")
-                val userUpdatedInfo: String = ""
+                val userUpdatedInfo: String = "",
+                @SerializedName("buttons")
+                val buttons: List<Button> = listOf()
             ) {
                 data class Driver(
                     @Expose
@@ -382,6 +384,17 @@ data class GetBuyerOrderDetailResponse(
                     @Expose
                     @SerializedName("street")
                     val street: String = ""
+                )
+
+                data class Button(
+                    @SerializedName("key")
+                    val key: String = "",
+                    @SerializedName("icon")
+                    val icon: String = "",
+                    @SerializedName("action_type")
+                    val actionType: String = "",
+                    @SerializedName("value")
+                    val value: String = ""
                 )
             }
 

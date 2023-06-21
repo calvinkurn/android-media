@@ -14,7 +14,8 @@ import com.tokopedia.user.session.UserSessionInterface
 open class OtherMenuAdapterTypeFactory(
     private val trackingListener: SettingTrackingListener,
     private val sellerMenuTracker: SellerMenuTracker? = null,
-    private val userSession: UserSessionInterface? = null
+    private val userSession: UserSessionInterface? = null,
+    private val coachMarkListener: CoachMarkListener? = null
 ) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -25,7 +26,7 @@ open class OtherMenuAdapterTypeFactory(
             DividerViewHolder.THIN_LAYOUT_INDENTED -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
-            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
+            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker, coachMarkListener)
             MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, userSession, trackingListener, sellerMenuTracker)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
@@ -61,4 +62,8 @@ open class OtherMenuAdapterTypeFactory(
     override fun type(settingLoadingUiModel: SettingLoadingUiModel): Int {
         return LoadingViewholder.LAYOUT
     }
+}
+
+interface CoachMarkListener {
+    fun onViewReadyForCoachMark(menuName: String, targetView: View?)
 }

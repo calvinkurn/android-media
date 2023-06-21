@@ -154,28 +154,27 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check voucher active appLink then should return tokopedia internal voucher active in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/voucher-list/active"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/list/active/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_ACTIVE, expectedDeepLink)
     }
 
     @Test
     fun `check history voucher appLink then should return tokopedia internal voucher list history in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/voucher-list/history"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/list/history/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_HISTORY, expectedDeepLink)
     }
 
     @Test
     fun `check voucher detail appLink then should return tokopedia internal voucher detail in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/voucher-detail"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/detail//"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_DETAIL, expectedDeepLink)
     }
 
     @Test
     fun `check create voucher appLink then should return tokopedia internal create voucher in sellerapp`() {
-        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/create/shop/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CREATE_VOUCHER, expectedDeepLink)
     }
-
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
@@ -375,6 +374,13 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = ApplinkConst.SellerApp.TOPCHAT_BUBBLE_ACTIVATION
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller shop nib app link should mapping to sellerapp internal app link`() {
+        val appLink = ApplinkConst.SellerApp.SELLER_SHOP_NIB
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
     }
 
     @Test

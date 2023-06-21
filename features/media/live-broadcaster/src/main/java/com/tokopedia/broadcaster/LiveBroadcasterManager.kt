@@ -10,15 +10,15 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.instance
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
-import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.consts.*
+import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.lib.LarixStreamerFactory
 import com.tokopedia.broadcaster.listener.BroadcasterListener
+import com.tokopedia.broadcaster.log.ui.notification.NotificationBuilder
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
-import com.tokopedia.broadcaster.log.ui.notification.NotificationBuilder
 import com.tokopedia.broadcaster.tracker.BroadcasterStatistic
 import com.tokopedia.broadcaster.utils.BroadcasterUtils
 import com.tokopedia.broadcaster.utils.BroadcasterUtils.getCameraConfig
@@ -38,7 +38,7 @@ class LiveBroadcasterManager constructor(
     var streamer: LarixStreamer? = null,
     var mConfig: BroadcasterConfig = BroadcasterConfig(),
     var mConnection: BroadcasterConnection = BroadcasterConnection(),
-    val statistic: BroadcasterStatistic = BroadcasterStatistic(),
+    val statistic: BroadcasterStatistic = BroadcasterStatistic()
 ) : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
     private var mListener: BroadcasterListener? = null
@@ -193,10 +193,14 @@ class LiveBroadcasterManager constructor(
                 BroadcasterState.Error(ERROR_AUTH_FAIL)
             )
             Streamer.STATUS.UNKNOWN_FAIL -> {
-                if (state == Streamer.CONNECTION_STATE.DISCONNECTED
-                    && (lastState is BroadcasterState.Stopped
-                    || lastState is BroadcasterState.Paused)
-                ) return
+                if (state == Streamer.CONNECTION_STATE.DISCONNECTED &&
+                    (
+                        lastState is BroadcasterState.Stopped ||
+                            lastState is BroadcasterState.Paused
+                        )
+                ) {
+                    return
+                }
 
                 if (info?.length().orZero() > 0) {
                     broadcastState(
@@ -209,7 +213,7 @@ class LiveBroadcasterManager constructor(
                 }
             }
             Streamer.STATUS.SUCCESS -> {
-                when(state) {
+                when (state) {
                     Streamer.CONNECTION_STATE.IDLE -> broadcastState(BroadcasterState.Idle)
                     Streamer.CONNECTION_STATE.INITIALIZED,
                     Streamer.CONNECTION_STATE.SETUP,
@@ -227,12 +231,15 @@ class LiveBroadcasterManager constructor(
                     }
                 }
             }
+            else -> {
+                // no op
+            }
         }
     }
 
     override fun onVideoCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
-        when(state) {
+        when (state) {
             Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(
                 BroadcasterState.Error(ERROR_VIDEO_ENCODING_FAIL)
             )
@@ -248,7 +255,7 @@ class LiveBroadcasterManager constructor(
 
     override fun onAudioCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
-        when(state) {
+        when (state) {
             Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(
                 BroadcasterState.Error(ERROR_AUDIO_ENCODING_FAIL)
             )
@@ -411,17 +418,19 @@ class LiveBroadcasterManager constructor(
     private fun startStatsJob() {
         cancelStatsJob()
         statisticUpdateTimer = Timer()
-        statisticUpdateTimer?.schedule(object : TimerTask() {
-            override fun run() {
-                mHandler?.post {
-                    if (mContext != null && mConnection.uri != null) {
-                        statistic.update(mContext, mConnection.uri, mConfig)
+        statisticUpdateTimer?.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    mHandler?.post {
+                        if (mContext != null && mConnection.uri != null) {
+                            statistic.update(mContext, mConnection.uri, mConfig)
+                        }
+                        mListener?.onUpdateLivePusherStatistic(statistic)
                     }
-                    mListener?.onUpdateLivePusherStatistic(statistic)
                 }
-            }
-
-        }, DELAYED_TIME, PERIOD_TIME)
+            },
+            DELAYED_TIME, PERIOD_TIME
+        )
     }
 
     private fun cancelStatsJob() {
@@ -437,5 +446,4 @@ class LiveBroadcasterManager constructor(
         private const val DELAYED_TIME = 1000L
         private const val PERIOD_TIME = 1000L
     }
-
 }

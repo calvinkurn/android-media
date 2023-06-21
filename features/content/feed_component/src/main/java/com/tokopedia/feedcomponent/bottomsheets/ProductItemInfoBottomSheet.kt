@@ -9,15 +9,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedcomponent.R
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListener
+import com.tokopedia.feedcomponent.presentation.utils.FeedXProductResult
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
@@ -31,7 +32,9 @@ import com.tokopedia.usecase.coroutines.Success
 
 class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
-    private var binding: ItemPosttagBinding? = null
+    private var _binding: ItemPosttagBinding? = null
+    private val binding: ItemPosttagBinding
+        get() = _binding!!
 
     private var viewModelFactory: ViewModelProvider.Factory? = null
     private var viewModel: FeedProductItemInfoViewModel? = null
@@ -65,26 +68,35 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ItemPosttagBinding.inflate(inflater, container, false)
-        setTitle(getString(R.string.content_product_bs_title))
-        setChild(binding?.root)
+        _binding = ItemPosttagBinding.inflate(inflater, container, false)
+        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
+        setChild(binding.root)
+//        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+//    private fun generateDynamicView(): View?{
+//        val height = (getDeviceHeight() * 0.8).toInt().toPx()
+//
+//        val customHeightView = binding?.root
+//        customHeightView?.layoutParams =
+//            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+//
+//        return customHeightView
+//    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.cardTitlePostTag?.gone()
-        binding?.rvPosttag?.show()
-        binding?.rvPosttag?.setHasFixedSize(true)
-        val layoutManager: RecyclerView.LayoutManager =
+        val rvLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding?.rvPosttag?.isNestedScrollingEnabled = false
-        binding?.rvPosttag?.layoutManager = layoutManager
-        binding?.rvPosttag?.setPadding(0, 0, 0, 0)
-        if (::listProducts.isInitialized) {
-            setAdapter()
-        } else {
-            dismiss()
+
+        binding.rvPosttag.apply {
+            show()
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            layoutManager = rvLayoutManager
+            setPadding(0, 0, 0, 0)
+            addOnScrollListener(getRecyclerViewListener())
         }
 
         activity?.let {
@@ -92,12 +104,19 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 viewModel = ViewModelProvider(
                     it,
                     factory
-                ).get(FeedProductItemInfoViewModel::class.java)
+                )[FeedProductItemInfoViewModel::class.java]
             }
         }
 
         viewModel?.fetchMerchantVoucherSummary(shopId)
-        observe()
+        if (listProducts.isNotEmpty()) {
+            viewModel?.showProductsFromPost(listProducts)
+        } else {
+            viewModel?.fetchFeedXProductsData(postId)
+        }
+
+        observeMVC()
+        observeFeedXActivityProducts()
 
         setCloseClickListener {
             dismissedByClosing = true
@@ -111,52 +130,89 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun observe() {
-        viewModel?.merchantVoucherSummary?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    if (it.data.animatedInfoList?.isNotEmpty() == true) {
-                        binding?.merchantVoucherWidgetPostTag?.setData(
-                            mvcData = MvcData(
-                                it.data.animatedInfoList
-                            ),
-                            shopId = shopId,
-                            source = MvcSource.FEED_BOTTOM_SHEET,
-                            mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
-                        )
-                        binding?.merchantVoucherWidgetPostTag?.show()
-                    } else {
-                        binding?.merchantVoucherWidgetPostTag?.hide()
+//    private fun getDeviceHeight(): Float {
+//        val displayMetrics = context?.resources?.displayMetrics
+//        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
+//    }
+
+    private fun observeMVC() {
+        viewModel?.run {
+            merchantVoucherSummary.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        if (it.data.animatedInfoList?.isNotEmpty() == true) {
+                            binding.merchantVoucherWidgetPostTag.setData(
+                                mvcData = MvcData(
+                                    it.data.animatedInfoList
+                                ),
+                                shopId = shopId,
+                                source = MvcSource.FEED_BOTTOM_SHEET,
+                                mvcTrackerImpl = customMvcTracker ?: DefaultMvcTrackerImpl()
+                            )
+                            binding.merchantVoucherWidgetPostTag.show()
+                        } else {
+                            binding.merchantVoucherWidgetPostTag.hide()
+                        }
                     }
-                }
-                is Fail -> {
-                    binding?.merchantVoucherWidgetPostTag?.hide()
+                    is Fail -> {
+                        binding.merchantVoucherWidgetPostTag.hide()
+                    }
                 }
             }
         }
     }
 
-    private fun setAdapter() {
-        binding?.rvPosttag?.adapter = adapter
-        if (listProducts.isNotEmpty()) {
-            listener?.onTaggedProductCardImpressed(
-                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
-                listProducts,
-                postType,
-                shopId,
-                isFollowed,
-                mediaType,
-                hasVoucher,
-                authorType
-            )
-            adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
+    private fun observeFeedXActivityProducts() {
+        viewModel?.run {
+            feedProductsResponse.observe(viewLifecycleOwner) {
+                when (it) {
+                    is FeedXProductResult.Success -> {
+                        setAdapter(it.feedXGetActivityProductsResponse.products)
+                    }
+                    is FeedXProductResult.LoadingState -> {
+                        // TODO add loading state
+                    }
+                    is FeedXProductResult.Error -> {
+                        // TODO add error state
+                    }
+                    FeedXProductResult.SuccessWithNoData -> {
+                        // TODO add no data state
+                    }
+                }
+            }
         }
+    }
+
+    private fun moveToAddToCartPage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun getRecyclerViewListener(): EndlessScrollRecycleListener {
+        return object : EndlessScrollRecycleListener() {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (viewModel?.cursor?.isNotEmpty() == true) {
+                    val lastPage = viewModel?.getPagingLiveData()?.value
+                    lastPage?.let { viewModel?.fetchFeedXProductsData(postId, page = it) }
+                }
+            }
+
+            override fun onScroll(lastVisiblePosition: Int) {
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            }
+        }
+    }
+
+    private fun setAdapter(products: List<FeedXProduct>) {
+        binding.rvPosttag.adapter = adapter
+        adapter?.setItemsAndAnimateChanges(mapPostTag(products))
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagModelNew> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(R.string.feed_share_default_text)
+        val desc = context?.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
         val itemList: MutableList<ProductPostTagModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
             postDescription = desc?.replace("%s", postTagItem.authorName).toString()
@@ -207,7 +263,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         listener: Listener?,
         productBottomSheetData: ProductBottomSheetData,
         viewModelFactory: ViewModelProvider.Factory,
-        customMvcTracker: MvcTrackerImpl? = null
+        customMvcTracker: MvcTrackerImpl? = null,
+        tag: String = ""
     ) {
         this.listProducts = productBottomSheetData.products
         this.listener = listener
@@ -227,7 +284,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.customMvcTracker = customMvcTracker
 
         dismissedByClosing = false
-        show(fragmentManager, "")
+        show(fragmentManager, tag)
     }
 
     fun changeWishlistIconOnWishlistSuccess(rowNumber: Int) {
@@ -249,10 +306,10 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 Toaster.toasterCustomBottomHeight =
                     resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
-            if (actionText?.isEmpty() == false)
+            if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
                     .show()
-            else {
+            } else {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
         }

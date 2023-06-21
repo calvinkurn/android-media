@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.R
+import com.tokopedia.dropoff.databinding.ItemEmptyNearbyLocationBinding
+import com.tokopedia.dropoff.databinding.ItemNearbyLocationBinding
 import com.tokopedia.dropoff.ui.dropoff_picker.model.*
 import com.tokopedia.dropoff.util.getDescription
 import com.tokopedia.logisticCommon.util.toKilometers
-import kotlinx.android.synthetic.main.item_empty_nearby_location.view.*
-import kotlinx.android.synthetic.main.item_nearby_location.view.*
 
 internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -19,8 +19,20 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_nearby_location -> NearbyStoreViewHolder(view)
-            R.layout.item_empty_nearby_location -> EmptyViewHolder(view)
+            R.layout.item_nearby_location -> NearbyStoreViewHolder(
+                ItemNearbyLocationBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            R.layout.item_empty_nearby_location -> EmptyViewHolder(
+                ItemEmptyNearbyLocationBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             R.layout.item_dropoff_list_header -> HeaderViewHolder(view)
             else -> ShimmeringViewHolder(view)
         }
@@ -34,7 +46,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.bind(mData[position] as DropoffNearbyModel)
             }
             is EmptyViewHolder -> {
-                holder.itemView.button_search.setOnClickListener { mListener?.requestAutoComplete() }
+                holder.bind()
             }
         }
     }
@@ -82,18 +94,24 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
      *  Set as inner class and private to hide access from outside of the class while having access
      *  to member of the adapter, e.g. listener
      * */
-    private inner class NearbyStoreViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    private inner class NearbyStoreViewHolder(val binding: ItemNearbyLocationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(datum: DropoffNearbyModel) {
-            view.tv_location_title.text = datum.addrName
-            view.tv_location_desc.text = datum.getDescription()
-            view.tv_distance.text = datum.storeDistance.toKilometers()
-            view.setOnClickListener { mListener?.onItemClicked(it, adapterPosition) }
-            view.tag = datum
+            binding.tvLocationTitle.text = datum.addrName
+            binding.tvLocationDesc.text = datum.getDescription()
+            binding.tvDistance.text = datum.storeDistance.toKilometers()
+            binding.root.setOnClickListener { mListener?.onItemClicked(it, adapterPosition) }
+            binding.root.tag = datum
         }
-
     }
 
-    private inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    private inner class EmptyViewHolder(val binding: ItemEmptyNearbyLocationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind() {
+            binding.buttonSearch.setOnClickListener { mListener?.requestAutoComplete() }
+        }
+    }
+
     private inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
     private inner class ShimmeringViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

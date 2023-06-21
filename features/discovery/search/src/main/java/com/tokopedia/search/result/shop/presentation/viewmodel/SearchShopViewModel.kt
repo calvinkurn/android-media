@@ -90,8 +90,6 @@ internal class SearchShopViewModel(
     private val clickNotActiveShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickShopRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val routePageEventLiveData = MutableLiveData<Event<String>>()
-    private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem.ShopItemProduct>>()
-    private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem.ShopItemProduct>>()
     private val sortFilterItemListLiveData = MutableLiveData<List<SortFilterItem>>()
     private val clickQuickFilterTrackingEventMutableLiveData = MutableLiveData<Event<QuickFilterTrackingData>>()
     private val quickFilterIsVisible = MutableLiveData<Boolean>()
@@ -840,20 +838,6 @@ internal class SearchShopViewModel(
         routePageEventLiveData.postValue(Event(applink))
     }
 
-    fun onViewClickProductPreview(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
-        postRoutePageEvent(shopDataItemProduct.applink)
-        postClickProductPreviewTrackingEvent(shopDataItemProduct)
-    }
-
-    private fun postClickProductPreviewTrackingEvent(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
-        if (shopDataItemProduct.isRecommendation) {
-            clickProductRecommendationItemTrackingEventLiveData.postValue(Event(shopDataItemProduct))
-        }
-        else {
-            clickProductItemTrackingEventLiveData.postValue(Event(shopDataItemProduct))
-        }
-    }
-
     fun onViewRequestShopCount(mapParameter: Map<String, Any>) {
         getShopCountUseCase.get().execute(
                 this::setShopCount,
@@ -933,12 +917,6 @@ internal class SearchShopViewModel(
             clickShopRecommendationItemTrackingEventLiveData
 
     fun getRoutePageEventLiveData(): LiveData<Event<String>> = routePageEventLiveData
-
-    fun getClickProductItemTrackingEventLiveData(): LiveData<Event<ShopDataView.ShopItem.ShopItemProduct>> =
-            clickProductItemTrackingEventLiveData
-
-    fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopDataView.ShopItem.ShopItemProduct>> =
-            clickProductRecommendationItemTrackingEventLiveData
 
     fun getSortFilterItemListLiveData(): LiveData<List<SortFilterItem>> =
             sortFilterItemListLiveData

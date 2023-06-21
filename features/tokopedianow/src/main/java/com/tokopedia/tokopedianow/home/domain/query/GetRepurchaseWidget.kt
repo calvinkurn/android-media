@@ -22,6 +22,8 @@ internal object GetRepurchaseWidget: GqlQueryInterface {
                 }
                 data {
                     title
+                    subtitle
+                    subtitleColor
                     listProduct {
                         id
                         name

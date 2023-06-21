@@ -146,6 +146,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is ErrorMessage -> RouteManager.route(context, it.data)
                 is Success -> showToasterAndRedirect(it.data)
+                else -> {
+                    //no-op
+                }
             }
             return@let
         }
@@ -156,6 +159,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is ErrorMessage -> onRealCodeReFreshError()
                 is Success -> onRealCodeReFresh(it.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     })
@@ -169,6 +175,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is ErrorMessage -> onSwipeError(it.data)
                 is Success -> onSwipeResponse(it.data, "", "")
+                else -> {
+                    //no-op
+                }
             }
         }
     })
@@ -195,6 +204,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     setCouponToUi(it.data)
                     stopRenderPerformanceMonitoring()
                     stopPerformanceMonitoring()
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

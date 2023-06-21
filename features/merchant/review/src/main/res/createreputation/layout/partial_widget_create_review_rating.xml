@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/review_form_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -11,13 +11,13 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture() {
     @Test
-    fun `onPageSelected should update _viewPagerUiState when changingConfiguration is false`() = runBlockingTest {
+    fun `onPageSelected should update _viewPagerUiState when changingConfiguration is false`() = runTest {
         val newPosition = 10
         val currentPosition = viewModel.viewPagerUiState.first().currentPagerPosition
         viewModel.updateOrientationUiState(OrientationUiState(OrientationUiState.Orientation.PORTRAIT))
@@ -27,7 +27,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `onPageSelected should not update _viewPagerUiState when changingConfiguration is true`() = runBlockingTest {
+    fun `onPageSelected should not update _viewPagerUiState when changingConfiguration is true`() = runTest {
         val newPosition = 10
         val currentPosition = viewModel.viewPagerUiState.first().currentPagerPosition
         val previousPosition = viewModel.viewPagerUiState.first().previousPagerPosition
@@ -38,7 +38,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `onPageSelected should not update if new page position is equal to current page position`() = runBlockingTest {
+    fun `onPageSelected should not update if new page position is equal to current page position`() = runTest {
         val initialState = viewModel.viewPagerUiState.first()
         viewModel.onPageSelected(initialState.currentPagerPosition)
         val previousState = viewModel.viewPagerUiState.first()
@@ -48,14 +48,14 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `onPageSelected should disable view pager when changingConfiguration is true`() = runBlockingTest {
+    fun `onPageSelected should disable view pager when changingConfiguration is true`() = runTest {
         val newPosition = 10
         viewModel.onPageSelected(newPosition)
         Assert.assertEquals(false, viewModel.viewPagerUiState.first().enableUserInput)
     }
 
     @Test
-    fun `saveUiState should save current states`() = runBlockingTest {
+    fun `saveUiState should save current states`() = runTest {
         mockkStatic("com.tokopedia.reviewcommon.extension.CacheManagerExtKt") {
             val cacheManager = mockk<CacheManager>(relaxed = true)
             viewModel.saveUiState(cacheManager)
@@ -65,7 +65,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `restoreUiState should restore all saved states`() = runBlockingTest {
+    fun `restoreUiState should restore all saved states`() = runTest {
         val latestViewPagerUiState = mockk<ViewPagerUiState>(relaxed = true)
         val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
@@ -78,7 +78,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `updateDetailedReviewMediaResult should update uiState containing load next item then update currentMediaItem`() = runBlockingTest {
+    fun `updateDetailedReviewMediaResult should update uiState containing load next item then update currentMediaItem`() = runTest {
         viewModel.updateDetailedReviewMediaResult(
             response = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia,
             mediaNumberToLoad = 1,
@@ -92,7 +92,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `updateDetailedReviewMediaResult should update uiState containing load prev item and load next then update currentMediaItem`() = runBlockingTest {
+    fun `updateDetailedReviewMediaResult should update uiState containing load prev item and load next then update currentMediaItem`() = runTest {
         viewModel.updateDetailedReviewMediaResult(
             response = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia,
             mediaNumberToLoad = 11,
@@ -107,7 +107,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `updateDetailedReviewMediaResult should update uiState containing load first page then update currentMediaItem when response is null`() = runBlockingTest {
+    fun `updateDetailedReviewMediaResult should update uiState containing load first page then update currentMediaItem when response is null`() = runTest {
         viewModel.updateDetailedReviewMediaResult(
             response = null,
             mediaNumberToLoad = 11,
@@ -122,7 +122,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     }
 
     @Test
-    fun `updateDetailedReviewMediaResult should filter invalid media`() = runBlockingTest {
+    fun `updateDetailedReviewMediaResult should filter invalid media`() = runTest {
         viewModel.updateDetailedReviewMediaResult(
             response = getDetailedReviewMediaResultWithInvalidImageAndVideo.productrevGetReviewMedia,
             mediaNumberToLoad = 1,

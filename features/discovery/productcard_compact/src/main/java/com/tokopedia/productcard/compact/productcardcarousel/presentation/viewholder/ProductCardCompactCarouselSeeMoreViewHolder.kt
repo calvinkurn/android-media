@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselSeeMoreCardBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.util.ProductCardExtension.setProductCarouselWidth
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardCompactCarouselSeeMoreViewHolder(
     view: View,
-    private val listener: TokoNowCarouselProductCardSeeMoreListener? = null
+    private val listener: ProductCardCompactCarouselSeeMoreListener? = null
 ) : AbstractViewHolder<ProductCardCompactCarouselSeeMoreUiModel>(view){
 
     companion object {
@@ -19,6 +20,10 @@ class ProductCardCompactCarouselSeeMoreViewHolder(
     }
 
     private val binding: ItemProductCardCompactCarouselSeeMoreCardBinding? by viewBinding()
+
+    init {
+        binding?.cardSeeMoreBannerMix?.setProductCarouselWidth()
+    }
 
     override fun bind(element: ProductCardCompactCarouselSeeMoreUiModel) {
         binding?.apply {
@@ -35,7 +40,7 @@ class ProductCardCompactCarouselSeeMoreViewHolder(
         }
     }
 
-    interface TokoNowCarouselProductCardSeeMoreListener {
+    interface ProductCardCompactCarouselSeeMoreListener {
         fun onProductCardSeeMoreClickListener(
             seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )

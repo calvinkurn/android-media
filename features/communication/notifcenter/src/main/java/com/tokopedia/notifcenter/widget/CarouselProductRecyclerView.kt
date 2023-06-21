@@ -12,13 +12,17 @@ import kotlin.math.roundToInt
 class CarouselProductRecyclerView : RecyclerView {
 
     private val lm = ProductListLayoutManager(
-            context, LinearLayoutManager.HORIZONTAL, false
+        context,
+        LinearLayoutManager.HORIZONTAL,
+        false
     )
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(
-            context: Context, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     init {
@@ -28,15 +32,15 @@ class CarouselProductRecyclerView : RecyclerView {
     }
 
     fun saveProductCarouselState(
-            position: Int,
-            listener: CarouselProductNotificationViewHolder.Listener?
+        position: Int,
+        listener: CarouselProductNotificationViewHolder.Listener?
     ) {
         listener?.saveProductCarouselState(position, lm.onSaveInstanceState())
     }
 
     fun restoreSavedCarouselState(
-            adapterPosition: Int,
-            listener: CarouselProductNotificationViewHolder.Listener?
+        adapterPosition: Int,
+        listener: CarouselProductNotificationViewHolder.Listener?
     ) {
         listener?.getSavedCarouselState(adapterPosition)?.let {
             lm.onRestoreInstanceState(it)
@@ -49,9 +53,9 @@ class CarouselProductRecyclerView : RecyclerView {
         private val childWidthMultiplier = 0.73
         private var maxChildWidth = 0
 
-        constructor(context: Context?) : super(context)
-        constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
-        constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+        constructor(context: Context) : super(context)
+        constructor(context: Context, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
+        constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
         override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
             lp?.let { child ->

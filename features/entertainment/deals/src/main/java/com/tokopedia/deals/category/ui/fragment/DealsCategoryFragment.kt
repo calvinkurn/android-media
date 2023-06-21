@@ -299,10 +299,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 val position = parent.getChildAdapterPosition(view)
                 val totalSpanCount = getTotalSpanCount(parent)
 
-                if (position != RecyclerView.NO_POSITION) {
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.four).toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
-                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
+                context?.let { context->
+                    if (position != RecyclerView.NO_POSITION) {
+                        outRect.bottom = if (isInTheFirstRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.four).toPx()
+                        outRect.left = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.two).toPx() else context.resources.getInteger(R.integer.sixteen).toPx()
+                        outRect.right = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.two).toPx()
+                    }
                 }
             }
         }
@@ -477,6 +479,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val MAX_SIZE_CHIPS = 5
         const val CHIPS_INITIAL_SUBLIST_INDEX = 0
         const val CHIPS_LAST_SUBLIST_INDEX = 4
+
+        private const val ADDITIONAL_POSITION = 2
 
         private const val EXTRA_TAB_NAME = ""
 

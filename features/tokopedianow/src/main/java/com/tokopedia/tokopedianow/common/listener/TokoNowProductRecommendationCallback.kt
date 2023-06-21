@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.listener
 
+import android.content.Context
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
@@ -10,7 +11,7 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel,
     private val listener: TokoNowProductRecommendationListener?
-): ProductCardCompactCarouselView.TokoNowProductCardCarouselListener,
+): ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     override fun onProductCardClicked(
@@ -20,8 +21,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardClicked(
             position = position,
             product = product,
-            isLogin = viewModel.isLogin,
-            userId = viewModel.userId
+            isLogin = viewModel.isLoggedIn(),
+            userId = viewModel.getUserId()
         )
     }
 
@@ -32,8 +33,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardImpressed(
             position = position,
             product = product,
-            isLogin = viewModel.isLogin,
-            userId = viewModel.userId
+            isLogin = viewModel.isLoggedIn(),
+            userId = viewModel.getUserId()
         )
     }
 
@@ -42,7 +43,7 @@ class TokoNowProductRecommendationCallback(
         product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
-        if (!viewModel.isLogin) {
+        if (!viewModel.isLoggedIn()) {
             listener?.openLoginPage()
         } else {
             viewModel.onCartQuantityChanged(
@@ -67,7 +68,16 @@ class TokoNowProductRecommendationCallback(
         listener?.seeMoreClicked(seeMoreUiModel)
     }
 
-    override fun onSeeAllClicked(headerName: String, appLink: String) {
+    override fun onProductCardAddToCartBlocked() {
+        listener?.productCardAddToCartBlocked()
+    }
+
+    override fun onSeeAllClicked(
+        context: Context,
+        headerName: String,
+        appLink: String,
+        widgetId: String
+    ) {
         listener?.seeAllClicked(appLink)
     }
 

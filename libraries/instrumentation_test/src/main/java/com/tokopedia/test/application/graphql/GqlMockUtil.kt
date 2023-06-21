@@ -1,23 +1,19 @@
 package com.tokopedia.test.application.graphql
 
-import android.content.Context
+import androidx.annotation.RawRes
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
-import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import timber.log.Timber
-import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Type
 
 object GqlMockUtil {
 
-    inline fun <reified T : Any> createSuccessResponseFromRaw(
-        context: Context,
-        res: Int,
+    inline fun <reified T : Any> createSuccessResponse(
+        @RawRes res: Int
     ): GraphqlResponse {
+        val context = InstrumentationRegistry.getInstrumentation().context
         val rawResource: InputStream = context.resources.openRawResource(res)
         val content = rawResource.bufferedReader().use { it.readText() }
         val contentObj = Gson().fromJson(content, T::class.java)
@@ -45,6 +41,10 @@ object GqlMockUtil {
         return success.toSuccessGqlResponse()
     }
 
+    inline fun <reified T : Any> createSuccessResponse(s: String): GraphqlResponse {
+        val obj = Gson().fromJson(s, T::class.java)
+        return createSuccessResponse(obj)
+    }
 }
 
 fun HashMap<Type, Any>.toSuccessGqlResponse(): GraphqlResponse {

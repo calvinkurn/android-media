@@ -10,6 +10,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
@@ -18,9 +19,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockkStatic
 import io.mockk.verify
 import org.junit.runner.RunWith
@@ -35,11 +34,13 @@ class EditorViewModelTest {
     private val saveImageRepo = mockk<SaveImageRepository>()
     private val userSession = mockk<UserSessionInterface>()
     private val addLogoRepository = mockk<AddLogoFilterRepository>()
+    private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = EditorViewModel(
         saveImageRepo,
         addLogoRepository,
-        userSession
+        userSession,
+        bitmapCreationRepository
     )
 
     @Test
@@ -202,16 +203,13 @@ class EditorViewModelTest {
         dataList[3].editList.clear()
 
         // When
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             dataList,
-            onFinish = { _, _ -> }
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+            }
         )
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -234,13 +232,10 @@ class EditorViewModelTest {
 
         // When
         every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
+        viewModel.finishPage(dataList) { finalUrlList ->
+            // Then
+            assertNotNull(finalUrlList)
         }
-        viewModel.saveToGallery(dataList) { _, _ -> }
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -253,16 +248,13 @@ class EditorViewModelTest {
         // When
         mockkStatic(FileUtil::class)
         every { getTokopediaCacheDir() } returns tokopediaCacheDir
-        every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
-        }
-        viewModel.saveToGallery(
+        viewModel.finishPage(
             dataList,
-            onFinish = { _, _ -> }
+            onFinish = { finalUrlList ->
+                // Then
+                assertNotNull(finalUrlList)
+            }
         )
-
-        // Then
-        verify { saveImageRepo.saveToGallery(any(), any()) }
     }
 
     @Test
@@ -305,6 +297,36 @@ class EditorViewModelTest {
 
         // Then
         assertEquals(false, isShopAvail)
+    }
+
+    @Test
+    fun `check memory is overflow true`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns true
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(true, isMemoryOverflow)
+    }
+
+    @Test
+    fun `check memory is overflow false`() {
+        // Given
+        val width = 100
+        val height = 100
+        var isMemoryOverflow = false
+
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns false
+        isMemoryOverflow = viewModel.isMemoryOverflow(width, height)
+
+        // Then
+        assertEquals(false, isMemoryOverflow)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {

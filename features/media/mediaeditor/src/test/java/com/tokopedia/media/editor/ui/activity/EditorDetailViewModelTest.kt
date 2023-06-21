@@ -5,20 +5,17 @@ import android.graphics.BitmapFactory
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
-import com.tokopedia.media.editor.data.repository.ColorFilterRepository
-import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
-import com.tokopedia.media.editor.data.repository.RotateFilterRepository
-import com.tokopedia.media.editor.data.repository.SaveImageRepository
-import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
-import com.tokopedia.media.editor.data.repository.WatermarkType
+import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.ResourceProvider
+import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Runs
@@ -56,6 +53,7 @@ class EditorDetailViewModelTest {
     private val saveImageRepository = mockk<SaveImageRepository>()
     private val getWatermarkUseCase = mockk<GetWatermarkUseCase>()
     private val addLogoRepository = mockk<AddLogoFilterRepository>()
+    private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
 
     private val viewModel = DetailEditorViewModel(
         resourceProvider,
@@ -67,6 +65,7 @@ class EditorDetailViewModelTest {
         rotateFilterRepository,
         saveImageRepository,
         getWatermarkUseCase,
+        bitmapCreationRepository,
         addLogoRepository
     )
 
@@ -465,6 +464,117 @@ class EditorDetailViewModelTest {
 
         // Then
         assertEquals(shopAvatar, shopAvatarUrl)
+    }
+
+    @Test
+    fun `generate add logo overlay without bitmap`() {
+        // Given
+        var overlayLogo: Bitmap? = null
+
+        // When
+        overlayLogo = viewModel.generateAddLogoOverlay(
+            null,
+            Pair(10, 10),
+            true
+        )
+
+        // Then
+        assertEquals(overlayLogo, null)
+    }
+
+    @Test
+    fun `generate add logo overlay with bitmap`() {
+        // Given
+        val bitmapName = "base"
+        var overlayLogo: Bitmap? = null
+        val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { addLogoRepository.generateOverlayImage(any(), any(), any()) } returns expectedResult
+        overlayLogo = viewModel.generateAddLogoOverlay(
+            expectedResult,
+            Pair(10, 10),
+            true
+        )
+
+        // Then
+        assertEquals(overlayLogo, expectedResult)
+    }
+
+    @Test
+    fun `create new bitmap`() {
+        // Given
+        val bitmapName = "base"
+        var createdBitmap: Bitmap? = null
+        val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { bitmapCreationRepository.createBitmap(any()) } returns expectedResult
+        createdBitmap = viewModel.bitmapCreation(
+            BitmapCreation.scaledBitmap(
+                expectedResult,
+                10,
+                10,
+                false
+            )
+        )
+
+        // Then
+        assertEquals(createdBitmap, expectedResult)
+    }
+
+    @Test
+    fun `get bitmap with filter`() {
+        // Given
+        val bitmapName = "base"
+        var createdBitmap = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { bitmapCreationRepository.getProcessedBitmap(any()) } returns null
+        createdBitmap = viewModel.getProcessedBitmap(
+            ProcessedBitmapModel(
+                originalBitmap = createdBitmap,
+                offsetX = 1,
+                offsetY = 1,
+                imageWidth = 1,
+                imageHeight = 1,
+                finalRotationDegree = 1f,
+                sliderValue = 1f,
+                rotateNumber = 1,
+                data = null,
+                translateX = 1f,
+                translateY = 1f,
+                imageScale = 1f,
+                isRotate = false,
+                isCrop = false,
+                scaleX = 1f,
+                scaleY = 1f,
+                isNormalizeY = false
+            )
+        )
+
+        // Then
+        assertEquals(createdBitmap, null)
+    }
+
+    @Test
+    fun `check image overflow true`() {
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns true
+        val isOverflow = viewModel.isImageOverFlow(localLogoUrl)
+
+        // Then
+        assertEquals(true, isOverflow)
+    }
+
+    @Test
+    fun `check image overflow false`() {
+        // When
+        every { bitmapCreationRepository.isBitmapOverflow(any(), any()) } returns false
+        val isOverflow = viewModel.isImageOverFlow(localLogoUrl)
+
+        // Then
+        assertEquals(false, isOverflow)
     }
 
     companion object {

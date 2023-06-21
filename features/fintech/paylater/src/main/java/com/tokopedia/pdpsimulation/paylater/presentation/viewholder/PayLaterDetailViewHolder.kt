@@ -13,11 +13,14 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterTickerCtaClick
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterTickerImpression
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -105,6 +108,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
     private fun setUpTicker(element: Detail) {
         itemView.payLaterStatusTicker.shouldShowWithAction(element.ticker.isShown) {
+            val urlList = HtmlLinkHelper(context, element.ticker.content).urlList
+
             itemView.payLaterStatusTicker.setHtmlDescription(element.ticker.content)
             itemView.payLaterStatusTicker.tickerType = when (element.ticker.type) {
                 TICKER_TYPE_GENERAL -> Ticker.TYPE_INFORMATION
@@ -115,6 +120,11 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             }
             itemView.payLaterStatusTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    val urlText = urlList.firstOrNull { it.linkUrl == linkUrl }?.linkText ?: ""
+
+                    interaction.invokeAnalytics(
+                        getGPLTickerCtaCLickEvent(element, urlText)
+                    )
                     RouteManager.route(
                         itemView.context,
                         linkUrl.toString()
@@ -123,6 +133,10 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
 
                 override fun onDismiss() {}
             })
+
+            interaction.invokeAnalytics(
+                getGPLTickerImpressionEvent(element)
+            )
         }
     }
 
@@ -197,6 +211,31 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
             promoName = detail.promoName.orEmpty()
+        }
+
+    @SuppressLint("PII Data Exposure")
+    private fun getGPLTickerCtaCLickEvent(detail: Detail, cta: String) =
+        PayLaterTickerCtaClick().apply {
+            tenureOption = detail.tenure ?: 0
+            userStatus = detail.userState ?: ""
+            payLaterPartnerName = detail.gatewayDetail?.gatewayCode ?: ""
+            linkingStatus = detail.linkingStatus ?: ""
+            action = PdpSimulationAnalytics.CLICK_PAYLATER_GPL_TICKER
+            promoName = detail.promoName.orEmpty()
+            tickerType = detail.ticker.type
+            tickerCta = cta
+        }
+
+    @SuppressLint("PII Data Exposure")
+    private fun getGPLTickerImpressionEvent(detail: Detail) =
+        PayLaterTickerImpression().apply {
+            tenureOption = detail.tenure ?: 0
+            userStatus = detail.userState ?: ""
+            payLaterPartnerName = detail.gatewayDetail?.gatewayCode ?: ""
+            linkingStatus = detail.linkingStatus ?: ""
+            action = PdpSimulationAnalytics.IMPRESSION_PAYLATER_GPL_TICKER
+            promoName = detail.promoName.orEmpty()
+            tickerType = detail.ticker.type
         }
 }
 

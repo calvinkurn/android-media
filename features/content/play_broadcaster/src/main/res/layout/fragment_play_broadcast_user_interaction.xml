@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_interaction"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/error_live_view"
@@ -22,21 +20,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/view_play_action_bar_live"
             layout="@layout/layout_play_action_bar_live"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
             android:id="@+id/view_stat_info"
@@ -44,20 +40,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="@id/view_play_action_bar_live"
-            app:layout_constraintTop_toBottomOf="@+id/view_play_action_bar_live"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/view_play_action_bar_live" />
 
         <com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
             android:id="@+id/pmv_metrics"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/play_metrics_height"
             android:layout_marginBottom="@dimen/play_dp_12"
-            app:layout_constraintVertical_bias="1"
-            app:layout_constraintTop_toBottomOf="@id/view_stat_info"
             app:layout_constraintBottom_toTopOf="@id/chat_list"
             app:layout_constraintEnd_toEndOf="@id/chat_list"
             app:layout_constraintStart_toStartOf="@id/chat_list"
-            />
+            app:layout_constraintTop_toBottomOf="@id/view_stat_info"
+            app:layout_constraintVertical_bias="1" />
 
         <com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
             android:id="@+id/pinned_msg_view"
@@ -66,8 +60,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="@id/layout_product_tag"
             app:layout_constraintEnd_toEndOf="@id/chat_list"
-            app:layout_constraintStart_toStartOf="@id/chat_list"
-            />
+            app:layout_constraintStart_toStartOf="@id/chat_list" />
 
         <include
             android:id="@+id/layout_product_tag"
@@ -77,16 +70,14 @@
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="@id/iv_share_link"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <FrameLayout
             android:id="@+id/fl_max_height_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/view_stat_info"
             app:layout_constraintBottom_toTopOf="@id/pinned_msg_view"
-            />
+            app:layout_constraintTop_toBottomOf="@id/view_stat_info" />
 
         <include
             android:id="@+id/chat_list"
@@ -94,11 +85,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/play_dp_6"
-            app:layout_constraintTop_toBottomOf="@id/fl_max_height_chat"
             app:layout_constraintBottom_toTopOf="@id/pinned_msg_view"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
             app:layout_constraintStart_toStartOf="@id/icon_product"
-            />
+            app:layout_constraintTop_toBottomOf="@id/fl_max_height_chat" />
 
         <com.tokopedia.play.broadcaster.view.custom.ProductIconView
             android:id="@+id/icon_product"
@@ -107,8 +97,7 @@
             android:layout_marginStart="@dimen/play_dp_20"
             app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_share_link"
-            />
+            app:layout_constraintTop_toTopOf="@id/iv_share_link" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_game"
@@ -128,11 +117,10 @@
             android:id="@+id/view_play_interactive"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            app:layout_constraintWidth_default="wrap"
             app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
             app:layout_constraintStart_toEndOf="@id/icon_product"
-            />
+            app:layout_constraintWidth_default="wrap" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_share_link"
@@ -143,8 +131,7 @@
             android:background="@drawable/bg_play_light_gray_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_play_share_link_white"
-            />
+            app:srcCompat="@drawable/ic_play_share_link_white" />
 
         <include
             android:id="@+id/loading_view"
@@ -155,8 +142,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/view_game_widget"
@@ -172,19 +158,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        layout="@layout/layout_play_interactive_setup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
-
     <com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
         android:id="@+id/view_quiz_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </FrameLayout>

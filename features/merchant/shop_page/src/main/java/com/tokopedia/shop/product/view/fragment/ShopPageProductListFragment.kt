@@ -1395,6 +1395,9 @@ class ShopPageProductListFragment :
                     is Success -> {
                         onSuccessGetMembershipData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -1405,6 +1408,9 @@ class ShopPageProductListFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetMerchantVoucherData(it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -1417,6 +1423,9 @@ class ShopPageProductListFragment :
                     is Success -> {
                         onSuccessGetShopProductFeaturedData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -1427,6 +1436,9 @@ class ShopPageProductListFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductEtalaseHighlightData(it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -1523,6 +1535,9 @@ class ShopPageProductListFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -1533,6 +1548,9 @@ class ShopPageProductListFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }

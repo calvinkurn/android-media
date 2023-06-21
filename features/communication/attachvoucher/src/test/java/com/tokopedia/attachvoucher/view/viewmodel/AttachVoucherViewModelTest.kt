@@ -10,6 +10,7 @@ import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Companion.NO_FILTER
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.*
@@ -25,6 +26,9 @@ class AttachVoucherViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = UnconfinedTestRule()
 
     @RelaxedMockK
     lateinit var getVoucherUseCase: GetVoucherUseCase

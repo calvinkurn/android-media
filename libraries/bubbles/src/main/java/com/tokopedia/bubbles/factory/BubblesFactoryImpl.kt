@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,10 +15,11 @@ import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.tokopedia.bubbles.data.model.BubbleNotificationModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.bubbles.analytics.BubblesTracker
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
+import com.tokopedia.bubbles.data.model.BubbleNotificationModel
 import com.tokopedia.bubbles.utils.BubblesConst
 import com.tokopedia.bubbles.utils.BubblesUtils
 import com.tokopedia.config.GlobalConfig
@@ -31,9 +33,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
     override fun setupBubble(
         builder: NotificationCompat.Builder,
-        model: BubbleNotificationModel
+        model: BubbleNotificationModel,
+        bubbleBitmap: Bitmap?
     ) {
-        val icon = createBubbleIcon(model.avatarUrl)
+        val icon = createBubbleIcon(model.avatarUrl, bubbleBitmap)
         if (icon != null) {
             val pendingIntentBundle =
                 getPendingIntentBundle(model.notificationType, model.notificationId)
@@ -41,13 +44,9 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             val user = getBubblePerson(model.fullName)
             val person = getBubblePerson(icon, model.fullName)
             val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
-            val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
+            val bubbleMetadata = getBubbleMetadata(pendingIntent, icon, model.isFromUser)
 
-            BubblesTracker.sendImpressionTracking(
-                userSession.shopId,
-                model.shortcutId,
-                model.senderId
-            )
+            sendImpressionTracking(model)
 
             builder
                 .setBubbleMetadata(bubbleMetadata)
@@ -60,8 +59,28 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
-    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel) {
-        var shortcuts = createShortcuts(historyModels)
+    private fun sendImpressionTracking(model: BubbleNotificationModel) {
+        try {
+            val uri = Uri.parse(model.applinks)
+            when (uri.host) {
+                TOPCHAT_HOST -> {
+                    BubblesTracker.sendImpressionTracking(
+                        userSession.shopId,
+                        model.shortcutId,
+                        model.senderId
+                    )
+                }
+                else -> {
+                    // no op
+                }
+            }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+
+    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel, bubbleBitmap: Bitmap?) {
+        var shortcuts = createShortcuts(historyModels, bubbleBitmap)
 
         shortcuts = shortcuts.sortedByDescending { it.id == bubbleModel.shortcutId }
 
@@ -137,6 +156,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         }
     }
 
+    private fun getComponentName(): String {
+        return GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
+    }
+
     private fun getBubblePerson(fullName: String): Person {
         return Person.Builder()
             .setName(fullName)
@@ -153,8 +176,8 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
             .build()
     }
 
-    private fun createBubbleIcon(avatarUrl: String): IconCompat? {
-        val bitmap = BubblesUtils.getBitmap(context, avatarUrl, getBitmapWidth(), getBitmapHeight())
+    private fun createBubbleIcon(avatarUrl: String, bubbleBitmap: Bitmap?): IconCompat? {
+        val bitmap = bubbleBitmap ?: BubblesUtils.getBitmap(context, avatarUrl, getBitmapWidth(), getBitmapHeight())
         return bitmap?.let {
             IconCompat.createWithAdaptiveBitmap(it)
         }
@@ -178,36 +201,41 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
     private fun getBubbleMetadata(
         pendingIntent: PendingIntent,
-        icon: IconCompat
+        icon: IconCompat,
+        isFromUser: Boolean
     ): NotificationCompat.BubbleMetadata {
         return NotificationCompat.BubbleMetadata.Builder(
             pendingIntent,
             icon
-        ).setDesiredHeight(getBubbleHeight())
-            .build()
+        ).setDesiredHeight(getBubbleHeight()).apply {
+            if (isFromUser) {
+                setAutoExpandBubble(true)
+                setSuppressNotification(true)
+            }
+        }.build()
     }
 
-    private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>): List<ShortcutInfoCompat> {
+    private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>, bubbleBitmap: Bitmap?): List<ShortcutInfoCompat> {
         return historyModels.map {
             ShortcutInfoCompat.Builder(context, it.messageId)
                 .setLocusId(LocusIdCompat(it.messageId))
                 .setActivity(
                     ComponentName(
                         context.packageName,
-                        GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
+                        getComponentName()
                     )
                 )
                 .setShortLabel(it.senderName)
-                .setIcon(createBubbleIcon(it.avatarUrl))
+                .setIcon(createBubbleIcon(it.avatarUrl, bubbleBitmap))
                 .setLongLived(true)
                 .setIntent(createBubbleChatIntent(it.applink))
-                .setPerson(getBubblePerson(createBubbleIcon(it.avatarUrl), it.senderName))
+                .setPerson(getBubblePerson(createBubbleIcon(it.avatarUrl, bubbleBitmap), it.senderName))
                 .build()
         }
     }
 
     companion object {
         const val REQUEST_BUBBLE = 2
+        const val TOPCHAT_HOST = "topchat"
     }
-
 }

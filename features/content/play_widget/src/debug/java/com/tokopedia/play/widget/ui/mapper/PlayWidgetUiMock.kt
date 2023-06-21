@@ -1,6 +1,19 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import kotlin.random.Random
@@ -31,7 +44,7 @@ object PlayWidgetUiMock {
         background = getPlayWidgetBackgroundUiModel()
     )
 
-    private fun getSampleItemData(): List<PlayWidgetItemUiModel> {
+    internal fun getSampleItemData(): List<PlayWidgetItemUiModel> {
         val size = MOCK_DATA_SIZE
         return List(size) {
             if (it == size - BANNER_POSITION_INDEX) getSampleBannerModel()
@@ -59,13 +72,21 @@ object PlayWidgetUiMock {
         title = "BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D",
         channelType = channelType,
         appLink = "",
-        startTime = "",
+        startTime = "17 Apr 2023 | 17.00",
         totalView = PlayWidgetTotalView("33.1 rb", true),
         promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
         reminderType = PlayWidgetReminderType.NotReminded,
-        partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play"),
+        partner = PlayWidgetPartnerUiModel(
+            "11232713",
+            "Tokopedia Play",
+            PartnerType.Shop,
+            "",
+            "",
+            "",
+        ),
         video = getVideoUiModel(channelType),
         hasAction = true,
+        shouldShowPerformanceDashboard = false,
         share = PlayWidgetShareUiModel(
             "Udah pada nonton \\\"BARDI hingga Memory Mulai dari 1Rb! \uD83D\uDD25 \uD83D\uDE0D\\\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\\nhttps://www.tokopedia.com/play/channel/272686?titlebar=false",
             isShow = true
@@ -75,6 +96,16 @@ object PlayWidgetUiMock {
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+        products = List(3) {
+           PlayWidgetProduct(
+               id = it.toString(),
+               name = "Product $it",
+               imageUrl = "https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_960,f_auto/DCTM_Penguin_UK_DK_AL526630_wkmzns.jpg",
+               appLink = "",
+               priceFmt = "Rp${it + 1}00.000,00",
+               price = "${(it+1)}00000",
+           )
+        },
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

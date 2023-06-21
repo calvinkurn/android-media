@@ -22,6 +22,9 @@ private const val TAG_ATTRIBUTE_FIRST = 0
 private const val TAG_ATTRIBUTE_SECOND = 1
 private const val EMPTY_AMOUNT_RESERVE_BALANCE = 0
 private const val RESERVE_BALANCE_FORMAT = "%s Coins"
+private const val TEXT_COLOR_GREEN = "green"
+private const val TEXT_COLOR_GRAY = "gray"
+private const val TEXT_COLOR_BLACK = "black"
 
 fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String, position: Int): BalanceDrawerItemModel {
     val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.textAttributes?.mapToBalanceTextAttributes()
@@ -152,7 +155,12 @@ private fun buildWalletAppBalanceDrawerModel(
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
     return BalanceTextAttribute(
         colour = this.colour,
-        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        colourRef = when (this.colour) {
+            TEXT_COLOR_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            TEXT_COLOR_GRAY -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            TEXT_COLOR_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        },
         text = text,
         isBold = this.isBold
     )
@@ -161,7 +169,12 @@ fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
 fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
     return BalanceTextAttribute(
         colour = this.color,
-        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        colourRef = when (this.color) {
+            TEXT_COLOR_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            TEXT_COLOR_GRAY -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            TEXT_COLOR_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        },
         text = text,
         isBold = this.isBold
     )

@@ -76,22 +76,28 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     private fun addObserver() {
-        mPresenter.couponFilterViewModel.observe(this, Observer {
-            it.let {
-                when (it) {
-                    is Loading -> showLoading()
-                    is ErrorMessage -> onError(it.data, NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
-                    is Success -> {
-                        hideLoading()
-                        onSuccess(it.data.filter.categories)
+        mPresenter.couponFilterViewModel.observe(
+            this,
+            Observer {
+                it.let {
+                    when (it) {
+                        is Loading -> showLoading()
+                        is ErrorMessage -> onError(it.data, NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
+                        is Success -> {
+                            hideLoading()
+                            onSuccess(it.data.filter.categories)
+                        }
+                        else -> {
+                            // no-op
+                        }
                     }
                 }
             }
-        })
+        )
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
-        //Intermittent crash on Marshmallow
+        // Intermittent crash on Marshmallow
         try {
             setContentView(layoutRes)
         } catch (e: Exception) {
@@ -106,9 +112,11 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             supportActionBar?.title = this.title
         }
         updateTitle(getString(R.string.tp_label_my_coupon_new))
-        server_error_view.setErrorButtonClickListener(View.OnClickListener {
-            mPresenter.getFilter()
-        })
+        server_error_view.setErrorButtonClickListener(
+            View.OnClickListener {
+                mPresenter.getFilter()
+            }
+        )
         initViews()
     }
 
@@ -125,12 +133,11 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     private fun initInjector() =
-            DaggerTokopointBundleComponent.builder()
-                    .bundleModule(BundleModule(bundle ?: Bundle()))
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .tokopointsQueryModule(TokopointsQueryModule(this))
-                    .build()
-
+        DaggerTokopointBundleComponent.builder()
+            .bundleModule(BundleModule(bundle ?: Bundle()))
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokopointsQueryModule(TokopointsQueryModule(this))
+            .build()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -155,7 +162,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     override fun onSuccess(data: List<CouponFilterItem>) {
-
         view_pager_sort_type?.apply {
             mAdapter = StackedCouponFilterPagerAdapter(supportFragmentManager, data)
 
@@ -165,7 +171,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
                 }
 
                 override fun onPageSelected(position: Int) {
@@ -176,16 +181,16 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                             presenter.getCoupons(data[position].id)
                         }
                     }
-                    AnalyticsTrackerUtil.sendEvent(activityContext,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                            "click " + data[position],
-                            "")
+                    AnalyticsTrackerUtil.sendEvent(
+                        activityContext,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                        "click " + data[position],
+                        ""
+                    )
                 }
 
-
                 override fun onPageScrollStateChanged(state: Int) {
-
                 }
             })
 
@@ -197,8 +202,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                 }
             }, TAB_SETUP_DELAY_MS.toLong())
         }
-        //Setting up sort types tabsK
-
+        // Setting up sort types tabsK
     }
 
     override fun onError(error: String, hasInternet: Boolean) {

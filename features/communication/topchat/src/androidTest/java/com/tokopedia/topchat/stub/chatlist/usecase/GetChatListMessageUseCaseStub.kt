@@ -1,26 +1,24 @@
 package com.tokopedia.topchat.stub.chatlist.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListResponse
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import javax.inject.Inject
 
+@ActivityScope
 class GetChatListMessageUseCaseStub @Inject constructor(
-        gqlUseCase: GraphqlUseCase<ChatListPojo>,
-        private val mapper: GetChatListMessageMapper
-) : GetChatListMessageUseCase(gqlUseCase, mapper, CoroutineTestDispatchersProvider) {
+    graphqlRepository: GraphqlRepository,
+    private val mapper: GetChatListMessageMapper
+) : GetChatListMessageUseCase(graphqlRepository, mapper, CoroutineTestDispatchersProvider) {
 
     var response = ChatListPojo()
 
-    override fun getChatList(
-            page: Int,
-            filter: String,
-            tab: String,
-            onSuccess: (ChatListPojo, List<String>, List<String>) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        onSuccess(response, mapper.mapPinChat(response, page), mapper.mapUnpinChat(response))
+    override suspend fun execute(params: ChatListParam): ChatListResponse {
+        return ChatListResponse(response, mapper.mapPinChat(response, params.page), mapper.mapUnpinChat(response))
     }
 }

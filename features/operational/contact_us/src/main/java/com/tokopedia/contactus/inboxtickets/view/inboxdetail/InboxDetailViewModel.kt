@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxtickets.view.inboxdetail
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -12,18 +11,6 @@ import com.tokopedia.contactus.inboxtickets.data.model.Tickets
 import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_HIT_API
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_KEY_SECURE_IMAGE_PARAMETER
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
-import com.tokopedia.contactus.inboxtickets.view.utils.*
-import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ChipUploadHostConfigUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.CloseTicketByUserUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.ContactUsUploadImageUseCase
@@ -33,6 +20,20 @@ import com.tokopedia.contactus.inboxtickets.domain.usecase.PostMessageUseCase2
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SecureUploadUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.SubmitRatingUseCase
 import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessage2Param
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_LIKED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_HIT_API
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.SUCCESS_KEY_SECURE_IMAGE_PARAMETER
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_CLOSED
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_IN_PROCESS
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.TICKET_STATUS_NEED_RATING
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
+import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
+import com.tokopedia.contactus.inboxtickets.view.utils.NEW
+import com.tokopedia.contactus.inboxtickets.view.utils.OPEN
+import com.tokopedia.contactus.inboxtickets.view.utils.SOLVED
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
@@ -43,7 +44,11 @@ import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -62,12 +67,12 @@ class InboxDetailViewModel @Inject constructor(
     private val chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase,
     private val secureUploadUseCase: SecureUploadUseCase,
     private val userSession: UserSessionInterface,
-    private val coroutineDispatcherProvider: CoroutineDispatchers,
+    private val coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
 
-        //status on find keyword
+        // status on find keyword
         const val NOT_FIND_ANY_TEXT = 0
         const val OUT_OF_BOND = 1
         const val FIND_KEYWORD = 2
@@ -151,7 +156,8 @@ class InboxDetailViewModel @Inject constructor(
             block = {
                 val requestParams = submitRatingUseCase.createRequestParams(
                     getFirstCommentId(),
-                    rating, reason
+                    rating,
+                    reason
                 )
                 val chipGetInboxDetail = submitRatingUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
@@ -228,7 +234,8 @@ class InboxDetailViewModel @Inject constructor(
                                     .getBadCsatReasons(),
                                 ticketDetail = chipGetInboxDetail.getDataTicket().apply {
                                     isShowRating = false
-                                }, isIssueClose = false
+                                },
+                                isIssueClose = false
                             )
                         }
                     } else {
@@ -357,20 +364,21 @@ class InboxDetailViewModel @Inject constructor(
         searchIndices.clear()
         currentState.ticketDetail.getTicketComment().forEachIndexed { index, commentsItem ->
             if (utils.containsIgnoreCase(
-                    commentsItem.messagePlaintext, searchText
+                    commentsItem.messagePlaintext,
+                    searchText
                 )
             ) {
                 searchIndices.add(index)
             }
         }
-
     }
 
     fun getNextResult() {
         if (searchIndices.size > SIZE_ZERO) {
             if (next >= INVALID_NUMBER && next < searchIndices.size.minus(INDEX_ONE)) {
                 next += INDEX_ONE
-                _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(searchIndices[next], next + INDEX_ONE)
+                _onFindKeywordAtTicket.value =
+                    OnFindKeywordAtTicket(searchIndices[next], next + INDEX_ONE)
             } else {
                 _onFindKeywordAtTicket.value = OnFindKeywordAtTicket(status = OUT_OF_BOND)
             }
@@ -427,17 +435,21 @@ class InboxDetailViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val requestParam = postMessageUseCase.createRequestParams(
-                    ticketId, message, SIZE_ZERO, "", getLastReplyFromAgent(), userSession.userId
+                    ticketId,
+                    message,
+                    SIZE_ZERO,
+                    "",
+                    getLastReplyFromAgent(),
+                    userSession.userId
                 )
 
                 val replyTicketResponse = postMessageUseCase(requestParam)
 
                 if (replyTicketResponse.getTicketReplay()
-                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                    .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                 ) {
                     val newItemMessage = addNewLocalComment(imageList, message)
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageSuccess(newItemMessage))
-
                 } else {
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
@@ -457,9 +469,8 @@ class InboxDetailViewModel @Inject constructor(
                 val chipUploadHostConfig = chipUploadHostConfigUseCase(Unit)
 
                 if (chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
-                        .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
+                    .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
                 ) {
-
                     val securelyUploadedImages =
                         getSecurelyUploadedImages(imageList, files, chipUploadHostConfig)
                     if (securelyUploadedImages.isNotEmpty()) {
@@ -487,7 +498,7 @@ class InboxDetailViewModel @Inject constructor(
                         postMessageUseCase(requestParam)
 
                     if (createTicketResponse.getTicketReplay()
-                            .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
+                        .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
                     ) {
                         val ticketReplyData =
                             createTicketResponse.getTicketReplay().getTicketReplayData()
@@ -503,16 +514,12 @@ class InboxDetailViewModel @Inject constructor(
                         } else {
                             _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                         }
-
                     } else {
                         _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                     }
-
-
                 } else {
                     _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed())
                 }
-
             },
             onError = {
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
@@ -533,7 +540,9 @@ class InboxDetailViewModel @Inject constructor(
         val uploadedImageList = getUploadedImageList(imageList, files, listOfSecureImageParmeter)
         return if (uploadedImageList.isEmpty()) {
             arrayListOf()
-        } else uploadedImageList
+        } else {
+            uploadedImageList
+        }
     }
 
     private suspend fun getListOfSecureImageParameter(
@@ -568,16 +577,14 @@ class InboxDetailViewModel @Inject constructor(
         listOfSecureImageParmeter: ArrayList<SecureImageParameter>
     ): ArrayList<ImageUpload> {
         val list = arrayListOf<ImageUpload>()
-        withContext(coroutineDispatcherProvider.io) {
-            list.addAll(
-                contactUsUploadImageUseCase.uploadFile(
-                    userSession.userId,
-                    imageList,
-                    files,
-                    listOfSecureImageParmeter
-                )
+        list.addAll(
+            contactUsUploadImageUseCase.uploadFile(
+                userSession.userId,
+                imageList,
+                files,
+                listOfSecureImageParmeter
             )
-        }
+        )
         return list
     }
 
@@ -611,7 +618,8 @@ class InboxDetailViewModel @Inject constructor(
             },
             onError = {
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
-            })
+            }
+        )
     }
 
     private fun addNewLocalComment(

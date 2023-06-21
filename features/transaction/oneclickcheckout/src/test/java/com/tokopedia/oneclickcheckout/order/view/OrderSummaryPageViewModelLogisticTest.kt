@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.akamai_bot_lib.ERROR_MESSAGE_AKAMAI
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -8,6 +9,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Insur
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -200,6 +202,22 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Get Rates Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val response = AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
+
+        every { ratesUseCase.execute(any()) } throws response
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
@@ -1156,6 +1174,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                 shippingRecommendationData = helper.shippingRecommendationData,
                 logisticPromoTickerMessage = "Tersedia bbo",
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)
             ),
@@ -1207,6 +1226,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                 shippingRecommendationData = helper.shippingRecommendationData,
                 logisticPromoTickerMessage = "Tersedia bbo",
+                isShowLogisticPromoTickerMessage = false,
                 logisticPromoViewModel = helper.logisticPromo,
                 isServicePickerEnable = true,
                 insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
@@ -1241,6 +1261,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 ratesId = helper.firstCourierSecondDuration.ratesId,
                 shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                 shippingRecommendationData = shippingRecommendationData,
+                isShowLogisticPromoTickerMessage = false,
                 isServicePickerEnable = true,
                 insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
             ),
@@ -1280,7 +1301,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 shippingRecommendationData = helper.shippingRecommendationData,
                 serviceErrorMessage = error,
                 isServicePickerEnable = true,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                isShowLogisticPromoTickerMessage = false
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
@@ -1313,7 +1335,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
                 needPinpoint = true,
                 isServicePickerEnable = false,
-                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)
+                insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance),
+                isShowLogisticPromoTickerMessage = false
             ),
             orderSummaryPageViewModel.orderShipment.value
         )
@@ -2329,6 +2352,23 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shippingRecommendationData = helper.shippingRecommendationData
         shippingRecommendationData.logisticPromo = null
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shippingRecommendationData = shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.clearBboIfExist()
+
+        // Then
+        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any()) }
+    }
+
+    @Test
+    fun `Clear Bbo If Exist When No Shipping Courier Available`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = LogisticPromoUiModel(),
+            logisticPromoShipping = null
+        )
 
         // When
         orderSummaryPageViewModel.clearBboIfExist()

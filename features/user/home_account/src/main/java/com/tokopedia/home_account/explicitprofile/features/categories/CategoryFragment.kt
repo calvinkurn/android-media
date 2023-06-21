@@ -15,7 +15,7 @@ import com.tokopedia.home_account.explicitprofile.data.ExplicitProfileGetQuestio
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
 import com.tokopedia.home_account.explicitprofile.data.SectionsDataModel
 import com.tokopedia.home_account.explicitprofile.data.TemplateDataModel
-import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponentsBuilder
+import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponents
 import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileSharedViewModel
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.SectionAdapter
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.SectionViewHolder
@@ -31,7 +31,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener {
+class CategoryFragment : BaseDaggerFragment(), SectionViewHolder.SectionListener {
 
     @Inject
     lateinit var tracker: ExplicitProfileAnalytics
@@ -52,11 +52,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        activity?.application?.let {
-            ExplicitProfileComponentsBuilder
-                .getComponent(it)
-                .inject(this)
-        }
+        getComponent(ExplicitProfileComponents::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,7 +80,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
     private fun initObservers() {
         viewModel.questions.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
                 }

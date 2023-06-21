@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <com.tokopedia.play_common.view.RoundedConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/feed_dms_upload_progress_background"
+        android:padding="8dp"
+        app:rcl_cornerRadius="8dp"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_thumbnail"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="4"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_uploading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintStart_toEndOf="@id/img_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/pb_uploading"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            android:text="@string/feed_uploading_title"
+            />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/pb_uploading"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_uploading"
+            app:layout_constraintEnd_toEndOf="@id/tv_uploading"
+            app:layout_constraintTop_toBottomOf="@id/tv_uploading"
+            app:unify_progress_bar_color_type="color_green"
+            app:unify_progress_bar_height="4"
+            />
+
+    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+
+</merge>

@@ -31,27 +31,30 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
     override fun startSaveCoupon(item: CatalogsValueEntity) {
         launchCatchError(block = {
             val redeemCouponBaseEntity = repository.startSaveCoupon(item.id)
-            startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.cta,
-                redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.code,
-                redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.title,
-                redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.description,
-                redeemCouponBaseEntity.hachikoRedeem.redeemMessage
+            startSaveCouponLiveData.value = Success(
+                ConfirmRedeemDialog(
+                    redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.cta,
+                    redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.code,
+                    redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.title,
+                    redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.description,
+                    redeemCouponBaseEntity.hachikoRedeem.redeemMessage
 
-            ))
+                )
+            )
         }) {
             if (it is CatalogGqlError) {
                 var responseCode = 0
-                val errorsMessage = it.developerMessage?.split(",")?.get(0)?.split("|")?.toTypedArray()
+                val errorsMessage = it.developerMessage.split(",").get(0).split("|").toTypedArray()
                 val onlyDigits: Boolean = errorsMessage.last().matches(Regex("[0-9]+"))
                 if (onlyDigits) {
                     responseCode = errorsMessage.last().toIntOrZero()
                 }
                 val detailedErrorMessage = it.messageErrorException.message ?: ""
-                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(detailedErrorMessage ,responseCode))
-                }
+                startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(detailedErrorMessage, responseCode))
             }
         }
     }
+}
 
-data class ValidateMessageDialog( val desc: String, val messageCode: Int)
-data class ConfirmRedeemDialog(val cta: String?, val code: String?, val title: String?, val description: String ?, val redeemMessage:String?)
+data class ValidateMessageDialog(val desc: String, val messageCode: Int)
+data class ConfirmRedeemDialog(val cta: String?, val code: String?, val title: String?, val description: String ?, val redeemMessage: String?)

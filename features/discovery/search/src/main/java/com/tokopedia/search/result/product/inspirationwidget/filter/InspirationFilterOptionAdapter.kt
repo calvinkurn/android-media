@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class InspirationFilterOptionAdapter(
+    private val filterDataView: InspirationFilterDataView,
     private val inspirationFilterListener: InspirationFilterListener,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>(), InspirationFilterOptionListener  {
 
@@ -34,6 +35,6 @@ class InspirationFilterOptionAdapter(
     override fun onInspirationFilterOptionClicked(
         filterOptionDataView: InspirationFilterOptionDataView
     ) {
-        inspirationFilterListener.onInspirationFilterOptionClicked(filterOptionDataView, itemList)
+        inspirationFilterListener.onInspirationFilterOptionClicked(filterOptionDataView, filterDataView)
     }
 }

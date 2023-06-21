@@ -6,7 +6,7 @@ import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.pdp.data.GqlUseCaseWrapper
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +31,7 @@ class CouponDetailUseCaseTest {
 
     @Test
     fun `check function invokation of Gql wrapper`() {
-        runBlockingTest {
+        runTest {
             val couponIdList = emptyList<String>()
             val map: Map<*, *> = HashMap<Any,Any>()
             coEvery { gqlWrapper.getResponse(Map::class.java, any(), emptyMap()) } returns map

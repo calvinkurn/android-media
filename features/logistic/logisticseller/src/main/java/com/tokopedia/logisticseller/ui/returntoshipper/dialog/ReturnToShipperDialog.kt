@@ -195,7 +195,7 @@ class ReturnToShipperDialog(private val context: Context) {
                 removeAllViews()
                 addView(tvImageDescription)
             }
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             // no op
         }
     }

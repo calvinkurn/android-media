@@ -87,6 +87,17 @@ object CatalogDetailMapper {
                     )
                 }
 
+                CatalogConstant.CATALOG_LIBRARY_ENRTY_POINT -> {
+                    val crudeEntryPointData = component.data
+                    listOfComponents.add(
+                        mapIntoEntryPointData(
+                            component.name,
+                            component.type,
+                            crudeEntryPointData
+                        )
+                    )
+                }
+
                 CatalogConstant.COMPARISON_NEW -> {
                     component.data?.firstOrNull()?.let { comparisonDataNew ->
                         listOfComponents.add(getNewComparisonComponent(catalogGetDetailModular, comparisonDataNew))
@@ -95,6 +106,11 @@ object CatalogDetailMapper {
             }
         }
         return listOfComponents
+    }
+
+    private fun mapIntoEntryPointData(name: String, type: String, crudeEntryPointData: List<ComponentData>?): BaseCatalogDataModel {
+        val data = crudeEntryPointData?.firstOrNull()
+        return CatalogEntryBannerDataModel(name, type, data?.categoryName, data?.catalogCount, data?.catalogs)
     }
 
     private fun getNewComparisonComponent(
@@ -115,14 +131,14 @@ object CatalogDetailMapper {
                             catalogGetDetailModular.basicInfo.brand,
                             catalogGetDetailModular.basicInfo.name,
                             "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
-                            catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL
+                            catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL,""
                         ),
                         ComparisonNewModel(
                             comparisonComponentDataNew.comparedData?.id ?: "",
                             comparisonComponentDataNew.comparedData?.brand ?: "",
                             comparisonComponentDataNew.comparedData?.name ?: "",
                             "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
-                            comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: ""
+                            comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: "",""
                         )
                     )
                 ),

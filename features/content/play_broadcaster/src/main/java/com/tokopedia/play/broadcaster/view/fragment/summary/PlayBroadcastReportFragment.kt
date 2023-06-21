@@ -156,6 +156,9 @@ class PlayBroadcastReportFragment @Inject constructor(
                     errorMessage = value.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                 )
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

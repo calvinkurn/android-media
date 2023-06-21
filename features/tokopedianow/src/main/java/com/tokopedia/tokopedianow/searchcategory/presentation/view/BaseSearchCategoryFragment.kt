@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -67,7 +68,6 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
-import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
@@ -78,19 +78,20 @@ import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
+import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
@@ -101,7 +102,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleList
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -515,11 +518,16 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
+        getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
+            showToasterWhenAddToCartBlocked()
+        }
+
         productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
                     getViewModel().refreshMiniCart()
+                    updateToolbarNotification(true)
                 }
                 is Fail -> {
                     activity?.apply {
@@ -558,6 +566,10 @@ abstract class BaseSearchCategoryFragment:
 
         productRecommendationViewModel.atcDataTracker.observe(viewLifecycleOwner) {
             sendAddToCartRecommendationTrackingEvent(it)
+        }
+
+        productRecommendationViewModel.updateToolbarNotification.observe(viewLifecycleOwner) {
+            updateToolbarNotification(it)
         }
     }
 
@@ -778,11 +790,12 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productItemDataView.productCardModel.productId,
+        val uri = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productItemDataView.productCardModel.productId
         )
+        val appLink = getViewModel().createAffiliateLink(uri)
+        RouteManager.route(context, appLink)
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
@@ -956,6 +969,10 @@ abstract class BaseSearchCategoryFragment:
 
     }
 
+    override fun createAffiliateLink(url: String): String {
+        return getViewModel().createAffiliateLink(url)
+    }
+
     override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
         openATCVariantBottomSheet(
             data.productId,
@@ -1113,6 +1130,7 @@ abstract class BaseSearchCategoryFragment:
         eventActionClicked = getClickEventAction(false),
         eventActionImpressed = getImpressionEventAction(false),
         eventCategory = getEventCategory(false),
+        onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
         getListValue = { recommendationItem ->
             getListValue(false, recommendationItem)
         },
@@ -1120,5 +1138,21 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
+    }
+
+    protected open fun createProductCardCompactCallback(): ProductCardCompactCallback = ProductCardCompactCallback { productId, similarProductTrackerListener ->
+        context?.apply {
+            val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(this, productId, similarProductTrackerListener)
+            startActivity(intent)
+        }
+    }
+
+    override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+
+    protected fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            toasterType = Toaster.TYPE_ERROR
+        )
     }
 }

@@ -51,11 +51,13 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (promoCodeApplied != null) {
-            textInputCoupon.textFieldInput.setText(promoCodeApplied)
+        context?.let { context ->
+            if (promoCodeApplied != null) {
+                textInputCoupon.textFieldInput.setText(promoCodeApplied)
+            }
+            progressDialog = ProgressDialog(activity)
+            progressDialog.setMessage(context.resources.getString(com.tokopedia.abstraction.R.string.title_loading))
         }
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -115,10 +117,12 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, OMP_CATEGORY_ID, page, resources)
+        context?.let { context ->
+            if (isCouponActive) {
+                promoCheckoutListPresenter.getListPromo(serviceId, OMP_CATEGORY_ID, page, context.resources)
+            }
+            promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(context.resources)
         }
-        promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
     }
 
     companion object {

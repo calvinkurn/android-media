@@ -28,6 +28,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -127,7 +128,7 @@ class PlayUpcomingCampaign {
         coEvery { mockRepo.checkUpcomingCampaign(any()) } returns false
         coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns PlayViewerTagItemRepository.CampaignReminder(true, "")
 
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             givenPlayViewModelRobot(
                 repo = mockRepo,
                 userSession = mockUserSession,
@@ -154,7 +155,7 @@ class PlayUpcomingCampaign {
         coEvery { mockRepo.checkUpcomingCampaign(any()) } returns false
         coEvery { mockRepo.subscribeUpcomingCampaign(any(),any()) } returns PlayViewerTagItemRepository.CampaignReminder(false, "")
 
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             givenPlayViewModelRobot(
                 repo = mockRepo,
                 userSession = mockUserSession,
@@ -177,7 +178,7 @@ class PlayUpcomingCampaign {
 
     @Test
     fun `given user is not logged in and has not reminded upco campaign, open login page`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             givenPlayViewModelRobot(
                 repo = mockRepo,
                 userSession = mockUserSession,
