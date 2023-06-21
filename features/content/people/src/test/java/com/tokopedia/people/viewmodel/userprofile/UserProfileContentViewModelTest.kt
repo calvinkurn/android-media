@@ -114,6 +114,7 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 profileTab equalTo mockProfileTabShown
+                it.viewModel.profileTab equalTo mockProfileTabShown
             }
         }
     }
@@ -150,7 +151,6 @@ class UserProfileContentViewModelTest {
     fun `when user success load profile tab and this is the first time review tab is shown`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getUserProfileTab(mockOwnProfile.userID) } returns mockProfileTabNotShown
                 coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
             }
             it.recordEvent {

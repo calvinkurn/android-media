@@ -242,6 +242,104 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
+    fun `UpdateLikeStatus - success`() {
+
+        val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
+
+        val expectedLikeStatus = currentLikeDislike.switchLikeStatus()
+        val expectedTotalLike = when (currentLikeDislike.isLike) {
+            true -> currentLikeDislike.totalLike - 1
+            false -> currentLikeDislike.totalLike + 1
+        }
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(
+                    UserProfileAction.UpdateLikeStatus(
+                        feedbackId = mockReviewContent.reviewList.first().feedbackID,
+                        likeStatus = expectedLikeStatus
+                    )
+                )
+            } andThen {
+                reviewContent.reviewList.first().likeDislike.totalLike.equalTo(expectedTotalLike)
+                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(expectedLikeStatus)
+            }
+        }
+    }
+
+    @Test
+    fun `UpdateLikeStatus - review not found`() {
+
+        val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
+        val randomFeedbackId = "kasdjfklajsdf"
+
+        val oldLikeStatus = currentLikeDislike.likeStatus
+        val oldTotalLike = currentLikeDislike.totalLike
+        val expectedLikeStatus = currentLikeDislike.switchLikeStatus()
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(
+                    UserProfileAction.UpdateLikeStatus(
+                        feedbackId = randomFeedbackId,
+                        likeStatus = expectedLikeStatus
+                    )
+                )
+            } andThen {
+                reviewContent.reviewList.first().likeDislike.totalLike.equalTo(oldTotalLike)
+                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(oldLikeStatus)
+            }
+        }
+    }
+
+    @Test
+    fun `UpdateLikeStatus - review like status is already the same`() {
+
+        val currentLikeDislike = mockReviewContent.reviewList.first().likeDislike
+
+        val expectedLikeStatus = currentLikeDislike.likeStatus
+        val expectedTotalLike = currentLikeDislike.totalLike
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(
+                    UserProfileAction.UpdateLikeStatus(
+                        feedbackId = mockReviewContent.reviewList.first().feedbackID,
+                        likeStatus = expectedLikeStatus
+                    )
+                )
+            } andThen {
+                reviewContent.reviewList.first().likeDislike.totalLike.equalTo(expectedTotalLike)
+                reviewContent.reviewList.first().likeDislike.likeStatus.equalTo(expectedLikeStatus)
+            }
+        }
+    }
+
+    @Test
     fun `Public Getter - firstName with 1 words`() {
 
         val mockName = "Jonathan"
