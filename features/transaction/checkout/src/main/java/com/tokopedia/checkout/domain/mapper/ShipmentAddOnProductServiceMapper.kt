@@ -32,22 +32,24 @@ object ShipmentAddOnProductServiceMapper {
             source = AddOnConstant.SOURCE_NORMAL_CHECKOUT
             featureType = 1
             addOns = listOf(
-                    AddOnRequest().apply {
-                        addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
-                        addOnKey = ""
-                        cartProducts = listOf(CartProduct(
-                                cartId = cartItemModel.cartId,
-                                productId = cartItemModel.productId,
-                                productName = cartItemModel.name,
-                                productParentId = cartItemModel.variantParentId
-                        ))
-                        addOnData = listAddOnRequest
-                    }
+                AddOnRequest().apply {
+                    addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
+                    addOnKey = ""
+                    cartProducts = listOf(
+                        CartProduct(
+                            cartId = cartItemModel.cartId,
+                            productId = cartItemModel.productId,
+                            productName = cartItemModel.name,
+                            productParentId = cartItemModel.variantParentId
+                        )
+                    )
+                    addOnData = listAddOnRequest
+                }
             )
         }
     }
 
-    fun mapSummaryAddOns(listSummaryAddOn: List<ShipmentSummaryAddOnData>, cartShipmentAddressFormData: CartShipmentAddressFormData): List<ShipmentAddOnSummaryModel> {
+    fun mapSummaryAddOns(cartShipmentAddressFormData: CartShipmentAddressFormData): List<ShipmentAddOnSummaryModel> {
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
 
@@ -69,16 +71,16 @@ object ShipmentAddOnProductServiceMapper {
             }
         }
 
-        val mapSummary = getShoppingSummaryAddOns(listSummaryAddOn)
+        val mapSummary = getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
         for (entry in countMapSummaries) {
             val addOnWording = mapSummary[entry.key]!!.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = ShipmentAddOnSummaryModel(
-                    wording = addOnWording,
-                    type = entry.key,
-                    qty = entry.value.second,
-                    priceLabel = addOnPrice,
-                    priceValue = entry.value.first
+                wording = addOnWording,
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
             )
             listShipmentAddOnSummary.add(summaryAddOn)
         }

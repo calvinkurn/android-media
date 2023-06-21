@@ -1367,29 +1367,4 @@ class ShipmentAdapter @Inject constructor(
         shipmentDataList[position] = item
         notifyItemChanged(position)
     }
-
-    fun updateAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        val cartItemModelData: CartItemModel?
-        val currentShipmentData = shipmentDataList[position]
-        if (currentShipmentData is CartItemModel) {
-            cartItemModelData = currentShipmentData
-            if (cartItemModel.cartId == cartItemModelData.cartId) {
-                cartItemModelData.addOnProduct.listAddOnProductData.forEach { addOnItem ->
-                    if (addOnItem.addOnDataId == addOnProductDataItemModel.addOnDataId) {
-                        addOnItem.addOnDataStatus = addOnProductDataItemModel.addOnDataStatus
-                    }
-                }
-            }
-        }
-        notifyItemChanged(position)
-    }
-
-    fun updateAddOnSummary(shipmentCostModel: ShipmentCostModel): Boolean {
-        val item = shipmentDataList.getOrNull(shipmentCostPosition)
-        if (item is ShipmentCostModel) {
-            shipmentDataList[shipmentCostPosition] = shipmentCostModel
-            return true
-        }
-        return false
-    }
 }

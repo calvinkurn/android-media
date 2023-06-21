@@ -311,6 +311,7 @@ class ShipmentPresenter @Inject constructor(
     // add ons product
     // list summary add on - ready to render
     private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
+
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
 
@@ -373,6 +374,10 @@ class ShipmentPresenter @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
+        var qtyAddOn = 0
+        var totalPriceAddOn = 0.0
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
             if (shipmentData is ShipmentCartItemModel) {
                 val cartItemModels = shipmentData.cartItemModels
@@ -406,6 +411,13 @@ class ShipmentPresenter @Inject constructor(
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.addOnDataStatus == 1) {
                                     totalAddOnProductServicePrice += (addOnProductService.addOnDataPrice * cartItem.quantity)
+                                    if (countMapSummaries.containsKey(addOnProductService.addOnDataType)) {
+                                        qtyAddOn += cartItem.quantity
+                                    } else {
+                                        qtyAddOn = cartItem.quantity
+                                    }
+                                    totalPriceAddOn = qtyAddOn * addOnProductService.addOnDataPrice
+                                    countMapSummaries[addOnProductService.addOnDataType] = totalPriceAddOn to qtyAddOn
                                 }
                             }
                         }
@@ -514,6 +526,22 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         shipmentCost.bookingFee = totalBookingFee
+
+        for (entry in countMapSummaries) {
+            val addOnWording = summariesAddOnUiModel[entry.key]!!.replace(CartConstant.QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = ShipmentAddOnSummaryModel(
+                wording = addOnWording,
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
+            )
+            listShipmentAddOnSummary.add(summaryAddOn)
+        }
+
+        listSummaryAddOnModel = listShipmentAddOnSummary
+        shipmentCost.listAddOnSummary = listSummaryAddOnModel
         shipmentCostModel.value = shipmentCost
         updateCheckoutButtonData(shipmentCost)
     }
@@ -934,6 +962,7 @@ class ShipmentPresenter @Inject constructor(
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
         shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
+        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -1016,8 +1045,8 @@ class ShipmentPresenter @Inject constructor(
         shippingCourierViewModelsState = hashMapOf()
         mapRequestSaveAddonProductService(cartShipmentAddressFormData)
         summariesAddOnUiModel = ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons)
-        listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData.listSummaryAddons, cartShipmentAddressFormData)
-        setSummaryAddOnProduct(listSummaryAddOnModel)
+        /*listSummaryAddOnModel = ShipmentAddOnProductServiceMapper.mapSummaryAddOns(cartShipmentAddressFormData)
+        setSummaryAddOnProduct(listSummaryAddOnModel)*/
     }
 
     internal fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -5530,7 +5559,7 @@ class ShipmentPresenter @Inject constructor(
 
     fun setSummaryAddOnProduct(listSummaryAddOnModel: List<ShipmentAddOnSummaryModel>) {
         shipmentCostModel.value = shipmentCostModel.value.copy(
-                listAddOnSummary = listSummaryAddOnModel
+            listAddOnSummary = listSummaryAddOnModel
         )
     }
 
@@ -5542,19 +5571,19 @@ class ShipmentPresenter @Inject constructor(
                 groupShop.groupShopData.forEach { groupShopV2 ->
                     groupShopV2.products.forEach { product ->
                         val cartProduct = CartProduct(
-                                cartId = product.cartId,
-                                productId = product.productId,
-                                productName = product.productName,
-                                productParentId = product.variantParentId
+                            cartId = product.cartId,
+                            productId = product.productId,
+                            productName = product.productName,
+                            productParentId = product.variantParentId
                         )
                         listCartProduct.add(cartProduct)
                         product.addOnProduct.listAddOnProductData.forEach { addonProduct ->
                             val addOnDataRequest = AddOnDataRequest(
-                                    addOnId = addonProduct.addOnDataId,
-                                    addOnQty = 1,
-                                    addOnUniqueId = addonProduct.addOnDataUniqueId,
-                                    addOnType = addonProduct.addOnDataType,
-                                    addOnStatus = addonProduct.addOnDataStatus
+                                addOnId = addonProduct.addOnDataId,
+                                addOnQty = 1,
+                                addOnUniqueId = addonProduct.addOnDataUniqueId,
+                                addOnType = addonProduct.addOnDataType,
+                                addOnStatus = addonProduct.addOnDataStatus
                             )
                             listAddOnDataRequest.add(addOnDataRequest)
                         }
@@ -5564,11 +5593,11 @@ class ShipmentPresenter @Inject constructor(
         }
         paramRequestSaveAddOnProductService = SaveAddOnStateRequest(
             addOns = listOf(
-                    AddOnRequest(
-                            addOnLevel = ADD_ON_LEVEL_PRODUCT,
-                            cartProducts = listCartProduct,
-                            addOnData = listAddOnDataRequest
-                    )
+                AddOnRequest(
+                    addOnLevel = ADD_ON_LEVEL_PRODUCT,
+                    cartProducts = listCartProduct,
+                    addOnData = listAddOnDataRequest
+                )
             ),
             source = SOURCE_NORMAL_CHECKOUT,
             featureType = 1
@@ -5580,21 +5609,21 @@ class ShipmentPresenter @Inject constructor(
         val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel)
         saveAddOnProductUseCase.setParams(params, isFireAndForget)
         saveAddOnProductUseCase.execute(
-                onSuccess = {
-                    // success : recalculate + show summary transaction
-                    // updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
-                    view?.handleOnSuccessSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
-                    if (!isFireAndForget && it.saveAddOns.status.equals(statusOK, true)) {
-                        // continue to hit update DDP
-                    }
-                },
-                onError = {
-                    if (!isFireAndForget) {
-                        // showToaster error
-                    }
-                    // failed : set latest value + uncheck
-                    view?.handleOnErrorSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+            onSuccess = {
+                // success : recalculate + show summary transaction
+                // updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
+                view?.handleOnSuccessSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+                if (!isFireAndForget && it.saveAddOns.status.equals(statusOK, true)) {
+                    // continue to hit update DDP
                 }
+            },
+            onError = {
+                if (!isFireAndForget) {
+                    // showToaster error
+                }
+                // failed : set latest value + uncheck
+                view?.handleOnErrorSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+            }
         )
     }
 

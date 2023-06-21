@@ -171,7 +171,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
-import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -4256,12 +4255,11 @@ class ShipmentFragment :
     }
 
     fun handleOnSuccessSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
-
+        updateCost()
     }
 
     fun handleOnErrorSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        shipmentAdapter.updateAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+        updateCost()
     }
 
     companion object {
