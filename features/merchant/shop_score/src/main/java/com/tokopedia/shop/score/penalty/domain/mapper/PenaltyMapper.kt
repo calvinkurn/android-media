@@ -215,7 +215,8 @@ class PenaltyMapper @Inject constructor(
                         ),
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
-                        descStatusPenalty = descStatusPenaltyDetail
+                        descStatusPenalty = descStatusPenaltyDetail,
+                        isOldPage = false
                     )
                 )
             }

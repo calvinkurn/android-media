@@ -203,6 +203,7 @@
     <string name="title_penalty_over_bottom_sheet">Penalti selesai</string>
 
     <string name="title_point_have_not_been_deducted">Poin belum &lt;br /&gt;dipotong</string>
+    <string name="title_point_have_not_been_deducted_new">Belum &lt;br /&gt;Berlangsung</string>
     <string name="desc_point_have_not_been_deducted">Penalti yang belum berlangsung dan poin yang terkonversi baru akan memotong skor Performa Toko-mu di tanggal aktif.</string>
     <string name="desc_on_going_status_penalty">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
     <string name="desc_done_status_penalty">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>

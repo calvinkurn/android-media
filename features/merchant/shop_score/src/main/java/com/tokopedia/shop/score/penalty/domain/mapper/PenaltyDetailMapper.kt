@@ -20,11 +20,17 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
             endDateDetail = itemPenaltyUiModel.endDateDetail,
             prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
             productName = itemPenaltyUiModel.productName,
-            stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
+            stepperPenaltyDetailList = mapToStepperPenaltyDetail(
+                itemPenaltyUiModel.statusPenalty,
+                itemPenaltyUiModel.isOldPage
+            )
         )
     }
 
-    private fun mapToStepperPenaltyDetail(statusPenalty: String): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
+    private fun mapToStepperPenaltyDetail(
+        statusPenalty: String,
+        isOldPage: Boolean
+    ): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
         return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
             when (statusPenalty) {
                 ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
@@ -32,7 +38,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
+                            titleStepper = getNotYetDeductedMessageRes(isOldPage),
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
                             isBold = true,
                             isDividerShow = true
@@ -61,7 +67,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
+                            titleStepper = getNotYetDeductedMessageRes(isOldPage),
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
                             isDividerShow = true
                         )
@@ -90,7 +96,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
+                            titleStepper = getNotYetDeductedMessageRes(isOldPage),
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
                             isDividerShow = true
                         )
@@ -115,6 +121,14 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                     )
                 }
             }
+        }
+    }
+
+    private fun getNotYetDeductedMessageRes(isOldPage: Boolean): Int {
+        return if (isOldPage) {
+            R.string.title_point_have_not_been_deducted
+        } else {
+            R.string.title_point_have_not_been_deducted_new
         }
     }
 
