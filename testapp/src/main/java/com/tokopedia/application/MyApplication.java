@@ -32,17 +32,15 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.graphql.util.GqlActivityCallback;
@@ -67,9 +65,7 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter,
-        TkpdCoreRouter,
-        LinkerRouter
-{
+        TkpdCoreRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
@@ -150,7 +146,7 @@ public class MyApplication extends BaseMainApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         FirebaseApp.initializeApp(this);
 
-//        new DevOptNotificationManager(this).start();
+        new DevOptNotificationManager(this).start();
         TokoChatConnection.init(this, false);
     }
 
@@ -408,12 +404,6 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
-    }
-
-    @Override
-    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(key, defaultValue);
     }
 
     public static class AppsflyerAnalytics extends DummyAnalytics {
