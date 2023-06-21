@@ -149,6 +149,7 @@ class UserProfileViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 creationInfo.isActive.assertTrue()
+                it.viewModel.isShortVideoEntryPointShow.assertTrue()
             }
         }
     }
