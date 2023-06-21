@@ -71,7 +71,7 @@ const val QUERY_CONST = "titlebar=false"
 
 val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
 
-const val SOURCE_AFFILIATE = "Halaman Affiliate"
+const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
 val APP_LINK_KYC = ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
