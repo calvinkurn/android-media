@@ -192,7 +192,7 @@ class PromoCheckoutViewModel @Inject constructor(
         chosenAddress: ChosenAddress? = null
     ) {
         // Set request data
-        prepareGetPromoRequestData(attemptedPromoCode, promoRequest, chosenAddress)
+        prepareGetPromoRequestData(attemptedPromoCode, promoRequest)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
@@ -212,8 +212,7 @@ class PromoCheckoutViewModel @Inject constructor(
 
     private fun prepareGetPromoRequestData(
         tmpPromoCode: String,
-        promoRequest: PromoRequest,
-        chosenAddress: ChosenAddress?
+        promoRequest: PromoRequest
     ) {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
