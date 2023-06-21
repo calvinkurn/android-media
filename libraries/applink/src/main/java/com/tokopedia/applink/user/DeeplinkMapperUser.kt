@@ -17,8 +17,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
-    fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
-        val uri = Uri.parse(deeplink)
+    fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
             deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
                 ApplinkConst.CHANGE_INACTIVE_PHONE,

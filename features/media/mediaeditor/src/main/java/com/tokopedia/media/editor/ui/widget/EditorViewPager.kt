@@ -65,6 +65,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         index: Int,
         newImageUrl: String,
         overlayImageUrl: String = "",
+        overlaySecondaryImageUrl: String = "",
         onImageUpdated: () -> Unit = {}
     ) {
         val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
@@ -84,14 +85,26 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
             errorHandler()
         }
 
-        layout?.findViewById<ImageView>(R.id.img_main_overlay)?.apply {
-            if (overlayImageUrl.isNotEmpty()) {
-                loadImage(overlayImageUrl)
-            } else {
-                setImageDrawable(null)
+        layout?.let {
+            it.findViewById<ImageView>(R.id.img_main_overlay)?.apply {
+                if (overlayImageUrl.isNotEmpty()) {
+                    loadImage(overlayImageUrl)
+                } else {
+                    setImageDrawable(null)
+                }
+            } ?: kotlin.run {
+                errorHandler()
             }
-        } ?: kotlin.run { 
-            errorHandler()
+
+            it.findViewById<ImageView>(R.id.img_secondary_overlay)?.apply {
+                if (overlaySecondaryImageUrl.isNotEmpty()) {
+                    loadImage(overlaySecondaryImageUrl)
+                } else {
+                    setImageDrawable(null)
+                }
+            } ?: kotlin.run {
+                errorHandler()
+            }
         }
     }
 
