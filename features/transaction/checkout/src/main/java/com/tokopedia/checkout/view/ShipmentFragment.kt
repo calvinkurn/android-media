@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -3865,19 +3866,17 @@ class ShipmentFragment :
     }
 
     override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
-        // TODO: save addons
-        // TODO: adjust calculation
         if (isChecked) {
             addOnProductDataItemModel.addOnDataStatus = 1
         } else {
             addOnProductDataItemModel.addOnDataStatus = 2
         }
-        shipmentPresenter.saveAddOnsProduct(addOnProductDataItemModel, cartItemModel, bindingAdapterPosition, true)
+        shipmentPresenter.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
 
-    override fun onClickAddonProductInfoIcon() {
-        // TODO: open bottomsheet product info
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
     }
 
     override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>) {
@@ -4254,12 +4253,8 @@ class ShipmentFragment :
         updateCost()
     }
 
-    fun handleOnSuccessSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        updateCost()
-    }
-
-    fun handleOnErrorSaveAddOnProduct(position: Int, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel) {
-        updateCost()
+    fun handleOnSuccessSaveAddOnProduct() {
+        shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
     }
 
     companion object {

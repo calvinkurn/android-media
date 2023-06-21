@@ -139,7 +139,7 @@ interface ShipmentAdapterActionListener {
 
     fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
-    fun onClickAddonProductInfoIcon()
+    fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
 
     fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>)
 }

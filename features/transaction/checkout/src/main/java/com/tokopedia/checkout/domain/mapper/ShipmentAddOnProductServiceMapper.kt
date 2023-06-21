@@ -6,7 +6,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
-import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
@@ -17,7 +16,7 @@ import java.util.ArrayList
 import java.util.HashMap
 
 object ShipmentAddOnProductServiceMapper {
-    fun generateSaveAddOnProductRequestParams(addOnProductData: AddOnProductDataItemModel, cartItemModel: CartItemModel): SaveAddOnStateRequest {
+    fun generateSaveAddOnProductRequestParams(cartItemModel: CartItemModel): SaveAddOnStateRequest {
         val listAddOnRequest = arrayListOf<AddOnDataRequest>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOn ->
             val addOnRequest = AddOnDataRequest()

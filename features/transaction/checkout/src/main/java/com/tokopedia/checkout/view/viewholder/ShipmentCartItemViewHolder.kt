@@ -469,7 +469,7 @@ class ShipmentCartItemViewHolder(
                             }
                         }
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon()
+                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }
                     }
                     binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
@@ -545,7 +545,7 @@ class ShipmentCartItemViewHolder(
                             listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon()
+                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }
                     }
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
@@ -566,7 +566,7 @@ class ShipmentCartItemViewHolder(
 
         fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
-        fun onClickAddonProductInfoIcon()
+        fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
 
         fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>)
     }

@@ -5604,25 +5604,30 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    fun saveAddOnsProduct(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, position: Int, isFireAndForget: Boolean) {
-        // generate param based on addOnProductData
-        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(addOnProductDataItemModel, cartItemModel)
-        saveAddOnProductUseCase.setParams(params, isFireAndForget)
+    fun saveAddOnsProduct(cartItemModel: CartItemModel) {
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel)
+        saveAddOnProductUseCase.setParams(params, true)
         saveAddOnProductUseCase.execute(
             onSuccess = {
-                // success : recalculate + show summary transaction
-                // updateParamRequestSaveAddOns(addOnProductDataItemModel, cartItemModel)
-                view?.handleOnSuccessSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
-                if (!isFireAndForget && it.saveAddOns.status.equals(statusOK, true)) {
-                    // continue to hit update DDP
+                updateShipmentCostModel()
+            },
+            onError = {
+                updateShipmentCostModel()
+            }
+        )
+    }
+
+    fun saveAddOnsProductBeforeCheckout(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, position: Int, isFireAndForget: Boolean) {
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel)
+        saveAddOnProductUseCase.setParams(params, false)
+        saveAddOnProductUseCase.execute(
+            onSuccess = {
+                if (it.saveAddOns.status.equals(statusOK, true)) {
+                    view?.handleOnSuccessSaveAddOnProduct()
                 }
             },
             onError = {
-                if (!isFireAndForget) {
-                    // showToaster error
-                }
-                // failed : set latest value + uncheck
-                view?.handleOnErrorSaveAddOnProduct(position, addOnProductDataItemModel, cartItemModel)
+                view?.showToastError(getErrorMessage(view?.activity, it))
             }
         )
     }

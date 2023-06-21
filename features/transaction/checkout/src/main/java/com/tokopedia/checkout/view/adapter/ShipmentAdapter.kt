@@ -1356,8 +1356,8 @@ class ShipmentAdapter @Inject constructor(
         shipmentAdapterActionListener.onCheckboxAddonProductListener(isChecked, addOnProductDataItemModel, cartItemModel, bindingAdapterPosition)
     }
 
-    override fun onClickAddonProductInfoIcon() {
-        shipmentAdapterActionListener.onClickAddonProductInfoIcon()
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        shipmentAdapterActionListener.onClickAddonProductInfoIcon(addOnDataInfoLink)
     }
 
     override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: java.util.ArrayList<Long>) {
