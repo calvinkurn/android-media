@@ -70,6 +70,7 @@ import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
@@ -207,6 +208,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     // Variable to set personalized campaign
     private var personalizedMessage = ""
+    private var personalizedImage = ""
+    private var personalizedCampaignModel: PersonalizedCampaignModel? = null
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -527,6 +530,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      * this function is used to set personalized campaign message and output
      */
     fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        personalizedCampaignModel = model
         val context = LinkerManager.getInstance().context
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
@@ -543,6 +547,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         model.getStartDateCampaign()
                     )
                 }
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.startTime)
+                )
             }
             CampaignStatus.ON_GOING -> {
                 if (model.discountPercentage != 0F) {
@@ -559,6 +567,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         model.getEndDateCampaign()
                     )
                 }
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.END_SOON -> {
                 if (model.discountPercentage != 0F) {
@@ -575,12 +587,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                         model.getDiscountString()
                     )
                 }
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
             }
         }
     }
+
+    private fun isPersonalizedCampaignActive(): Boolean = personalizedCampaignModel != null
 
     fun addImageGeneratorData(key: String, value: String) {
         if (imageGeneratorDataArray == null) {
@@ -1120,6 +1138,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = SharingUtil.transformOgImageURL(context, ogImageUrl)
+
+            if (isPersonalizedCampaignActive()) {
+                val campaignName = personalizedCampaignModel?.getCampaignName() ?: ""
+                imageGeneratorParam = this.copy(campaignInfo = personalizedImage, campaignName = campaignName, hasRibbon = true)
+            }
         }
 
         lifecycleScope.launchCatchError(block = {

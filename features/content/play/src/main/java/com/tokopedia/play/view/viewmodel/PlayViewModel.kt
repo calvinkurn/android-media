@@ -1074,6 +1074,7 @@ class PlayViewModel @AssistedInject constructor(
                 updateCommentConfig()
             }
             is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
+            HideBottomSheet -> hideBottomSheet()
         }
     }
 
@@ -2549,11 +2550,14 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
-        needLogin {
-            viewModelScope.launch {
-                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
-            }
+        viewModelScope.launch {
+            _isBottomSheetsShown.update { true }
+            _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
         }
+    }
+
+    private fun hideBottomSheet() {
+        _isBottomSheetsShown.update { false }
     }
 
     /**
