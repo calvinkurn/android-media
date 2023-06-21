@@ -17,17 +17,17 @@ import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
 import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.cabinet.presentation.adapter.SeeMoreMedalAdapter
-import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
-import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
-import com.tokopedia.scp_rewards_widgets.medal.SeeMoreMedalTypeFactory
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.SeeMoreMedaliViewModel
 import com.tokopedia.scp_rewards.common.data.InfiniteLoading
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.EARNED_BADGE
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
+import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
+import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
+import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
 import com.tokopedia.scp_rewards_widgets.medal.MedalViewHolder
+import com.tokopedia.scp_rewards_widgets.medal.SeeMoreMedalTypeFactory
 import javax.inject.Inject
 
 class SeeMoreMedaliFragment : BaseDaggerFragment() {
@@ -45,7 +45,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
     private var rvLayoutManager: LayoutManager? = null
 
-    private var badgeType = EARNED_BADGE
+    private var badgeType = ""
 
     private var rvScrollListener: EndlessRecyclerViewScrollListener? = null
 
@@ -89,10 +89,11 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
 
     private fun getHeaderTitle(): String {
-        return if (badgeType == EARNED_BADGE)
+        return if (badgeType == EARNED_BADGE) {
             context?.getString(R.string.earned_medali_title) ?: ""
-        else
+        } else {
             context?.getString(R.string.progress_medali_title) ?: ""
+        }
     }
 
     private fun setupViewModelObservers() {

@@ -7,11 +7,3 @@ object CouponState {
     const val EXPIRED = "expired"
     const val ERROR = "error"
 }
-
-
-sealed class MedalType {
-    object Earned : MedalType()
-    object InProgress : MedalType()
-    object None : MedalType()
-}
-

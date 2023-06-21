@@ -1,10 +1,8 @@
 package com.tokopedia.scp_rewards.cabinet.mappers
 
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
-import com.tokopedia.scp_rewards.common.utils.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.medal.Cta
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
-import java.util.UUID
 
 object MedaliListMapper {
 
@@ -26,7 +24,7 @@ object MedaliListMapper {
                         appLink = it.cta.appLink,
                         deepLink = it.cta.url
                     ),
-                    isEarned = badgeType == EARNED_BADGE,
+                    medalType = badgeType,
                     isPlaceHolder = false
                 )
             )
@@ -34,5 +32,4 @@ object MedaliListMapper {
 
         return medalList
     }
-
 }

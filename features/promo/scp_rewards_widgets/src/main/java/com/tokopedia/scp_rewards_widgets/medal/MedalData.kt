@@ -1,13 +1,13 @@
 package com.tokopedia.scp_rewards_widgets.medal
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.scp_rewards_widgets.constants.MedalType
+import com.tokopedia.scp_rewards_common.EARNED_BADGE
 
 data class MedalData(
     val title: String? = null,
     val description: String? = null,
     val textColor: String? = null,
-    val medalType: MedalType = MedalType.None,
+    val medalType: String = "",
     val medalList: List<MedalItem>? = null,
     val bannerData: BannerData? = null,
     val cta: Cta? = null
@@ -32,11 +32,11 @@ data class MedalItem(
     val isDisabled: Boolean? = false,
     val progression: Int? = 0,
     val cta: Cta? = null,
-    val medalType: MedalType = MedalType.None,
+    val medalType: String = "",
     val isPlaceHolder: Boolean = false
 ) : Visitable<MedalViewTypeFactory> {
 
-    fun isEarned() = medalType == MedalType.Earned
+    fun isEarned() = medalType == EARNED_BADGE
 
     fun isNewlyEarned() = isEarned() && isNewMedal == true
     override fun type(typeFactory: MedalViewTypeFactory): Int = typeFactory.type(this)

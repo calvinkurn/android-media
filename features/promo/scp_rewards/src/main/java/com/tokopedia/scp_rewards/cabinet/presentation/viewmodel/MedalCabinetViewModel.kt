@@ -12,16 +12,16 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.EARNED_BADGE
 import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
-import com.tokopedia.scp_rewards.common.utils.PROGRESS_BADGE
 import com.tokopedia.scp_rewards.common.utils.SOURCE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.common.utils.parseJsonKey
+import com.tokopedia.scp_rewards_common.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.PROGRESS_BADGE
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import javax.inject.Inject
@@ -46,8 +46,8 @@ class MedalCabinetViewModel @Inject constructor(private val userMedaliUseCase: G
             val sectionResponse = userMedaliUseCase.getMedaliHomePageSection(getSectionParams())
             fetchMedalSections(sectionResponse)
         }, onError = {
-            _cabinetLiveData.postValue(Error(it))
-        })
+                _cabinetLiveData.postValue(Error(it))
+            })
     }
 
     private fun fetchMedalSections(sectionResponse: ScpRewardsGetMedaliSectionResponse) {
@@ -102,8 +102,9 @@ class MedalCabinetViewModel @Inject constructor(private val userMedaliUseCase: G
         }
 
     private fun getCommonParams(page: Int, pageSize: Int) = RequestParams().apply {
-        if (medaliSlug.isNotEmpty())
+        if (medaliSlug.isNotEmpty()) {
             putString(SOURCE_NAME_PARAM, "${MEDALI_DETAIL_PAGE}_$medaliSlug")
+        }
         putString(PAGE_NAME_PARAM, "medali_home_page")
         putInt(PAGE_PARAM, page)
         putInt(PAGESIZE_PARAM, pageSize)

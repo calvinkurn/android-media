@@ -22,16 +22,12 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
-import com.tokopedia.scp_rewards.common.constants.TrackerConstants
-import com.tokopedia.scp_rewards.common.data.Error
-import com.tokopedia.scp_rewards.common.data.Loading
-import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
+import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
-import com.tokopedia.scp_rewards_widgets.constants.MedalType
 import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
@@ -82,8 +78,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        medalCabinetViewModel.medaliSlug = medaliSlug
-        medalCabinetViewModel.getHomePage()
+        viewModel.medaliSlug = medaliSlug
+        viewModel.getHomePage()
         setupToolbar(binding.toolbar)
         setTopBottomMargin()
         setupScrollListener()
@@ -91,8 +87,8 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     }
 
     private fun setupViewModelObservers() {
-        medalCabinetViewModel.cabinetLiveData.observe(viewLifecycleOwner){
-            when(it){
+        viewModel.cabinetLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success<*> -> {}
                 is Loading -> {}
                 is Error -> {}
@@ -104,7 +100,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 "Earned medal",
                 "",
                 "#6D7588",
-                MedalType.Earned,
+                EARNED_BADGE,
                 listOf(
                     MedalItem(
                         1,
@@ -115,7 +111,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         "https://gist.githubusercontent.com/rooparshgojek/40122d190c1311d58ef82ae609c866ab/raw/83c1a23eb0572710a71a0d0fd8107446f9504932/confetti.json",
                         true,
                         false, 23,
-                        medalType = MedalType.Earned
+                        medalType = EARNED_BADGE
                     ),
                     MedalItem(
                         2,
@@ -126,7 +122,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
                         false,
                         true, 23,
-                        medalType = MedalType.Earned
+                        medalType = EARNED_BADGE
                     ),
                     MedalItem(
                         3,
@@ -137,7 +133,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
                         false,
                         false, 23,
-                        medalType = MedalType.Earned
+                        medalType = EARNED_BADGE
                     ),
                     MedalItem(
                         4,
@@ -148,7 +144,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                         "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
                         false,
                         false, 23,
-                        medalType = MedalType.Earned
+                        medalType = EARNED_BADGE
                     )
                 )
             )
