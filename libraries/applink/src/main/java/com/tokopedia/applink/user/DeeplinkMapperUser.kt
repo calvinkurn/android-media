@@ -32,16 +32,16 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> getApplinkGotoKyc()
+            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             else -> deeplink
         }
     }
 
-    fun getApplinkGotoKyc(): String {
+    private fun getApplinkGotoKyc(deeplink: String): String {
         return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalUserPlatform.GOTO_KYC
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
         } else {
-            ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+            ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
         }
     }
 

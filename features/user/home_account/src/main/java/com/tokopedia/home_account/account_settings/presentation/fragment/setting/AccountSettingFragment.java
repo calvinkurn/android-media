@@ -60,6 +60,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
 
+    private String SOURCE = "Account";
+
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
@@ -269,9 +271,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            String kycApplink = DeeplinkMapperUser.INSTANCE.getApplinkGotoKyc().concat("?").concat(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).concat("={projectId}");
-            Intent intent = RouteManager.getIntent(getContext(), kycApplink, String.valueOf(PROJECT_ID));
-            startActivity(intent);
+            RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.INSTANCE.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE, ""));
         }
     }
 
