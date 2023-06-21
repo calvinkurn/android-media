@@ -55,8 +55,9 @@ class ProductFeaturedViewHolder(
         }
 
         binding.root.setOnClickListener {
+            binding.layoutRibbon.root.transitionToEnd()
             if (item.applink.isNullOrEmpty()) return@setOnClickListener
-            listener.onClickProductCard(item, adapterPosition)
+//            listener.onClickProductCard(item, adapterPosition)
         }
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)

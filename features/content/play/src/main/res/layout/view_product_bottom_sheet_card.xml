@@ -290,6 +290,12 @@
             app:layout_constraintTop_toTopOf="@+id/iv_product_image"
             tools:text="1" />
 
+        <include
+            android:id="@+id/layout_ribbon"
+            layout="@layout/play_motion_card_ribbon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:translationZ="1dp"
+    app:layoutDescription="@xml/play_motion_card_ribbon_scene">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/play_iv_ribbon"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/play_widget_dp_20"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
+        app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
+        app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
+        app:layout_constraintTop_toTopOf="@+id/play_tv_ribbon"
+        android:src="@drawable/bg_play_ribbon_front" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/play_tv_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingTop="@dimen/unify_space_4"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_4"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="Terlaris" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

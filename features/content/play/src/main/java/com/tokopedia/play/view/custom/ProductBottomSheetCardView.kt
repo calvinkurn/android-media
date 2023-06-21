@@ -21,6 +21,7 @@ import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifycomponents.CardUnify
 
 /**
@@ -113,9 +114,10 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.setOnClickListener {
             mListener?.onButtonTransactionProduct(this, item, section, lastButton.type.toAction)
         }
+//        binding.layoutRibbon.playIvRibbon.setGradientBackground(listOf("#15736D", "#07898E"))
 
         setOnClickListener {
-            if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
+            binding.layoutRibbon.root.transitionToEnd()
         }
 
         // Buttons
