@@ -14,7 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
@@ -37,9 +43,9 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
@@ -237,7 +243,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }
         }
 
-        viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner){
+        viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if(it.data.topadsManageHeadlineAd.errors.isNullOrEmpty())
@@ -252,7 +258,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun successfulInsightSubmission(){
+    private fun successfulInsightSubmission() {
         confirmationDailog?.dismiss()
         val successMsg = when(saveButton?.tag) {
             TYPE_POSITIVE_KEYWORD -> getString(R.string.topads_insight_kata_kunci_submit_success_toast_msg)
@@ -306,15 +312,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
             it.setDescription(description)
 
-            if (it.dialogPrimaryCTA.isLoading)
+            if (it.dialogPrimaryCTA.isLoading) {
                 it.dialogPrimaryCTA.isLoading = false
+            }
 
             it.setPrimaryCTAText(getString(R.string.title_try_again))
             it.setSecondaryCTAText(getString(R.string.label_close))
         }
     }
 
-    private fun showSuccessToast(text: String){
+    private fun showSuccessToast(text: String) {
         view?.let {
             Toaster.build(
                 it,
@@ -365,7 +372,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             loadDetailPageOnAction(
                 utils.convertAdTypeToInt(item.adGroupType),
                 item.adGroupID,
-                item.insightType
+                item.insightType,
+                groupName = item.adGroupName
             )
         }
 
@@ -373,7 +381,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
         groupDetailsRecyclerView?.adapter = groupDetailAdapter
         handleStickyView()
-
     }
 
     private fun handleStickyView() {
@@ -410,7 +417,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         saveButton = view?.findViewById(R.id.saveButton)
     }
 
-    private fun attachViewClickListeners(){
+    private fun attachViewClickListeners() {
         saveButton?.setOnClickListener {
             val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
             showConfirmationDialog(input)
@@ -418,7 +425,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun showConfirmationDialog(input: TopadsManagePromoGroupProductInput?) {
-        confirmationDailog?.dismiss() //if already showing
+        confirmationDailog?.dismiss() // if already showing
         confirmationDailog =
             DialogUnify(
                 requireContext(),
@@ -547,9 +554,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun validateInsightData(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
-        if(hasErrors)
+        if(hasErrors) {
             return false
-        else {
+        } else {
             input?.let {
                 return when (saveButton?.tag) {
                     TYPE_POSITIVE_KEYWORD, TYPE_KEYWORD_BID, TYPE_NEGATIVE_KEYWORD_BID -> {

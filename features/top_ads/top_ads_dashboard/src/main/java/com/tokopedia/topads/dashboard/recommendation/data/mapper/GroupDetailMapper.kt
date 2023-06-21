@@ -65,10 +65,10 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_SHOP_VALUE to CONST_0
     )
 
-    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips:Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
         val position = chipsList.findPositionOfSelected { it.isSelected }
         return if (position == TYPE_INSIGHT || adGroupType == TYPE_SHOP_VALUE) {
-            reshuffleInsightExpansionIfRequired(clickedItem)
+            reshuffleInsightExpansionIfRequired(clickedItem, clickedChips)
             checkAndPutDataForUnoptimisedGroup()
             handleChipsData(adGroupType)
             detailPageDataMap.toSortedMap()
@@ -91,6 +91,10 @@ class GroupDetailMapper @Inject constructor() {
                             index,
                             expandedModel
                         )
+                        detailPageDataMap.put(
+                            index,
+                            expandedModel
+                        )
                     }
                 }
                 if (detailPageDataMap[index]?.isAvailable() == false) {
@@ -110,8 +114,11 @@ class GroupDetailMapper @Inject constructor() {
         groupDetailDataModel: GroupDetailDataModel,
         clickedChips: Int
     ): GroupInsightsUiModel? {
-        return if (clickedChips == INVALID_INSIGHT_TYPE) (groupDetailDataModel as? GroupInsightsUiModel)
-        else (groupDetailDataModel as? GroupInsightsUiModel)?.copy(isExpanded = true)
+        return if (clickedChips == INVALID_INSIGHT_TYPE) {
+            (groupDetailDataModel as? GroupInsightsUiModel)
+        } else {
+            (groupDetailDataModel as? GroupInsightsUiModel)?.copy(isExpanded = true)
+        }
     }
 
     private fun handleChipsData(adGroupType: Int) {
@@ -123,17 +130,28 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     private fun reshuffleInsightExpansionIfRequired(
-        clickedItem: Int
+        clickedItem: Int,
+        clickedChips: Int
     ) {
-        detailPageDataMap.values.forEach {
-            val groupInsightsUiModel = it as? GroupInsightsUiModel
-            if (clickedItem != INVALID_INSIGHT_TYPE &&
-                groupInsightsUiModel != null &&
-                clickedItem != groupInsightsUiModel.type &&
-                groupInsightsUiModel.isExpanded
-            ) {
-                detailPageDataMap[groupInsightsUiModel.type] =
-                    groupInsightsUiModel.copy(isExpanded = false)
+        if (clickedItem != INVALID_INSIGHT_TYPE) {
+            detailPageDataMap.values.forEach {
+                val groupInsightsUiModel = it as? GroupInsightsUiModel
+                if (groupInsightsUiModel != null &&
+                    clickedItem != groupInsightsUiModel.type &&
+                    groupInsightsUiModel.isExpanded
+                ) {
+                    detailPageDataMap[groupInsightsUiModel.type] =
+                        groupInsightsUiModel.copy(isExpanded = false)
+                }
+            }
+        }
+        if (clickedChips != INVALID_INSIGHT_TYPE) {
+            detailPageDataMap.values.forEach {
+                val groupInsightsUiModel = it as? GroupInsightsUiModel
+                if (groupInsightsUiModel != null) {
+                    detailPageDataMap[groupInsightsUiModel.type] =
+                        groupInsightsUiModel.copy(isExpanded = false)
+                }
             }
         }
     }
@@ -157,6 +175,8 @@ class GroupDetailMapper @Inject constructor() {
             } else {
                 detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] = GroupDetailInsightListUiModel(adGroups = adGroups)
             }
+        } else if (isAnyInsightAvailable) {
+            detailPageDataMap.remove(TYPE_UN_OPTIMIZED_GROUP)
         }
     }
 
@@ -322,9 +342,9 @@ class GroupDetailMapper @Inject constructor() {
         insightCountMap[adGroupType] = totalInsight
     }
 
-    private fun getImpressionSum(insightType: Int, groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): Int{
+    private fun getImpressionSum(insightType: Int, groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): Int {
         var impressionSum = Int.ZERO
-        when(insightType){
+        when (insightType) {
             TYPE_POSITIVE_KEYWORD -> {
                 groupData?.newPositiveKeywordsRecom?.forEach {
                     impressionSum += it.predictedImpression.toIntOrZero()
@@ -336,10 +356,10 @@ class GroupDetailMapper @Inject constructor() {
                 }
             }
             TYPE_NEGATIVE_KEYWORD_BID -> {
-                 groupData?.newNegativeKeywordsRecom?.forEach {
-                     impressionSum += it.predictedImpression.toIntOrZero()
-                 }
-             }
+                groupData?.newNegativeKeywordsRecom?.forEach {
+                    impressionSum += it.predictedImpression.toIntOrZero()
+                }
+            }
         }
         return impressionSum
     }

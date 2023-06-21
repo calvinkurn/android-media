@@ -35,6 +35,7 @@ object RecommendationConstants {
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
     const val INSIGHT_COUNT_PLACE_HOLDER = 10
+    const val DEFAULT_LOADING = 0
     const val DEFAULT_PRICE_BID = 0.0
     const val DEFAULT_SUGGESTION_BID = 0.0
 
@@ -57,13 +58,12 @@ object RecommendationConstants {
     const val PARAM_INSIGHT_TYPE = "insight_type"
     const val PARAM_AD_TYPE = "ad_type"
     const val PARAM_INSIGHT_TYPES = "insightTypes"
-    const val PARAM_PAGE_SETTING= "pageSetting"
-    const val PARAM_SIZE= "size"
-    const val PARAM_START_CURSOR= "startCursor"
+    const val PARAM_PAGE_SETTING = "pageSetting"
+    const val PARAM_SIZE = "size"
+    const val PARAM_START_CURSOR = "startCursor"
     const val INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG = "InsightsEducationBottomSheet"
 
-
-    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP_LIST"
+    const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP"
     const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"
     const val PER_PAGE_COUNT_VALUE = 20
 
@@ -101,6 +101,6 @@ object RecommendationConstants {
     object InsightGqlInputSource {
         const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center_landing_page"
         const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center_group_detail_page"
-        const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
+        const val SOURCE_TOP_ADS_DASHBOARD = "android.topads_dashboard"
     }
 }

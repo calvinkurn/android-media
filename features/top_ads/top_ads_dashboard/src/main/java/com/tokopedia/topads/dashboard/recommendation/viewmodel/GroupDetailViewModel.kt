@@ -12,12 +12,13 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_LOADING
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_INSIGHT_MUTATION_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_INSIGHT_MUTATION_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_INSIGHT_MUTATION_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_PRODUCT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
@@ -31,23 +32,23 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
@@ -81,7 +82,7 @@ class GroupDetailViewModel @Inject constructor(
         adGroupType: Int,
         groupId: String
     ) {
-        _detailPageLiveData.value = TopAdsListAllInsightState.Loading(0)
+        _detailPageLiveData.value = TopAdsListAllInsightState.Loading(DEFAULT_LOADING)
         launchCatchError(dispatcher.main, {
             val data = topAdsGroupDetailUseCase.executeOnBackground(
                 groupDetailMapper,
@@ -94,7 +95,7 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips:Int = INVALID_INSIGHT_TYPE) {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE, clickedChips: Int = INVALID_INSIGHT_TYPE) {
         _detailPageLiveData.value =
             TopAdsListAllInsightState.Success(groupDetailMapper.reSyncDetailPageData(adGroupType, clickedItem, clickedChips))
     }
@@ -175,10 +176,11 @@ class GroupDetailViewModel @Inject constructor(
         InsightType: Int?,
         groupName: String?
     ) {
-        if (adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD)
+        if (adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD) {
             submitHeadlineInsights(input, groupId, groupName)
-        else
+        } else {
             submitProductInsights(input, groupId)
+        }
     }
 
     private fun submitHeadlineInsights(
@@ -225,8 +227,8 @@ class GroupDetailViewModel @Inject constructor(
                 val data = topAdsCreateUseCase.execute(requestParams)
                 _editInsightLiveData.value = Success(data)
             }, onError = {
-                _editInsightLiveData.value = Fail(it)
-            })
+                    _editInsightLiveData.value = Fail(it)
+                })
         }
     }
 
@@ -269,8 +271,8 @@ class GroupDetailViewModel @Inject constructor(
         return list
     }
 
-    fun getInputDataFromMapper(insightType: Int?): TopadsManagePromoGroupProductInput?{
-        return when(insightType){
+    fun getInputDataFromMapper(insightType: Int?): TopadsManagePromoGroupProductInput? {
+        return when (insightType) {
             TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
             TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
             TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap[insightType] as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
