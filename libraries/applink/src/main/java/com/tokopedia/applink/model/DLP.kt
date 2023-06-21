@@ -4,84 +4,84 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 
-class DLPv2(
-    val logic: DLPLogicv2,
+class DLP(
+    val logic: DLPLogic,
     val targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String
 ) {
 
     companion object {
         @JvmName("goToStr")
-        fun goTo(targetDeeplink: String): DLPv2 {
-            return DLPv2(Always) { _, _, _, _ -> targetDeeplink }
+        fun goTo(targetDeeplink: String): DLP {
+            return DLP(Always) { _, _, _, _ -> targetDeeplink }
         }
 
         @JvmName("goTo")
-        fun goTo(targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String): DLPv2 {
-            return DLPv2(Always, targetDeeplink)
+        fun goTo(targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String): DLP {
+            return DLP(Always, targetDeeplink)
         }
 
         @JvmName("goToUriDeeplink")
-        fun goTo(targetDeeplink: (uri: Uri, deeplink: String) -> String): DLPv2 {
-            return DLPv2(Always) { _, uri, deepl, _ -> targetDeeplink(uri, deepl) }
+        fun goTo(targetDeeplink: (uri: Uri, deeplink: String) -> String): DLP {
+            return DLP(Always) { _, uri, deepl, _ -> targetDeeplink(uri, deepl) }
         }
         @JvmName("goToUri")
-        fun goTo(targetDeeplink: (uri: Uri) -> String): DLPv2 {
-            return DLPv2(Always) { _, uri, _, _ -> targetDeeplink(uri) }
+        fun goTo(targetDeeplink: (uri: Uri) -> String): DLP {
+            return DLP(Always) { _, uri, _, _ -> targetDeeplink(uri) }
         }
 
         @JvmName("goToCtxDeeplink")
-        fun goTo(targetDeeplink: (context: Context, deeplink: String) -> String): DLPv2 {
-            return DLPv2(Always) { c, _, deepl, _ -> targetDeeplink(c, deepl) }
+        fun goTo(targetDeeplink: (context: Context, deeplink: String) -> String): DLP {
+            return DLP(Always) { c, _, deepl, _ -> targetDeeplink(c, deepl) }
         }
 
         @JvmName("goToCtxUri")
-        fun goTo(targetDeeplink: (context: Context, uri: Uri) -> String): DLPv2 {
-            return DLPv2(Always) { c, uri, _, _ -> targetDeeplink(c, uri) }
+        fun goTo(targetDeeplink: (context: Context, uri: Uri) -> String): DLP {
+            return DLP(Always) { c, uri, _, _ -> targetDeeplink(c, uri) }
         }
 
         @JvmName("goToDeeplink")
-        fun goTo(targetDeeplink: (deeplink: String) -> String): DLPv2 {
-            return DLPv2(Always) { _, _, deepl, _ -> targetDeeplink(deepl) }
+        fun goTo(targetDeeplink: (deeplink: String) -> String): DLP {
+            return DLP(Always) { _, _, deepl, _ -> targetDeeplink(deepl) }
         }
 
         @JvmName("match")
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck), targetDeeplink)
+        ): DLP {
+            return DLP(MatchPattern(pathCheck), targetDeeplink)
         }
 
         @JvmName("matchDeeplink")
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: (deeplink: String) -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { _, _, deeplink, _ -> targetDeeplink(deeplink) }
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { _, _, deeplink, _ -> targetDeeplink(deeplink) }
         }
 
         @JvmName("matchFunc")
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: () -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { _, _, _, _ -> targetDeeplink() }
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { _, _, _, _ -> targetDeeplink() }
         }
 
         @JvmName("matchUri")
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: (uri: Uri) -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { _, uri, _, _ -> targetDeeplink(uri) }
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { _, uri, _, _ -> targetDeeplink(uri) }
         }
 
         @JvmName("matchUriId")
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: (uri: Uri, idList: List<String>?) -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { _, uri, _, idList ->
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { _, uri, _, idList ->
                 targetDeeplink(
                     uri,
                     idList
@@ -93,8 +93,8 @@ class DLPv2(
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: (ctx: Context, deeplink: String) -> String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { c, _, d, _ ->
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { c, _, d, _ ->
                 targetDeeplink(
                     c,
                     d
@@ -106,66 +106,66 @@ class DLPv2(
         fun matchPattern(
             pathCheck: String,
             targetDeeplink: String
-        ): DLPv2 {
-            return DLPv2(MatchPattern(pathCheck)) { _, _, _, _ -> targetDeeplink }
+        ): DLP {
+            return DLP(MatchPattern(pathCheck)) { _, _, _, _ -> targetDeeplink }
         }
 
         @JvmName("startStr")
-        fun startsWith(pathCheck: String, targetDeeplink: String): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { _, _, _, _ -> targetDeeplink }
+        fun startsWith(pathCheck: String, targetDeeplink: String): DLP {
+            return DLP(StartsWith(pathCheck)) { _, _, _, _ -> targetDeeplink }
         }
 
         @JvmName("startCtxUri")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: (context: Context, uri: Uri) -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { c, uri, _, _ -> targetDeeplink(c, uri) }
+        ): DLP {
+            return DLP(StartsWith(pathCheck)) { c, uri, _, _ -> targetDeeplink(c, uri) }
         }
 
         @JvmName("startCtxDeeplink")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: (context: Context, deeplink: String) -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { c, _, d, _ -> targetDeeplink(c, d) }
+        ): DLP {
+            return DLP(StartsWith(pathCheck)) { c, _, d, _ -> targetDeeplink(c, d) }
         }
 
         @JvmName("start")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck), targetDeeplink)
+        ): DLP {
+            return DLP(StartsWith(pathCheck), targetDeeplink)
         }
 
         @JvmName("startFunc")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: () -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { _, _, _, _ -> targetDeeplink() }
+        ): DLP {
+            return DLP(StartsWith(pathCheck)) { _, _, _, _ -> targetDeeplink() }
         }
 
         @JvmName("startUri")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: (uri: Uri) -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { _, uri, _, _ -> targetDeeplink(uri) }
+        ): DLP {
+            return DLP(StartsWith(pathCheck)) { _, uri, _, _ -> targetDeeplink(uri) }
         }
 
         @JvmName("startDeeplink")
-        fun startsWith(pathCheck: String, targetDeeplink: (deeplink: String) -> String): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { _, _, deeplink, _ -> targetDeeplink(deeplink) }
+        fun startsWith(pathCheck: String, targetDeeplink: (deeplink: String) -> String): DLP {
+            return DLP(StartsWith(pathCheck)) { _, _, deeplink, _ -> targetDeeplink(deeplink) }
         }
 
         @JvmName("startCtxUriDeeplink")
         fun startsWith(
             pathCheck: String,
             targetDeeplink: (context: Context, uri: Uri, deeplink: String) -> String
-        ): DLPv2 {
-            return DLPv2(StartsWith(pathCheck)) { c, uri, deeplink, _ ->
+        ): DLP {
+            return DLP(StartsWith(pathCheck)) { c, uri, deeplink, _ ->
                 targetDeeplink(
                     c,
                     uri,
@@ -176,11 +176,11 @@ class DLPv2(
     }
 }
 
-open class DLPLogicv2(
+open class DLPLogic(
     val logic: ((context: Context, uri: Uri, deeplink: String) -> Pair<Boolean, List<String>?>)
 ) {
-    operator fun plus(additionalLogic: () -> Boolean): DLPLogicv2 {
-        return DLPLogicv2(logic = { context, uri, deeplink ->
+    operator fun plus(additionalLogic: () -> Boolean): DLPLogic {
+        return DLPLogic(logic = { context, uri, deeplink ->
             val resultFirstLogic = logic.invoke(context, uri, deeplink)
             val isMatchResult = resultFirstLogic.first
             val idListResult = resultFirstLogic.second
@@ -188,8 +188,8 @@ open class DLPLogicv2(
         })
     }
 
-    operator fun plus(additionalLogic: (context: Context, uri: Uri, deeplink: String) -> Boolean): DLPLogicv2 {
-        return DLPLogicv2(logic = { context, uri, deeplink ->
+    operator fun plus(additionalLogic: (context: Context, uri: Uri, deeplink: String) -> Boolean): DLPLogic {
+        return DLPLogic(logic = { context, uri, deeplink ->
             val resultFirstLogic = logic.invoke(context, uri, deeplink)
             val isMatchResult = resultFirstLogic.first
             val idListResult = resultFirstLogic.second
@@ -199,8 +199,8 @@ open class DLPLogicv2(
     }
 }
 
-infix fun DLPLogicv2.or(other: DLPLogicv2): DLPLogicv2 {
-    return DLPLogicv2(logic = { context, uri, deeplink ->
+infix fun DLPLogic.or(other: DLPLogic): DLPLogic {
+    return DLPLogic(logic = { context, uri, deeplink ->
         val resultFirstLogic = this.logic.invoke(context, uri, deeplink)
         val isMatchResult = resultFirstLogic.first
         val resultSecondLogic = other.logic.invoke(context, uri, deeplink)
@@ -211,11 +211,11 @@ infix fun DLPLogicv2.or(other: DLPLogicv2): DLPLogicv2 {
     })
 }
 
-object Always : DLPLogicv2(logic = { _, _, _ ->
+object Always : DLPLogic(logic = { _, _, _ ->
     (true to null)
 })
 
-class StartsWith(sourcePath: String) : DLPLogicv2(logic = { _, uri, _ ->
+class StartsWith(sourcePath: String) : DLPLogic(logic = { _, uri, _ ->
     val uriPath = uri.path
     val result = if (uriPath == null) {
         (false to null)
@@ -237,7 +237,7 @@ fun String.trimSlash(): String {
     return output
 }
 
-class MatchPattern(sourcePath: String) : DLPLogicv2(logic = { _, uri, _ ->
+class MatchPattern(sourcePath: String) : DLPLogic(logic = { _, uri, _ ->
     val list = UriUtil.matchPathsWithPattern(
         sourcePath.trimSlash().split("/"),
         uri.pathSegments
