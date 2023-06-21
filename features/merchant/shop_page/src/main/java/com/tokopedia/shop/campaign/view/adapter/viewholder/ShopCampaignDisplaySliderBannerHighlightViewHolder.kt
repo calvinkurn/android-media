@@ -91,13 +91,16 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
 
     private fun setBackgroundGradient() {
         val listBackgroundColor = shopCampaignInterface.getListBackgroundColor()
-        val colors = IntArray(listBackgroundColor.size)
-        for (i in listBackgroundColor.indices) {
-            colors[i] = ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+        if(listBackgroundColor.isNotEmpty()) {
+            val colors = IntArray(listBackgroundColor.size)
+            for (i in listBackgroundColor.indices) {
+                colors[i] =
+                    ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            itemView.background = gradient
         }
-        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-        gradient.cornerRadius = 0f
-        itemView.background = gradient
     }
 
     private fun setCtaClickedListener(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
