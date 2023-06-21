@@ -103,7 +103,7 @@ class SomDetailHeaderViewHolder(
                         headerDeadlineLabel.text = root.context.getString(R.string.som_deadline)
                     }
                     tvSomDetailDeadline.text = item.dataObject.deadlineText
-                    setupDeadlineStyle(item.dataObject.deadlineStyle)
+                    setupDeadlineStyleFromRollence(item.dataObject)
                     headerDeadlineLabel.show()
                     layoutSomDetailDeadline.show()
                 } else {
@@ -133,6 +133,19 @@ class SomDetailHeaderViewHolder(
         }
     }
 
+    private fun DetailHeaderItemBinding.setupDeadlineStyleFromRollence(element: SomDetailHeader) {
+        if (Utils.isEnableOperationalGuideline()) {
+            setupDeadlineStyle(element.deadlineStyle)
+        } else {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            layoutSomDetailDeadline.background = deadlineBackground
+        }
+    }
+
     private fun DetailHeaderItemBinding.setupDeadlineStyle(deadlineStyle: Int) {
         when (deadlineStyle) {
             SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThan24Hours()
@@ -144,10 +157,10 @@ class SomDetailHeaderViewHolder(
 
     private fun DetailHeaderItemBinding.setDeadlineLowerThan12Hours() {
         val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
-        val textColorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         layoutSomDetailDeadline.background = bgDeadline
-        icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-        tvSomDetailDeadline.setTextColor(textColorDeadline)
+        icSomDetailDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomDetailDeadline.setTextColor(colorDeadline)
     }
 
     private fun DetailHeaderItemBinding.setDeadlineBetween12To24Hours() {

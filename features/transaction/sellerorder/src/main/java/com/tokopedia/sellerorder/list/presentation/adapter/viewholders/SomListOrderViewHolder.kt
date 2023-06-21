@@ -240,7 +240,7 @@ open class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
-                setupDeadlineStyle(element.deadlineStyle)
+                setupDeadlineStyleFromRollence(element)
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 tvSomListResponseLabel.show()
                 layoutSomListDeadline.show()
@@ -248,6 +248,19 @@ open class SomListOrderViewHolder(
                 tvSomListResponseLabel.gone()
                 layoutSomListDeadline.gone()
             }
+        }
+    }
+
+    private fun ItemSomListOrderBinding.setupDeadlineStyleFromRollence(element: SomListOrderUiModel) {
+        if (Utils.isEnableOperationalGuideline()) {
+            setupDeadlineStyle(element.deadlineStyle)
+        } else {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            layoutSomListDeadline.background = deadlineBackground
         }
     }
 
