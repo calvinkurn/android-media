@@ -78,6 +78,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -209,7 +210,8 @@ class HomeAdapterFactory(
     private val missionWidgetComponentListener: MissionWidgetComponentListener,
     private val legoProductListener: LegoProductListener,
     private val todoWidgetComponentListener: TodoWidgetComponentListener,
-    private val flashSaleWidgetListener: FlashSaleWidgetListener
+    private val flashSaleWidgetListener: FlashSaleWidgetListener,
+    private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -624,7 +626,7 @@ class HomeAdapterFactory(
             CarouselPlayWidgetViewHolder.LAYOUT -> {
                 val playWidgetView = view.findViewById<View>(R.id.playWidgetView)
                 viewHolder = if (playWidgetView != null) {
-                    CarouselPlayWidgetViewHolder(view, PlayWidgetViewHolder(playWidgetView, playWidgetCoordinator), listener)
+                    CarouselPlayWidgetViewHolder(view, PlayWidgetViewHolder(playWidgetView, playWidgetCoordinator), carouselPlayWidgetCallback, listener)
                 } else {
                     super.createViewHolder(view, type)
                 }
