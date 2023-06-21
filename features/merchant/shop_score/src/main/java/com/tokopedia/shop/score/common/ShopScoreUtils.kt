@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_EDT
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -55,9 +56,9 @@ fun getLocale(): Locale {
     return Locale("id")
 }
 
-fun getPastDaysPenaltyTimeStamp(): Date {
+fun getPastDaysPenaltyTimeStamp(shouldStartFromMonday: Boolean = false): Date {
     val date = Calendar.getInstance(getLocale())
-    val totalDays = ShopScoreConstant.FOUR_WEEKS + getNPastDaysPenalty()
+    val totalDays = ShopScoreConstant.FOUR_WEEKS + getNPastDaysPenalty(shouldStartFromMonday)
     date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - totalDays)
     return date.time
 }
@@ -71,21 +72,29 @@ fun getHistoryPenaltyTimeStamp(): Date {
 
 fun getNotYetDeductedPenaltyTimeStamp(): Date {
     val date = Calendar.getInstance(getLocale())
-    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - getNPastDaysPenalty())
+    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - getNPastDaysPenalty(true))
     return date.time
 }
 
-fun getNPastDaysPenalty(): Int {
+fun getNPastDaysPenalty(
+    shouldStartFromMonday: Boolean = false
+): Int {
     val calendar = Calendar.getInstance(getLocale())
     calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR))
-    return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        Calendar.SATURDAY -> ShopScoreConstant.SIX_NUMBER
-        Calendar.FRIDAY -> ShopScoreConstant.FIVE_NUMBER
-        Calendar.THURSDAY -> ShopScoreConstant.FOUR_NUMBER
-        Calendar.WEDNESDAY -> ShopScoreConstant.THREE_NUMBER
-        Calendar.TUESDAY -> ShopScoreConstant.TWO_NUMBER
-        Calendar.MONDAY -> ShopScoreConstant.ONE_NUMBER
-        else -> ShopScoreConstant.ZERO_NUMBER
+    val nPastDays =
+        when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.SATURDAY -> ShopScoreConstant.SIX_NUMBER
+            Calendar.FRIDAY -> ShopScoreConstant.FIVE_NUMBER
+            Calendar.THURSDAY -> ShopScoreConstant.FOUR_NUMBER
+            Calendar.WEDNESDAY -> ShopScoreConstant.THREE_NUMBER
+            Calendar.TUESDAY -> ShopScoreConstant.TWO_NUMBER
+            Calendar.MONDAY -> ShopScoreConstant.ONE_NUMBER
+            else -> ShopScoreConstant.ZERO_NUMBER
+        }
+    return if (shouldStartFromMonday) {
+        nPastDays - Int.ONE
+    } else {
+        nPastDays
     }
 }
 

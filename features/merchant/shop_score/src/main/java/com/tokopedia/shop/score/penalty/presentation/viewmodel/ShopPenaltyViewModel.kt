@@ -84,7 +84,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private var maxStartDate: String? = null
     private var maxEndDate: String? = null
     private var startDateSummary =
-        format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+        format(getPastDaysPenaltyTimeStamp(true).time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDateSummary =
         format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var typeIds = listOf<Int>()
@@ -331,7 +331,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private fun getInitialStartDate(@ShopPenaltyPageType pageType: String): String {
         val timeStamp =
             when(pageType) {
-                ShopPenaltyPageType.ONGOING -> getPastDaysPenaltyTimeStamp()
+                ShopPenaltyPageType.ONGOING -> getPastDaysPenaltyTimeStamp(true)
                 ShopPenaltyPageType.HISTORY -> getHistoryPenaltyTimeStamp()
                 else -> getNotYetDeductedPenaltyTimeStamp()
             }
