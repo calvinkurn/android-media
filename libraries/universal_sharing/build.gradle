@@ -66,10 +66,9 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     api rootProject.ext.miscDependencies.coroutineCore
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    androidTestImplementation project(path: ':features:merchant:review')
+//    implementation 'androidx.appcompat:appcompat:1.4.1'
+//    implementation 'com.google.android.material:material:1.5.0'
+//    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
     testImplementation rootProject.ext.testDependencies.junit
@@ -95,9 +94,6 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-
-
-
 }
 
 project.ext {
