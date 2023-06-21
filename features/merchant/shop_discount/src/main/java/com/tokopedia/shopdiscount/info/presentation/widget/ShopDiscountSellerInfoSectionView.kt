@@ -18,7 +18,7 @@ import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
-import java.util.*
+import java.util.Date
 
 class ShopDiscountSellerInfoSectionView : ConstraintLayout {
 
@@ -36,7 +36,9 @@ class ShopDiscountSellerInfoSectionView : ConstraintLayout {
 
     init {
         binding = LayoutBottomSheetShopDiscountSellerInfoSectionItemBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         )
     }
 
@@ -81,7 +83,7 @@ class ShopDiscountSellerInfoSectionView : ConstraintLayout {
                     context.getString(R.string.seller_info_bottom_sheet_package_option_vps_description_format),
                     vpsData?.remainingQuota.orZero(),
                     vpsData?.maxQuota.orZero(),
-                    formattedExpiryDate,
+                    formattedExpiryDate
                 )
                 setCardOptionData(
                     cardSecondOption,
@@ -134,15 +136,7 @@ class ShopDiscountSellerInfoSectionView : ConstraintLayout {
             title.text = titleText
             description.text = descriptionText
             cardOption.cardType = CardUnify2.TYPE_BORDER
-//            cardOption.checkIcon.setImageDrawable(
-//                MethodChecker.getDrawable(
-//                    context,
-//                    R.drawable.ic_seller_info_option_check
-//                )
-//            )
             cardOption.hasCheckIcon = true
         }
     }
-
-
 }

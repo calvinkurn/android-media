@@ -125,6 +125,7 @@ class DeveloperOptionTypeFactoryImpl(
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
     private val loginHelperListener: LoginHelperListener,
     private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
+    private val branchListener: BranchLinkViewHolder.BranchListener
     private val userIdListener: UserIdViewHolder.UserIdListener,
     private val shopIdListener: ShopIdViewHolder.ShopIdListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
@@ -180,6 +181,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
+    override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
+
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -235,6 +238,7 @@ class DeveloperOptionTypeFactoryImpl(
             LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view, loginHelperListener)
             DevOptsAuthorizationViewHolder.LAYOUT -> DevOptsAuthorizationViewHolder(view, authorizeListener)
             DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
+            BranchLinkViewHolder.LAYOUT -> BranchLinkViewHolder(branchListener, view)
             UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             else -> super.createViewHolder(view, type)

@@ -5,9 +5,12 @@ import android.net.Uri
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.webview.WebViewHelper
+import com.tokopedia.webview.WhiteListedDomains
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import com.tokopedia.webview.ext.encodeQueryNested
+import io.mockk.every
+import io.mockk.mockkObject
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -25,6 +28,18 @@ class WebViewHelperTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
+        mockkObject(WebViewHelper)
+        every {
+            WebViewHelper.getWhiteListedDomains(any())
+        } answers {
+            WhiteListedDomains(
+                true,
+                listOf(
+                    "gojek.co.id",
+                    "web.stage.halodoc.com"
+                )
+            )
+        }
     }
 
     @Test
@@ -214,5 +229,41 @@ class WebViewHelperTest {
             "https://accounts.tokopedia.com/oauth/redirect?redirect_uri=https%3A%2F%2Fweb.stage.halodoc.com%2Ftanya-dokter%2Fkonsultasi-resep%3Ftitle%3DChat-Dokter%26source%3Dtokopedia%26consultation_id%3D448153%26_single%3Dtrue%26redirect_tokopedia%3Dtokopedia%253A%252F%252Fback"
         val result = url.encodeQueryNested()
         assertEquals(url, result)
+    }
+
+    @Test
+    fun testWhitelistTokopedia1() {
+        val url = "https://www.tokopedia.com/help"
+        assertEquals(true, WebViewHelper.isUrlWhitelisted(context, url))
+    }
+
+    @Test
+    fun testWhitelistTokopedia2() {
+        val url = "https://test.halo.tokopedia.com/help/123"
+        assertEquals(true, WebViewHelper.isUrlWhitelisted(context, url))
+    }
+
+    @Test
+    fun testWhitelistTokopediaFake() {
+        val url = "https://www.tokopedia.com.fake/poc/test"
+        assertEquals(false, WebViewHelper.isUrlWhitelisted(context, url))
+    }
+
+    @Test
+    fun testWhitelistGojek1() {
+        val url = "https://gojek.co.id/test"
+        assertEquals(true, WebViewHelper.isUrlWhitelisted(context, url))
+    }
+
+    @Test
+    fun testWhitelistGojek2() {
+        val url = "https://test.gojek.co.id/test"
+        assertEquals(true, WebViewHelper.isUrlWhitelisted(context, url))
+    }
+
+    @Test
+    fun testWhitelistNotRegistered() {
+        val url = "https://halodoc.com/test"
+        assertEquals(false, WebViewHelper.isUrlWhitelisted(context, url))
     }
 }

@@ -59,7 +59,7 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(CUSTOM_VALUE)
-    var customValues: String? = null,
+    var customValues: Map<String, String>? = null,
 
     @Expose
     @SerializedName(NOTIFICATION_TYPE)
@@ -223,6 +223,10 @@ data class SerializedNotificationData(
 
     @SerializedName(ADVANCE_TARGET)
     @Expose
-    val isAdvanceTargeting: String?
+    val isAdvanceTargeting: String?,
+
+    @SerializedName(USER_TYPE)
+    @Expose
+    val userType: String?
 
 ) : Parcelable

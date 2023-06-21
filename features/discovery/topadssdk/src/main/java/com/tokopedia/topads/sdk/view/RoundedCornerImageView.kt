@@ -20,7 +20,6 @@ class RoundedCornerImageView : AppCompatImageView {
         defStyle
     )
 
-
     override fun onDraw(canvas: Canvas) {
         rect.left = 0F
         rect.top = 0F

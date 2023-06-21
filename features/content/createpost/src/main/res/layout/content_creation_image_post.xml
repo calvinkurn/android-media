@@ -20,14 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect" />
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/product_tagging_parent_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_0"
-        app:layout_constraintStart_toStartOf="@id/content_creation_post_image"
-        app:layout_constraintEnd_toEndOf="@id/content_creation_post_image"
-        app:layout_constraintTop_toTopOf="@id/content_creation_post_image"
-        app:layout_constraintBottom_toBottomOf="@id/content_creation_post_image"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_tagging_button_parent"

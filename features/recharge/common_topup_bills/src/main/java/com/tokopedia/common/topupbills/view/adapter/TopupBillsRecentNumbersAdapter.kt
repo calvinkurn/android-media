@@ -1,21 +1,20 @@
 package com.tokopedia.common.topupbills.view.adapter
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.media.loader.loadImage
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
 class TopupBillsRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRecommendation>) :
-        RecyclerView.Adapter<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
+    RecyclerView.Adapter<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
 
@@ -52,9 +51,7 @@ class TopupBillsRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRe
 
         fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
             this.topupBillsRecommendation = topupBillsRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
-                    ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
-            )
+            iconOperator.loadImage(topupBillsRecommendation.iconUrl)
             if (topupBillsRecommendation.description.isEmpty()) {
                 textClientNumber.text = topupBillsRecommendation.clientNumber
             } else {
@@ -62,11 +59,9 @@ class TopupBillsRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRe
             }
             textProductName.text = topupBillsRecommendation.title
         }
-
     }
 
     interface ActionListener {
         fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int)
     }
-
 }

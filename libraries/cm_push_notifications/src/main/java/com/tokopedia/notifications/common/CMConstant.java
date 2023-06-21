@@ -153,6 +153,7 @@ public interface CMConstant {
         String ADVANCE_TARGET = "isAdvanceTarget";
         String GROUP_ID = "groupId";
         String GROUP_NAME = "groupName";
+        String USER_TYPE = "userType";
 
         interface PayloadExtraDataKey {
             String CAMPAIGN_NAME = "cmpgnName";
@@ -161,6 +162,8 @@ public interface CMConstant {
             String SESSION_ID = "sesnId";
             String INTENT_ACTION = "intentAction";
             String TOPCHAT = "topChat";
+
+            String TOKOCHAT = "tokoChat";
         }
 
 
@@ -284,9 +287,11 @@ public interface CMConstant {
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_SA = "37797";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_MA = "37794";
         String VALUE_TRACKER_ID_REMINDER_VIEW = "42642";
+        String VALUE_TRACKER_ID_REMINDER_VIEW_SA = "42649";
         String VALUE_TRACKER_ID_CLICK_CTA_REMINDER = "42645";
-
+        String VALUE_TRACKER_ID_CLICK_CTA_REMINDER_SA = "42650";
         String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER = "42646";
+        String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER_SA = "42651";
         String VALUE_CURRENT_SITE = "tokopediamarketplace";
         String VALUE_EVENT_CLICK_CONTENT = "clickContent";
         String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
@@ -295,6 +300,7 @@ public interface CMConstant {
         String VALUE_GEN_CATEGORY = "general android push prompt";
         String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
         String VALUE_REMINDER_CATEGORY = "reminder push prompt";
+        String VALUE_REMINDER_CATEGORY_SA = "seller reminder push prompt";
         String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";
@@ -304,11 +310,11 @@ public interface CMConstant {
         String KEY_EVENT_GA = "event_ga";
         String KEY_MAIN_APP_PUSH_PERMISSION_STATUS = "android_push_permission_mainapp_device_status";
         String KEY_SELLER_APP_PUSH_PERMISSION_STATUS = "android_push_permission_sellerapp_device_status";
-        String KEY_TRAFFIC_SOURCE_NAME = "traffic_source_name";
-        String KEY_TRAFFIC_SOURCE_ID = "traffic_source_id";
-        String KEY_EVENT_REFRESH_SOURCE = "event_refresh_source";
-        String KEY_DELAY_HRS_OPEN_HOME_SCR = "delayhours_to_user_open_homescreen";
-        String KEY_DELAY_DAY_OPEN_HOME_SCR = "delayday_to_user_open_homescreen";
+        String KEY_TRAFFIC_SOURCE_NAME = "campaign_name";
+        String KEY_TRAFFIC_SOURCE_ID = "campaign_id";
+        String KEY_EVENT_REFRESH_SOURCE = "refreshsource";
+        String KEY_DELAY_HRS_OPEN_HOME_SCR = "delayhours";
+        String KEY_DELAY_DAY_OPEN_HOME_SCR = "delayday";
         String KEY_DEVICE_ID_NEW = "device_id";
         String KEY_USER_ID_NEW = "user_id";
         String KEY_SHOP_ID_NEW = "shop_id";
@@ -318,8 +324,8 @@ public interface CMConstant {
         String KEY_OS_NAME = "os_name";
         String KEY_APP_VERSION = "app_version";
         String KEY_DEVICE_MANUFACTURER = "device_manufacturer";
-        String KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS = "promo_app_push_permission_latest_status";
-        String KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS = "device_push_permission_latest_status";
+        String KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS = "apppushpermissionstatus";
+        String KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS = "devicepushpermissionstatus";
     }
 
 }

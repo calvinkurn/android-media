@@ -1,156 +1,31 @@
 package com.tokopedia.shop.flashsale.presentation.creation.rule
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
-import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.TncRequest
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
-import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.shop.flashsale.util.CampaignDataGenerator
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.After
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.DATE
 import java.util.concurrent.TimeUnit
 
-class CampaignRuleViewModelTest {
-
-    @RelaxedMockK
-    lateinit var getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
-
-    @RelaxedMockK
-    lateinit var doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase
-
-    @RelaxedMockK
-    lateinit var validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase
-
-    @RelaxedMockK
-    lateinit var tracker: ShopFlashSaleTracker
-
-    @RelaxedMockK
-    lateinit var campaignObserver: Observer<in Result<CampaignUiModel>>
-
-    @RelaxedMockK
-    lateinit var selectedPaymentTypeObserver: Observer<in PaymentType?>
-
-    @RelaxedMockK
-    lateinit var isUniqueBuyerObserver: Observer<in Boolean?>
-
-    @RelaxedMockK
-    lateinit var isCampaignRelationObserver: Observer<in Boolean?>
-
-    @RelaxedMockK
-    lateinit var relatedCampaignsObserver: Observer<in List<RelatedCampaign>?>
-
-    @RelaxedMockK
-    lateinit var isRelatedCampaignsVisibleObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var isRelatedCampaignButtonActiveObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var isRelatedCampaignRemovedObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var isAllInputValidObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var tncClickEventObserver: Observer<in TncRequest>
-
-    @RelaxedMockK
-    lateinit var isTNCConfirmedObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var isCampaignCreationAllowedObserver: Observer<in Boolean>
-
-    @RelaxedMockK
-    lateinit var saveDraftActionStateObserver: Observer<in CampaignRuleActionResult>
-
-    @RelaxedMockK
-    lateinit var createCampaignActionStateObserver: Observer<in CampaignRuleActionResult>
-
-    @RelaxedMockK
-    lateinit var addRelatedCampaignButtonEventObserver: Observer<in AddRelatedCampaignRequest>
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    lateinit var viewModel: CampaignRuleViewModel
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-
-        viewModel = CampaignRuleViewModel(
-            getSellerCampaignDetailUseCase,
-            doSellerCampaignCreationUseCase,
-            validateCampaignCreationEligibilityUseCase,
-            tracker,
-            CoroutineTestDispatchersProvider
-        )
-
-        with(viewModel) {
-            campaign.observeForever(campaignObserver)
-            selectedPaymentType.observeForever(selectedPaymentTypeObserver)
-            isUniqueBuyer.observeForever(isUniqueBuyerObserver)
-            isCampaignRelation.observeForever(isCampaignRelationObserver)
-            relatedCampaigns.observeForever(relatedCampaignsObserver)
-            isRelatedCampaignsVisible.observeForever(isRelatedCampaignsVisibleObserver)
-            isRelatedCampaignButtonActive.observeForever(isRelatedCampaignButtonActiveObserver)
-            isRelatedCampaignRemoved.observeForever(isRelatedCampaignRemovedObserver)
-            isAllInputValid.observeForever(isAllInputValidObserver)
-            tncClickEvent.observeForever(tncClickEventObserver)
-            isTNCConfirmed.observeForever(isTNCConfirmedObserver)
-            isCampaignCreationAllowed.observeForever(isCampaignCreationAllowedObserver)
-            saveDraftActionState.observeForever(saveDraftActionStateObserver)
-            createCampaignActionState.observeForever(createCampaignActionStateObserver)
-            addRelatedCampaignButtonEvent.observeForever(addRelatedCampaignButtonEventObserver)
-        }
-    }
-
-    @After
-    fun tearDown() {
-        with(viewModel) {
-            campaign.removeObserver(campaignObserver)
-            selectedPaymentType.removeObserver(selectedPaymentTypeObserver)
-            isUniqueBuyer.removeObserver(isUniqueBuyerObserver)
-            isCampaignRelation.removeObserver(isCampaignRelationObserver)
-            relatedCampaigns.removeObserver(relatedCampaignsObserver)
-            isRelatedCampaignsVisible.removeObserver(isRelatedCampaignsVisibleObserver)
-            isRelatedCampaignButtonActive.removeObserver(isRelatedCampaignButtonActiveObserver)
-            isRelatedCampaignRemoved.removeObserver(isRelatedCampaignRemovedObserver)
-            isAllInputValid.removeObserver(isAllInputValidObserver)
-            tncClickEvent.removeObserver(tncClickEventObserver)
-            isTNCConfirmed.removeObserver(isTNCConfirmedObserver)
-            isCampaignCreationAllowed.removeObserver(isCampaignCreationAllowedObserver)
-            saveDraftActionState.removeObserver(saveDraftActionStateObserver)
-            createCampaignActionState.removeObserver(createCampaignActionStateObserver)
-            addRelatedCampaignButtonEvent.removeObserver(addRelatedCampaignButtonEventObserver)
-        }
-    }
+class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
 
     @Test
     fun `When fetchCampaignDetail success with no related campaigns, observer will receive the data for non-unique buyer and campaign rule submitted`() {
@@ -216,7 +91,7 @@ class CampaignRuleViewModelTest {
 
     @Test
     fun `When fetchCampaignDetail success, observer will receive the data for unique buyer and campaign rule submitted`() {
-        runBlocking {
+        runBlockingTest {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val result = CampaignDataGenerator.generateCampaignUiModel(isUniqueBuyer = true)
@@ -229,10 +104,10 @@ class CampaignRuleViewModelTest {
                 getCampaignDetail(campaignId)
 
                 val actual = campaign.getOrAwaitValue(time = 0L, timeUnit = TimeUnit.SECONDS)
-                assertEquals(expected, actual)
-                assertEquals(expected.data.paymentType, selectedPaymentType.value)
-                assertEquals(expected.data.isUniqueBuyer, isUniqueBuyer.value)
-                assertEquals(expected.data.isCampaignRuleSubmit, isTNCConfirmed.value)
+                Assert.assertEquals(expected, actual)
+                Assert.assertEquals(expected.data.paymentType, selectedPaymentType.value)
+                Assert.assertEquals(expected.data.isUniqueBuyer, isUniqueBuyer.value)
+                Assert.assertEquals(expected.data.isCampaignRuleSubmit, isTNCConfirmed.value)
             }
         }
     }
@@ -1229,32 +1104,6 @@ class CampaignRuleViewModelTest {
             method.isAccessible = true
             method.invoke(viewModel)
             assertFalse(viewModel.isTNCConfirmed.getOrAwaitValue())
-        }
-    }
-
-    @Test
-    fun `check isInputChanged are false and then restart the TNC Confirmation Status is not running`() {
-        runBlocking {
-            viewModel.setPrivateProperty("initialPaymentType", PaymentType.INSTANT)
-            viewModel.setPrivateProperty("initialUniqueBuyer", true)
-            viewModel.setPrivateProperty("initialCampaignRelation", true)
-            viewModel.setPrivateProperty(
-                "initialCampaignRelations",
-                CampaignDataGenerator.generateRelatedCampaigns()
-            )
-
-            viewModel.onInstantPaymentMethodSelected()
-            viewModel.onNotRequireUniqueAccountSelected()
-            viewModel.onAllowCampaignRelation()
-            viewModel.onRelatedCampaignsChanged(CampaignDataGenerator.generateRelatedCampaigns())
-            val method =
-                viewModel.javaClass.getDeclaredMethod("resetTNCConfirmationStatusIfDataChanged")
-
-            method.isAccessible = true
-            method.invoke(viewModel)
-            verify(exactly = 0) {
-                viewModel.onTNCCheckboxUnchecked()
-            }
         }
     }
 

@@ -14,7 +14,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 
 class CreateTemplateUseCaseTest {
 
@@ -70,43 +69,39 @@ class CreateTemplateUseCaseTest {
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_error_when_fail_to_create_template_buyer() {
-        assertThrows<Throwable> {
-            runBlocking {
-                // When
-                repository.stubRepositoryAsThrow(
-                    throwable = expectedThrowable
-                )
+        runBlocking {
+            // When
+            repository.stubRepositoryAsThrow(
+                throwable = expectedThrowable
+            )
 
-                // Then
-                createTemplateUseCase(
-                    CreateTemplateUseCase.Param(
-                        isSeller = false,
-                        value = testString
-                    )
+            // Then
+            createTemplateUseCase(
+                CreateTemplateUseCase.Param(
+                    isSeller = false,
+                    value = testString
                 )
-            }
+            )
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_error_when_fail_to_create_template_seller() {
-        assertThrows<Throwable> {
-            runBlocking {
-                // When
-                repository.stubRepositoryAsThrow(
-                    throwable = expectedThrowable
-                )
+        runBlocking {
+            // When
+            repository.stubRepositoryAsThrow(
+                throwable = expectedThrowable
+            )
 
-                // Then
-                createTemplateUseCase(
-                    CreateTemplateUseCase.Param(
-                        isSeller = true,
-                        value = testString
-                    )
+            // Then
+            createTemplateUseCase(
+                CreateTemplateUseCase.Param(
+                    isSeller = true,
+                    value = testString
                 )
-            }
+            )
         }
     }
 }

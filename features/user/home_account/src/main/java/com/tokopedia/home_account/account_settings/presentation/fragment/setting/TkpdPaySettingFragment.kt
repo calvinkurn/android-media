@@ -12,7 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACTIVITY_NAME_SALDO_DEPOSIT
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BALANCE
-import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CREDIT_CARD
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.DEBIT_OR_CREDIT_CARD
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.GOPAY
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOCASH
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
@@ -64,7 +64,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
         val settingItems: MutableList<SettingItemUIModel> = ArrayList<SettingItemUIModel>()
         val walletModel = walletPref.retrieveWallet()
 
-        if(walletModel != null) {
+        if (walletModel != null) {
             settingItems.add(
                 SettingItemUIModel(
                     SettingConstant.SETTING_TOKOCASH_ID,
@@ -92,8 +92,9 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
             )
         )
 
-        if(settingItems.isNotEmpty()) {
-            settingItems.add(0,
+        if (settingItems.isNotEmpty()) {
+            settingItems.add(
+                0,
                 SettingItemUIModel(
                     SettingConstant.SETTING_GOPAY,
                     getString(R.string.title_gopay_setting)
@@ -110,7 +111,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
     override fun onItemClicked(settingId: Int) {
         when (settingId) {
             SettingConstant.SETTING_CREDIT_CARD_ID -> {
-                accountAnalytics.eventClickPaymentSetting(CREDIT_CARD)
+                accountAnalytics.eventClickCreditCardSetting(DEBIT_OR_CREDIT_CARD)
                 RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING)
             }
             SettingConstant.SETTING_TOKOCASH_ID -> {
@@ -137,8 +138,11 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
                             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
                         } else {
                             RouteManager.route(
-                                context, String.format(
-                                    "%s?url=%s", ApplinkConst.WEBVIEW,
+                                context,
+                                String.format(
+                                    Locale.getDefault(),
+                                    "%s?url=%s",
+                                    ApplinkConst.WEBVIEW,
                                     ApplinkConst.WebViewUrl.SALDO_DETAIL
                                 )
                             )
@@ -151,11 +155,13 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
                         pvtUserSession.setSaldoIntroPageStatus(true)
                         RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_INTRO)
                     }
-                }
-                else {
+                } else {
                     RouteManager.route(
-                        activity, String.format(
-                            "%s?url=%s", ApplinkConst.WEBVIEW,
+                        activity,
+                        String.format(
+                            Locale.getDefault(),
+                            "%s?url=%s",
+                            ApplinkConst.WEBVIEW,
                             ApplinkConst.WebViewUrl.SALDO_DETAIL
                         )
                     )
@@ -163,7 +169,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
             }
             SettingConstant.SETTING_DEBIT_INSTANT -> {
                 val debitInstantUrl = walletPref.retrieveDebitInstantUrl()
-                if(debitInstantUrl?.isNotEmpty() == true) {
+                if (debitInstantUrl?.isNotEmpty() == true) {
                     RouteManager.route(
                         activity,
                         SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl)

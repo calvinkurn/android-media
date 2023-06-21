@@ -3,16 +3,16 @@ package com.tokopedia.inbox.fake.view.navigator
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_CHAT
 import com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION
-import com.tokopedia.inbox.fake.view.fragment.FakeChatListInboxFragment
 import com.tokopedia.inbox.fake.view.fragment.FakeNotifcenterInboxFragment
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactory
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
 
 class FakeInboxFragmentFactory(
     private val page: String
 ) : InboxFragmentFactory {
     override fun createChatListFragment(): Fragment {
         return if (page == VALUE_PAGE_CHAT) {
-            FakeChatListInboxFragment.create()
+            ChatListInboxFragment()
         } else {
             Fragment()
         }

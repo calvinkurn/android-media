@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -135,6 +136,7 @@ class BaseTokoFoodOrderTrackingFragment :
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
         observeTokoChatMutationProfile()
+        setDataArguments()
     }
 
     override fun onDestroy() {
@@ -212,6 +214,9 @@ class BaseTokoFoodOrderTrackingFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, tokoChatAppLink).apply {
                 putExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, true)
+                if (viewModel.isFromBubble) { // Only assign if it's true
+                    putExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, true)
+                }
             }
             startActivity(intent)
         }
@@ -374,6 +379,9 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.INIT_MUTATION_PROFILE_ERROR,
                         TokofoodErrorLogger.ErrorDescription.INIT_MUTATION_PROFILE_ERROR
                     )
+                }
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -621,6 +629,13 @@ class BaseTokoFoodOrderTrackingFragment :
             viewModel.userSession.deviceId.orEmpty(),
             TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
+    }
+
+    private fun setDataArguments() {
+        viewModel.isFromBubble = arguments?.getBoolean(
+            TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+            false
+        ) ?: false
     }
 
     companion object {

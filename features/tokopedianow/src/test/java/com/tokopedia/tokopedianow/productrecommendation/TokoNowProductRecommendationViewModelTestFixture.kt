@@ -12,12 +12,15 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
@@ -25,6 +28,7 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,6 +53,9 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+
+    @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
@@ -58,7 +65,10 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
     @RelaxedMockK
-    lateinit var addressData: TokoNowLocalAddress
+    lateinit var affiliateService: NowAffiliateService
+
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -71,7 +81,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
 
     protected val productModels = mutableListOf<Visitable<*>>(
         ProductCardCompactCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
+            productCardModel = ProductCardCompactUiModel(
                 productId = "11111",
                 name = "product a",
                 price = "RP. 10.000",
@@ -84,7 +94,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             parentId = "0"
         ),
         ProductCardCompactCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
+            productCardModel = ProductCardCompactUiModel(
                 productId = "11112",
                 name = "product b",
                 price = "RP. 30.000",
@@ -97,7 +107,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             parentId = "0"
         ),
         ProductCardCompactCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
+            productCardModel = ProductCardCompactUiModel(
                 productId = "11113",
                 name = "product c",
                 price = "RP. 20.000",
@@ -110,7 +120,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             parentId = "0"
         ),
         ProductCardCompactCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
+            productCardModel = ProductCardCompactUiModel(
                 productId = "11114",
                 name = "product d",
                 price = "RP. 60.000",
@@ -123,7 +133,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             parentId = "122231443"
         ),
         ProductCardCompactCarouselItemUiModel(
-            productCardModel = TokoNowProductCardViewUiModel(
+            productCardModel = ProductCardCompactUiModel(
                 productId = "11115",
                 name = "product e",
                 price = "RP. 40.000",
@@ -198,6 +208,14 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         }
     }
 
+    protected fun onCheckAtcAffiliateCookie_thenReturn(error: Throwable) {
+        coEvery { affiliateService.checkAtcAffiliateCookie(any()) } throws error
+    }
+
+    protected fun verifyCheckAtcAffiliateCookieCalled(expectedAffiliateData: NowAffiliateAtcData) {
+        coVerify { affiliateService.checkAtcAffiliateCookie(expectedAffiliateData) }
+    }
+
     protected fun mockProductModels() {
         viewModel.mockPrivateField(
             name = privateFieldProductModels,
@@ -230,19 +248,21 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         viewModel = TokoNowProductRecommendationViewModel(
             getRecommendationUseCase = getRecommendationUseCase,
             getMiniCartUseCase = getMiniCartUseCase,
+            addressData = addressData,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
+            affiliateService = affiliateService,
+            getTargetedTickerUseCase = getTargetedTickerUseCase,
             userSession = userSession,
-            addressData = addressData,
             dispatchers = coroutineTestRule.dispatchers
         )
     }
 
     @Test
     fun `verify the properties`() {
-        Assert.assertEquals(viewModel.isLogin, false)
-        Assert.assertEquals(viewModel.userId, "")
+        Assert.assertEquals(viewModel.isLoggedIn(), false)
+        Assert.assertEquals(viewModel.getUserId(), "")
 
         val isLogin = true
         val userId = "1222233"
@@ -259,8 +279,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             userId
         }
 
-        Assert.assertEquals(viewModel.isLogin, isLogin)
-        Assert.assertEquals(viewModel.userId, userId)
+        Assert.assertEquals(viewModel.isLoggedIn(), isLogin)
+        Assert.assertEquals(viewModel.getUserId(), userId)
     }
-
 }

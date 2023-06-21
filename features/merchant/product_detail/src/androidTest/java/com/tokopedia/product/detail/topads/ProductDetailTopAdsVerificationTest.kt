@@ -21,6 +21,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.Timeout.millis
 
 class ProductDetailTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
@@ -63,6 +64,7 @@ class ProductDetailTopAdsVerificationTest {
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
         for (i in 0 until itemCount) {
+            waitForData(500)
             scrollRecyclerViewToPosition(recyclerView, i)
             checkTopAdsOnProductRecommendationViewHolder(recyclerView, i)
         }
@@ -76,7 +78,7 @@ class ProductDetailTopAdsVerificationTest {
             val childRecyclerView: RecyclerView? =
                 viewHolder.itemView.findViewById(R.id.carouselProductCardRecyclerView)
 
-            //check if adapter null, means recom widget data is empty from backend
+            // check if adapter null, means recom widget data is empty from backend
             if (childRecyclerView != null && childRecyclerView.adapter != null) {
                 clickOnEachItemRecyclerView(
                     viewHolder.itemView,
@@ -92,8 +94,8 @@ class ProductDetailTopAdsVerificationTest {
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-    private fun waitForData() {
-        Thread.sleep(15000)
+    private fun waitForData(millis: Long = 15000) {
+        Thread.sleep(millis)
     }
 
     private fun login() {

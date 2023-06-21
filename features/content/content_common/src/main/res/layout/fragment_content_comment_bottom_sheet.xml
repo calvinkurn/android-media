@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.content.common.ui.custom.ContentHeaderView
+        android:id="@+id/comment_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/content_common_space_8"
+        android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginEnd="@dimen/content_common_space_8"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/gl_bottom_comment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_header"
+        app:layout_constraintVertical_bias="0.0" >
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_bottom_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.9"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/view_comment_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_common_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_user_photo"
+            android:layout_width="@dimen/content_common_space_40"
+            android:layout_height="@dimen/content_common_space_40"
+            app:unify_image_type="circle" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/new_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/content_common_space_36"
+            android:maxLines="4"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/content_common_space_8"
+            android:layout_weight="1"
+            android:background="@drawable/bg_et_comment"
+            android:hint="@string/content_comment_edit_text_hint"
+            android:inputType="textMultiLine"
+            android:paddingStart="@dimen/unify_space_16"
+            android:paddingTop="@dimen/content_common_space_6"
+            android:paddingEnd="@dimen/content_common_space_12"
+            android:paddingBottom="@dimen/content_common_space_6"
+            android:scrollbars="vertical"
+            android:tag=""
+            android:textSize="@dimen/unify_font_14"
+            android:textStyle="normal" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_comment_send"
+            android:layout_width="@dimen/content_common_space_40"
+            android:layout_height="@dimen/content_common_space_40"
+            android:layout_marginStart="@dimen/content_common_space_8"
+            android:background="@drawable/bg_button_circle_green"
+            android:padding="@dimen/content_common_space_8"
+            app:icon_color_light_disabled="@color/Unify_NN0"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_night_disabled="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
+            app:icon_name="SEND_TEXT" />
+
+    </LinearLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/comment_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

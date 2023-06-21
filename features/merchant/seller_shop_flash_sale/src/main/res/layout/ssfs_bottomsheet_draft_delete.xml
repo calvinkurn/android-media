@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         tool:listitem="@layout/ssfs_item_delete_question"
         tool:itemCount="5"
         app:layout_constraintTop_toBottomOf="@+id/typographyQuestionTitle" />

@@ -10,15 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.AnalyticsDebuggerTypeFactory
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
 
@@ -84,11 +82,8 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
-                .builder()
-                .baseAppComponent(
-                        (activity!!.application as BaseMainApplication).baseAppComponent
-                ).build()
+        val component = DaggerAnalyticsDebuggerComponent.builder()
+            .context(activity!!.application).build()
 
         injectToFragment(component)
         presenter!!.attachView(this)
@@ -105,7 +100,6 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
@@ -127,7 +121,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     override fun showCount(count: Int) {
-        //noop
+        // noop
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -7,22 +7,21 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
+import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
+import com.tokopedia.affiliate.AFFILIATE_TOKONOW_BANNER
+import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
@@ -33,8 +32,10 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
+import com.tokopedia.affiliate.model.pojo.TokonowRemoteConfigData
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
@@ -49,6 +50,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.affiliate_toko.databinding.AffiliatePromoFragmentLayoutBinding
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -59,21 +61,21 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class AffiliatePromoFragment :
     AffiliateBaseFragment<AffiliatePromoViewModel>(),
     AffiliatePromoInterface,
-    PromotionClickInterface {
+    PromotionClickInterface,
+    ProductClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -85,10 +87,18 @@ class AffiliatePromoFragment :
 
     private val tabFragments = arrayListOf<Fragment>()
     private var remoteConfig: RemoteConfig? = null
+    private var tokoNowData: TokonowRemoteConfigData? = null
+
+    private var binding by autoClearedNullable<AffiliatePromoFragmentLayoutBinding>()
+
+    private val ssaAdapter: AffiliateAdapter by lazy {
+        AffiliateAdapter(
+            AffiliateAdapterFactory(productClickInterface = this)
+        )
+    }
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
-
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -97,11 +107,16 @@ class AffiliatePromoFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        setObservers()
     }
 
     private fun isAffiliateGamificationEnabled() =
         remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
+
+    private fun isAffiliateSSAShopEnabled() =
+        RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_SSA_SHOP,
+            ""
+        ) == AFFILIATE_SSA_SHOP
 
     private fun affiliateRedirection() =
         remoteConfig?.getString(
@@ -109,9 +124,15 @@ class AffiliatePromoFragment :
             AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
         )
 
+    private fun affiliateTokoNowData(): TokonowRemoteConfigData? {
+        val data = remoteConfig?.getString(AFFILIATE_TOKONOW_DATA, "")
+        return Gson().fromJson(data, TokonowRemoteConfigData::class.java)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+        setObservers()
         sendOpenScreenTracking()
     }
 
@@ -125,7 +146,7 @@ class AffiliatePromoFragment :
     }
 
     private fun afterViewCreated() {
-        view?.findViewById<NavToolbar>(R.id.promo_navToolbar)?.run {
+        binding?.promoNavToolbar?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                 IconBuilder()
@@ -143,24 +164,31 @@ class AffiliatePromoFragment :
             }
         }
 
-        view?.findViewById<ImageUnify>(R.id.icon_more)?.setOnClickListener {
+        binding?.promotionInfoCard?.setOnClickListener {
             AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
-        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.setOnClickListener {
-            sendClickEvent()
-            context?.let {
-                startActivity(
-                    Intent(it, AffiliateSSAShopListActivity::class.java)
-                )
+
+        isAffiliateSSAShopEnabled().let {
+            affiliatePromoViewModel.fetchSSAShopList()
+        }
+
+        if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_TOKONOW_BANNER,
+                ""
+            ) == AFFILIATE_TOKONOW_BANNER
+        ) {
+            binding?.tokonowContainer?.apply {
+                show()
+                setOnClickListener {
+                    tokoNowData = affiliateTokoNowData()
+                    affiliatePromoViewModel.getTokoNowBottomSheetInfo(getTokoNowPageId())
+                }
             }
         }
-        view?.findViewById<LinearLayout>(R.id.ssa_container)?.isVisible =
-            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
 
-        view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible =
-            isAffiliateGamificationEnabled()
+        binding?.gamificationContainer?.isVisible = isAffiliateGamificationEnabled()
 
-        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener {
+        binding?.gamificationEntryCardBanner?.setOnClickListener {
             val urlRedirectionAppLink = affiliateRedirection()
             if (urlRedirectionAppLink?.isNotEmpty() == true) {
                 RouteManager.route(context, urlRedirectionAppLink)
@@ -178,6 +206,11 @@ class AffiliatePromoFragment :
         }
     }
 
+    private fun getTokoNowPageId(): String? {
+        val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
+        return if (isStaging) tokoNowData?.tokonowIdStaging else tokoNowData?.tokonowId
+    }
+
     private fun sendClickEvent() {
         AffiliateAnalytics.sendEvent(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
@@ -189,7 +222,7 @@ class AffiliatePromoFragment :
     }
 
     fun handleBack() {
-        if (view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.isVisible == true) {
+        if (binding?.recommendedLayout?.isVisible == true) {
             (activity as? AffiliateActivity)?.handleBackButton(false)
         } else {
             showDefaultState()
@@ -201,48 +234,52 @@ class AffiliatePromoFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.affiliate_promo_fragment_layout, container, false)
+        binding = AffiliatePromoFragmentLayoutBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     private fun setupViewPager() {
-        val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_recommended)
-        val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_recommended)
         activity?.let {
-            tabFragments.add(
-                AffiliateRecommendedProductFragment.getFragmentInstance(
-                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,
-                    this
-                )
-            )
             tabFragments.add(
                 AffiliateRecommendedProductFragment.getFragmentInstance(
                     AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER,
                     this
                 )
             )
+            tabFragments.add(
+                AffiliateRecommendedProductFragment.getFragmentInstance(
+                    AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,
+                    this
+                )
+            )
             val adapter =
                 AffiliateRecommendedAdapter(childFragmentManager, lifecycle, context, tabFragments)
-            viewPager?.adapter = adapter
-            if (tabLayout != null && viewPager != null) {
-                TabLayoutMediator(tabLayout, viewPager) { _, _ ->
+            binding?.viewPagerRecommended?.adapter = adapter
+            if (binding?.tabLayoutRecommended != null && binding?.viewPagerRecommended != null) {
+                TabLayoutMediator(
+                    binding?.tabLayoutRecommended!!,
+                    binding?.viewPagerRecommended!!
+                ) { _, _ ->
                 }.attach()
             }
-            tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab?) = Unit
+            binding?.tabLayoutRecommended?.addOnTabSelectedListener(
+                object : TabLayout.OnTabSelectedListener {
+                    override fun onTabReselected(tab: TabLayout.Tab?) = Unit
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    tab?.position?.let { adapter.setUnSelectView(tab) }
-                }
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        tab?.position?.let { adapter.setUnSelectView(tab) }
+                    }
 
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    sendTabSelectedEvent(tab?.position)
-                    tab?.position?.let {
-                        adapter.setOnSelectView(tab)
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        sendTabSelectedEvent(tab?.position)
+                        tab?.position?.let {
+                            adapter.setOnSelectView(tab)
+                        }
                     }
                 }
-            })
+            )
         }
-        setCustomTabText(requireContext(), tabLayout)
+        setCustomTabText(context, binding?.tabLayoutRecommended)
     }
 
     private fun sendTabSelectedEvent(position: Int?) {
@@ -265,15 +302,15 @@ class AffiliatePromoFragment :
             if (visibility != null) {
                 if (visibility) {
                     hideAllElements()
-                    view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.show()
+                    binding?.promoAffiliateProgressView?.show()
                 } else {
-                    view?.findViewById<Group>(R.id.promo_affiliate_progress_view)?.gone()
+                    binding?.promoAffiliateProgressView?.gone()
                 }
             }
         }
 
         affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
-            view?.rootView?.let {
+            binding?.root?.let {
                 Toaster.build(
                     it,
                     getString(R.string.affiliate_product_link_invalid),
@@ -292,7 +329,7 @@ class AffiliatePromoFragment :
                     it.getAffiliateAnnouncementV2?.data?.type,
                     it.getAffiliateAnnouncementV2?.data?.id
                 )
-                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     it,
                     activity,
                     source = PAGE_ANNOUNCEMENT_PROMOSIKAN
@@ -301,20 +338,19 @@ class AffiliatePromoFragment :
         }
         affiliatePromoViewModel.getDiscoCampaignBanners().observe(this) {
             if (!it?.recommendedAffiliateDiscoveryCampaign?.data?.items.isNullOrEmpty()) {
-                view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
-                view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
-                    ?.setOnClickListener {
-                        context?.let {
-                            startActivity(
-                                Intent(it, AffiliateDiscoPromoListActivity::class.java)
-                            )
-                        }
-                        sendDiscoLihatEvent()
+                binding?.discoPromotionGroup?.show()
+                binding?.discoInspirationLihatSemua?.setOnClickListener {
+                    context?.let { ctx ->
+                        startActivity(
+                            Intent(ctx, AffiliateDiscoPromoListActivity::class.java)
+                        )
                     }
-                view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
+                    sendDiscoLihatEvent()
+                }
+                binding?.rvDiscoPromotion?.apply {
                     val discoBannerAdapter =
                         AffiliateAdapter(
-                            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+                            source = AffiliateAdapter.PageSource.SOURCE_PROMOSIKAN,
                             affiliateAdapterFactory = AffiliateAdapterFactory(
                                 promotionClickInterface = this@AffiliatePromoFragment
                             ),
@@ -327,6 +363,48 @@ class AffiliatePromoFragment :
                     )
                     this.adapter = discoBannerAdapter
                 }
+            }
+        }
+        affiliatePromoViewModel.getTokoNowBottomSheetData().observe(viewLifecycleOwner) { eligibility ->
+            val pageId = getTokoNowPageId().toString()
+            AffiliatePromotionBottomSheet.newInstance(
+                AffiliatePromotionBottomSheetParams(
+                    null,
+                    pageId,
+                    tokoNowData?.name.toString(),
+                    tokoNowData?.imageURL.toString(),
+                    tokoNowData?.weblink.toString(),
+                    type = PageType.SHOP.value,
+                    productIdentifier = pageId,
+                    isLinkGenerationEnabled = true,
+                    origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_TOKO_NOW,
+                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                        ssaStatus = true,
+                        ssaMessage = "",
+                        message = eligibility?.eligibleCommission?.message.toString(),
+                        label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                            labelType = "",
+                            labelText = ""
+                        )
+                    )
+                ),
+                AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                null
+            ).show(childFragmentManager, "")
+        }
+        affiliatePromoViewModel.getSSAShopList().observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty()) {
+                binding?.ssaPromotionGroup?.show()
+                binding?.rvSsa?.adapter = ssaAdapter
+                binding?.ssaLihatSemua?.setOnClickListener {
+                    sendClickEvent()
+                    context?.let { ctx ->
+                        startActivity(
+                            Intent(ctx, AffiliateSSAShopListActivity::class.java)
+                        )
+                    }
+                }
+                ssaAdapter.setVisitables(it)
             }
         }
     }
@@ -357,11 +435,11 @@ class AffiliatePromoFragment :
     }
 
     private fun showDefaultState() {
-        view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.show()
+        binding?.recommendedLayout?.show()
     }
 
     private fun hideAllElements() {
-        view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.hide()
+        binding?.recommendedLayout?.hide()
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
@@ -390,7 +468,7 @@ class AffiliatePromoFragment :
         if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
             tabOne.apply {
-                text = context.getString(R.string.affiliate_pernah_dibeli)
+                text = context.getString(R.string.affiliate_terakhir_dilihat)
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
                 gravity = Gravity.CENTER
@@ -404,7 +482,7 @@ class AffiliatePromoFragment :
 
             val tabTwo = Typography(context)
             tabTwo.apply {
-                text = context.getString(R.string.affiliate_terakhir_dilihat)
+                text = context.getString(R.string.affiliate_pernah_dibeli)
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
                 gravity = Gravity.CENTER
@@ -462,6 +540,7 @@ class AffiliatePromoFragment :
         commison: String,
         status: String,
         type: String?,
+        appUrl: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
@@ -472,6 +551,7 @@ class AffiliatePromoFragment :
                 itemImage,
                 itemURL,
                 itemID,
+                appUrl = appUrl,
                 commission = commison,
                 type = type,
                 isLinkGenerationEnabled = true,
@@ -485,6 +565,27 @@ class AffiliatePromoFragment :
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) =
         Unit
+
+    override fun onProductClick(
+        productId: String,
+        productName: String,
+        productImage: String,
+        productUrl: String,
+        productIdentifier: String,
+        status: Int?,
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+    ) {
+        AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null, productId, productName, productImage, productUrl, productIdentifier,
+                AffiliatePromotionBottomSheet.ORIGIN_SSA_SHOP, true, type = type,
+                ssaInfo = ssaInfo
+            ),
+            AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+            null
+        ).show(childFragmentManager, "")
+    }
 }
 
 interface AffiliatePromoInterface {

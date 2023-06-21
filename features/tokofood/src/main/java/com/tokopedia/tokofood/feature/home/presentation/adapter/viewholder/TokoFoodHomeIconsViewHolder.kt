@@ -105,18 +105,16 @@ class TokoFoodHomeIconsViewHolder(
         }
 
         fun submitList(list: List<DynamicIcon>, verticalPosition: Int) {
-            list?.let {
-                iconList.clear()
-                iconList.addAll(it.take(MAX_ICON_ITEM))
-            }
+            iconList.clear()
+            iconList.addAll(list.take(MAX_ICON_ITEM))
             this.verticalPosition = verticalPosition
         }
     }
 
     internal inner class TokoFoodIconViewHolder(private val bindingIcon: ItemTokofoodIconBinding):
         RecyclerView.ViewHolder(bindingIcon.root){
-        var imgIcon : ImageUnify? = null
-        var tgIcon : Typography? = null
+        private var imgIcon : ImageUnify? = null
+        private var tgIcon : Typography? = null
 
         fun bind(item: DynamicIcon, verticalPosition: Int){
             imgIcon = bindingIcon.imgIconTokofoodHome

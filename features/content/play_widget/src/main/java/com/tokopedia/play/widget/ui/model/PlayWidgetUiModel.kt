@@ -66,8 +66,11 @@ data class PlayWidgetChannelUiModel(
     val poolType: String,
     val recommendationType: String,
     val hasAction: Boolean,
+    val products: List<PlayWidgetProduct>,
+    val shouldShowPerformanceDashboard: Boolean,
     val channelTypeTransition: PlayWidgetChannelTypeTransition,
     val gridType: PlayGridType = PlayGridType.Unknown,
+    val extras: Map<String, Any> = emptyMap(),
 ) : PlayWidgetItemUiModel(), ImpressionableModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -84,4 +87,14 @@ data class PlayWidgetTotalView(
     val isVisible: Boolean,
 )
 
-object PlayCardShimmering: PlayWidgetItemUiModel()
+data class PlayWidgetProduct(
+    val id: String,
+    val name: String,
+    val imageUrl: String,
+    val appLink: String,
+    val price: String,
+    val priceFmt: String,
+) : ImpressionableModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+}

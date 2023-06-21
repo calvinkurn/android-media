@@ -1,5 +1,6 @@
 package com.tokopedia.home_component
 
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -18,6 +19,7 @@ object HomeComponentRollenceController {
         rollenceHPBDurationValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DURATION_EXP, RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL)
         rollenceHPBDotsInfiniteValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_EXP, RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL)
         rollenceDynamicIcons = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_EXP, "")
+        HomeChannelHeaderRollenceController.fetchHomeHeaderRollence()
     }
 
     private fun getRollenceValueHPBDotsInfinite(): String {
@@ -34,6 +36,10 @@ object HomeComponentRollenceController {
 
     fun isHomeComponentDynamicIconsUsingRollenceVariant(): Boolean {
         return rollenceDynamicIcons == RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_VARIANT
+    }
+
+    fun isDynamicChannelHeaderUsingRollenceVariant(): Boolean {
+        return HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()
     }
 
     fun getHPBDuration(): Long {

@@ -97,7 +97,7 @@ class TopAdsInsightViewModelTest {
     }
 
     @Test
-    fun `getShopKeywords onError block test`() = testRule.runBlockingTest{
+    fun `getShopKeywords onError block test`() = testRule.runTest{
         val exp = "error"
 
         coEvery { shopKeywordSuggestionUseCase.getKeywordRecommendation(any()) } throws Exception(exp)

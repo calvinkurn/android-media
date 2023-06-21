@@ -240,6 +240,9 @@ class ProductTagParentFragment @Inject constructor(
                     ProductTagUiEvent.MaxSelectedProductReached -> {
                         mListener?.onMaxSelectedProductReached()
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

@@ -60,7 +60,7 @@ object DynamicChannelComponentMapper {
                         campaignCode = channel.campaignCode,
                         homeAttribution = channel.homeAttribution
                 ),
-                channelGrids = channel.grids.map {
+                channelGrids = channel.grids.mapIndexed { index, it ->
                     ChannelGrid(
                             id = it.id,
                             warehouseId = it.warehouseId,
@@ -100,7 +100,8 @@ object DynamicChannelComponentMapper {
                                     it.benefit.type,
                                     it.benefit.value
                             ),
-                            textColor = it.textColor
+                            textColor = it.textColor,
+                            position = index
                     )
                 }
         )

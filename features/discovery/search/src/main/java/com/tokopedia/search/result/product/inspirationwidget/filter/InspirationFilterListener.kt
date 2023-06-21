@@ -7,6 +7,6 @@ interface InspirationFilterListener {
 
     fun onInspirationFilterOptionClicked(
         filterOptionDataView: InspirationFilterOptionDataView,
-        filterOptionDataViewList: List<InspirationFilterOptionDataView>,
+        filterDataView: InspirationFilterDataView,
     )
 }

@@ -12,12 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -41,6 +43,7 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.UiObjectMapper.ma
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.getIntent
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.RESULT_FINISH
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -49,8 +52,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.webview.KEY_TITLE
-import kotlinx.coroutines.flow.collect
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -82,15 +83,22 @@ class InboxContactUsFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(InboxContactUsViewModel::class.java) }
 
+    private var isFromTokopediaHelp = false
+
     companion object {
+        const val FLAG_FROM_TOKOPEDIA_HELP = "isFromTokopediaHelp"
         private const val RAISE_TICKET_TAG = "raiseTicket"
         private const val PAGE_SIZE = 10
         const val REQUEST_DETAILS = 204
         const val REQUEST_CLEAR_ACTIVITY = 100
 
         @JvmStatic
-        fun newInstance(): InboxContactUsFragment {
-            return InboxContactUsFragment()
+        fun newInstance(isFromInboxPage: Boolean = false): InboxContactUsFragment {
+            val bundle = Bundle()
+            bundle.putBoolean(FLAG_FROM_TOKOPEDIA_HELP, isFromInboxPage)
+            return InboxContactUsFragment().apply {
+                arguments = bundle
+            }
         }
     }
 
@@ -120,6 +128,7 @@ class InboxContactUsFragment :
         initView()
         setObserver()
         setObserverUIEffect()
+        isFromTokopediaHelp = arguments?.getBoolean(FLAG_FROM_TOKOPEDIA_HELP, false).orFalse()
     }
 
     override fun onResume() {
@@ -166,12 +175,19 @@ class InboxContactUsFragment :
         if (uiState.showChatBotWidget) {
             val applinkPrefix =
                 context?.resources?.getString(R.string.contactus_chat_bot_applink).orEmpty()
-            val appLink = String.format(applinkPrefix, uiState.idMessage)
+            val appLink = String.format(applinkPrefix, uiState.idMessage, uiState.isChatbotActive)
             val welcomeMessage = MethodChecker.fromHtmlWithoutExtraSpace(uiState.welcomeMessage)
             showChatBotWidget(welcomeMessage.toString(), uiState.unReadNotification, appLink)
         } else {
             hideChatBotWidget()
             showErrorTopChatStatus(uiState.errorMessageChatBotWidget)
+            sendRecordToFirebase(uiState.exception)
+        }
+    }
+
+    private fun sendRecordToFirebase(e : Exception?){
+        e?.let {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -486,21 +502,26 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun raiseTicket() {
         if (tvRaiseTicket?.tag == RAISE_TICKET_TAG) {
-            val contactUsHome = Intent(context ?: return, InboxContactUsActivity::class.java)
-            contactUsHome.putExtra(KEY_TITLE, getString(R.string.contact_us_title_home))
-            contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(contactUsHome)
-            ContactUsTracking.sendGTMInboxTicket(
-                "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickHubungi,
-                InboxTicketTracking.Label.InboxEmpty
-            )
-            activity?.finish()
+            routeEmptyPage()
         } else {
             viewModel.autoPickShowAllOptionsFilter()
             viewModel.restartPageOfList()
             viewModel.getTicketItems()
+        }
+    }
+
+    private fun routeEmptyPage(){
+        ContactUsTracking.sendGTMInboxTicket(
+            "",
+            InboxTicketTracking.Category.EventInboxTicket,
+            InboxTicketTracking.Action.EventClickHubungi,
+            InboxTicketTracking.Label.InboxEmpty
+        )
+        if(isFromTokopediaHelp) {
+            activity?.finish()
+        } else {
+            val route = "$CONTACT_US_NATIVE?$FLAG_FROM_TOKOPEDIA_HELP=true"
+            startActivity(RouteManager.getIntent(context ?: return, route))
         }
     }
 

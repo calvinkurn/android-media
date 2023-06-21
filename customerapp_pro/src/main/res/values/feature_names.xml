@@ -386,7 +386,6 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
-    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
@@ -414,6 +413,7 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!-- Review   -->
     <string name="title_product_ar">Product Ar</string>

@@ -184,6 +184,9 @@ class TokomemberDashHomeFragment : BaseDaggerFragment(), EditCardCallback {
                 TokoLiveDataResult.STATUS.ERROR -> {
                     tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 

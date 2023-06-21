@@ -21,9 +21,10 @@ class HomeLeftCarouselAtcCallback(
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-    ProductCardCompactCarouselSeeMoreViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
     HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
     override fun onProductCardAddVariantClicked(
@@ -51,6 +52,8 @@ class HomeLeftCarouselAtcCallback(
                 productId = product.id.orEmpty(),
                 quantity = quantity,
                 shopId = product.shopId,
+                stock = product.productCardModel.availableStock,
+                isVariant = product.productCardModel.isVariant,
                 type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
             )
         } else {
@@ -62,7 +65,8 @@ class HomeLeftCarouselAtcCallback(
         position: Int,
         product: HomeLeftCarouselAtcProductCardUiModel
     ) {
-        openAppLink(product.appLink)
+        val appLink = viewModel.createAffiliateLink(product.appLink)
+        openAppLink(appLink)
 
         analytics.trackClickProductLeftCarousel(
             position = position,
@@ -79,6 +83,8 @@ class HomeLeftCarouselAtcCallback(
             product = product
         )
     }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
     override fun onSeeMoreClicked(
         appLink: String,

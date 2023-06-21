@@ -7,6 +7,7 @@ import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.media.loader.data.Properties
 
 @GlideExtension
+/** @suppress */
 open class GlideExtensions private constructor() {
 
     companion object {

@@ -100,7 +100,9 @@ class ProductCardCompactSimilarProductViewHolder(
                     listener?.onCartQuantityChanged(
                         productId = product.id,
                         shopId = product.shopId,
-                        quantity = product.minOrder
+                        quantity = product.minOrder,
+                        stock = product.stock,
+                        isVariant = product.isVariant
                     )
                 }
             }
@@ -142,7 +144,13 @@ class ProductCardCompactSimilarProductViewHolder(
 
     private fun renderDeleteBtn(product: ProductCardCompactSimilarProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            listener?.onCartQuantityChanged(product.id, product.shopId, QUANTITY_ZERO)
+            listener?.onCartQuantityChanged(
+                product.id,
+                product.shopId,
+                QUANTITY_ZERO,
+                product.stock,
+                product.isVariant
+            )
         }
     }
 
@@ -154,7 +162,13 @@ class ProductCardCompactSimilarProductViewHolder(
 
     private fun onQuantityChanged(product: ProductCardCompactSimilarProductUiModel) {
         val input = binding?.quantityEditor?.getValue().orZero()
-        listener?.onCartQuantityChanged(product.id, product.shopId, input)
+        listener?.onCartQuantityChanged(
+            product.id,
+            product.shopId,
+            input,
+            product.stock,
+            product.isVariant
+        )
     }
 
     private fun onEditorAction(product: ProductCardCompactSimilarProductUiModel) {
@@ -178,7 +192,13 @@ class ProductCardCompactSimilarProductViewHolder(
     }
 
     interface SimilarProductListener {
-        fun onCartQuantityChanged(productId: String, shopId: String, quantity: Int)
+        fun onCartQuantityChanged(
+            productId: String,
+            shopId: String,
+            quantity: Int,
+            stock: Int,
+            isVariant: Boolean
+        )
         fun onProductClicked(product: ProductCardCompactSimilarProductUiModel)
         fun onProductImpressed(product: ProductCardCompactSimilarProductUiModel)
     }

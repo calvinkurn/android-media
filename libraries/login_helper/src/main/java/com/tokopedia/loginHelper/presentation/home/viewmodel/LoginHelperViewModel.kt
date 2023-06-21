@@ -387,6 +387,9 @@ class LoginHelperViewModel @Inject constructor(
                     )
                 }
                 is Fail -> Unit
+                else -> {
+                    // no op
+                }
             }
         }
         return filteredUserList

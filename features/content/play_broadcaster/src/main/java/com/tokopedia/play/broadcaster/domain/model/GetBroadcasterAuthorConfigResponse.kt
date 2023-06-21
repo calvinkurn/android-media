@@ -17,10 +17,14 @@ data class GetBroadcasterAuthorConfigResponse(
                 val shortVideoAllowed: Boolean = false,
                 @SerializedName("isBanned")
                 val isBanned: Boolean = false,
+                @SerializedName("hasContent")
+                val hasContent: Boolean = false,
                 @SerializedName("config")
                 val config: String = "",
                 @SerializedName("tnc")
                 val tnc: List<TermsAndCondition> = emptyList(),
+                @SerializedName("beautificationConfig")
+                val beautificationConfig: String = "",
         )
 
         data class TermsAndCondition(

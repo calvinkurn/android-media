@@ -179,7 +179,8 @@ class TokoNowSearchFragment :
             productRecommendationBindOocListener = createProductRecommendationOocCallback(),
             productRecommendationListener = createProductRecommendationCallback().copy(
                 query = getViewModel().query
-            )
+            ),
+            productCardCompactListener = createProductCardCompactCallback()
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -474,6 +475,10 @@ class TokoNowSearchFragment :
         SearchTracking.sendBroadMatchSeeAllClickEvent(title, getViewModel().query)
 
         RouteManager.route(context, getBroadMatchSeeAllApplink(appLink))
+    }
+
+    override fun onBroadMatchAddToCartBlocked() {
+        showToasterWhenAddToCartBlocked()
     }
 
     private fun getBroadMatchSeeAllApplink(appLink: String) =

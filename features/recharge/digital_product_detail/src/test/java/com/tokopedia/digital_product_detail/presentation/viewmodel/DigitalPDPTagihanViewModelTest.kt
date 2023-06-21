@@ -10,6 +10,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -198,7 +199,7 @@ class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupEmptyValData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -212,7 +213,7 @@ class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -226,7 +227,7 @@ class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -240,7 +241,7 @@ class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.validateClientNumber(TagihanDataFactory.VALID_CLIENT_NUMBER)
             viewModel.cancelValidatorJob()
             verifyValidatorJobIsCancelled()

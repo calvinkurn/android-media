@@ -94,6 +94,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_LOGIN_HELPER = "Login Helper"
         const val KEYWORD_DEV_OPTS_AUTHORIZE = "Authorize"
         const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
+        const val KEYWORD_EXTRACT_BRANCH_LINK = "Extract Branchlink"
         const val KEYWORD_GET_USER_ID = "Get User Id"
         const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
     }
@@ -147,7 +148,8 @@ class DeveloperOptionAdapter(
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
-        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
+        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK))
     )
 
     private val hiddenItems = mutableListOf(

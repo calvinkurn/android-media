@@ -35,7 +35,7 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
     private var binding: LayoutProductCardCompactWishlistButtonViewBinding
     private var mProductId: String = ""
     private var hasBeenSelected: Boolean? = null
-    private var listener: TokoNowWishlistButtonListener? = null
+    private var listener: WishlistButtonListener? = null
 
     init {
         initInjector()
@@ -152,7 +152,7 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
         }
     }
 
-    fun setListener(wishlistButtonListener: TokoNowWishlistButtonListener) {
+    fun setListener(wishlistButtonListener: WishlistButtonListener) {
         listener = wishlistButtonListener
     }
 
@@ -181,7 +181,7 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
 
     fun getValue() = hasBeenSelected
 
-    interface TokoNowWishlistButtonListener {
+    interface WishlistButtonListener {
         fun onWishlistButtonClicked(
             productId: String,
             isWishlistSelected: Boolean,

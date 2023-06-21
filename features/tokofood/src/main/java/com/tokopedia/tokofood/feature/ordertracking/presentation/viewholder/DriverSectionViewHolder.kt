@@ -5,12 +5,11 @@ import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokofood.R
@@ -194,10 +193,10 @@ class DriverSectionViewHolder(
 
     private fun isShowDriverChat(): Boolean {
         return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_TOKOCHAT,
-                ""
-            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+            TokoChatConnection.tokoChatConfigComponent?.getRemoteConfig()?.getBoolean(
+                TokoChatConnection.TOKOCHAT_REMOTE_CONFIG,
+                true
+            ) == true
         } catch (e: Exception) {
             true
         }

@@ -10,9 +10,13 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -107,7 +111,7 @@ class UserProfileViewModelRobot(
 
     fun start(fn: suspend UserProfileViewModelRobot.() -> Unit) {
         use {
-            runBlockingTest { fn() }
+            runTest { fn() }
         }
     }
 

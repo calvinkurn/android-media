@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.product.detail.common.ProductTrackingConstant.MerchantVoucher.PROMO_CLICK
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
@@ -41,7 +42,7 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKER_ID_35766
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.USER_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.addGeneralTracker
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getItemATC
@@ -162,7 +163,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, eventDataLayer)
     }
 
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
@@ -198,14 +199,14 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.CLICK_PG, eventDataLayer)
     }
 
-    fun clickAtc(userId: String?, destinationId: String?, data: CheckoutTokoFoodData){
+    fun clickAtc(userId: String?, destinationId: String?, data: CartGeneralCartListData){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_ORDER_MINICART)
             putString(TrackAppUtils.EVENT_LABEL, "")
         }
         val items = getItemATC(data)
         eventDataLayer.putParcelableArrayList(TokoFoodAnalytics.KEY_ITEMS, items)
-        eventDataLayer.addToCart(userId, destinationId, data.shop.shopId, data)
+        eventDataLayer.addToCart(userId, destinationId, data.data.getTokofoodBusinessData().customResponse.shop.shopId, data)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BEGIN_CHECKOUT, eventDataLayer)
     }
 
@@ -320,7 +321,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         return this
     }
 
-    private fun Bundle.addToCart(userId: String?, destinationId: String?, shopId: String, data: CheckoutTokoFoodData): Bundle {
+    private fun Bundle.addToCart(userId: String?, destinationId: String?, shopId: String, data: CartGeneralCartListData): Bundle {
         addGeneralTracker(userId, destinationId)
         this.putString(TrackAppUtils.EVENT, BEGIN_CHECKOUT)
         this.putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE)

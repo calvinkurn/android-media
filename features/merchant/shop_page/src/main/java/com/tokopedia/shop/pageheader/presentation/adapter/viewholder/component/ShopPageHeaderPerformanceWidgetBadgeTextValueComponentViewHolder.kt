@@ -9,10 +9,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetBadgeTextValueComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_2
+import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
+import com.tokopedia.unifyprinciples.Typography.Companion.HEADING_1
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
@@ -47,7 +51,11 @@ class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
         val imageUrlFirstLine = model.text.getOrNull(0)?.icon.orEmpty()
         val appLink = model.text.getOrNull(0)?.textLink.orEmpty()
         val textSecondLine = model.text.getOrNull(1)?.textHtml.orEmpty()
-        textViewFirstLine?.text = MethodChecker.fromHtml(textFirstLine)
+        textViewFirstLine?.apply {
+            text = MethodChecker.fromHtml(textFirstLine)
+            if(ShopUtil.isFoldable)
+                setType(DISPLAY_2)
+        }
         imageViewFirstLine?.apply {
             if (imageUrlFirstLine.isNotEmpty()) {
                 show()
@@ -56,7 +64,11 @@ class ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder(
                 hide()
             }
         }
-        textViewSecondLine?.text = MethodChecker.fromHtml(textSecondLine)
+        textViewSecondLine?.apply {
+            text = MethodChecker.fromHtml(textSecondLine)
+            if(ShopUtil.isFoldable)
+                setType(DISPLAY_3)
+        }
         itemView.setOnClickListener {
             listener.onShopPerformanceWidgetBadgeTextValueItemClicked(
                 model,

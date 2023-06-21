@@ -42,7 +42,7 @@ class ProductThumbnailVariantViewHolder(
     }
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
-    private val emptyVariantData = VariantOptionWithAttribute()
+    private val emptyVariantData = VariantOptionWithAttribute.EMPTY
 
     init {
         with(binding) {

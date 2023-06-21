@@ -81,6 +81,9 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
                         analytic.impressToasterPopUp(playViewModel.channelId, playViewModel.channelType.value, isSuccess = false)
                         dismiss()
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

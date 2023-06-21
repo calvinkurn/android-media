@@ -9,7 +9,6 @@ object ReviewInboxConstants {
     const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = TokopediaImageUrl.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE
     const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = TokopediaImageUrl.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION
     const val CREATE_REVIEW_MESSAGE = "create_review_message"
-    const val BULK_CREATE_REVIEW_MESSAGE = "bulk_create_review_message"
     const val TAB_WAITING_REVIEW = 1
     const val TAB_MY_REVIEW = 2
     const val TAB_BUYER_REVIEW = 3

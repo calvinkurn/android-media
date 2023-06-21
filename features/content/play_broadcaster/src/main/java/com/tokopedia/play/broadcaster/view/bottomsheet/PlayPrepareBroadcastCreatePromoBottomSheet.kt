@@ -44,8 +44,12 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         super.onActivityCreated(savedInstanceState)
         if (!isEditPage) {
             dialog?.window?.setWindowAnimations(
-                    if (isBack) R.style.DialogAnimationEnterLeft
-                    else R.style.DialogAnimationEnterRight)
+                if (isBack) {
+                    R.style.DialogAnimationEnterLeft
+                } else {
+                    R.style.DialogAnimationEnterRight
+                }
+            )
         }
     }
 
@@ -70,7 +74,8 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             isBack = it.getBoolean(EXTRA_IS_BACK)
 
             if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
-                    promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+                promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE
+            ) {
                 isEditPage = true
             }
         }
@@ -115,18 +120,24 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
     private fun initView() {
         bottomSheetHeader.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
-                bottomSheetHeader.top,
-                bottomSheetWrapper.right,
-                bottomSheetHeader.bottom)
-        bottomSheetWrapper.setPadding(0,
-                bottomSheetWrapper.paddingTop,
-                0,
-                bottomSheetWrapper.paddingBottom)
+            requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+            bottomSheetHeader.top,
+            bottomSheetWrapper.right,
+            bottomSheetHeader.bottom
+        )
+        bottomSheetWrapper.setPadding(
+            0,
+            bottomSheetWrapper.paddingTop,
+            0,
+            bottomSheetWrapper.paddingBottom
+        )
         if (!isEditPage) {
             context?.let {
-                bottomSheetClose.setImageDrawable(it.resources.getDrawable(
-                        com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
+                bottomSheetClose.setImageDrawable(
+                    it.resources.getDrawable(
+                        com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24
+                    )
+                )
             }
             btnPlayPrepareBroadcastNext.text = getString(R.string.play_next)
         } else {
@@ -224,37 +235,44 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
     private fun showMainStateView() {
         currentState = MAIN_STATE
-        if (containerPlayPrepareBroadcastWithPromo.visibility == View.GONE
-                && containerPlayPrepareBroadcastWithoutPromo.visibility == View.GONE
-                && containerPlayPrepareBroadcastBottom.visibility == View.GONE) {
-
+        if (containerPlayPrepareBroadcastWithPromo.visibility == View.GONE &&
+            containerPlayPrepareBroadcastWithoutPromo.visibility == View.GONE &&
+            containerPlayPrepareBroadcastBottom.visibility == View.GONE
+        ) {
             containerPlayPrepareBroadcastWithPromo.visibility = View.VISIBLE
             containerPlayPrepareBroadcastWithoutPromo.visibility = View.VISIBLE
             containerPlayPrepareBroadcastBottom.visibility = View.VISIBLE
 
             containerPlayPrepareBroadcastWithPromo.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX(0f)
+                .setDuration(ANIMATION_DURATION)
+                .translationX(0f)
             containerPlayPrepareBroadcastWithoutPromo.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX(0f)
+                .setDuration(ANIMATION_DURATION)
+                .translationX(0f)
             containerPlayPrepareBroadcastBottom.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX(0f)
+                .setDuration(ANIMATION_DURATION)
+                .translationX(0f)
         }
 
         if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
-                promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+            promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE
+        ) {
             ivPlayPrepareBroadcastWithPromoEdit.visibility = View.VISIBLE
 
             tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.BODY_3)
-            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_detail_title)
 
             tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.BODY_1)
-            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-            tvPlayPrepareBroadcastWithPromoDescription.text = HtmlCompat.fromHtml(getString(R.string.play_prepare_broadcast_promo_detail_description,
-                    promoPercentage, promoQuota), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvPlayPrepareBroadcastWithPromoDescription.text = HtmlCompat.fromHtml(
+                getString(
+                    R.string.play_prepare_broadcast_promo_detail_description,
+                    promoPercentage,
+                    promoQuota
+                ),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
 
             containerConstraintPlayWithPromo.requestLayout()
             btnPlayPrepareBroadcastNext.isEnabled = true
@@ -262,11 +280,11 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             ivPlayPrepareBroadcastWithPromoEdit.visibility = View.GONE
 
             tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.HEADING_6)
-            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_with_promo_title)
 
             tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.SMALL)
-            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvPlayPrepareBroadcastWithPromoDescription.text = getString(R.string.play_prepare_broadcast_promo_with_promo_description)
 
             containerConstraintPlayWithPromo.requestLayout()
@@ -275,60 +293,60 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun hideMainStateView() {
-        if (containerPlayPrepareBroadcastWithPromo.visibility == View.VISIBLE
-                && containerPlayPrepareBroadcastWithoutPromo.visibility == View.VISIBLE
-                && containerPlayPrepareBroadcastBottom.visibility == View.VISIBLE) {
-
+        if (containerPlayPrepareBroadcastWithPromo.visibility == View.VISIBLE &&
+            containerPlayPrepareBroadcastWithoutPromo.visibility == View.VISIBLE &&
+            containerPlayPrepareBroadcastBottom.visibility == View.VISIBLE
+        ) {
             containerPlayPrepareBroadcastWithPromo.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX((screenWidth * -1).toFloat())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animator: Animator) {}
+                .setDuration(ANIMATION_DURATION)
+                .translationX((screenWidth * -1).toFloat())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animator: Animator) {}
 
-                        override fun onAnimationEnd(animator: Animator) {
-                            if (currentState != MAIN_STATE) {
-                                containerPlayPrepareBroadcastWithPromo.visibility = View.GONE
-                            }
+                    override fun onAnimationEnd(animator: Animator) {
+                        if (currentState != MAIN_STATE) {
+                            containerPlayPrepareBroadcastWithPromo.visibility = View.GONE
                         }
+                    }
 
-                        override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationCancel(animator: Animator) {}
 
-                        override fun onAnimationStart(animator: Animator) {}
-                    })
+                    override fun onAnimationStart(animator: Animator) {}
+                })
 
             containerPlayPrepareBroadcastWithoutPromo.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX((screenWidth * -1).toFloat())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animator: Animator) {}
+                .setDuration(ANIMATION_DURATION)
+                .translationX((screenWidth * -1).toFloat())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animator: Animator) {}
 
-                        override fun onAnimationEnd(animator: Animator) {
-                            if (currentState != MAIN_STATE) {
-                                containerPlayPrepareBroadcastWithoutPromo.visibility = View.GONE
-                            }
+                    override fun onAnimationEnd(animator: Animator) {
+                        if (currentState != MAIN_STATE) {
+                            containerPlayPrepareBroadcastWithoutPromo.visibility = View.GONE
                         }
+                    }
 
-                        override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationCancel(animator: Animator) {}
 
-                        override fun onAnimationStart(animator: Animator) {}
-                    })
+                    override fun onAnimationStart(animator: Animator) {}
+                })
 
             containerPlayPrepareBroadcastBottom.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX((screenWidth * -1).toFloat())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animator: Animator) {}
+                .setDuration(ANIMATION_DURATION)
+                .translationX((screenWidth * -1).toFloat())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animator: Animator) {}
 
-                        override fun onAnimationEnd(animator: Animator) {
-                            if (currentState != MAIN_STATE) {
-                                containerPlayPrepareBroadcastBottom.visibility = View.GONE
-                            }
+                    override fun onAnimationEnd(animator: Animator) {
+                        if (currentState != MAIN_STATE) {
+                            containerPlayPrepareBroadcastBottom.visibility = View.GONE
                         }
+                    }
 
-                        override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationCancel(animator: Animator) {}
 
-                        override fun onAnimationStart(animator: Animator) {}
-                    })
+                    override fun onAnimationStart(animator: Animator) {}
+                })
         }
     }
 
@@ -338,8 +356,8 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             containerPlayPrepareBroadcastPercetageAndDiscount.x = screenWidth.toFloat()
             containerPlayPrepareBroadcastPercetageAndDiscount.visibility = View.VISIBLE
             containerPlayPrepareBroadcastPercetageAndDiscount.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX(0f)
+                .setDuration(ANIMATION_DURATION)
+                .translationX(0f)
         }
 
         tvPlayPrepareBroadcastInputField.textFiedlLabelText.text = getString(R.string.play_prepare_broadcast_promo_percentage_label)
@@ -369,21 +387,21 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         if (containerPlayPrepareBroadcastPercetageAndDiscount.visibility == View.VISIBLE) {
             tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(percentageTextWatcher)
             containerPlayPrepareBroadcastPercetageAndDiscount.animate()
-                    .setDuration(ANIMATION_DURATION)
-                    .translationX(screenWidth.toFloat())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animator: Animator) {}
+                .setDuration(ANIMATION_DURATION)
+                .translationX(screenWidth.toFloat())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animator: Animator) {}
 
-                        override fun onAnimationEnd(animator: Animator) {
-                            if (currentState != PERCENTAGE_STATE) {
-                                containerPlayPrepareBroadcastPercetageAndDiscount.visibility = View.GONE
-                            }
+                    override fun onAnimationEnd(animator: Animator) {
+                        if (currentState != PERCENTAGE_STATE) {
+                            containerPlayPrepareBroadcastPercetageAndDiscount.visibility = View.GONE
                         }
+                    }
 
-                        override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationCancel(animator: Animator) {}
 
-                        override fun onAnimationStart(animator: Animator) {}
-                    })
+                    override fun onAnimationStart(animator: Animator) {}
+                })
         }
     }
 
@@ -501,12 +519,12 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         private const val MAX_QUOTA_VALUE = 999
 
         fun getInstance(promoPercentage: Int = DEFAULT_PERCENT_QUOTA_VALUE, promoQuota: Int = DEFAULT_PERCENT_QUOTA_VALUE, isBack: Boolean = false) =
-                PlayPrepareBroadcastCreatePromoBottomSheet().also {
-                    it.arguments = Bundle().apply {
-                        putInt(EXTRA_PROMO_PERCENTAGE, promoPercentage)
-                        putInt(EXTRA_PROMO_QUOTA, promoQuota)
-                        putBoolean(EXTRA_IS_BACK, isBack)
-                    }
+            PlayPrepareBroadcastCreatePromoBottomSheet().also {
+                it.arguments = Bundle().apply {
+                    putInt(EXTRA_PROMO_PERCENTAGE, promoPercentage)
+                    putInt(EXTRA_PROMO_QUOTA, promoQuota)
+                    putBoolean(EXTRA_IS_BACK, isBack)
                 }
+            }
     }
 }

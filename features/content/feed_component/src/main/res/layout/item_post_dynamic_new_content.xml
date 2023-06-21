@@ -120,7 +120,7 @@
         tools:listitem="@layout/item_grid"
         tools:spanCount="@integer/int_3" />
 
-    <com.tokopedia.feedcomponent.util.NestedScrollableHost
+    <com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
         android:id="@+id/scroll_host_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_post_video_new" />
 
-    </com.tokopedia.feedcomponent.util.NestedScrollableHost>
+    </com.tokopedia.feedcomponent.util.FeedNestedScrollableHost>
 
     <com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
         android:id="@+id/feed_vod_viewholder"
@@ -341,8 +341,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/comment_user_image1"
-        android:layout_width="@dimen/feed_component_dp_14"
-        android:layout_height="@dimen/feed_component_dp_14"
+        android:layout_width="@dimen/content_common_space_14"
+        android:layout_height="@dimen/content_common_space_14"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/comment_text1"
@@ -359,7 +359,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:maxLines="@integer/feed_component_int_3"
+        android:maxLines="@integer/content_common_int_3"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/like_button1"
         app:layout_constraintHorizontal_bias="0"
@@ -384,8 +384,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/comment_user_image2"
-        android:layout_width="@dimen/feed_component_dp_14"
-        android:layout_height="@dimen/feed_component_dp_14"
+        android:layout_width="@dimen/content_common_space_14"
+        android:layout_height="@dimen/content_common_space_14"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/comment_text2"
@@ -402,7 +402,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:maxLines="@integer/feed_component_int_3"
+        android:maxLines="@integer/content_common_int_3"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/like_button2"
         app:layout_constraintHorizontal_bias="0"
