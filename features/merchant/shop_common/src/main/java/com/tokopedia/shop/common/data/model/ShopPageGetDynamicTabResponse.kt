@@ -40,6 +40,8 @@ data class ShopPageGetDynamicTabResponse(
             var backgroundImage: String = "",
             @SerializedName("imgLottie")
             var lottieUrl: String = "",
+            @SerializedName("bgImages")
+            var bgImages: List<String> = listOf(),
             @SerializedName("isDark")
             var isDark: Boolean = false,
             @SerializedName("widgetHeaderStyle")
