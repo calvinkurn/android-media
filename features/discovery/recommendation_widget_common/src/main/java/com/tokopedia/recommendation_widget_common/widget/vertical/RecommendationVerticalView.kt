@@ -33,6 +33,9 @@ class RecommendationVerticalView :
         RecommendationVerticalAdapter(RecommendationVerticalTypeFactoryImpl())
     }
 
+    override val layoutId: Int
+        get() = LAYOUT
+
     override fun bind(model: RecommendationVerticalModel) {
         setupHeader(model.widget)
         setupProductCards(model.widget)
