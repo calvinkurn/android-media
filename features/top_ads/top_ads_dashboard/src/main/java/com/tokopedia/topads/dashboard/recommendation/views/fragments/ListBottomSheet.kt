@@ -13,7 +13,7 @@ import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.ItemListAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.ItemListTypeFactory
 
@@ -21,7 +21,7 @@ class ListBottomSheet:
     BottomSheetUnify(), OnItemSelectChangeListener {
 
     private var binding : ListBottomsheetLayoutBinding? = null
-    private var itemList: List<ItemListUiModel> = listOf()
+    private var itemList: List<ListBottomSheetItemUiModel> = listOf()
     private var bottomsheetType: Int = 1
     private var itemChangeListener: OnItemSelectChangeListener? = null
     private var currentAdType : Int? = null
@@ -81,7 +81,7 @@ class ListBottomSheet:
     }
 
     companion object {
-        fun show(fm: FragmentManager, title:String, list: List<ItemListUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId:String?): ListBottomSheet {
+        fun show(fm: FragmentManager, title:String, list: List<ListBottomSheetItemUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId:String?): ListBottomSheet {
             val bottomSheet = ListBottomSheet().apply {
                 setTitle(title)
                 itemList = list

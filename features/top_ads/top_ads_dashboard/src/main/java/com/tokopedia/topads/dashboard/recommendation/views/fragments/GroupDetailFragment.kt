@@ -52,7 +52,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.Chips
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
@@ -496,11 +496,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 String.EMPTY // don't send group id in case of choose ad type bottomsheet
             )
         } else {
-            val list = arrayListOf<ItemListUiModel>()
+            val list = arrayListOf<ListBottomSheetItemUiModel>()
             groupList.forEach {
                 (it as? AdGroupUiModel)?.apply {
                     list.add(
-                        ItemListUiModel(
+                        ListBottomSheetItemUiModel(
                             adType = utils.convertAdTypeToInt(adType),
                             title = this.adGroupName,
                             groupId = this.adGroupID,

@@ -5,24 +5,24 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.TopadsInsightCentreInsightSelctionItemBinding
 import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 
 class ItemListViewHolder(
     private val viewBinding: TopadsInsightCentreInsightSelctionItemBinding,
     private val listener: OnItemSelectChangeListener
-) : AbstractViewHolder<ItemListUiModel>(viewBinding.root) {
+) : AbstractViewHolder<ListBottomSheetItemUiModel>(viewBinding.root) {
 
-    override fun bind(element: ItemListUiModel) {
+    override fun bind(element: ListBottomSheetItemUiModel) {
         setView(element)
         bindValue(element)
         setSelected(element)
     }
 
-    private fun setSelected(element: ItemListUiModel) {
+    private fun setSelected(element: ListBottomSheetItemUiModel) {
         viewBinding.radioButton.isChecked = element.isSelected
     }
 
-    private fun setView(element: ItemListUiModel) {
+    private fun setView(element: ListBottomSheetItemUiModel) {
         viewBinding.tvTitle.showWithCondition(element.title.isNotEmpty())
 
         viewBinding.container.setOnClickListener {
@@ -33,7 +33,7 @@ class ItemListViewHolder(
         }
     }
 
-    private fun bindValue(element: ItemListUiModel) {
+    private fun bindValue(element: ListBottomSheetItemUiModel) {
         viewBinding.tvTitle.text = element.title
     }
 

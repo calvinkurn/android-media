@@ -62,6 +62,7 @@ object RecommendationConstants {
     const val PARAM_SIZE = "size"
     const val PARAM_START_CURSOR = "startCursor"
     const val INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG = "InsightsEducationBottomSheet"
+    const val INSIGHT_PERFORMANCE_WIDGET_BOTTOMSHEET_TAG = "InsightsPerformanceBottomSheet"
 
     const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP"
     const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"

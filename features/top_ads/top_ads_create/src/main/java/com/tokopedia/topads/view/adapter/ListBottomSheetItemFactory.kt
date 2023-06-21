@@ -11,9 +11,9 @@ import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.topads.view.utils.ScheduleSlotListener
 import com.tokopedia.topads.view.viewholder.ItemListViewHolder
 
-class ItemListTypeFactory(val listener: ScheduleSlotListener) :
+class ListBottomSheetItemFactory(val listener: ScheduleSlotListener) :
     BaseAdapterTypeFactory(),
-    ItemListTypeViewHolder {
+    ListBottomSheetItemViewHolder {
 
     override fun type(model: ItemListUiModel): Int = ItemListViewHolder.LAYOUT_RES
 
@@ -36,6 +36,6 @@ class ItemListTypeFactory(val listener: ScheduleSlotListener) :
 }
 
 
-interface ItemListTypeViewHolder {
+interface ListBottomSheetItemViewHolder {
     fun type(model: ItemListUiModel): Int
 }
