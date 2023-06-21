@@ -402,7 +402,7 @@ object ApplinkConstInternalUserPlatform {
 
     const val GOTO_KYC = "$NEW_INTERNAL_USER/goto-kyc?" +
         "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
-        "$PARAM_SOURCE={$PARAM_SOURCE}" +
+        "$PARAM_SOURCE={$PARAM_SOURCE}&" +
         "$PARAM_CALL_BACK={$PARAM_CALL_BACK}"
 
     /**
