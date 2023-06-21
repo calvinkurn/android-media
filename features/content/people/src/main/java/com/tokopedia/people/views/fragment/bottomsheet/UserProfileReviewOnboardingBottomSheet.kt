@@ -18,6 +18,9 @@ import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.people.databinding.BottomSheetReviewOnboardingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.people.R
+import com.tokopedia.people.utils.getBoldSpan
+import com.tokopedia.people.utils.getClickableSpan
+import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -34,8 +37,7 @@ class UserProfileReviewOnboardingBottomSheet : BottomSheetUnify() {
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
-            mListener?.onClickOpenProfileSettingsPage()
-            dismiss()
+
         }
 
         override fun updateDrawState(ds: TextPaint) {
@@ -92,6 +94,7 @@ class UserProfileReviewOnboardingBottomSheet : BottomSheetUnify() {
     private fun setupListener() {
         binding.btnOpenReviewTab.setOnClickListener {
             mListener?.onClickOpenReviewTab()
+            dismiss()
         }
     }
 
@@ -102,7 +105,13 @@ class UserProfileReviewOnboardingBottomSheet : BottomSheetUnify() {
         val targetSpanText = getString(R.string.up_profile_settings_title)
 
         footerText.append(fullText)
-        footerText.setSpanOnText(targetSpanText, clickablePolicy, boldSpan, colorSpan)
+        footerText.setSpanOnText(targetSpanText,
+            getClickableSpan {
+                mListener?.onClickOpenProfileSettingsPage()
+                dismiss()
+            }, getBoldSpan(),
+            getGreenColorSpan(requireContext())
+        )
 
         return footerText
     }

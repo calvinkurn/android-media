@@ -58,6 +58,7 @@ import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.UserProfileSharedPref
+import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -67,8 +68,6 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
-import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
-import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -91,6 +90,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.URLEncoder
@@ -107,6 +107,7 @@ class UserProfileFragment @Inject constructor(
     private val impressionCoordinator: ShopRecomImpressCoordinator,
     private val coachMarkManager: ContentCoachMarkManager,
     private val userProfileSharedPref: UserProfileSharedPref,
+    private val userProfileUiBridge: UserProfileUiBridge,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -150,9 +151,11 @@ class UserProfileFragment @Inject constructor(
             mainBinding.profileTabs.tabLayout,
             mainBinding.profileTabs.viewPager
         ) {
-            if (it == FRAGMENT_KEY_FEEDS) {
+            if (it == ProfileTabUiModel.Key.Feeds.value) {
                 userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
-            } else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            } else if (it == ProfileTabUiModel.Key.Video.value) {
+                userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            }
         }
     }
 
@@ -164,7 +167,7 @@ class UserProfileFragment @Inject constructor(
         if (result.resultCode == Activity.RESULT_OK &&
             ProfileSettingsActivity.getIsAnySettingsChanged(result.data)
         ) {
-            refreshLandingPageData(isRefreshPost = false)
+            refreshLandingPageData(isRefreshPost = true)
         }
     }
 
@@ -299,11 +302,11 @@ class UserProfileFragment @Inject constructor(
             is UserProfileReviewOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserProfileReviewOnboardingBottomSheet.Listener {
                     override fun onClickOpenReviewTab() {
-                        /** TODO: handle this */
+                        setupAutoSelectTabIfAny(UserProfileParam.SelectedTab.Review.key)
                     }
 
                     override fun onClickOpenProfileSettingsPage() {
-                        openProfileSettingsPage()
+                        userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
                     }
                 })
             }
@@ -378,6 +381,7 @@ class UserProfileFragment @Inject constructor(
     private fun initObserver() {
         observeUiState()
         observeUiEvent()
+        observeUiBridgeEvent()
     }
 
     private fun observeUiState() {
@@ -486,15 +490,30 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun observeUiBridgeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            userProfileUiBridge.eventBus.subscribe().collect { event ->
+                when (event) {
+                    is UserProfileUiBridge.Event.OpenProfileSettingsPage -> {
+                        openProfileSettingsPage()
+                    }
+                }
+            }
+        }
+    }
+
     fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
         if (!isRefreshPost) return
 
         if (pagerAdapter.getTabs().isEmpty()) return
+
         if (pagerAdapter.getFeedsTabs().isNotEmpty())
             viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
         if (pagerAdapter.getVideoTabs().isNotEmpty())
             viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
+        if (pagerAdapter.getReviewTabs().isNotEmpty())
+            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -637,7 +656,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
-                openProfileSettingsPage()
+                userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(
                     childFragmentManager,
@@ -716,13 +735,12 @@ class UserProfileFragment @Inject constructor(
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
 
-        setupAutoSelectTabIfAny(value.tabs)
+        val selectedTabKey = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true).key
+        setupAutoSelectTabIfAny(selectedTabKey)
     }
 
-    private fun setupAutoSelectTabIfAny(tabs: List<ProfileTabUiModel.Tab>) {
-        val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
-
-        val idx = tabs.indexOfFirst { it.key == selectedTab.key }
+    private fun setupAutoSelectTabIfAny(selectedTabKey: String) {
+        val idx = viewModel.profileTab.tabs.indexOfFirst { it.key.value == selectedTabKey }
         if(idx != -1) {
             mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
         }
@@ -1114,12 +1132,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val desc = buildString {
-            append("Lihat foto & video menarik dari ${viewModel.displayName}")
-            if (viewModel.profileUsername.isNotBlank()) append(" (${getUsernameWithAdd()})")
-            append(", yuk! \uD83D\uDE0D")
-        }
-
         val linkerShareData = DataMapper.getLinkerShareData(
             LinkerData().apply {
                 type = LinkerData.USER_PROFILE_SOCIAL
@@ -1147,7 +1159,21 @@ class UserProfileFragment @Inject constructor(
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {
-                            val shareString = desc + "\n" + linkerShareData?.shareUri
+                            val shareString = if (viewModel.profileUsername.isNotBlank()) {
+                                getString(
+                                    R.string.up_share_text_with_username_template,
+                                    viewModel.displayName,
+                                    getUsernameWithAdd(),
+                                    linkerShareData?.shareUri
+                                )
+                            } else {
+                                getString(
+                                    R.string.up_share_text_template,
+                                    viewModel.displayName,
+                                    linkerShareData?.shareUri
+                                )
+                            }
+
                             SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,

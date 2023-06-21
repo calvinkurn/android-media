@@ -9,7 +9,10 @@ import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.UserProfileTabModel
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.model.GetProfileSettingsResponse
+import com.tokopedia.people.model.GetUserReviewListResponse
+import com.tokopedia.people.model.SetLikeStatusResponse
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -36,4 +39,11 @@ interface UserProfileUiMapper {
     fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel
 
     fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel>
+
+    fun mapUserReviewList(
+        response: GetUserReviewListResponse,
+        currentPage: Int,
+    ): UserReviewUiModel
+
+    fun mapSetLikeStatus(response: SetLikeStatusResponse): UserReviewUiModel.LikeDislike
 }

@@ -12,8 +12,11 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.model.GetProfileSettingsRequest
+import com.tokopedia.people.model.GetUserReviewListRequest
+import com.tokopedia.people.model.SetLikeStatusRequest
 import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.domains.GetUserProfileTabUseCase
 import com.tokopedia.people.domains.PlayPostContentUseCase
 import com.tokopedia.people.domains.PostBlockUserUseCase
@@ -22,6 +25,8 @@ import com.tokopedia.people.domains.UserDetailsUseCase
 import com.tokopedia.people.domains.VideoPostReminderUseCase
 import com.tokopedia.people.domains.GetProfileSettingsUseCase
 import com.tokopedia.people.domains.SetProfileSettingsUseCase
+import com.tokopedia.people.domains.GetUserReviewListUseCase
+import com.tokopedia.people.domains.SetLikeStatusUseCase
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -53,6 +58,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
     private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
+    private val getUserReviewListUseCase: GetUserReviewListUseCase,
+    private val setLikeStatusUseCase: SetLikeStatusUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -186,6 +193,36 @@ class UserProfileRepositoryImpl @Inject constructor(
                 )
             )
         ).data.success
+    }
+
+    override suspend fun getUserReviewList(
+        userID: String,
+        limit: Int,
+        page: Int
+    ): UserReviewUiModel = withContext(dispatcher.io) {
+        val response = getUserReviewListUseCase(
+            GetUserReviewListRequest(
+                userID = userID,
+                limit = limit,
+                page = page,
+            )
+        )
+
+        mapper.mapUserReviewList(response, page)
+    }
+
+    override suspend fun setLikeStatus(
+        feedbackID: String,
+        likeStatus: Int
+    ): UserReviewUiModel.LikeDislike = withContext(dispatcher.io) {
+        val response = setLikeStatusUseCase(
+            SetLikeStatusRequest(
+                feedbackID = feedbackID,
+                likeStatus = likeStatus,
+            )
+        )
+
+        mapper.mapSetLikeStatus(response)
     }
 
     companion object {
