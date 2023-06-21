@@ -18,17 +18,23 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by resakemal on 20/08/19.
  */
-open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
-                                                                attrs: AttributeSet? = null,
-                                                                defStyleAttr: Int = 0,
-                                                                var actionListener: ActionListener? = null)
-    : FrameLayout(context, attrs, defStyleAttr) {
+open class TopupBillsInputFieldWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    var actionListener: ActionListener? = null
+) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     var isCustomInput = false
         set(value) {
@@ -160,7 +166,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
