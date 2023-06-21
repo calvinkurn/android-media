@@ -54,7 +54,7 @@ dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

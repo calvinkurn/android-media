@@ -39,7 +39,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
 
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

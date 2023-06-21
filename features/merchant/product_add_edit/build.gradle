@@ -140,7 +140,7 @@ dependencies {
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
 }
 
 project.ext {

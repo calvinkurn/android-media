@@ -53,7 +53,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler

@@ -110,7 +110,7 @@ dependencies {
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Unify
     implementation rootProject.ext.unifyDependencies.components

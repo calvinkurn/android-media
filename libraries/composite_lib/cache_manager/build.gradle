@@ -26,7 +26,7 @@ dependencies {
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 

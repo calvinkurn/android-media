@@ -54,7 +54,7 @@ dependencies {
 
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.miscDependencies.daggerCompiler
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 }
