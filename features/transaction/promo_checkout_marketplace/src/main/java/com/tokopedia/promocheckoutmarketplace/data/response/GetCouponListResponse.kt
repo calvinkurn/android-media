@@ -236,14 +236,8 @@ data class SecondaryCoupon(
     val boClashingInfos: List<BoClashingInfo> = emptyList(),
     @SerializedName("currency_details_str")
     val currencyDetailStr: String = "",
-    @SerializedName("coachmark")
-    val coachMark: PromoCoachmark = PromoCoachmark(),
     @SerializedName("is_highlighted")
     val isHighlighted: Boolean = false,
-    @SerializedName("group_id")
-    val groupId: String = "",
-    @SerializedName("is_group_header")
-    val isGroupHeader: Boolean = false,
     @SerializedName("promo_infos")
     val promoInfos: List<PromoInfo> = emptyList(),
     @SerializedName("benefit_details")
@@ -251,9 +245,7 @@ data class SecondaryCoupon(
     @SerializedName("is_bebas_ongkir")
     val isBebasOngkir: Boolean = false,
     @SerializedName("additional_bo_datas")
-    val additionalBoData: List<AdditionalBoData> = emptyList(),
-    @SerializedName("benefit_adjustment_message")
-    val benefitAdjustmentMessage: String = ""
+    val additionalBoData: List<AdditionalBoData> = emptyList()
 )
 
 data class AdditionalBoData(

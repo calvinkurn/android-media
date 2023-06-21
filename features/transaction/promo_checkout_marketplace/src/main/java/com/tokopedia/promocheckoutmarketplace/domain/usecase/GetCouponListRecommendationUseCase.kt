@@ -189,14 +189,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                             eta_txt
                                         }
                                         currency_details_str
-                                        coachmark {
-                                            is_shown
-                                            title
-                                            content
-                                        }
                                         is_highlighted
-                                        group_id
-                                        is_group_header
                                         promo_infos {
                                              type
                                              title
@@ -209,7 +202,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                             benefit_type
                                             data_type
                                         }
-                                        benefit_adjustment_message
                                     }
                                 }
                             }
