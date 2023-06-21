@@ -36,6 +36,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -234,7 +235,8 @@ open class SomListFragment :
     private var bulkAcceptButtonLeaveAnimation: ValueAnimator? = null
     private var isWaitingPaymentOrderPageOpened: Boolean = false
     private var shouldScrollToTop: Boolean = false
-    private var skipSearch: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
+    private var skipSearch: Boolean =
+        false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
@@ -289,8 +291,13 @@ open class SomListFragment :
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
-            viewModel.setTabActiveFromAppLink(arguments?.getString(TAB_ACTIVE) ?: STATUS_ALL_ORDER)
-            arguments?.getString(FILTER_ORDER_TYPE)?.toLongOrNull()?.let { viewModel.addOrderTypeFilter(it) }
+            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+            val tabActiveFilter =
+                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
+            viewModel.setTabActiveFromAppLink(tabActiveFilter)
+            viewModel.setFirstPageOpened(true)
+            arguments?.getString(FILTER_ORDER_TYPE)?.toLongOrNull()
+                ?.let { viewModel.addOrderTypeFilter(it) }
         } else if (savedInstanceState != null) {
             skipSearch = true
             selectedOrderId = savedInstanceState.getString(KEY_LAST_SELECTED_ORDER_ID).orEmpty()
@@ -1155,6 +1162,7 @@ open class SomListFragment :
                     onActionCompleted(false, selectedOrderId)
                     showCommonToaster(view, result.data.rejectCancelRequest.message)
                 }
+
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(
                         result.throwable,
@@ -2072,7 +2080,7 @@ open class SomListFragment :
         }
         somListBinding?.run {
             globalErrorSomList.setType(errorType)
-            sortFilterSomList.invisible()
+            sortFilterSomList.hide()
             scrollViewErrorState.show()
         }
         errorToaster?.dismiss()
@@ -2130,6 +2138,7 @@ open class SomListFragment :
 
     protected open fun renderOrderList(data: SomListOrderWrapperUiModel) {
         skipSearch = false
+        somListBinding?.globalErrorSomList?.hide()
         if (somListBinding?.rvSomList?.visibility != View.VISIBLE) somListBinding?.rvSomList?.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.somListOrders.isEmpty()) {
@@ -2205,14 +2214,16 @@ open class SomListFragment :
         if (!(adapter as? SomListOrderAdapter)?.hasOrder().orFalse()) {
             (adapter as? SomListOrderAdapter)?.removeMultiSelectSection()
             toggleBulkAction(false)
-            toggleBulkAction(false)
             toggleBulkActionButtonVisibility()
             showEmptyState(result.somListEmptyStateUiModel)
         }
     }
 
     private fun onRefreshOrderFailed() {
-        showToasterError(view, context?.resources?.getString(R.string.som_list_failed_refresh_order).orEmpty())
+        showToasterError(
+            view,
+            context?.resources?.getString(R.string.som_list_failed_refresh_order).orEmpty()
+        )
     }
 
     private fun checkLoadMore() {
@@ -2225,41 +2236,47 @@ open class SomListFragment :
         }
     }
 
-    private fun createSomListEmptyStateModel(somListEmptyStateUiModel: SomListEmptyStateUiModel?, isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
+    private fun createSomListEmptyStateModel(
+        somListEmptyStateUiModel: SomListEmptyStateUiModel?,
+        isTopAdsActive: Boolean
+    ): Visitable<SomListAdapterTypeFactory> {
         val isSellerApp = GlobalConfig.isSellerApp()
-        val isNewOrderFilterSelected = somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
+        val isNewOrderFilterSelected =
+            somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
         val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(
             somListOrderStatusFilterTab?.getSelectedFilterStatus()
         ) == true
-        val isSearchQueryApplied = somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.isNotBlank() == true
-        return if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
-            !isNonStatusOrderFilterApplied && !isSearchQueryApplied
-        ) {
-            SomListEmptyStateUiModel(
-                imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
-                title = context?.resources?.getString(R.string.empty_peluang_title).orEmpty(),
-                description = context?.resources?.getString(R.string.empty_peluang_desc_non_topads_no_filter).orEmpty(),
-                buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads).orEmpty(),
-                buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
-                showButton = true
-            )
-        } else {
-            somListEmptyStateUiModel.let {
-                it ?: if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
-                    SomListEmptyStateUiModel(
-                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
-                        title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title)
-                            .orEmpty()
-                    )
-                } else {
-                    SomListEmptyStateUiModel(
-                        imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
-                        title = context?.resources?.getString(R.string.empty_peluang_title)
-                            .orEmpty(),
-                        description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter)
-                            .orEmpty()
-                    )
-                }
+        val isSearchQueryApplied =
+            somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.isNotBlank() == true
+        return somListEmptyStateUiModel.let {
+            it ?:
+            if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
+                !isNonStatusOrderFilterApplied && !isSearchQueryApplied
+            ) {
+                SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
+                    title = context?.resources?.getString(R.string.empty_peluang_title).orEmpty(),
+                    description = context?.resources?.getString(R.string.empty_peluang_desc_non_topads_no_filter)
+                        .orEmpty(),
+                    buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
+                        .orEmpty(),
+                    buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
+                    showButton = true
+                )
+            } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
+                SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
+                    title = context?.resources?.getString(R.string.som_list_empty_state_not_found_title)
+                        .orEmpty()
+                )
+            } else {
+                SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
+                    title = context?.resources?.getString(R.string.empty_peluang_title)
+                        .orEmpty(),
+                    description = context?.resources?.getString(R.string.som_list_empty_state_description_no_topads_no_filter)
+                        .orEmpty()
+                )
             }
         }
     }
@@ -2281,7 +2298,8 @@ open class SomListFragment :
 
     private fun showToasterError(
         view: View?,
-        message: String = context?.resources?.getString(R.string.som_list_error_some_information_cannot_be_loaded).orEmpty(),
+        message: String = context?.resources?.getString(R.string.som_list_error_some_information_cannot_be_loaded)
+            .orEmpty(),
         buttonMessage: String = context?.resources?.getString(R.string.btn_reload).orEmpty(),
         canRetry: Boolean = true
     ) {
@@ -2380,7 +2398,8 @@ open class SomListFragment :
                     val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
                         add(
                             SomListBulkProcessOrderDescriptionUiModel(
-                                context?.resources?.getString(R.string.som_list_bottom_sheet_bulk_accept_order_description).orEmpty(),
+                                context?.resources?.getString(R.string.som_list_bottom_sheet_bulk_accept_order_description)
+                                    .orEmpty(),
                                 false
                             )
                         )
@@ -2392,7 +2411,10 @@ open class SomListFragment :
                         )
                     }
                     bottomSheet.init(it)
-                    bottomSheet.setTitle(context?.resources?.getString(R.string.som_list_bulk_accept_order_button).orEmpty())
+                    bottomSheet.setTitle(
+                        context?.resources?.getString(R.string.som_list_bulk_accept_order_button)
+                            .orEmpty()
+                    )
                     bottomSheet.setItems(items)
                     bottomSheet.showButtonAction()
                     bottomSheet.setListener(this@SomListFragment)
@@ -2418,7 +2440,8 @@ open class SomListFragment :
                         add(
                             SomListBulkProcessOrderMenuItemUiModel(
                                 KEY_PRINT_AWB,
-                                context?.resources?.getString(R.string.som_list_bulk_print_button).orEmpty(),
+                                context?.resources?.getString(R.string.som_list_bulk_print_button)
+                                    .orEmpty(),
                                 true
                             )
                         )
@@ -2426,14 +2449,18 @@ open class SomListFragment :
                             add(
                                 SomListBulkProcessOrderMenuItemUiModel(
                                     KEY_REQUEST_PICKUP,
-                                    context?.resources?.getString(R.string.som_list_bulk_request_pickup_button).orEmpty(),
+                                    context?.resources?.getString(R.string.som_list_bulk_request_pickup_button)
+                                        .orEmpty(),
                                     isEligibleRequestPickup()
                                 )
                             )
                         }
                     }
                     bottomSheet.init(fragmentView)
-                    bottomSheet.setTitle(context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button).orEmpty())
+                    bottomSheet.setTitle(
+                        context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button)
+                            .orEmpty()
+                    )
                     bottomSheet.setItems(items)
                     bottomSheet.hideButtonAction()
                     bottomSheet.setListener(this@SomListFragment)
@@ -2483,13 +2510,18 @@ open class SomListFragment :
     private fun showNoInternetConnectionToaster() {
         showToasterError(
             view,
-            context?.resources?.getString(R.string.som_error_message_no_internet_connection).orEmpty(),
+            context?.resources?.getString(R.string.som_error_message_no_internet_connection)
+                .orEmpty(),
             canRetry = false
         )
     }
 
     private fun showServerErrorToaster() {
-        showToasterError(view, context?.resources?.getString(R.string.som_error_message_server_fault).orEmpty(), canRetry = false)
+        showToasterError(
+            view,
+            context?.resources?.getString(R.string.som_error_message_server_fault).orEmpty(),
+            canRetry = false
+        )
     }
 
     private fun getVisiblePercent(v: View): Int {
@@ -2542,14 +2574,22 @@ open class SomListFragment :
 
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
-        somListBinding?.btnBulkAction?.text = when (somListOrderStatusFilterTab?.getSelectedFilterStatus()) {
-            STATUS_NEW_ORDER -> context?.resources?.getString(R.string.som_list_bulk_accept_order_button).orEmpty()
-            KEY_CONFIRM_SHIPPING -> context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button).orEmpty()
-            else -> ""
-        }
+        somListBinding?.btnBulkAction?.text =
+            when (somListOrderStatusFilterTab?.getSelectedFilterStatus()) {
+                STATUS_NEW_ORDER -> context?.resources?.getString(R.string.som_list_bulk_accept_order_button)
+                    .orEmpty()
+
+                KEY_CONFIRM_SHIPPING -> context?.resources?.getString(R.string.som_list_bulk_confirm_shipping_order_button)
+                    .orEmpty()
+
+                else -> ""
+            }
         somListBinding?.containerBtnBulkAction?.visible()
         bulkAcceptButtonEnterAnimation =
-            somListBinding?.containerBtnBulkAction?.animateSlide(somListBinding?.containerBtnBulkAction?.translationY.orZero(), Float.ZERO)
+            somListBinding?.containerBtnBulkAction?.animateSlide(
+                somListBinding?.containerBtnBulkAction?.translationY.orZero(),
+                Float.ZERO
+            )
     }
 
     private fun animateBulkAcceptOrderButtonLeave() {
@@ -2635,7 +2675,8 @@ open class SomListFragment :
             sortFilterShimmer3.translationY = translation
             sortFilterShimmer4.translationY = translation
             sortFilterShimmer5.translationY = translation
-            val params = (somListBinding?.swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
+            val params =
+                (somListBinding?.swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
             params?.topMargin = translation.toInt()
             swipeRefreshLayoutSomList.layoutParams = params
             containerBtnBulkAction.translationY = translation
@@ -2650,6 +2691,7 @@ open class SomListFragment :
         if (refreshFilter) {
             loadFilters(showShimmer = false, loadOrders = !loadOrderListImmediately)
         }
+
         if (loadOrderListImmediately || !refreshFilter) {
             refreshOrderList()
         } else {
@@ -2816,7 +2858,16 @@ open class SomListFragment :
             somListFilterUiModel = result.data,
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
-        if (result.data.refreshOrder) {
+
+        //this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        val shouldRefreshOrder = viewModel.getIsFirstPageOpened() &&
+            result.data.highLightedStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
+
+        if (shouldRefreshOrder) {
+            viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(result.data.highLightedStatusKey))
+            viewModel.setFirstPageOpened(false)
+            refreshOrders(shouldScrollToTop, false)
+        } else if (result.data.refreshOrder) {
             refreshOrders(shouldScrollToTop, false)
         }
     }

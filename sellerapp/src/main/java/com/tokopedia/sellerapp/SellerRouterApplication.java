@@ -430,7 +430,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
-        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_NEW_ORDER : tabPage;
+        tabPage = (null == tabPage || "".equals(tabPage)) ? "" : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);

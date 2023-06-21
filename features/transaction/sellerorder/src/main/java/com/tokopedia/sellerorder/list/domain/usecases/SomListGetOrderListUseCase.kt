@@ -64,6 +64,11 @@ class SomListGetOrderListUseCase @Inject constructor(
             query GetOrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {
                 cursor_order_id
+                empty_state {
+                  title
+                  subtitle
+                  image_url
+                }
                 list {
                   order_id
                   status
@@ -84,11 +89,6 @@ class SomListGetOrderListUseCase @Inject constructor(
                   courier_product_name
                   preorder_type
                   buyer_name
-                  empty_state {
-                    title
-                    subtitle
-                    image_url
-                  }
                   order_product {
                     product_id
                     product_name

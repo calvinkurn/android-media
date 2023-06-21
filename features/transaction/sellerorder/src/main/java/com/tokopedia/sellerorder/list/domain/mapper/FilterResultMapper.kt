@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import javax.inject.Inject
@@ -10,7 +11,7 @@ class FilterResultMapper @Inject constructor() {
     fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data, fromCache: Boolean): SomListFilterUiModel {
         return SomListFilterUiModel(
             quickFilterList = mapQuickFilterList(resultFilterList.orderFilterSom.quickFilterList),
-            statusList = mapStatusList(resultFilterList.orderFilterSom.statusList, resultFilterList.orderFilterSom.highLightedStatusKey),
+            statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
             sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
             fromCache = fromCache,
             highLightedStatusKey = resultFilterList.orderFilterSom.highLightedStatusKey
@@ -28,7 +29,7 @@ class FilterResultMapper @Inject constructor() {
         }
     }
 
-    private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>, highLightedStatusKey: String): List<SomListFilterUiModel.Status> {
+    private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>): List<SomListFilterUiModel.Status> {
         return statusList.map {
             SomListFilterUiModel.Status(
                 key = it.key,
@@ -44,17 +45,7 @@ class FilterResultMapper @Inject constructor() {
                         isChecked = it.isChecked
                     )
                 },
-                isChecked = if (highLightedStatusKey in
-                    listOf(
-                            SomConsts.STATUS_ALL_ORDER,
-                            SomConsts.STATUS_NEW_ORDER,
-                            SomConsts.STATUS_CONFIRM_SHIPPING
-                        )
-                ) {
-                    true
-                } else {
-                    it.isChecked
-                }
+                isChecked = it.isChecked
             )
         }.run {
             if (containsAllStatusOrderFilter()) {
@@ -84,7 +75,7 @@ class FilterResultMapper @Inject constructor() {
         add(
             SomListFilterUiModel.Status(
                 key = SomConsts.STATUS_ALL_ORDER,
-                status = SomConsts.STATUS_NAME_ALL_ORDER
+                status = SomConsts.STATUS_NAME_ALL_ORDER,
             )
         )
     }

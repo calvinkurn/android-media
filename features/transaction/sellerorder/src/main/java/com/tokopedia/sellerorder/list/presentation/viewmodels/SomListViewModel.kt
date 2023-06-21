@@ -209,6 +209,8 @@ class SomListViewModel @Inject constructor(
     }
 
     private var tabActiveFromAppLink: String = ""
+    private var isFirstPageOpened: Boolean = false
+
     private var getOrderListParams = SomListGetOrderListParam()
     private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
 
@@ -491,19 +493,6 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
-        launchCatchError(context = dispatcher.main, block = {
-            val newFilterData = somListGetFilterListUseCase.executeOnBackground(
-                useCache = false
-            ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
-            newFilterData.refreshOrder = refreshOrders && !afterSuccessfulLoadFromCache
-            setTabActiveFromAppLink("")
-            _filterResult.value = Success(newFilterData)
-        }, onError = {
-                _filterResult.value = Fail(it)
-            })
-    }
-
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
             delay(DELAY_BULK_REQUEST_PICK_UP)
@@ -543,16 +532,15 @@ class SomListViewModel @Inject constructor(
     fun getFilters(refreshOrders: Boolean) {
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                val result = somListGetFilterListUseCase.executeOnBackground(true)
-                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
+                val result = somListGetFilterListUseCase.executeOnBackground()
+                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink, isFirstPageOpened)
                 result.refreshOrder = refreshOrders
                 setTabActiveFromAppLink("")
                 _filterResult.value = Success(result)
-                getFiltersFromCloud(refreshOrders, true)
             }
         }, onError = {
-                getFiltersFromCloud(refreshOrders, false)
-            })
+            _filterResult.value = Fail(it)
+        })
     }
 
     fun getHeaderIconsInfo() {
@@ -718,6 +706,18 @@ class SomListViewModel @Inject constructor(
 
     fun setTabActiveFromAppLink(tab: String) {
         tabActiveFromAppLink = tab
+    }
+
+    fun getTabActiveFromAppLink(): String {
+        return tabActiveFromAppLink
+    }
+
+    fun setFirstPageOpened(isFirstPageOpened: Boolean) {
+        this.isFirstPageOpened = isFirstPageOpened
+    }
+
+    fun getIsFirstPageOpened(): Boolean {
+        return this.isFirstPageOpened
     }
 
     fun getTabActive(): String {

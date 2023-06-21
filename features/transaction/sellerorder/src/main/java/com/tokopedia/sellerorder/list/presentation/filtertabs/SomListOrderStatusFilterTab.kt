@@ -52,7 +52,9 @@ class SomListOrderStatusFilterTab(
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeAllTabs()
         filterTabs.clear()
-        statusList.forEach { filterTabs.add(tabs.addNewTab(createNewTabs(it), it.isChecked)) }
+        statusList.forEach {
+            filterTabs.add(tabs.addNewTab(createNewTabs(it), it.isChecked))
+        }
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): String {
@@ -91,12 +93,14 @@ class SomListOrderStatusFilterTab(
 
     inner class TabSelectedListener : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
-            somListFilterUiModel?.statusList?.getOrNull(tab?.position ?: -1)?.let { selected ->
-                selected.isChecked = true
-                listener.onClickOrderStatusFilterTab(
-                    status = selected,
-                    shouldScrollToTop = true
-                )
+            somListFilterUiModel?.let { somFilter ->
+                somFilter.statusList.getOrNull(tab?.position ?: -1)?.let { selected ->
+                    selected.isChecked = true
+                    listener.onClickOrderStatusFilterTab(
+                        status = selected,
+                        shouldScrollToTop = true
+                    )
+                }
             }
         }
 
@@ -104,6 +108,8 @@ class SomListOrderStatusFilterTab(
             somListFilterUiModel?.statusList?.getOrNull(tab?.position ?: -1)?.isChecked = false
         }
 
-        override fun onTabReselected(tab: TabLayout.Tab?) {}
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+
+        }
     }
 }

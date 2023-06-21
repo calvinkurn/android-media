@@ -94,4 +94,7 @@ object RollenceKey {
 
     //Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    //Seller Order Management
+    const val KEY_SOM_OPERATIONAL_GUIDELINE = "som_operational_guideline"
 }
