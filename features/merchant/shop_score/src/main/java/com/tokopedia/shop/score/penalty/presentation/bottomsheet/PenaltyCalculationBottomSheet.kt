@@ -19,6 +19,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.calculation.ItemPenal
 import com.tokopedia.shop.score.penalty.presentation.model.calculation.ItemPenaltyCalculationScoreUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.calculation.ItemPenaltyCalculationSubtitleUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.calculation.ItemPenaltyCalculationTableUiModel
+import kotlin.math.absoluteValue
 
 class PenaltyCalculationBottomSheet :
     BaseBottomSheetShopScore<BottomsheetPenaltyCalculationBinding>(),
@@ -95,7 +96,7 @@ class PenaltyCalculationBottomSheet :
             ItemPenaltyCalculationScoreUiModel(
                 uiModel.result.penaltyDynamic,
                 uiModel.date,
-                uiModel.result.penaltyAmount,
+                uiModel.result.penalty.absoluteValue,
                 uiModel.result.orderVerified,
                 uiModel.result.shopLevel
             ),
@@ -103,7 +104,7 @@ class PenaltyCalculationBottomSheet :
                 getString(R.string.title_penalty_calculation_percentage_calculate)
             ),
             ItemPenaltyCalculationFormulaUiModel(
-                uiModel.result.penaltyAmount,
+                uiModel.result.penalty.absoluteValue,
                 uiModel.result.orderVerified,
                 uiModel.result.penaltyCumulativePercentageFormatted,
                 uiModel.result.penaltyDynamic
