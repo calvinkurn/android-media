@@ -420,6 +420,10 @@ dependencies {
 
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     implementation project(rootProject.ext.features.watch)
+
+    implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
+        exclude group: 'com.android.support'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
