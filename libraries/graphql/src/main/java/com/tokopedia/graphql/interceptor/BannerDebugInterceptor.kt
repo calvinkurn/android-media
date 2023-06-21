@@ -6,7 +6,7 @@ import com.tokopedia.config.GlobalConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class BannerDebugInterceptor(context: Context) : Interceptor {
+class BannerEnvironmentInterceptor(context: Context) : Interceptor {
 
     var sharedPreferences: SharedPreferences = context.getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
 
