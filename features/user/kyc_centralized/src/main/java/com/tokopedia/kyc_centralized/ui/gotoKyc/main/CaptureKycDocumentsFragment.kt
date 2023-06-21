@@ -16,6 +16,11 @@ import com.gojek.kyc.sdk.core.broadcast.KycSdkStatusPublisher
 import com.gojek.kyc.sdk.core.constants.UnifiedKycFlowResult
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.gojek.OneKycSdk
+import com.gojek.kyc.plus.OneKycConstants
+import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
+import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
+import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
+import com.gojek.kyc.sdk.core.constants.OneKycResumeState
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,6 +31,8 @@ import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBindi
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.isConnectionAvailable
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -99,20 +106,44 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                         gotoFinalLoader()
                     }
                     UnifiedKycFlowResult.USER_CANCELLED -> {
-                        activity?.setResult(Activity.RESULT_CANCELED)
-                        activity?.finish()
+                        finishWithResultCancelAndRemoveCache()
                     }
                     UnifiedKycFlowResult.STATE_UPDATED -> {
-                        activity?.setResult(Activity.RESULT_CANCELED)
-                        activity?.finish()
+                        finishWithResultCancelAndRemoveCache()
                     }
                     UnifiedKycFlowResult.DOC_TYPE_SWITCHED -> {
-                        activity?.setResult(Activity.RESULT_CANCELED)
-                        activity?.finish()
+                        finishWithResultCancelAndRemoveCache()
                     }
                 }
             }
         }
+    }
+
+    private fun finishWithResultCancelAndRemoveCache() {
+        val isUploading = oneKycSdk.getKycPlusPreferencesProvider()
+            .getOneKycState()
+        if (isUploading != OneKycResumeState.DOCUMENTS_UPLOADING) {
+            removeGotoKycCache()
+        }
+        activity?.setResult(Activity.RESULT_CANCELED)
+        activity?.finish()
+    }
+
+    private fun removeGotoKycCache() {
+        val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
+        val preferenceKey = OneKycConstants.KYC_UPLOAD_PROGRESS_STATE
+        removeGotoKycPreference(
+            context = requireContext(),
+            preferenceName = preferenceName,
+            preferenceKey = preferenceKey
+        )
+
+        val directory1 = getKycSdkDocumentDirectoryPath(requireContext())
+        val directory2 = getKycSdkFrameDirectoryPath(requireContext())
+        val directory3 = getKycSdkLogDirectoryPath(requireContext())
+        removeGotoKycImage(directory1)
+        removeGotoKycImage(directory2)
+        removeGotoKycImage(directory3)
     }
 
     private fun gotoCaptureKycDocuments() {
