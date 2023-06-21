@@ -5,11 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
-import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase.Companion.PAGESIZE_PARAM
-import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase.Companion.PAGE_NAME_PARAM
-import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase.Companion.PAGE_PARAM
-import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase.Companion.SOURCE_NAME_PARAM
-import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase.Companion.TYPE_PARAM
 import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetMedaliSectionResponse
 import com.tokopedia.scp_rewards.cabinet.domain.model.getData
@@ -19,7 +14,12 @@ import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.EARNED_BADGE
 import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
+import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
 import com.tokopedia.scp_rewards.common.utils.PROGRESS_BADGE
+import com.tokopedia.scp_rewards.common.utils.SOURCE_NAME_PARAM
+import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.common.utils.parseJsonKey
 import com.tokopedia.usecase.RequestParams

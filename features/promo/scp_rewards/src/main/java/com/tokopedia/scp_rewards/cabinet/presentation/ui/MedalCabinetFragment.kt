@@ -66,6 +66,9 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 ""
             ) ?: ""
         }
+        activity?.window?.let {
+            WindowCompat.setDecorFitsSystemWindows(it, false)
+        }
     }
 
     override fun onCreateView(
@@ -93,6 +96,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                 is Success<*> -> {}
                 is Loading -> {}
                 is Error -> {}
+                else -> {}
             }
         }
         val data = listOf<MedalData>(

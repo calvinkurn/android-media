@@ -4,19 +4,11 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetMedaliSectionResponse
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
+import com.tokopedia.scp_rewards.common.utils.API_VERSION_PARAM
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetUserMedaliUseCase @Inject constructor() {
-
-    companion object{
-        const val API_VERSION_PARAM = "apiVersion"
-        const val SOURCE_NAME_PARAM = "sourceName"
-        const val PAGE_NAME_PARAM = "pageName"
-        const val PAGE_PARAM = "page"
-        const val TYPE_PARAM = "type"
-        const val PAGESIZE_PARAM = "pageSize"
-    }
 
     @GqlQuery("ScpRewardsGetMedaliSectionLayoutGQL",GET_MEDALI_SECTION_GQL)
      suspend fun getMedaliHomePageSection(sectionParams: RequestParams) : ScpRewardsGetMedaliSectionResponse{

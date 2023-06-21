@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards.cabinet.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.scp_rewards.cabinet.presentation.ui.MedalCabinetFragment
+import com.tokopedia.scp_rewards.cabinet.presentation.ui.SeeMoreMedaliFragment
 import com.tokopedia.scp_rewards.detail.di.MedalDetailScope
 import dagger.Component
 
@@ -12,4 +13,5 @@ import dagger.Component
 )
 interface MedalCabinetComponent {
     fun inject(medalCabinetFragment: MedalCabinetFragment)
+    fun inject(seeMoreMedaliFragment: SeeMoreMedaliFragment)
 }

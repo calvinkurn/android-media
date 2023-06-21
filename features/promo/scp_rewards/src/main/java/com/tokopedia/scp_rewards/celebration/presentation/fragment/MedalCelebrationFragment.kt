@@ -152,6 +152,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 is Loading -> {
                     binding?.mainFlipper?.displayedChild = LOADING_STATE
                 }
+                else -> {}
             }
         }
     }
