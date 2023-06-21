@@ -384,6 +384,8 @@ class PenaltyMapper @Inject constructor(
                     endDate = shopScorePenaltyDetailResponse.endDate,
                     defaultStartDate = shopScorePenaltyDetailResponse.defaultStartDate,
                     defaultEndDate = shopScorePenaltyDetailResponse.defaultEndDate,
+                    initialStartDate = shopScorePenaltyDetailResponse.startDate,
+                    initialEndDate = shopScorePenaltyDetailResponse.endDate,
                     completeDate = "${
                         shopScorePenaltyDetailResponse.startDate.convertToFormattedDate().orEmpty()
                     } - ${
@@ -483,8 +485,13 @@ class PenaltyMapper @Inject constructor(
                     shownFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
                         if (index == position) {
                             selectedId = chipsFilterPenaltyUiModel.value
-                            chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
-                            itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
+                            if (isMultiple) {
+                                chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
+                                itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
+                            } else {
+                                chipsFilterPenaltyUiModel.isSelected = true
+                                itemSortFilterWrapperList.getOrNull(index)?.isSelected = true
+                            }
                         } else {
                             if (!isMultiple) {
                                 chipsFilterPenaltyUiModel.isSelected = false
@@ -578,8 +585,8 @@ class PenaltyMapper @Inject constructor(
     ): MutableList<BaseFilterPenaltyPage> {
         penaltyFilterUiModel.forEach { model ->
             if (model is PenaltyFilterDateUiModel) {
-                model.defaultStartDate = startDate
-                model.defaultEndDate = endDate
+                model.startDate = startDate
+                model.endDate = endDate
                 model.completeDate = date
             }
         }

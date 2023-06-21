@@ -80,6 +80,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         observeUpdateSortSelectedPeriod()
         observeUpdateFilterSelected()
         observeResetFilter()
+        observeDateFilter()
         clickBtnApplied()
     }
 
@@ -89,6 +90,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         removeObservers(viewModelShopPenalty.updateSortSelectedPeriod)
         removeObservers(viewModelShopPenalty.resetFilterResult)
         removeObservers(viewModelShopPenalty.updateFilterSelected)
+        removeObservers(viewModelShopPenalty.dateFilterResult)
         super.onDestroy()
     }
 
@@ -133,12 +135,12 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         endDate: String,
         defaultEndDate: String
     ) {
-        viewModelShopPenalty.setMaxDateFilterData(startDate to endDate)
+        viewModelShopPenalty.setMaxDateFilterData(defaultStartDate to defaultEndDate)
         val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
-            defaultStartDate,
-            defaultEndDate,
             startDate,
-            endDate
+            endDate,
+            defaultStartDate,
+            defaultEndDate
         )
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
@@ -264,6 +266,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         }
     }
 
+    private fun observeDateFilter() = observe(viewModelShopPenalty.dateFilterResult) {
+        showHideBottomSheetReset()
+    }
+
     private fun setClickBtnReset() {
         setAction(getString(R.string.reset_filter_penalty)) {
             viewModelShopPenalty.resetFilterSelected()
@@ -271,7 +277,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     }
 
     private fun showHideBottomSheetReset() {
-        if (checkIsSelected()) {
+        if (checkIsSelected() || checkIsDateFilterApplied()) {
             setClickBtnReset()
         } else {
             clearAction()
@@ -287,6 +293,15 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
                         return true
                     }
                 }
+            }
+        return false
+    }
+
+    private fun checkIsDateFilterApplied(): Boolean {
+        viewModelShopPenalty.getPenaltyFilterUiModelList()
+            .filterIsInstance<PenaltyFilterDateUiModel>()
+            .firstOrNull()?.let {
+                return it.startDate != viewModelShopPenalty.getInitialStartDate() || it.endDate != viewModelShopPenalty.getInitialEndDate()
             }
         return false
     }

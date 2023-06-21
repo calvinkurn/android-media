@@ -8,6 +8,8 @@ data class PenaltyFilterDateUiModel(
     var endDate: String,
     var defaultStartDate: String,
     var defaultEndDate: String,
+    var initialStartDate: String,
+    var initialEndDate: String,
     var completeDate: String
 ): BaseFilterPenaltyPage {
 

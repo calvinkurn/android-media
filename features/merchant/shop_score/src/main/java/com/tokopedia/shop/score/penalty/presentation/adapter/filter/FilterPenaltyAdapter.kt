@@ -23,11 +23,26 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
 
     fun resetFilterSelected(dataList: List<BaseFilterPenaltyPage>) {
         visitables.mapIndexed { index, item ->
-            if (item is PenaltyFilterUiModel) {
-                val chipsIndex = visitables.indexOf(item)
-                item.chipsFilterList = (dataList[index] as? PenaltyFilterUiModel)?.chipsFilterList.orEmpty()
-                if (chipsIndex != RecyclerView.NO_POSITION) {
-                    notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+            when (item) {
+                is PenaltyFilterUiModel -> {
+                    val chipsIndex = visitables.indexOf(item)
+                    item.chipsFilterList = (dataList[index] as? PenaltyFilterUiModel)?.chipsFilterList.orEmpty()
+                    if (chipsIndex != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+                    }
+                }
+                is PenaltyFilterDateUiModel -> {
+                    val dateIndex = visitables.indexOf(item)
+                    (dataList[index] as? PenaltyFilterDateUiModel)?.let {
+                        item.startDate = it.startDate
+                        item.endDate = it.endDate
+                        item.defaultStartDate = it.defaultStartDate
+                        item.defaultEndDate = it.defaultEndDate
+                        item.completeDate = it.completeDate
+                    }
+                    if (dateIndex != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(dateIndex)
+                    }
                 }
             }
         }
@@ -87,10 +102,12 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         visitables.forEachIndexed { index, visitable ->
             if (visitable is PenaltyFilterDateUiModel) {
                 visitables[index] = PenaltyFilterDateUiModel(
-                    maxDateSelected.first,
-                    maxDateSelected.second,
                     dateSelected.first,
                     dateSelected.second,
+                    maxDateSelected.first,
+                    maxDateSelected.second,
+                    visitable.initialStartDate,
+                    visitable.initialEndDate,
                     completeDate
                 )
                 notifyItemChanged(index)

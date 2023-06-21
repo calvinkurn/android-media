@@ -15,6 +15,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyEmptyStateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
@@ -27,6 +28,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
+    private var initialPenaltyScoreCardUiModel: ItemPenaltyPointCardUiModel? = null
 
     private val penaltySortFilterPosition: Int?
         get() = visitables.indexOfFirst {
@@ -34,6 +36,9 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }.takeIf { it != -1 }
 
     fun setPenaltyData(penaltyListUiModel: List<BasePenaltyPage>) {
+        initialPenaltyScoreCardUiModel =
+            penaltyListUiModel.find { it is ItemPenaltyPointCardUiModel } as? ItemPenaltyPointCardUiModel
+
         val diffCallback = ShopPenaltyDiffUtilCallback(visitables, penaltyListUiModel)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
@@ -60,12 +65,27 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         notifyItemRangeInserted(visitables.size, penaltyListUiModel.size)
     }
 
-    fun updateChipsSelected(chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>) {
+    fun updateChipsSelected(
+        chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>,
+        isDateFilterApplied: Boolean? = null
+    ) {
         val updateIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
+        var hasDateFilterApplied = false
         visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>()
-            .firstOrNull()?.itemSortFilterWrapperList = chipsList
+            .firstOrNull()?.run {
+                itemSortFilterWrapperList = chipsList
+                hasDateFilterApplied = this.isDateFilterApplied
+                isDateFilterApplied?.let {
+                    this.isDateFilterApplied = it
+                    hasDateFilterApplied = it
+                }
+            }
         if (updateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(updateIndex)
+
+            val shouldHidePointCard =
+                chipsList.count { it.isSelected }.isMoreThanZero() || hasDateFilterApplied
+            setInitialPointCard(shouldHidePointCard)
         }
     }
 
@@ -76,23 +96,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
         if (dateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(dateIndex)
-        }
-    }
-
-    fun updateSelectedBackground(
-        invoicePenaltyText: String
-    ) {
-        visitables.mapIndexed { index, item ->
-            val itemPenalty = item as? ItemPenaltyUiModel
-            if (itemPenalty != null) {
-                if (itemPenalty.invoicePenalty == invoicePenaltyText) {
-                    itemPenalty.isSelected = true
-                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
-                } else if (itemPenalty.isSelected) {
-                    itemPenalty.isSelected = false
-                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
-                }
-            }
         }
     }
 
@@ -144,6 +147,26 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
                 (it as? ItemPenaltyInfoNotificationUiModel)?.shouldShowDot = false
                 if (notificationUiModelIndex != RecyclerView.NO_POSITION) {
                     notifyItemChanged(notificationUiModelIndex)
+                }
+            }
+        }
+    }
+
+    private fun setInitialPointCard(shouldHide: Boolean) {
+        if (shouldHide) {
+            val cardIndex = visitables.indexOfFirst { it is ItemPenaltyPointCardUiModel }
+            if (cardIndex > RecyclerView.NO_POSITION) {
+                visitables.removeAt(cardIndex)
+                notifyItemRemoved(cardIndex)
+            }
+        } else {
+            val subsectionIndex = visitables.indexOfFirst { it is ItemPenaltySubsectionUiModel }
+            if (subsectionIndex > RecyclerView.NO_POSITION) {
+                if (!visitables.any { it is ItemPenaltyPointCardUiModel }) {
+                    initialPenaltyScoreCardUiModel?.let {
+                        visitables.add(subsectionIndex, it)
+                        notifyItemInserted(subsectionIndex)
+                    }
                 }
             }
         }

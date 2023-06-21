@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.convertToFormattedDate
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getHistoryPenaltyTimeStamp
 import com.tokopedia.shop.score.common.getNotYetDeductedPenaltyTimeStamp
@@ -24,6 +25,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiM
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,6 +67,10 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _resetFilterResult = MutableLiveData<Result<List<BaseFilterPenaltyPage>>>()
     val resetFilterResult: LiveData<Result<List<BaseFilterPenaltyPage>>> = _resetFilterResult
 
+    private val _dateFilterResult = MutableLiveData<Boolean>()
+    val dateFilterResult: LiveData<Boolean>
+        get() = _dateFilterResult
+
     private val _updateFilterSelected =
         MutableLiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>>()
     val updateFilterSelected: LiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>> =
@@ -79,6 +85,8 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _dateFilterData = MutableLiveData<Pair<String, String>>()
     private val _pageTypeData = MutableLiveData<String>()
 
+    private var initialStartDate: String = String.EMPTY
+    private var initialEndDate: String = String.EMPTY
     private var startDate = String.EMPTY
     private var endDate = String.EMPTY
     private var maxStartDate: String? = null
@@ -108,6 +116,7 @@ class ShopPenaltyViewModel @Inject constructor(
 
         penaltyFilterUiModel =
             penaltyMapper.transformDateFilter(penaltyFilterUiModel, startDate, endDate, completeDate)
+        _dateFilterResult.value = true
     }
 
     fun setDateFilterData(dateFilter: Pair<String, String>) {
@@ -130,6 +139,8 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyFilterUiModelList() = penaltyFilterUiModel
     fun getStartDate() = startDate
     fun getEndDate() = endDate
+    fun getInitialStartDate() = initialStartDate
+    fun getInitialEndDate() = initialEndDate
     fun getMaxStartDate() = maxStartDate
     fun getMaxEndDate() = maxEndDate
 
@@ -183,10 +194,12 @@ class ShopPenaltyViewModel @Inject constructor(
                 typeIds
             )
 
-            startDate = penaltyDetailMerge.second.startDate
-            endDate = penaltyDetailMerge.second.endDate
+            initialStartDate = penaltyDetailMerge.second.startDate
+            initialEndDate = penaltyDetailMerge.second.endDate
             maxStartDate = penaltyDetailMerge.second.defaultStartDate
             maxEndDate = penaltyDetailMerge.second.defaultEndDate
+            startDate = penaltyDetailMerge.second.startDate
+            endDate = penaltyDetailMerge.second.endDate
 
             penaltyFilterUiModel = penaltyDataWrapper.penaltyFilterList.toMutableList()
 
@@ -254,6 +267,11 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getFilterPenalty(filterPenaltyList: List<BaseFilterPenaltyPage>) {
         launch {
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
+
+            filterPenaltyList.filterIsInstance<PenaltyFilterDateUiModel>().firstOrNull()?.let {
+                initialStartDate = it.initialStartDate
+                initialEndDate = it.initialEndDate
+            }
             _filterPenaltyData.value = Success(penaltyFilterUiModel)
         }
     }
@@ -309,19 +327,34 @@ class ShopPenaltyViewModel @Inject constructor(
     fun resetFilterSelected() {
         launch {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
-                if (penaltyFilterUiModel is PenaltyFilterUiModel) {
-                    if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
-                        penaltyFilterUiModel.chipsFilterList.map {
-                            it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
-                        }
-                    } else {
-                        penaltyFilterUiModel.chipsFilterList.map {
-                            it.isSelected = false
-                        }
-                        penaltyFilterUiModel.shownFilterList.map {
-                            it.isSelected = false
+                when(penaltyFilterUiModel) {
+                    is PenaltyFilterUiModel -> {
+                        if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
+                            penaltyFilterUiModel.chipsFilterList.map {
+                                it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
+                            }
+                        } else {
+                            penaltyFilterUiModel.chipsFilterList.map {
+                                it.isSelected = false
+                            }
+                            penaltyFilterUiModel.shownFilterList.map {
+                                it.isSelected = false
+                            }
+                            penaltyFilterUiModel.shownFilterList =
+                                penaltyFilterUiModel.shownFilterList.take(PenaltyMapper.MAX_SHOWN_FILTER_CHIPS)
                         }
                     }
+                    is PenaltyFilterDateUiModel -> {
+                        penaltyFilterUiModel.startDate = initialStartDate
+                        penaltyFilterUiModel.endDate = initialEndDate
+                        penaltyFilterUiModel.completeDate =
+                            "${
+                                penaltyFilterUiModel.startDate.convertToFormattedDate().orEmpty()
+                            } - ${
+                                penaltyFilterUiModel.endDate.convertToFormattedDate().orEmpty()
+                            }"
+                    }
+                    else -> {}
                 }
             }
             _resetFilterResult.value = Success(penaltyFilterUiModel)

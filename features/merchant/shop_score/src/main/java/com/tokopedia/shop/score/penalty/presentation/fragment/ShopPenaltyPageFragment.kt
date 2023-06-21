@@ -111,6 +111,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     private var shopPenaltyPerformanceMonitoringListener:
         ShopPenaltyPerformanceMonitoringListener? = null
 
+    private var initialStartDate = String.EMPTY
+    private var initialEndDate = String.EMPTY
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         shopPenaltyPerformanceMonitoringListener =
@@ -262,14 +265,19 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
                 .find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
                 ?: ZERO_NUMBER
         endlessRecyclerViewScrollListener.resetState()
+
+        var startDate = String.EMPTY
+        var endDate = String.EMPTY
         datePenaltyFilter?.let {
-            viewModelShopPenalty.setDateFilterData(it.defaultStartDate, it.defaultEndDate, it.completeDate)
+            viewModelShopPenalty.setDateFilterData(it.startDate, it.endDate, it.completeDate)
+            startDate = it.startDate
+            endDate = it.endDate
         }
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeIds))
 
         binding?.rvPenaltyPage?.post {
             penaltyPageAdapter.run {
-                updateChipsSelected(chipsPenaltyMap)
+                updateChipsSelected(chipsPenaltyMap, getIsDateFilterApplied(startDate, endDate))
                 removePenaltyListData()
                 refreshSticky()
                 removeNotFoundPenalty()
@@ -402,6 +410,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
                         it.data.penaltyVisitableList.third
                     )
                     penaltyPageAdapter.refreshSticky()
+
+                    initialStartDate = viewModelShopPenalty.getStartDate()
+                    initialEndDate = viewModelShopPenalty.getEndDate()
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
@@ -472,6 +483,10 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             }
         }
         return itemSortFilterWrapperList
+    }
+
+    private fun getIsDateFilterApplied(startDate: String, endDate: String): Boolean {
+        return startDate != initialStartDate || endDate != initialEndDate
     }
 
     companion object {
