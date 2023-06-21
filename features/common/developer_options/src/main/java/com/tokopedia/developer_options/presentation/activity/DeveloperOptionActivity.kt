@@ -31,7 +31,9 @@ import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizat
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
