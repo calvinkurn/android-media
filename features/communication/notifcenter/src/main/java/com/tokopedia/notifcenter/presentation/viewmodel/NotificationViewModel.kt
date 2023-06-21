@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.notifcenter.data.entity.Notifications
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
@@ -27,6 +28,7 @@ import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.notifcenter.domain.AffiliateEducationArticleUseCase
 import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
+import com.tokopedia.notifcenter.domain.GetNotificationCounterUseCase
 import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
 import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
@@ -74,6 +76,7 @@ class NotificationViewModel @Inject constructor(
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
     private var affiliateEducationArticleUseCase: AffiliateEducationArticleUseCase,
+    private var getNotificationCounterUseCase: GetNotificationCounterUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), INotificationViewModel {
 
@@ -120,6 +123,10 @@ class NotificationViewModel @Inject constructor(
         MutableLiveData<NotificationAffiliateEducationUiModel>()
     val affiliateEducationArticle: LiveData<NotificationAffiliateEducationUiModel>
         get() = _affiliateEducationArticle
+
+    private val _notifications = MutableLiveData<Result<Notifications>>()
+    val notifications: LiveData<Result<Notifications>>
+        get() = _notifications
 
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
@@ -476,6 +483,17 @@ class NotificationViewModel @Inject constructor(
                 }
             } catch (throwable: Throwable) {
                 Timber.e(throwable)
+            }
+        }
+    }
+
+    fun getNotifications(shopId: String) {
+        viewModelScope.launch {
+            try {
+                val result = getNotificationCounterUseCase(shopId)
+                _notifications.postValue(Success(result.notifications))
+            } catch (throwable: Throwable) {
+                _notifications.postValue(Fail(throwable))
             }
         }
     }

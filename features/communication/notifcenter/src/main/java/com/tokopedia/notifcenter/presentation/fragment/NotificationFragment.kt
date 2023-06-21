@@ -27,7 +27,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
-import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -113,7 +113,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private var rvScrollListener: NotificationEndlessRecyclerViewScrollListener? = null
     private var rvTypeFactory: NotificationTypeFactoryImpl? = null
     private var filter: NotificationFilterView? = null
-    private var containerListener: InboxFragmentContainer? = null
+    private var containerListener: NotificationFragmentContainer? = null
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
@@ -131,7 +131,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun isAutoLoadEnabled(): Boolean = true
 
     override fun onAttachActivity(context: Context?) {
-        if (context is InboxFragmentContainer) {
+        if (context is NotificationFragmentContainer) {
             containerListener = context
         }
     }

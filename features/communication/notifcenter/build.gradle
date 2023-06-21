@@ -49,6 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.preferenceV7

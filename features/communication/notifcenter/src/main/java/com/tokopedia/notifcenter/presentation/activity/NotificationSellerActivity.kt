@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
@@ -17,7 +17,7 @@ import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
  * Created by faisalramd on 05/02/20.
  */
 
-class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer {
+class NotificationSellerActivity : BaseSimpleActivity(), NotificationFragmentContainer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setThemeWhiteIfSellerApp()
@@ -62,25 +62,7 @@ class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer 
     override fun clearNotificationCounter() {
     }
 
-    override fun decreaseChatUnreadCounter() {
-    }
-
-    override fun increaseChatUnreadCounter() {
-    }
-
     override fun refreshNotificationCounter() {
-    }
-
-    override fun decreaseDiscussionUnreadCounter() {
-    }
-
-    override fun decreaseReviewUnreviewedCounter() {
-    }
-
-    override fun hideReviewCounter() {
-    }
-
-    override fun showReviewCounter() {
     }
 
     override fun getPageSource(): String {

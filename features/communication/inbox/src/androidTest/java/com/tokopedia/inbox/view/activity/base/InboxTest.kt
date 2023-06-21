@@ -162,7 +162,7 @@ object InboxAssertion {
     }
 
     fun assertTotalSwitchRoleCounter(text: String) {
-        onView(withId(R.id.unread_header_counter)).check(
+        onView(withId(R.id.notifcenter_unread_header_counter)).check(
             matches(withText(text))
         )
     }

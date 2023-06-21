@@ -6,6 +6,8 @@ import com.tokopedia.notifcenter.di.module.NotificationModule
 import com.tokopedia.notifcenter.di.module.NotificationQueryModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.di.scope.NotificationScope
+import com.tokopedia.notifcenter.presentation.notificationbuyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
+import com.tokopedia.notifcenter.presentation.notificationbuyer.NotificationActivity
 import com.tokopedia.notifcenter.presentation.activity.NotificationAffiliateActivity
 import com.tokopedia.notifcenter.presentation.fragment.NotificationAffiliateFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
@@ -20,11 +22,13 @@ import dagger.Component
         NotificationViewModelModule::class,
         NotificationModule::class
     ],
-    dependencies = [(BaseAppComponent::class)]
+    dependencies = [BaseAppComponent::class]
 )
 interface NotificationComponent {
     fun inject(fragment: NotificationFragment)
     fun inject(fragment: NotificationAffiliateFragment)
     fun inject(activity: NotificationAffiliateActivity)
     fun inject(service: MarkAsSeenService)
+    fun inject(activity: NotificationActivity)
+    fun inject(fragment: NotifCenterAccountSwitcherBottomSheet)
 }

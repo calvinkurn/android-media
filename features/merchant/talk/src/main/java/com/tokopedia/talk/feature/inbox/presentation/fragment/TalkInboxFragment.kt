@@ -26,7 +26,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.gone
@@ -122,7 +122,7 @@ open class TalkInboxFragment :
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     protected var talkInboxListener: TalkInboxListener? = null
     private var inboxType = ""
-    private var containerListener: InboxFragmentContainer? = null
+    private var containerListener: NotificationFragmentContainer? = null
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var talkInboxPreference: TalkInboxPreference? = null
     private var coachMark: CoachMark2? = null
@@ -222,7 +222,7 @@ open class TalkInboxFragment :
             )
             goToReply(it.questionID)
             if (it.isUnread || it.state.isUnresponded || it.state.hasProblem) {
-                containerListener?.decreaseDiscussionUnreadCounter()
+//                containerListener?.decreaseDiscussionUnreadCounter()
             }
         }
         talkInboxOldUiModel?.inboxDetail?.let {
@@ -302,7 +302,7 @@ open class TalkInboxFragment :
     }
 
     override fun onAttachActivity(context: Context?) {
-        if (context is InboxFragmentContainer) {
+        if (context is NotificationFragmentContainer) {
             containerListener = context
         }
     }
