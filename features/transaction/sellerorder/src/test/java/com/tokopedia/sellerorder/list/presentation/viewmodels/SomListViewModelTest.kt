@@ -1462,9 +1462,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } answers {
-            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, false)
         }
 
         getAdminPermission_shouldSuccess()
@@ -1472,8 +1472,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1487,10 +1486,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1498,8 +1494,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1513,10 +1508,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, true)
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } throws Throwable()
 
         getAdminPermission_shouldSuccess()
@@ -1524,8 +1516,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1536,7 +1527,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun `filterResult should equals to Fail when get filters from cache and cloud is failed`() = coroutineTestRule.runTest {
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } throws Throwable()
 
         getAdminPermission_shouldSuccess()
@@ -1544,8 +1535,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1559,10 +1549,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1570,8 +1557,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1585,10 +1571,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(true)
-        } throws Throwable()
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
@@ -1596,8 +1579,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(false)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
@@ -1612,9 +1594,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         )
 
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground()
         } answers {
-            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, false)
         }
 
         getAdminPermission_shouldSuccess()
@@ -1622,13 +1604,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(true)
-            somListGetFilterListUseCase.executeOnBackground(false)
+            somListGetFilterListUseCase.executeOnBackground()
         }
 
         val result = viewModel.filterResult.observeAwaitValue()
 
-        assert(result is Success && !result.data.refreshOrder)
+        assert(result is Success && result.data.refreshOrder)
     }
 
     @Test
