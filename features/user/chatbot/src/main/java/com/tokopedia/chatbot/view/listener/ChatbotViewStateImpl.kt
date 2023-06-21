@@ -416,7 +416,6 @@ class ChatbotViewStateImpl(
         val title = toolbar.findViewById<TextView>(R.id.title)
         val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
         title.text = MethodChecker.fromHtml(interlocutorName)
-        //    loadAvatar(chatroomViewModel.headerModel.image)
     }
 
     override fun getInterlocutorName(headerName: String): String = headerName
