@@ -24,6 +24,8 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -114,6 +116,7 @@ class UiModelBuilder {
         countDown: Long = 0L,
         scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
         tnc: List<TermsAndConditionUiModel> = emptyList(),
+        beautificationConfig: BeautificationConfigUiModel = BeautificationConfigUiModel.Empty,
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
         shortVideoAllowed = shortVideoAllowed,
@@ -126,6 +129,7 @@ class UiModelBuilder {
         scheduleConfig = scheduleConfig,
         tnc = tnc,
         hasContent = hasContent,
+        beautificationConfig = beautificationConfig,
     )
 
     fun buildDurationConfigUiModel(
