@@ -1276,7 +1276,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 } else {
                     personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
                         model.price,
-                        model.getEndDateCampaign()
                     )
                 }
             }
@@ -1295,7 +1294,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.getDiscountString()
                     )
                 }
-
             }
             CampaignStatus.END_BY_A_WEEK-> {
                 if (model.discountPercentage != 0F) {
@@ -1305,9 +1303,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endweek_without_disc,
-                        model.price
+                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price,
                     )
                 }
             }
