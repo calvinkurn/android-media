@@ -23,6 +23,7 @@ import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.databinding.FragmentChangeFullnameBinding
+import com.tokopedia.profilecompletion.databinding.FragmentOnboardPinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,7 +37,8 @@ import javax.inject.Inject
  */
 class ChangeNameFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentChangeFullnameBinding? by viewBinding()
+    private var _binding: FragmentChangeFullnameBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var infoTracker: ProfileInfoTracker
@@ -63,7 +65,8 @@ class ChangeNameFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_change_fullname, container, false)
+        _binding = FragmentChangeFullnameBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -231,6 +234,11 @@ class ChangeNameFragment : BaseDaggerFragment() {
     private fun hideLoading() {
         binding?.changeNameViewMain?.show()
         binding?.changeNameProgressBar?.hide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

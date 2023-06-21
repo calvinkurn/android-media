@@ -32,13 +32,13 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 
 open class AddPhoneFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentAddPhoneBinding? by viewBinding()
+    private var _binding: FragmentAddPhoneBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
@@ -76,12 +76,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         splitCompatInstall()
-        return try {
-            inflater.inflate(R.layout.fragment_add_phone, container, false)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            null
-        }
+        _binding = FragmentAddPhoneBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -288,6 +284,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             viewModel.addPhoneResponse.removeObservers(this)
             viewModel.userValidateResponse.removeObservers(this)
             viewModel.flush()
+            _binding = null
         } catch (_: Throwable) { }
     }
 

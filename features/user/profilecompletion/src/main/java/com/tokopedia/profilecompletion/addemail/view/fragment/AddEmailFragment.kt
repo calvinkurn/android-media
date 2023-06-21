@@ -30,12 +30,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class AddEmailFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentAddEmailSettingProfileBinding? by viewBinding()
+    private var _binding: FragmentAddEmailSettingProfileBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -68,7 +68,8 @@ class AddEmailFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
+        _binding = FragmentAddEmailSettingProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -253,6 +254,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateAddEmailResponse.removeObservers(this)
         viewModel.flush()
+        _binding = null
     }
 
 }

@@ -30,7 +30,6 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -43,7 +42,8 @@ import javax.inject.Inject
 
 class AddBodFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentAddBodBinding? by viewBinding()
+    private var _binding: FragmentAddBodBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
@@ -72,7 +72,8 @@ class AddBodFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_add_bod, container, false)
+        _binding = FragmentAddBodBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -230,6 +231,11 @@ class AddBodFragment : BaseDaggerFragment() {
     private fun dismissLoading() {
         binding?.mainView?.visibility = View.VISIBLE
         binding?.progressBar?.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

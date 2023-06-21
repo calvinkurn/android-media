@@ -16,7 +16,6 @@ import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Scre
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.databinding.FragmentCompletePinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -26,7 +25,8 @@ import javax.inject.Inject
 
 class PinCompleteFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentCompletePinBinding? by viewBinding()
+    private var _binding: FragmentCompletePinBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -40,8 +40,8 @@ class PinCompleteFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_complete_pin, container, false)
-        return view
+        _binding = FragmentCompletePinBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,6 +98,11 @@ class PinCompleteFragment : BaseDaggerFragment() {
 
     fun onBackPressed() {
         trackingPinUtil.trackClickBackButtonSuccess()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

@@ -37,7 +37,6 @@ import com.tokopedia.profilecompletion.databinding.FragmentAddNameRegisterBindin
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -45,7 +44,8 @@ import javax.inject.Inject
  */
 open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
-    private val binding: FragmentAddNameRegisterBinding? by viewBinding()
+    private var _binding: FragmentAddNameRegisterBinding? = null
+    private val binding get() = _binding!!
     var phoneNumber: String? = ""
     var uuid: String? = ""
 
@@ -110,11 +110,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         savedInstanceState: Bundle?
     ): View? {
         splitCompatInstall()
-        return inflater.inflate(
-                com.tokopedia.profilecompletion.R.layout.fragment_add_name_register,
-                container,
-                false
-            )
+        _binding = FragmentAddNameRegisterBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private fun splitCompatInstall() {
@@ -316,5 +313,10 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

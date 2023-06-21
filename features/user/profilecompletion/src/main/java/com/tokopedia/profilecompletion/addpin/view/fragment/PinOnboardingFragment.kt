@@ -25,6 +25,7 @@ import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.databinding.FragmentNewAddPhoneBinding
 import com.tokopedia.profilecompletion.databinding.FragmentOnboardPinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -42,7 +43,8 @@ import javax.inject.Inject
 
 class PinOnboardingFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentOnboardPinBinding? by viewBinding()
+    private var _binding: FragmentOnboardPinBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -70,7 +72,8 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
+        _binding = FragmentOnboardPinBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -192,6 +195,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         super.onDestroy()
         addChangePinViewModel.getStatusPinResponse.removeObservers(this)
         addChangePinViewModel.flush()
+        _binding = null
     }
 
     fun onBackPressed() {

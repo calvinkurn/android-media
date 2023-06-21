@@ -24,12 +24,12 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ChangeGenderFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentChangeGenderBinding? by viewBinding()
+    private var _binding: FragmentChangeGenderBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
@@ -59,8 +59,8 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_change_gender, container, false)
-        return view
+        _binding = FragmentChangeGenderBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -154,6 +154,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateChangeGenderResponse.removeObservers(this)
         viewModel.flush()
+        _binding = null
     }
 
     companion object {
