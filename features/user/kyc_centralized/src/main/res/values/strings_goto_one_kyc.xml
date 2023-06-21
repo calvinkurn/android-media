@@ -6,13 +6,11 @@
     <string name="onekyc_zero_clicks_ktp_title">Pastikan e-KTP kamu dalam kotak</string>
     <string name="onekyc_zero_clicks_ktp_auto_capture_info">Tahan dulu ya, kami akan foto segera.</string>
     <string name="onekyc_zero_clicks_ktp_manual_capture_info">Ambil fotonya kalau udah siap</string>
+
+    <!-- Zero Click Flow Selfie Prepare Dialog-->
     <string name="onekyc_zero_clicks_selfie_title">Posisikan wajahmu dalam lingkaran</string>
     <string name="onekyc_zero_clicks_selfie_auto_capture_info">Tahan dulu ya, kami akan foto segera.</string>
     <string name="onekyc_zero_clicks_selfie_manual_capture_info">Ambil fotonya kalau udah siap</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_info_title">Need time to get ready?</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_info_yes">Yes</string>
-
-    <!-- Zero Click Flow Selfie Prepare Dialog-->
     <string name="onekyc_zero_clicks_selfie_prepare_card_title">Siap-siap buat selfie</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info1">Tanpa masker</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info2">Tanpa topi</string>
@@ -26,8 +24,8 @@
     <string name="onekyc_zero_clicks_feedback_ktp_card_not_detected">e-KTP kamu belum pas di kotak</string>
     <string name="onekyc_zero_clicks_feedback_ktp_card_cropped">e-KTP kamu belum pas di kotak</string>
     <string name="onekyc_zero_clicks_feedback_ktp_lowlight">Terlalu gelap. Atur lagi cahayanya, ya.</string>
-    <string name="onekyc_zero_clicks_feedback_ktp_hightlight">Terlalu terang. Atur lagi cahayanya, ya</string>
-    <string name="onekyc_zero_clicks_feedback_ktp_lowlight_hightlight">Atur cahayanya biar e-KTP kamu terlihat.</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_highlight">Terlalu terang. Atur lagi cahayanya, ya</string>
+    <string name="onekyc_zero_clicks_feedback_ktp_lowlight_highlight">Atur cahayanya biar e-KTP kamu terlihat.</string>
     <string name="onekyc_zero_clicks_feedback_ktp_blurry">Buram, nih. Pegang HP yang stabil, ya</string>
     <string name="onekyc_zero_clicks_feedback_ktp_blurry_lowlight_highlight">Foto kurang jelas. Atur cahayanya.</string>
     <string name="onekyc_zero_clicks_feedback_ktp_blurry_lowlight">Foto kurang jelas. Atur cahayanya.</string>
@@ -50,22 +48,10 @@
     <string name="onekyc_zero_clicks_feedback_perfect_manualcapture">Ambil fotonya kalau udah siap</string>
     <string name="onekyc_review_screen_title">Review &amp; Kirim Dokumen</string>
     <string name="onekyc_review_document_info">Pastikan foto dokumen kamu terlihat jelas biar bisa langsung dikirim dan diproses.</string>
-    <string name="onekyc_review_document_resume_info_part1">You already took photos,</string>
-    <string name="onekyc_review_document_resume_info_part2">you just need to submit it</string>
-    <string name="onekyc_review_document_resume_info_part3"> and your GoPay will be upgraded to GoPay Plus!</string>
-    <string name="onekyc_review_confidential_title">Your information will remain confidential &amp; only be used for verification.</string>
     <string name="onekyc_review_document_ktp">Foto e-KTP</string>
     <string name="onekyc_review_document_selfie">Foto selfie</string>
     <string name="onekyc_review_document_take_photo">Ambil Foto</string>
     <string name="onekyc_review_document_submit">Kirim Dokumen</string>
-    <string name="onekyc_review_foreigner_info">Are you a foreigner?</string>
-    <string name="onekyc_review_use_passport">Use passport</string>
-    <string name="onekyc_review_switch_to_ktp_title">Sure you want to switch to e-KTP?</string>
-    <string name="onekyc_review_switch_to_passport_title">Sure you want to switch to passport?</string>
-    <string name="onekyc_review_switch_description">Once you switched, you\'ll have to start over and the captured photos will be deleted.</string>
-    <string name="onekyc_review_switch_yes">Yes, I\'m sure</string>
-    <string name="onekyc_review_switch_keep_passport">Keep passport</string>
-    <string name="onekyc_review_switch_keep_ktp">Keep e-KTP</string>
     <string name="onekyc_review_document_delete_confirmation_title">Yakin mau hapus fotonya?</string>
     <string name="onekyc_review_document_delete_confirmation_description">Setelah foto dihapus, kamu bakal perlu ulang dari awal kalau kamu mau verifikasi.</string>
     <string name="onekyc_review_document_delete_confirmation_yes">Ya, Hapus</string>
@@ -84,8 +70,8 @@
     <string name="onekyc_guideline_selfie_autocapture_info_description">Kamu hanya perlu posisikan wajahmu sesuai tips di bawah ini. Kami akan otomatis ambil fotomu.</string>
     <string name="onekyc_guideline_selfie_instruction_1">Tempatkan wajahmu di dalam bingkai.</string>
     <string name="onekyc_guideline_selfie_instruction_2">Pastikan foto tidak blur dan tidak silau.</string>
-    <string name="onekyc_guideline_selfie_instruction_3">Pastikan cahayanya cukup saat foto.</string>
-    <string name="onekyc_guideline_selfie_instruction_4">Tekan button untuk ambil foto.</string>
+    <string name="onekyc_guideline_selfie_instruction_3">Pastikan kamu tidak memakai kacamata atau masker di wajahmu.</string>
+    <string name="onekyc_guideline_selfie_instruction_4">Pastikan cahayanya cukup saat foto.</string>
     <string name="onekyc_guideline_correct">Benar</string>
     <string name="onekyc_guideline_wrong">Salah</string>
 
