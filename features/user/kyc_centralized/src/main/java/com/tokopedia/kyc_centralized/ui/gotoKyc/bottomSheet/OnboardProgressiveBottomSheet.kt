@@ -202,7 +202,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private fun showToasterError(throwable: Throwable?) {
         val message = throwable.getGotoKycErrorMessage(requireContext())
-        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        binding?.root?.rootView?.apply {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun setTokopediaCareView() {
