@@ -28,25 +28,6 @@ class DtHomepageRobot {
             .perform(ViewActions.click())
 
         waitForData(5000)
-
-//        Espresso.onView(RecyclerViewMatcher(R.id.rv_product).atPosition(0))
-//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//            .perform(ViewActions.click())
-
-//        Espresso.onView(
-//            allOf(
-//                isDescendantOfA(
-//                    allOf(
-//                        withId(R.id.contentRootLayout),
-//                        hasDescendant(withText("title text"))
-//                    )
-//                ),
-//                isDescendantOfA(withId(R.id.rv_product)).
-//
-//            )
-//        )
-
-//            .perform(ViewActions.click())
     }
 
     private fun waitForData(millis: Long = 500L) {
