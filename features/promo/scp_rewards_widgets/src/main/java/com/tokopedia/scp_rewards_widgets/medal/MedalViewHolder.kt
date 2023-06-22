@@ -50,7 +50,9 @@ class MedalViewHolder(
             ivMedal.grayscale()
             ivMedal.setImageUrl(item.imageUrl.orEmpty())
         } else {
-            this.root.setOnClickListener { medalClickListener?.onMedalClick(item) }
+            medalClickListener?.let {
+                this.root.setOnClickListener { medalClickListener.onMedalClick(item) }
+            }
             ivMedal.setImageUrl(item.imageUrl.orEmpty())
         }
         handleProgressBar(item)

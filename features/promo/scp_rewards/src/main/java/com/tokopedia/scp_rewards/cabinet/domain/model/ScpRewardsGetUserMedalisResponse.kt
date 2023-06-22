@@ -1,97 +1,94 @@
 package com.tokopedia.scp_rewards.cabinet.domain.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ScpRewardsGetUserMedalisResponse(
     @SerializedName("scpRewardsGetUserMedalisByType")
-    val scpRewardsGetUserMedalisByType: ScpRewardsGetUserMedalisByType
-){
+    val scpRewardsGetUserMedalisByType: ScpRewardsGetUserMedalisByType? = null
+) {
     data class ScpRewardsGetUserMedalisByType(
         @SerializedName("medaliBanner")
-        val medaliBanner: MedaliBanner,
+        val medaliBanner: MedaliBanner? = null,
         @SerializedName("medaliList")
-        val medaliList: List<Medal>,
+        val medaliList: List<Medal>? = null,
         @SerializedName("paging")
-        val paging: Paging,
+        val paging: Paging? = null,
         @SerializedName("resultStatus")
-        val resultStatus: ResultStatus
-    ){
+        val resultStatus: ResultStatus? = null
+    ) {
         data class MedaliBanner(
             @SerializedName("imageList")
-            val imageList: List<Image>
-        ){
+            val imageList: List<Image>? = null
+        ) {
             data class Image(
                 @SerializedName("imageURL")
-                val imageURL: String,
+                val imageURL: String = "",
                 @SerializedName("redirectAppLink")
-                val redirectAppLink: String,
+                val redirectAppLink: String = "",
                 @SerializedName("redirectURL")
-                val redirectURL: String
+                val redirectURL: String = ""
             )
         }
 
         data class Medal(
             @SerializedName("celebrationImageURL")
-            val celebrationImageURL: String,
+            val celebrationImageURL: String = "",
             @SerializedName("cta")
-            val cta: Cta,
+            val cta: Cta? = null,
             @SerializedName("extraInfo")
-            val extraInfo: String,
+            val extraInfo: String = "",
             @SerializedName("id")
-            val id: Int,
+            val id: Int = 0,
             @SerializedName("isDisabled")
-            val isDisabled: Boolean,
+            val isDisabled: Boolean = false,
             @SerializedName("isNewMedali")
-            val isNewMedali: Boolean,
+            val isNewMedali: Boolean = false,
             @SerializedName("logoImageURL")
-            val logoImageURL: String,
+            val logoImageURL: String = "",
             @SerializedName("name")
-            val name: String,
+            val name: String = "",
             @SerializedName("progressionCompletement")
-            val progressionCompletement: Int,
+            val progressionCompletement: Int = 0,
             @SerializedName("provider")
-            val provider: String
-        ){
+            val provider: String = ""
+        ) {
             data class Cta(
                 @SerializedName("appLink")
-                val appLink: String,
+                val appLink: String = "",
                 @SerializedName("url")
-                val url: String
+                val url: String = ""
             )
         }
 
-
         data class Paging(
             @SerializedName("cta")
-            val cta: Cta,
+            val cta: Cta? = null,
             @SerializedName("hasNext")
-            val hasNext: Boolean
-        ){
+            val hasNext: Boolean = false
+        ) {
             data class Cta(
                 @SerializedName("appLink")
-                val appLink: String,
+                val appLink: String = "",
                 @SerializedName("isShown")
-                val isShown: Boolean,
+                val isShown: Boolean = false,
                 @SerializedName("text")
-                val text: String,
+                val text: String = "",
                 @SerializedName("url")
-                val url: String
+                val url: String = ""
             )
         }
 
         data class ResultStatus(
             @SerializedName("code")
-            val code: String,
+            val code: String = "",
             @SerializedName("message")
-            val message: List<String>,
+            val message: List<String>? = null,
             @SerializedName("status")
-            val status: String
+            val status: String = ""
         )
-
     }
 }
 
-fun ScpRewardsGetUserMedalisResponse.getData(successCode:String) : ScpRewardsGetUserMedalisResponse? {
-    return if(scpRewardsGetUserMedalisByType.resultStatus.code!=successCode) null else this
+fun ScpRewardsGetUserMedalisResponse.getData(successCode: String): ScpRewardsGetUserMedalisResponse? {
+    return if (scpRewardsGetUserMedalisByType?.resultStatus?.code != successCode) null else this
 }

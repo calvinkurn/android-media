@@ -46,7 +46,9 @@ class MedalSectionViewHolder(
         if (item.cta?.isShown == true) {
             binding.btnSeeMore.text = item.cta.text
             binding.btnSeeMore.visible()
-            binding.btnSeeMore.setOnClickListener { medalClickListener?.onSeeMoreClick(item) }
+            medalClickListener?.let {
+                binding.btnSeeMore.setOnClickListener { medalClickListener.onSeeMoreClick(item) }
+            }
         } else {
             binding.btnSeeMore.gone()
         }

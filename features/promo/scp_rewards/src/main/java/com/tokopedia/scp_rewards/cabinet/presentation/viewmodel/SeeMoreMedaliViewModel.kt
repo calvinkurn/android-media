@@ -20,7 +20,8 @@ import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: GetUserMedaliUseCase) : ViewModel() {
+class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: GetUserMedaliUseCase) :
+    ViewModel() {
 
     companion object {
         private const val PAGE_SIZE = 20
@@ -29,20 +30,20 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
     val visitableList: MutableList<Visitable<*>> = mutableListOf()
     var pageCount = 0
 
-    private val _medalLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
+    private val _medalLiveData: MutableLiveData<ScpResult> = MutableLiveData()
     val medalLiveData: LiveData<ScpResult> = _medalLiveData
 
     private val _hasNextLiveData = MutableLiveData(true)
     val hasNextLiveData: LiveData<Boolean> = _hasNextLiveData
 
-    fun getUserMedalis(page: Int = 1) {
+    fun getUserMedalis(page: Int = 1, badgeType: String = EARNED_BADGE) {
         viewModelScope.launchCatchError(block = {
             if (page == 1) {
                 _medalLiveData.postValue(Loading)
             } else {
                 _medalLiveData.postValue(InfiniteLoading)
             }
-            val response = userMedaliUseCase.getUserMedalis(getRequestParams())
+            val response = userMedaliUseCase.getUserMedalis(getRequestParams(badgeType))
             pageCount++
             _medalLiveData.postValue(Success(response))
             checkForNextPage(response)
@@ -53,9 +54,9 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
         _hasNextLiveData.postValue(res?.scpRewardsGetUserMedalisByType?.paging?.hasNext.orFalse())
     }
 
-    private fun getRequestParams(): RequestParams {
+    private fun getRequestParams(badgeType: String): RequestParams {
         return RequestParams().apply {
-            putString(TYPE_PARAM, EARNED_BADGE)
+            putString(TYPE_PARAM, badgeType)
             putInt(PAGE_PARAM, 1)
             putInt(PAGESIZE_PARAM, PAGE_SIZE)
         }
