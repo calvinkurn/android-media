@@ -105,7 +105,7 @@ class FlashSaleContainerViewModel @Inject constructor(
                         isLoading = false,
                         error = null,
                         tabs = tabMetadata.tabs,
-                        tickerMessage = tabMetadata.tickerNonMultiLocationMessage,
+                        tickerMessage =  // tabMetadata.tickerNonMultiLocationMessage,
                         showTicker = showTicker,
                         isEligibleUsingFeature = isEligibleUsingFeature
                     )
