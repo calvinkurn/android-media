@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.model
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 
 data class ItemPenaltyUiModel(
     val statusPenalty: String = "",
@@ -18,7 +19,8 @@ data class ItemPenaltyUiModel(
     val productName: String? = null,
     @ColorRes val colorPenalty: Int? = null,
     var isSelected: Boolean = false,
-    val isOldPage: Boolean = true
+    val isOldPage: Boolean = true,
+    @ShopPenaltyPageType val pageType: String = ShopPenaltyPageType.ONGOING
 ) : BasePenaltyPage {
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {
         return typeFactory.type(this)

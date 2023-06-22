@@ -92,8 +92,8 @@ class PenaltyMapper @Inject constructor(
 
     private fun getFormattedDate(penaltyDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail): String {
         return "${
-            penaltyDetail.defaultStartDate.convertToFormattedDate().orEmpty()
-        } - ${penaltyDetail.defaultEndDate.convertToFormattedDate().orEmpty()}"
+            penaltyDetail.startDate.convertToFormattedDate().orEmpty()
+        } - ${penaltyDetail.endDate.convertToFormattedDate().orEmpty()}"
     }
 
     private fun mapToSortFilterPenalty(
@@ -111,16 +111,18 @@ class PenaltyMapper @Inject constructor(
         }
     }
 
-    fun mapToItemPenaltyList(shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail):
-        Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> {
+    fun mapToItemPenaltyList(
+        shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+        @ShopPenaltyPageType pageType: String
+    ): Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> {
 
         val itemPenaltyList = mutableListOf<ItemPenaltyUiModel>().apply {
             shopScorePenaltyDetailResponse.result.forEach {
-                val colorTypePenalty = when (it.status) {
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING, ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
+                val colorTypePenalty = when (pageType) {
+                    ShopPenaltyPageType.NOT_YET_DEDUCTED, ShopPenaltyPageType.HISTORY -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
-                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> {
+                    ShopPenaltyPageType.ONGOING -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_RN600
                     }
                     else -> {
@@ -128,8 +130,8 @@ class PenaltyMapper @Inject constructor(
                     }
                 }
 
-                val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
-                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> {
+                val (prefixDatePenaltyDetail, endDateText) = when (pageType) {
+                    ShopPenaltyPageType.ONGOING -> {
                         Pair(
                             ShopScoreConstant.ACTIVE_PENALTY_DETAIL,
                             "${ShopScoreConstant.FINISHED_IN} ${
@@ -141,7 +143,7 @@ class PenaltyMapper @Inject constructor(
                             }"
                         )
                     }
-                    ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
+                    ShopPenaltyPageType.HISTORY -> {
                         Pair(
                             ShopScoreConstant.SINCE_FINISH_PENALTY_DETAIL,
                             "${ShopScoreConstant.SINCE} ${
@@ -153,7 +155,7 @@ class PenaltyMapper @Inject constructor(
                             }"
                         )
                     }
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> {
+                    ShopPenaltyPageType.NOT_YET_DEDUCTED -> {
                         Pair(
                             ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL,
                             "${ShopScoreConstant.START} ${
@@ -168,15 +170,15 @@ class PenaltyMapper @Inject constructor(
                     else -> Pair("", "")
                 }
 
-                val endDateDetail = when (it.status) {
-                    ShopScoreConstant.ON_GOING, ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_ON_GOING, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
+                val endDateDetail = when (pageType) {
+                    ShopPenaltyPageType.ONGOING, ShopPenaltyPageType.HISTORY -> {
                         DateFormatUtils.formatDate(
                             ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
                             ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                             it.penaltyExpirationDate
                         )
                     }
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> {
+                    ShopPenaltyPageType.NOT_YET_DEDUCTED -> {
                         DateFormatUtils.formatDate(
                             ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
                             ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
@@ -186,10 +188,10 @@ class PenaltyMapper @Inject constructor(
                     else -> ""
                 }
 
-                val descStatusPenaltyDetail = when (it.status) {
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> R.string.desc_point_have_not_been_deducted
-                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> R.string.desc_on_going_status_penalty
-                    ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> R.string.desc_done_status_penalty
+                val descStatusPenaltyDetail = when (pageType) {
+                    ShopPenaltyPageType.NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
+                    ShopPenaltyPageType.ONGOING -> R.string.desc_on_going_status_penalty
+                    ShopPenaltyPageType.HISTORY -> R.string.desc_done_status_penalty
                     else -> null
                 }
 
@@ -216,7 +218,8 @@ class PenaltyMapper @Inject constructor(
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
                         descStatusPenalty = descStatusPenaltyDetail,
-                        isOldPage = false
+                        isOldPage = false,
+                        pageType = pageType
                     )
                 )
             }
@@ -243,17 +246,20 @@ class PenaltyMapper @Inject constructor(
                     shopScorePenaltySummaryWrapper,
                     shopScorePenaltyDetailResponse,
                     notYetDeductedPenalties,
-                    typeIds
+                    typeIds,
+                    pageType
                 )
                 ShopPenaltyPageType.HISTORY -> getMappedHistoryPenaltyVisitables(
                     shopScorePenaltySummaryWrapper,
                     shopScorePenaltyDetailResponse,
-                    typeIds
+                    typeIds,
+                    pageType
                 )
                 else -> getMappedNotYetDeductedPenaltyVisitables(
                     shopScorePenaltySummaryWrapper,
                     shopScorePenaltyDetailResponse,
-                    typeIds
+                    typeIds,
+                    pageType
                 )
             }
 
@@ -268,7 +274,8 @@ class PenaltyMapper @Inject constructor(
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
-        typeIds: List<Int>
+        typeIds: List<Int>,
+        @ShopPenaltyPageType pageType: String
     ): MutableList<BasePenaltyPage> {
         return mutableListOf<BasePenaltyPage>().apply {
             add(ItemPenaltyTickerUiModel)
@@ -300,7 +307,7 @@ class PenaltyMapper @Inject constructor(
                 }
             }
 
-            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse, pageType).first
             addAll(itemPenaltyFilterList)
         }
     }
@@ -308,7 +315,8 @@ class PenaltyMapper @Inject constructor(
     private fun getMappedHistoryPenaltyVisitables(
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
-        typeIds: List<Int>
+        typeIds: List<Int>,
+        @ShopPenaltyPageType pageType: String
     ): MutableList<BasePenaltyPage> {
         return mutableListOf<BasePenaltyPage>().apply {
 
@@ -329,7 +337,7 @@ class PenaltyMapper @Inject constructor(
                 add(mapToDetailPenaltyFilter(ShopPenaltyPageType.HISTORY, shopScorePenaltyDetailResponse))
             }
 
-            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse, pageType).first
             addAll(itemPenaltyFilterList)
         }
     }
@@ -337,7 +345,8 @@ class PenaltyMapper @Inject constructor(
     private fun getMappedNotYetDeductedPenaltyVisitables(
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
-        typeIds: List<Int>
+        typeIds: List<Int>,
+        @ShopPenaltyPageType pageType: String
     ): MutableList<BasePenaltyPage> {
         return mutableListOf<BasePenaltyPage>().apply {
 
@@ -356,7 +365,7 @@ class PenaltyMapper @Inject constructor(
                 }
             }
 
-            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse, pageType).first
             addAll(itemPenaltyFilterList)
         }
     }
@@ -528,7 +537,7 @@ class PenaltyMapper @Inject constructor(
             chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
                 if (chipsFilterPenaltyUiModel.title == titleFilter) {
                     chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
-                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
+                    itemSortFilterWrapperList.find { it.title == titleFilter }?.isSelected = !updateChipsSelected
                 }
             }
 

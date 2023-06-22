@@ -255,7 +255,8 @@ class ShopPenaltyViewModel @Inject constructor(
                     )
                 )
                 penaltyMapper.mapToItemPenaltyList(
-                    getShopPenaltyDetailUseCase.get().executeOnBackground()
+                    getShopPenaltyDetailUseCase.get().executeOnBackground(),
+                    getCurrentPageType()
                 )
             }
             shopPenaltyDetailMediator.value = Success(penaltyDetail)

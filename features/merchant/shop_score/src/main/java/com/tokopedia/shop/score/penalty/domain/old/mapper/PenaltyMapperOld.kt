@@ -7,7 +7,10 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.ACTIVE_PENALTY_DETAIL
+import com.tokopedia.shop.score.common.ShopScoreConstant.CAPITALIZED_ON_GOING
+import com.tokopedia.shop.score.common.ShopScoreConstant.CAPITALIZED_PENALTY_DONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
+import com.tokopedia.shop.score.common.ShopScoreConstant.NOT_YET_ONGOING
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT
@@ -103,10 +106,10 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
         val itemPenaltyList = mutableListOf<ItemPenaltyUiModel>().apply {
             shopScorePenaltyDetailResponse.result.forEach {
                 val colorTypePenalty = when (it.status) {
-                    POINTS_NOT_YET_DEDUCTED, PENALTY_DONE -> {
+                    POINTS_NOT_YET_DEDUCTED, NOT_YET_ONGOING, PENALTY_DONE, CAPITALIZED_PENALTY_DONE -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
-                    ON_GOING -> {
+                    ON_GOING, CAPITALIZED_ON_GOING -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_RN600
                     }
                     else -> {
@@ -115,7 +118,7 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
                 }
 
                 val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
-                    ON_GOING -> {
+                    ON_GOING, CAPITALIZED_ON_GOING -> {
                         Pair(
                             ACTIVE_PENALTY_DETAIL,
                             "$FINISHED_IN ${
@@ -127,7 +130,7 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
                             }"
                         )
                     }
-                    PENALTY_DONE -> {
+                    PENALTY_DONE, CAPITALIZED_PENALTY_DONE -> {
                         Pair(
                             SINCE_FINISH_PENALTY_DETAIL,
                             "$SINCE ${
@@ -139,7 +142,7 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
                             }"
                         )
                     }
-                    POINTS_NOT_YET_DEDUCTED -> {
+                    POINTS_NOT_YET_DEDUCTED, NOT_YET_ONGOING -> {
                         Pair(
                             START_ACTIVE_PENALTY_DETAIL,
                             "$START ${
@@ -155,14 +158,14 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
                 }
 
                 val endDateDetail = when (it.status) {
-                    ON_GOING, PENALTY_DONE -> {
+                    ON_GOING, CAPITALIZED_ON_GOING, PENALTY_DONE, CAPITALIZED_PENALTY_DONE -> {
                         DateFormatUtils.formatDate(
                             PATTERN_PENALTY_DATE_PARAM,
                             PATTERN_PENALTY_DATE_TEXT,
                             it.penaltyExpirationDate
                         )
                     }
-                    POINTS_NOT_YET_DEDUCTED -> {
+                    POINTS_NOT_YET_DEDUCTED, NOT_YET_ONGOING -> {
                         DateFormatUtils.formatDate(
                             PATTERN_PENALTY_DATE_PARAM,
                             PATTERN_PENALTY_DATE_TEXT,
@@ -173,9 +176,9 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
                 }
 
                 val descStatusPenaltyDetail = when (it.status) {
-                    POINTS_NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
-                    ON_GOING -> R.string.desc_on_going_status_penalty
-                    PENALTY_DONE -> R.string.desc_done_status_penalty
+                    POINTS_NOT_YET_DEDUCTED, NOT_YET_ONGOING -> R.string.desc_point_have_not_been_deducted
+                    ON_GOING, CAPITALIZED_ON_GOING -> R.string.desc_on_going_status_penalty
+                    PENALTY_DONE, CAPITALIZED_PENALTY_DONE -> R.string.desc_done_status_penalty
                     else -> null
                 }
 
