@@ -72,12 +72,11 @@ dependencies {
     debugImplementation rootProject.ext.composeDependencies.composeActivity
     debugImplementation rootProject.ext.composeDependencies.composeConstraint
     debugImplementation rootProject.ext.composeDependencies.composeLiveData
-    debugImplementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     debugImplementation rootProject.ext.composeDependencies.composeVideoCoil
     debugImplementation rootProject.ext.composeDependencies.composeCoil
 
-    debugImplementation rootProject.ext.unifyDependencies.principles
     debugImplementation rootProject.ext.unifyDependencies.principles
     debugImplementation rootProject.ext.unifyDependencies.components
 
