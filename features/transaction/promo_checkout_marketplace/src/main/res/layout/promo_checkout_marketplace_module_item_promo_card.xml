@@ -54,11 +54,9 @@
             android:id="@+id/container_constraint_promo_checkout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintCircleRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/promo_highlight_identifier"
