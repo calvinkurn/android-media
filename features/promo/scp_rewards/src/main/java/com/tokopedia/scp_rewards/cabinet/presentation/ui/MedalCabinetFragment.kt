@@ -21,12 +21,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
+import com.tokopedia.scp_rewards.cabinet.domain.model.MedaliCabinetData
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetViewModel
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
@@ -78,8 +78,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.medaliSlug = medaliSlug
-        viewModel.getHomePage()
+        viewModel.getHomePage(medaliSlug)
         setupToolbar(binding.toolbar)
         setTopBottomMargin()
         setupScrollListener()
@@ -89,112 +88,26 @@ class MedalCabinetFragment : BaseDaggerFragment() {
     private fun setupViewModelObservers() {
         viewModel.cabinetLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is Success<*> -> {}
+                is Success<*> -> {
+                    showData(it.data as MedaliCabinetData)
+                }
+
                 is Loading -> {}
                 is Error -> {}
                 else -> {}
             }
         }
-        val data = listOf<MedalData>(
-            MedalData(
-                "Earned medal",
-                "",
-                "#6D7588",
-                EARNED_BADGE,
-                listOf(
-                    MedalItem(
-                        1,
-                        "Beauty Shopper",
-                        "By Unilever",
-                        "Ada Bonus",
-                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                        "https://gist.githubusercontent.com/rooparshgojek/40122d190c1311d58ef82ae609c866ab/raw/83c1a23eb0572710a71a0d0fd8107446f9504932/confetti.json",
-                        true,
-                        false, 23,
-                        medalType = EARNED_BADGE
-                    ),
-                    MedalItem(
-                        2,
-                        "Beauty Shopper",
-                        "By Unilever",
-                        "Ada Bonus",
-                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                        false,
-                        true, 23,
-                        medalType = EARNED_BADGE
-                    ),
-                    MedalItem(
-                        3,
-                        "Beauty Shopper",
-                        "By Unilever",
-                        "Ada Bonus",
-                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                        false,
-                        false, 23,
-                        medalType = EARNED_BADGE
-                    ),
-                    MedalItem(
-                        4,
-                        "Beauty Shopper",
-                        "By Unilever",
-                        "Ada Bonus",
-                        "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                        "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                        false,
-                        false, 23,
-                        medalType = EARNED_BADGE
-                    )
-                )
-            )
-            /*            MedalData(
-                            "InProgress medal",
-                            "",
-                            "#6D7588",
-                            MedalType.InProgress,
-                            listOf(
-                                MedalItem(
-                                    1,
-                                    "Beauty Shopper",
-                                    "By Unilever",
-                                    "Ada Bonus",
-                                    "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                                    "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                                    true,
-                                    false, 23,
-                                    isEarned = false,
-                                ),
-                                MedalItem(
-                                    2,
-                                    "Beauty Shopper",
-                                    "By Unilever",
-                                    "Ada Bonus",
-                                    "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                                    "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                                    true,
-                                    false, 23,
-                                    isEarned = false,
-                                ),
-                                MedalItem(
-                                    3,
-                                    "Beauty Shopper",
-                                    "By Unilever",
-                                    "Ada Bonus",
-                                    "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png",
-                                    "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/04/confetti_lottie.json",
-                                    true,
-                                    false, 23,
-                                    isEarned = false,
-                                ),
-                            ))*/
-        )
+    }
 
+    private fun showData(medalCabinetData: MedaliCabinetData) {
         binding.viewCabinet.postDelayed(1500) {
             binding.mainFlipper.displayedChild = 1
             binding.viewCabinet.bindData(
-                CabinetHeader("hi", "asdas", "https://images.tokopedia.net/img/HThbdi/scp/2023/06/05/medali_homepage_header.png"),
-                data
+                cabinetHeader = medalCabinetData.header ?: CabinetHeader(),
+                medalList = listOf(
+                    medalCabinetData.earnedMedaliData ?: MedalData(),
+                    medalCabinetData.progressMedaliData ?: MedalData()
+                )
             )
             binding.viewCabinet.attachMedalClickListener(object : MedalClickListener {
                 override fun onMedalClick(medalItem: MedalItem) {

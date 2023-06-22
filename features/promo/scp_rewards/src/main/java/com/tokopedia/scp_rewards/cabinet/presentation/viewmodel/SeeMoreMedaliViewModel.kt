@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.scp_rewards.cabinet.domain.GetUserMedaliUseCase
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
+import com.tokopedia.scp_rewards.cabinet.domain.model.getData
 import com.tokopedia.scp_rewards.common.data.InfiniteLoading
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
@@ -17,6 +18,7 @@ import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards_common.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.SUCCESS_CODE
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
 
     val visitableList: MutableList<Visitable<*>> = mutableListOf()
     var pageCount = 0
+        private set
 
     private val _medalLiveData: MutableLiveData<ScpResult> = MutableLiveData()
     val medalLiveData: LiveData<ScpResult> = _medalLiveData
@@ -43,10 +46,14 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
             } else {
                 _medalLiveData.postValue(InfiniteLoading)
             }
-            val response = userMedaliUseCase.getUserMedalis(getRequestParams(badgeType))
-            pageCount++
-            _medalLiveData.postValue(Success(response))
-            checkForNextPage(response)
+            val response = userMedaliUseCase.getUserMedalis(getRequestParams(badgeType))?.getData(SUCCESS_CODE)
+            if (response == null) {
+                throw Throwable()
+            } else {
+                pageCount++
+                _medalLiveData.postValue(Success(response))
+                checkForNextPage(response)
+            }
         }, onError = {})
     }
 
