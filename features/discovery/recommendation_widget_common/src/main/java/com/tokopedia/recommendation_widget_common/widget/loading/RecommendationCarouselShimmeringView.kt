@@ -33,6 +33,10 @@ internal class RecommendationCarouselShimmeringView:
 
     override fun bind(model: RecommendationCarouselShimmeringModel) { }
 
+    override fun recycle() {
+
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.partial_recom_shimmering_grid_list_horizontal
