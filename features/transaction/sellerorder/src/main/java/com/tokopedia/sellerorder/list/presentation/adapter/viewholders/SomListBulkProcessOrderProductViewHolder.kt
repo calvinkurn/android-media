@@ -3,8 +3,8 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemSomListBulkProcessOrderProductBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
