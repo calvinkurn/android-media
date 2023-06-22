@@ -1,11 +1,10 @@
 package com.tokopedia.common.topupbills.view.viewholder
 
 import androidx.annotation.LayoutRes
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.databinding.ViewDigitalEmptyProductListBinding\
+import com.tokopedia.common.topupbills.databinding.ViewDigitalEmptyProductListBinding
 
 /**
  * @author by resakemal on 22/08/19
