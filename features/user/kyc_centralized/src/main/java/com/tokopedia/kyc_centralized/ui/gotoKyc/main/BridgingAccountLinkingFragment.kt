@@ -274,7 +274,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
         binding?.btnConfirm?.setOnClickListener {
             if (viewModel.checkEligibility.value is CheckEligibilityResult.Progressive) {
-                viewModel.registerProgressiveUseCase(args.parameter.projectId)
+                viewModel.registerProgressive(args.parameter.projectId)
             } else {
                 activity?.let {
                     if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

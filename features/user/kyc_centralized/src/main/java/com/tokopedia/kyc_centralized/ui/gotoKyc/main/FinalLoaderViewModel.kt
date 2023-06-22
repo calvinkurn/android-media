@@ -26,7 +26,7 @@ class FinalLoaderViewModel @Inject constructor(
     private val _kycStatus = MutableLiveData<ProjectInfoResult>()
     val kycStatus : LiveData<ProjectInfoResult> get() = _kycStatus
 
-    fun registerProgressiveUseCase(projectId: String, challengeId: String) {
+    fun registerProgressive(projectId: String, challengeId: String) {
         _registerProgressive.value = RegisterProgressiveResult.Loading
 
         val parameter = RegisterProgressiveParam(

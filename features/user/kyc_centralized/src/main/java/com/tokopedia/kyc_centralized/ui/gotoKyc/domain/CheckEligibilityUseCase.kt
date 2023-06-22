@@ -28,7 +28,7 @@ class CheckEligibilityUseCase @Inject constructor(
                         if (response.data?.reasonCode == KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY) {
                             CheckEligibilityResult.AwaitingApprovalGopay
                         } else {
-                            val message = "$FLOW: ${response.data?.flow} - $REASON_CODE: ${response.data?.reasonCode} "
+                            val message = "$FLOW: ${response.data?.flow} - $REASON_CODE: ${response.data?.reasonCode}"
                             CheckEligibilityResult.Failed(Throwable(message = message))
                         }
                     }

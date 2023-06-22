@@ -20,7 +20,7 @@ class OnboardProgressiveViewModel @Inject constructor(
     private val _registerProgressive = MutableLiveData<RegisterProgressiveResult>()
     val registerProgressive : LiveData<RegisterProgressiveResult> get() = _registerProgressive
 
-    fun registerProgressiveUseCase(projectId: String) {
+    fun registerProgressive(projectId: String) {
         _registerProgressive.value = RegisterProgressiveResult.Loading
 
         val parameter = RegisterProgressiveParam(
