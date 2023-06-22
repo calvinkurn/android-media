@@ -111,7 +111,6 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
         val originalImageUrlList = getOriginalProductImageUseCase.apply {
             params = GetOriginalProductImageUseCase.createParams(productId)
         }.executeOnBackground()
-        yield()
 
         val resizedUrlLastSegments = resizedImageUrl.split("/")
                 .let { it[it.lastIndex] }

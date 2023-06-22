@@ -22,9 +22,11 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -38,7 +40,10 @@ class PlayCoverSetupViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dispatcherProvider = CoroutineTestDispatchersProvider
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+
+    private val dispatchers = coroutineScopeRule.dispatchers
 
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
@@ -64,10 +69,10 @@ class PlayCoverSetupViewModelTest {
         channelConfigStore = ChannelConfigStoreImpl()
         titleConfigStore = TitleConfigStoreImpl()
 
-        coverDataStore = MockCoverDataStore(dispatcherProvider)
-        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
-        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        coverDataStore = MockCoverDataStore(dispatchers)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatchers, mockk())
+        titleDataStore = TitleDataStoreImpl(dispatchers, mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatchers, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
         productTagDataStore = ProductTagDataStoreImpl()
         mockSetupDataStore = MockSetupDataStore(
@@ -90,7 +95,7 @@ class PlayCoverSetupViewModelTest {
                 BroadcastScheduleConfigStoreImpl(),
                 AccountConfigStoreImpl(),
             ),
-            dispatcher = dispatcherProvider,
+            dispatcher = dispatchers,
             setupDataStore = mockSetupDataStore,
             uploadImageUseCase = uploadImageUseCase,
             getOriginalProductImageUseCase = getOriginalProductImageUseCase,
