@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.universalinbox.stub.data.response
 
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxCounterWrapperResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetWrapperResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxCounterWrapperResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetWrapperResponse
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 
