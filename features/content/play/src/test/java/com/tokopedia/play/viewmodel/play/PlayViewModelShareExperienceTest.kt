@@ -54,7 +54,6 @@ class PlayViewModelShareExperienceTest {
     private val mockPlayShareExperience: PlayShareExperience = mockk(relaxed = true)
 
     private val fakePlayShareExperience = FakePlayShareExperience()
-    private val bottomSheet = UniversalShareBottomSheet()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -204,7 +203,6 @@ class PlayViewModelShareExperienceTest {
     fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any(), any()) } returns Unit
-        every { mockPlayShareExperience.isScreenshotBottomSheet(any()) } returns false
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -218,7 +216,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             it.recordEvent {
-                submitAction(CloseSharingOptionAction(bottomSheet))
+                submitAction(CloseSharingOptionAction(false))
             }
 
             /** Verify */
@@ -289,7 +287,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickSharingOptionAction(shareModel, bottomSheet))
+                submitAction(ClickSharingOptionAction(shareModel, false))
             }
 
             /** Verify */
@@ -325,7 +323,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickSharingOptionAction(shareModel, bottomSheet))
+                submitAction(ClickSharingOptionAction(shareModel, false))
             }
 
             /** Verify */

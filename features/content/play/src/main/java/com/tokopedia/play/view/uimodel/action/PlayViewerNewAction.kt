@@ -79,8 +79,8 @@ object SetChannelActiveAction : PlayViewerNewAction()
  * Sharing Experience
  */
 object ShowShareExperienceAction : PlayViewerNewAction()
-data class ClickSharingOptionAction(val shareModel: ShareModel, val universalShareBottomSheet: UniversalShareBottomSheet) : PlayViewerNewAction()
-data class CloseSharingOptionAction(val universalShareBottomSheet: UniversalShareBottomSheet) : PlayViewerNewAction()
+data class ClickSharingOptionAction(val shareModel: ShareModel, val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
+data class CloseSharingOptionAction(val isScreenshotBottomSheet: Boolean) : PlayViewerNewAction()
 object ScreenshotTakenAction : PlayViewerNewAction()
 data class SharePermissionAction(val label: String) : PlayViewerNewAction()
 

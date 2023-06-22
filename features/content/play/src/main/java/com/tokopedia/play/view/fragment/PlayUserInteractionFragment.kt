@@ -458,11 +458,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
-        playViewModel.submitAction(ClickSharingOptionAction(shareModel, view.universalShareBottomSheet))
+        playViewModel.submitAction(ClickSharingOptionAction(shareModel, view.isScreenshotBottomSheet))
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(CloseSharingOptionAction(view.universalShareBottomSheet))
+        playViewModel.submitAction(CloseSharingOptionAction(view.isScreenshotBottomSheet))
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {

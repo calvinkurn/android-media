@@ -160,9 +160,6 @@ class PlayUpcomingViewModel @Inject constructor(
     val isCustomSharingAllowed: Boolean
         get() = playShareExperience.isCustomSharingAllow()
 
-    fun isSharingBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean =
-        playShareExperience.isScreenshotBottomSheet(universalShareBottomSheet)
-
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData

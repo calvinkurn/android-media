@@ -18,8 +18,6 @@ interface PlayShareExperience {
 
     fun createUrl(listener: Listener)
 
-    fun isScreenshotBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean
-
     interface Listener {
         fun onUrlCreated(linkerShareData: LinkerShareResult?, shareModel: ShareModel, shareString: String)
         fun onError(e: Exception)

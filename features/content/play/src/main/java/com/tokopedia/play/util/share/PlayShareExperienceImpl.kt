@@ -81,7 +81,4 @@ class PlayShareExperienceImpl @Inject constructor(
             )
         )
     }
-
-    override fun isScreenshotBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean =
-        universalShareBottomSheet.getShareBottomSheetType() == UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET
 }
