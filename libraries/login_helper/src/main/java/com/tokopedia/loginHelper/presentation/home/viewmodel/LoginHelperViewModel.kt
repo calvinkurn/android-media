@@ -75,7 +75,6 @@ class LoginHelperViewModel @Inject constructor(
                 handleBackButtonTap()
             }
             is LoginHelperEvent.GetRemoteLoginData -> {
-                // Removed now, Can be directly used when moved to REST endpoint
                 getLoginData()
             }
             is LoginHelperEvent.LoginUser -> {

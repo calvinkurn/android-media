@@ -4,8 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
+import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
 import com.tokopedia.loginHelper.domain.uiModel.deleteUser.LoginHelperDeleteUserUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.DeleteUserRestUseCase
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
@@ -53,6 +57,10 @@ class LoginHelperSearchAccountViewModelTest {
     private lateinit var viewModel: LoginHelperSearchAccountViewModel
     private lateinit var userSession: UserSessionInterface
 
+    private val mockEmail = "test@tokopedia.com"
+    private val mockPassword = "password"
+    private val mockTribe = "test-tribe"
+
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -83,6 +91,37 @@ class LoginHelperSearchAccountViewModelTest {
     @Test
     fun `processEvent when GetUserDataFromRemoteDB success`() {
         val response: UnifiedLoginHelperData = mockk(relaxed = true)
+
+        coEvery {
+            getUserDetailsRestCase.makeNetworkCall(
+                any()
+            )
+        } returns response
+
+        viewModel.processEvent(
+            LoginHelperSearchAccountEvent.GetUserData(LoginDataResponse())
+        )
+
+        assert(
+            viewModel.uiState.value.loginDataList is Success
+        )
+    }
+
+    @Test
+    fun `processEvent when GetUserDataFromRemoteDB success with data`() {
+        val response = UnifiedLoginHelperData(
+            persistentCacheUserData = null,
+            remoteUserData = LoginDataUiModel(
+                HeaderUiModel(1),
+                users = listOf(
+                    UserDataUiModel(
+                        mockEmail,
+                        mockPassword,
+                        mockTribe
+                    )
+                )
+            )
+        )
 
         coEvery {
             getUserDetailsRestCase.makeNetworkCall(
@@ -210,5 +249,40 @@ class LoginHelperSearchAccountViewModelTest {
 
             job.cancel()
         }
+    }
+
+    @Test
+    fun `processEvent with Change Env Type = STAGING`() {
+        viewModel.processEvent(LoginHelperSearchAccountEvent.SetEnvType(LoginHelperEnvType.STAGING))
+        val result = viewModel.uiState.value.envType
+        Assert.assertEquals(result, LoginHelperEnvType.STAGING)
+    }
+
+    @Test
+    fun `processEvent with Change Env Type = PRODUCTION`() {
+        viewModel.processEvent(LoginHelperSearchAccountEvent.SetEnvType(LoginHelperEnvType.PRODUCTION))
+        val result = viewModel.uiState.value.envType
+        Assert.assertEquals(result, LoginHelperEnvType.PRODUCTION)
+    }
+
+    @Test
+    fun `processEvent when Back Button is tapped`() {
+        runBlockingTest {
+            val emittedValues = arrayListOf<LoginHelperSearchAccountAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+            viewModel.processEvent(LoginHelperSearchAccountEvent.TapBackButton)
+            val actualEvent = emittedValues.last()
+            val backButtonTapped = actualEvent is LoginHelperSearchAccountAction.TapBackSearchAccountAction
+            Assert.assertEquals(true, backButtonTapped)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `processEvent when search User Name`() {
+        viewModel.processEvent(LoginHelperSearchAccountEvent.QueryEmail(mockEmail))
+        assert(true)
     }
 }

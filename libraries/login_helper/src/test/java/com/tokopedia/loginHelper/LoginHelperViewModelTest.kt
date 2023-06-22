@@ -77,8 +77,10 @@ class LoginHelperViewModelTest {
     private lateinit var userSession: UserSessionInterface
 
     private val throwable = Throwable("Error")
-    private val email = "sourav.saikia@tokopedia.com"
-    private val password = "abc123456"
+
+    private val mockEmail = "test@tokopedia.com"
+    private val mockPassword = "password"
+    private val mockTribe = "test-tribe"
 
     @Before
     @Throws(Exception::class)
@@ -260,7 +262,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Success
@@ -285,7 +287,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, false))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, false))
 
         assert(
             viewModel.uiState.value.loginToken is Success
@@ -313,7 +315,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -339,7 +341,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -367,7 +369,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -392,7 +394,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -406,7 +408,7 @@ class LoginHelperViewModelTest {
 
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -417,7 +419,7 @@ class LoginHelperViewModelTest {
     fun `on Login Email V2 Error`() {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
