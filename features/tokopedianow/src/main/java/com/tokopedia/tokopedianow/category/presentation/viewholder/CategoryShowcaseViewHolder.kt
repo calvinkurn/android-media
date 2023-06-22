@@ -2,7 +2,9 @@ package com.tokopedia.tokopedianow.category.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,10 +29,13 @@ class CategoryShowcaseViewHolder(
     private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
     companion object {
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
+        private const val RECYCLER_VIEW_ITEM_CACHE = 3
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_category_showcase
@@ -43,7 +48,8 @@ class CategoryShowcaseViewHolder(
             typeFactory = CategoryShowcaseAdapterTypeFactory(
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
+                lifecycleOwner = lifecycleOwner
             ),
             differ = CategoryShowcaseDiffer()
         )
@@ -116,6 +122,9 @@ class CategoryShowcaseViewHolder(
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 spanSizeLookup = getLayoutManagerSpanSize()
             }
+            animation = null
+            setRecycledViewPool(parentRecycledViewPool)
+            setItemViewCacheSize(RECYCLER_VIEW_ITEM_CACHE)
         }
     }
 

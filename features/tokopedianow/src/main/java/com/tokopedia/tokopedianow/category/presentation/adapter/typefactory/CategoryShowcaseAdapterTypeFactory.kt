@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,6 +16,7 @@ class CategoryShowcaseAdapterTypeFactory(
     private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val lifecycleOwner: LifecycleOwner? = null
 ): BaseAdapterTypeFactory(), CategoryShowcaseTypeFactory {
 
     override fun type(uiModel: CategoryShowcaseItemUiModel): Int = CategoryShowcaseItemViewHolder.LAYOUT
@@ -25,7 +27,8 @@ class CategoryShowcaseAdapterTypeFactory(
                 itemView = view,
                 listener = categoryShowcaseItemListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
+                lifecycleOwner = lifecycleOwner
             )
             else -> super.createViewHolder(view, type)
         }

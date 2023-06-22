@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -644,34 +643,11 @@ class FeedBaseFragment :
     }
 
     private fun onChangeTab(position: Int) {
-        val newTabView = if (position == TAB_FIRST_INDEX) {
-            binding.tyFeedFirstTab
+        if (position == TAB_FIRST_INDEX) {
+            binding.root.transitionToStart()
         } else {
-            binding.tyFeedSecondTab
+            binding.root.transitionToEnd()
         }
-
-        val newConstraintSet = ConstraintSet()
-        newConstraintSet.clone(binding.root)
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.TOP,
-            newTabView.id,
-            ConstraintSet.BOTTOM
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.START,
-            newTabView.id,
-            ConstraintSet.START
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.END,
-            newTabView.id,
-            ConstraintSet.END
-        )
-
-        newConstraintSet.applyTo(binding.root)
     }
 
     private fun onCreatePostClicked() {

@@ -143,7 +143,9 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 tokoNowProductRecommendationListener = createProductRecommendationCallback(),
                 productCardCompactListener = createProductCardCompactCallback(),
                 productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
-                productAdsCarouselListener = createProductCardAdsCallback()
+                productAdsCarouselListener = createProductCardAdsCallback(),
+                recycledViewPool = recycledViewPool,
+                lifecycleOwner = viewLifecycleOwner
             ),
             differ = CategoryDiffer()
         )
@@ -152,6 +154,9 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     /**
      * -- private getter variable section --
      */
+
+    private val recycledViewPool
+        get() = RecyclerView.RecycledViewPool()
 
     private val onScrollListener: RecyclerView.OnScrollListener
         get() = object : RecyclerView.OnScrollListener() {
@@ -238,6 +243,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         UniversalShareBottomSheet.clearState(screenshotDetector)
+        recycledViewPool.clear()
         super.onDestroy()
     }
 
@@ -452,6 +458,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         rvCategory.layoutManager = LinearLayoutManager(context)
         rvCategory.addOnScrollListener(onScrollListener)
         rvCategory.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
+        rvCategory.animation = null
+        rvCategory.setRecycledViewPool(recycledViewPool)
     }
 
     private fun FragmentTokopedianowCategoryBaseBinding.setupRefreshLayout() {

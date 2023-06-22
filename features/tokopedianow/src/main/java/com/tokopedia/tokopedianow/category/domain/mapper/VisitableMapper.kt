@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -110,6 +111,7 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addCategoryShowcase(
+        totalData: Int = Int.ZERO,
         productList: List<AceSearchProductModel.Product> = listOf(),
         categoryIdL2: String = String.EMPTY,
         title: String = String.EMPTY,
@@ -120,6 +122,7 @@ internal object VisitableMapper {
     ) {
         add(
             mapToShowcaseProductCard(
+                totalData = totalData,
                 productList = productList,
                 categoryIdL2 = categoryIdL2,
                 title = title,
@@ -132,6 +135,7 @@ internal object VisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.mapCategoryShowcase(
+        totalData: Int,
         productList: List<AceSearchProductModel.Product>,
         categoryIdL2: String,
         title: String,
@@ -143,6 +147,7 @@ internal object VisitableMapper {
             id = categoryIdL2,
             block = {
                 mapToShowcaseProductCard(
+                    totalData = totalData,
                     productList = productList,
                     categoryIdL2 = categoryIdL2,
                     title = title,
