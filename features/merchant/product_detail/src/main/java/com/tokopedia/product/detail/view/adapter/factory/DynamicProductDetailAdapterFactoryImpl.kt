@@ -371,7 +371,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
-            ProductRecommendationWidgetViewHolder.LAYOUT -> ProductRecommendationWidgetViewHolder(view)
+            ProductRecommendationWidgetViewHolder.LAYOUT -> ProductRecommendationWidgetViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

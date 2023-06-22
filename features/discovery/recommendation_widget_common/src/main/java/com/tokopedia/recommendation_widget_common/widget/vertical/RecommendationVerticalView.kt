@@ -41,6 +41,8 @@ class RecommendationVerticalView :
         setupProductCards(model.widget)
     }
 
+    override fun recycle() {}
+
     private fun setupHeader(widget: RecommendationWidget) {
         binding.headerViewRecommendationVertical.bindData(widget, this)
         binding.headerViewRecommendationVertical.seeAllButton?.hide()
