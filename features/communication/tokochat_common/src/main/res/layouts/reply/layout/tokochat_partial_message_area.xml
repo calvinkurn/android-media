@@ -41,6 +41,8 @@
         android:textColor="@color/Unify_NN950"
         android:textColorHint="@color/Unify_NN400"
         android:textSize="16sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:ignore="RtlSymmetry"
         tools:text="@tools:sample/lorem/random"
         />
