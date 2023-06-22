@@ -805,12 +805,11 @@ class PlayBroadcasterViewModelTest {
 
         val configMock = uiModelBuilder.buildConfigurationUiModel(channelId = "123")
         val accountMock = uiModelBuilder.buildAccountListModel()
-        val mockTitle = PlayTitleUiModel.HasTitle("Title 1")
+        val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
         val mockMaxProduct = 17
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
-        coEvery { mockDataStore.getSetupDataStore().getTitle() } returns mockTitle
         coEvery { mockHydraConfigStore.getChannelId() } returns "123"
         coEvery { mockHydraConfigStore.getMaxProduct() } returns mockMaxProduct
 
@@ -829,7 +828,6 @@ class PlayBroadcasterViewModelTest {
                 getAccountConfiguration(TYPE_SHOP)
             }
             it.getViewModel().channelId.assertEqualTo("123")
-            it.getViewModel().channelTitle.assertEqualTo("Title 1")
             it.getViewModel().maxProduct.assertEqualTo(mockMaxProduct)
             it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
             it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
@@ -844,11 +842,9 @@ class PlayBroadcasterViewModelTest {
     fun `when user as shop setup channel and empty`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
-        val mockTitle = PlayTitleUiModel.NoTitle
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
-        coEvery { mockDataStore.getSetupDataStore().getTitle() } returns mockTitle
         coEvery { mockHydraConfigStore.getChannelId() } returns ""
 
         val robot = PlayBroadcastViewModelRobot(
@@ -864,7 +860,6 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.recordState { getAccountConfiguration(TYPE_SHOP) }
             it.getViewModel().channelId.assertEqualTo("")
-            it.getViewModel().channelTitle.assertEqualTo("")
             it.getViewModel().maxProduct.assertEqualTo(0)
             it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
             it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
