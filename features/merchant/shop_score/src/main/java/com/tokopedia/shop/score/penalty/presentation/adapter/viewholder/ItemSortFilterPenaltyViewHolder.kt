@@ -2,7 +2,9 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemSortFilterPenaltyBinding
@@ -71,6 +73,12 @@ class ItemSortFilterPenaltyViewHolder(
                 } else {
                     updateSortFilterItemPeriodList?.count { it.isSelected }.orZero()
                 }
+
+            prefixText = if (indicatorCounter > Int.ZERO) {
+                getString(R.string.shop_penalty_filter_applied).orEmpty()
+            } else {
+                String.EMPTY
+            }
         }
     }
 }
