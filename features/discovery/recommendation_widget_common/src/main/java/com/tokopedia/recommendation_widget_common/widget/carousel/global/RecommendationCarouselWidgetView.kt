@@ -54,6 +54,13 @@ class RecommendationCarouselWidgetView :
         get() = LAYOUT
 
     override fun bind(model: RecommendationCarouselModel) {
+        if (!model.hasData) hide()
+        else bindData(model)
+    }
+
+    private fun bindData(model: RecommendationCarouselModel) {
+        show()
+
         binding?.recommendationHeaderView?.bindData(model.widget, this)
 
         binding?.recommendationCarouselLoading?.root?.show()
@@ -156,6 +163,10 @@ class RecommendationCarouselWidgetView :
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         trackingQueue.sendAll()
+    }
+
+    override fun recycle() {
+        binding?.recommendationCarouselProduct?.recycle()
     }
 
     companion object {
