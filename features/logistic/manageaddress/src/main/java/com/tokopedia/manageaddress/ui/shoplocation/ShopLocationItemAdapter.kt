@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.CardShopLocationAddressBinding
@@ -80,7 +79,6 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
                         com.tokopedia.unifyprinciples.R.color.Unify_G600
                     )
                 )
-                binding.tvShopLabel.gone()
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (data.status == ShopLocationConstant.SHOP_LOCATION_STATE_INACTIVE) {
                 binding.tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
