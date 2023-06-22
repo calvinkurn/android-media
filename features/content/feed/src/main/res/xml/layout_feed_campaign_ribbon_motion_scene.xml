@@ -112,11 +112,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
-    <Transition
-        app:constraintSetEnd="@+id/start_in_state"
-        app:constraintSetStart="@+id/initial_title_with_icon"
-        app:duration="600" />
-
     <ConstraintSet android:id="@+id/initial_title_with_timer_and_icon">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
@@ -231,10 +226,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
-    <Transition
-        app:constraintSetEnd="@+id/availability_state"
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
+
     <ConstraintSet android:id="@+id/second_title_with_icon">
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
@@ -291,76 +283,99 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
+
+    <!-- START initial_title_with_icon TRANSITION-->
     <Transition
         app:constraintSetEnd="@+id/second_title_with_icon"
         app:constraintSetStart="@+id/initial_title_with_icon"
         app:duration="600" />
     <Transition
+        app:constraintSetEnd="@+id/availability_state"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:constraintSetEnd="@+id/availability_state"
         app:duration="600" />
     <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
         app:duration="600" />
     <Transition
-        app:constraintSetStart="@+id/start_in_state"
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/initial_title_with_icon"
+        app:duration="600" />
+    <!-- END initial_title_with_icon TRANSITION-->
+
+    <!-- START start_in_state TRANSITION-->
+    <Transition
         app:constraintSetEnd="@+id/initial_title_with_icon"
+        app:constraintSetStart="@+id/start_in_state"
         app:duration="600" />
     <Transition
-        app:constraintSetStart="@+id/start_in_state"
         app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetStart="@+id/start_in_state"
         app:duration="600" />
     <Transition
-        app:constraintSetStart="@+id/start_in_state"
         app:constraintSetEnd="@+id/availability_state"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/start_in_state"
+        app:duration="600" />
+    <Transition
         app:constraintSetEnd="@+id/second_title_with_icon"
+        app:constraintSetStart="@+id/start_in_state"
         app:duration="600" />
+    <!-- END start_in_state TRANSITION-->
+
+    <!-- START initial_title_with_timer_and_icon TRANSITION-->
     <Transition
-        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
         app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetEnd="@+id/start_in_state"
         app:duration="600" />
     <Transition
+        app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:constraintSetEnd="@+id/second_title_with_icon"
         app:duration="600" />
     <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/start_in_state"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/availability_state"
-        app:constraintSetEnd="@+id/second_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/start_in_state"
-        app:duration="600"/>
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
-        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
-    <Transition
-        app:constraintSetStart="@+id/second_title_with_icon"
         app:constraintSetEnd="@+id/availability_state"
-        app:duration="600"/>
+        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/second_title_with_icon"
+        app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
+        app:duration="600" />
+    <!-- END initial_title_with_timer_and_icon TRANSITION-->
+
+    <!-- START availability_state TRANSITION-->
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/second_title_with_icon"
+        app:constraintSetStart="@+id/availability_state"
+        app:duration="600" />
+    <!-- END availability_state TRANSITION-->
+
+    <!-- START second_title_with_icon TRANSITION-->
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_icon"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/start_in_state"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600" />
+    <Transition
+        app:constraintSetEnd="@+id/availability_state"
+        app:constraintSetStart="@+id/second_title_with_icon"
+        app:duration="600" />
+    <!-- END second_title_with_icon TRANSITION-->
 </MotionScene>
