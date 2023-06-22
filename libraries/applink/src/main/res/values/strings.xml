@@ -60,6 +60,8 @@
 
     <string name="goto_kyc_title">GoTo KYC</string>
 
+    <string name="liveness_title">Liveness</string>
+
     <string name="title_topchat">Chat</string>
     <string name="title_inbox">Inbox</string>
 

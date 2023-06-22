@@ -1003,6 +1003,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_KYC_SELLERAPP, R.string.user_identification_form_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_KYC_SELLERAPP, R.string.user_identification_info_simple))
             add(DFP({ it.startsWithPattern(GOTO_KYC)}, DF_KYC_SELLERAPP, R.string.goto_kyc_title))
+            add(DFP({ it.startsWithPattern(KYC_LIVENESS_BASE) }, DF_KYC_SELLERAPP, R.string.liveness_title))
         }
     }
 
