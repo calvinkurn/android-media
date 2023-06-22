@@ -99,8 +99,11 @@ object ShopScoreConstant {
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
     const val POINTS_NOT_YET_DEDUCTED = "Poin belum terpotong"
+    const val NOT_YET_ONGOING = "Belum Berlangsung"
     const val ON_GOING = "Sedang berlangsung"
+    const val CAPITALIZED_ON_GOING = "Sedang Berlangsung"
     const val PENALTY_DONE = "Penalti selesai"
+    const val CAPITALIZED_PENALTY_DONE = "Penalti Selesai"
 
     const val START_ACTIVE_PENALTY_DETAIL = "Mulai aktif pada"
     const val ACTIVE_PENALTY_DETAIL = "Aktif hingga"

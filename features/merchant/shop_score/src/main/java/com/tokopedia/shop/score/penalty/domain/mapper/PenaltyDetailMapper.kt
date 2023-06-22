@@ -33,7 +33,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
     ): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
         return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
             when (statusPenalty) {
-                ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
+                ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
@@ -62,7 +62,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                         )
                     )
                 }
-                ShopScoreConstant.ON_GOING -> {
+                ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
@@ -91,7 +91,7 @@ class PenaltyDetailMapper @Inject constructor(@ApplicationContext val context: C
                         )
                     )
                 }
-                ShopScoreConstant.PENALTY_DONE -> {
+                ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,

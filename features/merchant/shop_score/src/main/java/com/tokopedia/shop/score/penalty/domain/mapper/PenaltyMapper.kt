@@ -117,10 +117,10 @@ class PenaltyMapper @Inject constructor(
         val itemPenaltyList = mutableListOf<ItemPenaltyUiModel>().apply {
             shopScorePenaltyDetailResponse.result.forEach {
                 val colorTypePenalty = when (it.status) {
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.PENALTY_DONE -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING, ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
-                    ShopScoreConstant.ON_GOING -> {
+                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_RN600
                     }
                     else -> {
@@ -129,7 +129,7 @@ class PenaltyMapper @Inject constructor(
                 }
 
                 val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
-                    ShopScoreConstant.ON_GOING -> {
+                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> {
                         Pair(
                             ShopScoreConstant.ACTIVE_PENALTY_DETAIL,
                             "${ShopScoreConstant.FINISHED_IN} ${
@@ -141,7 +141,7 @@ class PenaltyMapper @Inject constructor(
                             }"
                         )
                     }
-                    ShopScoreConstant.PENALTY_DONE -> {
+                    ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
                         Pair(
                             ShopScoreConstant.SINCE_FINISH_PENALTY_DETAIL,
                             "${ShopScoreConstant.SINCE} ${
@@ -153,7 +153,7 @@ class PenaltyMapper @Inject constructor(
                             }"
                         )
                     }
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> {
                         Pair(
                             ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL,
                             "${ShopScoreConstant.START} ${
@@ -169,14 +169,14 @@ class PenaltyMapper @Inject constructor(
                 }
 
                 val endDateDetail = when (it.status) {
-                    ShopScoreConstant.ON_GOING, ShopScoreConstant.PENALTY_DONE -> {
+                    ShopScoreConstant.ON_GOING, ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_ON_GOING, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> {
                         DateFormatUtils.formatDate(
                             ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
                             ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                             it.penaltyExpirationDate
                         )
                     }
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> {
                         DateFormatUtils.formatDate(
                             ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
                             ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
@@ -187,9 +187,9 @@ class PenaltyMapper @Inject constructor(
                 }
 
                 val descStatusPenaltyDetail = when (it.status) {
-                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
-                    ShopScoreConstant.ON_GOING -> R.string.desc_on_going_status_penalty
-                    ShopScoreConstant.PENALTY_DONE -> R.string.desc_done_status_penalty
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.NOT_YET_ONGOING -> R.string.desc_point_have_not_been_deducted
+                    ShopScoreConstant.ON_GOING, ShopScoreConstant.CAPITALIZED_ON_GOING -> R.string.desc_on_going_status_penalty
+                    ShopScoreConstant.PENALTY_DONE, ShopScoreConstant.CAPITALIZED_PENALTY_DONE -> R.string.desc_done_status_penalty
                     else -> null
                 }
 
