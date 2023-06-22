@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
@@ -63,6 +64,8 @@ class ShopCampaignVideoViewHolder(
     }
 
     private fun setVideo(uiModel: ShopHomeDisplayWidgetUiModel) {
+        val cornerRadius = itemView.context?.resources?.getDimension(R.dimen.dp_4).orZero()
+        youTubeThumbnailShopPageImageUnify?.cornerRadius = cornerRadius.toInt()
         if (uiModel.data?.firstOrNull()?.youTubeVideoDetail == null) {
             val videoData = uiModel.data?.firstOrNull()
             listener.loadYouTubeData(videoData?.videoUrl.orEmpty(), uiModel.widgetId)

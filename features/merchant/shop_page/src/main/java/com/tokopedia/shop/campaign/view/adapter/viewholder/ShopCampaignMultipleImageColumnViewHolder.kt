@@ -7,18 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.databinding.WidgetShopCampaignMultipleImageColumnBinding
-import com.tokopedia.shop.databinding.WidgetShopHomeMultipleImageColumnBinding
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignMultipleImageColumnViewHolder(
@@ -44,7 +43,8 @@ class ShopCampaignMultipleImageColumnViewHolder(
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         setHeader(element)
         setWidgetImpressionListener(element)
-        shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
+        val cornerRadius = itemView.context?.resources?.getDimension(R.dimen.dp_4).orZero()
+        shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener, cornerRadius)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
