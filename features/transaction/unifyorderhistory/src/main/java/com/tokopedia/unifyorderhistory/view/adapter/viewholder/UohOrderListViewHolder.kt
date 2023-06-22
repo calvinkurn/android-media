@@ -208,10 +208,10 @@ class UohOrderListViewHolder(
 
     private fun setupReviewRatingWidget(metadata: UohListOrder.UohOrders.Order.Metadata) {
         binding.layoutReviewRating.setContent {
+            val config = remember { mutableStateOf(UohReviewRatingWidgetConfig()) }
             val componentData = remember(metadata.extraComponents) {
                 mutableStateOf(metadata.getReviewRatingComponent())
             }
-            val config = remember { mutableStateOf(UohReviewRatingWidgetConfig()) }
             SetupConfigUpdater(componentData, config)
             UohReviewRatingWidget(config = config.value)
         }

@@ -6,9 +6,13 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,8 +25,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
@@ -34,66 +40,104 @@ import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_an
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 private const val LABEL_WEIGHT = 1f
-private const val LABEL_PADDING = 8
-private const val REVIEW_RATING_WIDGET_PADDING = 8
-private const val REVIEW_RATING_WIDGET_STAR_SIZE = 18
-private const val REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN = 8
+private const val REVIEW_RATING_WIDGET_STAR_SIZE = 24
+private const val REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN = 4
+private const val SPACER_WIDTH = 16
+private const val SPACER_HEIGHT = 0
+private const val CONTENT_PADDING = 8
+private const val DELAY_RATING_CHANGED_REDIRECTION = 500L
 
 @Composable
 fun UohReviewRatingWidget(
     modifier: Modifier = Modifier,
     config: UohReviewRatingWidgetConfig
 ) {
-    var rating by remember(config.componentData) { mutableStateOf(Int.ZERO) }
-    val reviewRatingWidgetConfig by remember(config) {
-        derivedStateOf {
-            WidgetReviewAnimatedRatingConfig(
-                rating = rating,
-                starSize = REVIEW_RATING_WIDGET_STAR_SIZE.dp,
-                spaceInBetween = REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN.dp,
-                skipInitialAnimation = true,
-                onStarClicked = { previousRating: Int, currentRating: Int ->
-                    if (previousRating != currentRating) {
-                        rating = currentRating
-                        config.onRatingChanged(composeAppLink(rating, config.componentData.action.appUrl))
-                    }
-                }
-            )
-        }
-    }
+    var rating by rememberRating(config.componentData)
+    SetupRatingChangedListener(rating, config)
     AnimatedVisibility(
         visible = config.show,
         enter = EnterTransition.None,
         exit = shrinkVertically()
     ) {
-        val resources = LocalContext.current.resources
-
-        NestCard(
+        DrawContent(
             modifier = modifier,
-            type = NestCardType.Border
+            config = config,
+            reviewRatingWidgetConfig = rememberReviewRatingWidgetConfig(
+                config = config,
+                rating = rating,
+                onRatingChanged = { newRating -> rating = newRating }
+            )
+        )
+    }
+}
+
+@Composable
+private fun SetupRatingChangedListener(rating: Int, config: UohReviewRatingWidgetConfig) {
+    LaunchedEffect(rating) {
+        delay(DELAY_RATING_CHANGED_REDIRECTION)
+        config.onRatingChanged(composeAppLink(rating, config.componentData.action.appUrl))
+    }
+}
+
+@Composable
+private fun rememberReviewRatingWidgetConfig(
+    config: UohReviewRatingWidgetConfig,
+    rating: Int,
+    onRatingChanged: (rating: Int) -> Unit
+) = remember(config, rating) {
+    derivedStateOf {
+        WidgetReviewAnimatedRatingConfig(
+            rating = rating,
+            starSize = REVIEW_RATING_WIDGET_STAR_SIZE.dp,
+            spaceInBetween = REVIEW_RATING_WIDGET_SPACE_IN_BETWEEN.dp,
+            skipInitialAnimation = true,
+            onStarClicked = { previousRating: Int, currentRating: Int ->
+                if (previousRating != currentRating) onRatingChanged(currentRating)
+            }
+        )
+    }
+}
+
+@Composable
+private fun rememberRating(
+    componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
+) = remember(componentData) { mutableStateOf(Int.ZERO) }
+
+@Composable
+private fun DrawContent(
+    modifier: Modifier = Modifier,
+    config: UohReviewRatingWidgetConfig,
+    reviewRatingWidgetConfig: State<WidgetReviewAnimatedRatingConfig>
+) {
+    val resources = LocalContext.current.resources
+
+    NestCard(
+        modifier = modifier,
+        type = NestCardType.Border
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind { setupBackground(config.componentData.type, resources) }
+                .padding(CONTENT_PADDING.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .drawBehind { setupBackground(config.componentData.type, resources) },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                NestTypography(
-                    modifier = Modifier
-                        .weight(weight = LABEL_WEIGHT, fill = false)
-                        .padding(LABEL_PADDING.dp),
-                    text = formatLabel(config.componentData.label),
-                    textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._600)
+            NestTypography(
+                modifier = Modifier.weight(weight = LABEL_WEIGHT, fill = false),
+                text = formatLabel(config.componentData.label),
+                textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._600)
+            )
+            if (shouldShowRatingWidget(config.componentData.type)) {
+                Spacer(modifier = Modifier.size(width = SPACER_WIDTH.dp, height = SPACER_HEIGHT.dp))
+                WidgetReviewAnimatedRating(
+                    modifier = Modifier,
+                    config = reviewRatingWidgetConfig.value
                 )
-                if (shouldShowRatingWidget(config.componentData.type)) {
-                    WidgetReviewAnimatedRating(
-                        modifier = Modifier.padding(REVIEW_RATING_WIDGET_PADDING.dp),
-                        config = reviewRatingWidgetConfig
-                    )
-                }
             }
         }
     }
@@ -105,15 +149,23 @@ private fun formatLabel(label: String): CharSequence {
 }
 
 private fun composeAppLink(rating: Int, appLink: String): String {
-    return UriUtil.buildUriAppendParam(
-        uri = appLink,
-        queryParameters = mapOf("rating" to rating.toString())
+    return UriUtil.appendDiffDeeplinkWithQuery(
+        deeplink = appLink,
+        query = "${ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING}=$rating"
     )
 }
 
 private fun DrawScope.setupBackground(type: String, resources: Resources) {
     if (shouldDrawBackground(type)) {
-        drawImage(ImageBitmap.imageResource(res = resources, id = R.drawable.bg_uoh_review_rating))
+        val image = ImageBitmap.imageResource(res = resources, id = R.drawable.bg_uoh_review_rating)
+        val sizeMultiplier = size.height / image.height.toFloat()
+        drawImage(
+            image = image,
+            dstSize = IntSize(
+                width = image.width.times(sizeMultiplier).roundToInt(),
+                height = image.height.times(sizeMultiplier).roundToInt()
+            )
+        )
     }
 }
 
