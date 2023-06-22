@@ -152,4 +152,8 @@ class ComparisonBpcWidgetView :
         )
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
     }
+
+    override fun recycle() {
+
+    }
 }
