@@ -42,7 +42,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import javax.inject.Inject
 
@@ -147,6 +146,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
                 }
+                else -> {}
             }
         } else {
             when (val loginDataList = state.filteredUserList) {
@@ -156,6 +156,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
                 }
+                else -> {}
             }
         }
     }

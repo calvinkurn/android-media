@@ -33,7 +33,6 @@ import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
@@ -107,6 +106,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
                     setUpButtonClickListenerForEditAccount()
                     setUpTextFields()
                 }
+                else -> {}
             }
         }
         observeUiAction()

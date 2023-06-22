@@ -162,6 +162,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
                     )
                 }
                 is Fail -> Unit
+                else -> {}
             }
         }
 

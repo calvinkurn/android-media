@@ -4,6 +4,7 @@ import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
 import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.BranchLinkUiModel
 import com.tokopedia.developer_options.presentation.model.CassavaUiModel
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
 import com.tokopedia.developer_options.presentation.model.DataExplorerActivityUiModel
@@ -112,7 +113,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: LoginHelperUiModel): Int
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
-
     fun type(uiModel: BranchLinkUiModel): Int
     fun type(uiModel: UserIdUiModel): Int
     fun type(uiModel: ShopIdUiModel): Int

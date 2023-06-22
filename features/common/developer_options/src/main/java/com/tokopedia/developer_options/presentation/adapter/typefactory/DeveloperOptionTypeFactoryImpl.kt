@@ -8,6 +8,7 @@ import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
 import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.BranchLinkUiModel
 import com.tokopedia.developer_options.presentation.model.CassavaUiModel
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
 import com.tokopedia.developer_options.presentation.model.DataExplorerActivityUiModel
@@ -61,6 +62,7 @@ import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHo
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AppVersionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ApplinkLogOnNotificationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.CassavaViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ConvertResourceIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DataExplorerActivityViewHolder
@@ -125,7 +127,7 @@ class DeveloperOptionTypeFactoryImpl(
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
     private val loginHelperListener: LoginHelperListener,
     private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
-    private val branchListener: BranchLinkViewHolder.BranchListener
+    private val branchListener: BranchLinkViewHolder.BranchListener,
     private val userIdListener: UserIdViewHolder.UserIdListener,
     private val shopIdListener: ShopIdViewHolder.ShopIdListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
@@ -182,7 +184,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
-
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {

@@ -48,7 +48,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import javax.inject.Inject
 
@@ -293,6 +292,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                     handleLoginUserDataListFailure(NoUserInfoException(), state.dataSourceType)
                 }
             }
+            else -> {}
         }
 
         if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {

@@ -38,10 +38,12 @@ import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizat
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -59,7 +61,6 @@ import kotlinx.coroutines.yield
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.RuntimeException
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
@@ -133,7 +134,7 @@ class DeveloperOptionActivity :
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
                 loginHelperListener = loginHelperListener(),
-                authorizeListener = checkAuthorize(),
+                authorizeListener = this,
                 branchListener = getBranchListener(),
                 userIdListener = userIdListener(),
                 shopIdListener = shopIdListener()
