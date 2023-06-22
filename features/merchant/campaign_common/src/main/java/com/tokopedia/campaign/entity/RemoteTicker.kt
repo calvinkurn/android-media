@@ -1,3 +1,7 @@
 package com.tokopedia.campaign.entity
 
-data class RemoteTicker(val title: String, val description: String)
+data class RemoteTicker(
+    val title: String,
+    val description: String,
+    val type: String
+)

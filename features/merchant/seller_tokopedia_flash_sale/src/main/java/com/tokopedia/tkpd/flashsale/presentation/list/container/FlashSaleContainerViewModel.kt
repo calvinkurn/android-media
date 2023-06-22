@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaign.entity.RemoteTargetedTicker
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
@@ -38,7 +38,7 @@ class FlashSaleContainerViewModel @Inject constructor(
         val showTicker: Boolean = false,
         val error: Throwable? = null,
         val isEligibleUsingFeature: Boolean = true,
-        val tickerList: List<RemoteTargetedTicker> = emptyList()
+        val tickerList: List<RemoteTicker> = emptyList()
     )
 
     sealed class UiEvent {

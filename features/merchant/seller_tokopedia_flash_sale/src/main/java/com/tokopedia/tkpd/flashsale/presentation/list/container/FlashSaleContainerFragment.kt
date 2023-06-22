@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
-import com.tokopedia.campaign.entity.RemoteTargetedTicker
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -280,7 +280,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun renderTicker(
         showTicker: Boolean,
 //        remoteTickerMessage: String,
-        tickerList: List<RemoteTargetedTicker>,
+        tickerList: List<RemoteTicker>,
         error: Throwable?,
         isLoading: Boolean,
         isEligibleUsingFeature: Boolean
@@ -316,7 +316,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTicker(tickerList: List<RemoteTargetedTicker>) {
+    private fun displayTicker(tickerList: List<RemoteTicker>) {
         binding?.run {
             ticker.isVisible = true
 
