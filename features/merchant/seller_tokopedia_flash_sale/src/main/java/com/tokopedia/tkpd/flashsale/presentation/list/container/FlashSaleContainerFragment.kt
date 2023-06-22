@@ -105,7 +105,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
         applyUnifyBackgroundColor()
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+        val rollenceValues = getRollenceValues()
+        viewModel.processEvent(
+            event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
+            rollenceValueList = rollenceValues
+        )
     }
 
     override fun onResume() {
@@ -119,7 +123,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             header.setNavigationOnClickListener { activity?.finish() }
         }
         addToolbarIcon()
-        setupTickers()
     }
 
     private fun observeUiState() {
@@ -171,10 +174,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         CampaignDetailActivity.start(context ?: return, campaignId)
     }
 
-    private fun setupTickers() {
+    private fun getRollenceValues(): List<String> {
         val listOfFilteredRollenceKeys: List<String> = getFilteredRollenceKeys()
         val listOfFilteredRollenceValues: List<String> = getFilteredRollenceValues(listOfFilteredRollenceKeys)
-        viewModel.getTickers(listOfFilteredRollenceValues)
+        return listOfFilteredRollenceValues
+//        viewModel.getTickers(listOfFilteredRollenceValues)
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
@@ -203,9 +207,13 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderErrorState(error: Throwable?) {
         val isError = error != null
+        val rollenceValues = getRollenceValues()
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
-            viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+            viewModel.processEvent(
+                event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
+                rollenceValueList = rollenceValues
+            )
         }
     }
 
@@ -330,7 +338,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
 
                 override fun onDismiss() {
-                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
+                    val rollenceValues = getRollenceValues()
+                    viewModel.processEvent(
+                        event = FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker,
+                        rollenceValueList = rollenceValues
+                    )
                 }
             })
         }

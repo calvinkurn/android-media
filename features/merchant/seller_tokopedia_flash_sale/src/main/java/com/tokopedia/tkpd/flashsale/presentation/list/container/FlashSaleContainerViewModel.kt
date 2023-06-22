@@ -122,9 +122,6 @@ class FlashSaleContainerViewModel @Inject constructor(
         )
     }
 
-    private fun getDynamicTickerData(variantValues: List<String>) {
-    }
-
     private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
         val isRbacRuleActive = isDeviceAllowed
 
@@ -145,31 +142,31 @@ class FlashSaleContainerViewModel @Inject constructor(
         ) { }
     }
 
-    fun getTickers(valueList: List<String>) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
-                    GetTargetedTickerUseCase.Param.Target(
-                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
-                        values = valueList
-                    )
-                )
-                val tickerParams = GetTargetedTickerUseCase.Param(
-                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
-                    targets = targetParams
-                )
-                val tickers = getTargetedTickerUseCase.execute(tickerParams)
-
-                _uiState.update {
-                    it.copy(
-                        tickers = tickers
-                    )
-                }
-            },
-            onError = {}
-        )
-    }
+//    fun getTickers(valueList: List<String>) {
+//        launchCatchError(
+//            dispatchers.io,
+//            block = {
+//                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+//                    GetTargetedTickerUseCase.Param.Target(
+//                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+//                        values = valueList
+//                    )
+//                )
+//                val tickerParams = GetTargetedTickerUseCase.Param(
+//                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+//                    targets = targetParams
+//                )
+//                val tickers = getTargetedTickerUseCase.execute(tickerParams)
+//
+//                _uiState.update {
+//                    it.copy(
+//                        tickers = tickers
+//                    )
+//                }
+//            },
+//            onError = {}
+//        )
+//    }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {
         return getFlashSaleProductSubmissionProgressUseCase.execute(
