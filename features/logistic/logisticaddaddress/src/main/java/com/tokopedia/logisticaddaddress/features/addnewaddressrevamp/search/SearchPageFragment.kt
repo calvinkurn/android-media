@@ -57,9 +57,13 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiStateEnum
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isAdd
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isPinpointOnly
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -105,9 +109,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private var isPositiveFlow: Boolean = true
     private var isFromPinpoint: Boolean = false
     private var isPolygon: Boolean = false
-    private var isEdit: Boolean = false
     private var source: String = ""
-    private var isGetPinPointOnly: Boolean = false
+
+//    private var isEdit: Boolean = false
+//    private var isGetPinPointOnly: Boolean = false
+
+    private var addressUiState: AddressUiStateEnum = AddressUiStateEnum.AddAddress
 
     var currentLat: Double = DEFAULT_LAT
     var currentLong: Double = DEFAULT_LONG
@@ -159,11 +166,10 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     private fun hitAnalyticOnBackPress() {
-        if (!isFromPinpoint) {
-            if (isEdit) {
-                EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-            } else {
-                AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+        when (addressUiState) {
+            AddressUiStateEnum.AddAddress -> AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            AddressUiStateEnum.EditAddress -> EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            else -> { /* no-op */
             }
         }
     }
@@ -173,15 +179,20 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
             isFromPinpoint = getBoolean(EXTRA_FROM_PINPOINT)
             isPolygon = getBoolean(EXTRA_IS_POLYGON)
-            isEdit = getBoolean(EXTRA_IS_EDIT, false)
             source = getString(PARAM_SOURCE, "")
-            isGetPinPointOnly = getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+            if (getBoolean(EXTRA_IS_EDIT, false)) {
+                addressUiState = AddressUiStateEnum.EditAddress
+            }
+            if (getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)) {
+                addressUiState = AddressUiStateEnum.PinpointOnly
+            }
+
             currentLat = getDouble(EXTRA_LAT, DEFAULT_LAT)
             currentLong = getDouble(EXTRA_LONG, DEFAULT_LONG)
             getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
                 saveAddressDataModel = this
             }
-            getString(EXTRA_REF)?.takeIf { !isEdit }?.let { from ->
+            getString(EXTRA_REF)?.takeIf { addressUiState.isEdit() }?.let { from ->
                 AddNewAddressRevampAnalytics.sendScreenName(from)
             }
         }
@@ -191,9 +202,9 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         outState.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         outState.putBoolean(EXTRA_FROM_PINPOINT, isFromPinpoint)
         outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
-        outState.putBoolean(EXTRA_IS_EDIT, isEdit)
+        outState.putBoolean(EXTRA_IS_EDIT, addressUiState.isEdit())
+        outState.putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, addressUiState.isPinpointOnly())
         outState.putString(PARAM_SOURCE, source)
-        outState.putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
         outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
         outState.putDouble(EXTRA_LAT, currentLat)
         outState.putDouble(EXTRA_LONG, currentLong)
@@ -294,7 +305,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!isEdit && !isGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
                 }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -305,14 +316,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
 
             PERMISSION_DENIED -> {
-                if (!isEdit && !isGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
 
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
-                if (!isEdit && !isGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
@@ -350,7 +361,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             it.rvAddressList.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             it.rvAddressList.adapter = autoCompleteAdapter
-            if (isEdit || isGetPinPointOnly) {
+            if (addressUiState.isEdit() || addressUiState.isPinpointOnly()) {
                 it.tvMessageSearch.visibility = View.GONE
                 it.tvSearchCurrentLocation.text =
                     getString(R.string.tv_discom_current_location_text)
@@ -388,22 +399,22 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!isGetPinPointOnly) {
-                        if (!isEdit) {
-                            AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                        } else {
-                            EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    when (addressUiState) {
+                        AddressUiStateEnum.AddAddress -> AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        AddressUiStateEnum.EditAddress -> EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        else -> {
+                            /* no-op */
                         }
                     }
                 }
             }
 
             setOnClickListener {
-                if (!isGetPinPointOnly) {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                when (addressUiState) {
+                    AddressUiStateEnum.AddAddress -> AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    AddressUiStateEnum.EditAddress -> EditAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    else -> {
+                        /* no-op */
                     }
                 }
             }
@@ -443,13 +454,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
         binding?.rlSearchCurrentLocation?.setOnClickListener {
-            if (!isGetPinPointOnly) {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            when (addressUiState) {
+                AddressUiStateEnum.AddAddress -> AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                AddressUiStateEnum.EditAddress -> EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+                else -> {
+                    /* no-op */
                 }
             }
+
             if (allPermissionsGranted()) {
                 permissionState = PERMISSION_GRANTED
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -479,7 +491,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!isEdit && !isGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 }
                 dismiss()
@@ -504,7 +516,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!isEdit && !isGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -675,13 +687,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
     override fun onItemClicked(placeId: String) {
-        if (!isGetPinPointOnly) {
-            if (!isEdit) {
-                AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-            } else {
-                EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+        when (addressUiState) {
+            AddressUiStateEnum.AddAddress -> AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
+            AddressUiStateEnum.EditAddress -> EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            else -> { /* no-op */
             }
         }
+
         isPolygon = false
         if (!isPositiveFlow && isFromPinpoint) {
             goToPinpointPage(
@@ -712,7 +724,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         bundle.putString(PARAM_SOURCE, source)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-        if (!isEdit && !isGetPinPointOnly) {
+        if (addressUiState.isAdd()) {
             startActivityForResult(
                 context?.let {
                     PinpointNewPageActivity.createIntent(
@@ -733,9 +745,9 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                         putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
                         putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
                         putExtra(EXTRA_IS_POLYGON, isPolygon)
-                        putExtra(EXTRA_IS_EDIT, isEdit)
+                        putExtra(EXTRA_IS_EDIT, addressUiState.isEdit())
+                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, addressUiState.isPinpointOnly())
                         putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
                     }
                 )
                 finish()
