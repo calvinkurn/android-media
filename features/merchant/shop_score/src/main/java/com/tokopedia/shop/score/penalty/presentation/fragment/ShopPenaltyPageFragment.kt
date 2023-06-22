@@ -454,6 +454,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     private fun clearAllPenaltyData() {
+        endlessRecyclerViewScrollListener?.resetState()
         penaltyPageAdapter.run {
             removeShopPenaltyLoading()
             removeErrorStatePenalty()
