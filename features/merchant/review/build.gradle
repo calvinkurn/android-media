@@ -138,7 +138,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.imageGallery
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

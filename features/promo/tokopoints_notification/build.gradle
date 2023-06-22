@@ -29,7 +29,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 }
 
 project.ext {

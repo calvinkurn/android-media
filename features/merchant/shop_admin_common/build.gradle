@@ -35,7 +35,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 }
 
 project.ext {

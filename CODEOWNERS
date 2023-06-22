@@ -390,6 +390,7 @@
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/data_explorer/                               @tokopedia/android-core-dev
 /libraries/foldable                                     @tokopedia/android-miniondarth-dev
+/libraries/gqlquery_ksp_processor                        @tokopedia/android-miniondarth-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
