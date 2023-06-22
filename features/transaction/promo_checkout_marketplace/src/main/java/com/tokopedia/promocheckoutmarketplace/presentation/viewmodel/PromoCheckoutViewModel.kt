@@ -149,24 +149,28 @@ class PromoCheckoutViewModel @Inject constructor(
 
     // Used for mocking _fragmentUiModel value.
     // Should only be called from unit test.
+    @VisibleForTesting
     fun setFragmentUiModelValue(value: FragmentUiModel) {
         _fragmentUiModel.value = value
     }
 
     // Used for mocking _promoListUiModel value.
     // Should only be called from unit test.
+    @VisibleForTesting
     fun setPromoListValue(value: ArrayList<Visitable<*>>) {
         _promoListUiModel.value = value
     }
 
     // Used for mocking _promoRecommendationUiModel value.
     // Should only be called from unit test.
+    @VisibleForTesting
     fun setPromoRecommendationValue(value: PromoRecommendationUiModel) {
         _promoRecommendationUiModel.value = value
     }
 
     // Used for mocking _promoInputUiModel value.
     // Should only be called from unit test.
+    @VisibleForTesting
     fun setPromoInputUiModelValue(value: PromoInputUiModel) {
         _promoInputUiModel.value = value
     }
