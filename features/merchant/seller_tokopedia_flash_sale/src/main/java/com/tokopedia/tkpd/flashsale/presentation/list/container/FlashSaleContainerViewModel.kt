@@ -86,7 +86,7 @@ class FlashSaleContainerViewModel @Inject constructor(
                     )
                 )
                 val tickerParams = GetTargetedTickerUseCase.Param(
-                    page = TickerConstantt.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
+                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
                     targets = targetParams
                 )
                 val tickersDeffered = async { getTargetedTickerUseCase.execute(tickerParams) }
