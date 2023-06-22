@@ -23,6 +23,7 @@ import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_common.PROGRESS_BADGE
+import com.tokopedia.scp_rewards_common.SUCCESS_CODE
 import com.tokopedia.scp_rewards_common.parseJsonKey
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
@@ -34,7 +35,6 @@ class MedalCabinetViewModel @Inject constructor(
 ) :
     ViewModel() {
     companion object {
-        private const val SUCCESS_CODE = "200"
         private const val DEFAULT_PAGE_SIZE = 6
         private const val HEADER_SECTION_ID = 1
         private const val EARNED_SECTION_ID = 2
