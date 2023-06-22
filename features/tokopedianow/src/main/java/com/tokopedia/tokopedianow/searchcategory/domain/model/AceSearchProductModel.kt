@@ -99,7 +99,16 @@ data class AceSearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: Meta = Meta()
+    )
+
+    data class Meta(
+        @SerializedName("categoryId")
+        val categoryId: String = "0"
     )
 
     data class SearchProductData(
@@ -382,6 +391,10 @@ data class AceSearchProductModel(
             @SerializedName("childs")
             @Expose
             val childs: List<String> = listOf(),
+
+            @SerializedName("category_id")
+            @Expose
+            val categoryId: String = "",
 
             @SerializedName("parentId")
             @Expose
