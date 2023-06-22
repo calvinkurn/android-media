@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
@@ -279,8 +281,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     private fun showHideBottomSheetReset() {
         if (checkIsSelected() || checkIsDateFilterApplied()) {
             setClickBtnReset()
+            binding?.btnShowPenalty?.show()
         } else {
             clearAction()
+            binding?.btnShowPenalty?.gone()
         }
     }
 

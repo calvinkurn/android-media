@@ -86,6 +86,7 @@
     <string name="end_date">Sampai dengan</string>
     <string name="shop_penalty_end_date">Sampai dengan</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
+    <string name="btn_penalty_apply_filter">Terapkan Filter</string>
     <string name="btn_save">Simpan</string>
     <string name="ss_not_active">Tidak Aktif</string>
 
