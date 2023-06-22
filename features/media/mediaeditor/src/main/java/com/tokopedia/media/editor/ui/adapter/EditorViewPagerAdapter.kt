@@ -77,6 +77,7 @@ class EditorViewPagerAdapter(
         val uiModel = editorList[position]
         val filePath = uiModel.getImageUrl()
         val logoOverlay = uiModel.getOverlayLogoValue()
+        val textOverlay = uiModel.getOverlayTextValue()
 
         if (isVideoFormat(filePath)) {
             val vidPreviewRef = layout.findViewById<PlayerView>(editorR.id.vid_main_preview)
@@ -108,9 +109,17 @@ class EditorViewPagerAdapter(
             }
 
             if (logoOverlay != null) {
-                val imgOverlayAddLogoRef = layout.findViewById<ImageView>(editorR.id.img_main_overlay)
-                imgOverlayAddLogoRef.visible()
-                imgOverlayAddLogoRef.loadImage(logoOverlay.overlayLogoUrl)
+                layout.findViewById<ImageView>(editorR.id.img_main_overlay).apply {
+                    visible()
+                    loadImage(logoOverlay.overlayLogoUrl)
+                }
+            }
+
+            if (textOverlay != null) {
+                layout.findViewById<ImageView>(editorR.id.img_secondary_overlay).apply {
+                    visible()
+                    loadImage(textOverlay.textImagePath)
+                }
             }
         }
 

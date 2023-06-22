@@ -80,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Unify_N200"
+                        android:textColor="@color/Unify_NN500"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Hitam" />
@@ -102,7 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Unify_N200"
+                        android:textColor="@color/Unify_NN500"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Besar" />

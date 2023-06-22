@@ -857,7 +857,12 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPowerMerchantSubscribe() {
-        context?.let { RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE) }
+        context?.let {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            )
+        }
     }
 
     private fun setupAdapter() {

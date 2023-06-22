@@ -215,7 +215,6 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.appCommon)
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
     implementation projectOrAar(rootProject.ext.features.sellerHome)
@@ -398,11 +397,6 @@ dependencies {
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
-    }
-
-
-    implementation('de.hdodenhof:circleimageview:2.1.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
