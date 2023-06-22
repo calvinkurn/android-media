@@ -111,9 +111,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private var isPolygon: Boolean = false
     private var source: String = ""
 
-//    private var isEdit: Boolean = false
-//    private var isGetPinPointOnly: Boolean = false
-
     private var addressUiState: AddressUiStateEnum = AddressUiStateEnum.AddAddress
 
     var currentLat: Double = DEFAULT_LAT
