@@ -1761,11 +1761,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_GOTO_KYC)
         } returns DeeplinkMapperUser.ROLLENCE_GOTO_KYC
 
-        every {
-            GlobalConfig.isSellerApp()
-        } returns false
-
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
     }
 
     @Test
@@ -1775,13 +1771,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_GOTO_KYC)
-        } returns ""
+        } returns DeeplinkMapperUser.ROLLENCE_GOTO_KYC
 
-        every {
-            GlobalConfig.isSellerApp()
-        } returns false
-
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
     }
 
     @Test
@@ -1793,27 +1785,19 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_GOTO_KYC)
         } returns DeeplinkMapperUser.ROLLENCE_GOTO_KYC
 
-        every {
-            GlobalConfig.isSellerApp()
-        } returns false
-
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
     }
 
     @Test
     fun `check goto kyc param appLink when rollence deactivated then should return tokopedia internal toko kyc in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/goto-kyc?projectId=7&source=Account&callback=url"
+        val expectedDeepLink = "${ApplinkConstInternalUserPlatform.KYC_INFO_BASE}?projectId=7&source=Account&callback=url"
         val appLink = "tokopedia-android-internal://user/goto-kyc?projectId=7&source=Account&callback=url"
 
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_GOTO_KYC)
         } returns ""
 
-        every {
-            GlobalConfig.isSellerApp()
-        } returns false
-
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, appLink, expectedDeepLink)
     }
 
     @Test
