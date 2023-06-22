@@ -43,7 +43,7 @@ class PenaltyMapper @Inject constructor(
         typeIds: List<Int>
     ): PenaltyDataWrapper {
         val penaltyTypes =
-            shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result ?: emptyList()
+            shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result.orEmpty()
         return PenaltyDataWrapper(
             penaltyVisitableList = mapToItemVisitablePenaltyList(
                 pageType, shopScorePenaltySummaryWrapper, shopScorePenaltyDetailResponse,
@@ -285,9 +285,9 @@ class PenaltyMapper @Inject constructor(
                 )
             }
 
-            val isNoPenalty = shopScorePenaltyDetailResponse.result.isEmpty()
+            val isHasPenalty = shopScorePenaltyDetailResponse.result.isNotEmpty()
 
-            if (!isNoPenalty) {
+            if (isHasPenalty) {
                 shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result?.let {
                     add(
                         ItemSortFilterPenaltyUiModel(
@@ -551,7 +551,7 @@ class PenaltyMapper @Inject constructor(
         penaltyFilterUiModel: MutableList<BaseFilterPenaltyPage>,
         typeIds: List<Int>
     ):
-        Triple<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>, List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
+        Triple<List<BaseFilterPenaltyPage>, List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>, List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
         var itemSortFilterWrapperList = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.run {
             chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
@@ -598,7 +598,7 @@ class PenaltyMapper @Inject constructor(
         penaltyFilterUiModel: MutableList<BaseFilterPenaltyPage>,
     ): List<ChipsFilterPenaltyUiModel> {
         return penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>()
-            .find { it.title == titleFilter }?.chipsFilterList ?: emptyList()
+            .find { it.title == titleFilter }?.chipsFilterList.orEmpty()
     }
 
     private fun getShownSortFilterChips(

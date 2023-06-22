@@ -48,7 +48,7 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
         dateFilter: Pair<String, String>
     ): PenaltyDataWrapperOld {
         val penaltyTypes =
-            shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result ?: emptyList()
+            shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result.orEmpty()
         return PenaltyDataWrapperOld(
             penaltyVisitableList = mapToItemVisitablePenaltyList(
                 shopScorePenaltySummaryWrapper, shopScorePenaltyDetailResponse,
@@ -360,6 +360,6 @@ open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context:
         titleFilter: String,
         penaltyFilterUiModelOld: MutableList<PenaltyFilterUiModelOld>,
     ): List<ChipsFilterPenaltyUiModel> {
-        return penaltyFilterUiModelOld.find { it.title == titleFilter }?.chipsFilterList ?: emptyList()
+        return penaltyFilterUiModelOld.find { it.title == titleFilter }?.chipsFilterList.orEmpty()
     }
 }

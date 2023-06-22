@@ -205,7 +205,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
                 add(middlePosition, dateFilter)
             }
         }
-        return orderedList
+        return orderedList.toList()
     }
 
     private fun clickBtnApplied() {

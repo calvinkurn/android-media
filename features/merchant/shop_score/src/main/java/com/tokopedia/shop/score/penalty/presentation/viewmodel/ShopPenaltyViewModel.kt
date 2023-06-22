@@ -299,8 +299,8 @@ class ShopPenaltyViewModel @Inject constructor(
                     penaltyFilterUiModel,
                     typeIds
                 )
-            penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first
-            itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second
+            penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first.toMutableList()
+            itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second.toMutableList()
             _updateSortFilterSelected.value = Success(mapTransformUpdateSortFilterSelected.third)
         }
     }
