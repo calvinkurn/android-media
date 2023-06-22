@@ -85,7 +85,7 @@ abstract class ShopPenaltyViewModelTestFixture {
     protected fun onGetNotYetDeductedPenaltyUseCase_thenReturn() {
         coEvery {
             getNotYetDeductedPenaltyUseCase.get().execute(
-                format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM),
+                format(getPastDaysPenaltyTimeStamp(true).time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM),
                 format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
             )
         } returns listOf(ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result())
