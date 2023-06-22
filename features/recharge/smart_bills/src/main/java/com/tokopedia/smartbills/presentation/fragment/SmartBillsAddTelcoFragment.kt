@@ -22,6 +22,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -56,7 +57,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCallback {
+class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCallback, AddSmartBillsInquiryCallBack {
 
     private var binding by autoClearedNullable<FragmentSmartBillsAddTelcoBinding>()
 
@@ -397,6 +398,8 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCal
         super.onAttachFragment(childFragment)
         if (childFragment is SmartBillsNominalBottomSheet) {
             childFragment.setCallback(this)
+        } else if (childFragment is AddSmartBillsInquiryBottomSheet) {
+            childFragment.setCallback(this)
         }
     }
     override fun onProductClicked(rechargeProduct: RechargeProduct) {
@@ -458,18 +461,18 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCal
 
     private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData) {
         val attribute = inquiry.enquiry.attributes
-        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
-            override fun onInquiryClicked() {
-                commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
-                addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
-            }
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet.newInstance(attribute)
+        inquiryBottomSheet.setCallback(this)
+        inquiryBottomSheet.show(childFragmentManager, "")
+    }
 
-            override fun onInquiryClose() {
-                commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
-            }
-        })
-        inquiryBottomSheet.addSBMInquiry(attribute)
-        inquiryBottomSheet.show(requireFragmentManager(), "")
+    override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
+        commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
+        addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
+    }
+
+    override fun onInquiryClose() {
+        commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
     }
 
     private fun setErrorNumber(isError: Boolean, message: String) {

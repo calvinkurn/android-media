@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -106,7 +109,8 @@ class RechargeGeneralFragment :
     OnInputListener,
     RechargeGeneralAdapter.LoaderListener,
     RechargeGeneralCheckoutBottomSheet.CheckoutListener,
-    TopupBillsMenuBottomSheets.MenuListener {
+    TopupBillsMenuBottomSheets.MenuListener,
+    AddSmartBillsInquiryCallBack{
 
     private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
@@ -1294,21 +1298,30 @@ class RechargeGeneralFragment :
     }
 
     private fun renderBottomSheetAddBillInquiry(data: TopupBillsEnquiry) {
-        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
-            override fun onInquiryClicked() {
-                commonTopupBillsAnalytics.clickAddInquiry(categoryName)
-                inputData[PARAM_CLIENT_NUMBER]?.let {
-                    addBills(productId, it)
-                }
-            }
-
-            override fun onInquiryClose() {
-                commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
-            }
-        })
-        inquiryBottomSheet.addSBMInquiry(data.attributes)
-        fragmentManager?.let { fm ->
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet.newInstance(data.attributes)
+        inquiryBottomSheet.setCallback(this)
+        childFragmentManager.let { fm ->
             inquiryBottomSheet.show(fm, "")
+        }
+    }
+
+    override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
+        commonTopupBillsAnalytics.clickAddInquiry(categoryName)
+        Log.d("CUAKS", "Yoi")
+        inputData[PARAM_CLIENT_NUMBER]?.let {
+            Log.d("CUAKS", it)
+            addBills(productId, it)
+        }
+    }
+
+    override fun onInquiryClose() {
+        commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if (childFragment is AddSmartBillsInquiryBottomSheet) {
+            childFragment.setCallback(this)
         }
     }
 
