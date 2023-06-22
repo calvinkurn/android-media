@@ -49,7 +49,7 @@ class SubmitChallengeUseCaseTest {
 
         val result = useCase(parameter)
         assertTrue(result is SubmitChallengeResult.Failed)
-        assertEquals(message.joinToString(), result.throwable?.message)
+        assertEquals(message.joinToString(), result.throwable.message)
     }
 
     @Test

@@ -80,7 +80,7 @@ class FinalLoaderViewModelTest {
     @Test
     fun `when get status then return toko kyc`() {
         val projectId = "7"
-        val expected = ProjectInfoResult.TokoKyc()
+        val expected = ProjectInfoResult.TokoKyc
 
         coEvery { projectInfoUseCase(any()) } returns expected
         viewModel.kycStatus(projectId)

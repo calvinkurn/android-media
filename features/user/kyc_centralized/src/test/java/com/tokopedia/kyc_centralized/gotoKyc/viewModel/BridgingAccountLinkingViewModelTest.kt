@@ -42,7 +42,7 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get status account linking then return linked`() {
-        val expected = AccountLinkingStatusResult.Linked()
+        val expected = AccountLinkingStatusResult.Linked
 
         coEvery { accountLinkingStatusUseCase(Unit) } returns expected
         viewModel.checkAccountLinkingStatus()
@@ -54,7 +54,7 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get status account linking then return not linked`() {
-        val expected = AccountLinkingStatusResult.NotLinked()
+        val expected = AccountLinkingStatusResult.NotLinked
 
         coEvery { accountLinkingStatusUseCase(Unit) } returns expected
         viewModel.checkAccountLinkingStatus()
@@ -92,7 +92,7 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get eligibility then return non progressive`() {
-        val expected = CheckEligibilityResult.NonProgressive()
+        val expected = CheckEligibilityResult.NonProgressive
 
         coEvery { checkEligibilityUseCase.invoke() } returns expected
         viewModel.checkEligibility()
@@ -103,7 +103,7 @@ class BridgingAccountLinkingViewModelTest {
 
     @Test
     fun `when get eligibility then return awaiting approval gopay`() {
-        val expected = CheckEligibilityResult.AwaitingApprovalGopay()
+        val expected = CheckEligibilityResult.AwaitingApprovalGopay
 
         coEvery { checkEligibilityUseCase.invoke() } returns expected
         viewModel.checkEligibility()

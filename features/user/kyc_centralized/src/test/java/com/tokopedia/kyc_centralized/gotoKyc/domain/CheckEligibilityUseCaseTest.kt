@@ -117,7 +117,7 @@ class CheckEligibilityUseCaseTest {
 
         val result = useCase.invoke()
         assertTrue(result is CheckEligibilityResult.Failed)
-        assertEquals(messageError, result.throwable?.message)
+        assertEquals(messageError, result.throwable.message)
     }
 
     @Test
@@ -140,7 +140,7 @@ class CheckEligibilityUseCaseTest {
 
         val result = useCase.invoke()
         assertTrue(result is CheckEligibilityResult.Failed)
-        assertEquals(flow, result.throwable?.message)
+        assertEquals(flow, result.throwable.message)
     }
 
     @Test
@@ -170,7 +170,7 @@ class CheckEligibilityUseCaseTest {
 
         val result = useCase.invoke()
         assertTrue(result is CheckEligibilityResult.Failed)
-        assertEquals(message, result.throwable?.message)
+        assertEquals(message, result.throwable.message)
     }
 
 }

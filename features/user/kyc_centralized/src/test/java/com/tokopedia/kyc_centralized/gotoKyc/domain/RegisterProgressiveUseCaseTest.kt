@@ -50,7 +50,7 @@ class RegisterProgressiveUseCaseTest {
 
         val result = useCase(parameter)
         assertTrue(result is RegisterProgressiveResult.Failed)
-        assertEquals(message.joinToString(), result.throwable?.message)
+        assertEquals(message.joinToString(), result.throwable.message)
     }
 
     @Test

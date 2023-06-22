@@ -64,7 +64,7 @@ class DobChallengeViewModelTest {
         val questionId = "AsDew-SdJdw5F"
         val challengeId = "VBRew-SdJdfDf"
         val selectedDate = "1999-01-01"
-        val expected = SubmitChallengeResult.Success()
+        val expected = SubmitChallengeResult.Success
 
         coEvery { submitChallengeUseCase(any()) } returns expected
         viewModel.submitChallenge(challengeId, questionId, selectedDate)

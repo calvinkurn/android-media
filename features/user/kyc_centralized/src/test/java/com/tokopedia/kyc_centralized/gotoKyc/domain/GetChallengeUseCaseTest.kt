@@ -85,7 +85,7 @@ class GetChallengeUseCaseTest {
 
         val result = useCase(challengeId)
         assertTrue(result is GetChallengeResult.Failed)
-        assertEquals(message, result.throwable?.message)
+        assertEquals(message, result.throwable.message)
     }
 
     @Test
@@ -105,6 +105,6 @@ class GetChallengeUseCaseTest {
 
         val result = useCase(challengeId)
         assertTrue(result is GetChallengeResult.Failed)
-        assertEquals(message, result.throwable?.message)
+        assertEquals(message, result.throwable.message)
     }
 }
