@@ -695,7 +695,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
             activity?.let {
-                val bottomSheet = QrDealsBottomSheet(actionButton)
+                val bottomSheet = QrDealsBottomSheet.newInstance(actionButton)
                 bottomSheet.show(childFragmentManager, TAG_DEALS_QR)
             }
         } else {
