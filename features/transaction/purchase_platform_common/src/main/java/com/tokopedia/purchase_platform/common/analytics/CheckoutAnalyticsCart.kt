@@ -792,21 +792,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickBackNavToolbar(userId: String) {
-        val gtmData = getGtmData(
-            ConstantTransactionAnalytics.EventName.CLICK_NAVIGATION_DRAWER,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            ConstantTransactionAnalytics.EventAction.CLICK_BACK_BUTTON_NAV,
-            ""
-        )
-        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
-        gtmData[ExtraKey.PAGE_TYPE] = ""
-        gtmData[ExtraKey.PAGE_PATH] = ""
-        sendGeneralEvent(gtmData)
-    }
-
     fun eventClickTopNavMenuNavToolbar(userId: String) {
         val gtmData = getGtmData(
             ConstantTransactionAnalytics.EventName.CLICK_NAVIGATION_DRAWER,
