@@ -418,12 +418,12 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
-        analytic.clickSharingOption(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, shareModel.channel, playUpcomingViewModel.isSharingBottomSheet(view.universalShareBottomSheet))
+        analytic.clickSharingOption(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, shareModel.channel, view.isScreenshotBottomSheet)
         playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
-        analytic.closeShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, playUpcomingViewModel.isSharingBottomSheet(view.universalShareBottomSheet))
+        analytic.closeShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, view.isScreenshotBottomSheet)
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {

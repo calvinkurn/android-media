@@ -1015,8 +1015,8 @@ class PlayViewModel @AssistedInject constructor(
             ClickShareAction -> handleClickShareIcon()
             ShowShareExperienceAction -> handleOpenSharingOption(false)
             ScreenshotTakenAction -> handleOpenSharingOption(true)
-            is CloseSharingOptionAction -> handleCloseSharingOption(action.universalShareBottomSheet)
-            is ClickSharingOptionAction -> handleSharingOption(action.shareModel, action.universalShareBottomSheet)
+            is CloseSharingOptionAction -> handleCloseSharingOption(action.isScreenshotBottomSheet)
+            is ClickSharingOptionAction -> handleSharingOption(action.shareModel, action.isScreenshotBottomSheet)
             is SharePermissionAction -> handleSharePermission(action.label)
             OpenKebabAction -> handleThreeDotsMenuClick()
             is OpenFooterUserReport -> handleFooterClick(action.appLink)
@@ -2411,14 +2411,14 @@ class PlayViewModel @AssistedInject constructor(
         _isBottomSheetsShown.update { true }
     }
 
-    private fun handleCloseSharingOption(universalShareBottomSheet: UniversalShareBottomSheet) {
-        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet(universalShareBottomSheet))
+    private fun handleCloseSharingOption(isScreenshotBottomSheet: Boolean) {
+        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, isScreenshotBottomSheet)
         _isBottomSheetsShown.update { false }
     }
 
-    private fun handleSharingOption(shareModel: ShareModel, universalShareBottomSheet: UniversalShareBottomSheet) {
+    private fun handleSharingOption(shareModel: ShareModel, isScreenshotBottomSheet: Boolean) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet(universalShareBottomSheet))
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.channel, isScreenshotBottomSheet)
 
             val playShareExperienceData = getPlayShareExperienceData()
 

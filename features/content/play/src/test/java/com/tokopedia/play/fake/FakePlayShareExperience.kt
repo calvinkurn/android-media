@@ -48,6 +48,4 @@ class FakePlayShareExperience : PlayShareExperience {
             listener.onUrlCreated(null, shareModel, "")
         }
     }
-
-    override fun isScreenshotBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean = isScreenshotBottomSheet
 }
