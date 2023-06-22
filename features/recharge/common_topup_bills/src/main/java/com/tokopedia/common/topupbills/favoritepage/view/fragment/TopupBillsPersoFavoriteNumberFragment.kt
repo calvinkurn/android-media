@@ -543,6 +543,8 @@ class TopupBillsPersoFavoriteNumberFragment :
         super.onAttachFragment(childFragment)
         if (childFragment is PersoFavoriteNumberMenuBottomSheet) {
             childFragment.setListener(this)
+        } else if(childFragment is PersoFavoriteNumberModifyBottomSheet) {
+            childFragment.setListener(this)
         }
     }
 
@@ -575,7 +577,8 @@ class TopupBillsPersoFavoriteNumberFragment :
             currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
 
-        val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
+        val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem)
+        bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "")
     }
 
