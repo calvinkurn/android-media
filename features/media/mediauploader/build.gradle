@@ -69,9 +69,9 @@ dependencies {
     debugImplementation rootProject.ext.supportLibDependencies.constraintLayout
     debugImplementation rootProject.ext.miscDependencies.workManager
 
-    debugImplementation rootProject.ext.composeDependencies.composeActivity
-    debugImplementation rootProject.ext.composeDependencies.composeConstraint
-    debugImplementation rootProject.ext.composeDependencies.composeLiveData
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeLiveData
     implementation rootProject.ext.unifyDependencies.nestComponents
 
     debugImplementation rootProject.ext.composeDependencies.composeVideoCoil
