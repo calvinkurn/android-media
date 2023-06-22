@@ -10,6 +10,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import org.junit.Assert
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
@@ -295,6 +296,37 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert((viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
+    }
+
+    @Test
+    fun `WHEN apply recommended promo has secondary promo THEN select secondary promo code`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseBoAndMvcSecondaryRecommended()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
+
+        // WHEN
+        val initialSelectedPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiState.isSelected
+        }
+        viewModel.applyRecommendedPromo()
+
+        // THEN
+        val selectedBoPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiState.isBebasOngkir
+        }
+        val selectedMvcWithSecondaryPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiData.useSecondaryPromo
+        }
+        assert(initialSelectedPromoCount == 0)
+        Assert.assertNotNull(selectedBoPromo)
+        Assert.assertNotNull(selectedMvcWithSecondaryPromo)
     }
 
     @Test
