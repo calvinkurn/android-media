@@ -333,6 +333,9 @@ class ShopPenaltyViewModel @Inject constructor(
                             penaltyFilterUiModel.chipsFilterList.map {
                                 it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
                             }
+                            penaltyFilterUiModel.shownFilterList.map {
+                                it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
+                            }
                         } else {
                             penaltyFilterUiModel.chipsFilterList.map {
                                 it.isSelected = false

@@ -500,15 +500,15 @@ class PenaltyMapper @Inject constructor(
                         }
                     }
                     chipsFilterList.map {
-                        if (isMultiple) {
-                            if (selectedId == it.value) {
-                                it.isSelected = !updateChipsSelected
-                            }
-                        } else {
-                            if (selectedId == it.value) {
+                        if (selectedId == it.value) {
+                            if (isMultiple) {
                                 it.isSelected = !updateChipsSelected
                             } else {
-                                it.isSelected = updateChipsSelected
+                                it.isSelected = true
+                            }
+                        } else {
+                            if (!isMultiple) {
+                                it.isSelected = false
                             }
                         }
                     }

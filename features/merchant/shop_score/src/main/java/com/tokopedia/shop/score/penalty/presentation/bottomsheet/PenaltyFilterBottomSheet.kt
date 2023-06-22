@@ -286,11 +286,21 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     private fun checkIsSelected(): Boolean {
         viewModelShopPenalty.getPenaltyFilterUiModelList().filterIsInstance<PenaltyFilterUiModel>()
-            .filter { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }
             .forEach {
-                it.chipsFilterList.forEach { chips ->
-                    if (chips.isSelected) {
-                        return true
+                when(it.title) {
+                    ShopScoreConstant.TITLE_TYPE_PENALTY -> {
+                        it.chipsFilterList.forEach { chips ->
+                            if (chips.isSelected) {
+                                return true
+                            }
+                        }
+                    }
+                    ShopScoreConstant.TITLE_SORT -> {
+                        it.chipsFilterList.forEach { chip ->
+                            if (chip.isSelected && chip.title == ShopScoreConstant.SORT_OLDEST) {
+                                return true
+                            }
+                        }
                     }
                 }
             }
