@@ -137,17 +137,15 @@ class NotificationViewModel @Inject constructor(
         role: Int?
     ) {
         if (role == null) return
-        launchCatchError(
-            dispatcher.io,
-            {
+        viewModelScope.launch {
+            try {
                 notifOrderListUseCase.getOrderList(role).collect {
-                    _orderList.postValue(it)
+                    _orderList.value = it
                 }
-            },
-            {
-                _orderList.postValue(Resource.error(it, null))
+            } catch (throwable: Throwable) {
+                _orderList.value = Resource.error(throwable, null)
             }
-        )
+        }
     }
 
     /**
@@ -257,24 +255,22 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
-        launchCatchError(
-            dispatcher.io,
-            {
+        viewModelScope.launch {
+            try {
                 bumpReminderUseCase.bumpReminder(
                     product.productId,
                     notif.notifId
                 ).collect {
                     it.referer = product.productId
-                    _bumpReminder.postValue(it)
+                    _bumpReminder.value = it
                 }
-            },
-            {
-                val error = Resource.error(it, null).apply {
+            } catch (throwable: Throwable) {
+                val error = Resource.error(throwable, null).apply {
                     referer = product.productId
                 }
-                _bumpReminder.postValue(error)
+                _bumpReminder.value = error
             }
-        )
+        }
     }
 
     fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
@@ -532,4 +528,3 @@ class NotificationViewModel @Inject constructor(
         }
     }
 }
-
