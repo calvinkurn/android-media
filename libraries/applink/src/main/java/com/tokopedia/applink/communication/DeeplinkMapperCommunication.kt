@@ -7,7 +7,9 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.user.session.UserSession
 
 object DeeplinkMapperCommunication {
 
@@ -83,13 +85,18 @@ object DeeplinkMapperCommunication {
     /**
      * Inbox mapper with remote config
      */
-    fun getRegisteredNavigationInbox(): String {
-        val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
-            isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
-        return if (useUnivInbox) {
-            ApplinkConstInternalCommunication.UNIVERSAL_INBOX
+    fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
+        val userSession = UserSession(context)
+        return if (userSession.isLoggedIn) {
+            val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
+                isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
+            return if (useUnivInbox) {
+                ApplinkConstInternalCommunication.UNIVERSAL_INBOX
+            } else {
+                ApplinkConsInternalHome.HOME_INBOX
+            }
         } else {
-            ApplinkConsInternalHome.HOME_INBOX
+            ApplinkConstInternalUserPlatform.LOGIN
         }
     }
 }
