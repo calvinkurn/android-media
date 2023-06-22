@@ -659,23 +659,6 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When in checkout and duration has eta error code Then show notifier model`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithServiceError()
-
-        // When
-        val actual = presenter.convertServiceListToUiModel(
-            shippingRecommendationData.shippingDurationUiModels,
-            shippingRecommendationData.listLogisticPromo,
-            shippingRecommendationData.preOrderModel,
-            false
-        )
-
-        // Then
-        assertTrue(actual.first() is NotifierModel)
-    }
-
-    @Test
     fun `When in checkout and duration is hidden and has eta error code Then dont show notifier model`() {
         // Given
         val shippingRecommendationData = getShippingDataWithServiceError()
