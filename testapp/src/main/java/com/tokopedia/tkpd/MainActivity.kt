@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://communication/universal-inbox"
+        return ""
     }
 
     data class Model(
