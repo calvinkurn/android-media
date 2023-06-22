@@ -30,7 +30,6 @@ class ShopLocationMapper @Inject constructor() {
 
     private fun mapWarehouses(response: GetShopLocationResponse): List<Warehouse> {
         val data = response.shopLocations.data.warehouse
-        val showWarehouseStatus = data.size > 1
         return data.map {
             Warehouse(
                 it.warehouseId,
@@ -50,8 +49,7 @@ class ShopLocationMapper @Inject constructor() {
                 it.country,
                 it.status,
                 it.isCoveredByCouriers,
-                mapTicker(it.ticker),
-                showWarehouseStatus
+                mapTicker(it.ticker)
             )
         }
     }

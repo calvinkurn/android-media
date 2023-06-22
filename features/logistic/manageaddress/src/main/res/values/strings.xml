@@ -52,7 +52,9 @@
     <string name="shop_active">Aktif</string>
     <string name="shop_inactive">Tidak Aktif</string>
     <string name="deactivate_info_one">Stok di lokasi ini tidak akan ditampilkan ke pembeli atau dinonaktifkan sementara</string>
-    <string name="deactivate_info_two">Pesanan yang sudah masukke lokasi ini akan tetap diproses</string>
+    <string name="deactivate_info_one_pointer">1</string>
+    <string name="deactivate_info_two">Pesanan yang sudah masuk ke lokasi ini akan tetap diproses</string>
+    <string name="deactivate_info_two_pointer">2</string>
     <string name="ticker_main_info">Jika ingin nonaktifkan semua lokasi toko, kamu bisa atur jadwal buka-tutup toko di tab informasi</string>
     <string name="text_deactivate_confirmation">Nonaktifkan lokasi toko %1$s?</string>
     <string name="general_ticker_link">&lt;a href="#"&gt; Selengkapnya&lt;/a&gt;</string>

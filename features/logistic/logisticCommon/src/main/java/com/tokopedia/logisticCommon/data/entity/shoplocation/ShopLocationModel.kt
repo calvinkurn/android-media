@@ -34,8 +34,7 @@ data class Warehouse(
     var country: String = "",
     var status: Int = 0,
     var isCoveredByCouriers: Boolean = false,
-    var ticker: Ticker = Ticker(),
-    var showWarehouseStatus: Boolean = true
+    var ticker: Ticker = Ticker()
 ) : Parcelable
 
 @Parcelize

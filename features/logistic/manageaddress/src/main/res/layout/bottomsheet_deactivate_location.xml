@@ -16,13 +16,18 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
-    <ImageView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/iv_point_one"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_no_1_warehouse"
+        android:text="@string/deactivate_info_one_pointer"
+        android:gravity="center"
+        app:typographyType="small"
+        android:textColor="@color/Unify_GN500"
+        app:typographyWeight="bold"
+        android:background="@drawable/manageaddress_circle_border"
         app:layout_constraintTop_toBottomOf="@id/tv_deactivate_location" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -38,12 +43,17 @@
         app:layout_constraintStart_toEndOf="@id/iv_point_one"
         app:layout_constraintTop_toTopOf="@id/iv_point_one" />
 
-    <ImageView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/iv_point_two"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_no_2_warehouse"
+        android:text="@string/deactivate_info_two_pointer"
+        android:gravity="center"
+        app:typographyType="small"
+        android:textColor="@color/Unify_GN500"
+        app:typographyWeight="bold"
+        android:background="@drawable/manageaddress_circle_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_one" />
 

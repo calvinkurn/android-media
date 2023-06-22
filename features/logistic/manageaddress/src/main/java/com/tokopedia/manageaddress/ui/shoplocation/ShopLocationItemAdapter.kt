@@ -73,17 +73,14 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
         private fun setWarehouseStatus(data: Warehouse) {
             if (data.status == ShopLocationConstant.SHOP_LOCATION_STATE_ACTIVE) {
-                if (data.showWarehouseStatus) {
-                    binding.tvShopLabel.text = itemView.context.getString(R.string.shop_active)
-                    binding.tvShopLabel.setTextColor(
-                        ContextCompat.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G600
-                        )
+                binding.tvShopLabel.text = itemView.context.getString(R.string.shop_active)
+                binding.tvShopLabel.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G600
                     )
-                } else {
-                    binding.tvShopLabel.gone()
-                }
+                )
+                binding.tvShopLabel.gone()
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (data.status == ShopLocationConstant.SHOP_LOCATION_STATE_INACTIVE) {
                 binding.tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
@@ -119,8 +116,8 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
                 binding.tickerAddressInfo.visibility = View.VISIBLE
                 binding.tickerAddressInfo.setHtmlDescription(
                     "${shopLocation.ticker.textInactive} ${
-                        itemView.context.getString(R.string.ticker_info_selengkapnya)
-                            .replace(TICKER_LABEL, shopLocation.ticker.textCourierSetting)
+                    itemView.context.getString(R.string.ticker_info_selengkapnya)
+                        .replace(TICKER_LABEL, shopLocation.ticker.textCourierSetting)
                     }"
                 )
                 binding.tickerAddressInfo.setDescriptionClickEvent(object : TickerCallback {

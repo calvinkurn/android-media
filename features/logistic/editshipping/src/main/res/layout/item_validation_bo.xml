@@ -11,7 +11,7 @@
         android:id="@+id/item_count"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:background="@drawable/circle_border"
+        android:background="@drawable/editshipping_circle_border"
         android:gravity="center"
         android:textColor="@color/Unify_N700"
         app:typographyType="small"
