@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.entity.RemoteTargetedTicker
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
@@ -38,7 +38,7 @@ class FlashSaleContainerViewModel @Inject constructor(
         val showTicker: Boolean = false,
         val error: Throwable? = null,
         val isEligibleUsingFeature: Boolean = true,
-        val tickers: List<RemoteTicker> = emptyList()
+        val tickerList: List<RemoteTargetedTicker> = emptyList()
     )
 
     sealed class UiEvent {
@@ -65,7 +65,7 @@ class FlashSaleContainerViewModel @Inject constructor(
                 getPrerequisiteData(rollenceValueList)
             }
             UiEvent.DismissMultiLocationTicker -> {
-                preferenceDataStore.markMultiLocationTickerAsDismissed()
+//                preferenceDataStore.markMultiLocationTickerAsDismissed()
             }
         }
     }
@@ -95,8 +95,8 @@ class FlashSaleContainerViewModel @Inject constructor(
                 val sellerEligibility = sellerEligibilityDeferred.await()
                 val tabMetadata = tabMetadataDeferred.await()
 
-                val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
-                val showTicker = !isMultiLocationTickerPreviouslyDismissed
+//                val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
+//                val showTicker = !isMultiLocationTickerPreviouslyDismissed
 
                 val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
 
@@ -105,8 +105,9 @@ class FlashSaleContainerViewModel @Inject constructor(
                         isLoading = false,
                         error = null,
                         tabs = tabMetadata.tabs,
-                        tickerMessage =  // tabMetadata.tickerNonMultiLocationMessage,
-                        showTicker = showTicker,
+                        // tickerMessage = tabMetadata.tickerNonMultiLocationMessage,
+                        showTicker = tickers.isNotEmpty(), // showTicker,
+                        tickerList = tickers,
                         isEligibleUsingFeature = isEligibleUsingFeature
                     )
                 }

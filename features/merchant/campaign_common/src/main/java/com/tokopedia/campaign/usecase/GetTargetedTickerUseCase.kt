@@ -3,6 +3,7 @@ package com.tokopedia.campaign.usecase
 
 import com.tokopedia.campaign.data.request.GetTargetedTickerRequest
 import com.tokopedia.campaign.data.response.GetTargetedTickerResponse
+import com.tokopedia.campaign.entity.RemoteTargetedTicker
 import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.mapper.GetTargetedTickerMapper
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -54,7 +55,7 @@ class GetTargetedTickerUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(param: Param): List<RemoteTicker> {
+    suspend fun execute(param: Param): List<RemoteTargetedTicker> {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         return mapper.map(response.getSuccessData())

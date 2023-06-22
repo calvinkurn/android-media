@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
+import com.tokopedia.campaign.entity.RemoteTargetedTicker
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -41,6 +42,10 @@ import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -183,7 +188,13 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
-        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading, uiState.isEligibleUsingFeature)
+        renderTicker(
+            showTicker = uiState.showTicker,
+            tickerList = uiState.tickerList,
+            error = uiState.error,
+            isLoading = uiState.isLoading,
+            isEligibleUsingFeature = uiState.isEligibleUsingFeature
+        )
         renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return, uiState.isEligibleUsingFeature)
         renderErrorState(uiState.error)
         renderIneligibleAccessWarning(uiState.isEligibleUsingFeature)
@@ -268,7 +279,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderTicker(
         showTicker: Boolean,
-        remoteTickerMessage: String,
+//        remoteTickerMessage: String,
+        tickerList: List<RemoteTargetedTicker>,
         error: Throwable?,
         isLoading: Boolean,
         isEligibleUsingFeature: Boolean
@@ -277,7 +289,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val shouldDisplayTicker = showTicker && !isError && !isLoading && isEligibleUsingFeature
 
         if (shouldDisplayTicker) {
-            displayTicker(remoteTickerMessage)
+            displayTicker(tickerList)
         }
     }
 
@@ -304,26 +316,35 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTicker(remoteTickerMessage: String) {
+    private fun displayTicker(tickerList: List<RemoteTargetedTicker>) {
         binding?.run {
             ticker.isVisible = true
 
-            val defaultTicker = TickerData(
-                title = "",
-                description = getString(R.string.stfs_multi_location_ticker),
-                isFromHtml = true,
-                type = Ticker.TYPE_ANNOUNCEMENT
-            )
-            val remoteTicker = TickerData(
-                title = "",
-                description = remoteTickerMessage,
-                isFromHtml = true,
-                type = Ticker.TYPE_ANNOUNCEMENT
-            )
+//            val defaultTicker = TickerData(
+//                title = "",
+//                description = getString(R.string.stfs_multi_location_ticker),
+//                isFromHtml = true,
+//                type = Ticker.TYPE_ANNOUNCEMENT
+//            )
+//            val remoteTicker = TickerData(
+//                title = "",
+//                description = remoteTickerMessage,
+//                isFromHtml = true,
+//                type = Ticker.TYPE_ANNOUNCEMENT
+//            )
+            var tickerDataList: MutableList<TickerData> = mutableListOf()
+            tickerList.map {
+                tickerDataList.add(
+                    TickerData(
+                        description = it.description,
+                        type = it.type.toInt()
+                    )
+                )
+            }
 
-            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
+//            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
 
-            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     sendTickerHyperlinkClickEvent(linkUrl.toString())
@@ -331,18 +352,18 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
             })
 
-            ticker.addPagerView(tickerAdapter, tickers)
+            ticker.addPagerView(tickerAdapter, tickerDataList)
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     routeToUrl(linkUrl.toString())
                 }
 
                 override fun onDismiss() {
-                    val rollenceValues = getRollenceValues()
-                    viewModel.processEvent(
-                        event = FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker,
-                        rollenceValueList = rollenceValues
-                    )
+//                    val rollenceValues = getRollenceValues()
+//                    viewModel.processEvent(
+//                        event = FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker,
+//                        rollenceValueList = rollenceValues
+//                    )
                 }
             })
         }

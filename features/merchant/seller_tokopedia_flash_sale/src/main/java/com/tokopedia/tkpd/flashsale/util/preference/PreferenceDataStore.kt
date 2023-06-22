@@ -8,7 +8,7 @@ class PreferenceDataStore @Inject constructor(@ApplicationContext context: Conte
 
     companion object {
         private const val PREFERENCE_FILE_NAME = "tokopedia_flash_sale_prefs"
-        private const val PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED = "multi_location_ticker_dismissed"
+//        private const val PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED = "multi_location_ticker_dismissed"
     }
 
     private val preference by lazy {
@@ -19,15 +19,15 @@ class PreferenceDataStore @Inject constructor(@ApplicationContext context: Conte
     }
 
     fun markMultiLocationTickerAsDismissed() {
-        val editor = preference.edit()
-        with(editor) {
-            putBoolean(PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED, true)
-            apply()
-        }
+//        val editor = preference.edit()
+//        with(editor) {
+//            putBoolean(PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED, true)
+//            apply()
+//        }
     }
 
     fun isMultiLocationTickerDismissed(): Boolean {
-        return preference.getBoolean(PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED, false)
+        return true // preference.getBoolean(PREFERENCE_KEY_TICKER_MULTI_LOCATION_DISMISSED, false)
     }
 
 }
