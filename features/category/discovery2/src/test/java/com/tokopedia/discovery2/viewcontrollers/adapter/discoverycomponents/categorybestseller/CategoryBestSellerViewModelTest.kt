@@ -124,7 +124,7 @@ class CategoryBestSellerViewModelTest {
         } returns mockk()
 
         viewModel.onAttachToViewHolder()
-        assert(viewModel.getBackgroundImage().value == null)
+        assert(viewModel.getBackgroundImage().value == "")
     }
 
     @Test
