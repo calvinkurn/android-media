@@ -605,8 +605,6 @@ public interface ApplinkConst {
         String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{isVariant}";
 
         String SELLER_SHOP_HOUR = "sellerapp://shop/operational-hours";
-
-        String GOTO_KYC = "sellerapp://goto-kyc";
     }
 
     interface TokopediaNow {
