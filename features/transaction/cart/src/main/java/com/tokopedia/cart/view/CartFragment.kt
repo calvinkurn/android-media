@@ -998,11 +998,6 @@ class CartFragment :
         activity?.let {
             val statusBarBackground = binding?.statusBarBg
 
-//            val args = arguments?.getString(CartFragment::class.java.simpleName)
-//            if (args?.isNotEmpty() == true) {
-//                isToolbarWithBackButton = false
-//            }
-
             if (isToolbarWithBackButton) {
                 statusBarBackground?.hide()
             }
@@ -1044,11 +1039,6 @@ class CartFragment :
     @SuppressLint("ObsoleteSdkInt")
     private fun initBasicToolbar(view: View) {
         activity?.let {
-//            val args = arguments?.getString(CartFragment::class.java.simpleName)
-//            if (args?.isNotEmpty() == true) {
-//                isToolbarWithBackButton = false
-//            }
-
             val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)

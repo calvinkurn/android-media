@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.common.util
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.text.NumberFormat
 import java.util.*
 

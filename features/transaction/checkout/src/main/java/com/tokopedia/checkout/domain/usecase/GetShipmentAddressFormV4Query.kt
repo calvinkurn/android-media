@@ -88,6 +88,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       name
                       badge_url
                       description
+                      description_badge_url
                   }
                   add_ons {
                     status

@@ -227,7 +227,7 @@ class CartGroupViewHolder(
     private fun renderFulfillment(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
-                if (cartGroupHolderData.isFulfillment && cartGroupHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
+                if (cartGroupHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
                     iuImageFulfill.show()
                     iuImageFulfill.loadImageWithoutPlaceholder(cartGroupHolderData.fulfillmentBadgeUrl)
                 } else {

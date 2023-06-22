@@ -17,7 +17,6 @@ import com.tokopedia.checkout.databinding.ItemShipmentGroupFooterBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
-import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
@@ -36,12 +35,9 @@ import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import rx.Emitter
 import rx.Observable
 import rx.Subscriber
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
@@ -52,8 +48,7 @@ class ShipmentCartItemBottomViewHolder(
     itemView: View,
     private val ratesDataConverter: RatesDataConverter,
     private val listener: Listener? = null,
-    private val actionListener: ShipmentAdapterActionListener? = null,
-    private val scheduleDeliveryCompositeSubscription: CompositeSubscription? = null
+    private val actionListener: ShipmentAdapterActionListener? = null
 ) : RecyclerView.ViewHolder(itemView), ShippingWidget.ShippingWidgetListener {
 
     companion object {
@@ -80,13 +75,14 @@ class ShipmentCartItemBottomViewHolder(
     private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
-    private var scheduleDeliverySubscription: Subscription? = null
+
+//    private var scheduleDeliverySubscription: Subscription? = null
     private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
-    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
+//    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
 
     init {
         initSaveStateDebouncer()
-        initScheduleDeliveryPublisher()
+//        initScheduleDeliveryPublisher()
     }
 
     fun bind(
@@ -1221,36 +1217,36 @@ class ShipmentCartItemBottomViewHolder(
     }
 
     private fun initScheduleDeliveryPublisher() {
-        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
-            scheduleDeliverySubscription?.unsubscribe()
-        }
-        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
-            scheduleDeliveryDonePublisher?.onCompleted()
-        }
-        scheduleDeliverySubscription = Observable.create(
-            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
-                scheduleDeliveryDebouncedListener =
-                    object : ScheduleDeliveryDebouncedListener {
-                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
-                            emitter.onNext(shipmentScheduleDeliveryHolderData)
-                        }
-                    }
-            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
-            Emitter.BackpressureMode.LATEST
-        )
-            .observeOn(AndroidSchedulers.mainThread(), false, 1)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
-                scheduleDeliveryDonePublisher = PublishSubject.create()
-                actionListener?.onChangeScheduleDelivery(
-                    scheduleDeliveryUiModel,
-                    position,
-                    scheduleDeliveryDonePublisher!!
-                )
-                scheduleDeliveryDonePublisher
-            }
-            .subscribe()
-        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
+//        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
+//            scheduleDeliverySubscription?.unsubscribe()
+//        }
+//        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
+//            scheduleDeliveryDonePublisher?.onCompleted()
+//        }
+//        scheduleDeliverySubscription = Observable.create(
+//            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
+//                scheduleDeliveryDebouncedListener =
+//                    object : ScheduleDeliveryDebouncedListener {
+//                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
+//                            emitter.onNext(shipmentScheduleDeliveryHolderData)
+//                        }
+//                    }
+//            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
+//            Emitter.BackpressureMode.LATEST
+//        )
+//            .observeOn(AndroidSchedulers.mainThread(), false, 1)
+//            .subscribeOn(AndroidSchedulers.mainThread())
+//            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
+//                scheduleDeliveryDonePublisher = PublishSubject.create()
+//                actionListener?.onChangeScheduleDelivery(
+//                    scheduleDeliveryUiModel,
+//                    position,
+//                    scheduleDeliveryDonePublisher!!
+//                )
+//                scheduleDeliveryDonePublisher
+//            }
+//            .subscribe()
+//        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
     }
 
     fun unsubscribeDebouncer() {
@@ -1336,10 +1332,10 @@ class ShipmentCartItemBottomViewHolder(
         fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
     }
 
-    private interface ScheduleDeliveryDebouncedListener {
-
-        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
-    }
+//    private interface ScheduleDeliveryDebouncedListener {
+//
+//        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
+//    }
 
     interface Listener {
 

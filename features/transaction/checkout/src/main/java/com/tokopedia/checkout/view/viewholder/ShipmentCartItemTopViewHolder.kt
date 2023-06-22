@@ -50,28 +50,19 @@ class ShipmentCartItemTopViewHolder(
                         )
                     )
                 }
-            } else if (shipmentCartItemTopModel.shopTypeInfoData.shopBadge.isNotEmpty()) {
-                imgShopBadge.setImageUrl(shipmentCartItemTopModel.shopTypeInfoData.shopBadge)
-                imgShopBadge.visible()
-                imgShopBadge.contentDescription = itemView.context.getString(
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
-                    shipmentCartItemTopModel.shopTypeInfoData.title.lowercase(
-                        Locale.getDefault()
-                    )
-                )
             } else {
                 imgShopBadge.gone()
             }
-            if (shipmentCartItemTopModel.shopLocation.isNotBlank()) {
-                val fulfillmentBadgeUrl = shipmentCartItemTopModel.fulfillmentBadgeUrl
-                if (shipmentCartItemTopModel.isFulfillment && fulfillmentBadgeUrl.isNotBlank()) {
+            if (shipmentCartItemTopModel.groupInfoDescription.isNotBlank()) {
+                val fulfillmentBadgeUrl = shipmentCartItemTopModel.groupInfoDescriptionBadgeUrl
+                if (fulfillmentBadgeUrl.isNotBlank()) {
                     iuImageFulfill.setImageUrl(fulfillmentBadgeUrl)
                     iuImageFulfill.visible()
                 } else {
                     iuImageFulfill.gone()
                 }
+                tvFulfillDistrict.text = shipmentCartItemTopModel.groupInfoDescription
                 tvFulfillDistrict.visible()
-                tvFulfillDistrict.text = shipmentCartItemTopModel.shopLocation
             } else {
                 iuImageFulfill.gone()
                 tvFulfillDistrict.gone()
@@ -139,25 +130,6 @@ class ShipmentCartItemTopViewHolder(
             }
         }
     }
-
-//    private fun renderFulfillment(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
-//        with(binding.containerSellerInfo) {
-//            if (shipmentCartItemTopModel.shopLocation.isNotBlank()) {
-//                val fulfillmentBadgeUrl = shipmentCartItemTopModel.fulfillmentBadgeUrl
-//                if (shipmentCartItemTopModel.isFulfillment && fulfillmentBadgeUrl.isNotBlank()) {
-//                    iuImageFulfill.setImageUrl(fulfillmentBadgeUrl)
-//                    iuImageFulfill.visible()
-//                } else {
-//                    iuImageFulfill.gone()
-//                }
-//                tvFulfillDistrict.visible()
-//                tvFulfillDistrict.text = shipmentCartItemTopModel.shopLocation
-//            } else {
-//                iuImageFulfill.gone()
-//                tvFulfillDistrict.gone()
-//            }
-//        }
-//    }
 
     private fun renderErrorAndWarning(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         if (shipmentCartItemTopModel.isError) {

@@ -118,13 +118,14 @@ class ShipmentAdapter @Inject constructor(
             }
             return field
         }
-    private var scheduleDeliverySubscription: CompositeSubscription? = CompositeSubscription()
-        get() {
-            if (field == null || field?.isUnsubscribed == false) {
-                return CompositeSubscription()
-            }
-            return field
-        }
+
+//    private var scheduleDeliverySubscription: CompositeSubscription? = CompositeSubscription()
+//        get() {
+//            if (field == null || field?.isUnsubscribed == false) {
+//                return CompositeSubscription()
+//            }
+//            return field
+//        }
     private var isShowOnboarding = false
     var lastChooseCourierItemPosition = 0
     var lastServiceId = 0
@@ -340,8 +341,7 @@ class ShipmentAdapter @Inject constructor(
                     view,
                     ratesDataConverter,
                     this@ShipmentAdapter,
-                    shipmentAdapterActionListener,
-                    scheduleDeliverySubscription
+                    shipmentAdapterActionListener
                 )
             }
 
@@ -461,7 +461,6 @@ class ShipmentAdapter @Inject constructor(
 
     fun clearCompositeSubscription() {
         compositeSubscription?.clear()
-        scheduleDeliverySubscription?.clear()
     }
 
     fun clearData() {

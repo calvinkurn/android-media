@@ -93,6 +93,7 @@ includeIfEnabled("features:discovery:autocomplete_component")
 includeIfEnabled("features:discovery:recommendation_widget_common")
 includeIfEnabled("features:discovery:home")
 includeIfEnabled("features:discovery:home_component")
+includeIfEnabled("features:discovery:home_component_header")
 includeIfEnabled("features:discovery:home_recom")
 includeIfEnabled("features:discovery:home_nav")
 includeIfEnabled("features:discovery:topadssdk")
@@ -281,7 +282,6 @@ includeIfEnabled("features:user:fcm_common")
 
 includeIfEnabled("features:tokofood")
 
-includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
 
