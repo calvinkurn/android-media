@@ -78,7 +78,7 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check internal catalog appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://catalog"
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://catalog/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
