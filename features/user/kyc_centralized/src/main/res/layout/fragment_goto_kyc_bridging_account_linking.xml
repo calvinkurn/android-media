@@ -24,7 +24,7 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         tools:visibility="visible"
-        app:layout_constraintDimensionRatio="37:16"
+        app:layout_constraintDimensionRatio="320:152"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unify_toolbar" />
