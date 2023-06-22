@@ -88,7 +88,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onGetRecommendation_thenReturn(productCarouselResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             val chipList = listOf(
@@ -241,7 +245,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onGetRecommendation_thenReturn(firstProductCarouselResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             onGetRecommendation_thenReturn(secondProductCarouselResponse)
@@ -367,7 +375,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = "2")
@@ -439,7 +451,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onGetRecommendation_thenReturn(firstProductCarouselResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             onGetRecommendation_thenReturn(secondProductCarouselResponse)
@@ -567,7 +583,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = selectedChipId)
@@ -643,7 +663,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetRecommendation_thenReturn(productCarouselResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
                 productId = productId,
@@ -813,7 +837,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetRecommendation_thenReturn(productCarouselResponse)
             onAddToCart_thenReturn(addToCartResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
                 productId = "99",
@@ -888,7 +916,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
             onGetRecommendation_thenReturn(productCarouselResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
 
@@ -908,7 +940,11 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-            viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf(),
+                enableNewRepurchase = true
+            )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
 

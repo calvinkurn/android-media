@@ -3,6 +3,7 @@ package com.tokopedia.affiliate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
@@ -68,7 +69,13 @@ const val APP_LINK_DESTINATION =
 
 const val QUERY_CONST = "titlebar=false"
 
-val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
+val uri = String.format(
+    Locale.ENGLISH,
+    "%s?%s?url=%s",
+    ApplinkConst.WEBVIEW,
+    QUERY_CONST,
+    APP_LINK_DESTINATION
+)
 
 const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
 
@@ -194,7 +201,8 @@ const val AFFILIATE_NC = "Affiliate_NC"
 
 const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
-const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
+const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK =
+    "tokopedia://discovery/tantangan-hadiah-ramadan"
 
 const val AFFILIATE_TOKONOW_DATA = "android_affiliate_tokonow_static_data"
 

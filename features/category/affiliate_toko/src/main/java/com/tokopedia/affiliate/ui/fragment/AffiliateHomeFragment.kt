@@ -99,10 +99,12 @@ class AffiliateHomeFragment :
     private var listSize = 0
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
     private var affiliateActivityInterface: AffiliateActivityInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -155,8 +157,6 @@ class AffiliateHomeFragment :
                 affiliateActivityInterface = affiliateActivity
             }
         }
-
-        private const val PARTIAL_RESET_LENGTH = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -175,7 +175,7 @@ class AffiliateHomeFragment :
                 affiliatePerformanceChipClick = this
             ),
             source = AffiliateAdapter.PageSource.SOURCE_HOME,
-            userId = userSessionInterface.userId
+            userId = userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -197,8 +197,8 @@ class AffiliateHomeFragment :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             "${AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_FRAGMENT}register",
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -262,7 +262,7 @@ class AffiliateHomeFragment :
             AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -344,7 +344,7 @@ class AffiliateHomeFragment :
         affiliateHomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
-                    if (it.getString(USER_ID, null) != userSessionInterface.userId || it.getLong(
+                    if (it.getString(USER_ID, null) != userSessionInterface?.userId || it.getLong(
                             TICKER_ID,
                             -1
                         ) != announcementData.getAffiliateAnnouncementV2?.data?.id
@@ -354,7 +354,7 @@ class AffiliateHomeFragment :
                                 TICKER_ID,
                                 announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
                             )
-                            putString(USER_ID, userSessionInterface.userId)
+                            putString(USER_ID, userSessionInterface?.userId)
                             apply()
                         }
 
@@ -397,7 +397,7 @@ class AffiliateHomeFragment :
                 PAGE_ANNOUNCEMENT_HOME,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_HOME_TICKER_COMMUNICATION,
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -469,7 +469,7 @@ class AffiliateHomeFragment :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -552,7 +552,7 @@ class AffiliateHomeFragment :
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -592,7 +592,7 @@ class AffiliateHomeFragment :
                 action,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -639,7 +639,7 @@ class AffiliateHomeFragment :
             AffiliateAnalytics.ActionKeys.CLICK_PROMOTED_PAGE_FILTER_TAB,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "${type?.name?.lowercase()}",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 

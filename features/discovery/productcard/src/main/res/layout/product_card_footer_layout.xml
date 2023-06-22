@@ -248,4 +248,22 @@
         app:unifyButtonSize="medium"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonSeeOtherProduct"
+        android:contentDescription="@string/product_card_content_desc_seeOtherProduct"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_button_see_other_product_height"
+        android:layout_marginTop="@dimen/product_card_button_see_other_product_margin_top"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonDeleteProduct"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="text"
+        app:unifyButtonSize="small"
+        tools:text="Lihat 5 Lainnya"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

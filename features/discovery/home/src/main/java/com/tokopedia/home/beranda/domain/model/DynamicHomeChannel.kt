@@ -310,6 +310,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
+            const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
