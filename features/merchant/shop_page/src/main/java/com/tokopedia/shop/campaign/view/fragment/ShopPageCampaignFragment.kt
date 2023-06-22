@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -26,8 +27,10 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
@@ -69,15 +72,21 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
+import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
@@ -101,6 +110,8 @@ class ShopPageCampaignFragment :
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
+        private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
+        private const val QUERY_PARAM_TAB = "tab"
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -112,14 +123,14 @@ class ShopPageCampaignFragment :
     }
 
     private val viewBindingCampaignTab: FragmentShopPageCampaignBinding? by viewBinding()
-    private var campaignTabBackgroundColor: String = ""
-    private var campaignTabBackgroundPatternImage: String = ""
+    private var listCampaignTabBackgroundColor: List<String> = listOf()
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
     private var textColor: String = ""
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var viewModelCampaign: ShopCampaignViewModel? = null
+    private var isDarkTheme: Boolean = false
 
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
@@ -164,6 +175,36 @@ class ShopPageCampaignFragment :
         observeVoucherSliderWidgetData()
         observeRedeemResult()
         observeCampaignWidgetListVisitable()
+        observeLatestShopCampaignWidgetLayoutData()
+    }
+
+    private fun observeLatestShopCampaignWidgetLayoutData() {
+        viewModelCampaign?.latestShopCampaignWidgetLayoutData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    getRecyclerView(view)?.visible()
+                    setShopLayoutData(it.data)
+                }
+                is Fail -> {
+                    onErrorGetLatestShopCampaignWidgetLayoutData(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onErrorGetLatestShopCampaignWidgetLayoutData(throwable: Throwable) {
+        globalErrorShopPage?.visible()
+        if (throwable is MessageErrorException) {
+            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
+        } else {
+            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
+        }
+        globalErrorShopPage?.errorSecondaryAction?.show()
+        globalErrorShopPage?.setOnClickListener {
+            globalErrorShopPage?.errorSecondaryAction?.hide()
+            getLatestShopCampaignWidgetLayoutData()
+        }
+        getRecyclerView(view)?.hide()
     }
 
     private fun observeCampaignWidgetListVisitable() {
@@ -227,9 +268,17 @@ class ShopPageCampaignFragment :
         getRecyclerView(view)?.visible()
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
-        shopPageHomeLayoutUiModel?.let {
-            setShopLayoutData(it)
-            setWidgetLayoutPlaceholder()
+        checkShopLayout()
+    }
+
+    override fun checkShopLayout() {
+        shopPageHomeLayoutUiModel.let {
+            if (it != null) {
+                setShopLayoutData(it)
+                setWidgetLayoutPlaceholder()
+            } else {
+                getLatestShopCampaignWidgetLayoutData()
+            }
         }
     }
 
@@ -342,9 +391,21 @@ class ShopPageCampaignFragment :
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
         shopCampaignTabAdapter.updateShopCampaignWidgetContentData(mapWidgetContentData)
+        checkBannerTimerWidgetRemindMeStatus(mapWidgetContentData.values.toList())
     }
 
-    // region mvc widget listener
+    private fun checkBannerTimerWidgetRemindMeStatus(listWidgetContentData: List<Visitable<*>?>) {
+        if (isLogin) {
+            listWidgetContentData
+                .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .firstOrNull().let { bannerTimerWidget ->
+                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                    }
+                }
+        }
+    }
+
     override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
         shopCampaignTabTracker.impressionShopBannerWidget(
             shopId,
@@ -498,24 +559,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun renderCampaignTabBackgroundColor() {
-//        if (listBackgroundColor.isNotEmpty()) {
-//            topView?.show()
-//            centerView?.show()
-//            bottomView?.show()
-//            val colors = IntArray(listBackgroundColor.size)
-//            for (i in listBackgroundColor.indices) {
-//                colors[i] = parseColor(listBackgroundColor.getOrNull(i).orEmpty())
-//            }
-//            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-//            gradient.cornerRadius = 0f
-//            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
-//            centerView?.background = gradient
-//            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
-//        } else {
-//            topView?.hide()
-//            centerView?.hide()
-//            bottomView?.hide()
-//        }
+        if (listCampaignTabBackgroundColor.isNotEmpty()) {
+            getRecyclerView(view)?.apply {
+                setBackgroundColor(parseColor(listCampaignTabBackgroundColor.firstOrNull().orEmpty()))
+            }
+        }
     }
 
     private fun parseColor(colorHex: String): Int {
@@ -684,7 +732,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun isWidgetVoucherSlider(uiModel: ShopPageWidgetUiModel): Boolean {
-        return uiModel.widgetType == WidgetType.VOUCHER && uiModel.widgetName == WidgetName.VOUCHER_SLIDER
+        return uiModel.widgetType == WidgetType.VOUCHER_SLIDER && uiModel.widgetName == WidgetName.VOUCHER
     }
 
     private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
@@ -735,16 +783,12 @@ class ShopPageCampaignFragment :
         (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
-    fun setCampaignTabBackgroundColor(backgroundColor: String) {
-        this.campaignTabBackgroundColor = backgroundColor
-    }
-
-    fun setCampaignTabBackgroundPatternImage(backgroundPatternImage: String) {
-        this.campaignTabBackgroundPatternImage = backgroundPatternImage
+    fun setCampaignTabListBackgroundColor(listBackgroundColor: List<String>) {
+        this.listCampaignTabBackgroundColor = listBackgroundColor
     }
 
     override fun isCampaignTabDarkMode(): Boolean {
-        return true
+        return isDarkTheme
     }
 
     override fun resumeSliderBannerAutoScroll() {
@@ -769,8 +813,12 @@ class ShopPageCampaignFragment :
     }
 
     override fun onWidgetSliderBannerHighlightCtaClicked(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
-        val appLink = uiModel.header.ctaLink
-        if (Uri.parse(appLink).lastPathSegment.equals("home", true)) {
+        checkShouldSelectHomeTab(uiModel.header.ctaLink)
+    }
+
+    private fun checkShouldSelectHomeTab(appLink: String) {
+        val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
+        if (tabValue == ShopPageHeaderTabName.HOME) {
             (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
         }
     }
@@ -781,6 +829,7 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        goToPDP(productUiModel?.productUrl.orEmpty())
     }
 
     override fun onCampaignCarouselProductItemImpression(
@@ -792,6 +841,9 @@ class ShopPageCampaignFragment :
     }
 
     override fun onCtaClicked(carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?) {
+        context?.let {
+            RouteManager.route(it, carouselProductWidgetUiModel?.header?.ctaLink)
+        }
     }
 
     override fun onCampaignCarouselProductWidgetImpression(
@@ -804,7 +856,6 @@ class ShopPageCampaignFragment :
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
-//        TODO("Not yet implemented")
     }
 
     override fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int) {
@@ -875,5 +926,99 @@ class ShopPageCampaignFragment :
             throwable
         )
         shopCampaignTabAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
+    }
+
+    override fun onDisplayBannerTimerClicked(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        RouteManager.route(context, uiModel.header.ctaLink)
+    }
+
+    override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {}
+
+    override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        shopCampaignTabAdapter.removeWidget(uiModel)
+        endlessRecyclerViewScrollListener.resetState()
+        getLatestShopCampaignWidgetLayoutData()
+    }
+
+    private fun getLatestShopCampaignWidgetLayoutData() {
+        globalErrorShopPage?.hide()
+        shopCampaignTabAdapter.showLoading()
+        scrollToTop()
+        viewModelCampaign?.getLatestShopCampaignWidgetLayoutData(
+            shopId,
+            extParam,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            "CampaignTab"
+        )
+    }
+
+    override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        viewModel?.let {
+            if (it.isLogin) {
+                viewModelCampaign?.showBannerTimerRemindMeLoading(
+                    shopCampaignTabAdapter.getNewVisitableItems()
+                )
+                handleBannerTimerClickRemindMe(uiModel)
+            } else {
+                redirectToLoginPage()
+            }
+        }
+    }
+
+    override fun onSuccessCheckBannerTimerNotifyMe(data: CheckCampaignNotifyMeUiModel) {
+        val isRegisterCampaign = data.action.equals(
+            NotifyMeAction.REGISTER.action,
+            ignoreCase = true
+        )
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRegisterCampaign,
+            true
+        )
+        view?.let {
+            Toaster.build(
+                it,
+                data.message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+    }
+
+    override fun onFailCheckBannerTimerNotifyMe(errorMessage: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                errorMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRemindMe = false,
+            isClickRemindMe = false
+        )
+    }
+
+    override fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRemindMe = data.isAvailable,
+            isClickRemindMe = false
+        )
+    }
+
+    fun setIsDarkTheme(isDarkTheme: Boolean) {
+        this.isDarkTheme = isDarkTheme
+    }
+
+    override fun getListBackgroundColor(): List<String> {
+        return listCampaignTabBackgroundColor
     }
 }

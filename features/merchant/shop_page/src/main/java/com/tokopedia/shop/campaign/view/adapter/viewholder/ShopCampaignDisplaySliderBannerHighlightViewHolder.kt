@@ -1,7 +1,9 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -9,11 +11,14 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignDisplaySliderBannerHighlightAdapter
 import com.tokopedia.shop.campaign.view.adapter.SliderBannerHighlightLayoutManager
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignSliderBannerHighlightBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -21,16 +26,18 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val shopCampaignInterface: ShopCampaignInterface
 ) : AbstractViewHolder<ShopWidgetDisplaySliderBannerHighlightUiModel>(itemView),
     SliderBannerHighlightLayoutManager.Listener {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_campaign_slider_banner_highlight
+        private const val INT_TWO = 2
     }
 
-    interface Listener{
+    interface Listener {
         fun onProductImageClicked(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData)
         fun onProductImageImpression(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData)
         fun onWidgetSliderBannerHighlightImpression(
@@ -54,13 +61,46 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     private val layoutManagerSliderBannerHighlight: SliderBannerHighlightLayoutManager by lazy {
         SliderBannerHighlightLayoutManager(itemView.context, this)
     }
+    private val rvCircularLoopScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstItemVisible: Int = layoutManager.findFirstVisibleItemPosition()
+            if (firstItemVisible != Int.ONE && (firstItemVisible % getTotalProductSize() == Int.ONE)) {
+                layoutManager.scrollToPosition(Int.ONE)
+            } else if (firstItemVisible != Int.ONE && firstItemVisible > getTotalProductSize() && (firstItemVisible % getTotalProductSize() > Int.ONE)) {
+                layoutManager.scrollToPosition(firstItemVisible % getTotalProductSize())
+            } else if (firstItemVisible == Int.ZERO) {
+                layoutManager.scrollToPositionWithOffset(
+                    getTotalProductSize(),
+                    -recyclerView.computeHorizontalScrollOffset()
+                )
+            }
+        }
+    }
+    private var uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel? = null
 
     override fun bind(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
+        this.uiModel = uiModel
         setTitle(uiModel)
         setProductImageCarousel(uiModel)
         setButtonCta(uiModel)
+        setBackgroundGradient()
         setWidgetImpression(uiModel)
         setCtaClickedListener(uiModel)
+    }
+
+    private fun setBackgroundGradient() {
+        val listBackgroundColor = shopCampaignInterface.getListBackgroundColor()
+        if(listBackgroundColor.isNotEmpty()) {
+            val colors = IntArray(listBackgroundColor.size)
+            for (i in listBackgroundColor.indices) {
+                colors[i] =
+                    ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            itemView.background = gradient
+        }
     }
 
     private fun setCtaClickedListener(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
@@ -104,8 +144,10 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
                 layoutManager = layoutManagerSliderBannerHighlight
                 adapter = adapterSliderBannerHighlight
                 adapterSliderBannerHighlight.submit(uiModel.listHighlightProductData)
+                addOnScrollListener(rvCircularLoopScrollListener)
                 setPrevNextButton()
             }
+            scrollToPosition(adapterSliderBannerHighlight.itemCount / INT_TWO)
         }
     }
 
@@ -137,5 +179,9 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
             buttonPrev?.show()
             buttonNext?.show()
         }
+    }
+
+    private fun getTotalProductSize(): Int {
+        return uiModel?.listHighlightProductData?.size.orZero()
     }
 }

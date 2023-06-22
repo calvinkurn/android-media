@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
@@ -15,12 +17,15 @@ import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,12 +34,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Provider
 
 class ShopCampaignViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getShopPageHomeLayoutV2UseCase: GetShopPageHomeLayoutV2UseCase,
     private val getPromoVoucherListUseCase: GetPromoVoucherListUseCase,
     private val redeemPromoVoucherUseCase: RedeemPromoVoucherUseCase,
+    private val getShopDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val shopCampaignWidgetContentData: Flow<Result<Map<Pair<String, String>, Visitable<*>?>>>
@@ -58,6 +65,10 @@ class ShopCampaignViewModel @Inject constructor(
     private val _campaignWidgetListVisitable = MutableLiveData<Result<List<Visitable<*>>>>()
     val campaignWidgetListVisitable: LiveData<Result<List<Visitable<*>>>>
         get() = _campaignWidgetListVisitable
+
+    val latestShopCampaignWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
+        get() = _latestShopCampaignWidgetLayoutData
+    private val _latestShopCampaignWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
     fun getWidgetContentData(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -186,5 +197,91 @@ class ShopCampaignViewModel @Inject constructor(
         )
 
     }
+
+    fun getLatestShopCampaignWidgetLayoutData(
+        shopId: String,
+        extParam: String,
+        locData: LocalCacheModel,
+        tabName: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopHomeWidgetData = getShopDynamicHomeTabWidgetData(
+                shopId,
+                extParam,
+                locData,
+                tabName
+            )
+            _latestShopCampaignWidgetLayoutData.postValue(Success(shopHomeWidgetData))
+        }) {
+            _latestShopCampaignWidgetLayoutData.postValue(Fail(it))
+        }
+    }
+
+    // need to surpress it.name, since name is not related to PII
+    @SuppressLint("PII Data Exposure")
+    private suspend fun getShopDynamicHomeTabWidgetData(
+        shopId: String,
+        extParam: String,
+        locData: LocalCacheModel,
+        tabName: String
+    ): ShopPageLayoutUiModel {
+        getShopDynamicTabUseCase.isFromCacheFirst = false
+        getShopDynamicTabUseCase.setRequestParams(
+            GqlShopPageGetDynamicTabUseCase.createParams(
+                shopId.toIntOrZero(),
+                extParam,
+                locData.district_id,
+                locData.city_id,
+                locData.lat,
+                locData.long,
+                tabName
+            ).parameters
+        )
+        val layoutData = getShopDynamicTabUseCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {
+            it.name == ShopPageHeaderTabName.CAMPAIGN
+        } ?: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+        return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData.data.homeLayoutData)
+    }
+
+    fun showBannerTimerRemindMeLoading(newList: MutableList<Visitable<*>>) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
+                nplCampaignUiModel.let {
+                    it.data?.showRemindMeLoading = true
+                    it.isNewData = true
+                }
+            }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) {throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
+    fun updateBannerTimerWidgetData(
+        newList: MutableList<Visitable<Any>>,
+        isRemindMe: Boolean,
+        isClickRemindMe: Boolean
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .onEach { nplCampaignUiModel ->
+                    nplCampaignUiModel.data?.let {
+                        it.isRemindMe = isRemindMe
+                        if (isClickRemindMe) {
+                            if (isRemindMe)
+                                ++it.totalNotify
+                            else
+                                --it.totalNotify
+                        }
+                        it.showRemindMeLoading = false
+                        nplCampaignUiModel.isNewData = true
+                    }
+                }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
 
 }

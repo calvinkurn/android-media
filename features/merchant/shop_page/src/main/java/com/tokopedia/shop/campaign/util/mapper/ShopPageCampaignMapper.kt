@@ -12,12 +12,12 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_SLIDER
+import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.VOUCHER
+import com.tokopedia.shop.home.WidgetType.VOUCHER_SLIDER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -58,7 +58,7 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.type.lowercase()) {
-            VOUCHER.lowercase() -> mapToVoucherWidget(widgetResponse, widgetLayout)
+            VOUCHER_SLIDER.lowercase() -> mapToVoucherWidget(widgetResponse, widgetLayout)
 
             DISPLAY.lowercase() -> mapDisplayWidget(widgetResponse, widgetLayout)
 
@@ -83,7 +83,7 @@ object ShopPageCampaignMapper {
         widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
-            VOUCHER_SLIDER -> {
+            VOUCHER -> {
                 ShopPageWidgetMapper.mapToCampaignVoucherSliderUiModel(
                     widgetResponse,
                     widgetLayout

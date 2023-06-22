@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.model
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
@@ -19,24 +20,24 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
     val impressHolder = ImpressHolder()
 
     data class NewProductLaunchCampaignItem(
-            val campaignId: String = "",
-            val name: String = "",
-            val description: String = "",
-            val startDate: String = "",
-            val endDate: String = "",
-            val statusCampaign: String = "",
-            val timeDescription: String = "",
-            val timeCounter: String = "",
-            var totalNotify: Int = 0,
-            val totalNotifyWording: String = "",
-            val voucherWording: String = "",
-            val dynamicRule: DynamicRule = DynamicRule(),
-            val bannerList: List<BannerItem> = listOf(),
-            val productList: List<ShopHomeProductUiModel> = listOf(),
-            var isRemindMe: Boolean? = null,
-            var rvState: Parcelable? = null,
-            var showRemindMeLoading : Boolean = false,
-            var isHideRemindMeTextAfterXSeconds: Boolean = false
+        val campaignId: String = "",
+        val name: String = "",
+        val description: String = "",
+        val startDate: String = "",
+        val endDate: String = "",
+        val statusCampaign: String = "",
+        val timeDescription: String = "",
+        val timeCounter: String = "",
+        var totalNotify: Int = 0,
+        val totalNotifyWording: String = "",
+        val voucherWording: String = "",
+        val dynamicRule: DynamicRule = DynamicRule(),
+        val bannerList: List<BannerItem> = listOf(),
+        val productList: List<ShopHomeProductUiModel> = listOf(),
+        var isRemindMe: Boolean? = null,
+        var rvState: Parcelable? = null,
+        var showRemindMeLoading : Boolean = false,
+        var isHideRemindMeTextAfterXSeconds: Boolean = false
     ) {
 
         data class BannerItem(
@@ -46,15 +47,6 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
             val device: String = ""
         ) : ImpressHolder()
 
-        data class DynamicRule(
-            val descriptionHeader: String = "",
-            val listDynamicRoleData: List<DynamicRoleData> = listOf()
-        ) {
-            data class DynamicRoleData(
-                    val ruleID: String = "",
-                    val isActive: Boolean = false
-            )
-        }
     }
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {

@@ -26,7 +26,7 @@ import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THA
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
-import com.tokopedia.shop.home.view.model.StatusCampaignInt
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -100,7 +100,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun setTnc(title: String, model: ShopWidgetDisplayBannerTimerUiModel) {
         imageTnc?.apply {
-            val statusCampaign = model.data?.status ?: -1
+            val statusCampaign = model.data?.status
             if (title.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
                 hide()
             } else {
@@ -114,7 +114,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun setCta(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val ctaText = uiModel.header.ctaText
-        val statusCampaign = uiModel.data?.status ?: -1
+        val statusCampaign = uiModel.data?.status
         val isShowCta = checkIsShowCta(ctaText, statusCampaign)
         textSeeAll?.apply {
             if (!isShowCta) {
@@ -130,14 +130,14 @@ class ShopHomeDisplayBannerTimerViewHolder(
         }
     }
 
-    private fun checkIsShowCta(ctaText: String, statusCampaign: Int): Boolean {
+    private fun checkIsShowCta(ctaText: String, statusCampaign: StatusCampaign?): Boolean {
         return ctaText.isNotEmpty() && isStatusCampaignOngoing(statusCampaign)
     }
 
     private fun setTimer(
         model: ShopWidgetDisplayBannerTimerUiModel
     ) {
-        val statusCampaign = model.data?.status ?: -1
+        val statusCampaign = model.data?.status
         if (!isStatusCampaignFinished(statusCampaign)) {
             val timeDescription = model.data?.timeDescription.orEmpty()
             val timeCounter = model.data?.timeCounter.orZero()
@@ -265,7 +265,12 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun setBannerImage(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val imageBannerUrl = uiModel.data?.imageUrl.orEmpty()
-        imageBanner?.setImageUrl(imageBannerUrl, heightRatio = getHeightRatio(uiModel))
+        imageBanner?.apply {
+            setImageUrl(imageBannerUrl)
+            setOnClickListener {
+                listener.onDisplayBannerTimerClicked(bindingAdapterPosition, uiModel)
+            }
+        }
     }
 
     private fun setRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -350,16 +355,16 @@ class ShopHomeDisplayBannerTimerViewHolder(
     }
 
 
-    private fun isStatusCampaignFinished(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.FINISHED.statusCampaign
+    private fun isStatusCampaignFinished(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.FINISHED
     }
 
-    private fun isStatusCampaignOngoing(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.ONGOING.statusCampaign
+    private fun isStatusCampaignOngoing(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.ONGOING
     }
 
-    private fun isStatusCampaignUpcoming(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.UPCOMING.statusCampaign
+    private fun isStatusCampaignUpcoming(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.UPCOMING
     }
 
         private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {

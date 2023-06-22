@@ -120,7 +120,6 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
-import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -193,6 +192,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivit
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -252,6 +252,7 @@ open class ShopPageHomeFragment :
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val QUERY_PARAM_EXT_PARAM = "extParam"
+        private const val QUERY_PARAM_TAB = "tab"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
@@ -271,6 +272,7 @@ open class ShopPageHomeFragment :
         private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE = 0.5f
         private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE = 0.75f
         private const val BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE = 1f
+        private const val CAMPAIGN_TAB_APP_LINK_LAST_SEGMENT = "campaign"
 
         fun createInstance(
             shopId: String,
@@ -526,8 +528,78 @@ open class ShopPageHomeFragment :
         observeShopPageMiniCartSharedViewModel()
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
+        observeBannerTimerRemindMeStatusData()
+        observeCheckBannerTimerRemindMeStatusData()
         isLoadInitialData = true
         //showVoucherListBottomsheet()
+    }
+
+    private fun observeCheckBannerTimerRemindMeStatusData() {
+        viewModel?.checkBannerTimerRemindMeStatusData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.success) {
+                        onSuccessCheckBannerTimerNotifyMe(it.data)
+                    } else {
+                        onFailCheckBannerTimerNotifyMe(it.data.errorMessage)
+                    }
+                }
+                is Fail -> {
+                    (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
+                        val errorMessage =
+                            ErrorHandler.getErrorMessage(context, checkCampaignException)
+                        onFailCheckBannerTimerNotifyMe(
+                            errorMessage
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    protected open fun onFailCheckBannerTimerNotifyMe(errorMessage: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                errorMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+        shopHomeAdapter?.updateBannerTimerWidgetData()
+    }
+
+    protected open fun onSuccessCheckBannerTimerNotifyMe(data: CheckCampaignNotifyMeUiModel) {
+        val isRegisterCampaign = data.action.equals(
+            NotifyMeAction.REGISTER.action,
+            ignoreCase = true
+        )
+        shopHomeAdapter?.updateBannerTimerWidgetData(isRegisterCampaign, true)
+        view?.let {
+            Toaster.build(
+                it,
+                data.message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.shop_string_ok)
+            ) {
+                shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
+            }.show()
+        }
+    }
+
+    private fun observeBannerTimerRemindMeStatusData() {
+        viewModel?.bannerTimerRemindMeStatusData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBannerTimerRemindMeStatusData(it.data)
+                }
+                else -> {
+                    //no-op
+                }
+            }
+        }
     }
 
     private fun showVoucherListBottomsheet() {
@@ -758,6 +830,19 @@ open class ShopPageHomeFragment :
         checkProductWidgetWishListStatus(mapWidgetContentData.values.toList())
         checkCampaignNplWidgetRemindMeStatus(mapWidgetContentData.values.toList())
         checkFlashSaleWidgetRemindMeStatus(mapWidgetContentData.values.toList())
+        checkBannerTimerWidgetRemindMeStatus(mapWidgetContentData.values.toList())
+    }
+
+    private fun checkBannerTimerWidgetRemindMeStatus(listWidgetContentData: List<Visitable<*>?>) {
+        if (isLogin) {
+            listWidgetContentData
+                .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .firstOrNull().let { bannerTimerWidget ->
+                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                    }
+                }
+        }
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -885,14 +970,22 @@ open class ShopPageHomeFragment :
         shopHomeAdapter?.isOwner = isOwner
         stopMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_PREPARE)
         startMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_MIDDLE)
-        shopPageHomeLayoutUiModel?.let {
-            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-                it.masterLayoutId,
-                shopId
-            )
-            shopHomeAdapter?.hideLoading()
-            setShopLayoutData(it)
-            setWidgetLayoutPlaceholder()
+        checkShopLayout()
+    }
+
+    protected open fun checkShopLayout() {
+        shopPageHomeLayoutUiModel.let {
+            if (it != null) {
+                shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+                    it.masterLayoutId,
+                    shopId
+                )
+                shopHomeAdapter?.hideLoading()
+                setShopLayoutData(it)
+                setWidgetLayoutPlaceholder()
+            } else {
+                getLatestShopHomeWidgetLayoutData()
+            }
         }
     }
 
@@ -935,33 +1028,6 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeLiveData() {
-        viewModel?.shopHomeWidgetLayoutData?.observe(viewLifecycleOwner, {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    shopPageHomeLayoutUiModel = it.data
-                    setShopLayoutData(it.data)
-                }
-                is Fail -> {
-                    val throwable = it.throwable
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
-                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
-                            functionName = this::observeLiveData.name,
-                            liveDataName = ShopHomeViewModel::shopHomeWidgetLayoutData.name,
-                            userId = userId,
-                            shopId = shopId,
-                            shopName = shopName,
-                            errorMessage = ErrorHandler.getErrorMessage(context, throwable),
-                            stackTrace = Log.getStackTraceString(throwable),
-                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
-                        )
-                    }
-                    onErrorGetShopHomeLayoutData(throwable)
-                }
-            }
-        })
-
         viewModel?.productListData?.observe(
             viewLifecycleOwner,
             Observer {
@@ -1374,6 +1440,10 @@ open class ShopPageHomeFragment :
         }
     }
 
+    protected open fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+        shopHomeAdapter?.updateBannerTimerWidgetData(data.isAvailable)
+    }
+
     private fun addProductListHeader() {
         shopHomeAdapter?.setEtalaseTitleData()
         val shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
@@ -1556,7 +1626,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    open fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
+    protected open fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
         val data: ShopPageLayoutUiModel = filterNplWidgetLayoutDataIfDisabled(dataWidgetLayoutUiModel)
         initialLayoutData = data.listWidgetLayout.toMutableList()
         listWidgetLayout = initialLayoutData.toMutableList()
@@ -3604,7 +3674,7 @@ open class ShopPageHomeFragment :
     override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(
+            showTncBottomSheet(
                 it.campaignId,
                 it.statusCampaign,
                 it.dynamicRule.listDynamicRoleData.map { it.ruleID }
@@ -3647,7 +3717,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun showNplCampaignTncBottomSheet(
+    private fun showTncBottomSheet(
         campaignId: String,
         statusCampaign: String,
         listRuleId: List<String>
@@ -3805,6 +3875,17 @@ open class ShopPageHomeFragment :
         viewModel?.clickFlashSaleReminder(campaignId, action)
     }
 
+    protected fun handleBannerTimerClickRemindMe(model: ShopWidgetDisplayBannerTimerUiModel) {
+        val isRemindMe = model.data?.isRemindMe.orFalse()
+        val action = if (isRemindMe) {
+            UNREGISTER_VALUE
+        } else {
+            REGISTER_VALUE
+        }
+        val campaignId = model.data?.campaignId.orEmpty()
+        viewModel?.clickBannerTimerReminder(campaignId, action)
+    }
+
     override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             if (!isOwner) {
@@ -3937,7 +4018,8 @@ open class ShopPageHomeFragment :
         viewModel?.getLatestShopHomeWidgetLayoutData(
             shopId,
             extParam,
-            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            "CampaignTab"
         )
     }
 
@@ -4058,9 +4140,10 @@ open class ShopPageHomeFragment :
         this.initialProductListData = productListData
     }
 
-    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData) {
-        this.shopPageHomeLayoutUiModel =
-            ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(homeLayoutData)
+    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData?) {
+        homeLayoutData?.let {
+            this.shopPageHomeLayoutUiModel = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(it)
+        }
     }
 
     override fun scrollToTop() {
@@ -4628,18 +4711,39 @@ open class ShopPageHomeFragment :
 
     override fun onDisplayBannerTimerClicked(
         position: Int,
-        uiModel: ShopWidgetDisplayBannerTimerUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
+        checkShouldSelectCampaignTab(uiModel.data?.appLink.orEmpty())
+    }
+
+    private fun checkShouldSelectCampaignTab(appLink: String) {
+        val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
+        if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
+            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN)
+        }
     }
 
     override fun onClickTncDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        showTncBottomSheet(
+            uiModel.data?.campaignId.orEmpty(),
+            uiModel.data?.status?.statusCampaign.orEmpty(),
+            uiModel.data?.dynamicRule?.listDynamicRoleData?.map { it.ruleID }.orEmpty()
+        )
     }
 
     override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        viewModel?.let {
+            if (it.isLogin) {
+                shopHomeAdapter?.showBannerTimerRemindMeLoading()
+                handleBannerTimerClickRemindMe(uiModel)
+            } else {
+                redirectToLoginPage()
+            }
+        }
     }
 
     override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        checkShouldSelectCampaignTab(uiModel.header.ctaLink)
     }
 
     override fun onImpressionDisplayBannerTimerWidget(
@@ -4649,6 +4753,9 @@ open class ShopPageHomeFragment :
     }
 
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        shopHomeAdapter?.removeWidget(uiModel)
+        endlessRecyclerViewScrollListener.resetState()
+        getLatestShopHomeWidgetLayoutData()
     }
 
     //endregion

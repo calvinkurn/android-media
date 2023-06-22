@@ -2,6 +2,7 @@ package com.tokopedia.shop.campaign.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
@@ -12,6 +13,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBa
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBannerTimerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignMultipleImageColumnViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
@@ -39,9 +41,10 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_SLIDER
+import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
@@ -65,7 +68,7 @@ class ShopCampaignTabAdapterTypeFactory(
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
-            VOUCHER_SLIDER -> getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel)
+            VOUCHER -> getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel)
             BANNER_TIMER -> getShopCampaignDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
             PRODUCT_HIGHLIGHT -> getShopCampaignCarouselProductViewHolder(baseShopHomeWidgetUiModel)
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopCampaignMultipleImageColumnViewHolder(
@@ -141,6 +144,9 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignVideoViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: LoadingModel?): Int {
+        return ShopCampaignLayoutLoadingShimmerViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
@@ -229,8 +235,13 @@ class ShopCampaignTabAdapterTypeFactory(
 
             ShopCampaignDisplaySliderBannerHighlightViewHolder.LAYOUT -> ShopCampaignDisplaySliderBannerHighlightViewHolder(
                 parent,
-                sliderBannerHighlightListener
+                sliderBannerHighlightListener,
+                shopCampaignInterface
             )
+
+            ShopCampaignLayoutLoadingShimmerViewHolder.LAYOUT -> {
+                ShopCampaignLayoutLoadingShimmerViewHolder(parent)
+            }
 
             else -> return super.createViewHolder(parent, type)
         }

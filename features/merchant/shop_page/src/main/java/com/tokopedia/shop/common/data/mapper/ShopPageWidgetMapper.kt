@@ -4,12 +4,14 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -30,6 +32,13 @@ object ShopPageWidgetMapper {
     private fun mapToBannerItemWidget(
         data: ShopLayoutWidget.Widget.Data?,
     ): ShopWidgetDisplayBannerTimerUiModel.Data {
+        val statusCampaign = data?.timeInfo?.status?.mapToStatusCampaign()
+        val isUpcomingCampaign = statusCampaign == StatusCampaign.UPCOMING
+        val isRemindMe = if (isUpcomingCampaign) {
+            false
+        } else {
+            null
+        }
         return ShopWidgetDisplayBannerTimerUiModel.Data(
             appLink =  data?.appLink.orEmpty(),
             imageUrl =  data?.imageUrl.orEmpty(),
@@ -41,9 +50,11 @@ object ShopPageWidgetMapper {
             endDate = data?.timeInfo?.endDate.orEmpty(),
             bgColor = data?.timeInfo?.bgColor.orEmpty(),
             textColor = data?.timeInfo?.textColor.orEmpty(),
-            status = data?.timeInfo?.status ?: -1,
+            status = data?.timeInfo?.status.mapToStatusCampaign(),
             totalNotify = data?.totalNotify.orZero(),
-            totalNotifyWording = data?.totalNotifyWording.orEmpty()
+            totalNotifyWording = data?.totalNotifyWording.orEmpty(),
+            dynamicRule = mapToDynamicRule(data?.dynamicRule),
+            isRemindMe = isRemindMe
         )
     }
 
@@ -121,6 +132,27 @@ object ShopPageWidgetMapper {
                     }
                 )
             )
+        }
+    }
+
+    fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule?): DynamicRule {
+        return DynamicRule(
+            dynamicRule?.descriptionHeader.orEmpty(),
+            dynamicRule?.dynamicRoleData?.map {
+                DynamicRule.DynamicRoleData(
+                    ruleID = it.ruleID,
+                    isActive = it.isActive
+                )
+            }.orEmpty()
+        )
+    }
+
+    private fun Int?.mapToStatusCampaign(): StatusCampaign {
+        return when (this) {
+            0 -> StatusCampaign.UPCOMING
+            1 -> StatusCampaign.ONGOING
+            2 -> StatusCampaign.FINISHED
+            else -> StatusCampaign.UPCOMING
         }
     }
 }

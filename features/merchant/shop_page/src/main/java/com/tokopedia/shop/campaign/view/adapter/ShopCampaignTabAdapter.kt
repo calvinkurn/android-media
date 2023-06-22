@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.adapter
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -13,11 +14,13 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -27,6 +30,10 @@ class ShopCampaignTabAdapter(
     shopCampaignTabAdapterTypeFactory: ShopCampaignTabAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, AdapterTypeFactory>(shopCampaignTabAdapterTypeFactory),
     DataEndlessScrollListener.OnDataEndlessScrollListener {
+
+    companion object{
+        private const val INVALID_INDEX = -1
+    }
 
     private var recyclerView: RecyclerView? = null
 
@@ -61,6 +68,7 @@ class ShopCampaignTabAdapter(
     fun getNewVisitableItems() = visitables.toMutableList()
 
     fun submitList(newList: List<Visitable<*>>) {
+        val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = ShopPageCampaignDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
@@ -71,6 +79,9 @@ class ShopCampaignTabAdapter(
         }
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+        currentRecyclerViewState?.let {
+            recyclerView?.layoutManager?.onRestoreInstanceState(it)
+        }
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
@@ -240,6 +251,28 @@ class ShopCampaignTabAdapter(
 
     private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
         return widget.items.isEmpty()
+    }
+
+    fun removeWidget(model: Visitable<*>) {
+        val newList = getNewVisitableItems()
+        val modelIndex = newList.indexOf(model)
+        if (modelIndex != INVALID_INDEX) {
+            newList.remove(model)
+            submitList(newList)
+        }
+    }
+
+    override fun showLoading() {
+        if (!isLoading) {
+            val newList = getNewVisitableItems()
+            if (isShowLoadingMore) {
+                newList.add(loadingMoreModel)
+            } else {
+                newList.clear()
+                newList.add(loadingModel)
+            }
+            submitList(newList)
+        }
     }
 
 }

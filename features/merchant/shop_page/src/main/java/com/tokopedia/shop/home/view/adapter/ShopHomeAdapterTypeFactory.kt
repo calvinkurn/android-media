@@ -44,7 +44,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPe
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeLoadingShimmerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignPlaceholderViewHolder
@@ -252,7 +252,7 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     override fun type(viewModel: LoadingModel?): Int {
-        return ShopHomeLoadingShimmerViewHolder.LAYOUT
+        return ShopLayoutLoadingShimmerViewHolder.LAYOUT
     }
 
     fun type(shopHomeProductChangeGridSectionUiModel: ShopHomeProductChangeGridSectionUiModel): Int {
@@ -308,8 +308,8 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
-            ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
-                ShopHomeLoadingShimmerViewHolder(parent)
+            ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
+                ShopLayoutLoadingShimmerViewHolder(parent)
             }
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
             ShopHomeNplCampaignViewHolder.LAYOUT -> {

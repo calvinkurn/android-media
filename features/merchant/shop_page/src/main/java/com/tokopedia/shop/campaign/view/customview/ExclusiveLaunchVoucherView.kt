@@ -50,9 +50,9 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     fun useDarkBackground() {
         binding?.run {
             imgBackground.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_dark)
-            tpgBenefitName.setTextColorCompat(R.color.Unify_Static_White)
-            tpgMinPurchase.setTextColorCompat(R.color.Unify_Static_White)
-            tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
+            tpgBenefitName.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            tpgMinPurchase.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            tpgRemainingQuota.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
             tpgClaim.setTextColorCompat(R.color.clr_dms_voucher_claim)
         }
     }
@@ -62,8 +62,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
             imgBackground.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_light)
             tpgBenefitName.setTextColorCompat(R.color.clr_dms_voucher_title)
             tpgMinPurchase.setTextColorCompat(R.color.clr_dms_voucher_min_purchase)
-            tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
-            tpgClaim.setTextColorCompat(R.color.Unify_GN500)
+            tpgRemainingQuota.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+            tpgClaim.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         }
     }
 }

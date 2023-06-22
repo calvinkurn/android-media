@@ -7,6 +7,7 @@ import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
+import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
@@ -634,7 +635,7 @@ object ShopPageHomeMapper {
                 it.totalNotify,
                 it.totalNotifyWording,
                 it.voucherWording,
-                mapToDynamicRule(it.dynamicRule),
+                ShopPageWidgetMapper.mapToDynamicRule(it.dynamicRule),
                 mapCampaignListBanner(it.listBanner),
                 mapCampaignListProduct(it.statusCampaign, it.listProduct),
                 isRemindMe
@@ -666,18 +667,6 @@ object ShopPageHomeMapper {
                 it.backgroundGradientColor.secondColor
             )
         }
-    }
-
-    private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
-        return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
-            dynamicRule.descriptionHeader,
-            dynamicRule.dynamicRoleData.map {
-                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
-                    ruleID = it.ruleID,
-                    isActive = it.isActive
-                )
-            }
-        )
     }
 
     internal fun mapCampaignListProduct(

@@ -5,15 +5,14 @@
     android:id="@+id/content_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="4dp"
+    android:layout_marginHorizontal="2dp"
     android:layout_marginLeft="@dimen/dp_minus12"
     android:layout_marginTop="16dp"
     android:layout_marginRight="@dimen/dp_minus12"
     android:layout_marginBottom="8dp"
     app:cardBackgroundColor="@color/red_30">
 
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -21,9 +20,11 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_banner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="200dp"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,12 +33,15 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp">
+            android:paddingVertical="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_banner">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/timer_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintVertical_bias="0"
                 app:layout_constraintBottom_toTopOf="@id/text_timer_more_than_1_day"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -58,6 +62,7 @@
                 app:typographyType="paragraph_3"
                 app:typographyWeight="bold"
                 tools:text="Launching dimulai"
+                android:layout_marginTop="2dp"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
@@ -71,6 +76,7 @@
                 app:timer_unify_highlight_remainingDays="0"
                 app:timer_unify_highlight_remainingHours="3"
                 app:timer_unify_highlight_show_text="false"
+                android:layout_marginTop="2dp"
                 tools:visibility="visible" />
 
             <androidx.cardview.widget.CardView
@@ -128,7 +134,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </com.tokopedia.unifycomponents.CardUnify2>
