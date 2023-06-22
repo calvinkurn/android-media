@@ -1,10 +1,7 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,23 +36,11 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         searchInputView = getSearchInputView(view);
-        searchInputView.getSearchBarTextField().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                new Handler().postDelayed(() -> updateListener(s.toString()), getDelayTextChanged());
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
+        searchInputView.addDebouncedTextChangedListener(s -> {
+            onSearchTextChanged(s);
+            return null;
+        }, getDelayTextChanged());
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    private void updateListener(String s) {
-        this.onSearchTextChanged(s);
     }
 
     @Nullable
