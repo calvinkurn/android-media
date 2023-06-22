@@ -64,23 +64,31 @@ import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(), AffiliateDatePickerRangeChangeInterface{
+class AffiliateIncomeFragment :
+    AffiliateBaseFragment<AffiliateIncomeViewModel>(),
+    AffiliateDatePickerRangeChangeInterface {
 
-    private lateinit var affiliateIncomeViewModel : AffiliateIncomeViewModel
-    private var userName : String = ""
-    private var profilePicture : String = ""
+    private val affiliateIncomeViewModel by lazy {
+        ViewModelProvider(this)[AffiliateIncomeViewModel::class.java]
+    }
+    private var userName: String = ""
+    private var profilePicture: String = ""
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private var listSize = 0
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+    private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
     private var isReviewed = false
     private var walletOnHold = true
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
         private const val WALLET_STATUS_HOLD = "WALLET_STATUS_HOLD"
-        fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
+        fun getFragmentInstance(
+            userNameParam: String,
+            profilePictureParam: String,
+            affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface
+        ): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
                 profilePicture = profilePictureParam
@@ -89,13 +97,16 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.affiliate_income_fragment_layout, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        affiliateIncomeViewModel = ViewModelProvider(this)[AffiliateIncomeViewModel::class.java]
         setObservers()
     }
 
@@ -114,14 +125,13 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
                 UserSession(it).userId
             )
         }
-
     }
 
     override fun getScreenName(): String {
-        return  ""
+        return ""
     }
 
-    private var lastItem : Visitable<AffiliateAdapterTypeFactory>? = null
+    private var lastItem: Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
         affiliateIncomeViewModel.getAffiliateBalanceData().observe(this) { balanceData ->
@@ -133,9 +143,9 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         }
         affiliateIncomeViewModel.getShimmerVisibility().observe(this) { visibility ->
             if (visibility != null) {
-                if (visibility)
+                if (visibility) {
                     adapter.addShimmer()
-                else {
+                } else {
                     stopSwipeRefresh()
                     adapter.removeShimmer(listSize)
                 }
@@ -203,22 +213,24 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
                 PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION,
-               UserSession(context).userId
+                UserSession(context).userId
             )
         }
     }
 
     private fun onGetError(error: Throwable?) {
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.run {
-            when(error) {
+            when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     setType(GlobalError.NO_CONNECTION)
                     show()
                 }
+
                 is IllegalStateException -> {
                     setType(GlobalError.PAGE_FULL)
                     show()
                 }
+
                 else -> {
                     setErrorState(error?.message)
                 }
@@ -234,7 +246,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     private fun onGetAffiliateDataItems(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         adapter.removeShimmer(listSize)
         stopSwipeRefresh()
-        if(dataList.isEmpty() && listSize == 0){
+        if (dataList.isEmpty() && listSize == 0) {
             showGlobalErrorEmptyState()
         } else {
             lastItem = dataList[dataList.lastIndex]
@@ -246,20 +258,23 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     }
 
     private fun onGetAffiliateBalance(balanceData: AffiliateBalance.AffiliateBalance.Data) {
-        if(balanceData.status == 1)
+        if (balanceData.status == 1) {
             setAffiliateBalance(balanceData)
-        else
+        } else {
             balanceData.error?.message?.let { setErrorState(it) }
+        }
     }
 
     private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
-        when(kycProjectInfo.status){
-            KYC_DONE ->{
-                if(TokopediaUrl.getInstance().GQL.contains("staging"))
+        when (kycProjectInfo.status) {
+            KYC_DONE -> {
+                if (TokopediaUrl.getInstance().GQL.contains("staging")) {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_STAGING)
-                else
+                } else {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_PROD)
+                }
             }
+
             else -> RouteManager.route(context, APP_LINK_KYC)
         }
     }
@@ -291,11 +306,13 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_empty_transaction)
             errorDescription.text = getString(R.string.affiliate_empty_transaction_description)
-            setButtonFull(true)
             errorSecondaryAction.gone()
             errorAction.text = getString(R.string.affiliate_choose_date)
             setActionClickListener {
-                AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
+                AffiliateBottomDatePicker.newInstance(
+                    affiliateIncomeViewModel.getSelectedDate(),
+                    this@AffiliateIncomeFragment
+                ).show(childFragmentManager, "")
             }
         }
     }
@@ -304,7 +321,6 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
             errorTitle.text = message
-            setButtonFull(true)
             errorSecondaryAction.gone()
             setActionClickListener {
                 hide()
@@ -314,7 +330,11 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         }
     }
 
-    private fun sendPendapatanEvent(eventAction: String,eventCategory:String ,eventLabel: String) {
+    private fun sendPendapatanEvent(
+        eventAction: String,
+        eventCategory: String,
+        eventLabel: String
+    ) {
         context?.let {
             AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
@@ -345,18 +365,25 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             it.setOnRefreshListener {
                 resetItems()
             }
-            view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                it.isEnabled = verticalOffset == 0
-            })
+            view?.findViewById<AppBarLayout>(R.id.appbar)
+                ?.addOnOffsetChangedListener { _, verticalOffset ->
+                    it.isEnabled = verticalOffset == 0
+                }
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
-           sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
-           openWithdrawalScreen()
+            sendPendapatanEvent(
+                AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                ""
+            )
+            openWithdrawalScreen()
         }
         view?.findViewById<ImageUnify>(R.id.withdrawal_user_image)?.loadImageCircle(profilePicture)
-        view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
+        view?.findViewById<Typography>(R.id.date_range_text)?.text =
+            affiliateIncomeViewModel.getSelectedDate()
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
-            AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this).show(childFragmentManager, "")
+            AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY, this)
+                .show(childFragmentManager, "")
         }
         view?.findViewById<RecyclerView>(R.id.withdrawal_transactions_rv)?.let {
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -373,16 +400,17 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         view?.findViewById<NavToolbar>(R.id.withdrawal_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                    IconBuilder()
-                            .addIcon(IconList.ID_NAV_GLOBAL) {}
+                IconBuilder()
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
-            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_withdrawal)
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
+                getString(
+                    R.string.affiliate_withdrawal
+                )
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel.getAffiliateValidateUser(UserSession(context).email)
     }
-
-
 
     private fun setTarikSaldoButtonUI() {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
@@ -396,17 +424,28 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
 
     private fun initDateRangeClickListener() {
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
-            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
-            AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
+            sendPendapatanEvent(
+                AffiliateAnalytics.ActionKeys.CLICK_FILTER_DATE,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                ""
+            )
+            AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(), this)
+                .show(
+                    childFragmentManager,
+                    ""
+                )
         }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 sendImpressionTracker()
-                if(affiliateIncomeViewModel.hasNext)
+                if (affiliateIncomeViewModel.hasNext) {
                     affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
+                }
             }
         }
     }
@@ -419,29 +458,41 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             transactionID = it
         }
         item?.transactionType?.let {
-            if(it == TRANSACTION_TYPE_DEPOSIT) {
-                label = if(item.commissionType == PRODUCT_TYPE) AffiliateAnalytics.LabelKeys.DEPOSIT_ORDER
-                else AffiliateAnalytics.LabelKeys.DEPOSIT_TRAFFIC
+            if (it == TRANSACTION_TYPE_DEPOSIT) {
+                label = if (item.commissionType == PRODUCT_TYPE) {
+                    AffiliateAnalytics.LabelKeys.DEPOSIT_ORDER
+                } else {
+                    AffiliateAnalytics.LabelKeys.DEPOSIT_TRAFFIC
+                }
+            } else if (it == TRANSACTION_TYPE_WITHDRAWAL) {
+                label =
+                    AffiliateAnalytics.LabelKeys.WITHDRAWAL
             }
-            else if(it == TRANSACTION_TYPE_WITHDRAWAL) label = AffiliateAnalytics.LabelKeys.WITHDRAWAL
         }
 
         context?.let {
             AffiliateAnalytics.sendIcomeTracker(
-                AffiliateAnalytics.EventKeys.VIEW_ITEM,AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
-                label,listSize,transactionID,UserSession(it).userId
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,
+                AffiliateAnalytics.ActionKeys.IMPRESSION_TRANSACTION_CARD,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                label,
+                listSize,
+                transactionID,
+                UserSession(it).userId
             )
         }
     }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
-        sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
+        sendPendapatanEvent(
+            AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,
+            range.value
+        )
         affiliateIncomeViewModel.onRangeChanged(range)
     }
 
-    override fun onRangeSelectionButtonClicked() {
-
-    }
+    override fun onRangeSelectionButtonClicked() = Unit
 
     override fun onSystemDown() {
         affiliateIncomeViewModel.getAnnouncementInformation()
@@ -502,6 +553,5 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         return AffiliateIncomeViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel){}
-
+    override fun setViewModel(viewModel: BaseViewModel) = Unit
 }

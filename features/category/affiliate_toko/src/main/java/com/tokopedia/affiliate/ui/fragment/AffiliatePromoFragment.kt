@@ -53,6 +53,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliatePromoFragmentLayoutBinding
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -78,10 +79,12 @@ class AffiliatePromoFragment :
     ProductClickInterface {
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
 
@@ -99,6 +102,7 @@ class AffiliatePromoFragment :
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -140,8 +144,8 @@ class AffiliatePromoFragment :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             AffiliateAnalytics.ScreenKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -217,7 +221,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -293,7 +297,7 @@ class AffiliatePromoFragment :
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -354,7 +358,7 @@ class AffiliatePromoFragment :
                             affiliateAdapterFactory = AffiliateAdapterFactory(
                                 promotionClickInterface = this@AffiliatePromoFragment
                             ),
-                            userId = userSessionInterface.userId
+                            userId = userSessionInterface?.userId.orEmpty()
                         )
                     discoBannerAdapter.setVisitables(
                         it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
@@ -415,7 +419,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -429,7 +433,7 @@ class AffiliatePromoFragment :
                 PAGE_ANNOUNCEMENT_PROMOSIKAN,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION,
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -442,7 +446,7 @@ class AffiliatePromoFragment :
         binding?.recommendedLayout?.hide()
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
