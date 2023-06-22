@@ -218,9 +218,13 @@ class AffiliatePromotionHistoryFragment :
                     }
                 }
                 show()
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+                view?.findViewById<Typography>(R.id.affiliate_products_count)?.hide()
                 setActionClickListener {
                     hide()
                     resetItems()
+                    view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+                    view?.findViewById<Typography>(R.id.affiliate_products_count)?.show()
                 }
             }
         }
