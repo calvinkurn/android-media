@@ -3,7 +3,6 @@ package com.tokopedia.inbox.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider

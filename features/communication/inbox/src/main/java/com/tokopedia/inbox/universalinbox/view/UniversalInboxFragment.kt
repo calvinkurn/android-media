@@ -39,6 +39,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUs
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
@@ -59,7 +60,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -107,7 +107,7 @@ class UniversalInboxFragment :
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var abTestPlatform: AbTestPlatform
+    lateinit var abTestPlatform: UniversalInboxAbPlatform
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
     private lateinit var adapter: UniversalInboxAdapter
@@ -239,11 +239,11 @@ class UniversalInboxFragment :
                 is Success -> {
                     // Update notif & static menu counters
                     if (activity is UniversalInboxActivity) {
-                        val notifUnread = it.data.notifCenterUnread.notifUnread
-                        if (notifUnread.toIntOrZero() > Int.ZERO) {
+                        val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
+                        if (notifUnread > Int.ZERO) {
                             (activity as UniversalInboxActivity).updateNotificationCounter(
                                 UniversalInboxViewUtil.getStringCounter(
-                                    it.data.notifCenterUnread.notifUnread.toIntOrZero()
+                                    notifUnread
                                 )
                             )
                         }

@@ -11,6 +11,7 @@ import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConst
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_HELP
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_NOTIF_CENTER
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_PDP
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_REVIEW
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.COMMUNICATION
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CURRENT_SITE
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT
@@ -28,6 +29,7 @@ import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConst
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44353
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44354
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44355
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44356
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44357
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44358
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.TRACKER_ID_44367
@@ -153,10 +155,10 @@ class UniversalInboxAnalytics @Inject constructor() {
     ) {
         val mapData = mapOf(
             EVENT to CLICK_COMMUNICATION,
-            EVENT_ACTION to CLICK_DISCUSSION,
+            EVENT_ACTION to CLICK_REVIEW,
             EVENT_CATEGORY to NEW_INBOX_PAGE,
             EVENT_LABEL to "$abVariant - $userRole - $shopId - $reviewCounter",
-            TRACKER_ID to TRACKER_ID_44355,
+            TRACKER_ID to TRACKER_ID_44356,
             BUSINESS_UNIT to COMMUNICATION,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE
         )
