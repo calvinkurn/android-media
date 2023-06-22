@@ -98,8 +98,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!--            </LinearLayout>-->
-
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier_consent"
             android:layout_width="match_parent"
