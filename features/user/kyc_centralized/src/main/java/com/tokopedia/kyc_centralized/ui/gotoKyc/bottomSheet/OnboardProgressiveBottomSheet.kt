@@ -111,9 +111,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     private fun initUserConsent() {
         val consentParam = ConsentCollectionParam(
             collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                KYCConstant.collectionIdGotoKycNonProgressiveStaging
+                KYCConstant.collectionIdGotoKycProgressiveStaging
             } else {
-                KYCConstant.collectionIdGotoKycNonProgressiveProduction
+                KYCConstant.collectionIdGotoKycProgressiveProduction
             }
         )
 
