@@ -110,7 +110,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -121,7 +120,6 @@ import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
-import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopLogger
@@ -138,6 +136,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopBannerTimerSharedViewModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -342,6 +341,7 @@ open class ShopPageHomeFragment :
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
+    var shopReminderButtonStatusSharedVieModel: ShopBannerTimerSharedViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
@@ -445,6 +445,9 @@ open class ShopPageHomeFragment :
         shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
             ShopPageMiniCartSharedViewModel::class.java
         )
+        shopReminderButtonStatusSharedVieModel = ViewModelProviders.of(requireActivity()).get(
+            ShopBannerTimerSharedViewModel::class.java
+        )
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(
             context?.resources?.getInteger(R.integer.span_count_small_grid).orZero(),
@@ -526,12 +529,35 @@ open class ShopPageHomeFragment :
         observeLiveData()
         observeShopHomeWidgetContentData()
         observeShopPageMiniCartSharedViewModel()
+        observeShopReminderButtonStatusSharedVieModel()
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         observeBannerTimerRemindMeStatusData()
         observeCheckBannerTimerRemindMeStatusData()
+        observeHomeWidgetListVisitable()
+        observeUpdatedBannerTimerUiModelData()
         isLoadInitialData = true
-        //showVoucherListBottomsheet()
+    }
+
+    private fun observeUpdatedBannerTimerUiModelData() {
+        viewModel?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            bannerTimerUiModel?.let {
+                shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
+            }
+        }
+    }
+
+    private fun observeShopReminderButtonStatusSharedVieModel() {
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            if (shopHomeAdapter?.isLoading == false && getSelectedFragment() != this) {
+                bannerTimerUiModel?.let {
+                    viewModel?.updateBannerTimerWidgetUiModel(
+                        shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
+                        it
+                    )
+                }
+            }
+        }
     }
 
     private fun observeCheckBannerTimerRemindMeStatusData() {
@@ -567,7 +593,11 @@ open class ShopPageHomeFragment :
                 getString(R.string.shop_string_ok)
             ).show()
         }
-        shopHomeAdapter?.updateBannerTimerWidgetData()
+        viewModel?.updateBannerTimerWidgetData(
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
+            isRemindMe = false,
+            isClickRemindMe = false
+        )
     }
 
     protected open fun onSuccessCheckBannerTimerNotifyMe(data: CheckCampaignNotifyMeUiModel) {
@@ -575,7 +605,11 @@ open class ShopPageHomeFragment :
             NotifyMeAction.REGISTER.action,
             ignoreCase = true
         )
-        shopHomeAdapter?.updateBannerTimerWidgetData(isRegisterCampaign, true)
+        viewModel?.updateBannerTimerWidgetData(
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
+            isRegisterCampaign,
+            true
+        )
         view?.let {
             Toaster.build(
                 it,
@@ -602,33 +636,17 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun showVoucherListBottomsheet() {
-        //TODO: Replace with real shopId and category slugs from backend
-        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            shopId = "1854168", //Unilever Official Store,
-            useDarkBackground = true,
-            voucherSlugs = listOf(
-                "ELTTS400JUN",
-                "ELTTS150JUN",
-                "CFDDJUN",
-                "KFSJUN",
-                "AUTO423",
-                "SHOPASHJUNE"
-            ),
-            campaignId = "",
-            widgetId = ""
-        )
-        bottomSheet.setOnVoucherClaimSuccess {
-            //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
+    private fun observeHomeWidgetListVisitable() {
+        viewModel?.homeWidgetListVisitable?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    shopHomeAdapter?.submitList(it.data)
+                }
+                is Fail -> {}
+            }
         }
-        bottomSheet.setOnVoucherUseSuccess {
-            showToaster(
-                view ?: return@setOnVoucherUseSuccess,
-                context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
-            )
-        }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
             when (it) {
@@ -887,7 +905,7 @@ open class ShopPageHomeFragment :
         )
     }
 
-    private fun getSelectedFragment(): Fragment? {
+    protected fun getSelectedFragment(): Fragment? {
         return (parentFragment as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
     }
 
@@ -1441,7 +1459,11 @@ open class ShopPageHomeFragment :
     }
 
     protected open fun onSuccessGetBannerTimerRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        shopHomeAdapter?.updateBannerTimerWidgetData(data.isAvailable)
+        viewModel?.updateBannerTimerWidgetData(
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList(),
+            isRemindMe = data.isAvailable,
+            isClickRemindMe = false
+        )
     }
 
     private fun addProductListHeader() {

@@ -390,29 +390,6 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun updateBannerTimerWidgetData(
-        isRemindMe: Boolean? = null,
-        isClickRemindMe: Boolean = false
-    ) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
-            nplCampaignUiModel.data?.let {
-                isRemindMe?.let { isRemindMe ->
-                    it.isRemindMe = isRemindMe
-                    if (isClickRemindMe) {
-                        if (isRemindMe)
-                            ++it.totalNotify
-                        else
-                            --it.totalNotify
-                    }
-                }
-                it.showRemindMeLoading = false
-                nplCampaignUiModel.isNewData = true
-            }
-        }
-        submitList(newList)
-    }
-
     fun removeWidget(model: Visitable<*>) {
         val newList = getNewVisitableItems()
         val modelIndex = newList.indexOf(model)

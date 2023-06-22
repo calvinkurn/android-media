@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -54,6 +55,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private var isRemindMe: Boolean? = null
     private val viewBinding: ItemShopCampaignDisplayBannerTimerBinding? by viewBinding()
     private val contentContainer: CardUnify2? = viewBinding?.contentContainer
     private val imageBanner: ImageUnify? = viewBinding?.imageBanner
@@ -257,26 +259,29 @@ class ShopCampaignDisplayBannerTimerViewHolder(
 
     private fun setRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         hideAllRemindMeLayout()
-        uiModel.data?.isRemindMe?.let { isRemindMe ->
+        isRemindMe = uiModel.data?.isRemindMe
+        isRemindMe?.let {
             buttonRemindMe?.show()
             buttonRemindMe?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
                     listener.onClickRemindMe(uiModel)
                 }
             }
-            if (isRemindMe) {
+            if (it) {
                 hideRemindMeText(uiModel, true)
-                uiModel.data.isHideRemindMeTextAfterXSeconds = true
+                uiModel.data?.isHideRemindMeTextAfterXSeconds = true
             } else {
-                val isHideRemindMeTextAfterXSeconds = uiModel.data.isHideRemindMeTextAfterXSeconds
+                val isHideRemindMeTextAfterXSeconds = uiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
                 if (isHideRemindMeTextAfterXSeconds) {
                     hideRemindMeText(uiModel, false)
-                } else {
+                }else{
                     buttonRemindMe?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
-                        hideRemindMeText(uiModel, false)
-                        uiModel.data.isHideRemindMeTextAfterXSeconds = true
+                        if (isRemindMe == false) {
+                            hideRemindMeText(uiModel, false)
+                        }
+                        uiModel.data?.isHideRemindMeTextAfterXSeconds = true
                     }) {}
                 }
             }

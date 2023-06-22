@@ -21,7 +21,6 @@ import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCa
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
-import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
@@ -34,7 +33,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Provider
 
 class ShopCampaignViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
@@ -69,6 +67,10 @@ class ShopCampaignViewModel @Inject constructor(
     val latestShopCampaignWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
         get() = _latestShopCampaignWidgetLayoutData
     private val _latestShopCampaignWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
+
+    private val _updatedBannerTimerUiModelData = MutableLiveData<ShopWidgetDisplayBannerTimerUiModel?>()
+    val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
+        get() = _updatedBannerTimerUiModelData
 
     fun getWidgetContentData(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -245,8 +247,8 @@ class ShopCampaignViewModel @Inject constructor(
 
     fun showBannerTimerRemindMeLoading(newList: MutableList<Visitable<*>>) {
         launchCatchError(dispatcherProvider.io, block = {
-            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
-                nplCampaignUiModel.let {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { bannerTimerUiModel ->
+                bannerTimerUiModel.let {
                     it.data?.showRemindMeLoading = true
                     it.isNewData = true
                 }
@@ -264,8 +266,8 @@ class ShopCampaignViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
-                .onEach { nplCampaignUiModel ->
-                    nplCampaignUiModel.data?.let {
+                .onEach { bannerTimerUiModel ->
+                    bannerTimerUiModel.data?.let {
                         it.isRemindMe = isRemindMe
                         if (isClickRemindMe) {
                             if (isRemindMe)
@@ -274,9 +276,10 @@ class ShopCampaignViewModel @Inject constructor(
                                 --it.totalNotify
                         }
                         it.showRemindMeLoading = false
-                        nplCampaignUiModel.isNewData = true
+                        bannerTimerUiModel.isNewData = true
                     }
                 }
+            _updatedBannerTimerUiModelData.postValue(newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull())
             _campaignWidgetListVisitable.postValue(Success(newList))
         }) { throwable ->
             _campaignWidgetListVisitable.postValue(Fail(throwable))
@@ -284,4 +287,20 @@ class ShopCampaignViewModel @Inject constructor(
     }
 
 
+    fun updateBannerTimerWidgetUiModel(
+        newList: MutableList<Visitable<*>>,
+        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            if(position != -1){
+                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                    isNewData = true
+                })
+            }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
 }

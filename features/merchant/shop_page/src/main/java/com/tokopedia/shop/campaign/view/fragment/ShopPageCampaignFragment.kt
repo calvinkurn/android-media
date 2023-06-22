@@ -176,6 +176,28 @@ class ShopPageCampaignFragment :
         observeRedeemResult()
         observeCampaignWidgetListVisitable()
         observeLatestShopCampaignWidgetLayoutData()
+        observeUpdatedBannerTimerUiModelData()
+        observeShopReminderButtonStatusSharedVieModel()
+    }
+
+    private fun observeShopReminderButtonStatusSharedVieModel() {
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            if (!shopCampaignTabAdapter.isLoading && getSelectedFragment() != this) {
+                bannerTimerUiModel?.let {
+                    viewModelCampaign?.updateBannerTimerWidgetUiModel(
+                        shopCampaignTabAdapter.getNewVisitableItems().toMutableList(),
+                        it
+                    )
+                }
+            }
+        }
+    }
+    private fun observeUpdatedBannerTimerUiModelData() {
+        viewModelCampaign?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            bannerTimerUiModel?.let {
+                shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
+            }
+        }
     }
 
     private fun observeLatestShopCampaignWidgetLayoutData() {
