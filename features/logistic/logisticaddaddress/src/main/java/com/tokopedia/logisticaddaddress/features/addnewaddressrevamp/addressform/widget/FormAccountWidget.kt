@@ -73,7 +73,7 @@ class FormAccountWidget : ConstraintLayout {
                 onClickPhoneNumberFirstIcon.invoke()
             }
             btnInfo.setOnClickListener {
-                onClickBtnInfo
+                onClickBtnInfo.invoke()
             }
         }
     }
