@@ -131,25 +131,6 @@ class ShipmentCartItemTopViewHolder(
         }
     }
 
-//    private fun renderFulfillment(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
-//        with(binding.containerSellerInfo) {
-//            if (shipmentCartItemTopModel.shopLocation.isNotBlank()) {
-//                val fulfillmentBadgeUrl = shipmentCartItemTopModel.fulfillmentBadgeUrl
-//                if (shipmentCartItemTopModel.isFulfillment && fulfillmentBadgeUrl.isNotBlank()) {
-//                    iuImageFulfill.setImageUrl(fulfillmentBadgeUrl)
-//                    iuImageFulfill.visible()
-//                } else {
-//                    iuImageFulfill.gone()
-//                }
-//                tvFulfillDistrict.visible()
-//                tvFulfillDistrict.text = shipmentCartItemTopModel.shopLocation
-//            } else {
-//                iuImageFulfill.gone()
-//                tvFulfillDistrict.gone()
-//            }
-//        }
-//    }
-
     private fun renderErrorAndWarning(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
         if (shipmentCartItemTopModel.isError) {
             binding.containerSellerInfo.root.alpha = VIEW_ALPHA_DISABLED
