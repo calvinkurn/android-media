@@ -3,12 +3,16 @@ package com.tokopedia.play.broadcaster.shorts.di
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
@@ -52,16 +56,8 @@ import com.tokopedia.play.broadcaster.data.datastore.TagsDataStore
 import com.tokopedia.play.broadcaster.data.datastore.TagsDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.TitleDataStore
 import com.tokopedia.play.broadcaster.data.datastore.TitleDataStoreImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroProductRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastChannelRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastInteractiveRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastPinnedMessageRepositoryImpl
-import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastRepositoryImpl
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.data.repository.*
+import com.tokopedia.play.broadcaster.domain.repository.*
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalytic
@@ -78,10 +74,16 @@ import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountMan
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManagerImpl
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsUiMapper
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
+import com.tokopedia.play_common.util.device.PlayDeviceSpecImpl
 import dagger.Binds
 import dagger.Module
 
@@ -158,6 +160,12 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
+    abstract fun bindBeautificationRepository(
+        repo: PlayBroadcastBeautificationRepositoryImpl
+    ): PlayBroadcastBeautificationRepository
+
+    @Binds
+    @PlayShortsScope
     abstract fun bindRepository(
         repo: PlayBroadcastRepositoryImpl
     ): PlayBroadcastRepository
@@ -207,6 +215,14 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcastBeautificationAnalytic(analytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcasterAnalyticSender(analytic: PlayBroadcasterAnalyticSenderImpl): PlayBroadcasterAnalyticSender
 
     /** Play Broadcaster Config Store */
     @Binds
@@ -269,4 +285,22 @@ abstract class PlayShortsBindModule {
     @PlayShortsScope
     abstract fun bindProductTagDataStore(dataStore: ProductTagDataStoreImpl): ProductTagDataStore
 
+
+    /**
+     * Device SPec
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
+
+    /**
+     * Beautification
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

@@ -42,7 +42,7 @@ class ProjectInfoUseCase @Inject constructor(
         val response: ProjectInfoResponse = repository.request(graphqlQuery(), parameter)
         response.kycProjectInfo.apply {
             return if (!isGotoKyc) {
-                ProjectInfoResult.TokoKyc()
+                ProjectInfoResult.TokoKyc
             } else {
                 if (status == NOT_VERIFIED) {
                     ProjectInfoResult.NotVerified(
@@ -64,4 +64,15 @@ class ProjectInfoUseCase @Inject constructor(
         const val ACCOUNT_LINKED = 1
         private const val PROJECT_ID = "projectID"
     }
+}
+
+sealed class ProjectInfoResult {
+    object TokoKyc : ProjectInfoResult()
+    data class StatusSubmission(
+        val status: String,
+        val rejectionReason: String,
+        val waitMessage: String
+    ): ProjectInfoResult()
+    data class NotVerified(val isAccountLinked: Boolean) : ProjectInfoResult()
+    data class Failed(val throwable: Throwable) : ProjectInfoResult()
 }

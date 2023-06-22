@@ -21,6 +21,9 @@ class DobChallengeViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main)  {
 
+    var questionId = ""
+        private set
+
     private val _getChallenge = MutableLiveData<GetChallengeResult>()
     val getChallenge : LiveData<GetChallengeResult> get() = _getChallenge
 
@@ -28,9 +31,15 @@ class DobChallengeViewModel @Inject constructor(
     val submitChallenge : SingleLiveEvent<SubmitChallengeResult> get() = _submitChallenge
 
     fun getChallenge(challengeId: String) {
-        _getChallenge.value = GetChallengeResult.Loading()
+        _getChallenge.value = GetChallengeResult.Loading
         launchCatchError(block = {
-            _getChallenge.value = getChallengeUseCase(challengeId)
+            val response = getChallengeUseCase(challengeId)
+
+            _getChallenge.value = response
+
+            if (response is GetChallengeResult.Success) {
+                questionId = response.questionId
+            }
         }, onError = {
             _getChallenge.value = GetChallengeResult.Failed(it)
         })
@@ -49,7 +58,7 @@ class DobChallengeViewModel @Inject constructor(
             )
         )
 
-        _submitChallenge.value = SubmitChallengeResult.Loading()
+        _submitChallenge.value = SubmitChallengeResult.Loading
         launchCatchError(block = {
             _submitChallenge.value = submitChallengeUseCase(parameter)
         }, onError = {

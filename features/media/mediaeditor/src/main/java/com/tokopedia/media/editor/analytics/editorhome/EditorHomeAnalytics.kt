@@ -10,5 +10,6 @@ interface EditorHomeAnalytics {
     fun clickWatermark()
     fun clickRemoveBackground()
     fun clickAddLogo()
+    fun clickAddText()
     fun autoCropProcessTime(loadTime: Long, fileNumber: Int)
 }

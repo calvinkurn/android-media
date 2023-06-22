@@ -170,7 +170,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_rejected_title)
-            tvDescription.text = getString(R.string.goto_kyc_status_rejected_subtitle)
+            tvDescription.hide()
             btnPrimary.text = getString(R.string.goto_kyc_status_rejected_button_primary)
             btnSecondary.text = getString(R.string.goto_kyc_status_rejected_button_secondary)
             cardReason.show()

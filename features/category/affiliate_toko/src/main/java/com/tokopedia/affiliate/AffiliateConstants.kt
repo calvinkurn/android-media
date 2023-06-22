@@ -71,13 +71,9 @@ const val QUERY_CONST = "titlebar=false"
 
 val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
 
-const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
+const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
-const val SOURCE_AFFILIATE = "${ApplinkConstInternalUserPlatform.PARAM_SOURCE}=Affiliate"
-
-val APP_LINK_KYC =
-    "${DeeplinkMapperUser.getApplinkGotoKyc()}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalUserPlatform.PARAM_CALL_BACK}=$uri" +
-        "&$SOURCE_AFFILIATE"
+val APP_LINK_KYC = ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 

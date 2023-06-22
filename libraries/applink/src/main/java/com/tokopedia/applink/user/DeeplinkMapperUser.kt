@@ -17,8 +17,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
-    fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
-        val uri = Uri.parse(deeplink)
+    fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
             deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
                 ApplinkConst.CHANGE_INACTIVE_PHONE,
@@ -32,16 +31,16 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> getApplinkGotoKyc()
+            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             else -> deeplink
         }
     }
 
-    fun getApplinkGotoKyc(): String {
+    private fun getApplinkGotoKyc(deeplink: String): String {
         return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalUserPlatform.GOTO_KYC
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
         } else {
-            ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+            ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
         }
     }
 

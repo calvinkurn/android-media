@@ -126,7 +126,12 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     showScreenLoading(false)
-                    handleGlobalError(it.throwable)
+                    val throwable = if (it is ProjectInfoResult.Failed) {
+                        it.throwable
+                    } else {
+                        null
+                    }
+                    handleGlobalError(throwable)
                 }
             }
         }

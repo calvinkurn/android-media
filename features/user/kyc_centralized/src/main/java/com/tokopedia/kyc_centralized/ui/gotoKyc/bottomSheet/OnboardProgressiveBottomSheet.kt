@@ -139,13 +139,17 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun initListener() {
-        binding?.btnSubmit?.setOnClickListener {
-            GotoKycAnalytics.sendClickButtonPakaiKtpIni(
-                projectId = projectId,
-                kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
-            )
-            binding?.consentGotoKycProgressive?.submitConsent()
-            viewModel.registerProgressive(projectId)
+        binding?.btnSubmit?.apply {
+            setOnClickListener {
+                if (!isLoading) {
+                    GotoKycAnalytics.sendClickButtonPakaiKtpIni(
+                        projectId = projectId,
+                        kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+                    )
+                    binding?.consentGotoKycProgressive?.submitConsent()
+                    viewModel.registerProgressive(projectId)
+                }
+            }
         }
     }
 
@@ -202,7 +206,9 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private fun showToasterError(throwable: Throwable?) {
         val message = throwable.getGotoKycErrorMessage(requireContext())
-        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        binding?.root?.rootView?.apply {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun setTokopediaCareView() {

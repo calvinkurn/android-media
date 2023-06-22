@@ -37,11 +37,7 @@ object PMConstant {
     object AppLink {
         private const val SOURCE_POWER_MERCHANT = "Power Merchant"
         private const val MERCHANT_KYC_PROJECT_ID = 10
-        private const val APPLINK_PARAMS_KYC_PM =
-            "${ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}" +
-                "&${ApplinkConstInternalUserPlatform.PARAM_SOURCE}=$SOURCE_POWER_MERCHANT"
-        private val applinkKyc = DeeplinkMapperUser.getApplinkGotoKyc()
-        val KYC_POWER_MERCHANT = "$applinkKyc?$APPLINK_PARAMS_KYC_PM"
+        val KYC_POWER_MERCHANT = ApplinkConstInternalUserPlatform.getGotoKYCApplink(MERCHANT_KYC_PROJECT_ID.toString(), SOURCE_POWER_MERCHANT)
     }
 
     object PMTierType {

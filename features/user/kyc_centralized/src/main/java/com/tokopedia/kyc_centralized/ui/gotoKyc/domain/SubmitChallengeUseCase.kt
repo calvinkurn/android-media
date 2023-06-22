@@ -1,9 +1,11 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitChallengeResponse
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitKYCChallenge
@@ -49,7 +51,7 @@ class SubmitChallengeUseCase @Inject constructor(
                     )
                 }
                 else -> {
-                    SubmitChallengeResult.Success()
+                    SubmitChallengeResult.Success
                 }
             }
         }
@@ -60,3 +62,35 @@ class SubmitChallengeUseCase @Inject constructor(
         private const val KEY_EXHAUSTED = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
     }
 }
+
+sealed class SubmitChallengeResult {
+    object Loading : SubmitChallengeResult()
+    object Success : SubmitChallengeResult()
+    class WrongAnswer(val attemptsRemaining: String): SubmitChallengeResult()
+    class Exhausted(
+        val cooldownTimeInSeconds: String,
+        val maximumAttemptsAllowed: String
+    ): SubmitChallengeResult()
+    data class Failed(val throwable: Throwable): SubmitChallengeResult()
+}
+
+data class SubmitChallengeParam (
+    @SerializedName("param")
+    val param: SubmitChallengeData = SubmitChallengeData()
+): GqlParam
+
+data class SubmitChallengeData (
+    @SerializedName("challengeID")
+    val challengeID: String = "",
+
+    @SerializedName("answers")
+    val answers: List<KycSubmitGoToChallengeAnswer> = listOf()
+)
+
+data class KycSubmitGoToChallengeAnswer (
+    @SerializedName("questionId")
+    val questionId: String = "",
+
+    @SerializedName("answer")
+    val answer: String = ""
+): GqlParam

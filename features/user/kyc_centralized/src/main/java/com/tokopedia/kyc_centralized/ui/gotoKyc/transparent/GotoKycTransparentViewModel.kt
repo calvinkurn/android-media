@@ -26,6 +26,9 @@ class GotoKycTransparentViewModel @Inject constructor(
     var source = ""
         private set
 
+    var isAccountLinked = false
+        private set
+
     private val _projectInfo = MutableLiveData<ProjectInfoResult>()
     val projectInfo: LiveData<ProjectInfoResult> get() = _projectInfo
 
@@ -46,7 +49,13 @@ class GotoKycTransparentViewModel @Inject constructor(
     fun getProjectInfo(projectId: Int) {
         launchCatchError(
             block = {
-                _projectInfo.value = projectInfoUseCase(projectId)
+                val response = projectInfoUseCase(projectId)
+
+                _projectInfo.value = response
+
+                if (response is ProjectInfoResult.NotVerified) {
+                    isAccountLinked = response.isAccountLinked
+                }
             }, onError = {
                 _projectInfo.value = ProjectInfoResult.Failed(it)
             }
@@ -64,10 +73,12 @@ class GotoKycTransparentViewModel @Inject constructor(
     }
 
     fun accountLikingStatus() {
-        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading()
+        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading
         launchCatchError(
             block = {
-                _accountLinkingStatus.value = accountLinkingStatusUseCase(Unit)
+                val response = accountLinkingStatusUseCase(Unit)
+                _accountLinkingStatus.value = response
+                isAccountLinked = response is AccountLinkingStatusResult.Linked
             }, onError = {
                 _accountLinkingStatus.value = AccountLinkingStatusResult.Failed(it)
             }

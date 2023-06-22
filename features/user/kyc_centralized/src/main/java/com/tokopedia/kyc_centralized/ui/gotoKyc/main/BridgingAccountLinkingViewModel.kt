@@ -34,7 +34,7 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     val accountLinkingStatus : LiveData<AccountLinkingStatusResult> get() = _accountLinkingStatus
 
     fun checkAccountLinkingStatus() {
-        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading()
+        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading
         launchCatchError(
             block = {
                 _accountLinkingStatus.value = accountLinkingStatusUseCase(Unit)
@@ -55,7 +55,7 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     }
 
     fun registerProgressive(projectId: String) {
-        _registerProgressive.value = RegisterProgressiveResult.Loading()
+        _registerProgressive.value = RegisterProgressiveResult.Loading
 
         val parameter = RegisterProgressiveParam(
             param = RegisterProgressiveData(

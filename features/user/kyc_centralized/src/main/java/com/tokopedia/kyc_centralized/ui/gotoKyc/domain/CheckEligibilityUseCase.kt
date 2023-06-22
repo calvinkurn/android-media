@@ -22,11 +22,11 @@ class CheckEligibilityUseCase @Inject constructor(
                         CheckEligibilityResult.Progressive(response.data?.userIdentityData?.maskedName.orEmpty())
                     }
                     KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
-                        CheckEligibilityResult.NonProgressive()
+                        CheckEligibilityResult.NonProgressive
                     }
                     KYCConstant.GotoKycFlow.ONEKYC_BLOCKED -> {
                         if (response.data?.reasonCode == KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY) {
-                            CheckEligibilityResult.AwaitingApprovalGopay()
+                            CheckEligibilityResult.AwaitingApprovalGopay
                         } else {
                             val message = "$FLOW: ${response.data?.flow} - $REASON_CODE: ${response.data?.reasonCode}"
                             CheckEligibilityResult.Failed(Throwable(message = message))
@@ -46,4 +46,11 @@ class CheckEligibilityUseCase @Inject constructor(
         private const val FLOW = "flow"
         private const val REASON_CODE = "reasonCode"
     }
+}
+
+sealed class CheckEligibilityResult {
+    data class Progressive(val encryptedName: String): CheckEligibilityResult()
+    object NonProgressive : CheckEligibilityResult()
+    object AwaitingApprovalGopay : CheckEligibilityResult()
+    data class Failed(val throwable: Throwable): CheckEligibilityResult()
 }

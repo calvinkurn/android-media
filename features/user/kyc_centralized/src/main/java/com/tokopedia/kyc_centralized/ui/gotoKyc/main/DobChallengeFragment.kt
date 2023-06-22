@@ -90,7 +90,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
             GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
             viewModel.submitChallenge(
                 challengeId = args.parameter.challengeId,
-                questionId = viewModel.getChallenge.value?.questionId.orEmpty(),
+                questionId = viewModel.questionId,
                 selectedDate = selectedDate
             )
         }
@@ -276,10 +276,11 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
         return String.format(
+            Locale.getDefault(),
             "%s-%s-%s",
             year.toString(),
-            String.format("%02d", month),
-            String.format("%02d", dayOfMonth)
+            String.format(Locale.getDefault(),"%02d", month),
+            String.format(Locale.getDefault(),"%02d", dayOfMonth)
         )
     }
 
