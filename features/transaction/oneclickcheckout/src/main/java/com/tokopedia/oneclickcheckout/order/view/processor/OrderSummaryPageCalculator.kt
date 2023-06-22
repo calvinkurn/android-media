@@ -483,8 +483,8 @@ class OrderSummaryPageCalculator @Inject constructor(
                         hasAddOn = true
                     }
                     product.addOnsProductData.data.filter {it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.forEach { addOnProductChecked ->
-                        totalAddOnProductPrice += addOnProductChecked.price
-                        addOnsProductSelectedList.add(addOnProductChecked)
+                        totalAddOnProductPrice += addOnProductChecked.price * product.orderQuantity
+                        addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = product.orderQuantity))
                     }
                 }
             }
