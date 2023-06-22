@@ -131,7 +131,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
@@ -5599,13 +5598,13 @@ class ShipmentPresenter @Inject constructor(
                     addOnData = listAddOnDataRequest
                 )
             ),
-            source = SOURCE_NORMAL_CHECKOUT,
+            source = if (isOneClickShipment) SOURCE_OCS else SOURCE_NORMAL_CHECKOUT,
             featureType = 1
         )
     }
 
     fun saveAddOnsProduct(cartItemModel: CartItemModel) {
-        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel)
+        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel, isOneClickShipment)
         saveAddOnProductUseCase.setParams(params, true)
         saveAddOnProductUseCase.execute(
             onSuccess = {
@@ -5617,19 +5616,24 @@ class ShipmentPresenter @Inject constructor(
         )
     }
 
-    fun saveAddOnsProductBeforeCheckout(addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, position: Int, isFireAndForget: Boolean) {
-        val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModel)
-        saveAddOnProductUseCase.setParams(params, false)
-        saveAddOnProductUseCase.execute(
-            onSuccess = {
-                if (it.saveAddOns.status.equals(statusOK, true)) {
-                    view?.handleOnSuccessSaveAddOnProduct()
+    fun saveAddOnsProductBeforeCheckout() {
+        if (shipmentCartItemModelList.isNotEmpty()) {
+            val cartItemModels =
+                (shipmentCartItemModelList.first { it is ShipmentCartItemModel } as ShipmentCartItemModel).cartItemModels
+
+            val params = ShipmentAddOnProductServiceMapper.generateSaveAddOnProductRequestParams(cartItemModels, isOneClickShipment)
+            saveAddOnProductUseCase.setParams(params, false)
+            saveAddOnProductUseCase.execute(
+                onSuccess = {
+                    if (it.saveAddOns.status.equals(statusOK, true)) {
+                        view?.handleOnSuccessSaveAddOnProduct()
+                    }
+                },
+                onError = {
+                    view?.showToastError(getErrorMessage(view?.activity, it))
                 }
-            },
-            onError = {
-                view?.showToastError(getErrorMessage(view?.activity, it))
-            }
-        )
+            )
+        }
     }
 
     companion object {

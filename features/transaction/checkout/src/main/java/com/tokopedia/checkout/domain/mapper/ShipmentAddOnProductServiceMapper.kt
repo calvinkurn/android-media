@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.mapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSummaryAddOnData
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -16,7 +17,7 @@ import java.util.ArrayList
 import java.util.HashMap
 
 object ShipmentAddOnProductServiceMapper {
-    fun generateSaveAddOnProductRequestParams(cartItemModel: CartItemModel): SaveAddOnStateRequest {
+    fun generateSaveAddOnProductRequestParams(cartItemModel: CartItemModel, isOneClickCheckout: Boolean): SaveAddOnStateRequest {
         val listAddOnRequest = arrayListOf<AddOnDataRequest>()
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOn ->
             val addOnRequest = AddOnDataRequest()
@@ -28,7 +29,7 @@ object ShipmentAddOnProductServiceMapper {
             listAddOnRequest.add(addOnRequest)
         }
         return SaveAddOnStateRequest().apply {
-            source = AddOnConstant.SOURCE_NORMAL_CHECKOUT
+            source = if (isOneClickCheckout) AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT else AddOnConstant.SOURCE_NORMAL_CHECKOUT
             featureType = 1
             addOns = listOf(
                 AddOnRequest().apply {
@@ -45,6 +46,46 @@ object ShipmentAddOnProductServiceMapper {
                     addOnData = listAddOnRequest
                 }
             )
+        }
+    }
+
+    fun generateSaveAddOnProductRequestParams(listCartItemModel: List<CartItemModel>, isOneClickCheckout: Boolean): SaveAddOnStateRequest {
+        val listAddOnRequest = arrayListOf<AddOnRequest>()
+        listCartItemModel.forEach { cartItem ->
+            val listAddOnProduct: ArrayList<AddOnDataRequest> = arrayListOf()
+            if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
+                    val addOnDataRequest = AddOnDataRequest(
+                        addOnQty = 1,
+                        addOnUniqueId = addOnProduct.addOnDataUniqueId,
+                        addOnType = addOnProduct.addOnDataType,
+                        addOnStatus = addOnProduct.addOnDataStatus
+                    )
+                    listAddOnProduct.add(addOnDataRequest)
+                }
+            }
+
+            val addOnRequest = AddOnRequest(
+                addOnKey = cartItem.cartId.toString(),
+                addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                cartProducts = listOf(
+                    CartProduct(
+                        cartId = cartItem.cartId,
+                        productId = cartItem.productId,
+                        warehouseId = cartItem.warehouseId.toLongOrZero(),
+                        productName = cartItem.name,
+                        productImageUrl = cartItem.imageUrl,
+                        productParentId = cartItem.variantParentId
+                    )
+                ),
+                addOnData = listAddOnProduct
+            )
+            listAddOnRequest.add(addOnRequest)
+        }
+        return SaveAddOnStateRequest().apply {
+            source = if (isOneClickCheckout) AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT else AddOnConstant.SOURCE_NORMAL_CHECKOUT
+            featureType = 1
+            addOns = listAddOnRequest
         }
     }
 

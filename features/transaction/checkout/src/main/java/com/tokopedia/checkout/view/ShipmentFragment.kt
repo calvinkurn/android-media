@@ -2222,7 +2222,7 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentAdapter.checkDropshipperValidation()
+        shipmentPresenter.saveAddOnsProductBeforeCheckout()
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
@@ -3585,7 +3585,8 @@ class ShipmentFragment :
             val addOnProductData = mapAddOnBottomSheetParam(
                 addOnsDataModel,
                 availableBottomSheetData,
-                unavailableBottomSheetData
+                unavailableBottomSheetData,
+                isOneClickShipment
             )
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
@@ -3623,7 +3624,8 @@ class ShipmentFragment :
             val addOnProductData = mapAddOnBottomSheetParam(
                 addOnsDataModel,
                 availableBottomSheetData,
-                unavailableBottomSheetData
+                unavailableBottomSheetData,
+                isOneClickShipment
             )
             val intent =
                 RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
@@ -4254,7 +4256,7 @@ class ShipmentFragment :
     }
 
     fun handleOnSuccessSaveAddOnProduct() {
-        shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
+        shipmentAdapter.checkDropshipperValidation()
     }
 
     companion object {

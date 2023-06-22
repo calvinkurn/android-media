@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.mapper
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
@@ -21,12 +22,13 @@ object ShipmentAddOnMapper {
     fun mapAddOnBottomSheetParam(
         addOnsDataModel: AddOnGiftingDataModel,
         availableBottomSheetData: AvailableBottomSheetData,
-        unavailableBottomSheetData: UnavailableBottomSheetData
+        unavailableBottomSheetData: UnavailableBottomSheetData,
+        isOneClickShipment: Boolean
     ): AddOnProductData {
         return AddOnProductData(
             bottomSheetType = addOnsDataModel.addOnsButtonModel.action,
             bottomSheetTitle = addOnsDataModel.addOnsBottomSheetModel.headerTitle,
-            source = SOURCE_NORMAL_CHECKOUT,
+            source = if (isOneClickShipment) SOURCE_ONE_CLICK_SHIPMENT else SOURCE_NORMAL_CHECKOUT,
             availableBottomSheetData = availableBottomSheetData,
             unavailableBottomSheetData = unavailableBottomSheetData
         )
