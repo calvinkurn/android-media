@@ -3,7 +3,6 @@ package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -13,23 +12,21 @@ import com.google.gson.annotations.SerializedName;
 public class ServiceTextData implements Parcelable {
 
     @SerializedName("text_range_price")
-    @Expose
     private String textRangePrice;
+
     @SerializedName("text_etd")
-    @Expose
     private String textEtd;
+
     @SerializedName("text_service_desc")
-    @Expose
     private String textServiceDesc;
+
     @SerializedName("text_eta_summarize")
-    @Expose
     private String textEtaSummarize;
+
     @SerializedName("error_code")
-    @Expose
     private int errorCode;
 
     @SerializedName("text_service_ticker")
-    @Expose
     private String textServiceTicker;
 
     public ServiceTextData() {
