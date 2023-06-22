@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class UniversalInboxWidgetMetaResponse(
     @SerializedName("metadata")
-    val metaData: List<UniversalInboxWidgetDataResponse> = listOf()
+    var metaData: List<UniversalInboxWidgetDataResponse> = listOf()
 )
