@@ -3,32 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingVertical="8dp"
     android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".75"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_shipment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/right_icon"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/icon_area"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
         app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/right_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_shipment_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/right_icon"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toEndOf="@id/rb_shipment"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -38,16 +59,16 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"/>
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description_shipment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/tv_title_shipment"
             app:typographyType="display_3"
-            android:visibility="gone"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -55,8 +76,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"
-            app:layout_constraintTop_toBottomOf="@id/tv_description_shipment"
             android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tv_description_shipment"
             app:typographyType="small" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

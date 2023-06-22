@@ -1,11 +1,16 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.analytics.HomePageTracking.ECOMMERCE
+import com.tokopedia.home.analytics.HomePageTracking.PROMOTIONS
+import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_CLICK
+import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.constant.TrackerConstant.TRACKER_ID
 
 /**
  * Created by Lukas on 09/11/20.
@@ -21,9 +26,13 @@ object BestSellerWidgetTracker : BaseTracking(){
 
     //list:"/ - p{x} - dynamic channel best seller - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name}|{chips_filter_group}|{recomm_model_source} - {header name}"
     private const val LIST_BEST_SELLER = "/ - p%s - dynamic channel best seller - product - %s - %s - %s - %s|%s|%s - %s"
+    private const val IMPRESSION_FILTER_BEST_SELLER = "impression chips filter on dynamic channel best seller"
     private const val CLICK_FILTER_BEST_SELLER = "click chips filter on dynamic channel best seller"
     private const val CLICK_SEE_ALL_BEST_SELLER = "click view all on dynamic channel best seller"
     private const val CLICK_SEE_ALL_CARD_BEST_SELLER = "click view all card on dynamic channel best seller"
+
+    private const val TRACKER_ID_CHIPS_FILTER_IMPRESSION = "43523"
+
     fun getImpressionTracker(recommendationItem: RecommendationItem, bestSellerDataModel: BestSellerDataModel, userId: String, position: Int) =
         BaseTrackerBuilder()
                 .constructBasicProductView(
@@ -90,18 +99,81 @@ object BestSellerWidgetTracker : BaseTracking(){
         getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 
-    fun sendFilterClickTracker(categoryId: String, channelId: String, headerName: String, userId: String) {
-        val tracker = DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
+    fun getFilterImpressionTracker(
+        categoryId: String,
+        channelId: String,
+        headerName: String,
+        userId: String,
+        position: Int,
+        ncpRank: Int,
+        totalFilterCount: Int,
+        chipsValue: String,
+    ): Map<String, Any> {
+        return DataLayer.mapOf(
+            Event.KEY, Event.PROMO_VIEW,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, IMPRESSION_FILTER_BEST_SELLER,
+            Label.KEY, "$channelId - null - $headerName - null - null - $totalFilterCount - null",
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            UserId.KEY, userId,
+            TRACKER_ID, TRACKER_ID_CHIPS_FILTER_IMPRESSION,
+            ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
+                    filterChipsAsObjectDataLayer(
+                        listOf(
+                            channelId,
+                            categoryId,
+                            headerName,
+                            position,
+                            ncpRank,
+                            totalFilterCount,
+                            chipsValue
+                        ).joinToString(" - ")
+                    )
+                ))
+            )
+        )
+    }
+
+    private fun filterChipsAsObjectDataLayer(creativeName: String): Any =
+        DataLayer.mapOf(
+            "creative_name", creativeName,
+            "id", "null",
+            "name", "null",
+            "creative_slot", "null"
+        )
+
+    fun sendFilterClickTracker(
+        categoryId: String,
+        channelId: String,
+        headerName: String,
+        position: Int,
+        ncpRank: Int,
+        chipsValue: String,
+    ) {
+        val creativeName = listOf(
+            channelId,
+            categoryId,
+            headerName,
+            position,
+            ncpRank,
+            chipsValue,
+        ).joinToString(" - ")
+
+        getTracker().sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                Event.KEY, PROMO_CLICK,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CLICK_FILTER_BEST_SELLER,
-                Label.KEY, "$channelId - $categoryId - $headerName",
-                BusinessUnit.KEY, BusinessUnit.DEFAULT,
-                CurrentSite.KEY, CurrentSite.DEFAULT,
-                ChannelId.KEY, channelId,
-                UserId.KEY, userId
+                Label.KEY, creativeName,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(filterChipsAsObjectDataLayer(creativeName))
+                    )
+                )
+            )
         )
-        getTracker().sendGeneralEvent(tracker)
     }
 
     fun sendViewAllClickTracker(channelId: String, headerName: String, userId: String) {
