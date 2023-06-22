@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_HOST = 152
+        const val SIZE_HOST = 153
         const val SIZE_PATH = 252
     }
 
