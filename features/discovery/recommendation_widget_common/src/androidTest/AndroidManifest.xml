@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.recommendation_widget_common.test">
+
+    <application
+        android:label="Recommendation Widget Test"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="true">
+
+        <activity
+            android:name=".RecommendationWidgetViewTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    </application>
+</manifest>

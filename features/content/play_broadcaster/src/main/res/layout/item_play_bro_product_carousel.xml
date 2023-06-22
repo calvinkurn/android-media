@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl2"
-        android:translationZ="@dimen/play_dp_1"
+        android:translationZ="@dimen/content_common_space_1"
         app:layout_constraintBottom_toBottomOf="@+id/iv_product_tag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_goneMarginTop="@dimen/spacing_lvl2"

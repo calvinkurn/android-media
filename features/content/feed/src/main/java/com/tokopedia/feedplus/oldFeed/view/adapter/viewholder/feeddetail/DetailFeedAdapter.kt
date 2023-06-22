@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.oldFeed.view.adapter.viewholder.feeddetail
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +39,7 @@ class DetailFeedAdapter(typeFactory: FeedPlusDetailTypeFactory) : RecyclerView.A
         return (list[position] as Visitable<FeedPlusDetailTypeFactory>).type(typeFactory)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addList(list: MutableList<FeedDetailProductModel>) {
         this.list.addAll(list)
         notifyDataSetChanged()

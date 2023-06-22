@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -19,17 +20,20 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
@@ -38,6 +42,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
@@ -45,13 +50,14 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.ProductIconView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
@@ -67,6 +73,7 @@ import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -87,7 +94,9 @@ import javax.inject.Inject
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val analytic: PlayBroadcastAnalytic
+    private val analytic: PlayBroadcastAnalytic,
+    private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -96,11 +105,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
-    private val iconProduct: ProductIconView by detachableView(R.id.icon_product)
+    private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
+    private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
+    private val faceFilterSetupContainer: FragmentContainerView by detachableView(R.id.face_filter_setup_container)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(
@@ -230,6 +241,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initAnalytic()
         setupView()
         setupInsets()
+        setupListener()
         setupObserve()
     }
 
@@ -284,6 +296,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     override fun getPageSource(): PlayBroPageSource {
                         return PlayBroPageSource.Live
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
@@ -316,7 +332,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        observeTitle()
         actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
@@ -346,6 +361,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     titleChannel = parentViewModel.channelTitle
                 )
             }
+        }
+
+        icFaceFilter.setOnClickListener {
+            analytic.clickBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
+
+            BeautificationSetupFragment.getFragment(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Live)
+        }
+
+        childFragmentManager.commit {
+            replace(
+                faceFilterSetupContainer.id,
+                BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                BeautificationSetupFragment.TAG,
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -409,9 +441,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            actionBarLiveView.setTitle(it.title)
+    private fun setupListener() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        clInteraction.hide()
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        clInteraction.show()
+                    }
+                }
+            }
         }
     }
 
@@ -456,6 +497,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        val beautificationSetupFragment = BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
             isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
@@ -465,8 +508,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
                 true
             }
-            /** TODO: gonna delete this */
-//            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
+            beautificationSetupFragment.isBottomSheetShown -> {
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
+                true
+            }
             else -> showDialogWhenActionClose()
         }
     }
@@ -749,6 +794,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderTitle(prevState?.title, state.title)
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
                 renderQuizForm(
@@ -775,6 +821,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     prevState?.game,
                     state.game,
                 )
+
+                renderBeautificationMenu(prevState?.beautificationConfig, state.beautificationConfig)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -867,6 +915,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun renderTitle(
+        prevState: PlayTitleUiModel?,
+        state: PlayTitleUiModel
+    ) {
+        if(prevState == state) return
+
+        actionBarLiveView.setTitle(
+            when(state) {
+                is PlayTitleUiModel.HasTitle -> state.title
+                else -> ""
+            }
+        )
+    }
 
     private fun renderPinnedMessageView(
         prevState: PinnedMessageUiState?,
@@ -996,7 +1058,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         // Have to be invisible because gone will resulting in not-rounded unify timer
         if (state.type == GameType.Unknown &&
             quizFormState.quizFormState == QuizFormStateUiModel.Nothing &&
-            pinnedState.editStatus == PinnedMessageEditStatus.Nothing
+            pinnedState.editStatus == PinnedMessageEditStatus.Nothing &&
+            !BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader).isBottomSheetShown
         ) {
             clInteraction.visible()
         } else {
@@ -1128,6 +1191,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             quizForm.setFormState(state.quizFormState)
         }
+    }
+
+    private fun renderBeautificationMenu(
+        prev: BeautificationConfigUiModel?,
+        curr: BeautificationConfigUiModel,
+    ) {
+        if(prev == curr || prev?.isUnknown == curr.isUnknown) return
+
+        icFaceFilter.showWithCondition(!curr.isUnknown)
+        analytic.viewBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {

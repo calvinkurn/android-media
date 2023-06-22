@@ -7,17 +7,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** |  <!--start status:PURPLE-->DEVELOPMENT<!--end status-->  |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence)  |
-| Product Manager | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)  |
-| Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
-| Release date | <!--start status:GREY-->NOT YET RELEASED<!--end status-->  |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [Cari Driver Baru (Finding New Driver) on Seller order management](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2057439075/Cari+Driver+Baru+%28Finding+New+Driver%29+on+Seller+Order+Management)  |
-| Module Location | `features/logistic/logisticseller` |
-
-## Table of Contents
+| **Status**              | <!--start status:PURPLE-->DEVELOPMENT<!--end status-->                                                                                                                                                      |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
+| Product Manager         | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)                                                                                                 |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                              |
+| Release date            | <!--start status:GREY-->NOT YET RELEASED<!--end status-->                                                                                                                                                   |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                          |
+| Product PRD             | [Cari Driver Baru (Finding New Driver) on Seller order management](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2057439075/Cari+Driver+Baru+%28Finding+New+Driver%29+on+Seller+Order+Management)    |
+| Module Location         | `features/logistic/logisticseller`                                                                                                                                                                          |
 
 <!--toc-->
 

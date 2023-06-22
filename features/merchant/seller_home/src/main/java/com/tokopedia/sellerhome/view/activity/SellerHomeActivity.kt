@@ -33,7 +33,6 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -412,7 +411,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun setupShadow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDarkMode()) {
+            val isAppDarkMode = isDarkMode()
+            if (isAppDarkMode) {
                 ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
                     binding?.statusBarShadow?.background = it
                     binding?.navBarShadow?.background = it
@@ -598,7 +598,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_home_to_enabled,
                 R.drawable.ic_sah_bottom_nav_home_active,
                 R.drawable.ic_sah_bottom_nav_home_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -612,7 +612,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_product_to_enabled,
                 R.drawable.ic_sah_bottom_nav_product_active,
                 R.drawable.ic_sah_bottom_nav_product_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -626,7 +626,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_chat_to_enabled,
                 R.drawable.ic_sah_bottom_nav_chat_active,
                 R.drawable.ic_sah_bottom_nav_chat_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -640,7 +640,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,
                 R.drawable.ic_sah_bottom_nav_order_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -654,7 +654,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_other_to_enabled,
                 R.drawable.ic_sah_bottom_nav_other_active,
                 R.drawable.ic_sah_bottom_nav_other_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -737,7 +737,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 wearSharedPreference.getBoolean(WEAR_POPUP_KEY, false)
             if (it && !isWearPopupShown) {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.apply{
+                dialog.apply {
                     setTitle(resources.getString(R.string.wearos_install_popup_title))
                     setDescription(resources.getString(R.string.wearos_install_popup_description))
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))

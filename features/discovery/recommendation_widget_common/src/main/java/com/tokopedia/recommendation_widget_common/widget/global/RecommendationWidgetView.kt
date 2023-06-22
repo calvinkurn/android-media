@@ -2,71 +2,76 @@ package com.tokopedia.recommendation_widget_common.widget.global
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
-import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
-import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
-import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
-import java.lang.Exception
+import androidx.lifecycle.Lifecycle.State.STARTED
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * Created by frenzel on 11/03/23
  */
 class RecommendationWidgetView : LinearLayout {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context) {
+        init()
+    }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init()
+    }
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+    ) : super(context, attrs, defStyleAttr) {
+        init()
+    }
 
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
     private val typeFactory = RecommendationTypeFactoryImpl()
-    private var component: RecommendationComponent? = null
+
+    private fun init() { }
 
     fun bind(model: RecommendationWidgetModel) {
-        val recommendationWidget = model.widget
+        val lifecycleOwner = context as? LifecycleOwner ?: return
 
-        val recommendationVisitable =
-            if (recommendationWidget.layoutType == TYPE_COMPARISON_BPC_WIDGET) {
-                RecommendationComparisonBpcModel.from(
-                    model.metadata,
-                    model.trackingModel,
-                    recommendationWidget
-                )
-            } else {
-                RecommendationCarouselModel.from(model.metadata, model.trackingModel)
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.lifecycle.repeatOnLifecycle(STARTED) {
+                recommendationWidgetViewModel
+                    ?.stateFlow
+                    ?.map { it.widgetMap[model.id] }
+                    ?.distinctUntilChanged()
+                    ?.collectLatest(::bind)
             }
-
-        bind(recommendationVisitable)
-    }
-
-    private fun bind(model: RecommendationVisitable) {
-        initInjector()
-        val widget = typeFactory.createView(context, model)
-        val widgetView = addWidgetView(widget) ?: return
-        widgetView.bind(model)
-    }
-
-    private fun addWidgetView(widgetView: ViewGroup): IRecommendationWidgetView<RecommendationVisitable>? {
-        return try {
-            removeAllViews()
-            val widget = widgetView.apply {
-                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            }
-            addView(widget)
-
-            widget
-        } catch (_: Exception) {
-            null
-        } as? IRecommendationWidgetView<RecommendationVisitable>
-    }
-
-    private fun initInjector() {
-        if (component == null) {
-            val appContext = context.getActivityFromContext()?.application as BaseMainApplication
-            component = DaggerRecommendationComponent.builder().baseAppComponent((appContext).baseAppComponent).build()
-            component?.inject(appContext)
         }
+
+        recommendationWidgetViewModel?.bind(model)
+    }
+
+    private fun bind(visitableList: List<RecommendationVisitable>?) {
+        val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
+            parentView = this,
+            visitableList = visitableList,
+            typeFactory = typeFactory
+        )
+
+        val listUpdateCallback = RecommendationWidgetListUpdateCallback(
+            parentView = this,
+            visitableList = visitableList,
+            typeFactory = typeFactory,
+        )
+
+        DiffUtil
+            .calculateDiff(diffUtilCallback, false)
+            .dispatchUpdatesTo(listUpdateCallback)
+
+        if (visitableList.isNullOrEmpty()) hide()
+        else show()
     }
 }

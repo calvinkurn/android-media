@@ -198,6 +198,10 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
             }
 
             override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
+                DtHomepageAnalytics.sendClickProductCardsDtEvent(
+                    userSession,
+                    ProductCardAnalyticsMapper.fromRecommendation(position, homeRecommendationItemDataModel)
+                )
                 goToProductDetail(homeRecommendationItemDataModel.product.id, position)
             }
 

@@ -7,13 +7,13 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.IMPRESSIONS
-import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEMS_PRODUCT_PRICE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_BRAND
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_CATEGORY
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_NAME
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ITEM_VARIANT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.KEY_INDEX
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.PRICE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -95,7 +95,7 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
             ITEM_NAME, item.name,
             ITEM_ID, item.productId.toString(),
             ITEM_BRAND, VALUE_NONE_OTHER,
-            ITEMS_PRODUCT_PRICE, item.priceInt.toString(),
+            PRICE, item.priceInt.toString(),
             ITEM_VARIANT, VALUE_NONE_OTHER,
             ITEM_CATEGORY, item.categoryBreadcrumbs,
             KEY_INDEX, (item.position + 1).toString()
@@ -155,7 +155,7 @@ object ComparisonBpcWidgetTracking : BaseTrackerConst() {
             putString(ITEM_NAME, item.name)
             putString(ITEM_ID, item.productId.toString())
             putString(ITEM_BRAND, VALUE_NONE_OTHER)
-            putFloat(ITEMS_PRODUCT_PRICE, item.priceInt.toFloat())
+            putFloat(PRICE, item.priceInt.toFloat())
             putString(ITEM_VARIANT, VALUE_NONE_OTHER)
             putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
             putInt(KEY_INDEX, item.position + 1)

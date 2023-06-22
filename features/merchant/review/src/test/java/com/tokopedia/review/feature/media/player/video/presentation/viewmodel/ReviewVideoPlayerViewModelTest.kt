@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.media.player.video.presentation.viewmodel
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
@@ -93,6 +92,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
+    fun `setPlaybackStateToPlaying should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToPlaying(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
+    }
+
+    @Test
     fun `setPlaybackStateToBuffering should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Buffering when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
@@ -114,6 +124,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         viewModel.setPlaybackStateToBuffering(newPosition)
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.value
         Assert.assertEquals(previousVideoPlaybackUiState, currentVideoPlaybackUiState)
+    }
+
+    @Test
+    fun `setPlaybackStateToBuffering should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToBuffering(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
     }
 
     @Test
@@ -141,6 +162,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
+    fun `setPlaybackStateToPaused should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToPaused(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
+    }
+
+    @Test
     fun `setPlaybackStateToPreloading should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Preloading when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
@@ -162,6 +194,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         viewModel.setPlaybackStateToPreloading(newPosition)
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.value
         Assert.assertEquals(previousVideoPlaybackUiState, currentVideoPlaybackUiState)
+    }
+
+    @Test
+    fun `setPlaybackStateToPreloading should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToPreloading(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
     }
 
     @Test
@@ -189,6 +232,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
+    fun `setPlaybackStateToEnded should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToEnded(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
+    }
+
+    @Test
     fun `setPlaybackStateToError should update _videoPlaybackUiState to ReviewVideoPlaybackUiState#Error when current _videoPlayerUiState value is ReviewVideoPlayerUiState#ReadyToPlay`() = testCoroutineRule.runTest {
         val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
         val newPosition = 100L
@@ -210,6 +264,17 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         viewModel.setPlaybackStateToError(newPosition, "")
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.value
         Assert.assertEquals(previousVideoPlaybackUiState, currentVideoPlaybackUiState)
+    }
+
+    @Test
+    fun `setPlaybackStateToError should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToError(newPosition, "")
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Hidden, videoThumbnailUiState)
     }
 
     @Test
@@ -237,63 +302,14 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `updateVideoThumbnail should update bitmap thumbnail and retain current state type`() = testCoroutineRule.runTest {
-        val mockBitmap = mockk<Bitmap>(relaxed = true)
-        viewModel.updateVideoThumbnail(mockBitmap)
-        viewModel.hideVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Hidden)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.value.videoThumbnail)
-        val newMockBitmap = mockk<Bitmap>(relaxed = true)
-        viewModel.showVideoThumbnail()
-        viewModel.updateVideoThumbnail(newMockBitmap)
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Showed)
-        Assert.assertEquals(newMockBitmap, viewModel.videoThumbnailUiState.value.videoThumbnail)
-    }
-
-    @Test
-    fun `updateVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden when bitmap is null`() = testCoroutineRule.runTest {
-        val mockBitmap = mockk<Bitmap>(relaxed = true)
-        viewModel.updateVideoThumbnail(mockBitmap)
-        viewModel.showVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.first() is ReviewVideoThumbnailUiState.Showed)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.first().videoThumbnail)
-
-        viewModel.updateVideoThumbnail(null)
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Hidden)
-        Assert.assertNull(viewModel.videoThumbnailUiState.value.videoThumbnail)
-    }
-
-    @Test
-    fun `showVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Showed when current bitmap is not null`() {
-        val mockBitmap = mockk<Bitmap>(relaxed = true)
-        viewModel.updateVideoThumbnail(mockBitmap)
-        viewModel.hideVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Hidden)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.value.videoThumbnail)
-
-        viewModel.showVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Showed)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.value.videoThumbnail)
-    }
-
-    @Test
-    fun `showVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden when current bitmap is null`() {
-        viewModel.showVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Hidden)
-        Assert.assertNull(viewModel.videoThumbnailUiState.value.videoThumbnail)
-    }
-
-    @Test
-    fun `hideVideoThumbnail should update _videoThumbnailUiState to ReviewVideoThumbnailUiState#Hidden without changing it's bitmap`() = testCoroutineRule.runTest {
-        val mockBitmap = mockk<Bitmap>(relaxed = true)
-        viewModel.updateVideoThumbnail(mockBitmap)
-        viewModel.showVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.first() is ReviewVideoThumbnailUiState.Showed)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.first().videoThumbnail)
-
-        viewModel.hideVideoThumbnail()
-        Assert.assertTrue(viewModel.videoThumbnailUiState.value is ReviewVideoThumbnailUiState.Hidden)
-        Assert.assertEquals(mockBitmap, viewModel.videoThumbnailUiState.value.videoThumbnail)
+    fun `setPlaybackStateToInactive should update videoThumbnailUiState to ReviewVideoThumbnailUiState#Showed`() = testCoroutineRule.runTest {
+        val newVideoUri = "https://tokopedia.com/patrickstarbellydancing.mp4"
+        val newPosition = 100L
+        viewModel.setVideoUri(newVideoUri)
+        viewModel.setVideoPlayerStateToReadyToPlay()
+        viewModel.setPlaybackStateToInactive(newPosition)
+        val videoThumbnailUiState = viewModel.videoThumbnailUiState.first()
+        Assert.assertEquals(ReviewVideoThumbnailUiState.Showed, videoThumbnailUiState)
     }
 
     @Test

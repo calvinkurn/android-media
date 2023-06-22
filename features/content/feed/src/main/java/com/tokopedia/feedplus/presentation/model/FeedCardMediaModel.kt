@@ -8,7 +8,7 @@ data class FeedMediaModel(
     val id: String,
     val coverUrl: String,
     val mediaUrl: String,
-    val applink: String,
+    val appLink: String,
     val tagging: List<FeedMediaTagging>
 )
 
@@ -18,5 +18,5 @@ data class FeedMediaRatioModel(
 )
 
 data class FeedMediaTagging(
-    val tagIndex: Int,
+    val tagIndex: Int
 )

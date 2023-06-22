@@ -20,7 +20,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUi
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder

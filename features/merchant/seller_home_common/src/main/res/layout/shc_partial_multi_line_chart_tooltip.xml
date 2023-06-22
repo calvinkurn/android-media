@@ -23,7 +23,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Senin, 2 des"
             tools:visibility="visible" />

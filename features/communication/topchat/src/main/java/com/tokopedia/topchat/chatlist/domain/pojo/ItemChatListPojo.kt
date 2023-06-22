@@ -36,6 +36,7 @@ data class ItemChatListPojo(
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
     var isActive: Boolean = false
         private set
+    val labelIcon: String get() = attributes?.labelIcon ?: ""
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)

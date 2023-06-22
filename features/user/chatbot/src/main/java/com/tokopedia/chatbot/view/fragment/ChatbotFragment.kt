@@ -95,6 +95,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
@@ -108,7 +109,6 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
-import com.tokopedia.chatbot.databinding.RetryUploadMediaBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -133,7 +133,6 @@ import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -179,6 +178,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -311,9 +311,13 @@ class ChatbotFragment :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
+
+    private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
+    private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
 
     private var pageSource: String = ""
+    private var isChatbotActive: Boolean = true
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -413,7 +417,7 @@ class ChatbotFragment :
         getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
     }
 
-    private fun onClickEmoji(number: Int) {
+    private fun onClickEmoji(number: Long) {
         startActivityForResult(
             context?.let {
                 ChatBotProvideRatingActivity
@@ -661,6 +665,9 @@ class ChatbotFragment :
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+
+        setErrorLayoutForServer()
         handlingForMessageIdValidity(messageId)
         presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
@@ -1028,6 +1035,11 @@ class ChatbotFragment :
     }
 
     private fun setErrorLayoutForServer() {
+        if (!isChatbotActive)
+            setErrorLayoutForChatbotError()
+    }
+
+    private fun setErrorLayoutForChatbotError() {
         getBindingView().layoutErrorGlobal.run {
             visible()
             getBindingView().homeGlobalError.run {
@@ -1052,7 +1064,7 @@ class ChatbotFragment :
                 throw NumberFormatException()
             }
         } catch (e: NumberFormatException) {
-            setErrorLayoutForServer()
+            setErrorLayoutForChatbotError()
             logNewRelicMessageIdError(
                 messageId,
                 pageSource
@@ -1796,47 +1808,37 @@ class ChatbotFragment :
     }
 
     private fun onBottomSheetItemClicked(
-        element: SendableUiModel,
-        bottomSheetPage: BottomSheetUnify
+        element: SendableUiModel
     ): (Int) -> Unit {
         return {
             if (element is ImageUploadUiModel) {
                 when (it) {
-                    RESEND -> handleImageResendBottomSheet(element, bottomSheetPage)
-                    DELETE -> handleImageDeleteBottomSheet(element, bottomSheetPage)
+                    RESEND -> handleImageResendBottomSheet(element)
+                    DELETE -> handleImageDeleteBottomSheet(element)
                 }
             } else if (element is VideoUploadUiModel) {
                 when (it) {
-                    RESEND -> handleVideoResendBottomSheet(element, bottomSheetPage)
-                    DELETE -> handleVideoDeleteBottomSheet(element, bottomSheetPage)
+                    RESEND -> handleVideoResendBottomSheet(element)
+                    DELETE -> handleVideoDeleteBottomSheet(element)
                 }
             }
         }
     }
 
-    private fun handleImageResendBottomSheet(
-        element: ImageUploadUiModel,
-        bottomSheetPage: BottomSheetUnify
-    ) {
+    private fun handleImageResendBottomSheet(element: ImageUploadUiModel) {
         removeDummy(element)
         getViewState()?.onImageUpload(element)
-        presenter.uploadImageSecureUpload(
-            element,
-            messageId,
-            opponentId,
-            onErrorImageUpload(),
-            element.imageUrl,
-            context
-        )
-        bottomSheetPage.dismiss()
+        presenter.uploadImageSecureUpload(element, messageId, opponentId, onErrorImageUpload(), element.imageUrl, context)
+        if (mediaRetryBottomSheet?.isVisible == true) {
+            mediaRetryBottomSheet?.dismiss()
+        }
     }
 
-    private fun handleImageDeleteBottomSheet(
-        element: ImageUploadUiModel,
-        bottomSheetPage: BottomSheetUnify
-    ) {
+    private fun handleImageDeleteBottomSheet(element: ImageUploadUiModel) {
         removeDummy(element)
-        bottomSheetPage.dismiss()
+        if (mediaRetryBottomSheet?.isVisible == true) {
+            mediaRetryBottomSheet?.dismiss()
+        }
         view?.let {
             Toaster.make(
                 it,
@@ -1848,12 +1850,11 @@ class ChatbotFragment :
         }
     }
 
-    private fun handleVideoResendBottomSheet(
-        element: VideoUploadUiModel,
-        bottomSheetPage: BottomSheetUnify
-    ) {
+    private fun handleVideoResendBottomSheet(element: VideoUploadUiModel) {
         removeDummy(element)
-        bottomSheetPage.dismiss()
+        if (mediaRetryBottomSheet?.isVisible == true) {
+            mediaRetryBottomSheet?.dismiss()
+        }
         element.isRetry = false
         getViewState()?.onVideoUpload(element)
         presenter.updateMediaUris(
@@ -1867,12 +1868,11 @@ class ChatbotFragment :
         )
     }
 
-    private fun handleVideoDeleteBottomSheet(
-        element: VideoUploadUiModel,
-        bottomSheetPage: BottomSheetUnify
-    ) {
+    private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel) {
         removeDummy(element)
-        bottomSheetPage.dismiss()
+        if (mediaRetryBottomSheet?.isVisible == true) {
+            mediaRetryBottomSheet?.dismiss()
+        }
         view?.let {
             Toaster.make(
                 it,
@@ -1969,9 +1969,7 @@ class ChatbotFragment :
 
     override fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView?) {
         activity?.let {
-            replyBubbleBottomSheet = ChatbotReplyBottomSheet(
-                messageUiModel,
-                this,
+            replyBubbleBottomSheet = ChatbotReplyBottomSheet.newInstance(
                 replyBubbleEnabled
             )
             replyBubbleBottomSheet?.setOnMenuClickListener { menu ->
@@ -2398,55 +2396,16 @@ class ChatbotFragment :
     }
 
     private fun createRetryMediaUploadBottomSheet(element: SendableUiModel) {
-        val bottomSheetPage = BottomSheetUnify()
-        val viewBottomSheetPage =
-            RetryUploadMediaBottomSheetLayoutBinding.inflate(LayoutInflater.from(context)).apply {
-                setUpMediaRetryBottomSheet(this, element, bottomSheetPage)
-            }
-
-        bottomSheetPage.apply {
-            if (element is ImageUploadUiModel) {
-                setTitle(
-                    this@ChatbotFragment.context?.getString(
-                        R.string.chatbot_retry_image_upload_bottom_sheet_title
-                    )
-                        ?: ""
-                )
-            } else {
-                setTitle(
-                    this@ChatbotFragment.context?.getString(
-                        R.string.chatbot_retry_video_upload_bottom_sheet_title
-                    )
-                        ?: ""
-                )
-            }
-            showCloseIcon = false
-            setChild(viewBottomSheetPage.root)
-            showKnob = true
-        }
-        fragmentManager?.let {
-            bottomSheetPage.show(it, "retry media bottom sheet")
-        }
-    }
-
-    private fun setUpMediaRetryBottomSheet(
-        view: RetryUploadMediaBottomSheetLayoutBinding,
-        element: SendableUiModel,
-        bottomSheetPage: BottomSheetUnify
-    ) {
-        val rvPages = view.rvImageUploadOption
-        rvPages.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter =
-            MediaRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
-        rvPages.adapter = adapter
-        adapter.setList(
-            listOf<String>(
-                context?.getString(R.string.chatbot_delete)
-                    ?: "",
-                context?.getString(R.string.chatbot_resend) ?: ""
-            )
+        mediaRetryBottomSheet = ChatbotMediaRetryBottomSheet.newInstance(
+            element,
+            onBottomSheetItemClicked(element)
         )
+        activity?.let {
+            mediaRetryBottomSheet?.show(
+                childFragmentManager,
+                context?.resources?.getString(R.string.chatbot_reply_bubble_bottomsheet_retry)
+            )
+        }
     }
 
     override fun sessionChangeStateHandler(state: Boolean) {
@@ -2479,7 +2438,7 @@ class ChatbotFragment :
         createAttachmentMenus()
     }
 
-    override fun goToBigReplyBoxBottomSheet() {
+    override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet
                 .newInstance(

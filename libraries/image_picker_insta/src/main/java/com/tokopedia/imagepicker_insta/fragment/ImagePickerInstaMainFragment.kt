@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -445,6 +446,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         rv.itemAnimator = null
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateSelectedFolderText(text: String, clearList: Boolean = true) {
         if (selectedFolderText == text) return
 

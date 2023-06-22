@@ -5,27 +5,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,20 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.ButtonSize
-import com.tokopedia.common_compose.components.NestBottomSheetShape
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.components.NestTextField
-import com.tokopedia.common_compose.components.NestTips
-import com.tokopedia.common_compose.components.ticker.NestTicker
-import com.tokopedia.common_compose.components.ticker.TickerType
-import com.tokopedia.common_compose.extensions.clickableWithoutRipple
-import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.common_compose.utils.toAnnotatedString
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
@@ -55,6 +27,19 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottom
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.NestBottomSheetShape
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestTextField
+import com.tokopedia.nest.components.NestTips
+import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.clickableWithoutRipple
+import com.tokopedia.nest.principles.utils.tag
+import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.coroutines.launch
 
@@ -174,15 +159,16 @@ private fun ReschedulePickupScreenLayout(
             )
         }
         NestButton(
+            text = stringResource(id = R.string.title_button_reschedule_pickup),
+            {
+                onEvent(ReschedulePickupUiEvent.SaveReschedule)
+            },
             modifier = Modifier
                 .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
             size = ButtonSize.LARGE,
-            text = stringResource(id = R.string.title_button_reschedule_pickup),
             isEnabled = state.valid
-        ) {
-            onEvent(ReschedulePickupUiEvent.SaveReschedule)
-        }
+        )
     }
 }
 
@@ -292,8 +278,8 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
-        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         enabled = false,
+        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         placeholder = stringResource(id = R.string.placeholder_day_reschedule_pick_up),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
     )
@@ -332,8 +318,8 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
-        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         enabled = false,
+        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
 }
@@ -364,10 +350,10 @@ private fun InputCustomReason(
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
 
-            onValueChanged = { onOtherReasonChanged(it) },
+            error = error,
 
-            counter = 160,
-            error = error
+            onValueChanged = { onOtherReasonChanged(it) },
+            counter = 160
         )
     }
 }
@@ -380,15 +366,19 @@ private fun ReschedulePickupSummary(summary: String) {
         exit = ExitTransition.None
     ) {
         NestTicker(
-            title = "",
-            description = HtmlLinkHelper(
-                LocalContext.current,
-                summary
-            ).spannedString?.toAnnotatedString() ?: "",
+            ticker = listOf(
+                NestTickerData(
+                    tickerTitle = "",
+                    tickerType = TickerType.ANNOUNCEMENT,
+                    tickerDescription = HtmlLinkHelper(
+                        LocalContext.current,
+                        summary
+                    ).spannedString?.toAnnotatedString() ?: ""
+                )
+            ),
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp),
-            closeButtonVisibility = false,
-            type = TickerType.ANNOUNCEMENT
+            closeButtonVisibility = false
         )
     }
 }

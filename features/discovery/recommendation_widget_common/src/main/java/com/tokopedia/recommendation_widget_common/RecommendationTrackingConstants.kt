@@ -9,6 +9,7 @@ object RecommendationTrackingConstants {
 
         const val ITEM_LIST = "item_list"
         const val ITEMS = "items"
+        const val PROMOTIONS = "promotions"
 
         const val PRODUCT_ID = "productId"
 
@@ -22,6 +23,7 @@ object RecommendationTrackingConstants {
         const val CATEGORY_ID = "category_id"
         const val DIMENSION_40 = "dimension40"
         const val DIMENSION_45 = "dimension45"
+        const val DIMENSION_90 = "dimension90"
 
         const val ITEM_BRAND = "item_brand"
         const val ITEM_CATEGORY = "item_category"
@@ -42,23 +44,14 @@ object RecommendationTrackingConstants {
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
 
-        const val ITEMS_DIMENSION_40 = "dimension40"
-        const val ITEMS_DIMENSION_84 = "dimension84"
-        const val ITEMS_DIMENSION_90 = "dimension90"
-        const val ITEMS_PRODUCT_NAME = "name"
-        const val ITEMS_PRODUCT_ID = "id"
-        const val ITEMS_PRODUCT_PRICE = "price"
-        const val ITEMS_PRODUCT_BRAND = "brand"
-        const val ITEMS_PRODUCT_VARIANT = "variant"
-        const val ITEMS_PRODUCT_CATEGORY = "category"
-        const val ITEMS_PRODUCT_LIST = "list"
-        const val ITEMS_PRODUCT_POSITION = "position"
-        const val ITEMS_ACTION_FIELD = "actionField"
-
         const val VALUE_NONE_OTHER = "none / other"
+        const val VALUE_IS_TOPADS = "- product topads"
+
+        fun String.convertToWidgetType(): String = replace("-", " ")
     }
 
     object Action {
+        const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
         const val VIEW_ITEM_LIST = "view_item_list"
 

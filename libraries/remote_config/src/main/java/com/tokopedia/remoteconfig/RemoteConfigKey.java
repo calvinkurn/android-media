@@ -100,7 +100,6 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE = "android_enable_always_native_entertainment";
 
-    public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
     public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
@@ -231,6 +230,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
+
+    public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
 
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
 
