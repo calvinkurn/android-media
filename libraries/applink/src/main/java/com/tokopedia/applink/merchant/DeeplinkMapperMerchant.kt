@@ -455,6 +455,10 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_DETAIL, appLink) != null
     }
 
+    fun isSellerShopNibAppLink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB)
+    }
+
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_LIST, lastSegment)
@@ -524,6 +528,10 @@ object DeeplinkMapperMerchant {
             ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL,
             lastSegment
         )
+    }
+
+    fun getRegisteredNavigationForSellerShopNib(): String {
+        return ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
     }
 
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {

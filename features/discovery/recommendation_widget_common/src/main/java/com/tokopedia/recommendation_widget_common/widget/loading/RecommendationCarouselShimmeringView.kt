@@ -28,6 +28,9 @@ internal class RecommendationCarouselShimmeringView:
             .inflate(LayoutInflater.from(context), this, true)
     }
 
+    override val layoutId: Int
+        get() = LAYOUT
+
     override fun bind(model: RecommendationCarouselShimmeringModel) { }
 
     companion object {

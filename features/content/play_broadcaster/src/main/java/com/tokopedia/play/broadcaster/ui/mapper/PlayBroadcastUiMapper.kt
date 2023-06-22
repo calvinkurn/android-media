@@ -29,6 +29,10 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
@@ -60,6 +64,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -82,6 +87,7 @@ import javax.inject.Inject
 class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer,
     private val uriParser: UriParser,
+    private val assetChecker: AssetChecker,
 ) : PlayBroadcastMapper {
 
     override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
@@ -155,7 +161,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapConfiguration(config: Config): ConfigurationUiModel {
+    override suspend fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelStatus.getChannelType(
             config.activeLiveChannel,
             config.pausedChannel,
@@ -199,6 +205,43 @@ class PlayBroadcastUiMapper @Inject constructor(
             tnc = config.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
+            beautificationConfig = BeautificationConfigUiModel(
+                licenseLink = config.beautificationConfig.license,
+                modelLink = config.beautificationConfig.model,
+                customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
+                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+                    val isRemoveEffectActive = config.beautificationConfig.customFace.menu.firstOrNull { it.active && it.id == FaceFilterUiModel.Type.None.id } != null
+
+                    FaceFilterUiModel(
+                        id = menu.id,
+                        name = menu.name,
+                        active = when {
+                            isRemoveEffectActive -> false
+                            else -> menu.active
+                        },
+                        minValue = menu.minValue,
+                        maxValue = menu.maxValue,
+                        defaultValue = menu.defaultValue,
+                        value = menu.value,
+                        isSelected = isRemoveEffectActive && menu.id == FaceFilterUiModel.Type.None.id,
+                    )
+                },
+                presets = config.beautificationConfig.presets.map { preset ->
+                    PresetFilterUiModel(
+                        id = preset.id,
+                        name = preset.name,
+                        active = preset.active,
+                        minValue = preset.minValue,
+                        maxValue = preset.maxValue,
+                        defaultValue = preset.defaultValue,
+                        value = preset.value,
+                        iconUrl = preset.urlIcon,
+                        assetLink = preset.assetLink,
+                        assetStatus = if (PresetFilterUiModel.isNone(preset.id) || assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                        isSelected = false,
+                    )
+                }
+            )
         )
     }
 
@@ -524,7 +567,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         otherParticipant = it.otherParticipantCount.toLong(),
                         leaderBoardType = getLeaderboardType(it.type),
                         totalParticipant = it.winner.size.toLong(),
-                        emptyLeaderBoardCopyText = it.otherParticipantCountText,
+                        emptyLeaderBoardCopyText = "", //in bro GQL no empty leaderboard
                         id = it.interactiveId,
                     )
                 )

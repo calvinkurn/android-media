@@ -8,13 +8,14 @@ import androidx.annotation.ColorRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -24,7 +25,11 @@ import com.tokopedia.product_service_widget.R
 import com.tokopedia.productbundlewidget.adapter.ProductBundleWidgetAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
-import com.tokopedia.productbundlewidget.model.*
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
+import com.tokopedia.productbundlewidget.model.BundleTypes
+import com.tokopedia.productbundlewidget.model.BundleUiModel
+import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -34,12 +39,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     companion object {
         private const val PADDING_START_ADJUSTMENT_RV = 6
+        private const val INVALID_POSITION = -1
     }
 
     @Inject
     lateinit var viewModel: ProductBundleWidgetViewModel
 
     private var tfTitle: Typography? = null
+    private var rvBundles: RecyclerView? = null
     private var pageSource: String = ""
     private var productId: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
@@ -63,17 +70,18 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
-        productItemPosition: Int
+        itemPosition: Int
     ) {
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, selectedProduct.productId)
-        listener?.onBundleProductClicked(bundle, selectedMultipleBundle, selectedProduct)
+        listener?.onBundleProductClicked(bundle, selectedMultipleBundle, selectedProduct, itemPosition)
     }
 
     override fun onMultipleBundleActionButtonClicked(
         selectedMultipleBundle: BundleDetailUiModel,
-        productDetails: List<BundleProductUiModel>
+        productDetails: List<BundleProductUiModel>,
+        bundlePosition: Int
     ) {
-        goToProductPage(selectedMultipleBundle, productDetails)
+        goToProductPage(selectedMultipleBundle, productDetails, bundlePosition)
     }
 
     override fun onMultipleBundleMoreProductClicked(
@@ -86,7 +94,8 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     override fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
-        bundleProducts: BundleProductUiModel
+        bundleProducts: BundleProductUiModel,
+        bundlePosition: Int
     ) {
         if (startActivityResult != null) {
             val intent = RouteManager.getIntent(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
@@ -96,7 +105,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
             RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
                 selectedBundle.bundleId, pageSource)
         }
-        listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
+        listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts, bundlePosition)
     }
 
     override fun onTrackSingleVariantChange(
@@ -113,7 +122,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         bundleName: String,
         bundlePosition: Int
     ) {
-        listener?.impressionSingleBundle(selectedSingleBundle, selectedProduct, bundleName)
+        listener?.impressionSingleBundle(selectedSingleBundle, selectedProduct, bundleName, bundlePosition)
     }
 
     override fun impressionProductBundleMultiple(
@@ -173,11 +182,13 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     private fun setup(context: Context, attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
-        val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
+        rvBundles = view.findViewById(R.id.rv_bundles)
         tfTitle = view.findViewById(R.id.tf_title)
-        setupItems(rvBundles)
-        defineCustomAttributes(attrs)
-        adjustPadding(rvBundles)
+        rvBundles?.let {
+            setupItems(it)
+            defineCustomAttributes(attrs)
+            adjustPadding(it)
+        }
         initInjector()
     }
 
@@ -217,7 +228,8 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     private fun goToProductPage(
         selectedMultipleBundle: BundleDetailUiModel,
-        productDetails: List<BundleProductUiModel>
+        productDetails: List<BundleProductUiModel>,
+        bundlePosition: Int = INVALID_POSITION
     ) {
         val fixedProductId = if (productId.isNotEmpty()) productId else PRODUCT_ID_DEFAULT_VALUE
         if (startActivityResult != null) {
@@ -228,7 +240,18 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
             RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
                 selectedMultipleBundle.bundleId, pageSource)
         }
-        listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
+        if (bundlePosition == INVALID_POSITION) {
+            listener?.onMultipleBundleActionButtonClicked(
+                selectedBundle = selectedMultipleBundle,
+                productDetails = productDetails
+            )
+        } else {
+            listener?.onMultipleBundleActionButtonClicked(
+                selectedBundle = selectedMultipleBundle,
+                productDetails = productDetails,
+                bundlePosition = bundlePosition
+            )
+        }
     }
 
     fun setTitleText(text: String) {
@@ -252,6 +275,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         productId = param.productId
         param.apply {
             viewModel.getBundleInfo(param)
+        }
+    }
+
+    fun setBundlingCarouselTopMargin(margin: Int) {
+        try {
+            rvBundles?.setMargin(paddingStart, margin, paddingEnd, paddingBottom)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

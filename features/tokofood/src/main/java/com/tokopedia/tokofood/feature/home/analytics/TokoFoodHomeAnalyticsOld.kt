@@ -52,6 +52,7 @@ import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_CLICK
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.SELECT_CONTENT
 import com.tokopedia.track.constant.TrackerConstant
 
@@ -162,7 +163,7 @@ class TokoFoodHomeAnalyticsOld: BaseTrackerConst() {
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, eventDataLayer)
     }
 
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
