@@ -276,11 +276,11 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
         return String.format(
-            Locale.getDefault(),
+            null,
             "%s-%s-%s",
             year.toString(),
-            String.format(Locale.getDefault(),"%02d", month),
-            String.format(Locale.getDefault(),"%02d", dayOfMonth)
+            String.format(null,"%02d", month),
+            String.format(null,"%02d", dayOfMonth)
         )
     }
 
