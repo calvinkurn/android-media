@@ -75,7 +75,7 @@ class AnchorTabsViewModel(
                                     anchorMap = sectionPositionMap
                                 )
                             }
-                        }
+                        } ?: listOf()
                         if (selectedSectionId.isNotEmpty() && anchorTabsUseCase?.selectedId?.isEmpty() == true) {
                             anchorTabsUseCase?.selectedId = selectedSectionId
                         }

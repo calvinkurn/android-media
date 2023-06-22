@@ -70,7 +70,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
                 if (!data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink.isNullOrEmpty()) {
                     components.data?.firstOrNull()?.applinks = data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink
                 }
-                couponCode.postValue(data?.hachikoRedeem?.coupons?.get(0)?.code)
+                couponCode.postValue(data?.hachikoRedeem?.coupons?.get(0)?.code ?: "")
             } else {
                 couponCode.postValue(NOT_LOGGEDIN)
             }

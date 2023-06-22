@@ -92,6 +92,7 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
                 setupTripleTypeView(listSize)
             }
         } catch (e: Exception) {
+            Utils.logException(e)
         }
         parentListSize = listSize
     }

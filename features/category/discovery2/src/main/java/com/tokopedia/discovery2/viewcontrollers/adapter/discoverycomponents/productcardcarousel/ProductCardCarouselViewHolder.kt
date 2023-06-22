@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.di.getSubComponent

@@ -49,7 +49,6 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
             Observer { item ->
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackImpressionNavigationChips(item)
                 categoriesRecycleAdapter.setDataList(item)
-                categoriesRecycleAdapter.notifyDataSetChanged()
                 if (item.size <= 0) {
                     chipsParentView.gone()
                     categoriesRecyclerView.gone()

@@ -52,7 +52,7 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
     }
 
     private fun setupBackground() {
-        backgroundImageUrl.value = components.properties?.backgroundImageUrl
+        backgroundImageUrl.value = components.properties?.backgroundImageUrl ?: ""
     }
 
     private fun fetchProductCarouselData() {

@@ -41,7 +41,6 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
             addDecorator()
             if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
                 addShimmer()
-                mDiscoveryRecycleAdapter.notifyDataSetChanged()
             }
             handleCarouselPagination()
         }
@@ -114,7 +113,6 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun handleErrorState() {
         addShimmer()
-        mDiscoveryRecycleAdapter.notifyDataSetChanged()
     }
 
     private fun reloadComponent() {

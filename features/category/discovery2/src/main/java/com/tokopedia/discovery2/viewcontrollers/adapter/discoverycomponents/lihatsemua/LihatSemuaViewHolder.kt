@@ -308,6 +308,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 view.clipToOutline = true
             }
         } catch (e: Exception) {
+            Utils.logException(e)
         }
     }
 
