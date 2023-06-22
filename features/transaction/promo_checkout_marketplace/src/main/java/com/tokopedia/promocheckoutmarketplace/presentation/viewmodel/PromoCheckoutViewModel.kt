@@ -447,15 +447,18 @@ class PromoCheckoutViewModel @Inject constructor(
                 initPromoInput()
                 analytics.eventViewAvailablePromoListNoPromo(getPageSource())
             }
+
             STATUS_PHONE_NOT_VERIFIED -> {
                 emptyState.uiData.buttonText = LABEL_BUTTON_PHONE_VERIFICATION
                 emptyState.uiState.isShowButton = true
                 analytics.eventViewPhoneVerificationMessage(getPageSource())
             }
+
             STATUS_USER_BLACKLISTED -> {
                 emptyState.uiState.isShowButton = false
                 analytics.eventViewBlacklistErrorAfterApplyPromo(getPageSource())
             }
+
             else -> {
                 emptyState.uiState.isShowButton = true
                 emptyState.uiData.buttonText = LABEL_BUTTON_TRY_AGAIN
@@ -598,7 +601,8 @@ class PromoCheckoutViewModel @Inject constructor(
 
             // Initialize promo list header
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
-            val recommendedPromoList = response.couponListRecommendation.data.promoRecommendation.codes
+            val recommendedPromoList =
+                response.couponListRecommendation.data.promoRecommendation.codes
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(
                     couponSubSection,
@@ -1779,15 +1783,19 @@ class PromoCheckoutViewModel @Inject constructor(
         return affectedPromoCount
     }
 
-    private fun calculateClash(selectedItem: PromoListItemUiModel, isApplyRecommendedPromo: Boolean) {
+    private fun calculateClash(
+        promo: PromoListItemUiModel,
+        isApplyRecommendedPromo: Boolean
+    ) {
         // Return clash result for analytics purpose
         var clashResult = false
-        if (selectedItem.uiState.isSelected) {
+        if (promo.uiState.isSelected) {
             // Calculate clash on selection event
             promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != promo.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
-                        val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem, isApplyRecommendedPromo)
+                        val tmpClashResult =
+                            checkAndSetClashOnSelectionEvent(it, promo, isApplyRecommendedPromo)
                         if (!clashResult) clashResult = tmpClashResult
                     }
                     it.uiState.isLoading = false
@@ -1795,34 +1803,38 @@ class PromoCheckoutViewModel @Inject constructor(
                 }
             }
         } else {
-            // Calculate clash on un selection event
+            // Calculate clash on un-selection event
             promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != promo.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
-                        checkAndSetClashOnUnSelectionEvent(it, selectedItem)
+                        checkAndSetClashOnUnSelectionEvent(it, promo)
                     }
                     it.uiState.isLoading = false
                     _tmpUiModel.value = Update(it)
                 }
             }
 
-            // Recalculate clash for selected promo after un-selection event
-            promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiData.secondaryCoupons.isNotEmpty() && it.uiState.isSelected) {
-                    if (selectedItem.uiData.clashingInfos.isNotEmpty()) {
-                        checkAndSetClashOnSelectionEvent(selectedItem, it, isApplyRecommendedPromo)
+            // Recalculate clash for adjusted selected promo after un-selection event
+            promoListUiModel.value?.forEach { adjustedPromo ->
+                if (adjustedPromo is PromoListItemUiModel
+                    && adjustedPromo.uiData.secondaryCoupons.isNotEmpty()
+                    && adjustedPromo.uiState.isSelected
+                ) {
+                    if (promo.uiData.clashingInfos.isNotEmpty()) {
+                        checkAndSetClashOnSelectionEvent(promo, adjustedPromo,
+                            isApplyRecommendedPromo)
                     }
-                    _tmpUiModel.value = Update(selectedItem)
+                    _tmpUiModel.value = Update(promo)
                 }
             }
         }
 
         if (clashResult) {
-            selectedItem.uiState.isCausingOtherPromoClash = true
+            promo.uiState.isCausingOtherPromoClash = true
         }
 
         // update BO clashing state
-        updateBoClashingState(selectedItem)
+        updateBoClashingState(promo)
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(
