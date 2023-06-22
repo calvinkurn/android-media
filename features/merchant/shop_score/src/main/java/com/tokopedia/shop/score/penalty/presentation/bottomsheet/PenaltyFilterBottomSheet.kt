@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,6 +42,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     }
 
     private var isApplyFilter = false
+    private var canShowApplyFilterButton = false
 
     private val filterPenaltyAdapterTypeFactory by lazy { FilterPenaltyAdapterFactory(this, this) }
     private val filterPenaltyAdapter by lazy { FilterPenaltyAdapter(filterPenaltyAdapterTypeFactory) }
@@ -281,11 +281,19 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     private fun showHideBottomSheetReset() {
         if (checkIsSelected() || checkIsDateFilterApplied()) {
             setClickBtnReset()
-            binding?.btnShowPenalty?.show()
         } else {
             clearAction()
-            binding?.btnShowPenalty?.gone()
         }
+
+        if (canShowApplyFilterButton) {
+            showApplyFilterButton()
+        } else {
+            canShowApplyFilterButton = true
+        }
+    }
+
+    private fun showApplyFilterButton() {
+        binding?.btnShowPenalty?.show()
     }
 
     private fun checkIsSelected(): Boolean {
