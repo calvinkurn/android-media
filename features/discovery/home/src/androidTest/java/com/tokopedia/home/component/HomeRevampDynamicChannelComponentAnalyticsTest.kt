@@ -41,9 +41,11 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runners.MethodSorters
 import kotlin.reflect.KClass
 
 private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
@@ -51,6 +53,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
  * Created by yfsx on 2/9/21.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @CassavaTest
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
@@ -72,6 +75,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Before
     fun resetAll() {
+        login()
         disableCoachMark(context)
         intending(isInternal()).respondWith(
             Instrumentation.ActivityResult(
@@ -96,15 +100,29 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testBalanceWidgetLogin() {
+    fun testLoggedInBalanceWidget() {
         HomeDCCassavaTest {
-            login()
+            initTest()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 actionOnBalanceWidget(viewHolder)
             }
         } validateAnalytics {
             addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+        }
+    }
+
+    @Test
+    fun testOpenScreenHomepage() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN)
         }
     }
 
@@ -208,7 +226,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Ignore("Ignored due to intermittent error megafeed gone after clicked")
     @Test
-    fun testRecommendationFeed() {
+    fun testComponentRecommendationFeed() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -227,7 +245,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testCueWidgetCategory() {
+    fun testComponentCueWidgetCategory() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -240,7 +258,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testVpsWidget() {
+    fun testComponentVpsWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = VpsDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -253,7 +271,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testLego4Product() {
+    fun testComponentLego4Product() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = Lego4ProductDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -266,21 +284,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testOpenScreenHomepage() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-                scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN)
-        }
-    }
-
-    @Test
-    fun testTicker() {
+    fun testComponentTicker() {
         visibilityIdlingResource = ViewVisibilityIdlingResource(
             activity = activityRule.activity,
             viewId = R.id.ticker_description,
@@ -297,7 +301,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testCloseReminderWidget() {
+    fun testComponentReminderWidgetClose() {
         HomeDCCassavaTest {
             initTest()
             doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
@@ -314,7 +318,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testReminderWidgetRecharge() {
+    fun testComponentReminderWidgetRecharge() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(
@@ -332,7 +336,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testReminderWidgetSalam() {
+    fun testComponentReminderWidgetSalam() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(
@@ -363,10 +367,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testRechargeBUWidget() {
+    fun testComponentRechargeBUWidget() {
         HomeDCCassavaTest {
             initTest()
-            login()
             doActivityTestByModelClass(dataModelClass = RechargeBUWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 checkRechargeBUWidget(viewHolder, i)
             }
@@ -392,7 +395,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testBannerComponentWidget() {
+    fun testComponentBannerWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -418,7 +421,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testSpecialReleaseWidget() {
+    fun testComponentSpecialReleaseWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -431,7 +434,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testSpecialCampaignWidget() {
+    fun testComponentSpecialCampaignWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = CampaignWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -444,7 +447,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testHomeDynamicIcon() {
+    fun testComponentHomeDynamicIcon() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = DynamicIconComponentDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -457,7 +460,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testDealsWidget() {
+    fun testComponentDealsWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = DealsDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -470,7 +473,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testFlashSaleWidget() {
+    fun testComponentFlashSaleWidget() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = FlashSaleDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -482,8 +485,39 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testComponentMissionWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            waitForData()
+            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMissionWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
+        }
+    }
+
+    @Test
+    fun testComponentTodoWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            waitForData()
+            doActivityTestByModelClass(dataModelClass = TodoWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnTodoWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
+        login()
         waitForData()
         hideStickyLogin()
     }
