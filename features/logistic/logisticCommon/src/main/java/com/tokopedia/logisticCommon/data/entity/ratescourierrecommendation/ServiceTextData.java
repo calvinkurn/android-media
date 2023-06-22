@@ -28,6 +28,10 @@ public class ServiceTextData implements Parcelable {
     @Expose
     private int errorCode;
 
+    @SerializedName("text_service_ticker")
+    @Expose
+    private String textServiceTicker;
+
     public ServiceTextData() {
     }
 
@@ -99,5 +103,13 @@ public class ServiceTextData implements Parcelable {
 
     public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public String getTextServiceTicker() {
+        return textServiceTicker;
+    }
+
+    public void setTextServiceTicker(String textServiceTicker) {
+        this.textServiceTicker = textServiceTicker;
     }
 }
