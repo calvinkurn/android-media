@@ -48,6 +48,8 @@ class FakeChatListNetworkModule {
         return fakeTopchatWebSocket
     }
 
+    // -- separator -- //
+
     @ActivityScope
     @Provides
     fun provideAbTestPlatform(): AbTestPlatform {

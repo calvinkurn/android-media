@@ -55,7 +55,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
 

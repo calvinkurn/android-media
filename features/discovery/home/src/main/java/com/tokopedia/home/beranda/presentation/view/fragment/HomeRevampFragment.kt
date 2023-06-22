@@ -110,18 +110,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
-import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
@@ -167,8 +162,6 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.iris.Iris
@@ -270,7 +263,6 @@ open class HomeRevampFragment :
     HomeReviewListener,
     PopularKeywordListener,
     FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
     PlayWidgetListener,
     RecommendationWidgetListener,
     QuestWidgetCallbacks,
@@ -420,10 +412,6 @@ open class HomeRevampFragment :
     private var recommendationWishlistItem: RecommendationItem? = null
     private var shouldPausePlay = true
     private var lock = Object()
-    private var autoRefreshFlag = HomeFlag()
-    private var autoRefreshHandler = Handler()
-    private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
-    private var serverOffsetTime: Long = 0L
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmarkTokonow: CoachMark2? = null
@@ -1048,9 +1036,6 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
-        if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            setAutoRefreshOnHome(autoRefreshFlag)
-        }
         shouldPausePlay = true
         if (getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
@@ -1114,9 +1099,6 @@ open class HomeRevampFragment :
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
-        }
-        if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
     }
 
@@ -1226,7 +1208,6 @@ open class HomeRevampFragment :
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
                     if (dynamicChannel.list.isNotEmpty()) {
-                        configureHomeFlag(dynamicChannel.homeFlag)
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
                 }
@@ -1548,38 +1529,6 @@ open class HomeRevampFragment :
 
     override fun onSpotlightItemClicked(actionLink: String) {
         onActionLinkClicked(actionLink)
-    }
-
-    private fun configureHomeFlag(homeFlag: HomeFlag) {
-        initAutoRefreshHandler()
-        if (isEnableToAutoRefresh(homeFlag)) {
-            autoRefreshFlag = homeFlag
-            serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(homeFlag.serverTime)
-            setAutoRefreshOnHome(homeFlag)
-        }
-    }
-
-    private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
-        return homeFlag.getFlag(HomeFlag.TYPE.IS_AUTO_REFRESH) &&
-            homeFlag.serverTime != INVALID_SERVER_TIME &&
-            homeFlag.eventTime.isNotEmpty()
-    }
-
-    private fun initAutoRefreshHandler() {
-        stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-        autoRefreshRunnable = TimerRunnable(listener = this)
-        autoRefreshHandler = Handler()
-    }
-
-    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag) {
-        initAutoRefreshHandler()
-        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
-        autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
-        runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-    }
-
-    override fun onHomeAutoRefreshTriggered() {
-        doHomeDataRefresh()
     }
 
     private fun doHomeDataRefresh() {

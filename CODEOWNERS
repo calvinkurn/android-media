@@ -212,7 +212,7 @@
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
-/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 /features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
@@ -315,6 +315,7 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
+/libraries/byteplus_effect/						        @tokopedia/android-minionlance-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
