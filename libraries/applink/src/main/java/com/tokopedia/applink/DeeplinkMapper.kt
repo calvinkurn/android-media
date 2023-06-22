@@ -486,7 +486,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
             ApplinkConst.SellerApp.SELLER_PERSONA -> ApplinkConstInternalSellerapp.SELLER_PERSONA
             ApplinkConst.SellerApp.SELLER_SHOP_HOUR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
-            ApplinkConst.SellerApp.GOTO_KYC -> ApplinkConstInternalUserPlatform.GOTO_KYC
             else -> when {
                 DeepLinkMapperProductManage.isStockReminderPattern(deeplink) -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(
                     deeplink
