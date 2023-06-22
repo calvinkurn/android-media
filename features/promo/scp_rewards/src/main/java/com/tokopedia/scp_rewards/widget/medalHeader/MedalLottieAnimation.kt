@@ -51,6 +51,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
+                    lottieView.maintainOriginalImageBounds = true
                     map.forEach { (key, bitmap) -> lottieView.updateBitmap(key, bitmap) }
                     val textAutoShow = lottieView.composition?.markers
                         ?.map { it.name }
