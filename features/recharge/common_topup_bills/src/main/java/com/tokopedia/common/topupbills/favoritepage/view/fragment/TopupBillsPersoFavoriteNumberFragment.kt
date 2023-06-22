@@ -533,9 +533,17 @@ class TopupBillsPersoFavoriteNumberFragment :
         val shouldShowDelete = clientNumbers.size > MIN_TOTAL_FAV_NUMBER
 
         val bottomSheet = PersoFavoriteNumberMenuBottomSheet.newInstance(
-            favNumberItem, this, shouldShowDelete
+            favNumberItem, shouldShowDelete
         )
+        bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if (childFragment is PersoFavoriteNumberMenuBottomSheet) {
+            childFragment.setListener(this)
+        }
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsPersoFavNumberDataView) {
