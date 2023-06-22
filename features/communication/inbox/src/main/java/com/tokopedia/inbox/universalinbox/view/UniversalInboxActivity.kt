@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.iconnotification.IconNotification
@@ -21,8 +22,12 @@ import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterLis
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
+import javax.inject.Inject
 
 class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInboxComponent> {
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private var universalInboxComponent: UniversalInboxComponent? = null
     private var viewBinding: UniversalInboxActivityBinding? = null
@@ -35,13 +40,8 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
     override fun getNewFragment(): Fragment {
         return UniversalInboxFragment.getFragment(
             supportFragmentManager,
-            classLoader,
-            getFragmentBundle()
+            classLoader
         )
-    }
-
-    private fun getFragmentBundle(): Bundle {
-        return Bundle()
     }
 
     override fun getComponent(): UniversalInboxComponent {
@@ -49,6 +49,7 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
         setupViewBinding()
@@ -56,7 +57,11 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
     }
 
     private fun setupFragmentFactory() {
-        supportFragmentManager.fragmentFactory = UniversalInboxFragmentFactory()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     private fun setupViewBinding() {

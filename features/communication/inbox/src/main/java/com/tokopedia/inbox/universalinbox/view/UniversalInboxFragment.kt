@@ -19,8 +19,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
@@ -79,7 +78,14 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import timber.log.Timber
 import javax.inject.Inject
 
-class UniversalInboxFragment :
+class UniversalInboxFragment @Inject constructor(
+    var viewModel: UniversalInboxViewModel,
+    var topAdsHeadlineViewModel: TopAdsHeadlineViewModel,
+    var analytics: UniversalInboxAnalytics,
+    var topAdsAnalytic: UniversalInboxTopAdsAnalytic,
+    var userSession: UserSessionInterface,
+    var abTestPlatform: UniversalInboxAbPlatform
+) :
     BaseDaggerFragment(),
     UniversalInboxEndlessScrollListener.Listener,
     UniversalInboxWidgetListener,
@@ -91,26 +97,15 @@ class UniversalInboxFragment :
 
     private var endlessRecyclerViewScrollListener: UniversalInboxEndlessScrollListener? = null
 
-    @Inject
-    lateinit var viewModel: UniversalInboxViewModel
-
-    @Inject
-    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
-
-    @Inject
-    lateinit var analytics: UniversalInboxAnalytics
-
-    @Inject
-    lateinit var topAdsAnalytic: UniversalInboxTopAdsAnalytic
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var abTestPlatform: UniversalInboxAbPlatform
-
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
-    private lateinit var adapter: UniversalInboxAdapter
+    private var adapter: UniversalInboxAdapter = UniversalInboxAdapter(
+        userSession,
+        this,
+        this,
+        this,
+        this,
+        this
+    )
 
     // TopAds Banner
     private var topAdsBannerInProductCards: List<TopAdsImageViewModel>? = null
@@ -138,9 +133,7 @@ class UniversalInboxFragment :
         return binding?.root
     }
 
-    override fun initInjector() {
-        getComponent(UniversalInboxComponent::class.java).inject(this)
-    }
+    override fun initInjector() {}
 
     override fun getScreenName(): String = TAG
 
@@ -172,14 +165,6 @@ class UniversalInboxFragment :
     }
 
     private fun setupRecyclerView() {
-        adapter = UniversalInboxAdapter(
-            userSession,
-            this,
-            this,
-            this,
-            this,
-            this
-        )
         binding?.inboxRv?.layoutManager = StaggeredGridLayoutManager(
             2,
             StaggeredGridLayoutManager.VERTICAL
@@ -907,7 +892,7 @@ class UniversalInboxFragment :
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle = Bundle()
         ): UniversalInboxFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UniversalInboxFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

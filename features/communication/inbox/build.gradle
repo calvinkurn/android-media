@@ -29,21 +29,9 @@ android {
         jvmTarget = JavaVersion.VERSION_11
     }
     testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-                excludes = ['jdk.internal.*']
-            }
-        }
         animationsDisabled = true
     }
     sourceSets {
-        test {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
-        androidTest {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
         main {
             res {
                 srcDirs 'src/main/res', 'src/main/res/layouts/oldinbox', 'src/main/res/layouts/page',

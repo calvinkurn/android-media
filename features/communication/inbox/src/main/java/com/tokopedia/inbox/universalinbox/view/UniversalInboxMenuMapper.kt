@@ -4,9 +4,9 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetDataResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetMetaResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_KEY

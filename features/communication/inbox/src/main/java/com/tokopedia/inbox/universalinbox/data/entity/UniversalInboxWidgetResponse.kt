@@ -1,7 +1,17 @@
-package com.tokopedia.inbox.universalinbox.data.response.widget
+package com.tokopedia.inbox.universalinbox.data.entity
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
+
+data class UniversalInboxWidgetWrapperResponse(
+    @SerializedName("chatInboxWidgetMeta")
+    val chatInboxWidgetMeta: UniversalInboxWidgetMetaResponse = UniversalInboxWidgetMetaResponse()
+)
+
+data class UniversalInboxWidgetMetaResponse(
+    @SerializedName("metadata")
+    var metaData: List<UniversalInboxWidgetDataResponse> = listOf()
+)
 
 data class UniversalInboxWidgetDataResponse(
     @SerializedName("icon")

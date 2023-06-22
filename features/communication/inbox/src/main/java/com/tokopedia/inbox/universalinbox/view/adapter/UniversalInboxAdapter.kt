@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate

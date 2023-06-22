@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetMetaResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
@@ -26,6 +26,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -69,41 +71,42 @@ class UniversalInboxViewModel @Inject constructor(
 
     fun loadWidgetMetaAndCounter() {
         viewModelScope.launch {
-            withContext(dispatcher.io) {
-                try {
-                    val widgetMetaResponse = getWidgetMeta()
-                    val allCounterResponse = getAllCounter()
-                    val result = inboxMenuMapper.mapWidgetMetaToUiModel(
-                        widgetMetaResponse,
-                        allCounterResponse
-                    )
-                    _widget.postValue(Pair(result, allCounterResponse))
-                } catch (throwable: Throwable) {
-                    _widget.postValue(
-                        Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
-                    )
-                }
+            try {
+                val widgetMetaResponse = getWidgetMetaAsync().await()
+                val allCounterResponse = getAllCounterAsync().await()
+                val result = inboxMenuMapper.mapWidgetMetaToUiModel(
+                    widgetMetaResponse,
+                    allCounterResponse
+                )
+                _widget.value = Pair(result, allCounterResponse)
+            } catch (throwable: Throwable) {
+                _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }
     }
 
-    private suspend fun getWidgetMeta(): UniversalInboxWidgetMetaResponse? {
-        return try {
-            getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            null
+    private suspend fun getWidgetMetaAsync(): Deferred<UniversalInboxWidgetMetaResponse?> {
+        return viewModelScope.async {
+            try {
+                getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                null
+            }
         }
     }
 
-    private suspend fun getAllCounter(): UniversalInboxAllCounterResponse? {
-        return try {
-            val result = getAllCounterUseCase(userSession.shopId)
-            _allCounter.postValue(Success(result))
-            result
-        } catch (throwable: Throwable) {
-            _allCounter.postValue(Fail(throwable))
-            null
+    private suspend fun getAllCounterAsync(): Deferred<UniversalInboxAllCounterResponse?> {
+        return viewModelScope.async {
+            try {
+                val result = getAllCounterUseCase(userSession.shopId)
+                _allCounter.value = Success(result)
+                result
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _allCounter.value = Fail(throwable)
+                null
+            }
         }
     }
 

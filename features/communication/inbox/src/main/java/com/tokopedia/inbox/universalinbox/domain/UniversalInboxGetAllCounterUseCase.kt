@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxCounterWrapperResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxCounterWrapperResponse
 import javax.inject.Inject
 
 class UniversalInboxGetAllCounterUseCase @Inject constructor(
@@ -45,6 +45,4 @@ class UniversalInboxGetAllCounterUseCase @Inject constructor(
         private const val PARAM_INPUT = "input"
         private const val SHOP_ID = "shopId"
     }
-
 }
-
