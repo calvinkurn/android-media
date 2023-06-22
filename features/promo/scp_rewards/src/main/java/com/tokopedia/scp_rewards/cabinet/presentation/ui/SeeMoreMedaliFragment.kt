@@ -35,7 +35,9 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     companion object {
         private const val FULL_COLUMN = 1
         private const val ONE_THIRD_COLUMN = 3
-        private const val GRID_VERTICAL_SPACING = 22
+        private const val GRID_VERTICAL_SPACING = 20
+        private const val GRID_HORIZONTAL_SPACING = 20
+        private const val COLUMN_3 = 3
     }
 
     private var binding: SeeMoreMedaliFragmentBinding? = null
@@ -73,7 +75,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getUserMedalis()
+        viewModel.getUserMedalis(badgeType = badgeType)
         setupHeader()
         setupRecyclerView()
         setupViewModelObservers()
@@ -162,12 +164,12 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
             adapter = medalAdapter
             layoutManager = rvLayoutManager
             addOnScrollListener(rvScrollListener!!)
-            addItemDecoration(GridSpacing(0, GRID_VERTICAL_SPACING))
+            addItemDecoration(GridSpacing(GRID_HORIZONTAL_SPACING, GRID_VERTICAL_SPACING))
         }
     }
 
     private fun setupLayoutManager() {
-        rvLayoutManager = GridLayoutManager(context, 3).apply {
+        rvLayoutManager = GridLayoutManager(context, COLUMN_3).apply {
             spanSizeLookup = getSpanLookup()
         }
     }
@@ -175,7 +177,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     private fun setupRecyclerViewScrollListener() {
         rvScrollListener = object : EndlessRecyclerViewScrollListener(rvLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getUserMedalis(page)
+                viewModel.getUserMedalis(page, badgeType)
             }
         }
     }
