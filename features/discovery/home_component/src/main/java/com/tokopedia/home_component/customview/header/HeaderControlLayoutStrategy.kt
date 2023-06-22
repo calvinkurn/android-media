@@ -92,6 +92,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
                 listener?.onSeeAllClick(channel.channelHeader.getLink())
             }
         } else {
+            seeAllButtonUnify?.hide()
             seeAllButton?.hide()
         }
     }
@@ -123,6 +124,7 @@ class HeaderControlLayoutStrategy : HeaderLayoutStrategy {
 
             seeAllButtonUnify?.show()
         } else {
+            seeAllButton?.hide()
             seeAllButtonUnify?.hide()
         }
     }
