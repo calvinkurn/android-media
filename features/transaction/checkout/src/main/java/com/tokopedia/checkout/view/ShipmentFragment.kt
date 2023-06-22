@@ -2222,7 +2222,7 @@ class ShipmentFragment :
 
     override fun onProcessToPayment() {
         showLoading()
-        shipmentPresenter.saveAddOnsProductBeforeCheckout()
+        shipmentViewModel.saveAddOnsProductBeforeCheckout()
     }
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
@@ -3873,7 +3873,7 @@ class ShipmentFragment :
         } else {
             addOnProductDataItemModel.addOnDataStatus = 2
         }
-        shipmentPresenter.saveAddOnsProduct(cartItemModel)
+        shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
 
