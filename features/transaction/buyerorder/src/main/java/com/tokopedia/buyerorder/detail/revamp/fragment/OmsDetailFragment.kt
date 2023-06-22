@@ -696,12 +696,12 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
             activity?.let {
                 val bottomSheet = QrDealsBottomSheet(actionButton)
-                bottomSheet.show(it.supportFragmentManager, TAG_DEALS_QR)
+                bottomSheet.show(childFragmentManager, TAG_DEALS_QR)
             }
         } else {
             activity?.let {
-                val bottomSheet = QrEventBottomSheet(actionButton)
-                bottomSheet.show(it.supportFragmentManager, TAG_EVENTS_QR)
+                val bottomSheet = QrEventBottomSheet.newInstance(actionButton)
+                bottomSheet.show(childFragmentManager, TAG_EVENTS_QR)
             }
         }
     }
