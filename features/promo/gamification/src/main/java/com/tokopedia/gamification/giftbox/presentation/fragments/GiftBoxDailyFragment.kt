@@ -36,6 +36,7 @@ import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxCompone
 import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
+import com.tokopedia.gamification.giftbox.presentation.RewardContainerListener
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.DEFAULT
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
@@ -62,7 +63,7 @@ import java.util.Locale
 
 import javax.inject.Inject
 
-class GiftBoxDailyFragment : GiftBoxBaseFragment() {
+class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
 
     lateinit var rewardContainer: RewardContainerDaily
     lateinit var llRewardMessage: LinearLayout
@@ -172,6 +173,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         setListeners()
         setupBottomSheet(false)
         preloadAssets()
+
+        rewardContainer.setListener(this)
     }
 
     fun preloadAssets() {
@@ -955,6 +958,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
         return true
+    }
+
+    override fun onTrigger(position: Int) {
+        giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.dummyCode?.let {
+            code ->
+            viewModel.autoApply(code)
+            GtmEvents.sendClickCouponImageEvent("")
+        }
     }
 }
 
