@@ -1741,8 +1741,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check goto kyc param appLink then should return tokopedia internal goto kyc in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/goto-kyc?projectId=12345"
-        val appLink = UriUtil.buildUri(ApplinkConst.GOTO_KYC, "12345")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/goto-kyc?projectId=7&source=Account&callback=url"
+        val appLink = "tokopedia://goto-kyc?projectId=7&source=Account&callback=url"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
