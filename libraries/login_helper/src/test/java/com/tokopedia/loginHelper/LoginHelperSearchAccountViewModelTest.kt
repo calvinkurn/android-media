@@ -3,20 +3,31 @@ package com.tokopedia.loginHelper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.loginHelper.data.response.LoginDataResponse
+import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
+import com.tokopedia.loginHelper.domain.uiModel.deleteUser.LoginHelperDeleteUserUiModel
 import com.tokopedia.loginHelper.domain.usecase.DeleteUserRestUseCase
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.LoginHelperSearchAccountViewModel
+import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountAction
+import com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state.LoginHelperSearchAccountEvent
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,10 +52,6 @@ class LoginHelperSearchAccountViewModelTest {
 
     private lateinit var viewModel: LoginHelperSearchAccountViewModel
     private lateinit var userSession: UserSessionInterface
-
-    private val throwable = Throwable("Error")
-    private val email = "sourav.saikia@tokopedia.com"
-    private val password = "abc123456"
 
     @Before
     @Throws(Exception::class)
@@ -74,7 +81,134 @@ class LoginHelperSearchAccountViewModelTest {
     }
 
     @Test
-    fun `test`() {
-        assertTrue(true)
+    fun `processEvent when GetUserDataFromRemoteDB success`() {
+        val response: UnifiedLoginHelperData = mockk(relaxed = true)
+
+        coEvery {
+            getUserDetailsRestCase.makeNetworkCall(
+                any()
+            )
+        } returns response
+
+        viewModel.processEvent(
+            LoginHelperSearchAccountEvent.GetUserData(LoginDataResponse())
+        )
+
+        assert(
+            viewModel.uiState.value.loginDataList is Success
+        )
+    }
+
+    @Test
+    fun `processEvent when AddUserToRemoteDB failure`() {
+        coEvery {
+            getUserDetailsRestCase.makeNetworkCall(
+                any()
+            )
+        } throws Exception()
+
+        viewModel.processEvent(
+            LoginHelperSearchAccountEvent.GetUserData(LoginDataResponse())
+        )
+
+        assert(
+            viewModel.uiState.value.loginDataList is Fail
+        )
+    }
+
+    @Test
+    fun `processEvent when deleteUser success when response is 200`() {
+        runBlockingTest {
+            val response: LoginHelperDeleteUserUiModel = mockk(relaxed = true)
+
+            coEvery {
+                deleteUserRestUseCase.makeApiCall(
+                    any(),
+                    any()
+                )
+            } returns response
+
+            val emittedValues = arrayListOf<LoginHelperSearchAccountAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+
+            coEvery { response.code } returns 200L
+
+            viewModel.processEvent(
+                LoginHelperSearchAccountEvent.DeleteUserDetailsFromRemote(
+                    1L
+                )
+            )
+
+            val actualEvent = emittedValues.last()
+            val onSuccessDeleteUserData =
+                actualEvent is LoginHelperSearchAccountAction.OnSuccessDeleteAccountAction
+            Assert.assertEquals(true, onSuccessDeleteUserData)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `processEvent when deleteUser success when response is not 200`() {
+        runBlockingTest {
+            val response: LoginHelperDeleteUserUiModel = mockk(relaxed = true)
+
+            coEvery {
+                deleteUserRestUseCase.makeApiCall(
+                    any(),
+                    any()
+                )
+            } returns response
+
+            val emittedValues = arrayListOf<LoginHelperSearchAccountAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+
+            coEvery { response.code } returns 500L
+
+            viewModel.processEvent(
+                LoginHelperSearchAccountEvent.DeleteUserDetailsFromRemote(
+                    1L
+                )
+            )
+
+            val actualEvent = emittedValues.last()
+            val onFailureDeleteUserData =
+                actualEvent is LoginHelperSearchAccountAction.OnFailureDeleteAccountAction
+            Assert.assertEquals(true, onFailureDeleteUserData)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `processEvent when deleteUser failure`() {
+        runBlockingTest {
+            coEvery {
+                deleteUserRestUseCase.makeApiCall(
+                    any(),
+                    any()
+                )
+            } throws Exception()
+
+            viewModel.processEvent(
+                LoginHelperSearchAccountEvent.DeleteUserDetailsFromRemote(1L)
+            )
+
+            val emittedValues = arrayListOf<LoginHelperSearchAccountAction>()
+            val job = launch {
+                viewModel.uiAction.toList(emittedValues)
+            }
+
+            val actualEvent = emittedValues.last()
+            val onFailureDeleteData =
+                actualEvent is LoginHelperSearchAccountAction.OnFailureDeleteAccountAction
+            Assert.assertEquals(true, onFailureDeleteData)
+
+            job.cancel()
+        }
     }
 }

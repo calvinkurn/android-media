@@ -45,7 +45,7 @@ class LoginHelperSearchAccountViewModel @Inject constructor(
             is LoginHelperSearchAccountEvent.SetEnvType -> {
                 setEnvType(event.envType)
             }
-            is LoginHelperSearchAccountEvent.SaveUserDetailsFromAssets -> {
+            is LoginHelperSearchAccountEvent.GetUserData -> {
                 getLoginData()
             }
             is LoginHelperSearchAccountEvent.QueryEmail -> {

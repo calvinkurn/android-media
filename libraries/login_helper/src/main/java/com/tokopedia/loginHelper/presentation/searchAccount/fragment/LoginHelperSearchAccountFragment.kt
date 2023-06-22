@@ -197,7 +197,7 @@ class LoginHelperSearchAccountFragment : BaseDaggerFragment(), LoginHelperSearch
         }
         val loginUserDetails = Gson().fromJson(jsonString, LoginDataResponse::class.java)
         viewModel.processEvent(
-            LoginHelperSearchAccountEvent.SaveUserDetailsFromAssets(loginUserDetails)
+            LoginHelperSearchAccountEvent.GetUserData(loginUserDetails)
         )
     }
 

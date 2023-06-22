@@ -7,7 +7,7 @@ sealed class LoginHelperSearchAccountEvent {
     data class SetEnvType(val envType: LoginHelperEnvType) : LoginHelperSearchAccountEvent()
     object TapBackButton : LoginHelperSearchAccountEvent()
     data class QueryEmail(val email: String) : LoginHelperSearchAccountEvent()
-    data class SaveUserDetailsFromAssets(val userDetails: LoginDataResponse) : LoginHelperSearchAccountEvent()
+    data class GetUserData(val userDetails: LoginDataResponse) : LoginHelperSearchAccountEvent()
 
     data class DeleteUserDetailsFromRemote(val id: Long) : LoginHelperSearchAccountEvent()
 }
