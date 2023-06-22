@@ -392,7 +392,7 @@ object DeeplinkMapper {
                 deeplink
             )
 
-            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(context, deeplink)
+            deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
 
             else -> return ""
         }

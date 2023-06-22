@@ -345,6 +345,9 @@ object DeeplinkMainApp {
         "kyc-form" to mutableListOf(
             DLP.goTo(ApplinkConstInternalUserPlatform.KYC_FORM_BASE)
         ),
+        "goto-kyc" to mutableListOf(
+            DLP.goTo(DeeplinkMapperUser::getRegisteredNavigationUser)
+        ),
         "layanan-finansial" to mutableListOf(
             DLP.goTo(DeeplinkMapperFintech::getRegisteredNavigationForLayanan)
         ),
