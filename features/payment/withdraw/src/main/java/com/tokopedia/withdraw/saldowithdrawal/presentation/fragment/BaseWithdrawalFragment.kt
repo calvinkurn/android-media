@@ -206,6 +206,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun showBlankState() {
         editable_group.gone()
+        bottom_content_group.gone()
         ivLockButton.gone()
         emptyGroup.visibility = View.VISIBLE
         val message = when (accountBalanceType) {
