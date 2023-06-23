@@ -1,0 +1,34 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "K0F5SBeCknLL7U3CE7709tnYIHs\u003d",
+        "source": "custom",
+        "title": "Lainnya di toko ini",
+        "subtitle": "",
+        "foreignTitle": "Products in this shop",
+        "widgetUrl": "",
+        "pageName": "pdp_1",
+        "seeMoreAppLink": "tokopedia://rekomendasi/616724820/d/?ref\u003dpdp_1_os_4030\u0026product_ids\u003d616724820",
+        "layoutType": "Custom-horizontal",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": []
+      }
+    ]
+  }
+}
