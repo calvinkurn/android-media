@@ -2,6 +2,8 @@ package com.tokopedia.play.analytic.explorewidget
 
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -50,12 +52,18 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             return if (this) "promo" else "no promo"
         }
 
-    override fun impressExploreIcon() {
+    private fun getCategoryLabel(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) : Triple<String, String, String> {
+        return if (type == ExploreWidgetType.Category) Triple(widgetInfo.categoryName, widgetInfo.categoryLevel.toString(), widgetInfo.categoryId)
+        else Triple(widgetInfo.categoryName, "0", "0")
+    }
+
+    override fun impressExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+        val label = getCategoryLabel(widgetInfo, type)
         Tracker.Builder()
             .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
             .setEventAction("impression - explore widget")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType")
+            .setEventLabel("$channelId - $channelType - ${label.first} - ${label.second} - ${label.third}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39856")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -65,12 +73,14 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun clickExploreIcon() {
+    override fun clickExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+        val label = getCategoryLabel(widgetInfo, type)
+
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - explore widget")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType")
+            .setEventLabel("$channelId - $channelType - ${label.first} - ${label.second} - ${label.third}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39857")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -124,18 +134,20 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     override fun clickContentCard(
         selectedChannel: PlayWidgetChannelUiModel,
         position: Int,
-        categoryName: String,
-        isAutoplay: Boolean
+        widgetInfo: ExploreWidgetConfig,
+        config: PlayWidgetConfigUiModel,
+        type: ExploreWidgetType,
     ) {
         /**
          * {channel_id live room} - {live/vod live room} - {channel_id clicked} - {card_type} - {position} -
-         * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type}
+         * {is_autoplay} - {category name} - {promo/no promo} - {recommendation_type} - {category level} - {category id}
          */
+        val label = getCategoryLabel(widgetInfo, type)
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - channel card")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - $isAutoplay - $categoryName - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39860")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -160,12 +172,13 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .send()
     }
 
-    override fun scrollExplore() {
+    override fun scrollExplore(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType) {
+        val label = getCategoryLabel(widgetInfo, type)
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("scroll - explore widget")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType")
+            .setEventLabel("$channelId - $channelType -${label.first} - ${label.second} - ${label.third}")
             .setCustomProperty(KEY_TRACK_TRACKER_ID, "39862")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -241,19 +254,21 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
     override fun impressChannelCard(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
+        widgetInfo: ExploreWidgetConfig,
         position: Int,
-        categoryName: String
+        type: ExploreWidgetType
     ) {
+        val label = getCategoryLabel(widgetInfo, type)
         val map = BaseTrackerBuilder().constructBasicPromotionView(
             event = KEY_TRACK_PROMO_VIEW,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "impression - channel card",
-            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${item.hasPromo.promoToString} - ${item.recommendationType} - ${label.second} - ${label.third}",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
                     name = PLAY_EXPLORE_WIDGET_PATH,
-                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - $categoryName - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${widgetInfo.categoryName} - ${item.hasPromo.promoToString} - ${item.recommendationType}",
                     position = (position + 1).toString()
                 )
             )

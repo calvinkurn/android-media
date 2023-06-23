@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
@@ -43,7 +44,7 @@ class ExploreWidgetViewComponent(
     }
 
     sealed interface Event {
-        object OnClicked : Event
-        object OnImpressed : Event
+        data class OnClicked(val widgetInfo: ExploreWidgetConfig): Event
+        data class OnImpressed(val widgetInfo: ExploreWidgetConfig): Event
     }
 }

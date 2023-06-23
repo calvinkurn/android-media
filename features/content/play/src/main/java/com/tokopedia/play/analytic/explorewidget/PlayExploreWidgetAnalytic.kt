@@ -1,6 +1,8 @@
 package com.tokopedia.play.analytic.explorewidget
 
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -17,8 +19,8 @@ interface PlayExploreWidgetAnalytic {
         ): PlayExploreWidgetAnalytic
     }
 
-    fun impressExploreIcon()
-    fun clickExploreIcon()
+    fun impressExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType)
+    fun clickExploreIcon(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType)
     fun impressExploreTab(
         categoryName: String,
         chips: Map<ChipWidgetUiModel, Int>
@@ -28,20 +30,22 @@ interface PlayExploreWidgetAnalytic {
     fun clickContentCard(
         selectedChannel: PlayWidgetChannelUiModel,
         position: Int,
-        categoryName: String,
-        isAutoplay: Boolean
+        widgetInfo: ExploreWidgetConfig,
+        config: PlayWidgetConfigUiModel,
+        type: ExploreWidgetType,
     )
 
     fun clickCloseExplore()
     fun clickRemind(selectedChannelId: String)
-    fun scrollExplore()
+    fun scrollExplore(widgetInfo: ExploreWidgetConfig, type: ExploreWidgetType)
     fun swipeRefresh()
     fun impressToasterGlobalError()
     fun clickRetryToaster()
     fun impressChannelCard(
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
+        widgetInfo: ExploreWidgetConfig,
         position: Int,
-        categoryName: String
+        type: ExploreWidgetType
     )
 }

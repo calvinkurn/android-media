@@ -50,7 +50,7 @@ class PlayExploreWidget @Inject constructor(
     }
 
     private val fgCategory by lazyThreadSafetyNone {
-        PlayCategoryWidgetFragment(router)
+        PlayCategoryWidgetFragment(router, trackingQueue, analyticFactory)
     }
 
     private val tabs = mutableMapOf<String, Fragment>()

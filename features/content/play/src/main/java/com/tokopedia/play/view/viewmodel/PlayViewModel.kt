@@ -553,6 +553,9 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
+    val widgetInfo : ExploreWidgetConfig
+        get() = _channelDetail.value.exploreWidgetConfig
+
     private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
 
     val exploreWidgetTabs: List<String>
@@ -1915,7 +1918,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
                 _channelDetail.update { channel ->
-                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl))
+                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory, categoryLevel = result.categoryLvl, categoryId = result.categoryId))
                 }
                 _categoryWidget.update { w -> w.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {

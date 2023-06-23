@@ -339,6 +339,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         categorySourceType = categoryConfig.sourceType,
         categorySourceId = categoryConfig.sourceId,
         categoryLevel = categoryConfig.categoryLvl,
+        categoryId = categoryConfig.categoryId,
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
