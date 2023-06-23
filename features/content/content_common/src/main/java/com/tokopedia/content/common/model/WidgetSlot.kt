@@ -136,7 +136,13 @@ data class ContentItem(
         val type: String = "",
 
         @SerializedName("thumbnail_url")
-        val thumbnail: String = "",
+        val thumbnailUrl: String = "",
+
+        @SerializedName("badge_url")
+        val badgeUrl: String = "",
+
+        @SerializedName("app_link")
+        val appLink: String = "",
     )
 
     data class Video(

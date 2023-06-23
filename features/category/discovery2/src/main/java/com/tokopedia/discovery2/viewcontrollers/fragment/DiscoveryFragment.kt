@@ -53,6 +53,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.dpToPx
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.AFFILIATE
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
@@ -2165,6 +2166,10 @@ open class DiscoveryFragment :
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
                     }
+
+                    override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+                        return super.calculateDyToMakeVisible(view, snapPreference) + dpToPx(55).toInt()
+                    }
                 }
             smoothScroller.targetPosition = position
             if (this.isResumed)
@@ -2291,6 +2296,12 @@ open class DiscoveryFragment :
         } else {
             initInjector()
             discoveryComponent.provideSubComponent()
+        }
+    }
+
+    fun scrollToNextComponent(currentCompPosition: Int?) {
+        if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
+            smoothScrollToComponentWithPosition(currentCompPosition + 1)
         }
     }
 }

@@ -19,7 +19,6 @@ import javax.inject.Inject
 @PlayScope
 class PlayExploreWidgetMapper @Inject constructor() {
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun map(widgetSlot: WidgetSlot): List<WidgetUiModel> {
         return buildList {
             widgetSlot.playGetContentSlot.data.map {
@@ -84,7 +83,9 @@ class PlayExploreWidgetMapper @Inject constructor() {
                             id = it.partner.id,
                             name = partnerName,
                             type = PartnerType.getTypeByValue(it.partner.name),
-                            thumbnail = it.partner.thumbnail
+                            avatarUrl = it.partner.thumbnailUrl,
+                            badgeUrl = it.partner.badgeUrl,
+                            appLink = it.partner.appLink,
                         ),
                         video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
                         channelType = channelType,
@@ -97,6 +98,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         shouldShowPerformanceDashboard = false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
                         gridType = PlayGridType.Medium,
+                        products = emptyList(),
                     )
                 }
             )
