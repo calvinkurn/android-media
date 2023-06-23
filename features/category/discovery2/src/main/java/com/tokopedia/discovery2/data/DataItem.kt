@@ -85,6 +85,12 @@ data class DataItem(
     @SerializedName("image_url_mobile")
     var imageUrlMobile: String? = "",
 
+    @SerializedName("product_image")
+    var productImage: String? = "",
+
+    @SerializedName("product_name")
+    var productName: String? = "",
+
     @SerializedName("promo_id")
     var promoId: String? = "",
 
@@ -286,7 +292,7 @@ data class DataItem(
     @SerializedName("is_topads")
     var isTopads: Boolean? = false,
 
-    @SerializedName("discounted_price")
+    @SerializedName("discounted_price", alternate = ["slashed_price"])
     var discountedPrice: String? = "",
 
     @SerializedName("gold_merchant")
@@ -510,6 +516,9 @@ data class DataItem(
     @SerializedName("limit")
     var limit: Int? = 0,
 
+    @SerializedName("is_active")
+    var isActive: Boolean? = null,
+
     @field:SerializedName("products")
     val products: List<ProductsItem?>? = null,
 
@@ -556,7 +565,9 @@ data class DataItem(
 
     var wishlistUrl: String? = "",
 
-    var itemWeight: Float? = 1.0f
+    var itemWeight: Float? = 1.0f,
+
+    var typeProductHighlightComponentCard: String? = "",
 ) {
     val leftMargin: Int
         get() {

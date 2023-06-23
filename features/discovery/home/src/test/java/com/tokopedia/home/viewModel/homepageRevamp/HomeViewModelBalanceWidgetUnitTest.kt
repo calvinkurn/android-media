@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -193,6 +194,9 @@ class HomeViewModelBalanceWidgetUnitTest {
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        homeViewModel.resetNestedScrolling.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() == true)
+        }
     }
 
     @ExperimentalCoroutinesApi

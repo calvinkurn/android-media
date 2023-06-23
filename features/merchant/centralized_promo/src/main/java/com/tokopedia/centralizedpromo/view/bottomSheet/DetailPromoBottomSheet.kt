@@ -21,6 +21,7 @@ class DetailPromoBottomSheet :
     private var onCreateCampaignTracking: (() -> Unit?)? = null
     private var onClickPaywallTracking: (() -> Unit?)? = null
     private var onImpressionPaywallracking: (() -> Unit?)? = null
+    private var onClickPerformanceListener: (() -> Unit?)? = null
 
     companion object {
         private const val TAG = "DetailPromoBottomSheet"
@@ -60,9 +61,13 @@ class DetailPromoBottomSheet :
                 onImpressionPaywallracking?.invoke()
             } else {
                 tickerInfoEligble.gone()
-                cbDontShowInfo.show()
-                cbDontShowInfo.setOnCheckedChangeListener { _, _ ->
-                    onCheckBoxListener?.invoke(binding?.cbDontShowInfo?.isChecked.orFalse())
+                if (it.hideCheckBox) {
+                    cbDontShowInfo.gone()
+                } else {
+                    cbDontShowInfo.show()
+                    cbDontShowInfo.setOnCheckedChangeListener { _, _ ->
+                        onCheckBoxListener?.invoke(binding?.cbDontShowInfo?.isChecked.orFalse())
+                    }
                 }
             }
             tvHeaderText.text = it.headerText
@@ -78,6 +83,7 @@ class DetailPromoBottomSheet :
                     onClickPaywallTracking?.invoke()
                 }
             }
+            setPerformanceButton(it.hasPerformanceButton)
         }
     }
 
@@ -101,5 +107,23 @@ class DetailPromoBottomSheet :
 
     fun onImpressionPaywallTracking(onImpressionPaywallracking: () -> Unit) {
         this.onImpressionPaywallracking = onImpressionPaywallracking
+    }
+
+    fun onClickPerformanceListener(onClickPerformanceListener: () -> Unit) {
+        this.onClickPerformanceListener = onClickPerformanceListener
+    }
+
+    private fun setPerformanceButton(shouldShow: Boolean) {
+        binding?.btnCtaPromoPerformance?.run {
+            if (shouldShow) {
+                show()
+                setOnClickListener {
+                    onClickPerformanceListener?.invoke()
+                }
+            } else {
+                gone()
+            }
+
+        }
     }
 }

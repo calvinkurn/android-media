@@ -21,7 +21,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,7 @@ import javax.inject.Inject
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
 class GetUnificationDataUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
     private val unificationMapper: UnificationMapper,
     private val getTableDataUseCase: GetTableDataUseCase,
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(
@@ -116,23 +116,25 @@ class GetUnificationDataUseCase @Inject constructor(
         isFromCache: Boolean
     ): List<UnificationDataUiModel> {
         return unificationUiModels
-            .filter { it.tabs.isNotEmpty() }
             .map { model ->
-                val tab = if (isExistingWidgetDataFetch) {
-                    model.tabs.firstOrNull { it.isSelected } ?: model.tabs.first()
-                } else {
-                    model.tabs.first()
-                }
+                return@map withContext(dispatchers.io) {
+                    if (model.tabs.isEmpty()) {
+                        return@withContext async { model }
+                    }
 
-                val dataKeyModel = TableAndPostDataKey(
-                    dataKey = tab.dataKey,
-                    filter = String.EMPTY,
-                    maxData = tab.config.maxData,
-                    maxDisplayPerPage = tab.config.maxDisplay
-                )
+                    return@withContext async {
+                        val tab = if (isExistingWidgetDataFetch) {
+                            model.tabs.firstOrNull { it.isSelected } ?: model.tabs.first()
+                        } else {
+                            model.tabs.first()
+                        }
 
-                return@map coroutineScope {
-                    async {
+                        val dataKeyModel = TableAndPostDataKey(
+                            dataKey = tab.dataKey,
+                            filter = String.EMPTY,
+                            maxData = tab.config.maxData,
+                            maxDisplayPerPage = tab.config.maxDisplay
+                        )
                         val tabData = fetchTableData(tab, dataKeyModel, isFromCache)
                         return@async model.copy(
                             tabs = model.tabs.map tab@{
@@ -211,6 +213,7 @@ class GetUnificationDataUseCase @Inject constructor(
                     }
                   }
                   error
+                  errorMsg
                   showWidget
                 }
               }

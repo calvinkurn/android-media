@@ -25,6 +25,8 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.visitable.DealsDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 
 /**
  * Created by Devara on 2020-04-28
@@ -55,4 +57,6 @@ interface HomeComponentTypeFactory {
     fun type(lego4ProductDataModel: Lego4ProductDataModel): Int = 0
     fun type(bannerRevampDataModel: BannerRevampDataModel): Int = 0
     fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int = 0
+    fun type(dealsDataModel: DealsDataModel): Int = 0
+    fun type(flashSaleDataModel: FlashSaleDataModel): Int = 0
 }

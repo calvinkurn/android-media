@@ -941,6 +941,10 @@ data class SearchProductModel(
             @SerializedName("stockbar")
             @Expose
             val stockBar: InspirationCarouselStockBar = InspirationCarouselStockBar(),
+
+            @SerializedName("warehouse_id_default")
+            @Expose
+            val warehouseIdDefault: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

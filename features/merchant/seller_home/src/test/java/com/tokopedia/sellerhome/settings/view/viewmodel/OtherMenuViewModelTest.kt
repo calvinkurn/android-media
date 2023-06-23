@@ -16,9 +16,7 @@ import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
 import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
-import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoList
-import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListData
-import com.tokopedia.sellerhomecommon.domain.model.MerchantPromotionGetPromoListPage
+import com.tokopedia.sellerhomecommon.domain.model.*
 import com.tokopedia.shop.common.view.model.BadgeUiModel
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -260,6 +258,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isInTransitionPeriod = false
             )
             onGetNewIklanPromotion_thenReturn(userSession.userId)
+            onGetTopAdsShopInfo_thenReturn(userSession.shopId)
 
             mViewModel.getAllOtherMenuData()
 
@@ -833,6 +832,45 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         }
 
     @Test
+    fun `when getIsTopAdsShopUsed is success and should set live data true`() =
+        runTest {
+            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = true))))
+            onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
+
+            mViewModel.getIsTopAdsShopUsed()
+
+            verifyGetIsTopAdsShopUsedCalled()
+            val expectedResult = true
+            mViewModel.isTopAdsShopUsed.verifyValueEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getIsTopAdsShopUsed is success and should set live data false`() =
+        runTest {
+            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = false))))
+            onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
+
+            mViewModel.getIsTopAdsShopUsed()
+
+            verifyGetIsTopAdsShopUsedCalled()
+            val expectedResult = false
+            mViewModel.isTopAdsShopUsed.verifyValueEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getIsTopAdsShopUsed is failed and should set live data false`() =
+        runTest {
+            val error = IllegalStateException()
+            onGetTopAdsShopInfo_thenError(error)
+
+            mViewModel.getIsTopAdsShopUsed()
+
+            verifyGetIsTopAdsShopUsedCalled()
+            val expectedResult = false
+            mViewModel.isTopAdsShopUsed.verifyValueEquals(expectedResult)
+        }
+
+    @Test
     fun `when setErrorStateMapDefaultValue but errorStateMap is already set, should not set values again`() =
         runBlocking {
             onGetShopTotalFollowers_thenThrow()
@@ -1032,6 +1070,18 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     private suspend fun verifyGetNewIklanPromotionCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { getNewPromotionUseCase.execute(any()) }
+    }
+
+    private suspend fun onGetTopAdsShopInfo_thenReturn(shopId: String, topAdsShopInfo: TopadsGetShopInfoV2_1 = TopadsGetShopInfoV2_1()){
+        coEvery { getTopAdsShopInfoUseCase.execute(shopId) } returns topAdsShopInfo
+    }
+
+    private suspend fun onGetTopAdsShopInfo_thenError(exception: Exception = IllegalStateException()) {
+        coEvery { getTopAdsShopInfoUseCase.execute("0") } throws exception
+    }
+
+    private suspend fun verifyGetIsTopAdsShopUsedCalled(atLeast: Int = 1) {
+        coVerify(atLeast = atLeast) { getTopAdsShopInfoUseCase.execute(any()) }
     }
 
     private fun verifySetIsGoldMerchantCalled(isGoldMerchant: Boolean) {

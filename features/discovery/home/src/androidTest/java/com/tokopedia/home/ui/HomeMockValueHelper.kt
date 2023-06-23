@@ -16,9 +16,8 @@ object HomeMockValueHelper {
     const val MOCK_HEADER_COUNT = 1
 
     const val MOCK_ATF_COUNT = 5
-    const val MOCK_ATF_ERROR_POSITION_COUNT = 1
     const val MOCK_ATF_ERROR_COUNT = 3
-    const val MOCK_DYNAMIC_CHANNEL_COUNT = 38
+    const val MOCK_DYNAMIC_CHANNEL_COUNT = 40
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
     private const val MOCK_DISABLE_REMOVE_PAGINATION = "false"
@@ -26,19 +25,19 @@ object HomeMockValueHelper {
     private const val MOCK_DISABLE_DYNAMIC_CHANNEL_QUERY_V2 = "false"
 
     fun setupAbTestRemoteConfig(
-        atf2Rollence: Boolean = false
+        atf2Rollence: Boolean = false,
+        useHeaderRevamp: Boolean = true
     ) {
-        if (atf2Rollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_COMPONENT_ATF,
-                RollenceKey.HOME_COMPONENT_ATF_2
-            )
-        } else {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_COMPONENT_ATF,
-                ""
-            )
-        }
+        val atf2Variant = if (atf2Rollence) RollenceKey.HOME_COMPONENT_ATF_2 else ""
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            RollenceKey.HOME_COMPONENT_ATF,
+            atf2Variant
+        )
+        val headerVariant = if (useHeaderRevamp) RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT else ""
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP,
+            headerVariant
+        )
     }
 
     fun setupRemoteConfig() {

@@ -1,6 +1,10 @@
 package com.tokopedia.feedcomponent.util.util
 
-import android.animation.*
+import android.animation.Animator
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.content.Context
 import android.transition.AutoTransition
 import android.transition.Transition
@@ -22,8 +26,6 @@ private const val LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT = 32F
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT = 125F
 private const val COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN = 250L
 private const val POINTER_ACTUAL_WIDTH = 79
-
-
 
 fun showViewWithAnimation(view: View, duration: Long = 300) {
     view.visible()
@@ -72,7 +74,7 @@ fun showBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
 
     val pointerLeftMargin = (pointerView.layoutParams as ConstraintLayout.LayoutParams).marginStart
     val bubbleLeftMargin = (view.layoutParams as ConstraintLayout.LayoutParams).marginStart
-    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH/2
+    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH / 2
 
     val pvhScaleX =
         PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 0f, 1f)
@@ -86,6 +88,7 @@ fun showBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
         override fun onAnimationStart(animation: Animator) {
             showViewWithAnimation(pointerView, BUBBLE_ANIMATION_POINTER_DURATION)
         }
+
         override fun onAnimationEnd(animation: Animator) {
         }
 
@@ -127,6 +130,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
                 }
             }, BUBBLE_ANIMATION_POINTER_DURATION)
         }
+
         override fun onAnimationEnd(animation: Animator) {
             view.gone()
         }
@@ -149,24 +153,28 @@ fun View.goneWithAnimation() {
 fun showViewWithSlideAnimation(view: ViewGroup) {
     view.setHasTransientState(true)
     val autoTransition = AutoTransition()
-    autoTransition.addListener(object : Transition.TransitionListener{
+    autoTransition.addListener(object : Transition.TransitionListener {
         override fun onTransitionStart(p0: Transition?) {
             view.setHasTransientState(true)
         }
+
         override fun onTransitionEnd(p0: Transition?) {
             view.setHasTransientState(false)
         }
+
         override fun onTransitionCancel(p0: Transition?) {
         }
+
         override fun onTransitionPause(p0: Transition?) {
         }
+
         override fun onTransitionResume(p0: Transition?) {
         }
     })
 
     TransitionManager.beginDelayedTransition(
-            view,
-            autoTransition
+        view,
+        autoTransition
     )
 }
 
@@ -186,6 +194,7 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     anim.duration = BUBBLE_MAIN_ANIMATION_DURATION
     anim.start()
 }
+
 fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthInDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val anim = ValueAnimator.ofInt(
@@ -202,11 +211,15 @@ fun showViewWithAnimationVOD(layoutLihatProdukParent: View, context: Context) {
     anim.duration = BUBBLE_MAIN_ANIMATION_DURATION
     anim.start()
 }
+
 fun hideViewWithAnimationVod(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
-    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT){
-        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT) {
+        val anim = ValueAnimator.ofInt(
+            convertDpToPixel(expandedWidthDp, context),
+            convertDpToPixel(shrinkedWidthDp, context)
+        )
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
             val animatedFinalValue = valueAnimator.animatedValue as Int
@@ -223,13 +236,16 @@ fun hideViewWithAnimationVod(layoutLihatProdukParent: View, context: Context) {
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
-    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
-        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH) {
+        val anim = ValueAnimator.ofInt(
+            convertDpToPixel(expandedWidthDp, context),
+            convertDpToPixel(shrinkedWidthDp, context)
+        )
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
             val animatedFinalValue = valueAnimator.animatedValue as Int
             val layoutParams: ViewGroup.LayoutParams =
-                    layoutLihatProdukParent.layoutParams
+                layoutLihatProdukParent.layoutParams
             layoutParams.width = animatedFinalValue
             layoutLihatProdukParent.layoutParams = layoutParams
         }
@@ -237,7 +253,8 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         anim.start()
     }
 }
-fun changeBackgroundColorAnimation(startColor: Int, endColor: Int, view: View){
+
+fun changeBackgroundColorAnimation(startColor: Int, endColor: Int, view: View) {
 
     val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), startColor, endColor)
     colorAnimation.duration = COLOR_CHANGE_ANIMATION_DURATION_CTA_BTN // milliseconds
@@ -249,13 +266,16 @@ fun changeBackgroundColorAnimation(startColor: Int, endColor: Int, view: View){
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = LIHAT_PRODUK_EXPANDED_WIDTH_FLOAT
     val shrinkedWidthDp = LIHAT_PRODUK_SHRINKED_WIDTH_FLOAT
-    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
-    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH) {
+        val anim = ValueAnimator.ofInt(
+            convertDpToPixel(expandedWidthDp, context),
+            convertDpToPixel(shrinkedWidthDp, context)
+        )
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
             val animatedFinalValue = valueAnimator.animatedValue as Int
             val layoutParams: ViewGroup.LayoutParams =
-                    layoutLihatProdukParent.layoutParams
+                layoutLihatProdukParent.layoutParams
             layoutParams.width = animatedFinalValue
             layoutLihatProdukParent.layoutParams = layoutParams
         }

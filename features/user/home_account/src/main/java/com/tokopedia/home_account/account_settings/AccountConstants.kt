@@ -32,7 +32,7 @@ object AccountConstants {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"
-        const val DEBIT_OR_CREDIT_CARD = "debit or credit card"
+        const val DEBIT_OR_CREDIT_CARD = "credit or debit card"
         const val CLICK_PAYMENT = "clickPayment"
         const val PAYMENT_SETTING_PAGE = "payment setting page"
         const val PAYMENT = "payment"

@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
@@ -26,9 +25,10 @@ object RollenceKey {
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
     const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
     const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
+    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
-    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -60,12 +60,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
-    // Global Menu (Me Page)
-    const val ME_PAGE_EXP = "mepage_secondexp"
-    const val ME_PAGE_CONTROL = "control_variant"
-    const val ME_PAGE_VARIANT_1 = "Mepage_1"
-    const val ME_PAGE_VARIANT_2 = "Mepage_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
@@ -90,4 +84,11 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
+
+    //Feed
+    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 }

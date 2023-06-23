@@ -93,8 +93,13 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
                 savedStateHandle.get<String>(TokoFoodOrderTrackingViewModel.CHANNEL_ID)
             } returns CHANNEL_ID
 
+            every {
+                savedStateHandle.get<Boolean>(IS_FROM_BUBBLE_KEY)
+            } returns IS_FROM_BUBBLE
+
             viewModel.goFoodOrderNumber = GOFOOD_ORDER_NUMBER
             viewModel.channelId = CHANNEL_ID
+            viewModel.isFromBubble = IS_FROM_BUBBLE
             viewModel.updateOrderId(ORDER_ID_DUMMY)
             viewModel.onSavedInstanceState()
             viewModel.onRestoreSavedInstanceState()
@@ -102,6 +107,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
             assertEquals(CHANNEL_ID, viewModel.channelId)
             assertEquals(GOFOOD_ORDER_NUMBER, viewModel.goFoodOrderNumber)
+            assertEquals(IS_FROM_BUBBLE, viewModel.isFromBubble)
         }
     }
 

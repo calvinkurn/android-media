@@ -6,12 +6,14 @@ import com.tokopedia.content.common.comment.CommentEvent
 import com.tokopedia.content.common.comment.ContentCommentViewModel
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.repository.ContentCommentRepository
+import com.tokopedia.content.common.comment.uimodel.CommentParam
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -67,6 +69,42 @@ class CommentViewModelRobot(
         return comments
     }
 
+    fun recordQueries(fn: suspend CommentViewModelRobot.() -> Unit): List<CommentParam> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val queries = mutableListOf<CommentParam>()
+        scope.launch {
+            val query = vm.getPrivateField<MutableStateFlow<CommentParam>>("_query")
+            query.collect {
+                queries.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return queries
+    }
+
+    fun recordQueryAndComment(fn: suspend CommentViewModelRobot.() -> Unit): Pair<CommentParam, CommentWidgetUiModel> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var query: CommentParam
+        lateinit var comment: CommentWidgetUiModel
+        scope.launch {
+            val q = vm.getPrivateField<MutableStateFlow<CommentParam>>("_query")
+            q.collect {
+                query = it
+            }
+        }
+        scope.launch {
+            vm.comments.collect {
+                comment = it
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return Pair(query, comment)
+    }
+
     fun setLogin(isLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns isLoggedIn
     }
@@ -87,4 +125,10 @@ internal fun createCommentRobot(
     return CommentViewModelRobot(
         dispatchers, userSession, pageSource, repository
     ).apply(fn)
+}
+
+internal fun <T> Any.getPrivateField(name: String): T {
+    val field = this.javaClass.getDeclaredField(name)
+    field.isAccessible = true
+    return field.get(this) as T
 }

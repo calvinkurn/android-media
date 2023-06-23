@@ -98,7 +98,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
 
-    public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
+    public static final String MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE = "android_enable_always_native_entertainment";
+
     public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
@@ -224,14 +225,23 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-
-    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
-
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
+    public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
+
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
+
+    public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
 
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
 
     public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
+
+    public static final String IS_USING_NEW_FEED = "android_main_app_show_unified_feed";
+
+    public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
+
+    public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
+
+    public static final String FEED_NEW_ICON = "FeedNewIcon";
 }

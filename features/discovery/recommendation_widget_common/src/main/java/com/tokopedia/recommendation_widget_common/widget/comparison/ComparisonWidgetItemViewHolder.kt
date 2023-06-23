@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonWidgetBinding
-import com.tokopedia.recommendation_widget_common.widget.ComparisonWidgetTracking
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp

@@ -47,8 +47,10 @@ sealed interface PlayShortsAction {
 
     object ClickUploadVideo : PlayShortsAction
 
+    /** Shorts x Affiliate */
+    object SubmitOnboardAffiliateTnc : PlayShortsAction
+
     /** Others */
-    object SetNotFirstSwitchAccount : PlayShortsAction
     object SetShowSetupCoverCoachMark : PlayShortsAction
     data class SetCoverUploadedSource(
         val source: Int

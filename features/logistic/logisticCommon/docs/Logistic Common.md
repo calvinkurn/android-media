@@ -6,14 +6,12 @@ labels:
 - common
 ---
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                          |
-| --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Contributors | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                                                                                                             |
-| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                                                                                                                                                                                                                |
+| **Status**      | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                          |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contributors    | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
+| Team            | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                                                                                                             |
+| Module type     | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                                                                                                                                                                                                                |
 | Module Location | `features/logistic/logisticCommon`                                                                                                                                                                                                                                                                         |
-
-## Table of Contents
 
 <!--toc-->
 

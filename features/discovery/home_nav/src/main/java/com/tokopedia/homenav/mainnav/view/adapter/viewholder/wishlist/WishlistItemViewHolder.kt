@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderWishlistBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.WISHLIST)
 class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<WishlistModel>(itemView) {
     private var binding: HolderWishlistBinding? by viewBinding()
     companion object {

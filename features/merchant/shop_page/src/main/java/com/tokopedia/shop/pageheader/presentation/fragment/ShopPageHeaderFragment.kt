@@ -34,6 +34,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
+import androidx.window.layout.FoldingFeature
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -50,6 +51,7 @@ import com.tokopedia.applink.FragmentConst.SHOP_REVIEW_FRAGMENT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -58,8 +60,12 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
+import com.tokopedia.foldable.FoldableAndTabletSupportManager
+import com.tokopedia.foldable.FoldableInfo
+import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -75,6 +81,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -193,10 +200,8 @@ import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivi
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -245,7 +250,9 @@ class ShopPageHeaderFragment :
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    MiniCartWidgetListener {
+    MiniCartWidgetListener,
+    FoldableSupportManager.FoldableInfoCallback
+{
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -299,7 +306,6 @@ class ShopPageHeaderFragment :
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
-
         private const val DELAY_MINI_CART_RESUME = 1000L
         private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"
         private const val PRODUCT_LIST_INDEX_ZERO = 0
@@ -313,6 +319,7 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_2 = 2
         private const val IMG_GENERATOR_SHOP_INFO_3 = 3
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
+        private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -325,6 +332,10 @@ class ShopPageHeaderFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
+
+    @Inject
+    lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
+
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -425,6 +436,12 @@ class ShopPageHeaderFragment :
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
     private var isConfettiAlreadyShown = false
+    private var mBroadcasterConfig = Broadcaster.Config()
+    private val layoutPartialShopHeaderDefaultMarginBottom:  Int by lazy{
+        val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
+        layoutParams?.bottomMargin.orZero()
+    }
+
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -439,6 +456,7 @@ class ShopPageHeaderFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
         super.onCreate(savedInstanceState)
+        FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
     }
 
     override fun onCreateView(
@@ -490,13 +508,21 @@ class ShopPageHeaderFragment :
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ShopPageHeaderContentCreationOptionBottomSheet -> {
+                childFragment.setData(mBroadcasterConfig)
                 childFragment.setListener(object : ShopPageHeaderContentCreationOptionBottomSheet.Listener {
+                    override fun onShortsCreationClicked() {
+                        goToShortsCreation()
+                    }
+
                     override fun onBroadcastCreationClicked() {
                         goToBroadcaster()
                     }
 
-                    override fun onShortsCreationClicked() {
-                        goToShortsCreation()
+                    override fun onPerformanceDashboardEntryClicked() {
+                        playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
+                            shopHeaderViewModel?.userShopId.orEmpty()
+                        )
+                        goToPerformanceDashboard()
                     }
                 })
             }
@@ -811,7 +837,13 @@ class ShopPageHeaderFragment :
             owner,
             Observer { result ->
                 if (result is Success) {
-                    shopPageHeaderFragmentHeaderViewHolder?.updateShopTicker(result.data, isMyShop)
+                    shopPageHeaderFragmentHeaderViewHolder?.updateShopTicker(
+                        result.data,
+                        isMyShop
+                    ) { tickerVisibilityState ->
+                        shopTickerVisibilityState = tickerVisibilityState
+                        configShopHeaderForFoldableScreen()
+                    }
                 }
             }
         )
@@ -1639,13 +1671,17 @@ class ShopPageHeaderFragment :
             .show(childFragmentManager)
     }
 
+    private fun goToShortsCreation() {
+        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    }
+
     private fun goToBroadcaster() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
     }
 
-    private fun goToShortsCreation() {
-        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+    private fun goToPerformanceDashboard() {
+        RouteManager.route(context, PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK)
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
@@ -2543,20 +2579,14 @@ class ShopPageHeaderFragment :
         broadcasterConfig: Broadcaster.Config
     ) {
         val valueDisplayed = componentModel.label
+        mBroadcasterConfig = broadcasterConfig
         sendClickShopHeaderComponentTracking(
             shopPageHeaderWidgetUiModel,
             componentModel,
             valueDisplayed
         )
 
-        if (broadcasterConfig.streamAllowed && broadcasterConfig.shortVideoAllowed) {
-            showContentCreationOptionBottomSheet()
-        } else {
-            when {
-                broadcasterConfig.streamAllowed -> goToBroadcaster()
-                broadcasterConfig.shortVideoAllowed -> goToShortsCreation()
-            }
-        }
+        showContentCreationOptionBottomSheet()
     }
 
     override fun onImpressionPlayWidgetComponent(componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel, shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel) {
@@ -3341,5 +3371,41 @@ class ShopPageHeaderFragment :
             stockQty,
             shopId
         )
+    }
+
+    private var foldableScreenHorizontalBottomBound: Int? = null
+    private var shopTickerVisibilityState: Int?= null
+
+    override fun onChangeLayout(foldableInfo: FoldableInfo) {
+        ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
+        if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.Orientation.HORIZONTAL) {
+            foldableScreenHorizontalBottomBound =
+                foldableInfo.foldingFeature?.bounds?.bottom.orZero()
+            ShopUtil.isFoldableAndHorizontalScreen = true
+            configShopHeaderForFoldableScreen()
+        } else {
+            ShopUtil.isFoldableAndHorizontalScreen = false
+        }
+    }
+
+    //config shop header for foldable screen
+    private fun configShopHeaderForFoldableScreen() {
+        viewBindingShopContentLayout?.apply {
+            val layoutPartialHeaderBottomMargin: Int = if (foldableScreenHorizontalBottomBound != null && shopTickerVisibilityState != null) {
+                if (shopTickerVisibilityState == View.VISIBLE) {
+                    PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE.toPx()
+                } else {
+                    layoutPartialShopHeaderDefaultMarginBottom
+                }
+            } else {
+                layoutPartialShopHeaderDefaultMarginBottom
+            }
+            layoutPartialShopPageHeader.root.setMargin(
+                Int.ZERO,
+                Int.ZERO,
+                Int.ZERO,
+                layoutPartialHeaderBottomMargin
+            )
+        }
     }
 }

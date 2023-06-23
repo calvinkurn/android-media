@@ -7,9 +7,9 @@ import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery

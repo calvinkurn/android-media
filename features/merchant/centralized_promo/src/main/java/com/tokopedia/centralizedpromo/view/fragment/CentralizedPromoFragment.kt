@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.R
@@ -40,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class CentralizedPromoFragment : BaseDaggerFragment(),
@@ -58,6 +60,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             "centralizePromoFragmentSuffix"
 
         private const val ERROR_GET_LAYOUT_DATA = "Error when get layout data for %s."
+
+        private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
+        private const val PLAY_PERFORMANCE_URL = "https://www.tokopedia.com/play/live"
 
         @JvmStatic
         fun createInstance(): CentralizedPromoFragment = CentralizedPromoFragment()
@@ -367,6 +372,12 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     )
                 }
 
+                detailPromoBottomSheet.onClickPerformanceListener {
+                    context?.let {
+                        RouteManager.route(it, getPlayPerformanceApplink())
+                    }
+                }
+
                 CentralizedPromoTracking.sendImpressionBottomSheetPromo(
                     currentFilterTab.name,
                     promoCreationUiModel.title
@@ -393,6 +404,16 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             showCoachMarkPromoCreationItem(pageId, targetView)
         }
     }
+
+    private fun getPlayPerformanceApplink(): String {
+        return String.format(
+            Locale.getDefault(),
+            WEBVIEW_APPLINK_FORMAT,
+            ApplinkConst.WEBVIEW,
+            PLAY_PERFORMANCE_URL
+        )
+    }
+
 }
 
 interface CoachMarkListener {

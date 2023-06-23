@@ -22,8 +22,6 @@ import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlReposit
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
-import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
-import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
@@ -31,6 +29,8 @@ import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
 import com.tokopedia.discovery2.repository.productbundling.ProductBundlingGQLRepository
 import com.tokopedia.discovery2.repository.productbundling.ProductBundlingRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.producthighlightrepository.ProductHighlightGQLRepository
+import com.tokopedia.discovery2.repository.producthighlightrepository.ProductHighlightRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -45,8 +45,6 @@ import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -90,11 +88,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideCategoryNavigationRestRepository(): CategoryNavigationRepository {
-        return CategoryNavigationRestRepository()
-    }
-
-    @Provides
     fun provideRedeemCouponRepository(@ApplicationContext context: Context): IClaimCouponGqlRepository {
         return ClaimCouponGQLRepository(provideGetStringMethod(context))
     }
@@ -108,11 +101,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideClaimCouponRestRepository(): IClaimCouponRepository {
         return ClaimCouponRestRepository()
-    }
-
-    @Provides
-    fun provideTokopointsRestRepository(): TokopointsRepository {
-        return TokopointsRestRepository()
     }
 
     @Provides
@@ -186,6 +174,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideShopCardRepository(): ShopCardRepository {
         return ShopCardGQLRepository()
+    }
+
+    @Provides
+    fun provideProductHighlightRepository(): ProductHighlightRepository {
+        return ProductHighlightGQLRepository()
     }
 
     @Provides

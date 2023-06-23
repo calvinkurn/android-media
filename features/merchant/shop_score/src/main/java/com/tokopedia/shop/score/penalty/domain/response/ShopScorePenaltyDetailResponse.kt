@@ -3,6 +3,8 @@ package com.tokopedia.shop.score.penalty.domain.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 data class ShopScorePenaltyDetailResponse(
         @Expose
@@ -53,8 +55,25 @@ data class ShopScorePenaltyDetailResponse(
                 val typeID: Int = 0,
                 @Expose
                 @SerializedName("typeName")
-                val typeName: String = ""
-        )
+                val typeName: String = "",
+                @SerializedName("penaltyTypeGroup")
+                val penaltyTypeGroup: Int = Int.ZERO,
+                @SerializedName("productDetail")
+                val productDetail: ProductDetail = ProductDetail()
+        ) {
+
+            data class ProductDetail(
+                @SerializedName("id")
+                val id: String = String.EMPTY,
+                @SerializedName("name")
+                val name: String = String.EMPTY
+            )
+
+            companion object {
+                const val PENALTY_TYPE_PRODUCT = 2
+            }
+
+        }
 
         data class Error(
                 @Expose

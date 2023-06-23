@@ -69,6 +69,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe false
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe false
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_TDN_BANNER, false) shouldBe false
     }
 
     private fun `Then verify view interaction when load data success`(searchProductModel: SearchProductModel) {

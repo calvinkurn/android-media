@@ -13,6 +13,7 @@
 /features/discovery/topadssdk/                      	@tokopedia/android-minionsolo-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
+/features/discovery/home_component_header/              @tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
@@ -86,6 +87,7 @@
 /features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
+/libraries/sub_viewmodel/                               @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
@@ -108,6 +110,7 @@
 /features/merchant/product_manage_common/               @tokopedia/android-minionken-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
+/features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
@@ -203,7 +206,7 @@
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
-/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 /features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
@@ -262,7 +265,6 @@
 /features/fintech/layanan_finansial                     @tokopedia/android-minionmark-dev
 /features/fintech/paylater                              @tokopedia/android-minionmark-dev
 /features/fintech/pdp_fintech_widget                    @tokopedia/android-minionmark-dev
-/features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionmark-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionmark-dev
 /features/fintech/home_credit           				@tokopedia/android-minionmark-dev
 /features/fintech/insurance           				    @tokopedia/android-minionmark-dev
@@ -278,7 +280,6 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
-/features/fintech/merchant_lending_widget               @tokopedia/android-minionmark-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
 
@@ -286,7 +287,6 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/ovop2p                                        @tokopedia/android-minionmark-dev
 /features/payment/common_payment                        @tokopedia/android-minionmark-dev
 /features/fintech/wallet                				@tokopedia/android-minionmark-dev
 /features/payment/thankyou_native                		@tokopedia/android-minionmark-dev
@@ -308,6 +308,7 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
+/libraries/byteplus_effect/						        @tokopedia/android-minionlance-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -405,7 +406,6 @@
 /tkpdseller/                                        	@tokopedia/android-core-dev
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeperlegacy-dev
-/tkpdcore/                                          	@tokopedia/android-gatekeeperlegacy-dev
 /tkpdabstraction/                                   	@tokopedia/android-gatekeeperlegacy-dev
 
 /customerapp/                                       	@tokopedia/android-core-dev

@@ -119,7 +119,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check getTopBotStatus if error`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 chipTopUsecase.invoke(Unit)
             } throws Exception()
@@ -188,12 +188,72 @@ class InboxContactUsViewModelTest {
     }
 
     @Test
-    fun `check when getTopBotStatus but throw to exception`() {
-        coEvery { chipTopUsecase.invoke(Unit) } throws Exception()
+    fun `check when getTopBotStatus success hit but error and have message`() {
+        val errorMessage = "Error Satu Yakk!!"
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
+            SUCCESS,
+            true,
+            "Silahkan Masuk",
+            true,
+            messageError = arrayListOf(errorMessage)
+        )
         viewModel.getTopBotStatus()
         val actual = viewModel.uiState.value
+        val errorMessageActual = actual.errorMessageChatBotWidget
         val isChatbotWidgetShown = actual.showChatBotWidget
         assertEquals(false, isChatbotWidgetShown)
+        assertEquals(errorMessage, errorMessageActual)
+    }
+
+    @Test
+    fun `check when getTopBotStatus success hit but isChatbot is Not Active`() {
+        runTest {
+            coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
+                SUCCESS,
+                true,
+                "Silahkan Masuk",
+                true,
+                isChatbotActive = false
+            )
+            viewModel.getTopBotStatus()
+            val actual = viewModel.uiState.value
+            val isChatbotOff = actual.isChatbotActive
+            assertEquals(false, isChatbotOff)
+        }
+    }
+
+    @Test
+    fun `check when getTopBotStatus success hit but isChatbot is null`() {
+        runTest {
+            coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
+                SUCCESS,
+                true,
+                "Silahkan Masuk",
+                true,
+                isChatbotActive = null
+            )
+            viewModel.getTopBotStatus()
+            val actual = viewModel.uiState.value
+            val isChatbotOff = actual.isChatbotActive
+            assertEquals(false, isChatbotOff)
+        }
+    }
+
+    @Test
+    fun `check when getTopBotStatus success hit but isChatbot is active`() {
+        runTest {
+            coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
+                SUCCESS,
+                true,
+                "Silahkan",
+                true,
+                isChatbotActive = true
+            )
+            viewModel.getTopBotStatus()
+            val actual = viewModel.uiState.value
+            val isChatbotOff = actual.isChatbotActive
+            assertEquals(true, isChatbotOff)
+        }
     }
 
     @Test
@@ -375,7 +435,9 @@ class InboxContactUsViewModelTest {
         isSuccessHit: Int,
         isActive: Boolean,
         welcomeMessage: String = "",
-        unreadNotif: Boolean = false
+        unreadNotif: Boolean = false,
+        messageError: List<String> = arrayListOf(),
+        isChatbotActive: Boolean? = true
     ): ChipTopBotStatusResponse {
         return ChipTopBotStatusResponse(
             ChipTopBotStatusResponse.ChipTopBotStatusInbox(
@@ -385,8 +447,10 @@ class InboxContactUsViewModelTest {
                     isSuccess = isSuccessHit,
                     messageId = "256",
                     unreadNotif = unreadNotif,
-                    welcomeMessage = welcomeMessage
-                )
+                    welcomeMessage = welcomeMessage,
+                    isChatbotActive = isChatbotActive
+                ),
+                    messageError= messageError
             )
         )
     }

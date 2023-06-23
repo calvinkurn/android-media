@@ -29,6 +29,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -220,6 +221,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         init()
         setupProductSubmissionCount()
         setupChooseProductRedirection()
@@ -801,7 +803,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             when (flashSale.status) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
                 FlashSaleStatus.WAITING_FOR_SELECTION -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_ORANGE)
@@ -817,7 +819,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
             }
             tickerHeader.gone()
@@ -984,8 +986,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems =
-            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
-        val isShown = newItems[Int.ZERO].isCheckBoxShown
+            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val isShown = newItems.firstOrNull()?.isCheckBoxShown ?: false
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
 
@@ -999,6 +1001,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 tpgSelectedProductCount.invisible()
                 tpgProductCount.visible()
                 btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
+                viewModel.removeAllSelectedItems()
             }
         }
         setupRegisteredButton(isShown)
@@ -1126,7 +1129,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         ongoingCdpHeaderBinding?.run {
             imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
             tgCampaignStatus.apply {
-                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 text = flashSale.statusText
             }
         }

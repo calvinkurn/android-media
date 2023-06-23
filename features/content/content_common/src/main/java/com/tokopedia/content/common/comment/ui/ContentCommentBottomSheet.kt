@@ -10,7 +10,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
@@ -20,7 +24,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.comment.*
+import com.tokopedia.content.common.comment.CommentAction
+import com.tokopedia.content.common.comment.CommentEvent
+import com.tokopedia.content.common.comment.CommentException
+import com.tokopedia.content.common.comment.ContentCommentFactory
+import com.tokopedia.content.common.comment.ContentCommentViewModel
+import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.TagMentionBuilder
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
@@ -35,11 +45,17 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.view.getImeHeight
+import com.tokopedia.content.common.view.isImeVisible
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -70,7 +86,7 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val keyboardHeight by lazyThreadSafetyNone {
+    private val keyboardThreshold by lazyThreadSafetyNone {
         (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
     }
 
@@ -137,11 +153,13 @@ class ContentCommentBottomSheet @Inject constructor(
 
                 val prevLength = binding.newComment.length()
                 val selEnd = binding.newComment.selectionEnd
-                val distanceFromEnd = prevLength - selEnd // calculate cursor distance from end of text
+                val distanceFromEnd =
+                    prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
                     TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
-                binding.newComment.setText(newText)
+                binding.newComment.text?.clear()
+                binding.newComment.append(newText)
 
                 val currentLength = binding.newComment.length()
                 if (distanceFromEnd in 1 until currentLength) {
@@ -168,17 +186,18 @@ class ContentCommentBottomSheet @Inject constructor(
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
 
-    //to escape Emoji length
+    // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
         var count = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val it: BreakIterator = BreakIterator.getCharacterInstance()
-             it.setText(this)
-             while (it.next() != BreakIterator.DONE) {
-                 count++
-             }
-         } else
-             count = binding.newComment?.text?.length.orZero()
+            it.setText(this)
+            while (it.next() != BreakIterator.DONE) {
+                count++
+            }
+        } else {
+            count = binding.newComment?.text?.length.orZero()
+        }
         return count
     }
 
@@ -204,6 +223,7 @@ class ContentCommentBottomSheet @Inject constructor(
         setupView()
         observeData()
         observeEvent()
+        refreshData()
     }
 
     private fun setupBottomSheet() {
@@ -226,23 +246,15 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
         }
-        Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
+        Toaster.toasterCustomBottomHeight =
+            context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
-        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
-            val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+        binding.root.setOnApplyWindowInsetsListener { view, windowInsets ->
+            val height = view.getImeHeight()
+            if (view.isImeVisible(threshold = keyboardThreshold)) {
+                binding.root.setPadding(0, 0, 0, height)
             } else {
-                windowInsets.systemWindowInsetBottom
-            }
-            val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowInsets.isVisible(WindowInsets.Type.ime())
-            } else {
-                height > keyboardHeight
-            }
-            if (isKeyboardOnScreen) {
-                binding.root.setPadding(0, 0, 0, 16.toPx() + height)
-            } else {
-                binding.root.setPadding(0, 0, 0, 16.toPx())
+                binding.root.setPadding(0, 0, 0, 0)
             }
             windowInsets
         }
@@ -305,13 +317,15 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty()).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if (!event.message.message?.equals(CommentException.createDeleteFailed().message.orEmpty())
+                                    .orFalse()
+                            ) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
                             },
                             type = if (event.message.message?.equals(CommentException.createLinkNotAllowed().message.orEmpty())
-                                .orFalse()
+                                    .orFalse()
                             ) {
                                 Toaster.TYPE_ERROR
                             } else {
@@ -333,7 +347,10 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
-                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReportSuccess -> {
+                        sheetMenu.setFinalView()
+                        analytics?.impressSuccessReport()
+                    }
                     is CommentEvent.ReplySuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(event.position)
@@ -448,28 +465,23 @@ class ContentCommentBottomSheet @Inject constructor(
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        binding.root.layoutParams.height = newHeight
-        val avatar =
-            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = newHeight
+        }
+
+        val avatar = if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
-        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     private fun showKeyboard(needToShow: Boolean) {
         val imm =
             binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (needToShow) {
+            binding.newComment.requestFocus()
             imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
-            binding.newComment.apply {
-                isFocusable = true
-                isFocusableInTouchMode = true
-            }
         } else {
+            binding.newComment.clearFocus()
             imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
-            binding.newComment.apply {
-                isFocusable = false
-                isFocusableInTouchMode = false
-            }
         }
     }
 
@@ -486,8 +498,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.DELETE -> deleteCommentChecker()
-            FeedMenuIdentifier.LAPORKAN -> {
+            FeedMenuIdentifier.Delete -> deleteCommentChecker()
+            FeedMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
@@ -503,9 +515,9 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
-        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
+        analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment(
+            CommentAction.ReportComment (
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
@@ -521,28 +533,18 @@ class ContentCommentBottomSheet @Inject constructor(
         if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
-                    name = getString(R.string.content_common_menu_delete),
-                    drawable = getIconUnifyDrawable(
-                        context = requireContext(),
-                        iconId = IconUnify.DELETE
-                    ),
-                    type = FeedMenuIdentifier.DELETE
+                    name = R.string.content_common_menu_delete,
+                    iconUnify = IconUnify.DELETE,
+                    type = FeedMenuIdentifier.Delete
                 )
             )
         }
         if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(R.string.content_common_menu_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    iconUnify = IconUnify.WARNING,
+                    name = R.string.content_common_menu_report,
+                    type = FeedMenuIdentifier.Report
                 )
             )
         }
@@ -592,13 +594,17 @@ class ContentCommentBottomSheet @Inject constructor(
                 Toaster.LENGTH_LONG,
                 getString(R.string.feed_content_coba_lagi_text)
             ) {
-                action(false)
+                requireInternet { action(it) }
             }
         }
     }
 
     fun setAnalytic(tracker: IContentCommentAnalytics) {
         analytics = tracker
+    }
+
+    private fun refreshData() {
+        viewModel.submitAction(CommentAction.RefreshComment)
     }
 
     interface EntrySource {
@@ -611,7 +617,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
-        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.35
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140

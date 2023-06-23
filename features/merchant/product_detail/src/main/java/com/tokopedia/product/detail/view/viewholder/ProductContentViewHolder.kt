@@ -15,8 +15,10 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 /**
  * Created by Yehezkiel on 06/05/20
  */
-class ProductContentViewHolder(private val view: View,
-                               private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductContentDataModel>(view) {
+class ProductContentViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductContentDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_content
@@ -32,7 +34,7 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header.renderData(it, element.isNpl(), element.freeOngkirImgUrl)
+            header.renderData(it, element.isNpl(), element.freeOngkirImgUrl, element.shouldShowCampaign)
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
@@ -51,7 +53,7 @@ class ProductContentViewHolder(private val view: View,
                 header.renderTradein(element.showTradeIn())
 
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-                //only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
+                // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header.renderFreeOngkir(element.freeOngkirImgUrl)
             }
         }
@@ -65,12 +67,18 @@ class ProductContentViewHolder(private val view: View,
         itemProductContent.tradeinHeaderContainer.setOnClickListener {
             listener.txtTradeinClicked(getComponentTrackData(element))
         }
-        itemProductContent.fabDetailPdp.setOnClickListener {
-            listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
+
+        itemProductContent.fabDetailPdp.apply {
+            setOnClickListener {
+                listener.onFabWishlistClicked(activeState, getComponentTrackData(element))
+            }
         }
     }
 
-    private fun getComponentTrackData(element: ProductContentDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
-
+    private fun getComponentTrackData(element: ProductContentDataModel?) = ComponentTrackDataModel(
+        element?.type
+            ?: "",
+        element?.name ?: "",
+        adapterPosition + 1
+    )
 }

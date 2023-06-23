@@ -113,12 +113,12 @@ fun String.parseAsHtml(): CharSequence {
 
 fun String.asUpperCase(): String {
     val locale = Locale.getDefault()
-    return this.toUpperCase(locale)
+    return this.uppercase(locale)
 }
 
 fun String.asLowerCase(): String {
     val locale = Locale.getDefault()
-    return this.toLowerCase(locale)
+    return this.lowercase(locale)
 }
 
 fun String.asCamelCase(): String {

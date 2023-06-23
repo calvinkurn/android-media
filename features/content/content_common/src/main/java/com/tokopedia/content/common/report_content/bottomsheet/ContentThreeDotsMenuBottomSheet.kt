@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.BottomSheetFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.report_content.adapter.ContentReportAdapter
 import com.tokopedia.content.common.report_content.adapter.ContentReportViewHolder
@@ -16,9 +17,7 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.roundToInt
-import com.tokopedia.content.common.R
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
@@ -36,7 +35,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     private val adapter: FeedMenuAdapter by lazy {
         FeedMenuAdapter(object : FeedMenuViewHolder.Listener {
             override fun onClick(item: FeedMenuItem) {
-                if (item.type != FeedMenuIdentifier.LAPORKAN) {
+                if (item.type != FeedMenuIdentifier.Report) {
                     dismiss()
                 } else {
                     showHeader = true
@@ -137,24 +136,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         if (isAdded) adapter.updateData(mFeedMenuItemList)
 
         return this
-    }
-    fun showToasterOnLoginSuccessFollow(
-        message: String,
-        type: Int,
-        actionText: String? = null
-    ) {
-        view?.rootView?.let {
-            context?.resources?.let { resource ->
-                Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
-            }
-            if (actionText?.isEmpty() == false) {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
-                    .show()
-            } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
-            }
-        }
     }
 
     @Deprecated("Analytic is not valid")

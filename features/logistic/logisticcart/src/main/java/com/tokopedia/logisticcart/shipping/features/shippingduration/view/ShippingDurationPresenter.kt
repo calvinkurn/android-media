@@ -346,7 +346,7 @@ class ShippingDurationPresenter @Inject constructor(
         } else {
             findRecommendedCourier(serviceData, shippingCourierUiModelList)
         }
-        if (view?.isToogleYearEndPromotionOn() == true && !isOcc) {
+        if (!isOcc) {
             if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
                 serviceData.error.errorMessage.isNotEmpty()
             ) {
@@ -364,10 +364,6 @@ class ShippingDurationPresenter @Inject constructor(
                 ) {
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
                     flagNeedToSetPinpoint = true
-                    if (!isOcc) {
-                        shippingCourierUiModel.serviceData.texts.textRangePrice =
-                            shippingCourierUiModel.productData.error.errorMessage
-                    }
                 }
             }
         }

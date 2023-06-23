@@ -12,8 +12,6 @@ import com.tokopedia.review.feature.createreputation.presentation.adapter.typefa
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewBadRatingCategories @JvmOverloads constructor(
     context: Context,
@@ -45,22 +43,17 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
         adapter.updateItems(badRatingCategories)
     }
 
-    fun updateUi(uiState: CreateReviewBadRatingCategoriesUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewBadRatingCategoriesUiState) {
         when (uiState) {
-            is CreateReviewBadRatingCategoriesUiState.Loading -> {
-                continuation.resume(Unit)
-            }
             is CreateReviewBadRatingCategoriesUiState.Showing -> {
                 showBadRatingCategories(uiState.badRatingCategories)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewBadRatingCategoriesUiState.Hidden -> {
-                animateHide(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateHide()
             }
+
+            else -> { /* noop */ }
         }
     }
 

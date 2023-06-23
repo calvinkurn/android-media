@@ -5,8 +5,9 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_A
 import com.tokopedia.home_account.AccountConstants.Analytics.CurrentSite.TOKOPEDIA_MARKETPLACE_SITE
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_ACCOUNT
 import com.tokopedia.track.builder.Tracker
+import javax.inject.Inject
 
-class TokopediaPlusAnalytics {
+class TokopediaPlusAnalytics @Inject constructor() {
 
     fun sendClickOnTokopediaPlusButtonEvent(isSubscriber: Boolean) {
         Tracker.Builder()
