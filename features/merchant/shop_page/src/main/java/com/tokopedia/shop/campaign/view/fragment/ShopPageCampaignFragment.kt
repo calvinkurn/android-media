@@ -933,7 +933,10 @@ class ShopPageCampaignFragment :
 
     private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()) {
-            showToaster(view ?: return, redeemResult.redeemMessage)
+            showToaster(
+                redeemResult.redeemMessage,
+                view ?: return,
+            )
             getVoucherSliderData()
         }
     }
