@@ -17,52 +17,55 @@ import com.tokopedia.unifycomponents.LocalLoad
 
 class SectionViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    lateinit var viewModel: SectionViewModel
+    var viewModel: SectionViewModel? = null
     val shimmer: ConstraintLayout = itemView.findViewById(R.id.section_shimmer)
     private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as SectionViewModel
-        getSubComponent().inject(viewModel)
-        shimmer.showWithCondition(viewModel.shouldShowShimmer())
-        carouselEmptyState.showWithCondition(viewModel.shouldShowError())
+        viewModel?.let {
+            getSubComponent().inject(it)
+        }
+        viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
+        viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.hideSection.observe(it,{ shouldHideSection ->
-                if(shouldHideSection){
-                    (fragment as DiscoveryFragment).handleHideSection(viewModel.getSectionID())
+            viewModel?.hideSection?.observe(it) { shouldHideSection ->
+                if (shouldHideSection) {
+                    viewModel?.getSectionID()?.let { it1 -> (fragment as DiscoveryFragment).handleHideSection(it1) }
                 }
-            })
-            viewModel.getSyncPageLiveData().observe(it, { shouldSync ->
-                if (shouldSync)
+            }
+            viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
+                if (shouldSync) {
                     (fragment as DiscoveryFragment).reSync()
-            })
+                }
+            }
 
-            viewModel.hideShimmerLD.observe(it, { shouldHideShimmer ->
+            viewModel?.hideShimmerLD?.observe(it) { shouldHideShimmer ->
                 if (shouldHideShimmer) {
                     shimmer.hide()
                     carouselEmptyState.hide()
                 }
-            })
+            }
 
-            viewModel.showErrorState.observe(it, { shouldShowError ->
+            viewModel?.showErrorState?.observe(it) { shouldShowError ->
                 if (shouldShowError) {
                     handleError()
                 }
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.hideSection.removeObservers(it)
-            viewModel.getSyncPageLiveData().removeObservers(it)
-            viewModel.hideShimmerLD.removeObservers(it)
-            viewModel.showErrorState.removeObservers(it)
+            viewModel?.hideSection?.removeObservers(it)
+            viewModel?.getSyncPageLiveData()?.removeObservers(it)
+            viewModel?.hideShimmerLD?.removeObservers(it)
+            viewModel?.showErrorState?.removeObservers(it)
         }
     }
 
@@ -74,7 +77,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             refreshBtn?.setOnClickListener {
                 hide()
                 shimmer.show()
-                viewModel.reload()
+                viewModel?.reload()
             }
         }
         carouselEmptyState.visible()
