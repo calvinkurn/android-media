@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.text.Editable
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by resakemal on 20/08/19.
  */
+@SuppressLint("ClickableViewAccessibility")
 class TopupBillsInputFieldWidget @JvmOverloads constructor(
     @NotNull context: Context,
     attrs: AttributeSet? = null,
@@ -88,7 +90,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(
             }
         }
 
-        binding.acInput.setOnTouchListener { view, motionEvent ->
+        binding.acInput.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (isCustomInput) {
                     actionListener?.onCustomInputClick()
