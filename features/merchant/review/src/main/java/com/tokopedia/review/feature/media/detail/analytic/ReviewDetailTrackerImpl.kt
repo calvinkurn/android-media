@@ -128,14 +128,4 @@ class ReviewDetailTrackerImpl : ReviewDetailTracker {
     ) {
         /** No need to track */
     }
-
-    override fun trackImpressionReviewDetailPage(
-        loggedInUserId: String,
-        feedbackId: String,
-        productId: String,
-        reviewUserId: String,
-        isReviewOwner: Boolean
-    ) {
-        /** No need to track */
-    }
 }
