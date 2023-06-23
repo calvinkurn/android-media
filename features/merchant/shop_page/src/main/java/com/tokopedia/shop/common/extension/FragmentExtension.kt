@@ -16,10 +16,10 @@ fun Fragment.showToasterError(view: View, throwable: Throwable) {
     }
 }
 
-fun Fragment.showToaster(view: View, message: String) {
+fun Fragment.showToaster(message: String, view: View, anchorView: View? = null) {
     if (!isAdded) return
-    Toaster.build(view.rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).apply {
-        anchorView = view
+    Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).apply {
+        this.anchorView = anchorView
         show()
     }
 }
