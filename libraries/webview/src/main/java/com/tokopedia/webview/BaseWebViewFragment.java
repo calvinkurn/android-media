@@ -279,13 +279,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
-        boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE, true);
-
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
         webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
-        if (isEnablePrintJsInterface) {
-            webView.addJavascriptInterface(new PartnerWebAppInterface(this::takePictureForPartnerKyc), "CameraPicker");
+
+        boolean isEnablePartnerKycJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE, true);
+        if (isEnablePartnerKycJsInterface) {
+            webView.addJavascriptInterface(new PartnerWebAppInterface(this::routeToPartnerKyc), "CameraPicker");
         }
 
         WebSettings webSettings = webView.getSettings();
@@ -1218,7 +1218,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         void onLocationPermissionRequested(GeolocationPermissions.Callback callback, String origin);
     }
 
-    private void takePictureForPartnerKyc(String docType, String lang) {
+    private void routeToPartnerKyc(String docType, String lang) {
         String applink = "";
         if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.KTP)) {
             applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
