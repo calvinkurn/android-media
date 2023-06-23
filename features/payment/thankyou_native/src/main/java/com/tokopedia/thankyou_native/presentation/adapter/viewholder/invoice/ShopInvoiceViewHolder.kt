@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.OrderItemType
@@ -49,7 +50,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddressValue = view.tvInvoiceShopShippingAddressValue
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
-
+    private val groupShipping = view.groupShipping
 
     override fun bind(element: ShopInvoice?) {
         element?.let {
@@ -131,6 +132,8 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopShippingAddressValue.visible()
                 tvInvoiceShopShippingAddress.visible()
             }
+
+            if (it.shouldHideShopInvoice) groupShipping.gone() else groupShipping.show()
 
         }
     }

@@ -7,7 +7,9 @@ import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.PREV_ORDER_
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
 import com.tokopedia.thankyou_native.domain.model.AddOnItem
 import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
+import com.tokopedia.thankyou_native.domain.model.OrderGroupList
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
+import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.CashBackEarned
 import com.tokopedia.thankyou_native.presentation.adapter.model.CashBackMap
@@ -198,7 +200,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         var currentIndex = Int.ZERO
         val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
         var bundleMap: MutableMap<String, BundleGroupItem>
-        thanksPageData.shopOrder.forEach { shopOrder ->
+        if (thanksPageData.orderGroupList.size > 1 ) thanksPageData.shopOrder.sortBy { it.orderGroupId }
+        thanksPageData.shopOrder.forEachIndexed { index, shopOrder ->
 
             if (currentIndex > Int.ZERO) {
                 visitableList.add(ShopDivider())
@@ -250,23 +253,25 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 }
             }
 
-            val shippingDurationOrETA = if (shopOrder.logisticETA.isNullOrBlank()) {
+            val shippingDetail = thanksPageData.orderGroupList.find { shopOrder.orderGroupId == it.id }
+
+            val shippingDurationOrETA = if (getShippingEta(shopOrder, shippingDetail).isNullOrBlank()) {
                 if (shopOrder.logisticDuration.isNullOrBlank()) "" else shopOrder.logisticDuration
             } else {
-                shopOrder.logisticETA
+                getShippingEta(shopOrder, shippingDetail)
             }
 
-            val shippingInfo = if (shippingDurationOrETA.isBlank()) {
+            val shippingInfo = if (shippingDurationOrETA?.isBlank() == true) {
                 shopOrder.logisticType
             } else {
                 shopOrder.logisticType + NEW_LINE + shippingDurationOrETA
             }
 
             val shopInvoice = ShopInvoice(
-                shopOrder.storeName,
-                orderedItemList,
-                discountFromMerchant,
-                if (totalProductProtectionForShop > 0.0) {
+                shopName = shopOrder.storeName,
+                orderedItem = orderedItemList,
+                itemDiscountStr = discountFromMerchant,
+                productProtectionStr = if (totalProductProtectionForShop > 0.0) {
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         totalProductProtectionForShop,
                         false
@@ -274,13 +279,14 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 } else {
                     null
                 },
-                if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
-                shippingInfo,
-                logisticDiscountStr,
-                if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
-                shopOrder.address,
+                shippingPriceStr = getShippingPriceStr(shopOrder, shippingDetail),
+                shippingInfo = shippingInfo,
+                discountOnShippingStr = logisticDiscountStr,
+                shippingInsurancePriceStr = getInsurancePriceStr(shopOrder, shippingDetail),
+                shippingAddress = shopOrder.address,
                 // add order level add-ons here
-                OrderLevelAddOn(shopOrder.addOnSectionDescription, shopOrder.addOnItemList)
+                orderLevelAddOn = OrderLevelAddOn(shopOrder.addOnSectionDescription, shopOrder.addOnItemList),
+                shouldHideShopInvoice = if (index == thanksPageData.shopOrder.size - 1) false else shopOrder.orderGroupId == thanksPageData.shopOrder[index + 1].orderGroupId
             )
             visitableList.add(shopInvoice)
             currentIndex++
@@ -288,6 +294,29 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             bundleToProductMap.clear()
             bundleMap.clear()
         }
+    }
+
+    private fun getShippingPriceStr(shopOrder: ShopOrder, orderGroupList: OrderGroupList?): String? {
+        return if (orderGroupList != null) {
+            if (orderGroupList.totalShippingFee > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(orderGroupList.totalShippingFee.toLong(), false)
+            else null
+        } else {
+            if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null
+        }
+    }
+
+    private fun getInsurancePriceStr(shopOrder: ShopOrder, orderGroupList: OrderGroupList?): String? {
+        return if (orderGroupList != null) {
+            if (orderGroupList.totalInsurancePrice > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(orderGroupList.totalInsurancePrice.toLong(), false)
+            else null
+        } else {
+            if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null
+        }
+    }
+
+    private fun getShippingEta(shopOrder: ShopOrder, orderGroupList: OrderGroupList?): String? {
+        return if (orderGroupList != null) return orderGroupList.shipperEta
+        else shopOrder.logisticETA
     }
 
     private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(

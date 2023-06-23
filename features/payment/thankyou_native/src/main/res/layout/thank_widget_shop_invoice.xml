@@ -72,6 +72,11 @@
         app:typographyType="body_3"
         tools:text="Rp12345678" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupShipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvInvoiceShopItemShipping, tvInvoiceShopItemShippingValue, tvInvoiceShopItemCourier, tvInvoiceShopItemShippingDiscount, tvInvoiceShopItemShippingDiscountValue, tvInvoiceShopItemShippingInsurance, tvInvoiceShopItemShippingInsuranceValue, llAddOnContainer, tvInvoiceShopShippingAddress, tvInvoiceShopShippingAddressValue"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShipping"

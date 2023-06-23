@@ -47,9 +47,20 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         total_discount
         total_discount_str
     }
+    order_group_list{
+        id
+        total_shipping_fee
+        total_bebasongkir_price
+        dest_address
+        shipping_service_name
+        total_insurance_price
+        shipper_name
+        shipper_eta
+    }
     order_list{
         order_id
         store_id
+        order_group_id
         store_type
         logistic_type
         store_name
