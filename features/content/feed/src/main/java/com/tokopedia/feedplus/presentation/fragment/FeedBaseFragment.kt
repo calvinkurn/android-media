@@ -347,6 +347,10 @@ class FeedBaseFragment :
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
+
+        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(
+            R.dimen.feed_toaster_bottom_margin
+        )
     }
 
     private fun onPauseInternal() {
@@ -354,6 +358,8 @@ class FeedBaseFragment :
 
         mOnboarding?.dismiss()
         mOnboarding = null
+
+        Toaster.toasterCustomBottomHeight = 0
     }
 
     private fun observeFeedTabData() {
@@ -678,7 +684,7 @@ class FeedBaseFragment :
         actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
         Toaster.build(
-            binding.layoutToaster,
+            binding.root,
             text,
             duration,
             Toaster.TYPE_NORMAL,
