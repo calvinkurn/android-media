@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.REQUEST_CODE_SIZE
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -27,7 +26,7 @@ data class ProductInputModel(
     // requestCode related to checkEnabledOrNot function on preview page,
     // it's for handling behaviour of enabling shipment and description stepper
     // when click back pressed in add mode
-    var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE) { NO_DATA },
+    var requestCode: ArrayList<Int> = arrayListOf(NO_DATA, NO_DATA, NO_DATA),
     var itemSold: Int = 0, // count of successful item transaction
     var isDataChanged: Boolean = false,
     var isDuplicate: Boolean = false,
