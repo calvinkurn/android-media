@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.penalty.presentation.old.adapter.filter
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
@@ -14,6 +15,7 @@ class FilterPenaltyAdapterOld(adapterFactory: FilterPenaltyAdapterFactory) :
         const val PAYLOAD_CHIPS_FILTER = 108
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(dataList: List<BaseFilterPenaltyPage>) {
         visitables.clear()
         visitables.addAll(dataList)

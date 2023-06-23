@@ -10,6 +10,7 @@ import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailRe
 import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyDataWrapperOld
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
@@ -49,8 +50,10 @@ open class GetShopPenaltyDetailMergeUseCaseOld @Inject constructor(
                 Pair(startDate, endDate)
             )
         } catch (e: IOException) {
+            Timber.e(e)
             throw IOException(e.message)
         } catch (e: Exception) {
+            Timber.e(e)
             val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(", "))
         }

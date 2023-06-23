@@ -27,13 +27,13 @@ class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCompone
     @Inject
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
-    private lateinit var binding: ActivityShopPenaltyPageBinding
+    private var binding: ActivityShopPenaltyPageBinding? = null
 
     private val vpPageChangeCallback by lazy {
         object : ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
-                binding.tabsPenaltyPage.tabLayout.let {
+                binding?.tabsPenaltyPage?.tabLayout?.let {
                     it.selectTab(it.getTabAt(position))
                 }
                 super.onPageSelected(position)
@@ -55,13 +55,13 @@ class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCompone
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         binding = ActivityShopPenaltyPageBinding.inflate(layoutInflater)
-        val view = binding.root
+        val view = binding?.root
         setContentView(view)
         setupView()
     }
 
     override fun onDestroy() {
-        binding.vpPenaltyPage.unregisterOnPageChangeCallback(vpPageChangeCallback)
+        binding?.vpPenaltyPage?.unregisterOnPageChangeCallback(vpPageChangeCallback)
         super.onDestroy()
     }
 
@@ -76,10 +76,10 @@ class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCompone
     }
 
     private fun setupToolbar() {
-        toolbar = binding.toolbarPenaltyPage
+        toolbar = binding?.toolbarPenaltyPage
         setUpActionBar(toolbar)
 
-        binding.toolbarPenaltyPage.addRightIconNotification(IconUnify.HELP).apply {
+        binding?.toolbarPenaltyPage?.addRightIconNotification(IconUnify.HELP)?.apply {
             setOnClickListener {
                 goToSystemPenaltyWebview()
             }
@@ -88,9 +88,9 @@ class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCompone
     }
 
     private fun setupTabs() {
-        binding.tabsPenaltyPage.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding?.tabsPenaltyPage?.tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.vpPenaltyPage.setCurrentItem(tab?.position.orZero(), true)
+                binding?.vpPenaltyPage?.setCurrentItem(tab?.position.orZero(), true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) { }
@@ -100,7 +100,7 @@ class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCompone
     }
 
     private fun setupViewPager() {
-        binding.vpPenaltyPage.run {
+        binding?.vpPenaltyPage?.run {
             adapter = ShopPenaltyPageAdapter(this@ShopPenaltyPageActivity, getPenaltyFragments())
             registerOnPageChangeCallback(vpPageChangeCallback)
         }

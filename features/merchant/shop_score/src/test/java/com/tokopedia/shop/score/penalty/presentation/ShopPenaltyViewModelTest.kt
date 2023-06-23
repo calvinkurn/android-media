@@ -106,6 +106,8 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
 
             onGetNotYetDeductedPenaltyUseCase_thenReturn()
 
+            onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.ONGOING)
+
             penaltyViewModel.getDataPenalty()
 
             verifyGetShopPenaltyDetailMergeUseCaseCalled()
@@ -140,6 +142,8 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
 
             onGetNotYetDeductedPenaltyUseCase_thenReturn()
 
+            onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.HISTORY)
+
             penaltyViewModel.getDataPenalty(ShopPenaltyPageType.HISTORY)
 
             verifyGetShopPenaltyDetailMergeUseCaseCalled()
@@ -156,6 +160,8 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
             onGetShopPenaltyDetailMergeUseCase_thenReturn()
 
             onGetNotYetDeductedPenaltyUseCase_thenReturn()
+
+            onGetShopPenaltyTickerUseCase_thenReturn(ShopPenaltyPageType.NOT_YET_DEDUCTED)
 
             penaltyViewModel.getDataPenalty(ShopPenaltyPageType.NOT_YET_DEDUCTED)
 

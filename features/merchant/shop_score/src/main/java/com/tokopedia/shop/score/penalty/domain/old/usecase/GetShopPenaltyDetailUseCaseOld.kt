@@ -6,6 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
@@ -59,8 +60,10 @@ open class GetShopPenaltyDetailUseCaseOld @Inject constructor(
                 ShopScorePenaltyDetailResponse::class.java
             ).shopScorePenaltyDetail
         } catch (e: IOException) {
+            Timber.e(e)
             throw IOException(e.message)
         } catch (e: Exception) {
+            Timber.e(e)
             val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(", "))
         }

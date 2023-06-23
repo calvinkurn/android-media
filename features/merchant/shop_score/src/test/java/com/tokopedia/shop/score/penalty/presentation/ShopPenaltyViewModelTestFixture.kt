@@ -10,11 +10,13 @@ import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.penalty.domain.response.GetTargetedTicker
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
+import com.tokopedia.shop.score.penalty.domain.usecase.ShopPenaltyTickerUseCase
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -45,6 +47,9 @@ abstract class ShopPenaltyViewModelTestFixture {
     @RelaxedMockK
     lateinit var getNotYetDeductedPenaltyUseCase: Lazy<GetNotYetDeductedPenaltyUseCase>
 
+    @RelaxedMockK
+    lateinit var shopPenaltyTickerUseCase: Lazy<ShopPenaltyTickerUseCase>
+
     lateinit var penaltyViewModel: ShopPenaltyViewModel
 
     protected lateinit var lifecycle: LifecycleRegistry
@@ -60,6 +65,7 @@ abstract class ShopPenaltyViewModelTestFixture {
             getShopPenaltyDetailMergeUseCase,
             getShopPenaltyDetailUseCase,
             getNotYetDeductedPenaltyUseCase,
+            shopPenaltyTickerUseCase,
             penaltyMapper
         )
         lifecycle = LifecycleRegistry(mockk()).apply {
@@ -89,6 +95,18 @@ abstract class ShopPenaltyViewModelTestFixture {
                 format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
             )
         } returns listOf(ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result())
+    }
+
+    protected fun onGetShopPenaltyTickerUseCase_thenReturn(pageType: String) {
+        coEvery {
+            shopPenaltyTickerUseCase.get().execute(pageType)
+        } returns listOf(
+            GetTargetedTicker.TickerResponse(
+                "",
+                "",
+                GetTargetedTicker.TickerResponse.Action("", "", "", "")
+            )
+        )
     }
 
     protected fun verifyGetShopPenaltyDetailMergeUseCaseCalled() {

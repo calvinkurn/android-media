@@ -13,6 +13,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_EDT
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -127,6 +128,7 @@ fun String.convertToFormattedDate(): String? {
             com.tokopedia.shop.score.common.format(it.time, PATTER_DATE_EDT, getLocale())
         }
     } catch (ex: Exception) {
+        Timber.e(ex)
         null
     }
 }

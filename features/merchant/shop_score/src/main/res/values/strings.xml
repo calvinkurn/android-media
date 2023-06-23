@@ -351,7 +351,7 @@
     <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
     
     <!-- Poena -->
-    <string name="desc_ticker_penalty"><![CDATA[%s <a href="\"%s\"">%s</a>]]></string>
+    <string name="desc_ticker_penalty"><![CDATA[%s <a href="\"%s\""><b>%s</b></a>]]></string>
     <string name="title_card_penalty_point">Potongan Poin Performa</string>
     <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
     <string name="title_filter_penalty_date">Tanggal</string>

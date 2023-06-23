@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -117,6 +118,7 @@ class PenaltyDateFilterBottomSheetOld :
         try {
             cpv.selectDate(date, smoothScroll)
         } catch (e: IllegalArgumentException) {
+            Timber.e(e)
         }
     }
 
