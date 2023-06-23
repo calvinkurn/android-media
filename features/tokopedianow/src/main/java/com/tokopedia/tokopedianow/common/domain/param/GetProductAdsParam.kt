@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.domain.param
 
 data class GetProductAdsParam(
     val query: String = "",
+    val categoryId: String = "",
     val warehouseIds: String,
     val src: String,
     val page: Int = 1,
@@ -18,6 +19,7 @@ data class GetProductAdsParam(
         private const val PARAM_SRC = "src"
         private const val PARAM_ITEM = "item"
         private const val PARAM_PAGE = "page"
+        private const val PARAM_DEP_ID = "dep_id"
         private const val PARAM_USER_WAREHOUSE_ID = "user_warehouseId"
         private const val PARAM_DEVICE = "device"
         private const val PARAM_USER_ID = "userId"
@@ -31,6 +33,9 @@ data class GetProductAdsParam(
         val params = mutableMapOf<String, Any>().apply {
             if (query.isNotBlank()) {
                 put(PARAM_QUERY, query)
+            }
+            if (categoryId.isNotBlank()) {
+                put(PARAM_DEP_ID, categoryId)
             }
             put(PARAM_SRC, src)
             put(PARAM_PAGE, page)

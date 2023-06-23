@@ -48,6 +48,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Compan
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
@@ -226,8 +227,9 @@ class TokoNowCategoryViewModel @Inject constructor(
     private fun getProductAds() {
         launchCatchError(block = {
             val params = GetProductAdsParam(
+                categoryId = categoryIdL1,
                 warehouseIds = addressData.getWarehouseIds(),
-                src = GetProductAdsParam.SRC_DIRECTORY_TOKONOW,
+                src = SRC_DIRECTORY_TOKONOW,
                 userId = getUserId()
             )
 
