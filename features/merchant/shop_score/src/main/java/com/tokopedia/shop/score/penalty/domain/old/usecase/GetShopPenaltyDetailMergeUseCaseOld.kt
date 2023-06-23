@@ -49,9 +49,8 @@ open class GetShopPenaltyDetailMergeUseCaseOld @Inject constructor(
                 typeId,
                 Pair(startDate, endDate)
             )
-        } catch (e: IOException) {
-            Timber.e(e)
-            throw IOException(e.message)
+        } catch (ignore: IOException) {
+            throw IOException(ignore.message)
         } catch (e: Exception) {
             Timber.e(e)
             val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)

@@ -41,7 +41,7 @@ class ItemPenaltyTickerViewHolder(
                 element.webUrl.orEmpty(),
                 element.actionText.orEmpty()
             ).orEmpty()
-        } catch (ex: Exception) {
+        } catch (expected: Exception) {
             String.EMPTY
         }
     }

@@ -59,9 +59,8 @@ open class GetShopPenaltyDetailUseCaseOld @Inject constructor(
             return gqlResponse.getData<ShopScorePenaltyDetailResponse>(
                 ShopScorePenaltyDetailResponse::class.java
             ).shopScorePenaltyDetail
-        } catch (e: IOException) {
-            Timber.e(e)
-            throw IOException(e.message)
+        } catch (ignore: IOException) {
+            throw IOException(ignore.message)
         } catch (e: Exception) {
             Timber.e(e)
             val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
