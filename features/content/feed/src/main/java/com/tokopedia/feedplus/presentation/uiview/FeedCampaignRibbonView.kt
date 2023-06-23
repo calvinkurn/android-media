@@ -13,23 +13,14 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 /**
@@ -125,8 +116,7 @@ class FeedCampaignRibbonView(
                 root.context,
                 R.drawable.feed_tag_product_background
             )
-            tyFeedCampaignRibbonSubtitle.text = ""
-            resetAnimationBasedOnType()
+            buildRibbonBasedOnType()
         }
     }
 
@@ -150,8 +140,7 @@ class FeedCampaignRibbonView(
                         setBackgroundGradient()
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.availability_state)
-                            root.transitionToEnd()
+                            root.transitionToState(R.id.availability_state)
                         }
                     }
                 }
@@ -160,8 +149,7 @@ class FeedCampaignRibbonView(
                         setBackgroundGradient()
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.start_in_state)
-                            root.transitionToEnd()
+                            root.transitionToState(R.id.start_in_state)
                         }
                     }
                 }
@@ -188,8 +176,7 @@ class FeedCampaignRibbonView(
                         tyFeedCampaignRibbonTitleSecond.text = mCta?.texts?.get(index) ?: ""
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.second_title_with_icon)
-                            root.transitionToEnd()
+                            root.transitionToState(R.id.second_title_with_icon)
                             runRecursiveDelayDiscount(index + ONE)
                         }
                     }
@@ -197,8 +184,7 @@ class FeedCampaignRibbonView(
                         tyFeedCampaignRibbonTitle.text = mCta?.texts?.get(index) ?: ""
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(root.currentState, R.id.initial_title_with_icon)
-                            root.transitionToEnd()
+                            root.transitionToState(R.id.initial_title_with_icon)
                             runRecursiveDelayDiscount(index + ONE)
                         }
                     }
@@ -206,11 +192,7 @@ class FeedCampaignRibbonView(
                         tyFeedCampaignRibbonTitleSecond.text = mCta?.texts?.get(index) ?: ""
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(
-                                root.currentState,
-                                R.id.second_title_with_icon
-                            )
-                            root.transitionToEnd()
+                            root.transitionToState(R.id.second_title_with_icon)
                             runRecursiveDelayDiscount(index + ONE)
                         }
                     }
@@ -289,8 +271,13 @@ class FeedCampaignRibbonView(
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    setupAvailabilityProgress()
+                    setupTimer("") {}
+                    tyFeedCampaignRibbonSubtitle.text = ""
+
                     if (!mCta?.texts.isNullOrEmpty()) {
                         tyFeedCampaignRibbonTitle.text = mCta?.texts!![0]
+                        tyFeedCampaignRibbonTitleSecond.text = mCta?.texts!![0]
                     }
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
@@ -330,12 +317,15 @@ class FeedCampaignRibbonView(
                 }
 
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                    tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
+                    setupAvailabilityProgress()
+                    tyFeedCampaignRibbonSubtitle.text = ""
+
+                    tyFeedCampaignRibbonTitle.text = mCampaign?.shortName.orEmpty()
+                    tyFeedCampaignRibbonTitleSecond.text = mCampaign?.shortName.orEmpty()
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
 
-                    setupAvailabilityProgress()
-
                     setupTimer(mCampaign?.endTime ?: "") {}
+
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
@@ -375,7 +365,10 @@ class FeedCampaignRibbonView(
                 }
 
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
+                    setupAvailabilityProgress()
+
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
+                    tyFeedCampaignRibbonTitleSecond.text = mCampaign?.shortName
                     tyFeedCampaignRibbonSubtitle.text =
                         root.context.getString(R.string.feed_campaign_start_from_label)
                     setupTimer(mCampaign?.startTime ?: "") {}
@@ -424,19 +417,11 @@ class FeedCampaignRibbonView(
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT, FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
-                    root.setTransition(
-                        root.currentState,
-                        R.id.initial_title_with_icon
-                    )
-                    root.transitionToEnd()
+                    root.transitionToState(R.id.initial_title_with_icon)
                     root.progress = 1f
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                    root.setTransition(
-                        root.currentState,
-                        R.id.initial_title_with_timer_and_icon
-                    )
-                    root.transitionToEnd()
+                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
                     root.progress = 1f
                 }
             }
@@ -452,6 +437,7 @@ class FeedCampaignRibbonView(
                     targetDate = it
                     this.onFinish = onFinish
                 }
+                binding.timerFeedCampaignRibbon.show()
             }
         } ?: binding.timerFeedCampaignRibbon.hide()
     }

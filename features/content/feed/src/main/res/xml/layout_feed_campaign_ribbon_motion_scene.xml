@@ -231,14 +231,12 @@
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="2dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/ty_feed_campaign_ribbon_title_second"
-            app:layout_constraintEnd_toStartOf="@id/ic_feed_campaign_ribbon_icon"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/timer_feed_campaign_ribbon"
             app:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:id="@+id/ty_feed_campaign_ribbon_title_second"
@@ -300,7 +298,8 @@
     <Transition
         app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/initial_title_with_icon"
-        app:duration="600" />
+        app:duration="600"
+        app:pathMotionArc="startVertical" />
     <!-- END initial_title_with_icon TRANSITION-->
 
     <!-- START start_in_state TRANSITION-->
@@ -330,7 +329,8 @@
     <Transition
         app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
-        app:duration="600" />
+        app:duration="600"
+        app:pathMotionArc="startVertical" />
     <Transition
         app:constraintSetEnd="@+id/availability_state"
         app:constraintSetStart="@+id/initial_title_with_timer_and_icon"
@@ -349,7 +349,8 @@
     <Transition
         app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/availability_state"
-        app:duration="600" />
+        app:duration="600"
+        app:pathMotionArc="startVertical" />
     <Transition
         app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
         app:constraintSetStart="@+id/availability_state"
@@ -368,7 +369,8 @@
     <Transition
         app:constraintSetEnd="@+id/start_in_state"
         app:constraintSetStart="@+id/second_title_with_icon"
-        app:duration="600" />
+        app:duration="600"
+        app:pathMotionArc="startVertical" />
     <Transition
         app:constraintSetEnd="@+id/initial_title_with_timer_and_icon"
         app:constraintSetStart="@+id/second_title_with_icon"

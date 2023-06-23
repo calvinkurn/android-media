@@ -208,6 +208,7 @@ class FeedPostVideoViewHolder(
                     it.id,
                     absoluteAdapterPosition
                 )
+                campaignView.resetView()
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
                 listener.onWatchPostVideo(it, trackerModel)
