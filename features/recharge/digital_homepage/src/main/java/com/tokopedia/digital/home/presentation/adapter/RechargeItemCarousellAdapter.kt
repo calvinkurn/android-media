@@ -37,6 +37,7 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
                                 onItemBindListener.onRechargeSectionItemClicked(element)
                             }
                         } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
