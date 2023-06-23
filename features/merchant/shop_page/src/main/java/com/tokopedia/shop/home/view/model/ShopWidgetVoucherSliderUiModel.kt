@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
@@ -16,7 +17,8 @@ data class ShopWidgetVoucherSliderUiModel(
     override val isFestivity: Boolean = false,
     val listCategorySlug: List<String> = listOf(),
     val listVoucher: List<ExclusiveLaunchVoucher> = listOf(),
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    var rvState: Parcelable? = null
 ) : BaseShopHomeWidgetUiModel() {
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
