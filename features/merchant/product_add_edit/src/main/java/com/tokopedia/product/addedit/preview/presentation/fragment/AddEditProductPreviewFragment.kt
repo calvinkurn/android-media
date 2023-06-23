@@ -304,6 +304,7 @@ class AddEditProductPreviewFragment :
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
+        observeHasDTStock()
         observePriceRangeFormatted()
         observeStockFormatted()
         observeImageUrlOrPathList()
@@ -582,12 +583,6 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupVariantViews() {
-        addEditProductVariantButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackAddProductVariant(shopId)
-            }
-            showVariantActivity()
-        }
         addProductVariantTipsLayout?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
@@ -1004,6 +999,22 @@ class AddEditProductPreviewFragment :
                 showEmptyVariantState(it)
             }
         })
+    }
+
+    private fun observeHasDTStock() {
+        viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
+            addEditProductVariantButton?.setColorToDisabled(hasDTStock)
+            addEditProductVariantButton?.setOnClickListener {
+                if (isEditing()) {
+                    ProductEditStepperTracking.trackAddProductVariant(shopId)
+                }
+                if (hasDTStock) {
+                    showDTDisableVariantChangeDialog()
+                } else {
+                    showVariantActivity()
+                }
+            }
+        }
     }
 
     private fun observePriceRangeFormatted() {
@@ -1491,6 +1502,20 @@ class AddEditProductPreviewFragment :
             val intent = AddEditProductVariantDetailActivity.createInstance(this, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT)
         }
+    }
+
+    private fun showDTDisableVariantChangeDialog() {
+        val dialog = DialogUnify(context ?: return, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_disabled_variant_deactivate_dialog)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_title_disabled_variant_deactivate_dialog))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.action_oke_got_it))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun updateProductImage() {
