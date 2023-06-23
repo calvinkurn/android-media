@@ -12,15 +12,15 @@ open class DeepLinkMatcherTestFixture {
 
     private lateinit var deepLinkMatcher: DeeplinkMatcher
 
+    private var hasMock = false
+
     @Before
     fun setup() {
-        mockkStatic(Uri::class)
+        if (!hasMock) {
+            mockkStatic(Uri::class)
+            hasMock = true
+        }
         deepLinkMatcher = DeeplinkMatcher()
-    }
-
-    @After
-    fun finish()  {
-        unmockkStatic(Uri::class)
     }
 
     protected fun assertEqualsDeepLinkMatcher(expectedIdDeepLinkChecker: Int, url: String) {

@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -61,6 +62,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
@@ -100,6 +102,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -107,21 +110,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
-import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryNavigationCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
@@ -152,6 +151,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCall
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
@@ -162,8 +162,6 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.iris.Iris
@@ -172,6 +170,8 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -188,10 +188,12 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play_common.util.extension.getVisiblePortion
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.quest_widget.constants.QuestUrls.QUEST_URL
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -233,6 +235,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
+import kotlinx.android.synthetic.main.play_banner.*
 import kotlinx.coroutines.FlowPreview
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -260,7 +263,6 @@ open class HomeRevampFragment :
     HomeReviewListener,
     PopularKeywordListener,
     FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
     PlayWidgetListener,
     RecommendationWidgetListener,
     QuestWidgetCallbacks,
@@ -288,6 +290,7 @@ open class HomeRevampFragment :
         private const val REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET = 258
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
         private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
+        private const val PLAY_CAROUSEL_WIDGET_VISIBLE_PORTION_THRESHOLD = 0.3
 
         var HIDE_TICKER = false
         private const val SOURCE_ACCOUNT = "account"
@@ -409,10 +412,6 @@ open class HomeRevampFragment :
     private var recommendationWishlistItem: RecommendationItem? = null
     private var shouldPausePlay = true
     private var lock = Object()
-    private var autoRefreshFlag = HomeFlag()
-    private var autoRefreshHandler = Handler()
-    private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
-    private var serverOffsetTime: Long = 0L
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmarkTokonow: CoachMark2? = null
@@ -818,6 +817,7 @@ open class HomeRevampFragment :
             }
         })
         setupEmbraceBreadcrumbListener()
+        setupHomePlayWidgetListener()
     }
 
     private fun setupEmbraceBreadcrumbListener() {
@@ -829,6 +829,44 @@ open class HomeRevampFragment :
                 }
             })
         }
+    }
+
+    private fun setupHomePlayWidgetListener() {
+        homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            val contentRect = Rect(
+                0,
+                homeMainToolbarHeight,
+                getScreenWidth(),
+                getScreenHeight() - resources.getDimensionPixelOffset(
+                    com.tokopedia.unifyprinciples.R.dimen.unify_space_48
+                )
+            )
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (!::playWidgetCoordinator.isInitialized) return
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+                val layoutManager = this@HomeRevampFragment.layoutManager ?: return
+
+                val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+                val viewHolders = (firstVisible..lastVisible).map {
+                    recyclerView.findViewHolderForAdapterPosition(it)
+                }
+                val playViewHolder = viewHolders.firstOrNull { it is CarouselPlayWidgetViewHolder }
+
+                if (playViewHolder != null) {
+                    val visiblePortion = playViewHolder.itemView.getVisiblePortion(contentRect)
+                    if (visiblePortion[1] >= PLAY_CAROUSEL_WIDGET_VISIBLE_PORTION_THRESHOLD) {
+                        playWidgetCoordinator.onVisible()
+                    } else {
+                        playWidgetCoordinator.onNotVisible()
+                    }
+                } else {
+                    playWidgetCoordinator.onNotVisible()
+                }
+            }
+        })
     }
 
     private fun trackEmbraceBreadcrumbPosition() {
@@ -998,9 +1036,6 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
-        if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            setAutoRefreshOnHome(autoRefreshFlag)
-        }
         shouldPausePlay = true
         if (getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
@@ -1065,9 +1100,6 @@ open class HomeRevampFragment :
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
-        if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-        }
     }
 
     override fun onStop() {
@@ -1099,6 +1131,7 @@ open class HomeRevampFragment :
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
+        refreshLayout?.setEnableSwipeRefreshDistancePx(navToolbar?.height ?: 0)
         refreshLayout?.setOnRefreshListener { onRefresh() }
 
         refreshLayoutOld?.post {
@@ -1176,7 +1209,6 @@ open class HomeRevampFragment :
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
                     if (dynamicChannel.list.isNotEmpty()) {
-                        configureHomeFlag(dynamicChannel.homeFlag)
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
                 }
@@ -1482,7 +1514,8 @@ open class HomeRevampFragment :
             MissionWidgetComponentCallback(this, getHomeViewModel()),
             LegoProductCallback(this),
             TodoWidgetComponentCallback(this, getHomeViewModel()),
-            FlashSaleWidgetCallback(this)
+            FlashSaleWidgetCallback(this),
+            CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1497,38 +1530,6 @@ open class HomeRevampFragment :
 
     override fun onSpotlightItemClicked(actionLink: String) {
         onActionLinkClicked(actionLink)
-    }
-
-    private fun configureHomeFlag(homeFlag: HomeFlag) {
-        initAutoRefreshHandler()
-        if (isEnableToAutoRefresh(homeFlag)) {
-            autoRefreshFlag = homeFlag
-            serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(homeFlag.serverTime)
-            setAutoRefreshOnHome(homeFlag)
-        }
-    }
-
-    private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
-        return homeFlag.getFlag(HomeFlag.TYPE.IS_AUTO_REFRESH) &&
-            homeFlag.serverTime != INVALID_SERVER_TIME &&
-            homeFlag.eventTime.isNotEmpty()
-    }
-
-    private fun initAutoRefreshHandler() {
-        stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-        autoRefreshRunnable = TimerRunnable(listener = this)
-        autoRefreshHandler = Handler()
-    }
-
-    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag) {
-        initAutoRefreshHandler()
-        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
-        autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
-        runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
-    }
-
-    override fun onHomeAutoRefreshTriggered() {
-        doHomeDataRefresh()
     }
 
     private fun doHomeDataRefresh() {
@@ -2287,8 +2288,44 @@ open class HomeRevampFragment :
         )
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
-        BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
+    override fun onBestSellerFilterImpression(
+        filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+    ) {
+        val filterValue = UrlParamUtils.getParamMap(filter.value)
+        val categoryId = filterValue[CATEGORY_ID].toString()
+
+        trackingQueue?.putEETracking(
+            BestSellerWidgetTracker.getFilterImpressionTracker(
+                categoryId = categoryId,
+                channelId = bestSellerDataModel.id,
+                headerName = bestSellerDataModel.title,
+                userId = userId,
+                position = filter.position,
+                ncpRank = filter.ncpRank,
+                totalFilterCount = bestSellerDataModel.filterChip.size,
+                chipsValue = filter.title,
+            ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onBestSellerFilterClick(
+        filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+        widgetPosition: Int,
+        selectedChipsPosition: Int,
+    ) {
+        val filterValue = UrlParamUtils.getParamMap(filter.value)
+        val categoryId = filterValue[CATEGORY_ID].toString()
+
+        BestSellerWidgetTracker.sendFilterClickTracker(
+            categoryId = categoryId,
+            channelId = bestSellerDataModel.id,
+            headerName = bestSellerDataModel.title,
+            position = filter.position,
+            ncpRank = filter.ncpRank,
+            chipsValue = filter.title
+        )
         getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
     }
 
@@ -2650,6 +2687,15 @@ open class HomeRevampFragment :
     }
 
     override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+        getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
+    }
+
+    override fun onReminderClicked(
+        view: PlayWidgetCarouselView,
+        channelId: String,
+        reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {
         getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
     }
 

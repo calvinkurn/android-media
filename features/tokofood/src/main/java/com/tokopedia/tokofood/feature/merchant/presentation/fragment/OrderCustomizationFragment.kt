@@ -47,7 +47,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -310,6 +309,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
                         binding?.atcButton?.isLoading = false
                         hideKeyboard()
+                        (it.data as? String)?.let { message ->
+                            showToaster(message)
+                        }
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
@@ -371,6 +373,17 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             Toaster.build(
                 view = view,
                 text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showToaster(toasterMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = toasterMessage,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()
