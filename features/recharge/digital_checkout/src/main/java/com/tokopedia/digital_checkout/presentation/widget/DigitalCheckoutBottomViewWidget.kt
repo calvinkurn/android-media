@@ -104,14 +104,18 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                 setOnFailedGetCollectionListener {
                     isCheckoutButtonEnabled = false
                 }
-                setOnDetailConsentListener { _, consentType ->
-                    if (isCrossSellConsentWidgetVisible()) {
-                        isCheckoutButtonEnabled = when (consentType) {
-                            is ConsentType.SingleInfo -> true
-                            is ConsentType.SingleChecklist -> false
-                            is ConsentType.MultipleChecklist -> false
-                            else -> true
+                setOnDetailConsentListener { isShowConsent, consentType ->
+                    if (isShowConsent) {
+                        if (isCrossSellConsentWidgetVisible()) {
+                            isCheckoutButtonEnabled = when (consentType) {
+                                is ConsentType.SingleInfo -> true
+                                is ConsentType.SingleChecklist -> false
+                                is ConsentType.MultipleChecklist -> false
+                                else -> true
+                            }
                         }
+                    } else {
+                        isCheckoutButtonEnabled = true
                     }
                     removeConsentCollectionObserver()
                 }
