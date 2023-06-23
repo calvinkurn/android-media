@@ -37,6 +37,11 @@ internal object VisitableMapper {
     const val DEFAULT_PRODUCT_PARENT_ID = "0"
     const val DEFAULT_PRODUCT_QUANTITY = 0
 
+    private val LAYOUT_TYPES = listOf(
+        CATEGORY_SHOWCASE.name,
+        PRODUCT_ADS_CAROUSEL
+    )
+
     /**
      * -- Header Section --
      */
@@ -320,18 +325,17 @@ internal object VisitableMapper {
         }
     }
 
-    fun MutableList<Visitable<*>>.updateProductQuantity(
-        miniCartData: MiniCartSimplifiedData,
-        layoutType: String
-    ) {
-        updateAllProductQuantity(
-            miniCartData = miniCartData,
-            layoutType = layoutType
-        )
-        updateDeletedProductQuantity(
-            miniCartData = miniCartData,
-            layoutType = layoutType
-        )
+    fun MutableList<Visitable<*>>.updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
+        LAYOUT_TYPES.forEach { layoutType ->
+            updateAllProductQuantity(
+                miniCartData = miniCartData,
+                layoutType = layoutType
+            )
+            updateDeletedProductQuantity(
+                miniCartData = miniCartData,
+                layoutType = layoutType
+            )
+        }
     }
 
     fun MutableList<Visitable<*>>.updateWishlistStatus(
@@ -339,7 +343,7 @@ internal object VisitableMapper {
         hasBeenWishlist: Boolean
     ) {
         filterIsInstance<CategoryShowcaseUiModel>().forEach { uiModel ->
-            uiModel.productListUiModels?.find { it.productCardModel.productId == productId }?.apply {
+            uiModel.productListUiModels.find { it.productCardModel.productId == productId }?.apply {
                 val index = uiModel.productListUiModels.indexOf(this)
 
                 uiModel.productListUiModels.getOrNull(index)?.productCardModel?.copy(hasBeenWishlist = hasBeenWishlist)?.let {

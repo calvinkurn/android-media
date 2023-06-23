@@ -143,10 +143,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         miniCartData: MiniCartSimplifiedData
     ) {
         super.onSuccessGetMiniCartData(miniCartData)
-        layout.updateProductQuantity(
-            miniCartData = miniCartData,
-            layoutType = CATEGORY_SHOWCASE.name
-        )
+        layout.updateProductQuantity(miniCartData)
         _categoryPage.postValue(layout)
     }
 
