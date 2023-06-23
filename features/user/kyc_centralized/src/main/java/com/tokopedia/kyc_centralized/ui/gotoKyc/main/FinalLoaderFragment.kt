@@ -61,7 +61,6 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.globalError?.setActionClickListener {
-            showScreenLoading(true)
             initLoader()
         }
         binding?.globalError?.setSecondaryActionClickListener {
@@ -71,13 +70,13 @@ class FinalLoaderFragment : BaseDaggerFragment() {
     }
 
     private fun initLoader() {
+        showScreenLoading(true)
         if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
             viewModel.registerProgressive(
                 projectId = args.parameter.projectId,
                 challengeId = args.parameter.challengeId
             )
         } else {
-            showScreenLoading(true)
             viewModel.kycStatus(args.parameter.projectId)
         }
     }
@@ -173,6 +172,11 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 projectId = args.parameter.projectId
             )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
+        }
+
+        binding?.globalError?.apply {
+            errorAction.text = getString(R.string.goto_kyc_try_again)
+            errorSecondaryAction.text = getString(R.string.goto_kyc_direct_to_setting)
         }
     }
 
