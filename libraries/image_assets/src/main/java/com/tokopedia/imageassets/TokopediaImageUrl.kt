@@ -273,7 +273,7 @@ object TokopediaImageUrl {
     const val ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN = "https://images.tokopedia.net/android/others/illustration_add_featured_product.png"
     const val ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN = "https://images.tokopedia.net/android/others/illustration_max_featured_product.png"
     const val ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN = "https://images.tokopedia.net/android/others/illustration_special_featured_product.png"
-    const val PRODUCT_MANAGE_LIST_EMPTY_STATE = "https://images.tokopedia.net/android/others/illustration_buka.png"
+    const val PRODUCT_MANAGE_LIST_EMPTY_STATE = "https://images.tokopedia.net/img/android/others/illustration_empty_mpp.png"
     const val ILLUSTRATION_STOCK_LOCATION = "https://images.tokopedia.net/android/others/ic_illustration_stock_location.png"
     const val ILLUSTRATION_NO_ACCESS = "https://images.tokopedia.net/android/others/ic_illustration_no_access.png"
     const val IMG_EMPTY_STATE = "https://images.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
