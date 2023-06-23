@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.event
 
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -36,4 +37,9 @@ sealed interface UserProfileUiEvent {
     data class ErrorLikeDislike(val error: Throwable) : UserProfileUiEvent
 
     data class OpenProductDetailPage(val productId: String) : UserProfileUiEvent
+
+    data class OpenReviewMediaGalleryPage(
+        val review: UserReviewUiModel.Review,
+        val mediaPosition: Int,
+    ) : UserProfileUiEvent
 }

@@ -196,6 +196,8 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
+            is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
+            is UserProfileAction.UpdateLikeStatus -> handleUpdateLikeStatus(action.feedbackId, action.likeStatus)
             else -> {}
         }
     }
@@ -613,6 +615,28 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleClickProductInfo(review: UserReviewUiModel.Review) {
         launch {
             _uiEvent.emit(UserProfileUiEvent.OpenProductDetailPage(review.product.productID))
+        }
+    }
+
+    private fun handleClickReviewMedia(feedbackID: String, attachment: UserReviewUiModel.Attachment) {
+        launch {
+            val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackID } ?: return@launch
+            val mediaPosition = review.attachments.indexOf(attachment) + 1
+
+            _uiEvent.emit(
+                UserProfileUiEvent.OpenReviewMediaGalleryPage(
+                    review = review,
+                    mediaPosition = mediaPosition,
+                )
+            )
+        }
+    }
+
+    private fun handleUpdateLikeStatus(feedbackId: String, likeStatus: Int) {
+        val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return
+
+        if (review.likeDislike.likeStatus != likeStatus) {
+            toggleLikeDislikeStatus(feedbackId)
         }
     }
 

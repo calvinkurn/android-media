@@ -1,27 +1,22 @@
 package com.tokopedia.people.views.fragment
 
-import android.graphics.Typeface
+import android.app.Activity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.setSpanOnText
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -47,6 +42,7 @@ import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -87,11 +83,30 @@ class UserProfileReviewFragment @Inject constructor(
                 override fun onClickProductInfo(review: UserReviewUiModel.Review) {
                     viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
                 }
+
+                override fun onMediaClick(
+                    feedbackID: String,
+                    attachment: UserReviewUiModel.Attachment
+                ) {
+                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackID, attachment))
+                }
             },
             onLoading = {
                 viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = false))
             }
         )
+    }
+
+    private val reviewMediaGalleryForActivityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val feedbackId = ReviewMediaGalleryRouter.getFeedbackIdResult(data)
+                val likeStatus = ReviewMediaGalleryRouter.getLikeStatusResult(data)
+                viewModel.submitAction(UserProfileAction.UpdateLikeStatus(feedbackId, likeStatus))
+            }
+        }
     }
 
     override fun getScreenName(): String = TAG
@@ -143,6 +158,21 @@ class UserProfileReviewFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.OpenProductDetailPage -> {
                         RouteManager.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)
+                    }
+                    is UserProfileUiEvent.OpenReviewMediaGalleryPage -> {
+                        val intent = ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                            context = requireContext(),
+                            pageSource = ReviewMediaGalleryRouter.PageSource.USER_PROFILE,
+                            productID = event.review.product.productID,
+                            shopID = "",
+                            isProductReview = true,
+                            isFromGallery = false,
+                            mediaPosition = event.mediaPosition,
+                            showSeeMore = false,
+                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel()
+                        )
+
+                        reviewMediaGalleryForActivityResult.launch(intent)
                     }
                     else -> {}
                 }

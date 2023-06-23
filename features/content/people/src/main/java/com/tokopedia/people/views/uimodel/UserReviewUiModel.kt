@@ -1,5 +1,13 @@
 package com.tokopedia.people.views.uimodel
 
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewDetail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewerUserInfo
+
 /**
  * Created By : Jonathan Darwin on May 12, 2023
  */
@@ -21,7 +29,60 @@ data class UserReviewUiModel(
         val attachments: List<Attachment>,
         val likeDislike: LikeDislike,
         val isReviewTextExpanded: Boolean,
-    )
+    ) {
+        fun mapToProductReviewMediaGalleryModel(): ProductrevGetReviewMedia {
+            return ProductrevGetReviewMedia(
+                reviewMedia = attachments.mapIndexed { index, attachment ->
+                    val position = index + 1
+
+                    when (attachment) {
+                        is Attachment.Video -> {
+                            ReviewMedia(
+                                videoId = attachment.attachmentID,
+                                feedbackId = feedbackID,
+                                mediaNumber = position,
+                            )
+                        }
+                        is Attachment.Image -> {
+                            ReviewMedia(
+                                imageId = attachment.attachmentID,
+                                feedbackId = feedbackID,
+                                mediaNumber = position,
+                            )
+                        }
+                    }
+                },
+                detail = Detail(
+                    reviewGalleryImages = attachments.filterIsInstance<Attachment.Image>().map {
+                        ReviewGalleryImage(
+                            attachmentId = it.attachmentID,
+                            thumbnailURL = it.thumbnailUrl,
+                            fullsizeURL = it.fullSizeUrl,
+                            feedbackId = feedbackID,
+                        )
+                    },
+                    reviewGalleryVideos = attachments.filterIsInstance<Attachment.Video>().map {
+                        ReviewGalleryVideo(
+                            attachmentId = it.attachmentID,
+                            url = it.mediaUrl,
+                            feedbackId = feedbackID,
+                        )
+                    },
+                    mediaCount = attachments.size.toLong(),
+                    reviewDetail = listOf(
+                        ReviewDetail(
+                            feedbackId = feedbackID,
+                            variantName = product.productVariant.variantName,
+                            review = reviewText,
+                            rating = rating,
+                            isLiked = likeDislike.isLike,
+                            totalLike = likeDislike.totalLike,
+                        )
+                    )
+                )
+            )
+        }
+    }
 
     data class Product(
         val productID: String,
@@ -37,17 +98,17 @@ data class UserReviewUiModel(
         val variantName: String
     )
 
-    data class Attachment(
-        val attachmentID: String,
-        val mediaUrl: String,
-        val type: Type,
-    ) {
-        val isVideo: Boolean
-            get() = type == Type.Video
+    sealed interface Attachment {
 
-        enum class Type {
-            Video, Image,
-        }
+        data class Image(
+            val attachmentID: String,
+            val thumbnailUrl: String,
+            val fullSizeUrl: String,
+        ) : Attachment
+        data class Video(
+            val attachmentID: String,
+            val mediaUrl: String,
+        ) : Attachment
     }
 
     data class LikeDislike(

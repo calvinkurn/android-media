@@ -43,7 +43,7 @@ class UserReviewViewHolder private constructor() {
                         feedbackID: String,
                         attachment: UserReviewUiModel.Attachment
                     ) {
-                        /** TODO: handle this */
+                        listener.onMediaClick(feedbackID, attachment)
                     }
                 }
             )
@@ -160,16 +160,19 @@ class UserReviewViewHolder private constructor() {
         private fun setupMedia(item: UserReviewUiModel.Review) {
             adapter.setItemsAndAnimateChanges(
                 item.attachments.map { attachment ->
-                    if (attachment.isVideo) {
-                        UserReviewMediaAdapter.Model.Video(
-                            feedbackID = item.feedbackID,
-                            attachment = attachment,
-                        )
-                    } else {
-                        UserReviewMediaAdapter.Model.Image(
-                            feedbackID = item.feedbackID,
-                            attachment = attachment,
-                        )
+                    when (attachment) {
+                        is UserReviewUiModel.Attachment.Video -> {
+                            UserReviewMediaAdapter.Model.Video(
+                                feedbackID = item.feedbackID,
+                                attachment = attachment,
+                            )
+                        }
+                        is UserReviewUiModel.Attachment.Image -> {
+                            UserReviewMediaAdapter.Model.Image(
+                                feedbackID = item.feedbackID,
+                                attachment = attachment,
+                            )
+                        }
                     }
                 }
             )
@@ -207,6 +210,10 @@ class UserReviewViewHolder private constructor() {
             fun onClickLike(review: UserReviewUiModel.Review)
             fun onClickSeeMore(review: UserReviewUiModel.Review)
             fun onClickProductInfo(review: UserReviewUiModel.Review)
+            fun onMediaClick(
+                feedbackID: String,
+                attachment: UserReviewUiModel.Attachment
+            )
         }
     }
 
