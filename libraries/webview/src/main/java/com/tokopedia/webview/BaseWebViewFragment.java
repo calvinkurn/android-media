@@ -463,18 +463,22 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_PARTNER_KYC && resultCode == Activity.RESULT_OK) {
-            String imageFilePath = intent.getStringExtra(ApplinkConstInternalFintech.FILE_PATH);
-            String type = intent.getStringExtra(ApplinkConstInternalFintech.TYPE);
-
-            if (!TextUtils.isEmpty(imageFilePath)) {
-                String imageBase64 = WebViewHelper.INSTANCE.getBase64FromImagePath(imageFilePath);
-                if (imageBase64 != null) {
-                    String formattedImageBase64 = imageBase64.replace("\n", "");
-                    WebViewHelper.INSTANCE.finishTakePicture(type, formattedImageBase64, webView);
-                }
-            }
+            proceedPartnerKyc(intent);
         }
 
+    }
+
+    private void proceedPartnerKyc(Intent intent) {
+        String imageFilePath = intent.getStringExtra(ApplinkConstInternalFintech.FILE_PATH);
+        String type = intent.getStringExtra(ApplinkConstInternalFintech.TYPE);
+
+        if (!TextUtils.isEmpty(imageFilePath)) {
+            String imageBase64 = WebViewHelper.INSTANCE.getBase64FromImagePath(imageFilePath);
+            if (imageBase64 != null) {
+                String formattedImageBase64 = imageBase64.replace("\n", "");
+                WebViewHelper.INSTANCE.finishTakePicture(type, formattedImageBase64, webView);
+            }
+        }
     }
 
     public static @Nullable
