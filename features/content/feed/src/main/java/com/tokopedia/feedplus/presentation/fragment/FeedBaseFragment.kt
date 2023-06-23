@@ -274,7 +274,7 @@ class FeedBaseFragment :
 
     @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
-        lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
             binding.viewVerticalSwipeOnboarding.showAnimated()
         }
@@ -434,68 +434,67 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
-                uploadReceiver
-                    .observe()
-                    .collect { info ->
-                        when (val status = info.status) {
-                            is UploadStatus.Progress -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setProgress(status.progress)
-                                binding.uploadView.setThumbnail(status.thumbnailUrl)
-                            }
-                            is UploadStatus.Finished -> {
-                                binding.uploadView.hide()
+        //we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
+            uploadReceiver
+                .observe()
+                .collect { info ->
+                    when (val status = info.status) {
+                        is UploadStatus.Progress -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setProgress(status.progress)
+                            binding.uploadView.setThumbnail(status.thumbnailUrl)
+                        }
+                        is UploadStatus.Finished -> {
+                            binding.uploadView.hide()
 
-                                if (info.type == UploadType.Shorts) {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                                status.authorId,
-                                                status.authorType,
-                                                status.contentId
-                                            )
-                                            router.route(
-                                                requireContext(),
-                                                ApplinkConst.PLAY_DETAIL,
-                                                status.contentId
-                                            )
-                                        }
-                                    )
-                                } else {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG
-                                    )
-                                }
-                            }
-                            is UploadStatus.Failed -> {
-                                binding.uploadView.setFailed()
-                                binding.uploadView.setListener(object : UploadInfoView.Listener {
-                                    override fun onRetryClicked(view: UploadInfoView) {
-                                        status.onRetry()
+                            if (info.type == UploadType.Shorts) {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG,
+                                    actionText = getString(R.string.feed_upload_shorts_see_video),
+                                    actionListener = {
+                                        playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                            status.authorId,
+                                            status.authorType,
+                                            status.contentId
+                                        )
+                                        router.route(
+                                            requireContext(),
+                                            ApplinkConst.PLAY_DETAIL,
+                                            status.contentId
+                                        )
                                     }
-
-                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                                            uploadReceiver.releaseCurrent()
-                                            binding.uploadView.hide()
-                                        }
-
-                                        if (info.type == UploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
-                                        }
-                                    }
-                                })
+                                )
+                            } else {
+                                showNormalToaster(
+                                    getString(R.string.feed_upload_content_success),
+                                    duration = Toaster.LENGTH_LONG
+                                )
                             }
                         }
+                        is UploadStatus.Failed -> {
+                            binding.uploadView.setFailed()
+                            binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                override fun onRetryClicked(view: UploadInfoView) {
+                                    status.onRetry()
+                                }
+
+                                override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                    launch {
+                                        uploadReceiver.releaseCurrent()
+                                        binding.uploadView.hide()
+                                    }
+
+                                    if (info.type == UploadType.Post) {
+                                        feedMainViewModel.deletePostCache()
+                                    }
+                                }
+                            })
+                        }
                     }
-            }
+                }
         }
     }
 
