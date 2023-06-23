@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -37,13 +38,15 @@ class YoutubePlayerActivity : AppCompatActivity(),
     }
 
     private fun addWebView() {
-        viewBinding?.videoContainer?.addView(
-            youtubeWebView,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
+        viewBinding?.activityYoutubePlayer?.apply {
+            removeAllViews()
+            viewBinding?.activityYoutubePlayer?.addView(
+                youtubeWebView,
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                ))
+        }
     }
 
     private fun initYoutubePlayer() {
@@ -73,7 +76,6 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     override fun onEnterFullScreen(view: View) {
         hideSystemUi()
-        viewBinding?.videoContainer?.hide()
         view.rotation = ROTATION
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = this.let {
@@ -87,9 +89,11 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
         val layoutParams = FrameLayout.LayoutParams(height, width)
         view.layoutParams = layoutParams
-        viewBinding?.videoFullscreenContainer?.addView(view)
-        viewBinding?.videoFullscreenContainer?.show()
-        viewBinding?.videoFullscreenContainer?.requestFocus()
+        youtubeWebView?.hide()
+        viewBinding?.activityYoutubePlayer?.apply {
+            addView(view)
+            requestFocus()
+        }
     }
 
     private fun hideSystemUi() {
@@ -106,9 +110,13 @@ class YoutubePlayerActivity : AppCompatActivity(),
 
     override fun onExitFullScreen() {
         showSystemUi()
-        viewBinding?.videoContainer?.show()
-        viewBinding?.videoFullscreenContainer?.hide()
-        viewBinding?.videoFullscreenContainer?.removeAllViews()
+        youtubeWebView?.show()
+        viewBinding?.activityYoutubePlayer?.apply {
+            val lastChildPos = childCount - Int.ONE
+            if(lastChildPos >= Int.ZERO) {
+                removeViewAt(lastChildPos)
+            }
+        }
     }
 
     private fun showSystemUi() {
