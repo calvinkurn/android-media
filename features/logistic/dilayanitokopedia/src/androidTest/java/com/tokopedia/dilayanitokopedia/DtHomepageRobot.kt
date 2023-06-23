@@ -19,15 +19,17 @@ class DtHomepageRobot {
         waitForData(5000)
     }
 
-    fun clickFirstItemInFirstWidget() {
+    fun impressFirstWidget() {
         Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPosition(0))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
 
+    fun clickFirstItemInFirstWidget() {
         Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPositionOnView(1, R.id.rv_product))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             .perform(ViewActions.click())
 
-        waitForData(5000)
+        waitForData(3000)
     }
 
     private fun waitForData(millis: Long = 500L) {

@@ -24,7 +24,7 @@ class DtHomepageTest {
     }
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = false, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
     private val applicationContext: Context
         get() = InstrumentationRegistry
@@ -60,14 +60,12 @@ class DtHomepageTest {
 
     @Test
     fun productCard() {
-        val queryPath = "tracker/logistic/dt_homepage.json"
-
         dtHomepage {
             launch(mActivityTestRule)
-
+            impressFirstWidget()
             clickFirstItemInFirstWidget()
         } validateAnalytics {
-            hasPassedAnalytics(cassavaRule, queryPath)
+            hasPassedAnalytics(cassavaRule, QUERY_ID)
         }
     }
 }
