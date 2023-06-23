@@ -2,10 +2,10 @@ package com.tokopedia.applink.promo
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.ScpRewards.SEE_MORE_MEDAL
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-
 
 fun getRegisteredNavigationTokopoints(deeplink: String) =
     when (deeplink) {
@@ -16,9 +16,9 @@ fun getRegisteredNavigationTokopoints(deeplink: String) =
 
 fun getDynamicDeeplinkForTokopoints(deeplink: String): String {
     val uri = Uri.parse(deeplink)
-   return when {
-        (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD) && uri.pathSegments.isEmpty())
-                || (deeplink.contains(ApplinkConst.TOKOPOINTS) && uri.pathSegments.isEmpty()) -> {
+    return when {
+        (deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD) && uri.pathSegments.isEmpty()) ||
+            (deeplink.contains(ApplinkConst.TOKOPOINTS) && uri.pathSegments.isEmpty()) -> {
             getSourceDeeplink(deeplink)
         }
         else -> {
@@ -28,7 +28,7 @@ fun getDynamicDeeplinkForTokopoints(deeplink: String): String {
 }
 
 fun getSourceDeeplink(deeplink: String): String {
-   return when {
+    return when {
         deeplink.contains(ApplinkConst.TOKOPEDIA_REWARD) -> {
             return deeplink.replace(
                 ApplinkConst.TOKOPEDIA_REWARD,
@@ -41,8 +41,8 @@ fun getSourceDeeplink(deeplink: String): String {
                 ApplinkConstInternalPromo.TOKOPOINTS_HOME
             )
         }
-       else -> ""
-   }
+        else -> ""
+    }
 }
 
 fun getDestinationDeeplink(deeplink: String): String {
@@ -82,7 +82,7 @@ fun getDestinationDeeplink(deeplink: String): String {
             )
         }
         deepLinkInternal.contains(ApplinkConst.TokoPoints.CATALOG_LIST_NEW) &&
-                uri.pathSegments[0] == ApplinkConst.TokoPoints.CATALOG_LIST_NEW -> {
+            uri.pathSegments[0] == ApplinkConst.TokoPoints.CATALOG_LIST_NEW -> {
             return deepLinkInternal.replace(
                 ApplinkConst.TokoPoints.CATALOG_LIST_NEW,
                 ApplinkConst.TokoPoints.CATALOG_LIST_VALUE
@@ -95,7 +95,7 @@ fun getDestinationDeeplink(deeplink: String): String {
 }
 
 // To handle Tokomember applinks with params
-fun getDynamicDeeplinkForTokomember(deeplink: String) : String{
+fun getDynamicDeeplinkForTokomember(deeplink: String): String {
     val uri = Uri.parse(deeplink)
     return when {
         deeplink.contains(ApplinkConst.Tokomember.PROGRAM_EXTENSION) -> getDeeplinkForProgramExtension(uri)
@@ -103,66 +103,68 @@ fun getDynamicDeeplinkForTokomember(deeplink: String) : String{
     }
 }
 
-fun getDeeplinkForProgramExtension(deeplink: Uri):String{
-    if(UriUtil.matchWithPattern(ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_EXTENSION,deeplink)!=null){
+fun getDeeplinkForProgramExtension(deeplink: Uri): String {
+    if (UriUtil.matchWithPattern(ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_EXTENSION, deeplink) != null) {
         val programId = deeplink.lastPathSegment
-        return UriUtil.buildUri(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION,programId)
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION, programId)
     }
     return ""
 }
 
-fun getRegisteredNavigationPromoFromHttp(deeplink:Uri) : String{
-   val query = deeplink.encodedQuery
-    val queryString = if(query.isNullOrEmpty()) "" else "?${query}"
+fun getRegisteredNavigationPromoFromHttp(deeplink: Uri): String {
+    val query = deeplink.encodedQuery
+    val queryString = if (query.isNullOrEmpty()) "" else "?$query"
     val path = deeplink.encodedPath ?: ""
     val regexMap = getPromoRegexMap()
-    when{
-       isMatchPattern(regexMap[ApplinkConst.Tokomember.COUPON_DETAIL],path) -> {
-           val applink = ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_DETAIL
-           val couponId = deeplink.lastPathSegment
-           return UriUtil.buildUri(applink,couponId) + queryString
-       }
+    when {
+        isMatchPattern(regexMap[ApplinkConst.Tokomember.COUPON_DETAIL], path) -> {
+            val applink = ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_DETAIL
+            val couponId = deeplink.lastPathSegment
+            return UriUtil.buildUri(applink, couponId) + queryString
+        }
         else -> ""
     }
     return ""
 }
 
-fun getInternalDeeplinkForScpMedalCabinet(deeplink: Uri) : String{
+fun getInternalDeeplinkForScpMedalCabinet(deeplink: Uri): String {
+    return if (deeplink.pathSegments.isEmpty()) {
+        UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_CABINET)
+    } else if (deeplink.toString().startsWith(SEE_MORE_MEDAL)) {
+        UriUtil.appendDeeplinkWithQuery(
+            ApplinkConstInternalPromo.SEE_MORE_MEDALI,
+            deeplink.query.orEmpty()
+        )
+    } else {
+        ""
+    }
+}
+
+fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri): String {
     val segments = deeplink.pathSegments
-    if(segments.last()!=""){
+    if (segments.last() != "") {
         val medaliSlug = segments.last()
-        return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_CABINET,medaliSlug)
+        return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_DETAIL, medaliSlug)
     }
     return ""
 }
 
-fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri) : String{
+fun getInternalDeeplinkForScpCelebration(deeplink: Uri): String {
     val segments = deeplink.pathSegments
-    if(segments.last()!=""){
+    if (segments.last() != "") {
         val medaliSlug = segments.last()
-        return UriUtil.buildUri(ApplinkConstInternalPromo.MEDAL_DETAIL,medaliSlug)
+        return UriUtil.buildUri(ApplinkConstInternalPromo.CELEBRATION_PAGE, medaliSlug)
     }
     return ""
 }
 
-fun getInternalDeeplinkForScpCelebration(deeplink: Uri) : String{
-    val segments = deeplink.pathSegments
-    if(segments.last()!=""){
-        val medaliSlug = segments.last()
-        return UriUtil.buildUri(ApplinkConstInternalPromo.CELEBRATION_PAGE,medaliSlug)
-    }
-    return ""
-}
-
-fun getPromoRegexMap() : MutableMap<String,Regex> {
+fun getPromoRegexMap(): MutableMap<String, Regex> {
     val couponDetailRegex = "^(/.*/voucher/[0-9]+)"
     return mutableMapOf(
-      ApplinkConst.Tokomember.COUPON_DETAIL to  Regex(couponDetailRegex)
+        ApplinkConst.Tokomember.COUPON_DETAIL to Regex(couponDetailRegex)
     )
 }
 
-
-fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
+fun isMatchPattern(pattern: Regex?, link: String): Boolean {
     return pattern?.matches(link) ?: false
 }
-

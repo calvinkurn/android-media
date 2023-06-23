@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.tokopedia.scp_rewards.common.utils
 
 import android.content.Context

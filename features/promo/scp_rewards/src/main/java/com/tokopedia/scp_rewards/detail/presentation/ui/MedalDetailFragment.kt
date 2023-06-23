@@ -227,6 +227,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         binding.loadContainer.loaderFlipper.visible()
                         MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
+                    else -> {}
                 }
             }
         }

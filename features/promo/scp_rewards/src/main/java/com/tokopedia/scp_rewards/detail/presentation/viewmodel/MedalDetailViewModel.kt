@@ -8,6 +8,7 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.MEDALI_DETAIL_PAGE
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
@@ -43,7 +44,7 @@ class MedalDetailViewModel @Inject constructor(
                 val response = medalDetailUseCase.getMedalDetail(
                     medaliSlug = medaliSlug,
                     sourceName = sourceName,
-                    pageName = "medali_detail_page"
+                    pageName = MEDALI_DETAIL_PAGE
                 )
                 if (response.detail?.resultStatus?.code == SUCCESS_CODE) {
                     _badgeLiveData.postValue(Success(response))
