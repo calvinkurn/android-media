@@ -8,18 +8,16 @@ import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Compani
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object MediaUploaderNetwork {
 
-    const val BASE_URL = "https://upedia.tokopedia.net/"
+    val BASE_URL = TokopediaUrl.getInstance().WEB
     private const val MAX_LENGTH_CHUCKER_CONTENT = 1000L
 
     fun okHttpClientBuilder(

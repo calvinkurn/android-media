@@ -80,6 +80,7 @@ class TokoNowSearchViewModel @Inject constructor (
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
+    private var recommendationCategoryId: String = ""
 
     val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
     val query = queryParamMap[SearchApiConst.Q].orEmpty()
@@ -157,6 +158,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomKeywords() = listOf(query)
 
+    override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
+
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
@@ -165,6 +168,7 @@ class TokoNowSearchViewModel @Inject constructor (
         related = searchModel.getRelated()
 
         val searchProductHeader = searchProduct.header
+        recommendationCategoryId = searchProductHeader.meta.categoryId
 
         val headerDataView = HeaderDataView(
                 title = "",
