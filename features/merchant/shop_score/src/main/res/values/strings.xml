@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">shop-score</string>
 
     <string name="title_shopscore">Skor Performa Toko</string>
@@ -351,8 +351,7 @@
     <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
     
     <!-- Poena -->
-    <string name="title_ticker_penalty">Perhitungan baru sistem Penalti Toko</string>
-    <string name="desc_ticker_penalty">Ada cara perhitungan baru sistem Penalti Toko yang mulai diterapkan pada 27 Juni 2023. Yuk, &lt;a href="#"&gt;Pelajari Sekarang&lt;a href="#"&gt;</string>
+    <string name="desc_ticker_penalty"><![CDATA[%s <a href="\"%s\"">%s</a>]]></string>
     <string name="title_card_penalty_point">Potongan Poin Performa</string>
     <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
     <string name="title_filter_penalty_date">Tanggal</string>

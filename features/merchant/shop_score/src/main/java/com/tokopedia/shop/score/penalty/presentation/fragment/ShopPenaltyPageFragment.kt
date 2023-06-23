@@ -321,12 +321,14 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         )
     }
 
-    override fun onDescriptionClicked() {
-        context?.let {
+    override fun onDescriptionClicked(linkUrl: String) {
+        context?.let { it ->
             RouteManager.route(
                 it,
                 ApplinkConstInternalGlobal.WEBVIEW,
-                ShopScoreConstant.PRODUCT_PENALTY_CALCULATION_URL
+                linkUrl.takeIf { link ->
+                    link.isNotBlank()
+                } ?: ShopScoreConstant.PRODUCT_PENALTY_CALCULATION_URL
             )
         }
     }

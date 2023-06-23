@@ -9,6 +9,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.convertToFormattedDate
+import com.tokopedia.shop.score.penalty.domain.response.GetTargetedTicker
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummary
@@ -40,14 +41,15 @@ class PenaltyMapper @Inject constructor(
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
         sortBy: Int,
-        typeIds: List<Int>
+        typeIds: List<Int>,
+        tickerList: List<GetTargetedTicker.TickerResponse>
     ): PenaltyDataWrapper {
         val penaltyTypes =
             shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result.orEmpty()
         return PenaltyDataWrapper(
             penaltyVisitableList = mapToItemVisitablePenaltyList(
                 pageType, shopScorePenaltySummaryWrapper, shopScorePenaltyDetailResponse,
-                notYetDeductedPenalties, typeIds
+                notYetDeductedPenalties, typeIds, tickerList
             ),
             penaltyFilterList = mapToPenaltyFilterBottomSheet(
                 shopScorePenaltyDetailResponse,
@@ -245,7 +247,8 @@ class PenaltyMapper @Inject constructor(
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
-        typeIds: List<Int>
+        typeIds: List<Int>,
+        tickerList: List<GetTargetedTicker.TickerResponse>
     ): Triple<List<BasePenaltyPage>, Boolean, Boolean> {
 
         val visitablePenaltyPage =
@@ -255,6 +258,7 @@ class PenaltyMapper @Inject constructor(
                     shopScorePenaltyDetailResponse,
                     notYetDeductedPenalties,
                     typeIds,
+                    tickerList,
                     pageType
                 )
                 ShopPenaltyPageType.HISTORY -> getMappedHistoryPenaltyVisitables(
@@ -283,10 +287,20 @@ class PenaltyMapper @Inject constructor(
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
         typeIds: List<Int>,
+        tickerList: List<GetTargetedTicker.TickerResponse>,
         @ShopPenaltyPageType pageType: String
     ): MutableList<BasePenaltyPage> {
         return mutableListOf<BasePenaltyPage>().apply {
-            add(ItemPenaltyTickerUiModel)
+            tickerList.firstOrNull()?.let { ticker ->
+                add(
+                    ItemPenaltyTickerUiModel(
+                        ticker.title,
+                        ticker.content,
+                        ticker.action?.label,
+                        ticker.action?.webURL
+                    )
+                )
+            }
 
             if (notYetDeductedPenalties != null) {
                 add(mapToNotYetDeductedItem(notYetDeductedPenalties))

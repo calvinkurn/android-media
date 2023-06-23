@@ -58,7 +58,7 @@ interface ItemSortFilterPenaltyListener {
 }
 
 interface ItemPenaltyTickerListener {
-    fun onDescriptionClicked()
+    fun onDescriptionClicked(linkUrl: String)
 }
 
 interface ItemPenaltySubsectionListener {

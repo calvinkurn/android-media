@@ -19,6 +19,7 @@ import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailPa
 import com.tokopedia.shop.score.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
+import com.tokopedia.shop.score.penalty.domain.usecase.ShopPenaltyTickerUseCase
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
@@ -43,6 +44,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private val getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>,
     private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,
     private val getNotYetDeductedPenaltyUseCase: Lazy<GetNotYetDeductedPenaltyUseCase>,
+    private val shopPenaltyTickerUseCase: Lazy<ShopPenaltyTickerUseCase>,
     private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -181,9 +183,17 @@ class ShopPenaltyViewModel @Inject constructor(
                     }
                 }
 
+            val tickerListDeffered =
+                withContext(dispatchers.io) {
+                    async {
+                        shopPenaltyTickerUseCase.get().execute(pageType)
+                    }
+                }
+
             val penaltyDetailMerge =
                 penaltyDetailMergeDeffered.await()
             val notYetDeductedPenalty = notYetDeductedPenaltyDeferred.await()
+            val tickerList = tickerListDeffered.await()
 
             val penaltyDataWrapper = penaltyMapper.mapToPenaltyData(
                 pageType,
@@ -191,7 +201,8 @@ class ShopPenaltyViewModel @Inject constructor(
                 penaltyDetailMerge.second,
                 notYetDeductedPenalty,
                 sortBy,
-                typeIds
+                typeIds,
+                tickerList
             )
 
             initialStartDate = penaltyDetailMerge.second.startDate
