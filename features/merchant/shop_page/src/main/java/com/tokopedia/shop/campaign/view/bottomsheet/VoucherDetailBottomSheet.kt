@@ -66,9 +66,8 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         isSkipCollapseState = true
         isKeyboardOverlap = false
-        showKnob = true
-        isFullpage = true
-        showCloseIcon = false
+        showKnob = false
+        showCloseIcon = true
     }
 
     @Inject
