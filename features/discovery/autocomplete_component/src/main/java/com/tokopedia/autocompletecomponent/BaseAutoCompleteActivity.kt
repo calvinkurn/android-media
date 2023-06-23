@@ -447,7 +447,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         return query.ifEmpty { searchParameter[HINT] ?: "" }
     }
     private fun getTrackingQueryOrHint(searchParameter: Map<String, String>) : String {
-        return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter[HINT] as String }
+        return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter.get(HINT) ?: "" }
     }
 
     private fun createSearchResultApplink(searchParameter: Map<String, String>): String {
