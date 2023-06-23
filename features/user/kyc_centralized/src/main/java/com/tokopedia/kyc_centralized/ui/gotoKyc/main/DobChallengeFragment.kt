@@ -86,6 +86,10 @@ class DobChallengeFragment : BaseDaggerFragment() {
             showDatePicker()
         }
 
+        binding?.fieldDob?.icon1?.setOnClickListener {
+            showDatePicker()
+        }
+
         binding?.btnConfirmation?.setOnClickListener {
             GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
             viewModel.submitChallenge(
