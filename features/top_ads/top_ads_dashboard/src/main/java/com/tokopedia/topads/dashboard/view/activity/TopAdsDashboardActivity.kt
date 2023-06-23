@@ -20,7 +20,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,6 +55,10 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragment
@@ -106,7 +109,6 @@ class TopAdsDashboardActivity :
     private lateinit var ivCalendarTopAdsActionBar: ImageUnify
     private lateinit var txtBuatIklan: Typography
     var insightMultiActionButtonEnabled: Boolean = false
-    private var saranTopAdsEducationalBottomSheet: BottomSheetUnify? = null
 
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
@@ -133,9 +135,6 @@ class TopAdsDashboardActivity :
         const val INSIGHT_PAGE = 3
         const val HEADLINE_ADS_TAB = 2
         const val IKLANKAN_PRODUK_TAB = 1
-        const val SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK = "https://seller.tokopedia.com/edu/halaman-rekomendasi-topads/"
-        const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL = "https://img.youtube.com/vi/wtXkUUsFSU4/0.jpg"
-        const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK = "https://www.youtube.com/watch?v=wtXkUUsFSU4"
     }
 
     @Inject
@@ -267,7 +266,7 @@ class TopAdsDashboardActivity :
 
         ivEducationTopAdsActionBar.setOnClickListener {
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == INSIGHT_PAGE) {
-                openSaransTopAdsEducationalBottomsheet()
+                showSaransTopAdsEducationalBottomsheet(false)
             } else {
                 startActivity(Intent(this, TopAdsEducationActivity::class.java))
             }
@@ -282,9 +281,9 @@ class TopAdsDashboardActivity :
         }
     }
 
-    private fun openSaransTopAdsEducationalBottomsheet() {
+    private fun showSaransTopAdsEducationalBottomsheet(firstLaunch: Boolean) {
         val view = layoutInflater.inflate(R.layout.layout_saran_topads_eductional_info_bottomsheet, null, false)
-        saranTopAdsEducationalBottomSheet = BottomSheetUnify().apply {
+        val saranTopAdsEducationalBottomSheet = BottomSheetUnify().apply {
             setChild(view)
             isDragable = false
             isHideable = true
@@ -297,6 +296,10 @@ class TopAdsDashboardActivity :
         val videoThumbnail = view.findViewById<ImageUnify>(R.id.video_thumbnail)
         val readArticleCta = view.findViewById<UnifyButton>(R.id.read_articles_cta)
         val seeSuggestionsCta = view.findViewById<UnifyButton>(R.id.topads_suggestion_cta)
+
+        if (firstLaunch)
+            seeSuggestionsCta.show()
+
         videoThumbnail.urlSrc = SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
         videoThumbnail.setOnClickListener {
             val intent = Intent(
@@ -312,9 +315,9 @@ class TopAdsDashboardActivity :
             RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK)
         }
         seeSuggestionsCta.setOnClickListener {
-            saranTopAdsEducationalBottomSheet?.dismiss()
+            saranTopAdsEducationalBottomSheet.dismiss()
         }
-        saranTopAdsEducationalBottomSheet?.show(supportFragmentManager, "educationalBottomSheet")
+        saranTopAdsEducationalBottomSheet.show(supportFragmentManager, INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG)
     }
 
     private fun initView() {
@@ -437,7 +440,7 @@ class TopAdsDashboardActivity :
                 val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
                 if (position == INSIGHT_PAGE) {
                     if (sharedPref.getBoolean(FIRST_LAUNCH, true)) {
-                        showFirstTimeDialog(this@TopAdsDashboardActivity)
+                        showSaransTopAdsEducationalBottomsheet(true)
                         with(sharedPref.edit()) {
                             putBoolean(FIRST_LAUNCH, false)
                             commit()
@@ -447,18 +450,6 @@ class TopAdsDashboardActivity :
             }
         })
         tabLayout?.setupWithViewPager(viewPager)
-    }
-
-    private fun showFirstTimeDialog(context: Context) {
-        val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-        dialog.setImageDrawable(R.drawable.topads_insight_dialog)
-        dialog.setDescription(context.getString(R.string.topads_dash_insight_dialog_desc))
-        dialog.setTitle(context.getString(R.string.topads_dash_insight_dialog_title))
-        dialog.setPrimaryCTAText(context.getString(R.string.topads_dash_insight_dialog_btn))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {

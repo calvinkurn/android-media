@@ -41,6 +41,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
@@ -247,11 +248,11 @@ class GroupDetailViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun getItemListUiModel(titleList: List<String>, adGroupType: String?): List<ItemListUiModel> {
-        val list = arrayListOf<ItemListUiModel>()
+    fun getItemListUiModel(titleList: List<String>, adGroupType: String?): List<ListBottomSheetItemUiModel> {
+        val list = arrayListOf<ListBottomSheetItemUiModel>()
         if (!groupDetailMapper.insightCountMap[TYPE_PRODUCT_VALUE].isZero()) {
             list.add(
-                ItemListUiModel(
+                ListBottomSheetItemUiModel(
                     adType = TYPE_PRODUCT_VALUE,
                     title = titleList.firstOrNull() ?: "",
                     isSelected = (PRODUCT_KEY == adGroupType)
@@ -260,7 +261,7 @@ class GroupDetailViewModel @Inject constructor(
         }
         if (!groupDetailMapper.insightCountMap[TYPE_SHOP_VALUE].isZero()) {
             list.add(
-                ItemListUiModel(
+                ListBottomSheetItemUiModel(
                     adType = TYPE_SHOP_VALUE,
                     title = titleList.getOrNull(CONST_1) ?: "",
                     isSelected = (adGroupType != PRODUCT_KEY)

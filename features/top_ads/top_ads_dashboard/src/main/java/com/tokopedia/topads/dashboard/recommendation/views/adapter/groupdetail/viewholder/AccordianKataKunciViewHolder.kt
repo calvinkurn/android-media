@@ -1,7 +1,10 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.text.Editable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +13,14 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.CONST_2
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_STATUS_ACTIVE
@@ -68,10 +73,25 @@ class AccordianKataKunciViewHolder(
                         val errorMsg = validateKataKunciBid(bid)
                         if(errorMsg.isEmpty()){
                             keywordCost.isInputError = false
-                            if(bid == element.suggestionBid)
+                            if(bid == element.suggestionBid) {
                                 keywordCost.setMessage(getString(R.string.biaya_optimal))
-                            else
-                                keywordCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply),element.suggestionBid))
+                            } else {
+                                val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), bid)
+                                val ss = SpannableString(msg)
+                                val cs = object : ClickableSpan() {
+                                    override fun onClick(p0: View) {
+                                        keywordCost.editText.setText(element.suggestionBid.toString())
+                                    }
+
+                                    override fun updateDrawState(ds: TextPaint) {
+                                        ds.isUnderlineText = false
+                                        ds.color = ContextCompat.getColor(keywordCost.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                                        ds.isFakeBoldText = true
+                                    }
+                                }
+                                ss.setSpan(cs, msg.length-8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                keywordCost.setMessage(ss)
+                            }
 
                             if(checkbox.isChecked){
                                 topadsManagePromoGroupProductInput?.keywordOperation?.firstOrNull { it?.keyword?.tag == element.keywordTag }?.keyword?.price_bid = bid.toDouble()
@@ -80,6 +100,7 @@ class AccordianKataKunciViewHolder(
                             keywordCost.isInputError = true
                             keywordCost.setMessage(errorMsg)
                         }
+                        onInsightAction.invoke(validateAllSelectedItems())
                     }
                 })
             }
@@ -155,19 +176,14 @@ class AccordianKataKunciViewHolder(
         override fun getItemCount(): Int {
             return kataKunciItemList.count()
         }
-
-        fun updateList(list : List<NewPositiveKeywordsRecom>){
-            kataKunciItemList = list
-            notifyDataSetChanged()
-        }
     }
 
     private val adapter by lazy { KataKunciItemsAdapter() }
     private val kataKunciRv: RecyclerView = itemView.findViewById(R.id.kataKunciRv)
     private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
-    private var maxBid: Int? = 0
-    private var minBid: Int? = 0
+    private var maxBid: Int? = Int.ZERO
+    private var minBid: Int? = Int.ZERO
 
     override fun bind(element: AccordianKataKunciUiModel?) {
         updateKeys(element)
@@ -196,7 +212,8 @@ class AccordianKataKunciViewHolder(
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         kataKunciRv.adapter = adapter
         element?.newPositiveKeywordsRecom?.let {
-            adapter.updateList(it)
+            kataKunciItemList = it
+            adapter.notifyDataSetChanged()
         }
         kataKunciRv.addItemDecoration(
             RecommendationInsightItemDecoration(
@@ -217,7 +234,8 @@ class AccordianKataKunciViewHolder(
                 it.isSelected = selectAllCheckbox.isChecked
             }
             element?.newPositiveKeywordsRecom?.let {
-                adapter.updateList(it)
+                kataKunciItemList = it
+                adapter.notifyDataSetChanged()
             }
             onInsightAction.invoke(validateAllSelectedItems())
         }
@@ -269,7 +287,7 @@ class AccordianKataKunciViewHolder(
         else
             selectAllCheckbox.setIndeterminate(true)
 
-        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > 0
+        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > Int.ZERO
     }
 
     private fun getKeywordType(type: String): String {
@@ -281,7 +299,7 @@ class AccordianKataKunciViewHolder(
             KEYWORD_TYPE_NEGATIVE_EXACT,
             KEYWORD_TYPE_NEGATIVE_BROAD -> type
             else -> {
-                if (type.split(' ').get(0).length >= 2)
+                if (type.split(' ').firstOrNull()?.length.toZeroIfNull() >= CONST_2)
                     KEYWORD_TYPE_POSITIVE_EXACT
                 else
                     KEYWORD_TYPE_POSITIVE_PHRASE
@@ -301,9 +319,9 @@ class AccordianKataKunciViewHolder(
             String.format(getString(R.string.topads_insight_min_bid_error_msg_format), minBid.toZeroIfNull())
         else if(bid > maxBid.toZeroIfNull())
             String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull())
-        else if(bid % INSIGHT_MULTIPLIER != 0)
+        else if(bid % INSIGHT_MULTIPLIER != Int.ZERO)
             getString(R.string.error_bid_not_multiple_50)
-        else ""
+        else String.EMPTY
     }
 
     private fun validateAllSelectedItems(): Boolean{

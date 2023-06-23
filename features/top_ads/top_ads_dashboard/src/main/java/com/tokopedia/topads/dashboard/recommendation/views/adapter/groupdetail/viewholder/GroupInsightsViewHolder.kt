@@ -1,11 +1,15 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
@@ -34,9 +38,10 @@ class GroupInsightsViewHolder(
                 title = element.title,
                 subtitle = getSubtitle(element, true),
                 isExpanded = element.isExpanded,
-                expandableView = getView(element.expandItemDataModel)
+                expandableView = getView(element.expandItemDataModel),
+                icon = getAccordianIcon(element.type)
             )
-            accordionUnifyData.setContentPadding(8.toPx(), 0.toPx(), 8.toPx(), 16.toPx())
+            accordionUnifyData.setContentPadding(8.toPx(), 16.toPx(), 8.toPx(), 16.toPx())
             addGroup(accordionUnifyData)
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
@@ -46,10 +51,27 @@ class GroupInsightsViewHolder(
                     title = element.title,
                     subtitle = if(element.isExpanded) getSubtitle(element, false) else getSubtitle(element, true),
                     isExpanded = element.isExpanded,
-                    expandableView = getView(element.expandItemDataModel)
+                    expandableView = getView(element.expandItemDataModel),
+                    icon = getAccordianIcon(element.type)
                 )
                 addGroup(accordionUnifyData)
             }
+        }
+    }
+
+    private fun getAccordianIcon(type: Int): Drawable? {
+        return when (type) {
+            RecommendationConstants.TYPE_POSITIVE_KEYWORD ->
+                getIconUnifyDrawable(itemView.context, IconUnify.KEYWORD)
+            RecommendationConstants.TYPE_KEYWORD_BID ->
+                getIconUnifyDrawable(itemView.context, IconUnify.KEYWORD_BUDGET)
+            RecommendationConstants.TYPE_GROUP_BID ->
+                getIconUnifyDrawable(itemView.context, IconUnify.ADS_BUDGET)
+            RecommendationConstants.TYPE_DAILY_BUDGET ->
+                getIconUnifyDrawable(itemView.context, IconUnify.SALDO)
+            RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID ->
+                getIconUnifyDrawable(itemView.context, IconUnify.KEYWORD_NEGATIVE)
+            else -> null
         }
     }
 
@@ -86,10 +108,10 @@ class GroupInsightsViewHolder(
                 getString(R.string.topads_insight_negative_kata_kunci_accordian_subtitle),
                 element.subTitleValue
             )
-            else -> ""
+            else -> String.EMPTY
         }
         return if (isTruncated)
-            "${subtitle.substring(0,subtitle.length/2)}..."
+            "${subtitle.substring(0,subtitle.length/3)}..."
         else
             subtitle
     }

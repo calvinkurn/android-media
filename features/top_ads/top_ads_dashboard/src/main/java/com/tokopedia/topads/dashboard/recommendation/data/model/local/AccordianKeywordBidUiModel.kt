@@ -6,7 +6,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianKeywordBidUiModel(
     val existingKeywordsBidRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom>?,
-    val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
+    val input: TopadsManagePromoGroupProductInput?
 ) : GroupDetailDataModel {
     override fun type(): String {
         return ""

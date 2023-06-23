@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
-import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.ItemListAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.ItemListTypeFactory
 
@@ -21,7 +21,7 @@ class ListBottomSheet:
     BottomSheetUnify(), OnItemSelectChangeListener {
 
     private var binding : ListBottomsheetLayoutBinding? = null
-    private var itemList: List<ItemListUiModel> = listOf()
+    private var itemList: List<ListBottomSheetItemUiModel> = listOf()
     private var bottomsheetType: Int = 1
     private var itemChangeListener: OnItemSelectChangeListener? = null
     private var currentAdType : Int? = null
@@ -60,18 +60,14 @@ class ListBottomSheet:
                 )
             )
 
-            if(bottomsheetType == CHOOSE_AD_TYPE_BOTTOMSHEET){
-                searchGroup.visibility = View.GONE
-            } else {
-                searchGroup.visibility = View.VISIBLE
-            }
+            searchGroup.showWithCondition(bottomsheetType == CHOOSE_AD_GROUP_BOTTOMSHEET)
 
             saveCtaButton.setOnClickListener{
                 newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
                 dismiss()
             }
 
-            searchGroup.editText.addTextChangedListener(object : TextWatcher {
+            searchGroup.searchBarTextField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -85,7 +81,7 @@ class ListBottomSheet:
     }
 
     companion object {
-        fun show(fm: FragmentManager, title:String, list: List<ItemListUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId:String?): ListBottomSheet {
+        fun show(fm: FragmentManager, title:String, list: List<ListBottomSheetItemUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId:String?): ListBottomSheet {
             val bottomSheet = ListBottomSheet().apply {
                 setTitle(title)
                 itemList = list
@@ -116,11 +112,7 @@ class ListBottomSheet:
     }
 
     private fun showCtaButton() {
-        if (newAdType != currentAdType || newGroupId != currentGroupId){
-            binding?.saveCtaButton?.visibility = View.VISIBLE
-        } else {
-            binding?.saveCtaButton?.visibility = View.GONE
-        }
+        binding?.saveCtaButton?.showWithCondition(newAdType != currentAdType || newGroupId != currentGroupId)
     }
 
     private fun updateAdGroups(text: String){

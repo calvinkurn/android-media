@@ -8,13 +8,16 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.CONST_2
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_PRICE_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_SUGGESTION_BID
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
@@ -165,9 +168,9 @@ class AccordianNegativeKeywordViewHolder(
                     type = getKeywordType(element.keywordType),
                     status = getKeywordStatus(element.keywordStatus),
                     tag = element.keywordTag,
-                    suggestionPriceBid = element.predictedImpression.toDoubleOrZero(),
-                    price_bid = element.potentialSavings.toDouble(),
-                    source = element.keywordSource
+                    source = element.keywordSource,
+                    suggestionPriceBid = DEFAULT_SUGGESTION_BID,
+                    price_bid = DEFAULT_PRICE_BID
                 )
             )
         )
@@ -187,9 +190,9 @@ class AccordianNegativeKeywordViewHolder(
                     type = it.keywordType,
                     status = it.keywordStatus,
                     tag = it.keywordTag,
-                    suggestionPriceBid = it.predictedImpression.toDoubleOrZero(),
-                    price_bid = it.potentialSavings.toDouble(),
-                    source = it.keywordSource
+                    source = it.keywordSource,
+                    suggestionPriceBid = DEFAULT_SUGGESTION_BID,
+                    price_bid = DEFAULT_PRICE_BID
                 )
             )
         ) }
@@ -202,7 +205,7 @@ class AccordianNegativeKeywordViewHolder(
         else
             selectAllCheckbox.setIndeterminate(true)
 
-        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > 0
+        selectAllCheckbox.isChecked = topadsManagePromoGroupProductInput?.keywordOperation?.count().toZeroIfNull() > Int.ZERO
     }
 
     private fun getKeywordType(type: String): String {
@@ -214,7 +217,7 @@ class AccordianNegativeKeywordViewHolder(
             RecommendationConstants.KEYWORD_TYPE_NEGATIVE_EXACT,
             RecommendationConstants.KEYWORD_TYPE_NEGATIVE_BROAD -> type
             else -> {
-                if (type.split(' ').get(0).length >= 2)
+                if (type.split(' ').firstOrNull()?.length.toZeroIfNull() >= CONST_2)
                     RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT
                 else
                     RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE

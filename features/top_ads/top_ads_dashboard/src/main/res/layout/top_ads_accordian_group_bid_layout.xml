@@ -91,7 +91,8 @@
         app:layout_constraintStart_toStartOf="@id/search_current_cost_value"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        app:unify_text_field_prepend_text="Rp"/>
+        app:unify_text_field_prepend_text="Rp"
+        app:unify_text_field_input_type="number"/>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/searchGroup"
@@ -192,7 +193,8 @@
         app:layout_constraintStart_toStartOf="@id/recommendation_current_cost_value"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        app:unify_text_field_prepend_text="Rp"/>
+        app:unify_text_field_prepend_text="Rp"
+        app:unify_text_field_input_type="number"/>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/recommendationGroup"

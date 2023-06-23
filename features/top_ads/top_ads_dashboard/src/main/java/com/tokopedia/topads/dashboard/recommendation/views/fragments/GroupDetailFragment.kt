@@ -19,12 +19,12 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_NAME_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_TYPE_KEY
@@ -50,9 +50,9 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightLis
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel
-import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
@@ -65,11 +65,11 @@ import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
-    private var adType: String? = ""
+    private var adType: String? = String.EMPTY
     private var insightType: Int = TYPE_INSIGHT
     private var insightList: ArrayList<AdGroupUiModel>? = null
-    private var adGroupId: String? = ""
-    private var adGroupName: String? = ""
+    private var adGroupId: String? = String.EMPTY
+    private var adGroupName: String? = String.EMPTY
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var saveButton: UnifyButton? = null
@@ -91,10 +91,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit = { element ->
         viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), element.type)
-        saveButton?.visibility = if (element.isExpanded) View.VISIBLE else View.GONE
-        saveButton?.tag = element.type
-        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type), false)
-        updateButtonTitle(viewModel.getInputDataFromMapper(element.type))
+        updateApplyInsightCtaTag(element.type)
+        showApplyInsightCta(element.isExpanded)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(element.type))
+        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(element.type),false))
     }
 
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
@@ -166,7 +166,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun updateButtonTitle(input: TopadsManagePromoGroupProductInput?) {
+    private fun updateApplyInsightCtaTitle(input: TopadsManagePromoGroupProductInput?){
         input?.let {
             saveButton?.text = when (saveButton?.tag) {
                 TYPE_POSITIVE_KEYWORD -> {
@@ -193,7 +193,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         input.keywordOperation?.size
                     )
                 }
-                else -> ""
+                else -> String.EMPTY
             }
         }
     }
@@ -232,7 +232,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    successfulInsightSubmission()
+                    if(it.data.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty() && it.data.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty())
+                        successfulInsightSubmission()
+                    else
+                        showFailedInsightApplyDialog()
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
@@ -243,7 +246,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    successfulInsightSubmission()
+                    if(it.data.topadsManageHeadlineAd.errors.isNullOrEmpty())
+                        successfulInsightSubmission()
+                    else
+                        showFailedInsightApplyDialog()
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
@@ -254,7 +260,15 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun successfulInsightSubmission() {
         confirmationDailog?.dismiss()
-        showSuccessToast(getString(R.string.topads_dashboard_submit_insight_success_toast_msg))
+        val successMsg = when(saveButton?.tag) {
+            TYPE_POSITIVE_KEYWORD -> getString(R.string.topads_insight_kata_kunci_submit_success_toast_msg)
+            TYPE_KEYWORD_BID -> getString(R.string.topads_insight_biaya_kata_kunci_submit_success_toast_msg)
+            TYPE_GROUP_BID -> getString(R.string.topads_insight_biaya_iklan_submit_success_toast_msg)
+            TYPE_DAILY_BUDGET -> getString(R.string.topads_insight_daily_budget_submit_success_toast_msg)
+            TYPE_NEGATIVE_KEYWORD_BID -> getString(R.string.topads_insight_negative_kata_kunci_submit_success_toast_msg)
+            else -> String.EMPTY
+        }
+        showSuccessToast(successMsg)
         loadData(
             utils.convertAdTypeToInt(adType),
             adGroupId
@@ -290,7 +304,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 getString(R.string.topads_dashboard_submit_negative_kata_kunci_insight_fail_title),
                 input?.keywordOperation?.size ?: 0
             )
-            else -> ""
+            else -> String.EMPTY
         }
 
         confirmationDailog?.let {
@@ -348,7 +362,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedChips = position + CONST_2
         )
-        changeTagOnChipsClick(position)
+        updateApplyInsightCtaTag(position + CONST_2)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(position + CONST_2))
+        showApplyInsightCta(viewModel.getInputDataFromMapper(saveButton?.tag as? Int) != null)
     }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
@@ -416,19 +432,19 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 DialogUnify.HORIZONTAL_ACTION,
                 DialogUnify.WITH_ILLUSTRATION
             )
-        val description: String = when (saveButton?.tag) {
-            TYPE_POSITIVE_KEYWORD -> String.format("%d kata kunci akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
-            TYPE_KEYWORD_BID -> "Biaya kata kunci baru akan diterapkan ke grup $adGroupName"
-            TYPE_GROUP_BID -> "Biaya iklan baru akan diterapkan ke grup $adGroupName"
-            TYPE_DAILY_BUDGET -> "Anggaran harian baru akan diterapkan ke grup $adGroupName"
-            TYPE_NEGATIVE_KEYWORD_BID -> String.format("%d kata kunci negatif akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
-            else -> ""
+        val description : String = when(saveButton?.tag){
+            TYPE_POSITIVE_KEYWORD -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_kata_kunci), input?.keywordOperation?.size ?: 0, adGroupName)
+            TYPE_KEYWORD_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_kata_kunci), adGroupName)
+            TYPE_GROUP_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_iklan), adGroupName)
+            TYPE_DAILY_BUDGET -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_daily_budget), adGroupName)
+            TYPE_NEGATIVE_KEYWORD_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_negative_kata_kunci), input?.keywordOperation?.size ?: 0, adGroupName)
+            else -> String.EMPTY
         }
         confirmationDailog?.setDescription(description)
         confirmationDailog?.setImageUrl(successfulSubmitInsightDialogImageUrl)
-        confirmationDailog?.setTitle("Terapkan perubahan ini untuk iklanmu?")
-        confirmationDailog?.setPrimaryCTAText("Ya, Terapkan")
-        confirmationDailog?.setSecondaryCTAText("Batal")
+        confirmationDailog?.setTitle(getString(R.string.topads_insight_confirmation_dialog_title))
+        confirmationDailog?.setPrimaryCTAText(getString(R.string.topads_yes_apply))
+        confirmationDailog?.setSecondaryCTAText(getString(R.string.top_ads_batal))
         confirmationDailog?.setPrimaryCTAClickListener {
             confirmationDailog?.dialogPrimaryCTA?.isLoading = true
             viewModel.submitInsights(input, adGroupId, adType, saveButton?.tag as? Int, adGroupName)
@@ -444,11 +460,21 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             adGroupType = utils.convertAdTypeToInt(adType),
             clickedChips = it + CONST_2
         )
-        changeTagOnChipsClick(it)
+        updateApplyInsightCtaTag(it + CONST_2)
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(it + CONST_2))
+        showApplyInsightCta(viewModel.getInputDataFromMapper(saveButton?.tag as? Int) != null)
     }
 
-    private fun changeTagOnChipsClick(chipsType: Int) {
-        saveButton?.tag = chipsType + CONST_2
+    private fun updateApplyInsightCtaTag(tag: Int){
+        saveButton?.tag = tag
+    }
+
+    private fun setApplyInsightCtaState(isEnabled: Boolean){
+        saveButton?.isEnabled = isEnabled
+    }
+
+    private fun showApplyInsightCta(isVisible: Boolean){
+        saveButton?.showWithCondition(isVisible)
     }
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {
@@ -467,14 +493,14 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 ListBottomSheet.CHOOSE_AD_TYPE_BOTTOMSHEET,
                 this,
                 if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
-                "" // don't send group id in case of choose ad type bottomsheet
+                String.EMPTY // don't send group id in case of choose ad type bottomsheet
             )
         } else {
-            val list = arrayListOf<ItemListUiModel>()
+            val list = arrayListOf<ListBottomSheetItemUiModel>()
             groupList.forEach {
                 (it as? AdGroupUiModel)?.apply {
                     list.add(
-                        ItemListUiModel(
+                        ListBottomSheetItemUiModel(
                             adType = utils.convertAdTypeToInt(adType),
                             title = this.adGroupName,
                             groupId = this.adGroupID,
@@ -511,13 +537,12 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    private val onInsightAction = { hasErrors: Boolean ->
-        saveButton?.isEnabled =
-            checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
-        updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
+    val onInsightAction = {hasErrors: Boolean ->
+        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors))
+        updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
-    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = "") {
+    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = String.EMPTY){
         viewModel.loadDetailPageOnAction(
             adType,
             adgroupID,
@@ -525,25 +550,25 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             isSwitchAdType,
             groupName
         )
-        saveButton?.visibility = View.GONE
+        showApplyInsightCta(false)
     }
 
-    private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean {
-        if (hasErrors) {
+    private fun validateInsightData(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
+        if(hasErrors) {
             return false
         } else {
             input?.let {
                 return when (saveButton?.tag) {
-                    RecommendationConstants.TYPE_POSITIVE_KEYWORD, RecommendationConstants.TYPE_KEYWORD_BID, RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> {
+                    TYPE_POSITIVE_KEYWORD, TYPE_KEYWORD_BID, TYPE_NEGATIVE_KEYWORD_BID -> {
                         !input.keywordOperation.isNullOrEmpty() && input.keywordOperation?.firstOrNull() != null
                     }
-                    RecommendationConstants.TYPE_GROUP_BID, RecommendationConstants.TYPE_DAILY_BUDGET -> {
+                    TYPE_GROUP_BID, TYPE_DAILY_BUDGET -> {
                         input.groupInput != null
                     }
                     else -> true
                 }
             }
-            return true
+            return false
         }
     }
 

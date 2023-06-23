@@ -17,6 +17,7 @@
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_insight_chips_item_layout"
-        tools:orientation="horizontal" />
+        tools:orientation="horizontal"
+        android:layout_marginTop="12dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

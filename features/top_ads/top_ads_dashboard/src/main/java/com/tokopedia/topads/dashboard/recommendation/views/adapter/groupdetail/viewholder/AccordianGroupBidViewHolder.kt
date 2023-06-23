@@ -5,6 +5,8 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.dashboard.R
@@ -20,7 +22,6 @@ class AccordianGroupBidViewHolder(
 ) :
     AbstractViewHolder<AccordianGroupBidUiModel>(itemView) {
 
-    private var hasErrors : Boolean = false
     private val searchCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.searchCheckbox)
     private val recommendationCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.recommendation_checkbox)
     private val searchCurrentCost : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.search_current_cost_value)
@@ -76,11 +77,8 @@ class AccordianGroupBidViewHolder(
     }
 
     private fun setViews(element: AccordianGroupBidUiModel?) {
-        searchGroup.visibility =
-            if (getSearchTypeCurrentBid(element) < getSearchTypeSuggestionBid(element)) View.VISIBLE else View.GONE
-
-        recommendationGroup.visibility =
-            if (getBrowseTypeCurrentBid(element) < getBrowseTypeSuggestionBid(element)) View.VISIBLE else View.GONE
+        searchGroup.showWithCondition(getSearchTypeCurrentBid(element) < getSearchTypeSuggestionBid(element))
+        recommendationGroup.showWithCondition(getBrowseTypeCurrentBid(element) < getBrowseTypeSuggestionBid(element))
     }
 
     private fun bindValues(element: AccordianGroupBidUiModel?) {
@@ -96,18 +94,18 @@ class AccordianGroupBidViewHolder(
     private fun setCheckedChangeListener(element: AccordianGroupBidUiModel?) {
         searchCheckBox.setOnCheckedChangeListener { btn, isChecked ->
             if (isChecked)
-                updateSearchInput(element, searchCost.editText.text.toString().toIntOrZero())
+                updateSearchTypeBid(element, searchCost.editText.text.toString().toIntOrZero())
             else
-                updateSearchInput(element, getSearchTypeCurrentBid(element))
-            onInsightAction.invoke(hasErrors)
+                updateSearchTypeBid(element, getSearchTypeCurrentBid(element))
+            onInsightAction.invoke(checkForErrors(element))
         }
 
         recommendationCheckBox.setOnCheckedChangeListener { btn, isChecked ->
             if (isChecked)
-                updateRecommendationInput(element, recommendationCost.editText.text.toString().toIntOrZero())
+                updateBrowseTypeBid(element, recommendationCost.editText.text.toString().toIntOrZero())
             else
-                updateRecommendationInput(element, getBrowseTypeCurrentBid(element))
-            onInsightAction.invoke(hasErrors)
+                updateBrowseTypeBid(element, getBrowseTypeCurrentBid(element))
+            onInsightAction.invoke(checkForErrors(element))
         }
     }
 
@@ -119,6 +117,7 @@ class AccordianGroupBidViewHolder(
 
             override fun afterTextChanged(text: Editable?) {
                 val bid = text.toString().toIntOrZero()
+                updateSearchTypeBid(element, bid)
                 val errorMsg = validateInput(bid, getSearchTypeCurrentBid(element))
                 if(errorMsg.isEmpty()){
                     searchCost.isInputError = false
@@ -135,6 +134,7 @@ class AccordianGroupBidViewHolder(
                     searchCost.isInputError = true
                     searchCost.setMessage(errorMsg)
                 }
+                onInsightAction.invoke(checkForErrors(element))
             }
         })
 
@@ -145,6 +145,7 @@ class AccordianGroupBidViewHolder(
 
             override fun afterTextChanged(text: Editable?) {
                 val bid = text.toString().toIntOrZero()
+                updateBrowseTypeBid(element, bid)
                 val errorMsg = validateInput(bid, getBrowseTypeCurrentBid(element))
                 if(errorMsg.isEmpty()){
                     recommendationCost.isInputError = false
@@ -163,15 +164,16 @@ class AccordianGroupBidViewHolder(
                     recommendationCost.isInputError = true
                     recommendationCost.setMessage(errorMsg)
                 }
+                onInsightAction.invoke(checkForErrors(element))
             }
         })
     }
 
-    private fun updateSearchInput(element: AccordianGroupBidUiModel?, bid: Int) {
+    private fun updateSearchTypeBid(element: AccordianGroupBidUiModel?, bid: Int) {
         element?.input?.groupInput?.group?.bidSettings?.firstOrNull()?.priceBid = bid.toFloat()
     }
 
-    private fun updateRecommendationInput(element: AccordianGroupBidUiModel?, bid: Int) {
+    private fun updateBrowseTypeBid(element: AccordianGroupBidUiModel?, bid: Int) {
         element?.input?.groupInput?.group?.bidSettings?.getOrNull(1)?.priceBid = bid.toFloat()
     }
 
@@ -205,7 +207,19 @@ class AccordianGroupBidViewHolder(
             )
         else if (inputBid % INSIGHT_MULTIPLIER != 0)
             getString(R.string.error_bid_not_multiple_50)
-        else ""
+        else String.EMPTY
+    }
+
+    private fun checkForErrors(element: AccordianGroupBidUiModel?): Boolean {
+        return validateInput(
+            searchCost.editText.text.toString().toIntOrZero(),
+            getSearchTypeCurrentBid(element))
+            .isEmpty()
+            &&
+            validateInput(
+                recommendationCost.editText.text.toString().toIntOrZero(),
+                getBrowseTypeCurrentBid(element))
+                .isEmpty()
     }
 
     companion object {

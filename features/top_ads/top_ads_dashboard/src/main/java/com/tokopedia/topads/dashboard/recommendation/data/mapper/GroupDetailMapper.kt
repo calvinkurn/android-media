@@ -239,6 +239,7 @@ class GroupDetailMapper @Inject constructor() {
             !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
             AccordianKataKunciUiModel(
                 groupData?.newPositiveKeywordsRecom,
+                getInsightInputModel(!groupData?.newPositiveKeywordsRecom.isNullOrEmpty()),
                 maxBid = pricingDetails.topAdsGetPricingDetails.maxBid,
                 minBid = pricingDetails.topAdsGetPricingDetails.minBid
             )
@@ -253,7 +254,8 @@ class GroupDetailMapper @Inject constructor() {
             impressionSum.toString(),
             !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
             AccordianKeywordBidUiModel(
-                groupData?.existingKeywordsBidRecom
+                groupData?.existingKeywordsBidRecom,
+                getInsightInputModel(!groupData?.existingKeywordsBidRecom.isNullOrEmpty())
             )
         )
     }
@@ -266,7 +268,8 @@ class GroupDetailMapper @Inject constructor() {
             impressionSum.toString(),
             !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
             AccordianNegativeKeywordUiModel(
-                groupData?.newNegativeKeywordsRecom
+                groupData?.newNegativeKeywordsRecom,
+                getInsightInputModel(!groupData?.newNegativeKeywordsRecom.isNullOrEmpty())
             )
         )
     }
@@ -280,7 +283,8 @@ class GroupDetailMapper @Inject constructor() {
             data?.predictedTotalImpression.toString(),
             !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
             AccordianGroupBidUiModel(
-                groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
+                groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID,
+                getInsightInputModel(!data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty())
             )
         )
     }
@@ -293,7 +297,8 @@ class GroupDetailMapper @Inject constructor() {
             sellerInsightData.data.getSellerInsightData.sellerInsightData.dailyBudgetData.firstOrNull()?.topSlotImpression.toString(),
             data.dailyBudgetData.isNotEmpty(),
             AccordianDailyBudgetUiModel(
-                data
+                data,
+                getInsightInputModel(data.dailyBudgetData.isNotEmpty())
             )
         )
     }
@@ -357,5 +362,9 @@ class GroupDetailMapper @Inject constructor() {
             }
         }
         return impressionSum
+    }
+
+    private fun getInsightInputModel(isInsightAvailable: Boolean): TopadsManagePromoGroupProductInput?{
+        return if (isInsightAvailable) TopadsManagePromoGroupProductInput() else null
     }
 }

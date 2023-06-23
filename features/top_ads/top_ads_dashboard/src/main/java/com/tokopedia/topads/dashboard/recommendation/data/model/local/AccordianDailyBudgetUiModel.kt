@@ -6,7 +6,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianDailyBudgetUiModel(
     val sellerInsightData: TopAdsGetSellerInsightDataResponse.GetSellerInsightData.SellerInsightData,
-    val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
+    val input: TopadsManagePromoGroupProductInput?
     ) : GroupDetailDataModel {
 
     override fun type(): String {

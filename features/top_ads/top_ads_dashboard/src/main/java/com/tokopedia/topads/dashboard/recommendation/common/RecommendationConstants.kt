@@ -36,6 +36,9 @@ object RecommendationConstants {
     const val ACTION_EDIT_PARAM = "edit"
     const val INSIGHT_COUNT_PLACE_HOLDER = 10
     const val DEFAULT_LOADING = 0
+    const val DEFAULT_PRICE_BID = 0.0
+    const val DEFAULT_SUGGESTION_BID = 0.0
+    const val CONST_2 = 2
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"
@@ -59,6 +62,8 @@ object RecommendationConstants {
     const val PARAM_PAGE_SETTING = "pageSetting"
     const val PARAM_SIZE = "size"
     const val PARAM_START_CURSOR = "startCursor"
+    const val INSIGHT_EDUCATIONAL_BOTTOMSHEET_TAG = "InsightsEducationBottomSheet"
+    const val INSIGHT_PERFORMANCE_WIDGET_BOTTOMSHEET_TAG = "InsightsPerformanceBottomSheet"
 
     const val PARAM_INSIGHT_TYPE_VALUE = "DAILY_BUDGET_GROUP"
     const val PARAM_INSIGHT_TYPE_VALUE_GROUP_PERFORMANCE = "GROUP_PERFORMANCE"
@@ -68,6 +73,9 @@ object RecommendationConstants {
     const val HEADLINE_INSIGHT_MUTATION_SOURCE = "android.insight_center_headline_keyword_recom"
     const val PRODUCT_INSIGHT_MUTATION_SOURCE = "product_recom_app"
     const val MANAGE_RECOMMENDATION_URL = "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_ARTICLE_LINK = "https://seller.tokopedia.com/edu/halaman-rekomendasi-topads/"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL = "https://img.youtube.com/vi/wtXkUUsFSU4/0.jpg"
+    const val SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK = "https://www.youtube.com/watch?v=wtXkUUsFSU4"
 
     object InsightTypeConstants {
         const val INSIGHT_TYPE_ALL = 0

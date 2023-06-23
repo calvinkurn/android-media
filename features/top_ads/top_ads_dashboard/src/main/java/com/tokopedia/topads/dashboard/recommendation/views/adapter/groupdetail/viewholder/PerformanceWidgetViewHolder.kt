@@ -3,13 +3,15 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.common.view.getFragmentManager
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.unifyprinciples.R.color as unifyColor
 import com.tokopedia.topads.dashboard.databinding.TopAdsPerformanceWidgetInfoBottomsheetLayoutBinding
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_PERFORMANCE_WIDGET_BOTTOMSHEET_TAG
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_FREQUENTLY_THRESHOLD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_RARITY_THRESHOLD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_NOT_RATED_THRESHOLD
@@ -23,7 +25,7 @@ class PerformanceWidgetViewHolder(itemView: View) :
 
     private val performanceWidgetStatus : Typography = itemView.findViewById(R.id.performanceWidgetStatus)
     private val performanceWidgetDesc : Typography = itemView.findViewById(R.id.performanceWidgetDesc)
-    private val performanceWidgetInfoBtn : IconUnify = itemView.findViewById(R.id.performanceWidgetInfoBtn)
+    private val performanceWidgetInfoBtn : ImageUnify = itemView.findViewById(R.id.performanceWidgetInfoBtn)
     private val block1 : ImageUnify = itemView.findViewById(R.id.block_1)
     private val block2 : ImageUnify = itemView.findViewById(R.id.block_2)
     private val block3 : ImageUnify = itemView.findViewById(R.id.block_3)
@@ -38,23 +40,23 @@ class PerformanceWidgetViewHolder(itemView: View) :
             if (it.topSlotImpression == PERFORMANCE_NOT_RATED_THRESHOLD) {
                 performanceWidgetStatus.text =
                 getString(R.string.topads_insight_not_rated)
-                setGreyCondition()
+                setColorConditions(unifyColor.Unify_NN100, unifyColor.Unify_NN100, unifyColor.Unify_NN100)
 
                 performanceWidgetDesc.text = getString(R.string.topads_insight_performance_not_rated_desc)
             } else {
-                val adPerformance = 100 * it.topSlotImpression / it.impression
+                val adPerformancePercent = 100 * it.topSlotImpression / it.impression
 
                 performanceWidgetStatus.text = when {
-                    adPerformance > PERFORMANCE_FREQUENTLY_THRESHOLD -> {
-                        setGreenCondition()
+                    adPerformancePercent > PERFORMANCE_FREQUENTLY_THRESHOLD -> {
+                        setColorConditions(unifyColor.Unify_GN500, unifyColor.Unify_GN500, unifyColor.Unify_GN500)
                         getString(R.string.topads_insight_performance_appears)
                     }
-                    adPerformance > PERFORMANCE_RARITY_THRESHOLD -> {
-                        setYellowCondition()
+                    adPerformancePercent > PERFORMANCE_RARITY_THRESHOLD -> {
+                        setColorConditions(unifyColor.Unify_YN500, unifyColor.Unify_YN500, unifyColor.Unify_NN100)
                         getString(R.string.topads_insight_top_rarity)
                     }
                     else -> {
-                        setRedCondition()
+                        setColorConditions(unifyColor.Unify_RN600, unifyColor.Unify_NN100, unifyColor.Unify_NN100)
                         getString(R.string.topads_insight_lose_competition)
                     }
                 }
@@ -73,67 +75,22 @@ class PerformanceWidgetViewHolder(itemView: View) :
             setTitle(this@PerformanceWidgetViewHolder.getString(R.string.topads_insight_performance_appears))
         }
         performanceWidgetInfoBtn.setOnClickListener {
-            getFragmentManager(itemView.context)?.let {  infoBottomSheetUnify.show( it,"something") }
+            getFragmentManager(itemView.context)?.let {  infoBottomSheetUnify.show( it,INSIGHT_PERFORMANCE_WIDGET_BOTTOMSHEET_TAG) }
         }
     }
 
-    private fun setGreenCondition() {
+    private fun setColorConditions(@ColorRes color1: Int, @ColorRes color2: Int, @ColorRes color3: Int){
         ImageViewCompat.setImageTintList(
             block1,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, color1))
         )
         ImageViewCompat.setImageTintList(
             block2,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, color2))
         )
         ImageViewCompat.setImageTintList(
             block3,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-        )
-    }
-
-    private fun setYellowCondition() {
-        ImageViewCompat.setImageTintList(
-            block1,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
-        )
-        ImageViewCompat.setImageTintList(
-            block2,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500))
-        )
-        ImageViewCompat.setImageTintList(
-            block3,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-        )
-    }
-
-    private fun setRedCondition() {
-        ImageViewCompat.setImageTintList(
-            block1,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600))
-        )
-        ImageViewCompat.setImageTintList(
-            block2,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-        )
-        ImageViewCompat.setImageTintList(
-            block3,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-        )
-    }
-
-    private fun setGreyCondition() {
-        ImageViewCompat.setImageTintList(
-            block1,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-        )
-        ImageViewCompat.setImageTintList(
-            block2,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
-        )
-        ImageViewCompat.setImageTintList(
-            block3,
-            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
+            ColorStateList.valueOf(ContextCompat.getColor(itemView.context, color3))
         )
     }
 
