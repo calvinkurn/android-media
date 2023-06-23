@@ -22,7 +22,7 @@
         android:id="@+id/play_tv_ribbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="0dp"
+        android:paddingStart="@dimen/unify_space_2"
         android:paddingTop="@dimen/unify_space_4"
         android:paddingEnd="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_4"
