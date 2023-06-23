@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
 import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -183,7 +184,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val listOfFilteredRollenceKeys: List<String> = getFilteredRollenceKeys()
         val listOfFilteredRollenceValues: List<String> = getFilteredRollenceValues(listOfFilteredRollenceKeys)
         return listOfFilteredRollenceValues
-//        viewModel.getTickers(listOfFilteredRollenceValues)
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
@@ -279,7 +279,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderTicker(
         showTicker: Boolean,
-//        remoteTickerMessage: String,
         tickerList: List<RemoteTicker>,
         error: Throwable?,
         isLoading: Boolean,
@@ -319,30 +318,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun displayTicker(tickerList: List<RemoteTicker>) {
         binding?.run {
             ticker.isVisible = true
-
-//            val defaultTicker = TickerData(
-//                title = "",
-//                description = getString(R.string.stfs_multi_location_ticker),
-//                isFromHtml = true,
-//                type = Ticker.TYPE_ANNOUNCEMENT
-//            )
-//            val remoteTicker = TickerData(
-//                title = "",
-//                description = remoteTickerMessage,
-//                isFromHtml = true,
-//                type = Ticker.TYPE_ANNOUNCEMENT
-//            )
             var tickerDataList: MutableList<TickerData> = mutableListOf()
             tickerList.map {
                 tickerDataList.add(
                     TickerData(
                         description = it.description,
-                        type = it.type.toInt()
+                        type = getTickerType(it.type)
                     )
                 )
             }
-
-//            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
 
             val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
@@ -359,13 +343,17 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
 
                 override fun onDismiss() {
-//                    val rollenceValues = getRollenceValues()
-//                    viewModel.processEvent(
-//                        event = FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker,
-//                        rollenceValueList = rollenceValues
-//                    )
                 }
             })
+        }
+    }
+
+    private fun getTickerType(tickerType: String): Int {
+        return when (tickerType.lowercase()) {
+            TickerType.INFO -> TYPE_ANNOUNCEMENT
+            TickerType.WARNING -> TYPE_WARNING
+            TickerType.DANGER -> TYPE_ERROR
+            else -> TYPE_INFORMATION
         }
     }
 
