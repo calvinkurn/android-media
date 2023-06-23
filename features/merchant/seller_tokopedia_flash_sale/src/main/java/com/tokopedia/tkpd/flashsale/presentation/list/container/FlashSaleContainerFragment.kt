@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -320,10 +321,18 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             ticker.isVisible = true
             var tickerDataList: MutableList<TickerData> = mutableListOf()
             tickerList.map {
+                val description = getTickerDescriptionFormat(
+                    content = it.description,
+                    link = it.actionAppUrl,
+                    textLink = it.actionLabel
+                )
+
                 tickerDataList.add(
                     TickerData(
-                        description = it.description,
-                        type = getTickerType(it.type)
+                        title = it.title,
+                        description = description,
+                        type = getTickerType(it.type),
+                        isFromHtml = true
                     )
                 )
             }
@@ -331,7 +340,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    sendTickerHyperlinkClickEvent(linkUrl.toString())
+                    sendTickerHyperlinkClickEvent(linkUrl = linkUrl.toString(), description = itemData.toString())
                     routeToUrl(linkUrl.toString())
                 }
             })
@@ -345,6 +354,14 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 override fun onDismiss() {
                 }
             })
+        }
+    }
+
+    private fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
+        return if (link.isNotEmpty()) {
+            getString(R.string.stfs_ticker_description_format, content, link, textLink)
+        } else {
+            content
         }
     }
 
@@ -380,8 +397,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun sendTickerHyperlinkClickEvent(linkUrl: String) {
-        val description = getString(R.string.stfs_multi_location_ticker_description)
+    private fun sendTickerHyperlinkClickEvent(linkUrl: String, description: String) {
         val eventLabel = "$description - $linkUrl"
         tracker.sendClickReadArticleEvent(eventLabel)
     }
