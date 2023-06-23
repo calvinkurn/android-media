@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMO_PERFORMA
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
@@ -121,13 +122,16 @@ class AffiliatePromoViewModel @Inject constructor(
         )
     }
 
-    fun getAnnouncementInformation() {
+    fun getAnnouncementInformation(isHome: Boolean) {
+        val page = if (isHome) {
+            PAGE_ANNOUNCEMENT_HOME
+        } else {
+            PAGE_ANNOUNCEMENT_PROMO_PERFORMA
+        }
         launchCatchError(
             block = {
                 affiliateAnnouncement.value =
-                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                        PAGE_ANNOUNCEMENT_PROMOSIKAN
-                    )
+                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(page)
             },
             onError = {
                 it.printStackTrace()

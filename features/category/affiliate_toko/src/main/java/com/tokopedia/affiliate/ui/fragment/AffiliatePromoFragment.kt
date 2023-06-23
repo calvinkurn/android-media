@@ -29,7 +29,7 @@ import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
-import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMO_PERFORMA
 import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.TIME_EIGHTEEN
 import com.tokopedia.affiliate.TIME_ELEVEN
@@ -429,7 +429,7 @@ class AffiliatePromoFragment :
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     announcementData,
                     activity,
-                    source = PAGE_ANNOUNCEMENT_PROMOSIKAN
+                    source = PAGE_ANNOUNCEMENT_PROMO_PERFORMA
                 )
             } else if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
@@ -557,7 +557,7 @@ class AffiliatePromoFragment :
                 AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
                 "$tickerType - $tickerId",
-                PAGE_ANNOUNCEMENT_PROMOSIKAN,
+                PAGE_ANNOUNCEMENT_PROMO_PERFORMA,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION,
                 userSessionInterface?.userId.orEmpty()
@@ -631,12 +631,12 @@ class AffiliatePromoFragment :
 
     override fun onSystemDown() {
         affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel?.getAnnouncementInformation()
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
     }
 
     override fun onReviewed() {
         affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel?.getAnnouncementInformation()
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
     }
 
     override fun onUserNotRegistered() {
@@ -654,7 +654,7 @@ class AffiliatePromoFragment :
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel?.getAnnouncementInformation()
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
         affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 

@@ -610,12 +610,12 @@ class AffiliateAdpFragment :
     }
 
     override fun onSystemDown() {
-        affiliateAdpViewModel?.getAnnouncementInformation()
+        affiliateAdpViewModel?.getAnnouncementInformation(!isAffiliateNCEnabled())
         binding?.swipeRefreshLayout?.hide()
     }
 
     override fun onReviewed() {
-        affiliateAdpViewModel?.getAnnouncementInformation()
+        affiliateAdpViewModel?.getAnnouncementInformation(!isAffiliateNCEnabled())
         affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
 
@@ -634,7 +634,7 @@ class AffiliateAdpFragment :
     }
 
     override fun onUserValidated() {
-        affiliateAdpViewModel?.getAnnouncementInformation()
+        affiliateAdpViewModel?.getAnnouncementInformation(!isAffiliateNCEnabled())
         affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
 

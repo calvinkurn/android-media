@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMO_PERFORMA
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -91,7 +92,7 @@ class AffiliateAdpViewModelTest {
 
     /**************************** getAnnouncementInformation() *******************************************/
     @Test
-    fun getAnnouncementInformation() {
+    fun `announcement information should be there for home`() {
         val affiliateAnnouncementData: AffiliateAnnouncementDataV2 = mockk(relaxed = true)
         coEvery {
             affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
@@ -99,7 +100,24 @@ class AffiliateAdpViewModelTest {
             )
         } returns affiliateAnnouncementData
 
-        affiliateAdpViewModel.getAnnouncementInformation()
+        affiliateAdpViewModel.getAnnouncementInformation(true)
+
+        assertEquals(
+            affiliateAdpViewModel.getAffiliateAnnouncement().value,
+            affiliateAnnouncementData
+        )
+    }
+
+    @Test
+    fun `announcement information should be there for performa`() {
+        val affiliateAnnouncementData: AffiliateAnnouncementDataV2 = mockk(relaxed = true)
+        coEvery {
+            affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                PAGE_ANNOUNCEMENT_PROMO_PERFORMA
+            )
+        } returns affiliateAnnouncementData
+
+        affiliateAdpViewModel.getAnnouncementInformation(false)
 
         assertEquals(
             affiliateAdpViewModel.getAffiliateAnnouncement().value,
@@ -116,7 +134,7 @@ class AffiliateAdpViewModelTest {
             )
         } throws throwable
 
-        affiliateAdpViewModel.getAnnouncementInformation()
+        affiliateAdpViewModel.getAnnouncementInformation(true)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/

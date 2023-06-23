@@ -2,7 +2,8 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.ON_REGISTERED
-import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMO_PERFORMA
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSSAShopListResponse
@@ -104,15 +105,32 @@ class AffiliatePromoViewModelTest {
 
     /**************************** getAnnouncementInformation() *******************************************/
     @Test
-    fun getAnnouncementInformation() {
+    fun `announcement information should be there for home`() {
         val affiliateAnnouncementData: AffiliateAnnouncementDataV2 = mockk(relaxed = true)
         coEvery {
             affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                PAGE_ANNOUNCEMENT_PROMOSIKAN
+                PAGE_ANNOUNCEMENT_HOME
             )
         } returns affiliateAnnouncementData
 
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel.getAnnouncementInformation(true)
+
+        assertEquals(
+            affiliatePromoViewModel.getAffiliateAnnouncement().value,
+            affiliateAnnouncementData
+        )
+    }
+
+    @Test
+    fun `announcement information should be there for promosikan`() {
+        val affiliateAnnouncementData: AffiliateAnnouncementDataV2 = mockk(relaxed = true)
+        coEvery {
+            affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+                PAGE_ANNOUNCEMENT_PROMO_PERFORMA
+            )
+        } returns affiliateAnnouncementData
+
+        affiliatePromoViewModel.getAnnouncementInformation(false)
 
         assertEquals(
             affiliatePromoViewModel.getAffiliateAnnouncement().value,
@@ -125,11 +143,11 @@ class AffiliatePromoViewModelTest {
         val throwable = Throwable("Validate Data Exception")
         coEvery {
             affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                PAGE_ANNOUNCEMENT_PROMOSIKAN
+                PAGE_ANNOUNCEMENT_PROMO_PERFORMA
             )
         } throws throwable
 
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel.getAnnouncementInformation(true)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/

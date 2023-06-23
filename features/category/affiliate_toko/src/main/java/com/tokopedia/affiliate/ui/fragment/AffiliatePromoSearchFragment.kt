@@ -283,12 +283,10 @@ class AffiliatePromoSearchFragment :
     override fun onSystemDown() {
         view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
         affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onReviewed() {
         affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onUserNotRegistered() {
@@ -306,7 +304,6 @@ class AffiliatePromoSearchFragment :
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel?.getAnnouncementInformation()
         affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 
