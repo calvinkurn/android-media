@@ -610,6 +610,9 @@ object DeeplinkMapper {
         DLP.matchPattern(ApplinkConst.GIFTING, targetDeeplink = { _, _, _, idList ->
             UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_GIFTING, idList?.getOrNull(0))
         }),
+        DLP.matchPattern(ApplinkConst.ADDON, targetDeeplink = { _, _, _, idList ->
+            UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+        }),
         DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
         DLP.host(ApplinkConst.WEBVIEW_DOWNLOAD_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_DOWNLOAD },
         DLP.host(ApplinkConst.WEBVIEW_PARENT_HOME_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME },

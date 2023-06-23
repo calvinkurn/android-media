@@ -9,7 +9,7 @@ data class GetAddOnRequest(
     val requestData: RequestData = RequestData(),
     @SerializedName("GetAddOnRequest")
     @Expose
-    val addOnRequest: AddOnRequest = AddOnRequest(),
+    val addOnRequest: List<AddOnRequest> = emptyList(),
     @SerializedName("Source")
     @Expose
     val source: Source = Source()
@@ -27,7 +27,10 @@ data class RequestData(
     val warehouseInfo: Boolean = true,
     @SerializedName("StaticInfo")
     @Expose
-    val staticInfo: Boolean = true
+    val staticInfo: Boolean = true,
+    @SerializedName("AggregatedData")
+    @Expose
+    val aggregatedData: Boolean = true
 )
 
 data class AddOnRequest(

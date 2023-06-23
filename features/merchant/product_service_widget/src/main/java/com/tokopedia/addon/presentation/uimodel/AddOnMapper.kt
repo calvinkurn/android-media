@@ -1,0 +1,144 @@
+package com.tokopedia.addon.presentation.uimodel
+
+import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
+
+object AddOnMapper {
+
+    private const val ATC_ADDON_STATUS_SELECTING = 1
+    private const val ATC_ADDON_STATUS_DESELECTING = 2
+    private const val ATC_ADDON_DEFAULT_QTY = 1
+    private const val ATC_ADDON_SERVICE_FEATURE_TYPE = 1
+
+    private fun String.convertToAddonEnum(): AddOnType {
+        return AddOnType.values().find { it.value == this }
+            ?: AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
+    }
+
+    fun mapAddonToUiModel(response: GetAddOnByProductResponse): List<AddOnGroupUIModel> {
+        val addonResponse = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()
+        val addons = addonResponse?.addons?.groupBy {
+            it.basic.metadata.infoURL.title
+        }
+
+        return addons?.map { addon ->
+            val infoUrl = addon.value.firstOrNull()?.basic?.metadata?.infoURL
+            var warehouseId = 0L
+            val addonsUi = addon.value.map {
+                warehouseId = it.basic.ownerWarehouseID.toLongOrZero()
+                AddOnUIModel(
+                    id = it.basic.basicId,
+                    name = it.basic.name,
+                    priceFormatted = it.inventory.price.getCurrencyFormatted(),
+                    price = it.inventory.price.toLong(),
+                    isSelected = it.basic.rules.autoSelect,
+                    addOnType = it.basic.addOnType.convertToAddonEnum(),
+                    eduLink = it.basic.metadata.infoURL.eduPageURL
+                )
+            }
+            AddOnGroupUIModel(
+                title = addon.key,
+                iconUrl = infoUrl?.iconURL.orEmpty(),
+                iconDarkmodeUrl = infoUrl?.iconDarkURL.orEmpty(),
+                addon = addonsUi,
+                productId = addonResponse.productID.toLongOrZero(),
+                warehouseId = warehouseId,
+                addOnLevel = addonResponse.addOnLevel
+            )
+        }.orEmpty()
+    }
+
+    fun mapAddOnWithSelectedIds(
+        addonGroupList: List<AddOnGroupUIModel>,
+        selectedAddonIds: List<String>
+    ): List<AddOnGroupUIModel> {
+        return addonGroupList.map {
+            it.copy(
+                addon = it.addon.map { addon ->
+                    addon.copy(isSelected =
+                        if (addon.id in selectedAddonIds) true
+                        else addon.isSelected)
+                }
+            )
+        }
+    }
+
+    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+        val resultValue: MutableList<AddOnUIModel> = mutableListOf()
+        addOnGroupUIModels.forEach { addOnGroupUIModel ->
+            resultValue.addAll(
+                addOnGroupUIModel.addon.filter { it.isSelected }
+            )
+        }
+        return resultValue
+    }
+
+    fun getSelectedAddonsIds(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
+        return getSelectedAddons(addOnGroupUIModels).map { it.id }
+    }
+
+    fun mapToSaveAddOnStateRequest(
+        cartId: Long,
+        source: String,
+        addOnGroup: AddOnGroupUIModel?,
+        selectedAddons: List<AddOnUIModel>?
+    ): SaveAddOnStateRequest {
+        val addons = selectedAddons
+            .orEmpty()
+            .map {
+                AddOnDataRequest(
+                    addOnId = it.id.toLongOrZero(),
+                    addOnQty = ATC_ADDON_DEFAULT_QTY,
+                    addOnUniqueId = it.uniqueId,
+                    addOnType = it.addOnType.toRequestAddonType(),
+                    addOnStatus = if (it.isSelected)
+                        ATC_ADDON_STATUS_SELECTING else ATC_ADDON_STATUS_DESELECTING,
+                )
+            }
+
+        val request = AddOnRequest(
+            addOnLevel = addOnGroup?.addOnLevel.orEmpty(),
+            cartProducts = listOf(
+                CartProduct(
+                    cartId = cartId,
+                    productId = addOnGroup?.productId.orZero()
+                )
+            ),
+            addOnData = addons
+        )
+
+        return SaveAddOnStateRequest(
+            addOns = listOf(request),
+            source = source,
+            featureType = ATC_ADDON_SERVICE_FEATURE_TYPE
+        )
+    }
+
+    fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
+        return addonGroups.map { group ->
+            group.copy(addon = group.addon.map { addon ->
+                addon.copy()
+            })
+        }
+    }
+
+    fun simplifyAddonGroup(addonGroups: List<AddOnGroupUIModel>, isSimplified: Boolean): List<AddOnGroupUIModel> {
+        return if (isSimplified) {
+            addonGroups.map { group ->
+                group.copy(
+                    addon = group.addon.firstOrNull()?.let {
+                        listOf(it)
+                    } ?: emptyList()
+                )
+            }
+        } else {
+            addonGroups
+        }
+    }
+}
