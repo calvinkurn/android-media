@@ -24,6 +24,12 @@ query GetBankListWDV2($isAdmin: Boolean!){
             default_bank_account
             warning_message
             warning_color
+            notes
+            wallet_app_data {
+                message
+                cta_copy_writing
+                cta_link
+            }
         }
         gopay_data {
             limit

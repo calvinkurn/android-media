@@ -99,28 +99,48 @@ data class BankAccount(
         @Expose
         var warningColor: Int = 0,
 
-        var isChecked: Boolean = false
+        @SerializedName("notes")
+        var notes: String = "",
+
+        @SerializedName("wallet_app_data")
+        var walletAppData: WalletAppData = WalletAppData(),
+
+        var isChecked: Boolean = false,
+
+        var gopayData: GopayData? = null
 ) : Parcelable {
+
+    fun isGopay(): Boolean {
+        return bankID == GOPAY_ID
+    }
+
+    fun isGopayEligible(): Boolean {
+        return bankID == GOPAY_ID && walletAppData.message.isEmpty()
+    }
     constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readInt(),
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte()) {
+        parcel.readLong(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readInt(),
+        parcel.readLong(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readParcelable(WalletAppData::class.java.classLoader) ?: WalletAppData(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readParcelable(GopayData::class.java.classLoader)
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -142,7 +162,10 @@ data class BankAccount(
         parcel.writeByte(if (defaultBankAccount) 1 else 0)
         parcel.writeString(warningMessage)
         parcel.writeInt(warningColor)
+        parcel.writeString(notes)
+        parcel.writeParcelable(walletAppData, flags)
         parcel.writeByte(if (isChecked) 1 else 0)
+        parcel.writeParcelable(gopayData, flags)
     }
 
     override fun describeContents(): Int {
@@ -150,6 +173,7 @@ data class BankAccount(
     }
 
     companion object CREATOR : Parcelable.Creator<BankAccount> {
+        private const val GOPAY_ID = 218L
         override fun createFromParcel(parcel: Parcel): BankAccount {
             return BankAccount(parcel)
         }
@@ -176,7 +200,39 @@ data class GopayData(
     @SerializedName("bottomsheet_data")
     @Expose
     var bottomsheetData: BottomsheetData = BottomsheetData()
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readParcelable(BottomsheetData::class.java.classLoader) ?: BottomsheetData()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(limit)
+        parcel.writeString(limitCopyWriting)
+        parcel.writeString(imageUrl)
+        parcel.writeString(widgetNote)
+        parcel.writeParcelable(bottomsheetData, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<GopayData> {
+        override fun createFromParcel(parcel: Parcel): GopayData {
+            return GopayData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<GopayData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 data class BottomsheetData(
     @SerializedName("title")
@@ -187,4 +243,73 @@ data class BottomsheetData(
     var description: String = "",
     @SerializedName("balance")
     var balance: String = ""
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(description)
+        parcel.writeString(balance)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<BottomsheetData> {
+        override fun createFromParcel(parcel: Parcel): BottomsheetData {
+            return BottomsheetData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<BottomsheetData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class WalletAppData(
+    @SerializedName("message")
+    @Expose
+    var message: String = "",
+
+    @SerializedName("cta_copy_writing")
+    @Expose
+    var ctaCopyWriting: String = "",
+
+    @SerializedName("cta_link")
+    @Expose
+    var ctaLink: String = ""
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(message)
+        parcel.writeString(ctaCopyWriting)
+        parcel.writeString(ctaLink)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<WalletAppData> {
+        override fun createFromParcel(parcel: Parcel): WalletAppData {
+            return WalletAppData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<WalletAppData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}

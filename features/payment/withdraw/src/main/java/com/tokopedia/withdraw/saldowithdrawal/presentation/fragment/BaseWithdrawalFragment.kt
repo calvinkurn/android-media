@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.coachmark.*
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,8 +32,10 @@ import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.GopayData
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.GopayWithdrawLimitBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
@@ -105,6 +109,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             setCurrencyTextWatcherToSaldoInput()
             withdrawalButton.isEnabled = false
             tvCopyAllSaldoAmount.setOnClickListener { copyAllBalanceToWithdrawalAmount() }
+            tvBankSetting.setOnClickListener { openAddBankAccount() }
             context?.let {
                 tvTermsAndCondition.text = createTermsAndConditionSpannable(it)
             }
@@ -148,7 +153,16 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             Observer {
                 when (it) {
                     is Success -> {
-                        updateBankAccountAdapter(it.data)
+                        val gopayBank = it.data.bankAccountList.find { bank -> bank.isGopay() }
+                        gopayBank?.let { bank ->
+                            bank.gopayData = it.data.gopayData
+
+                            it.data.bankAccountList.remove(bank)
+                            it.data.bankAccountList.add(0, bank)
+                        }
+
+                        updateBankAccountAdapter(it.data.bankAccountList)
+                        setGopayTicker(it.data.bankAccountList)
                     }
                     is Fail -> {
                         updateBankAccountAdapter(arrayListOf())
@@ -159,7 +173,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     fun changeHint(isError: Boolean, hintText: String) {
-        tfWithdrawal.setError(isError)
+        tfWithdrawal.isInputError = isError
         tfWithdrawal.setMessage(hintText)
     }
 
@@ -229,21 +243,46 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
+    private fun setGopayTicker(data: ArrayList<BankAccount>) {
+        val gopayBankAccount = data.firstOrNull { it.isGopay() }
+        val shouldShowInitially = gopayBankAccount?.defaultBankAccount == true
+            && gopayBankAccount.isGopayEligible()
+        val gopayData = gopayBankAccount?.gopayData
+
+        gopayBankAccount?.let {
+            tvGopayTickerDescription.text = gopayData?.widgetNote
+            tvGopayTickerTitle.text = gopayData?.limitCopyWriting
+            tvGopayTickerLimit.text = gopayData?.limit
+            icGopayTickerInformation.setOnClickListener {
+                activity?.let { activity ->
+                    gopayData?.let {
+                        GopayWithdrawLimitBottomSheet.getInstance(gopayData).show(
+                            activity.supportFragmentManager,
+                            GopayWithdrawLimitBottomSheet.TAG
+                        )
+                    }
+                }
+            }
+        }
+
+        gopayTickerGroup.showWithCondition(shouldShowInitially)
+    }
+
     private fun setCurrencyTextWatcherToSaldoInput() {
-        tfWithdrawal.textFieldInput.filters = arrayOf<InputFilter>(
+        tfWithdrawal.editText.filters = arrayOf<InputFilter>(
             InputFilter
                 .LengthFilter(WithdrawConstant.MAX_WITHDRAWAL_INPUT_LENGTH)
         )
-        tfWithdrawal.textFieldInput.addTextChangedListener(watcher())
+        tfWithdrawal.editText.addTextChangedListener(watcher())
     }
 
     private fun watcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(tfWithdrawal.textFieldInput, "0") {
+        return object : NumberTextWatcher(tfWithdrawal.editText, "0") {
             override fun onNumberChanged(number: Double) {
                 val withdrawal: Long = number.toLong()
                 updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
                 if (withdrawal == 0L) {
-                    tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
+                    tfWithdrawal.editText.setSelection(tfWithdrawal.editText.length())
                 }
                 updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
             }
@@ -251,8 +290,8 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun copyAllBalanceToWithdrawalAmount() {
-        tfWithdrawal.textFieldInput.setText(balance.toString())
-        tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
+        tfWithdrawal.editText.setText(balance.toString())
+        tfWithdrawal.editText.setSelection(tfWithdrawal.editText.length())
         analytics.get().eventClickWithdrawalAll()
     }
 
@@ -315,10 +354,15 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
+    private fun trackOpenBankAccountSetting() {
+        analytics.get().onClickManageAccount()
+    }
+
     override fun openAddBankAccount() {
         parentFragment?.let {
             if (it is SaldoWithdrawalFragment) {
                 it.openAddBankAccount()
+                trackOpenBankAccountSetting()
             }
         }
     }
@@ -332,8 +376,10 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun onBankAccountChanged() {
+        gopayTickerGroup.showWithCondition(bankAccountAdapter.getSelectedBankAccount()?.isGopayEligible() == true)
+
         try {
-            tfWithdrawal?.textFieldInput?.let { textFieldInput ->
+            tfWithdrawal?.editText?.let { textFieldInput ->
                 val inputText = (textFieldInput.text ?: "").toString()
                 val withdrawal: Long = StringUtils.convertToNumeric(
                     inputText,
@@ -402,7 +448,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         bankAccountAdapter.getSelectedBankAccount()?.let { bankAccount ->
             val withdrawalAmount = StringUtils
                 .convertToNumeric(
-                    tfWithdrawal.textFieldInput.text.toString(),
+                    tfWithdrawal.editText.text.toString(),
                     false
                 ).toLong()
             if (parentFragment is SaldoWithdrawalFragment) {

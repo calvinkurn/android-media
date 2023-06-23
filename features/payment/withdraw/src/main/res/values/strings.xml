@@ -10,6 +10,7 @@
     <string name="swd_title_add_account_bank">Tambah Rekening</string>
     <string name="swd_title_set_account_bank">Atur Rekening</string>
     <string name="swd_title_set_rekening_utama">Rekening Utama</string>
+    <string name="swd_bank_setting">Atur Rekening</string>
 
     <string name="swd_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
     <string name="swd_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
@@ -59,7 +60,7 @@
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
     <string name="swd_admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
-    <string name="swd_account_number_name">"%1$s • %2$s"</string>
+    <string name="swd_account_number_name">"%1$s - %2$s"</string>
     <string name="swd_special_offer">Penawaran Khusus</string>
     <string name="swd_join_premium_account_icon_title">Gabung ke rekening premium</string>
     <string name="swd_join_premium_account_icon_description">Temukan akun bank bertanda ini untuk tarik saldo sekaligus gabung ke rekening premium. Eksklusif untuk Power Merchant.</string>
@@ -113,4 +114,5 @@
     <string name="swd_deactivate">Nonaktifkan</string>
     <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
     <string name="swd_awd_pilih">Pilih</string>
+    <string name="swd_baru">BARU</string>
 </resources>
