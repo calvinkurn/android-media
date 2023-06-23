@@ -42,12 +42,7 @@ object GetProductAdsQuery : GqlQueryInterface {
                 category_breadcrumb
                 wishlist
                 image {
-                  m_url
-                  s_url
-                  xs_url
                   m_ecs
-                  s_ecs
-                  xs_ecs
                 }
                 uri
                 relative_uri
@@ -89,6 +84,8 @@ object GetProductAdsQuery : GqlQueryInterface {
                 }
                 customvideo_url
                 parent_id
+                max_order
+                stock
               }
               shop {
                 id

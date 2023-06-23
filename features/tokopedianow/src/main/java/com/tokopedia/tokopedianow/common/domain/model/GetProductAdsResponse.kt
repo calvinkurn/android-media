@@ -175,18 +175,8 @@ data class GetProductAdsResponse(
     )
 
     data class Image(
-        @SerializedName("m_url")
-        val mUrl: String,
-        @SerializedName("s_url")
-        val sUrl: String,
-        @SerializedName("xs_url")
-        val xsUrl: String,
         @SerializedName("m_ecs")
-        val mEcs: String,
-        @SerializedName("s_ecs")
-        val sEcs: String,
-        @SerializedName("xs_ecs")
-        val xsEcs: String
+        val mEcs: String
     )
 
     data class LabelGroup(
