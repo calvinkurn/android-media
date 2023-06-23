@@ -51,11 +51,12 @@ class TokoNowAdsCarouselViewHolder(
         binding?.apply {
             val title = getString(R.string.tokopedianow_product_ads_carousel_title)
 
-            container.setBackgroundResource(R.drawable.tokopedianow_bg_ads_carousel_rounded)
+            containerBackground.setBackgroundResource(R.drawable.tokopedianow_bg_ads_carousel_rounded)
             header.setModel(TokoNowDynamicHeaderUiModel(title = title))
             productCardCarousel.setListener(createProductCardListener(title))
             productCardCarousel.bindItems(uiModel.items)
 
+            containerBackground.show()
             productCardCarousel.show()
             imageBackground.show()
             header.show()
@@ -106,6 +107,7 @@ class TokoNowAdsCarouselViewHolder(
     private fun hideContent() {
         binding?.apply {
             productCardCarousel.hide()
+            containerBackground.hide()
             imageBackground.hide()
         }
     }
