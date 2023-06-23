@@ -76,13 +76,10 @@ class ShipmentCartItemBottomViewHolder(
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
 
-//    private var scheduleDeliverySubscription: Subscription? = null
     private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
-//    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
 
     init {
         initSaveStateDebouncer()
-//        initScheduleDeliveryPublisher()
     }
 
     fun bind(
@@ -1216,39 +1213,6 @@ class ShipmentCartItemBottomViewHolder(
         )
     }
 
-    private fun initScheduleDeliveryPublisher() {
-//        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
-//            scheduleDeliverySubscription?.unsubscribe()
-//        }
-//        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
-//            scheduleDeliveryDonePublisher?.onCompleted()
-//        }
-//        scheduleDeliverySubscription = Observable.create(
-//            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
-//                scheduleDeliveryDebouncedListener =
-//                    object : ScheduleDeliveryDebouncedListener {
-//                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
-//                            emitter.onNext(shipmentScheduleDeliveryHolderData)
-//                        }
-//                    }
-//            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
-//            Emitter.BackpressureMode.LATEST
-//        )
-//            .observeOn(AndroidSchedulers.mainThread(), false, 1)
-//            .subscribeOn(AndroidSchedulers.mainThread())
-//            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
-//                scheduleDeliveryDonePublisher = PublishSubject.create()
-//                actionListener?.onChangeScheduleDelivery(
-//                    scheduleDeliveryUiModel,
-//                    position,
-//                    scheduleDeliveryDonePublisher!!
-//                )
-//                scheduleDeliveryDonePublisher
-//            }
-//            .subscribe()
-//        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
-    }
-
     fun unsubscribeDebouncer() {
         compositeSubscription.unsubscribe()
     }
@@ -1304,7 +1268,6 @@ class ShipmentCartItemBottomViewHolder(
                 bindingAdapterPosition
             )
             actionListener?.onClickRefreshErrorLoadCourier()
-            initScheduleDeliveryPublisher()
         }
     }
 
@@ -1331,11 +1294,6 @@ class ShipmentCartItemBottomViewHolder(
 
         fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
     }
-
-//    private interface ScheduleDeliveryDebouncedListener {
-//
-//        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
-//    }
 
     interface Listener {
 

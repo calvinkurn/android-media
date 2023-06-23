@@ -8,16 +8,13 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellI
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -31,12 +28,14 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralD
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_OWOC
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
@@ -45,6 +44,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.CodModel
@@ -97,6 +97,13 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress as GroupAddressResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop as GroupShopResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2 as GroupShopV2Response
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Product as ProductResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd as ShipProdResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop as ShopResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress as UserAddressResponse
 
 class ShipmentMapper @Inject constructor() {
 
@@ -126,14 +133,18 @@ class ShipmentMapper @Inject constructor() {
             isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
             errorMessage = shipmentAddressFormDataResponse.errors.joinToString()
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
-            isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
+            isIneligiblePromoDialogEnabled =
+                shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
             isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
-            isEligibleNewShippingExperience = shipmentAddressFormDataResponse.isEligibleNewShippingExperience
+            isEligibleNewShippingExperience =
+                shipmentAddressFormDataResponse.isEligibleNewShippingExperience
             addressesData = mapAddressesData(shipmentAddressFormDataResponse)
             cod = mapCod(shipmentAddressFormDataResponse.cod)
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
-            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
-            promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
+            lastApplyData =
+                mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
+            promoCheckoutErrorDefault =
+                mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
             errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
@@ -156,9 +167,10 @@ class ShipmentMapper @Inject constructor() {
             newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
-            isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp && false
+            isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
-            shipmentPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
+            shipmentPlatformFee =
+                mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
         }
     }
 
@@ -183,15 +195,20 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapGroupAddresses(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse, isDisablePPP: Boolean): MutableList<GroupAddress> {
+    private fun mapGroupAddresses(
+        shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
+        isDisablePPP: Boolean
+    ): MutableList<GroupAddress> {
         val groupAddressListResult = arrayListOf<GroupAddress>()
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                 GroupAddress().apply {
-                    isError = groupAddress.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    isError =
+                        groupAddress.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = groupAddress.errors.joinToString()
                     userAddress = mapUserAddress(groupAddress)
-                    groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                    groupShop =
+                        mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
                 }
             )
         }
@@ -199,7 +216,7 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapGroupShops(
-        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        groupAddress: GroupAddressResponse,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean
     ): MutableList<GroupShop> {
@@ -214,8 +231,10 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoDescription = it.groupInformation.description,
                     groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
                 ).apply {
-                    isError = it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
+                    isError =
+                        it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    errorMessage =
+                        if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                     hasUnblockingError = it.unblockingErrors.isNotEmpty()
                     unblockingErrorMessage = it.unblockingErrors.joinToString()
                     shippingId = it.shippingId
@@ -254,7 +273,10 @@ class ShipmentMapper @Inject constructor() {
                     isDisableChangeCourier = it.isDisableChangeCourier
                     autoCourierSelection = it.autoCourierSelection
                     boMetadata = it.boMetadata
-                    courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
+                    courierSelectionErrorData = CourierSelectionErrorData(
+                        it.courierSelectionError.title,
+                        it.courierSelectionError.description
+                    )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
                 }
@@ -264,9 +286,9 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapProducts(
-        groupShop2: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
-        groupShop: GroupShopV2,
-        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        groupShop: GroupShopResponse,
+        groupShopV2: GroupShopV2Response,
+        groupAddress: GroupAddressResponse,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean,
         shopTypeInfoData: ShopTypeInfoData
@@ -274,19 +296,19 @@ class ShipmentMapper @Inject constructor() {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = 0
         var hasError = false
-        groupShop.cartDetails.forEachIndexed { index, cartDetail ->
+        groupShopV2.cartDetails.forEachIndexed { index, cartDetail ->
             cartDetail.products.forEachIndexed { productIndex, product ->
                 val productResult = Product(
-                    shouldShowShopInfo = groupShop2.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
-                    shopName = groupShop.shop.shopName,
+                    shouldShowShopInfo = groupShop.uiGroupType == UI_GROUP_TYPE_OWOC && index == 0 && productIndex == 0,
+                    shopName = groupShopV2.shop.shopName,
                     shopTypeInfoData = shopTypeInfoData,
                     originWarehouseIds = product.originWarehouseIds
                 ).apply {
                     analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
-                        groupShop2,
+                        groupShop,
                         product,
                         groupAddress.userAddress,
-                        groupShop,
+                        groupShopV2,
                         shipmentAddressFormDataResponse.cod,
                         shipmentAddressFormDataResponse.promoSAFResponse,
                         shopTypeInfoData
@@ -307,7 +329,8 @@ class ShipmentMapper @Inject constructor() {
                     } else {
                         ""
                     }
-                    errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
+                    errorMessageDescription =
+                        if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
                     if (isError && !hasError) {
                         hasError = true
                     } else if (!hasError) {
@@ -349,7 +372,8 @@ class ShipmentMapper @Inject constructor() {
                         tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
                     }
                     if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
-                        purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
+                        purchaseProtectionPlanData =
+                            mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
                     }
                     variantParentId = product.productVariantsResponse.parentId
                     variant = product.variantDescriptionDetail.variantDescription
@@ -357,13 +381,14 @@ class ShipmentMapper @Inject constructor() {
                     productInformation = product.productInformation
                     if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero()) {
                         isBundlingItem = true
-                        bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
-                            BUNDLING_ITEM_HEADER
-                        } else if (cartDetail.products.lastOrNull()?.productId == productId) {
-                            BUNDLING_ITEM_FOOTER
-                        } else {
-                            BUNDLING_ITEM_DEFAULT
-                        }
+                        bundlingItemPosition =
+                            if (cartDetail.products.firstOrNull()?.productId == productId) {
+                                BUNDLING_ITEM_HEADER
+                            } else if (cartDetail.products.lastOrNull()?.productId == productId) {
+                                BUNDLING_ITEM_FOOTER
+                            } else {
+                                BUNDLING_ITEM_DEFAULT
+                            }
                         bundleId = cartDetail.bundleDetail.bundleId
                         bundleGroupId = cartDetail.bundleDetail.bundleGroupId
                         bundleType = cartDetail.bundleDetail.bundleType
@@ -391,10 +416,10 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapAnalyticsProductCheckoutData(
-        groupShop2: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
-        product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
-        userAddress: UserAddress,
-        groupShop: GroupShopV2,
+        groupShop: GroupShopResponse,
+        product: ProductResponse,
+        userAddress: UserAddressResponse,
+        groupShopV2: GroupShopV2Response,
         cod: Cod,
         promoSAFResponse: PromoSAFResponse,
         shopTypeInfoData: ShopTypeInfoData
@@ -415,13 +440,13 @@ class ShipmentMapper @Inject constructor() {
             productCategoryId = product.productCatId.toString(),
             productName = product.productName,
             productPrice = if (product.tradeInInfo.isValidTradeIn) product.tradeInInfo.newDevicePrice.toString() else product.productPrice.toString(),
-            productShopId = groupShop.shop.shopId.toString(),
-            productShopName = groupShop.shop.shopName,
+            productShopId = groupShopV2.shop.shopId.toString(),
+            productShopName = groupShopV2.shop.shopName,
             productShopType = shopTypeInfoData.shopType,
             productVariant = "",
             productBrand = "",
             productQuantity = product.productQuantity,
-            warehouseId = groupShop2.warehouse.warehouseId.toString(),
+            warehouseId = groupShop.warehouse.warehouseId.toString(),
             productWeight = product.productWeight.toString(),
             buyerAddressId = userAddress.addressId,
             shippingDuration = "",
@@ -433,7 +458,7 @@ class ShipmentMapper @Inject constructor() {
             } else {
                 false.toString()
             },
-            isFulfillment = groupShop2.isFulfillment.toString(),
+            isFulfillment = groupShop.isFulfillment.toString(),
             isDiscountedPrice = product.productOriginalPrice > 0,
             campaignId = product.campaignId,
             promoCode = promoCode,
@@ -458,7 +483,7 @@ class ShipmentMapper @Inject constructor() {
         return shopShipmentListResult
     }
 
-    private fun mapShipProds(shipProds: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipProd>): List<ShipProd> {
+    private fun mapShipProds(shipProds: List<ShipProdResponse>): List<ShipProd> {
         val shipProdListResult = arrayListOf<ShipProd>()
         shipProds.forEach {
             shipProdListResult.add(
@@ -477,17 +502,24 @@ class ShipmentMapper @Inject constructor() {
     }
 
     private fun mapGroupShopV2List(
-        groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
-        groupShopV2List: List<GroupShopV2>,
-        groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
+        groupShop: GroupShopResponse,
+        groupShopV2List: List<GroupShopV2Response>,
+        groupAddress: GroupAddressResponse,
         shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
         isDisablePPP: Boolean
-    ): Pair<List<com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2>, Int> {
+    ): Pair<List<GroupShopV2>, Int> {
         var firstProductErrorIndex = -1
         var hasErrorProduct = false
         return groupShopV2List.map {
             val shop = mapShopData(it.shop)
-            val mapProducts = mapProducts(groupShop, it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+            val mapProducts = mapProducts(
+                groupShop,
+                it,
+                groupAddress,
+                shipmentAddressFormDataResponse,
+                isDisablePPP,
+                shop.shopTypeInfoData
+            )
             val products = mapProducts.first
             if (!hasErrorProduct) {
                 if (mapProducts.second > -1) {
@@ -503,7 +535,7 @@ class ShipmentMapper @Inject constructor() {
                     firstProductErrorIndex += products.size
                 }
             }
-            com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2(
+            GroupShopV2(
                 it.cartStringOrder,
                 shop,
                 products
@@ -511,8 +543,8 @@ class ShipmentMapper @Inject constructor() {
         } to if (hasErrorProduct) firstProductErrorIndex else -1
     }
 
-    private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
-        return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
+    private fun mapShopData(shop: ShopResponse): Shop {
+        return Shop().apply {
             shopId = shop.shopId
             shopName = shop.shopName
             shopTypeInfoData = mapShopTypeInfo(shop)
@@ -619,7 +651,7 @@ class ShipmentMapper @Inject constructor() {
         return listAddOnProductItem
     }
 
-    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+    private fun mapShopTypeInfo(shop: ShopResponse): ShopTypeInfoData {
         val shopTypeInfo = shop.shopTypeInfo
         val tmpShopType =
             when {
@@ -671,8 +703,8 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapUserAddress(groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress): com.tokopedia.logisticCommon.data.entity.address.UserAddress {
-        return com.tokopedia.logisticCommon.data.entity.address.UserAddress().apply {
+    private fun mapUserAddress(groupAddress: GroupAddressResponse): UserAddress {
+        return UserAddress().apply {
             status = groupAddress.userAddress.status
             address = groupAddress.userAddress.address
             address2 = groupAddress.userAddress.address2
@@ -762,7 +794,8 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
-            bebasOngkirInfo = LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
+            bebasOngkirInfo =
+                LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
         }
     }
 
@@ -967,7 +1000,8 @@ class ShipmentMapper @Inject constructor() {
                 val promoSpIdUiModel = PromoSpIdUiModel()
                 promoSpIdUiModel.uniqueId = promoSpId.uniqueId
                 if (promoSpId.mvcShippingBenefits.isNotEmpty()) {
-                    val mvcShippingBenefitUiModels: MutableList<MvcShippingBenefitUiModel> = ArrayList()
+                    val mvcShippingBenefitUiModels: MutableList<MvcShippingBenefitUiModel> =
+                        ArrayList()
                     for (mvcShippingBenefit in promoSpId.mvcShippingBenefits) {
                         val mvcShippingBenefitUiModel = MvcShippingBenefitUiModel().apply {
                             benefitAmount = mvcShippingBenefit.benefitAmount
@@ -998,8 +1032,8 @@ class ShipmentMapper @Inject constructor() {
         // Get trade in address if available
         val addresses = shipmentAddressFormDataResponse.addresses
         if (addresses.active.isNotEmpty()) {
-            var tradeInDefaultAddress: UserAddress? = null
-            var tradeInDropOffAddress: UserAddress? = null
+            var tradeInDefaultAddress: UserAddressResponse? = null
+            var tradeInDropOffAddress: UserAddressResponse? = null
             for ((key, value) in addresses.data) {
                 if (key == AddressesData.DEFAULT_ADDRESS) {
                     tradeInDefaultAddress = value
@@ -1020,8 +1054,8 @@ class ShipmentMapper @Inject constructor() {
         return addressesData
     }
 
-    private fun mapUserAddress(defaultAddress: UserAddress): com.tokopedia.logisticCommon.data.entity.address.UserAddress {
-        return com.tokopedia.logisticCommon.data.entity.address.UserAddress().apply {
+    private fun mapUserAddress(defaultAddress: UserAddressResponse): UserAddress {
+        return UserAddress().apply {
             addressId = defaultAddress.addressId
             addressName = defaultAddress.addressName
             address = defaultAddress.address

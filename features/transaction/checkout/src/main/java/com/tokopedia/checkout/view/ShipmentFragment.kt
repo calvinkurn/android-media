@@ -197,7 +197,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorString
@@ -620,13 +619,12 @@ class ShipmentFragment :
         if (toasterErrorAkamai == null) {
             val actionText =
                 activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
-            toasterErrorAkamai = build(
+            toasterErrorAkamai = Toaster.build(
                 view!!,
                 message!!,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                actionText,
-                View.OnClickListener { view: View? -> }
+                actionText
             )
         }
         if (toasterErrorAkamai?.isShownOrQueued == false) {
