@@ -137,7 +137,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String FDL_HOST = "tkpd.page.link";
-    private static final String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
+    private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -300,7 +300,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            WebView.setWebContentsDebuggingEnabled(true);
+            webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
     }
@@ -352,7 +352,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private final class WebToastInterface {
 
-        private final WeakReference<Activity> mContextRef;
+        private WeakReference<Activity> mContextRef;
         private Toast toast;
 
         public WebToastInterface(Activity context) {
@@ -392,16 +392,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
             if (imagePath != null && base64 != null) {
-                String jsCallbackBuilder = "javascript:" +
-                        mJsHciCallbackFuncName +
-                        "('" +
-                        imagePath +
-                        "'" +
-                        ", " +
-                        "'" +
-                        base64 +
-                        "')";
-                webView.loadUrl(jsCallbackBuilder);
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append("'")
+                        .append(", ")
+                        .append("'")
+                        .append(base64)
+                        .append("')");
+                webView.loadUrl(jsCallbackBuilder.toString());
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
