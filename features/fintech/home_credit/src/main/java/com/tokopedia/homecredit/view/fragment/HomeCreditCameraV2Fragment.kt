@@ -32,7 +32,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.fragment_home_credit_v2.*
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class HomeCreditCameraV2Fragment(
     private val cameraDetail: CameraDetail
 ) : BaseDaggerFragment() {
 
-    private var binding: FragmentHomeCreditV2Binding? by viewBinding()
+    private var binding by autoClearedNullable<FragmentHomeCreditV2Binding>()
     private var cameraListener: CameraListener? = null
     private var isCameraOpen = false
     private var mCapturingPicture = false
@@ -61,7 +61,8 @@ class HomeCreditCameraV2Fragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home_credit_v2, container, false)
+        binding = FragmentHomeCreditV2Binding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
