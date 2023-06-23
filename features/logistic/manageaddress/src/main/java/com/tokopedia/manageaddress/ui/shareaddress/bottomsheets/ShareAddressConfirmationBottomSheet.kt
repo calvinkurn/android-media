@@ -84,6 +84,9 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
             binding.btnDisagree.isLoading =
                 it is ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading
         }
+        viewModel.leavePageEvent.observe(viewLifecycleOwner) {
+            mListener?.leavePage()
+        }
     }
 
     override fun onCreateView(
@@ -210,6 +213,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun showToast(isError: Boolean, msg: String)
+        fun leavePage()
     }
 
     companion object {

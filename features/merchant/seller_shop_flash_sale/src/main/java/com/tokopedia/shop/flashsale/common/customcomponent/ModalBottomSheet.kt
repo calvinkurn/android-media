@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.flashsale.common.util.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.seller_shop_flash_sale.R
 
 open class ModalBottomSheet : BottomSheetUnify() {
 
@@ -61,7 +62,7 @@ open class ModalBottomSheet : BottomSheetUnify() {
         } else {
             getScreenWidth() * modalWidthRatio
         }.toInt()
-        bsLayout.background = requireContext().getDrawable(com.tokopedia.unifycomponents.R.drawable.nest_notification_big_bg)
+        bsLayout.background = requireContext().getDrawable(R.drawable.bg_dialog)
         bsLayout.requestLayout()
     }
 

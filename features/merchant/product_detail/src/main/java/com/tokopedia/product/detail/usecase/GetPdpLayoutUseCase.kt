@@ -38,11 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
-                    eduLink {
-                        appLink
-                    }
                   }
                   isGiftable
                   isTokoNow
