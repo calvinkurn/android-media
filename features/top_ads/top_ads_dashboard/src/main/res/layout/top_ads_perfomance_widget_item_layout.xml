@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp">
 
@@ -24,21 +24,21 @@
             app:typographyType="display_3"
             app:typographyWeight="bold" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/performanceWidgetInfoBtn"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="2dp"
-            app:icon_name="INFORMATION"
+            app:srcCompat="@drawable/iconunify_information"
             app:layout_constraintBottom_toBottomOf="@id/performanceWidgetTitle"
             app:layout_constraintStart_toEndOf="@id/performanceWidgetTitle"
-            app:layout_constraintTop_toTopOf="@id/performanceWidgetTitle" />
+            app:layout_constraintTop_toTopOf="@id/performanceWidgetTitle"
+            app:tint="@color/Unify_NN500"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/performanceWidgetStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             tools:text="Jarang Teratas"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="@id/performanceWidgetTitle"
@@ -59,7 +59,6 @@
             android:id="@+id/performanceWidgetDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
             tools:text="19.683x teratas dari 53.000 total tampil"
             android:textColor="@color/Unify_NN600"

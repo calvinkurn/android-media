@@ -7,7 +7,6 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.common.view.getFragmentManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifyprinciples.R.color as unifyColor
@@ -26,7 +25,7 @@ class PerformanceWidgetViewHolder(itemView: View) :
 
     private val performanceWidgetStatus : Typography = itemView.findViewById(R.id.performanceWidgetStatus)
     private val performanceWidgetDesc : Typography = itemView.findViewById(R.id.performanceWidgetDesc)
-    private val performanceWidgetInfoBtn : IconUnify = itemView.findViewById(R.id.performanceWidgetInfoBtn)
+    private val performanceWidgetInfoBtn : ImageUnify = itemView.findViewById(R.id.performanceWidgetInfoBtn)
     private val block1 : ImageUnify = itemView.findViewById(R.id.block_1)
     private val block2 : ImageUnify = itemView.findViewById(R.id.block_2)
     private val block3 : ImageUnify = itemView.findViewById(R.id.block_3)

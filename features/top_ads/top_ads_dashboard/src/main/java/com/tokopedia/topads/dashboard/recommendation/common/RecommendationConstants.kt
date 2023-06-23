@@ -38,6 +38,7 @@ object RecommendationConstants {
     const val DEFAULT_LOADING = 0
     const val DEFAULT_PRICE_BID = 0.0
     const val DEFAULT_SUGGESTION_BID = 0.0
+    const val CONST_2 = 2
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"

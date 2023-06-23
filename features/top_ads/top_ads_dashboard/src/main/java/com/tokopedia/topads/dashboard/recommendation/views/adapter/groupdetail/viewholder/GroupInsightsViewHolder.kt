@@ -41,7 +41,7 @@ class GroupInsightsViewHolder(
                 expandableView = getView(element.expandItemDataModel),
                 icon = getAccordianIcon(element.type)
             )
-            accordionUnifyData.setContentPadding(8.toPx(), 0.toPx(), 8.toPx(), 16.toPx())
+            accordionUnifyData.setContentPadding(8.toPx(), 16.toPx(), 8.toPx(), 16.toPx())
             addGroup(accordionUnifyData)
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
