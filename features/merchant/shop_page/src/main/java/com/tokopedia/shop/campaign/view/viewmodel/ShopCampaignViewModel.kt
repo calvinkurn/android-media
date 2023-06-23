@@ -137,9 +137,7 @@ class ShopCampaignViewModel @Inject constructor(
         launchCatchError(
             dispatcherProvider.io,
             block = {
-                val listVoucherPromo = getPromoVoucherDataAsync(uiModel).filter {
-                    it.remainingQuota > Int.ZERO
-                }
+                val listVoucherPromo = getPromoVoucherData(uiModel)
                 val updatedWidgetVoucherSliderUiModel = uiModel.copy(
                     listVoucher = listVoucherPromo
                 )
@@ -151,7 +149,7 @@ class ShopCampaignViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getPromoVoucherDataAsync(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
+    private suspend fun getPromoVoucherData(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
         return getPromoVoucherListUseCase.execute(uiModel.listCategorySlug)
     }
 
