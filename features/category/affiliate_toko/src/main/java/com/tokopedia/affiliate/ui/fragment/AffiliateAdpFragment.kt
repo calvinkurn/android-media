@@ -239,12 +239,12 @@ class AffiliateAdpFragment :
                     )
                 }
             }
+            if (!isAffiliatePromoteHomeEnabled()) {
+                iconBuilder.addIcon(IconList.ID_BILL) { openHistoryActivity() }
+            }
             iconBuilder
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 if (isAffiliatePromoteHomeEnabled()) {
                     getString(R.string.performa_affiliate)
@@ -358,10 +358,13 @@ class AffiliateAdpFragment :
         affiliateAdpViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && !isAffiliatePromoteHomeEnabled()) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
-                    if (it.getString(USER_ID, null) != userSessionInterface?.userId.orEmpty() || it.getLong(
-                            TICKER_ID,
-                            -1
-                        ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                    if (it.getString(
+                            USER_ID,
+                            null
+                        ) != userSessionInterface?.userId.orEmpty() || it.getLong(
+                                TICKER_ID,
+                                -1
+                            ) != announcementData.getAffiliateAnnouncementV2?.data?.id
                     ) {
                         it.edit().apply {
                             putLong(
