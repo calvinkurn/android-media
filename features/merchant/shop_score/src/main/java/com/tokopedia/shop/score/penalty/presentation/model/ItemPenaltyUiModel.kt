@@ -7,6 +7,7 @@ import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageTyp
 
 data class ItemPenaltyUiModel(
     val statusPenalty: String = "",
+    @StringRes val statusPenaltyRes: Int? = null,
     @StringRes val descStatusPenalty: Int? = null,
     val endDate: String = "",
     val endDateDetail: String = "",

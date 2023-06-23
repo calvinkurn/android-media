@@ -160,7 +160,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
                 notifyItemRemoved(cardIndex)
             }
         } else {
-            val subsectionIndex = visitables.indexOfFirst { it is ItemPenaltySubsectionUiModel }
+            val subsectionIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
             if (subsectionIndex > RecyclerView.NO_POSITION) {
                 if (!visitables.any { it is ItemPenaltyPointCardUiModel }) {
                     initialPenaltyScoreCardUiModel?.let {

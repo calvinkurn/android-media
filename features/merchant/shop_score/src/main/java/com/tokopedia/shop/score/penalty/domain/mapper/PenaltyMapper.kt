@@ -188,6 +188,13 @@ class PenaltyMapper @Inject constructor(
                     else -> ""
                 }
 
+                val statusPenaltyRes = when (pageType) {
+                    ShopPenaltyPageType.NOT_YET_DEDUCTED -> R.string.title_penalty_not_yet_deducted
+                    ShopPenaltyPageType.ONGOING -> R.string.title_penalty_ongoing
+                    ShopPenaltyPageType.HISTORY -> R.string.title_penalty_done
+                    else -> null
+                }
+
                 val descStatusPenaltyDetail = when (pageType) {
                     ShopPenaltyPageType.NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
                     ShopPenaltyPageType.ONGOING -> R.string.desc_on_going_status_penalty
@@ -200,6 +207,7 @@ class PenaltyMapper @Inject constructor(
                 add(
                     ItemPenaltyUiModel(
                         statusPenalty = it.status,
+                        statusPenaltyRes = statusPenaltyRes,
                         deductionPoint = scoreAbs,
                         startDate = DateFormatUtils.formatDate(
                             ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
@@ -286,12 +294,6 @@ class PenaltyMapper @Inject constructor(
 
             add(mapToDetailPenaltyFilter(ShopPenaltyPageType.ONGOING, shopScorePenaltyDetailResponse))
 
-            shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let {
-                add(
-                    mapToCardShopPenalty(it, shopScorePenaltyDetailResponse)
-                )
-            }
-
             val isHasPenalty = shopScorePenaltyDetailResponse.result.isNotEmpty()
 
             if (isHasPenalty) {
@@ -305,6 +307,12 @@ class PenaltyMapper @Inject constructor(
                         )
                     )
                 }
+            }
+
+            shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let {
+                add(
+                    mapToCardShopPenalty(it, shopScorePenaltyDetailResponse)
+                )
             }
 
             val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse, pageType).first
