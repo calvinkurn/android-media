@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/layout_ribbon"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_back_ribbon" />
@@ -18,9 +18,11 @@
     <include
         android:id="@+id/layout_ribbon"
         layout="@layout/play_motion_card_ribbon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_back_ribbon"
-        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
-        />
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon" />
 
     <com.tokopedia.play_common.view.RoundedConstraintLayout
         android:id="@+id/rcl_play_carousel_card"

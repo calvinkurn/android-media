@@ -8,10 +8,11 @@
             android:id="@+id/play_iv_ribbon"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="20dp"
+            android:layout_marginTop="1dp"
             app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
-            app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
             app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
-            app:layout_constraintTop_toTopOf="@+id/play_tv_ribbon" />
+            app:layout_constraintTop_toTopOf="@id/play_tv_ribbon"
+            app:layout_constraintVertical_bias="0.0" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -19,10 +20,12 @@
             android:id="@+id/play_iv_ribbon"
             android:layout_width="0dp"
             android:layout_height="20dp"
+            android:layout_marginTop="1dp"
             app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
             app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
             app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
-            app:layout_constraintTop_toTopOf="@+id/play_tv_ribbon"  />
+            app:layout_constraintTop_toTopOf="@id/play_tv_ribbon"
+            app:layout_constraintVertical_bias="0.0" />
     </ConstraintSet>
 
     <Transition
@@ -38,16 +41,6 @@
                 android:alpha="1.0"
                 app:framePosition="100"
                 app:motionTarget="@+id/play_tv_ribbon" />
-
-<!--            <KeyAttribute-->
-<!--                android:scaleX="0.1"-->
-<!--                app:framePosition="0"-->
-<!--                app:motionTarget="@+id/play_iv_ribbon" />-->
-<!--            <KeyAttribute-->
-<!--                android:scaleX="1.0"-->
-<!--                app:framePosition="100"-->
-<!--                app:motionTarget="@+id/play_iv_ribbon" />-->
-
         </KeyFrameSet>
     </Transition>
 </MotionScene>
