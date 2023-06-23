@@ -747,7 +747,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
-                calculateTotal(skipDynamicFee = true)
+                validateUsePromo()
                 globalEvent.value = OccGlobalEvent.Normal
                 orderSummaryAnalytics.eventViewTenureOption(selectedInstallmentTerm.term.toString())
                 return@launch
@@ -760,7 +760,8 @@ class OrderSummaryPageViewModel @Inject constructor(
         selectedInstallmentTerm: OrderPaymentGoCicilTerms,
         installmentList: List<OrderPaymentGoCicilTerms>,
         tickerMessage: String,
-        isSilent: Boolean
+        isSilent: Boolean,
+        shouldRevalidatePromo: Boolean = true
     ) {
         launch(executorDispatchers.immediate) {
             val walletData = orderPayment.value.walletData
@@ -772,7 +773,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                 )
             )
             orderPayment.value = orderPayment.value.copy(walletData = newWalletData)
-            calculateTotal(skipDynamicFee = true)
+            if (shouldRevalidatePromo) {
+                validateUsePromo()
+            } else {
+                calculateTotal(skipDynamicFee = true)
+            }
             if (isSilent) {
                 return@launch
             }
@@ -1169,7 +1174,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                     result.selectedInstallment,
                     result.installmentList,
                     result.tickerMessage,
-                    !result.shouldUpdateCart
+                    !result.shouldUpdateCart,
+                    false
                 )
                 return
             } else {
