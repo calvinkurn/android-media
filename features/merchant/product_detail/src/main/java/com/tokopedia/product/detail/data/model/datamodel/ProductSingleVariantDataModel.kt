@@ -30,7 +30,9 @@ data class ProductSingleVariantDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductSingleVariantDataModel) {
-            isVariantError == newData.isVariantError && variantLevelOne == newData.variantLevelOne
+            isVariantError == newData.isVariantError &&
+                variantLevelOne == newData.variantLevelOne &&
+                title == newData.title
         } else {
             false
         }
