@@ -24,11 +24,14 @@ interface ReviewMediaGalleryTracker {
     fun trackImpressImage(
         @ReviewMediaGalleryRouter.PageSource pageSource: Int,
         imageCount: Long,
+        feedbackId: String,
         productId: String,
         attachmentId: String,
         fileName: String,
         position: Int,
-        userId: String
+        userId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     )
 
     // row 33
@@ -40,6 +43,8 @@ interface ReviewMediaGalleryTracker {
         videoID: String,
         position: Int,
         userId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
         videoDurationSecond: Long
     )
 

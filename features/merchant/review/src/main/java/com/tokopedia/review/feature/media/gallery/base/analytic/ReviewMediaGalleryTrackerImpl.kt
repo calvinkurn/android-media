@@ -81,11 +81,14 @@ class ReviewMediaGalleryTrackerImpl @Inject constructor(
     override fun trackImpressImage(
         @ReviewMediaGalleryRouter.PageSource pageSource: Int,
         imageCount: Long,
+        feedbackId: String,
         productId: String,
         attachmentId: String,
         fileName: String,
         position: Int,
-        userId: String
+        userId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewMediaGalleryTrackerConstant.EVENT_NAME_PROMO_VIEW,
@@ -125,6 +128,8 @@ class ReviewMediaGalleryTrackerImpl @Inject constructor(
         videoID: String,
         position: Int,
         userId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
         videoDurationSecond: Long
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
