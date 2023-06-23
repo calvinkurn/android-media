@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.customview.ExclusiveLaunchVoucherView
@@ -56,7 +57,12 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     uiModel.minimumPurchase.getNumberFormatted()
                 )
             )
-            setRemainingQuota(uiModel.remainingQuota.toString())
+            val remainingQuota = if (uiModel.remainingQuota.isMoreThanZero()) {
+                context.getString(R.string.shop_page_placeholder_remaining_quota, uiModel.remainingQuota)
+            } else {
+                ""
+            }
+            setRemainingQuota(remainingQuota)
             setVoucherName(uiModel.voucherName)
             if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
             setOnClickListener {
