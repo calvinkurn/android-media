@@ -3,13 +3,14 @@ package com.tokopedia.media.editor.utils
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
+import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment

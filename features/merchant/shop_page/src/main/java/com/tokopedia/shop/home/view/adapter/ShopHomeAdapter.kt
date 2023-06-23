@@ -171,6 +171,32 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
+            if (index >= 0) {
+                if ((uiModel.recommendationWidget == null && !uiModel.isError)) {
+                    newList.removeAt(index)
+                } else {
+                    uiModel.widgetState = WidgetState.FINISH
+                    uiModel.isNewData = true
+                    newList.setElement(index, uiModel)
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    fun removeProductComparisonWidget() {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
+            if (index >= 0) {
+                newList.removeAt(index)
+            }
+        }
+        submitList(newList)
+    }
+
     override fun hideLoading() {
         val newList = getNewVisitableItems()
         if (newList.contains(loadingModel)) {
@@ -596,6 +622,10 @@ open class ShopHomeAdapter(
 
     fun getMvcWidgetUiModel(): ShopHomeVoucherUiModel? {
         return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
+    }
+
+    fun getPersoProductComparisonWidgetUiModel(): ShopHomePersoProductComparisonUiModel? {
+        return visitables.filterIsInstance<ShopHomePersoProductComparisonUiModel>().firstOrNull()
     }
 
     fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetLayoutUiModel>) {

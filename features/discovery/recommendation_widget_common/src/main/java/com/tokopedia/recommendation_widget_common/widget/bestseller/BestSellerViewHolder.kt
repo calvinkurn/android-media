@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -79,13 +80,14 @@ class BestSellerViewHolder (private val view: View,
     }
 
     private fun initHeader(element: BestSellerDataModel){
-        binding?.homeComponentHeaderView?.setHeader(
-            title = element.title,
-            subtitle = element.subtitle,
-            seeAllApplink = element.seeMoreAppLink
-        ) {
-            listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, absoluteAdapterPosition)
-        }
+        binding?.homeComponentHeaderView?.bind(
+            channelHeader = element.channelHeader,
+            listener = object: HomeChannelHeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, absoluteAdapterPosition)
+                }
+            }
+        )
         binding?.containerBestSellerWidget?.show()
         itemView.show()
     }
@@ -128,6 +130,13 @@ class BestSellerViewHolder (private val view: View,
             binding?.bestSellerRecommendationRecyclerView?.layoutParams?.height = element.height
             binding?.bestSellerRecommendationRecyclerView?.layoutManager?.scrollToPosition(0)
         }
+    }
+
+    override fun onFilterAnnotationImpressed(
+        annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip,
+    ) {
+        val bestSellerDataModel = bestSellerDataModel ?: return
+        listener.onBestSellerFilterImpression(annotationChip, bestSellerDataModel)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
