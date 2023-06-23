@@ -16,5 +16,6 @@
         android:orderInCategory="100"
         android:iconTint="@color/Unify_NN900"
         app:itemIconSize="12dp"
+        android:title=""
         app:showAsAction="always" />
 </menu>

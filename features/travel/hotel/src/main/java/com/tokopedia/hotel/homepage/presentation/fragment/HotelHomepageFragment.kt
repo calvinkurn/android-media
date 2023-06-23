@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -27,12 +28,14 @@ import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.MutationDeleteRecentSearch
@@ -88,7 +91,9 @@ class HotelHomepageFragment :
     HotelRoomAndGuestBottomSheets.HotelGuestListener,
     HotelLastSearchViewHolder.LastSearchListener,
     TravelVideoBannerWidget.ActionListener,
-    HotelHomepagePopularCitiesWidget.ActionListener {
+    HotelHomepagePopularCitiesWidget.ActionListener,
+    TravelMenuBottomSheet.TravelMenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -912,7 +917,7 @@ class HotelHomepageFragment :
             )
             iconUnify?.toBitmap()?.let {
                 getItem(1).setOnMenuItemClickListener {
-                    // TODO: [Misael] setup
+                    showBottomMenus()
                     true
                 }
                 getItem(1).icon = BitmapDrawable(
@@ -921,6 +926,24 @@ class HotelHomepageFragment :
                 )
             }
         }
+    }
+
+    override fun onOrderListClicked() {
+        RouteManager.route(context, ApplinkConst.HOTEL_ORDER)
+    }
+
+    override fun onPromoClicked() {
+        RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST)
+    }
+
+    override fun onHelpClicked() {
+        RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
+    }
+
+    private fun showBottomMenus() {
+        val hotelMenuBottomSheets = TravelMenuBottomSheet()
+        hotelMenuBottomSheets.listener = this
+        hotelMenuBottomSheets.show(childFragmentManager, HotelBaseActivity.TAG_HOTEL_MENU)
     }
 
     override fun onDestroyView() {
