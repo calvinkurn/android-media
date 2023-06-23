@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
@@ -26,6 +27,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addHead
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.findCategoryShowcaseItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
@@ -44,7 +46,7 @@ import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
-import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProduct
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -450,38 +452,25 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     fun onCartQuantityChanged(
-        productId: String,
-        quantity: Int,
-        stock: Int,
+        product: ProductCardCompactUiModel,
         shopId: String,
-        position: Int,
-        isOos: Boolean,
-        name: String,
-        categoryIdL1: String,
-        price: Int,
-        headerName: String,
+        quantity: Int,
         layoutType: String
     ) {
+        val productId = product.productId
+        val isVariant = product.isVariant
+        val stock = product.availableStock
+
         onCartQuantityChanged(
-            isVariant = false,
             productId = productId,
             shopId = shopId,
             quantity = quantity,
             stock = stock,
+            isVariant = isVariant,
             onSuccessAddToCart = {
                 updateProductCartQuantity(productId, quantity, layoutType)
+                trackAddToCart(product, quantity, layoutType)
                 updateToolbarNotification()
-                trackAddToCart(
-                    categoryIdL1,
-                    position,
-                    productId,
-                    isOos,
-                    name,
-                    price,
-                    headerName,
-                    quantity,
-                    layoutType
-                )
             },
             onSuccessUpdateCart = { _, _ ->
                 updateProductCartQuantity(productId, quantity, layoutType)
@@ -498,61 +487,43 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun trackAddToCart(
-        categoryIdL1: String,
-        position: Int,
-        productId: String,
-        isOos: Boolean,
-        name: String,
-        price: Int,
-        headerName: String,
+        product: ProductCardCompactUiModel,
         quantity: Int,
         layoutType: String
     ) {
+
         when (layoutType) {
-            CATEGORY_SHOWCASE.name -> trackCategoryShowCase(
-                categoryIdL1, position, productId,
-                isOos, name, price, headerName, quantity, layoutType
-            )
-            PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(productId, quantity)
+            CATEGORY_SHOWCASE.name -> trackCategoryShowCase(product, quantity)
+            PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(product, quantity)
         }
     }
 
-    private fun trackCategoryShowCase(
-        categoryIdL1: String,
-        position: Int,
-        productId: String,
-        isOos: Boolean,
-        name: String,
-        price: Int,
-        headerName: String,
-        quantity: Int,
-        layoutType: String
-    ) {
-        _atcDataTracker.postValue(
-            CategoryAtcTrackerModel(
+    private fun trackCategoryShowCase(product: ProductCardCompactUiModel, quantity: Int) {
+        layout.findCategoryShowcaseItem(product.productId)?.let { item ->
+            _atcDataTracker.postValue(CategoryAtcTrackerModel(
                 categoryIdL1 = categoryIdL1,
-                index = position,
-                productId = productId,
+                index = item.index,
                 warehouseId = getWarehouseId(),
-                isOos = isOos,
-                name = name,
-                price = price,
-                headerName = headerName,
+                headerName = item.headerName,
                 quantity = quantity,
-                layoutType = layoutType
-            )
-        )
+                product = product,
+                layoutType = CATEGORY_SHOWCASE.name
+            ))
+        }
     }
 
-    private fun trackProductAdsAddToCart(productId: String, quantity: Int) {
-        layout.findAdsProduct(productId)?.let { product ->
-            _atcDataTracker.postValue(
-                CategoryAtcTrackerModel(
-                    quantity = quantity,
-                    layoutType = PRODUCT_ADS_CAROUSEL,
-                    data = product
-                )
-            )
+    private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
+        layout.findAdsProductCarousel(product.productId)?.let { item ->
+            _atcDataTracker.postValue(CategoryAtcTrackerModel(
+                index = item.index,
+                quantity = quantity,
+                shopId = item.shopId,
+                shopName = item.shopName,
+                shopType = item.shopType,
+                categoryBreadcrumbs = item.categoryBreadcrumbs,
+                product = item.productCardModel,
+                layoutType = PRODUCT_ADS_CAROUSEL
+            ))
         }
     }
 }

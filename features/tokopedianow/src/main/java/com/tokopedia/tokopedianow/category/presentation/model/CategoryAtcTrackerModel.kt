@@ -1,15 +1,17 @@
 package com.tokopedia.tokopedianow.category.presentation.model
 
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+
 data class CategoryAtcTrackerModel(
-    val categoryIdL1: String = "",
     val index: Int = 0,
-    val productId: String = "",
+    val categoryIdL1: String = "",
     val warehouseId: String = "",
-    val isOos: Boolean = false,
-    val name: String = "",
-    val price: Int = 0,
     val headerName: String = "",
     val quantity: Int = 0,
-    val layoutType: String = "",
-    val data: Any? = null
+    val shopId: String = "",
+    val shopName: String = "",
+    val shopType: String = "",
+    val categoryBreadcrumbs: String = "",
+    val product: ProductCardCompactUiModel,
+    val layoutType: String = ""
 )

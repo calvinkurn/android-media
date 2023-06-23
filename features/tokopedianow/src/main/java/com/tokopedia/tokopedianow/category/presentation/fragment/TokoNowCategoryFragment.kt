@@ -36,7 +36,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1077,55 +1076,37 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
             index = model.index,
-            productId = model.productId,
+            productId = model.product.productId,
             warehouseId = model.warehouseId,
-            isOos = model.isOos,
-            name = model.name,
-            price = model.price,
+            isOos = model.product.isOos(),
+            name = model.product.name,
+            price = model.product.getPriceLong(),
             headerName = model.headerName,
             quantity = model.quantity
         )
     }
 
     private fun trackProductAdsAddToCart(model: CategoryAtcTrackerModel) {
-        val data = model.data
-        if (data is ProductCardCompactCarouselItemUiModel) {
-            val title = getString(R.string.tokopedianow_product_ads_carousel_title)
-            analytic.productAdsAnalytic.trackProductAddToCart(
-                index = data.index,
-                title = title,
-                quantity = model.quantity,
-                shopId = data.shopId,
-                shopName = data.shopName,
-                shopType = data.shopType,
-                categoryBreadcrumbs = data.categoryBreadcrumbs,
-                product = data.productCardModel
-            )
-        }
+        val title = getString(R.string.tokopedianow_product_ads_carousel_title)
+        analytic.productAdsAnalytic.trackProductAddToCart(
+            index = model.index,
+            title = title,
+            quantity = model.quantity,
+            shopId = model.shopId,
+            shopName = model.shopName,
+            shopType = model.shopType,
+            categoryBreadcrumbs = model.categoryBreadcrumbs,
+            product = model.product
+        )
     }
 
-    private fun changeProductCardQuantity(
-        position: Int,
-        product: CategoryShowcaseItemUiModel,
-        quantity: Int
-    ) {
-        if (!viewModel.isLoggedIn()) {
-            openLoginPage()
-        } else {
-            viewModel.onCartQuantityChanged(
-                productId = product.productCardModel.productId,
-                quantity = quantity,
-                stock = product.productCardModel.availableStock,
-                shopId = shopId,
-                position = position,
-                isOos = product.productCardModel.isOos(),
-                name = product.productCardModel.name,
-                categoryIdL1 = categoryIdL1,
-                price = product.productCardModel.price.getDigits().orZero(),
-                headerName = product.headerName,
-                layoutType = CATEGORY_SHOWCASE.name,
-            )
-        }
+    private fun changeProductCardQuantity(product: CategoryShowcaseItemUiModel, quantity: Int) {
+        viewModel.onCartQuantityChanged(
+            product = product.productCardModel,
+            shopId = product.shopId,
+            quantity = quantity,
+            layoutType = CATEGORY_SHOWCASE.name
+        )
     }
 
     private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()

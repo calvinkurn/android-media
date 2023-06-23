@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.kotlin.extensions.view.getDigits
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
@@ -66,16 +64,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
@@ -97,13 +88,10 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                 CategoryAtcTrackerModel(
                     categoryIdL1 = categoryIdL1,
                     index = productPosition,
-                    productId = categoryShowcaseItemUiModel.productCardModel.productId,
                     warehouseId = warehouseId,
-                    isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-                    name = categoryShowcaseItemUiModel.productCardModel.name,
-                    price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
                     headerName = categoryShowcaseItemUiModel.headerName,
                     quantity = newProductOrderQuantity,
+                    product = categoryShowcaseItemUiModel.productCardModel,
                     layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
                 )
             )
@@ -135,7 +123,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productStock = 5
         val productName = "Jeruk"
         val productPrice = "Rp. 2000"
-        val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
         val privateFieldNameLayout = "layout"
@@ -183,16 +170,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
@@ -242,7 +222,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productStock = 5
         val productName = "Jeruk"
         val productPrice = "Rp. 2000"
-        val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
         val privateFieldNameLayout = "layout"
@@ -290,16 +269,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
@@ -348,7 +320,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productStock = 5
         val productName = "Jeruk"
         val productPrice = "Rp. 2000"
-        val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
         val privateFieldNameLayout = "layout"
@@ -385,16 +356,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
@@ -431,7 +395,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productStock = 5
         val productName = "Jeruk"
         val productPrice = "Rp. 2000"
-        val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
         val privateFieldNameLayout = "layout"
@@ -480,16 +443,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 
@@ -526,7 +482,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productStock = 5
         val productName = "Jeruk"
         val productPrice = "Rp. 2000"
-        val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
         val privateFieldNameLayout = "layout"
@@ -575,16 +530,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // change product quantity
         viewModel.onCartQuantityChanged(
-            productId = categoryShowcaseItemUiModel.productCardModel.productId,
+            product = categoryShowcaseItemUiModel.productCardModel,
+            shopId = categoryShowcaseItemUiModel.shopId,
             quantity = newProductOrderQuantity,
-            stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-            shopId = shopId,
-            position = productPosition,
-            isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-            name = categoryShowcaseItemUiModel.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-            headerName = categoryShowcaseItemUiModel.headerName,
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE.name
         )
 

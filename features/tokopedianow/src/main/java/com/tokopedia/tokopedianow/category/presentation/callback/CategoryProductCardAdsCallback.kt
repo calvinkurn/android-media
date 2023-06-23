@@ -3,16 +3,12 @@ package com.tokopedia.tokopedianow.category.presentation.callback
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.getDigits
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.category.analytic.CategoryProductAdsAnalytic
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
-import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 
@@ -47,17 +43,10 @@ class CategoryProductCardAdsCallback(
         quantity: Int
     ) {
         viewModel.onCartQuantityChanged(
-            productId = product.productCardModel.productId,
-            quantity = quantity,
-            stock = product.productCardModel.availableStock,
+            product = product.productCardModel,
             shopId = product.shopId,
-            position = position,
-            isOos = product.productCardModel.isOos(),
-            name = product.productCardModel.name,
-            categoryIdL1 = categoryIdL1,
-            price = product.productCardModel.price.getDigits().orZero(),
-            headerName = product.headerName,
-            layoutType = TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL
+            quantity = quantity,
+            layoutType = PRODUCT_ADS_CAROUSEL
         )
     }
 

@@ -160,6 +160,16 @@ internal object VisitableMapper {
         )
     }
 
+    fun MutableList<Visitable<*>>.findCategoryShowcaseItem(productId: String): CategoryShowcaseItemUiModel? {
+        var categoryShowcase: CategoryShowcaseItemUiModel? = null
+        filterIsInstance<CategoryShowcaseUiModel>().forEach { showcase ->
+            showcase.productListUiModels.firstOrNull { it.getProductId() == productId }?.let {
+                categoryShowcase = it
+            }
+        }
+        return categoryShowcase
+    }
+
     /**
      * -- Progressbar Section --
      */

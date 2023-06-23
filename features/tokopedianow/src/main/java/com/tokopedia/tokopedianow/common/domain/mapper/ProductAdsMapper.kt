@@ -87,7 +87,7 @@ object ProductAdsMapper {
         return copy(items = carouseList)
     }
 
-    fun MutableList<Visitable<*>>.findAdsProduct(productId: String): ProductCardCompactCarouselItemUiModel? {
+    fun MutableList<Visitable<*>>.findAdsProductCarousel(productId: String): ProductCardCompactCarouselItemUiModel? {
         var product: ProductCardCompactCarouselItemUiModel? = null
         filterIsInstance<TokoNowAdsCarouselUiModel>().forEach { carousel ->
             carousel.items.firstOrNull { it.getProductId() == productId }?.let {
@@ -103,7 +103,7 @@ object ProductAdsMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
-        imageUrl = product.image.mUrl,
+        imageUrl = product.image.mEcs,
         minOrder = product.productMinimumOrder,
         maxOrder = product.maxOrder,
         availableStock = product.stock,

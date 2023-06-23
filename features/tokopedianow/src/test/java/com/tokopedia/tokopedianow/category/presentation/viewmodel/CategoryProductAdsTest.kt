@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.kotlin.extensions.view.getDigits
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
@@ -114,6 +112,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val expectedGetProductAdsParam = GetProductAdsParam(
+            categoryId = categoryIdL1,
             warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
@@ -208,6 +207,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val expectedGetProductAdsParam = GetProductAdsParam(
+            categoryId = categoryIdL1,
             warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
@@ -223,7 +223,6 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
     @Test
     fun `given product ads when add product to cart should update orderQuantity and atc tracker data`() {
         runTest {
-            val productPosition = 0
             val productQuantity = 1
 
             val getProductAdsResponse = getProductAdsResponse.productAds
@@ -231,7 +230,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             onAddToCart_thenReturns(addToCartDataModel)
 
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
-            val adsProduct = productAdsCarousel.items.first()
+            val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockPrivateField(
                 name = "layout",
@@ -239,28 +238,26 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             )
 
             viewModel.onCartQuantityChanged(
-                productId = adsProduct.productCardModel.productId,
+                product = adsProductItem.productCardModel,
+                shopId = adsProductItem.shopId,
                 quantity = productQuantity,
-                stock = adsProduct.productCardModel.availableStock,
-                shopId = shopId,
-                position = productPosition,
-                isOos = adsProduct.productCardModel.isOos(),
-                name = adsProduct.productCardModel.name,
-                categoryIdL1 = categoryIdL1,
-                price = adsProduct.productCardModel.price.getDigits().orZero(),
-                headerName = adsProduct.headerName,
                 layoutType = PRODUCT_ADS_CAROUSEL
             )
 
-            val expectedProductCardModel = adsProduct.productCardModel.copy(orderQuantity = 1)
-            val expectedAdsProduct = adsProduct.copy(productCardModel = expectedProductCardModel)
+            val expectedProductCardModel = adsProductItem.productCardModel.copy(orderQuantity = 1)
+            val expectedAdsProduct = adsProductItem.copy(productCardModel = expectedProductCardModel)
             val expectedProductAdsCarousel = productAdsCarousel.copy(items = listOf(expectedAdsProduct))
             val expectedCategoryPage = listOf(expectedProductAdsCarousel)
 
             val expectedAtcTrackerData = CategoryAtcTrackerModel(
+                index = adsProductItem.index,
                 quantity = productQuantity,
-                layoutType = PRODUCT_ADS_CAROUSEL,
-                data = expectedAdsProduct
+                shopId = adsProductItem.shopId,
+                shopName = adsProductItem.shopName,
+                shopType = adsProductItem.shopType,
+                categoryBreadcrumbs = adsProductItem.categoryBreadcrumbs,
+                product = expectedProductCardModel,
+                layoutType = PRODUCT_ADS_CAROUSEL
             )
 
             viewModel.addItemToCart.getOrAwaitValue()
@@ -285,7 +282,6 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
     @Test
     fun `given product ads not found when add product to cart should not update atc tracker data`() {
         runTest {
-            val productPosition = 0
             val productQuantity = 1
 
             val getProductAdsResponse = getProductAdsResponse.productAds
@@ -293,7 +289,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             onAddToCart_thenReturns(addToCartDataModel)
 
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
-            val adsProduct = productAdsCarousel.items.first()
+            val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockPrivateField(
                 name = "layout",
@@ -301,16 +297,9 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             )
 
             viewModel.onCartQuantityChanged(
-                productId = "9999",
+                product = adsProductItem.productCardModel,
+                shopId = adsProductItem.shopId,
                 quantity = productQuantity,
-                stock = adsProduct.productCardModel.availableStock,
-                shopId = shopId,
-                position = productPosition,
-                isOos = adsProduct.productCardModel.isOos(),
-                name = adsProduct.productCardModel.name,
-                categoryIdL1 = categoryIdL1,
-                price = adsProduct.productCardModel.price.getDigits().orZero(),
-                headerName = adsProduct.headerName,
                 layoutType = PRODUCT_ADS_CAROUSEL
             )
 
@@ -323,7 +312,6 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
     fun `given unknown layout type when add product to cart should not update atc tracker data`() {
         runTest {
             val layoutType = "unknown"
-            val productPosition = 0
             val productQuantity = 1
 
             val getProductAdsResponse = getProductAdsResponse.productAds
@@ -331,7 +319,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             onAddToCart_thenReturns(addToCartDataModel)
 
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
-            val adsProduct = productAdsCarousel.items.first()
+            val adsProductItem = productAdsCarousel.items.first()
 
             viewModel.mockPrivateField(
                 name = "layout",
@@ -339,16 +327,9 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             )
 
             viewModel.onCartQuantityChanged(
-                productId = "9999",
+                product = adsProductItem.productCardModel,
+                shopId = adsProductItem.shopId,
                 quantity = productQuantity,
-                stock = adsProduct.productCardModel.availableStock,
-                shopId = shopId,
-                position = productPosition,
-                isOos = adsProduct.productCardModel.isOos(),
-                name = adsProduct.productCardModel.name,
-                categoryIdL1 = categoryIdL1,
-                price = adsProduct.productCardModel.price.getDigits().orZero(),
-                headerName = adsProduct.headerName,
                 layoutType = layoutType
             )
 
