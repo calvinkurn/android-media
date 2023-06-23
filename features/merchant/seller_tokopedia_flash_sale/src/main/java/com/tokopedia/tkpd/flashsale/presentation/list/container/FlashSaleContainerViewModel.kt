@@ -43,7 +43,7 @@ class FlashSaleContainerViewModel @Inject constructor(
 
     sealed class UiEvent {
         object GetPrerequisiteData : UiEvent()
-        object DismissMultiLocationTicker : UiEvent()
+//        object DismissMultiLocationTicker : UiEvent()
     }
 
     sealed class UiEffect {
@@ -64,9 +64,6 @@ class FlashSaleContainerViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = true, error = null) }
                 getPrerequisiteData(rollenceValueList)
             }
-            UiEvent.DismissMultiLocationTicker -> {
-//                preferenceDataStore.markMultiLocationTickerAsDismissed()
-            }
         }
     }
 
@@ -77,8 +74,6 @@ class FlashSaleContainerViewModel @Inject constructor(
                 val sellerEligibilityDeferred = async { getFlashSaleSellerStatusUseCase.execute() }
                 val tabMetadataDeferred = async { getFlashSaleListForSellerMetaUseCase.execute() }
 
-                // TODO
-                // Should hit targetedTicker async here
                 val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
                     GetTargetedTickerUseCase.Param.Target(
                         type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
@@ -95,9 +90,6 @@ class FlashSaleContainerViewModel @Inject constructor(
                 val sellerEligibility = sellerEligibilityDeferred.await()
                 val tabMetadata = tabMetadataDeferred.await()
 
-//                val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
-//                val showTicker = !isMultiLocationTickerPreviouslyDismissed
-
                 val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
 
                 _uiState.update {
@@ -105,8 +97,7 @@ class FlashSaleContainerViewModel @Inject constructor(
                         isLoading = false,
                         error = null,
                         tabs = tabMetadata.tabs,
-                        // tickerMessage = tabMetadata.tickerNonMultiLocationMessage,
-                        showTicker = tickers.isNotEmpty(), // showTicker,
+                        showTicker = tickers.isNotEmpty(),
                         tickerList = tickers,
                         isEligibleUsingFeature = isEligibleUsingFeature
                     )
@@ -142,32 +133,6 @@ class FlashSaleContainerViewModel @Inject constructor(
             }
         ) { }
     }
-
-//    fun getTickers(valueList: List<String>) {
-//        launchCatchError(
-//            dispatchers.io,
-//            block = {
-//                val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
-//                    GetTargetedTickerUseCase.Param.Target(
-//                        type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
-//                        values = valueList
-//                    )
-//                )
-//                val tickerParams = GetTargetedTickerUseCase.Param(
-//                    page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_CAMPAIGN_LIST,
-//                    targets = targetParams
-//                )
-//                val tickers = getTargetedTickerUseCase.execute(tickerParams)
-//
-//                _uiState.update {
-//                    it.copy(
-//                        tickers = tickers
-//                    )
-//                }
-//            },
-//            onError = {}
-//        )
-//    }
 
     private suspend fun getFlashSaleProductSubmissionProgressResponse(): FlashSaleProductSubmissionProgress {
         return getFlashSaleProductSubmissionProgressUseCase.execute(

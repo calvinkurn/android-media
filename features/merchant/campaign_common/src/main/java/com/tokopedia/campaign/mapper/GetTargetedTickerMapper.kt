@@ -13,7 +13,10 @@ class GetTargetedTickerMapper @Inject constructor() {
             RemoteTicker(
                 title = remoteTicker.title,
                 description = remoteTicker.content,
-                type = remoteTicker.type
+                type = remoteTicker.type,
+                actionLabel = remoteTicker.action.label,
+                actionType = remoteTicker.action.type,
+                actionAppUrl = remoteTicker.action.appURL
             )
         }
     }
