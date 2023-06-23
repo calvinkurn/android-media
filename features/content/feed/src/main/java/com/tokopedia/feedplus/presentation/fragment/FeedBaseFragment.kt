@@ -91,6 +91,10 @@ class FeedBaseFragment :
 
     private var mCoachMarkJob: Job? = null
 
+    private val toasterBottomMargin by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
+
     private val adapter by lazy {
         FeedPagerAdapter(
             childFragmentManager,
@@ -143,15 +147,13 @@ class FeedBaseFragment :
     private val onNonLoginGoToFollowingTab =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (userSession.isLoggedIn) {
-                Toaster.build(
-                    binding.root,
-                    getString(
+                showNormalToaster(
+                    text = getString(
                         R.string.feed_report_login_success_toaster_text,
                         userSession.name
                     ),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
+                    duration = Toaster.LENGTH_LONG
+                )
 
                 feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
             } else {
@@ -347,10 +349,6 @@ class FeedBaseFragment :
 
         feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedMetaData()
-
-        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(
-            R.dimen.feed_toaster_bottom_margin
-        )
     }
 
     private fun onPauseInternal() {
@@ -440,7 +438,7 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        //we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
+        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
             uploadReceiver
@@ -683,6 +681,8 @@ class FeedBaseFragment :
         actionText: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {}
     ) {
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+
         Toaster.build(
             binding.root,
             text,
