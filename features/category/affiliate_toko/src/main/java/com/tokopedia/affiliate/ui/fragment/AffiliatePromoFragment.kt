@@ -631,12 +631,12 @@ class AffiliatePromoFragment :
 
     override fun onSystemDown() {
         affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliatePromoteHomeEnabled())
     }
 
     override fun onReviewed() {
         affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliatePromoteHomeEnabled())
     }
 
     override fun onUserNotRegistered() {
@@ -654,7 +654,7 @@ class AffiliatePromoFragment :
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliateNCEnabled())
+        affiliatePromoViewModel?.getAnnouncementInformation(isAffiliatePromoteHomeEnabled())
         affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 
