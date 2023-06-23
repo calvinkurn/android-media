@@ -161,14 +161,15 @@
 
     </ScrollView>
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:cardBackgroundColor="@color/Unify_NN0"
+        app:cardElevation="16dp"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:card_type="clear">
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -220,7 +221,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
