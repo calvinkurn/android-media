@@ -41,7 +41,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
-import com.tokopedia.topads.common.data.model.InsightTypeApplyInput
 import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.usecase.RequestParams
@@ -401,38 +400,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             input.keywordOperation = keywordList
         }
         return input
-    }
-
-    fun createRequestParamForInsight(insightTypeApplyInput: InsightTypeApplyInput): RequestParams {
-        val input = TopadsManagePromoGroupProductInput().apply {
-            shopID = userSession.shopId
-            source = "test-gql"
-            groupID = insightTypeApplyInput.groupId
-            keywordOperation = createKeywordOperationList(insightTypeApplyInput.keywordList, insightTypeApplyInput.insightType)
-        }
-        return input.convertToRequestParam()
-    }
-
-    private fun createKeywordOperationList(
-        keywordList: MutableList<InsightTypeApplyInput.KeywordInput>,
-        insightType: String
-    ): List<KeywordEditInput> {
-        val keywordEditInputList = mutableListOf<KeywordEditInput>()
-        keywordList.forEach {
-            val keyword = KeywordEditInput().apply {
-                action = insightType
-                keyword = KeywordEditInput.Keyword().apply {
-                    id = it.keywordId
-                    type = it.keywordType
-                    status = it.keywordStatus
-                    price_bid = it.priceBid
-                    source = it.keywordSource
-                    suggestionPriceBid = it.suggestionPriceBid
-                }
-            }
-            keywordEditInputList.add(keyword)
-        }
-        return keywordEditInputList
     }
 
     fun createRequestParamForInsight2(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput): RequestParams {

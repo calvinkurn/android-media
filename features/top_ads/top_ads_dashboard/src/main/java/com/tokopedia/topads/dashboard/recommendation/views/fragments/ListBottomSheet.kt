@@ -10,24 +10,24 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.databinding.ListBottomsheetLayoutBinding
-import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.ItemListAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.ItemListTypeFactory
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ListBottomSheet:
+class ListBottomSheet :
     BottomSheetUnify(), OnItemSelectChangeListener {
 
-    private var binding : ListBottomsheetLayoutBinding? = null
+    private var binding: ListBottomsheetLayoutBinding? = null
     private var itemList: List<ListBottomSheetItemUiModel> = listOf()
     private var bottomsheetType: Int = 1
     private var itemChangeListener: OnItemSelectChangeListener? = null
-    private var currentAdType : Int? = null
-    private var currentGroupId : String? = ""
-    private var newAdType : Int? = null
-    private var newGroupId : String? = ""
+    private var currentAdType: Int? = null
+    private var currentGroupId: String? = ""
+    private var newAdType: Int? = null
+    private var newGroupId: String? = ""
     private var selectedGroupName: String? = ""
 
     private val adapterItemList: ItemListAdapter by lazy {
@@ -43,7 +43,7 @@ class ListBottomSheet:
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initView(){
+    private fun initView() {
         clearContentPadding = true
 
         binding = ListBottomsheetLayoutBinding.inflate(layoutInflater).apply {
@@ -60,9 +60,9 @@ class ListBottomSheet:
                 )
             )
 
-            searchGroup.showWithCondition(bottomsheetType == CHOOSE_AD_GROUP_BOTTOMSHEET)
+            searchGroup.showWithCondition(bottomsheetType == CHOOSE_AD_GROUP_BOTTOM_SHEET)
 
-            saveCtaButton.setOnClickListener{
+            saveCtaButton.setOnClickListener {
                 newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
                 dismiss()
             }
@@ -81,7 +81,7 @@ class ListBottomSheet:
     }
 
     companion object {
-        fun show(fm: FragmentManager, title:String, list: List<ListBottomSheetItemUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId:String?): ListBottomSheet {
+        fun show(fm: FragmentManager, title: String, list: List<ListBottomSheetItemUiModel>, type: Int, listener: OnItemSelectChangeListener, adtype: Int?, groupId: String?): ListBottomSheet {
             val bottomSheet = ListBottomSheet().apply {
                 setTitle(title)
                 itemList = list
@@ -96,12 +96,12 @@ class ListBottomSheet:
             return bottomSheet
         }
 
-        val CHOOSE_AD_TYPE_BOTTOMSHEET = 1
-        val CHOOSE_AD_GROUP_BOTTOMSHEET = 2
+        const val CHOOSE_AD_TYPE_BOTTOM_SHEET = 1
+        const val CHOOSE_AD_GROUP_BOTTOM_SHEET = 2
     }
 
     override fun onClickItemListener(adType: Int, groupId: String, groupName: String) {
-        itemList.forEach{
+        itemList.forEach {
             it.isSelected = it.adType == adType && it.groupId == groupId
         }
         newAdType = adType
@@ -115,7 +115,7 @@ class ListBottomSheet:
         binding?.saveCtaButton?.showWithCondition(newAdType != currentAdType || newGroupId != currentGroupId)
     }
 
-    private fun updateAdGroups(text: String){
+    private fun updateAdGroups(text: String) {
         val list = itemList.filter {
             it.title.lowercase().contains(text.trim().lowercase())
         }
