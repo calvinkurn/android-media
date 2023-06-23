@@ -1,6 +1,6 @@
-package com.tokopedia.tokopedianow.category.analytic
+package com.tokopedia.tokopedianow.search.analytics
 
-import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -8,18 +8,18 @@ import com.tokopedia.user.session.UserSessionInterface
  * Ads Slot Tracker
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3991
  */
-class CategoryProductAdsAnalytic(
+class SearchProductAdsAnalytics(
     userSession: UserSessionInterface,
 ) : ProductAdsCarouselAnalytics(userSession) {
 
     companion object {
-        private const val TRACKER_ID_PRODUCT_IMPRESSION = "44063"
-        private const val TRACKER_ID_PRODUCT_CLICK = "44064"
-        private const val TRACKER_ID_PRODUCT_ATC = "44065"
+        private const val TRACKER_ID_PRODUCT_IMPRESSION = "44060"
+        private const val TRACKER_ID_PRODUCT_CLICK = "44061"
+        private const val TRACKER_ID_PRODUCT_ATC = "44062"
     }
 
     override val trackerIdImpression = TRACKER_ID_PRODUCT_IMPRESSION
     override val trackerIdClick = TRACKER_ID_PRODUCT_CLICK
     override val trackerIdAddToCart = TRACKER_ID_PRODUCT_ATC
-    override val eventCategory = EVENT_CATEGORY_PAGE
+    override val eventCategory = TOKONOW_DASH_SEARCH_RESULT_PAGE
 }

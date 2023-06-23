@@ -181,6 +181,7 @@ class TokoNowSearchViewModel @Inject constructor (
 
         val contentDataView = ContentDataView(
                 aceSearchProductData = searchProduct.data,
+                productAds = searchModel.productAds
         )
 
         val isActive = searchModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive

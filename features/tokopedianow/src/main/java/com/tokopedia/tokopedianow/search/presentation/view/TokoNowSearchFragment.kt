@@ -21,6 +21,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT
@@ -73,6 +75,8 @@ class TokoNowSearchFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
+
+    private val productAdsAnalytics by lazy { SearchProductAdsAnalytics(userSession) }
 
     override val toolbarPageName = "TokoNow Search"
 
@@ -135,16 +139,44 @@ class TokoNowSearchFragment :
 
     override fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>) {
         val (quantity, _, productItemDataView) = atcData
+        val productType = productItemDataView.type
 
+        if(productType == PRODUCT_ADS_CAROUSEL) {
+            trackAdsProductAddToCart(productItemDataView, quantity)
+        } else {
+            trackSearchProductAddToCart(productItemDataView, quantity)
+        }
+    }
+
+    private fun trackAdsProductAddToCart(
+        productItemDataView: ProductItemDataView,
+        quantity: Int
+    ) {
+        productAdsAnalytics.trackProductAddToCart(
+            index = productItemDataView.position,
+            title = productItemDataView.widgetTitle,
+            quantity = quantity,
+            shopId = productItemDataView.shopId,
+            shopName = productItemDataView.shopName,
+            shopType = productItemDataView.shopType,
+            categoryBreadcrumbs = productItemDataView.categoryBreadcrumbs,
+            product = productItemDataView.productCardModel
+        )
+    }
+
+    private fun trackSearchProductAddToCart(
+        productItemDataView: ProductItemDataView,
+        quantity: Int
+    ) {
         val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendAddToCartEvent(
-                productItemDataView,
-                getViewModel().query,
-                getUserId(),
-                sortFilterParams,
-                quantity,
+            productItemDataView,
+            getViewModel().query,
+            getUserId(),
+            sortFilterParams,
+            quantity,
         )
     }
 
@@ -159,7 +191,9 @@ class TokoNowSearchFragment :
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendDecreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
-    override fun createTypeFactory() = SearchTypeFactoryImpl(
+
+    override fun createTypeFactory(): SearchTypeFactoryImpl {
+        return SearchTypeFactoryImpl(
             tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_SEARCH_PAGE),
             chooseAddressListener = this,
             titleListener = this,
@@ -180,8 +214,10 @@ class TokoNowSearchFragment :
             productRecommendationListener = createProductRecommendationCallback().copy(
                 query = getViewModel().query
             ),
-            productCardCompactListener = createProductCardCompactCallback()
-    )
+            productCardCompactListener = createProductCardCompactCallback(),
+            productAdsCarouselListener = createProductAdsCarouselCallback(productAdsAnalytics)
+        )
+    }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.SEARCH_PAGE

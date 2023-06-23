@@ -4,6 +4,8 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object GetProductAdsQuery : GqlQueryInterface {
 
+    const val DISPLAY_PARAMS = "displayParams"
+
     override fun getOperationNameList(): List<String> {
         return listOf("displayAdsV3")
     }
@@ -15,7 +17,7 @@ object GetProductAdsQuery : GqlQueryInterface {
     override fun getQuery(): String {
         return """
         query displayAdsV3(${'$'}params: String) {
-          displayAdsV3(displayParams: ${'$'}params) {
+          displayAdsV3($DISPLAY_PARAMS: ${'$'}params) {
             status {
               error_code
               message

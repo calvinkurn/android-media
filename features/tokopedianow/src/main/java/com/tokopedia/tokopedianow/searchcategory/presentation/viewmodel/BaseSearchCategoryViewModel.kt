@@ -56,9 +56,14 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_SEARCH_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -102,6 +107,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidg
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.PRODUCT_ADS_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -376,9 +382,11 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
+        val productAdsParam = createProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
+        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam)
 
         return requestParams
     }
@@ -391,6 +399,18 @@ abstract class BaseSearchCategoryViewModel(
         appendQueryParam(tokonowQueryParam)
 
         return tokonowQueryParam
+    }
+
+    private fun createProductAdsParam(): String {
+        val query = queryParamMutable[SearchApiConst.Q].orEmpty()
+        val warehouseIds = AddressMapper.mapToWarehouseIds(chooseAddressData)
+        val requestParam = GetProductAdsParam(
+            query = query,
+            warehouseIds = warehouseIds,
+            src = SRC_SEARCH_TOKONOW,
+            userId = userSession.userId
+        )
+        return requestParam.generateQueryParams()
     }
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
@@ -701,17 +721,30 @@ abstract class BaseSearchCategoryViewModel(
         contentDataView: ContentDataView,
     ): List<Visitable<*>> {
         val contentVisitableList = mutableListOf<Visitable<*>>()
-
         val productList = contentDataView
             .aceSearchProductData
             .productList
-
-        addProductList(contentVisitableList, productList)
-
         val repurchaseWidget = contentDataView.repurchaseWidget
+        val productAds = contentDataView.productAds
+
+        addProductAds(contentVisitableList, productAds)
+        addProductList(contentVisitableList, productList)
         addRepurchaseWidget(contentVisitableList, repurchaseWidget, productList)
 
         return contentVisitableList
+    }
+
+    private fun addProductAds(
+        contentVisitableList: MutableList<Visitable<*>>,
+        response: ProductAdsResponse
+    ) {
+        if(response.productList.isNotEmpty()) {
+            contentVisitableList.add(mapProductAdsCarousel(
+                response,
+                miniCartWidgetLiveData.value,
+                hasBlockedAddToCart
+            ))
+        }
     }
 
     protected open fun addProductList(
@@ -1451,7 +1484,8 @@ abstract class BaseSearchCategoryViewModel(
 
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
-            val repurchaseWidget: RepurchaseData = RepurchaseData()
+            val repurchaseWidget: RepurchaseData = RepurchaseData(),
+            val productAds: ProductAdsResponse = ProductAdsResponse()
     )
 
     private fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {

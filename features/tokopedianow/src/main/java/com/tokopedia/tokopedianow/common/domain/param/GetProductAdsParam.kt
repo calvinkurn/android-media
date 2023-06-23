@@ -12,6 +12,7 @@ data class GetProductAdsParam(
         const val SRC_DIRECTORY_TOKONOW = "directory_tokonow"
         const val SRC_SEARCH_TOKONOW = "search_tokonow"
         const val DEVICE_ANDROID = "android"
+        const val EP_PRODUCT = "product"
 
         private const val PARAM_QUERY = "q"
         private const val PARAM_SRC = "src"
@@ -20,6 +21,7 @@ data class GetProductAdsParam(
         private const val PARAM_USER_WAREHOUSE_ID = "user_warehouseId"
         private const val PARAM_DEVICE = "device"
         private const val PARAM_USER_ID = "userId"
+        private const val PARAM_EP = "ep"
 
         private const val PER_PAGE_ITEM = 20
     }
@@ -36,6 +38,7 @@ data class GetProductAdsParam(
             put(PARAM_ITEM, PER_PAGE_ITEM)
             put(PARAM_DEVICE, DEVICE_ANDROID)
             put(PARAM_USER_ID, userId)
+            put(PARAM_EP, EP_PRODUCT)
         }
 
         for ((key, value) in params) {

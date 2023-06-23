@@ -1091,7 +1091,16 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         val data = model.data
         if (data is ProductCardCompactCarouselItemUiModel) {
             val title = getString(R.string.tokopedianow_product_ads_carousel_title)
-            analytic.productAdsAnalytic.trackProductAddToCart(title, model.quantity, data)
+            analytic.productAdsAnalytic.trackProductAddToCart(
+                index = data.index,
+                title = title,
+                quantity = model.quantity,
+                shopId = data.shopId,
+                shopName = data.shopName,
+                shopType = data.shopType,
+                categoryBreadcrumbs = data.categoryBreadcrumbs,
+                product = data.productCardModel
+            )
         }
     }
 
