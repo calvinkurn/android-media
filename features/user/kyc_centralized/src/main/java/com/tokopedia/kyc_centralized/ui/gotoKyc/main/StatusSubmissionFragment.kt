@@ -219,7 +219,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         binding?.apply {
             layoutBenefitNonAccount.root.showWithCondition(!isAccountPage)
-            divider.showWithCondition(isAccountPage)
+            divider.show()
             layoutBenefitAccount.root.showWithCondition(isAccountPage)
             layoutBenefitAccount.tvTitle.text = getString(R.string.goto_kyc_benefit_account_title_verified)
         }
