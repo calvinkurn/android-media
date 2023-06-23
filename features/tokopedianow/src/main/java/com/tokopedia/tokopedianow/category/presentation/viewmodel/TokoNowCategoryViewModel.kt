@@ -139,9 +139,7 @@ class TokoNowCategoryViewModel @Inject constructor(
      * -- override function section --
      */
 
-    override fun onSuccessGetMiniCartData(
-        miniCartData: MiniCartSimplifiedData
-    ) {
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.onSuccessGetMiniCartData(miniCartData)
         layout.updateProductQuantity(miniCartData)
         _categoryPage.postValue(layout)

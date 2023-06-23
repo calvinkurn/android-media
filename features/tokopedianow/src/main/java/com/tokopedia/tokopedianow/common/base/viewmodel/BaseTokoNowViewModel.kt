@@ -81,7 +81,7 @@ open class BaseTokoNowViewModel(
 
     var miniCartSource: MiniCartSource? = null
 
-    open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+    protected open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         setMiniCartData(miniCartData)
     }
 
@@ -103,17 +103,8 @@ open class BaseTokoNowViewModel(
         onError: (Throwable) -> Unit = {}
     ) {
         if (userSession.isLoggedIn) {
-            updateCartQuantity(
-                productId,
-                shopId,
-                quantity,
-                stock,
-                isVariant,
-                onSuccessAddToCart,
-                onSuccessUpdateCart,
-                onSuccessDeleteCart,
-                onError
-            )
+            val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
+            updateCartQuantity(product, onSuccessAddToCart, onSuccessUpdateCart, onSuccessDeleteCart, onError)
         } else {
             _openLoginPage.postValue(Unit)
         }
@@ -224,11 +215,7 @@ open class BaseTokoNowViewModel(
     }
 
     private fun updateCartQuantity(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean,
+        product: ProductCartItem,
         onSuccessAddToCart: (AddToCartDataModel) -> Unit,
         onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
         onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit,
@@ -239,13 +226,14 @@ open class BaseTokoNowViewModel(
             _blockAddToCart.value = Unit
         } else {
             changeQuantityJob?.cancel()
+            val productId = product.id
+            val quantity = product.quantity
 
             val miniCartItem = getMiniCartItem(productId)
             val cartQuantity = miniCartItem.quantity
             if (cartQuantity == quantity) return
 
             launchWithDelay(block = {
-                val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
                 when {
                     cartQuantity.isZero() -> addItemToCart(product, onSuccessAddToCart, onError)
                     quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
