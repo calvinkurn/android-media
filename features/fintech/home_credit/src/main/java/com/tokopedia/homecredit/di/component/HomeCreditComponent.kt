@@ -20,5 +20,5 @@ interface HomeCreditComponent {
 
     fun inject(homeCreditRegisterActivity: HomeCreditRegisterActivity)
 
-    fun inject(homeCreditRegisterActivity: HomeCreditCameraV2Fragment)
+    fun inject(homeCreditCameraV2Fragment: HomeCreditCameraV2Fragment)
 }

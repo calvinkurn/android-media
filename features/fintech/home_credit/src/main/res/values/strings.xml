@@ -20,4 +20,6 @@
     <string name="hc_camera_selfie_tips">Pastikan wajah dan KTP asli kamu terlihat jelas di dalam bingkai foto ini.</string>
     <string name="hc_camera_ktp_tips">Pastikan KTP asli kamu terlihat jelas di dalam bingkai foto ini.</string>
     <string name="hc_camera_tips_review">Pastikan informasi di foto ini sudah terlihat jelas, ya.</string>
+    <string name="hc_camera_label_foto_ulang">Foto Ulang</string>
+    <string name="hc_camera_label_pakai_foto_ini">Pakai Foto Ini</string>
 </resources>

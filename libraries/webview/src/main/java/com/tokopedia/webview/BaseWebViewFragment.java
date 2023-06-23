@@ -1220,7 +1220,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void routeToPartnerKyc(String docType, String lang) {
         String applink = "";
-        if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.KTP)) {
+        if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.TYPE_KTP)) {
             applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
         } else {
             applink = ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE;

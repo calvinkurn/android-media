@@ -483,7 +483,7 @@ object WebViewHelper {
     private fun executeJs(script: String, webView: WebView) {
         webView.evaluateJavascript(
             script
-        ) { value: String -> Timber.e("executeJS result: $value") }
+        ) { value: String -> Timber.d("executeJS result: $value") }
     }
 
     fun getBase64FromImagePath(imagePath: String): String? {
@@ -500,7 +500,7 @@ object WebViewHelper {
             val imageBytes = outputStream.toByteArray()
             return Base64.encodeToString(imageBytes, Base64.DEFAULT)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return null
     }
