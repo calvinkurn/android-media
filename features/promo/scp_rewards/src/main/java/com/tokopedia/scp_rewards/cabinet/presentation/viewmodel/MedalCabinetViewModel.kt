@@ -27,7 +27,9 @@ import com.tokopedia.scp_rewards_common.SUCCESS_CODE
 import com.tokopedia.scp_rewards_common.parseJsonKey
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class MedalCabinetViewModel @Inject constructor(
     private val medaliSectionUseCase: MedaliSectionUseCase,
@@ -46,25 +48,24 @@ class MedalCabinetViewModel @Inject constructor(
     private val _cabinetLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
     val cabinetLiveData: LiveData<ScpResult> = _cabinetLiveData
 
-    var medaliSlug = ""
-    fun getHomePage() {
+    private var medaliSlug = ""
+    fun getHomePage(medaliSlug: String) {
+        this.medaliSlug = medaliSlug
         viewModelScope.launchCatchError(block = {
             val sectionResponse = medaliSectionUseCase.getMedaliHomePageSection(getSectionParams())
-            fetchMedalSections(sectionResponse)
+            fetchMedalSections(this.coroutineContext, sectionResponse)
         }, onError = {
                 _cabinetLiveData.postValue(Error(it))
             })
     }
 
-    private fun fetchMedalSections(sectionResponse: ScpRewardsGetMedaliSectionResponse) {
-        viewModelScope.launchCatchError(block = {
+    private suspend fun fetchMedalSections(coroutineContext: CoroutineContext, sectionResponse: ScpRewardsGetMedaliSectionResponse) {
+        withContext(coroutineContext) {
             val earnedPageSize = getPageSize(sectionResponse, EARNED_SECTION_ID)
             val progressPageSize = getPageSize(sectionResponse, PROGRESS_SECTION_ID)
 
-            val earnedMedaliJob =
-                async { userMedaliUseCase.getUserMedalis(getEarnedMedaliParams(pageSize = earnedPageSize)) }
-            val progressMedaliJob =
-                async { userMedaliUseCase.getUserMedalis(getProgressMedaliParams(pageSize = progressPageSize)) }
+            val earnedMedaliJob = async { userMedaliUseCase.getUserMedalis(getEarnedMedaliParams(pageSize = earnedPageSize)) }
+            val progressMedaliJob = async { userMedaliUseCase.getUserMedalis(getProgressMedaliParams(pageSize = progressPageSize)) }
 
             val earnedMedaliRes = earnedMedaliJob.await()?.getData(SUCCESS_CODE)
             val progressMedaliRes = progressMedaliJob.await()?.getData(SUCCESS_CODE)
@@ -92,7 +93,7 @@ class MedalCabinetViewModel @Inject constructor(
                     )
                 )
             }
-        }, onError = {})
+        }
     }
 
     private fun getPageSize(

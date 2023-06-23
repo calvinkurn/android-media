@@ -31,6 +31,7 @@ class SeeMoreMedaliViewModel @Inject constructor(private val userMedaliUseCase: 
 
     val visitableList: MutableList<Visitable<*>> = mutableListOf()
     var pageCount = 0
+        private set
 
     private val _medalLiveData: MutableLiveData<ScpResult> = MutableLiveData()
     val medalLiveData: LiveData<ScpResult> = _medalLiveData

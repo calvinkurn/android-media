@@ -45,7 +45,6 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     private val medalAdapter: SeeMoreMedalAdapter by lazy {
         SeeMoreMedalAdapter(SeeMoreMedalTypeFactory())
     }
-    private var rvLayoutManager: LayoutManager? = null
 
     private var badgeType = ""
 
@@ -124,7 +123,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessResponse(response: ScpRewardsGetUserMedalisResponse) {
-        viewModel.apply {
+        with(viewModel) {
             if (pageCount == 1) {
                 visitableList.clear()
             } else {
@@ -141,7 +140,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
 
     private fun onLoadingState() {
-        viewModel.apply {
+        with(viewModel) {
             visitableList.clear()
             visitableList.add(LoadingModel())
             submitAdapterList(visitableList)
@@ -158,9 +157,10 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
+        var rvLayoutManager: LayoutManager
         binding?.badgeRv?.apply {
-            setupLayoutManager()
-            setupRecyclerViewScrollListener()
+            rvLayoutManager = setupLayoutManager()
+            setupRecyclerViewScrollListener(rvLayoutManager)
             adapter = medalAdapter
             layoutManager = rvLayoutManager
             addOnScrollListener(rvScrollListener!!)
@@ -168,14 +168,14 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupLayoutManager() {
-        rvLayoutManager = GridLayoutManager(context, COLUMN_3).apply {
+    private fun setupLayoutManager(): GridLayoutManager {
+        return GridLayoutManager(context, COLUMN_3).apply {
             spanSizeLookup = getSpanLookup()
         }
     }
 
-    private fun setupRecyclerViewScrollListener() {
-        rvScrollListener = object : EndlessRecyclerViewScrollListener(rvLayoutManager) {
+    private fun setupRecyclerViewScrollListener(layoutManager: LayoutManager) {
+        rvScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.getUserMedalis(page, badgeType)
             }

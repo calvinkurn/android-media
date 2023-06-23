@@ -10,6 +10,8 @@ import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
 import com.tokopedia.scp_rewards_common.grayscale
 import com.tokopedia.scp_rewards_common.parseColor
+import com.tokopedia.scp_rewards_common.R
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
@@ -23,6 +25,15 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
                 ivMedalIcon.grayscale()
                 lottieView.hide()
                 ivMedalIcon.setImageUrl(data.medalIconUrl ?: "")
+                ivMedalIcon.onUrlLoaded = { isSuccess ->
+                    if (isSuccess.not()) {
+                        ivMedalIcon.post {
+                            ivMedalIcon.setImageDrawable(
+                                MethodChecker.getDrawable(context, R.drawable.fallback_badge)
+                            )
+                        }
+                    }
+                }
             } else {
                 ivMedalIcon.hide()
                 lottieView.visible()
