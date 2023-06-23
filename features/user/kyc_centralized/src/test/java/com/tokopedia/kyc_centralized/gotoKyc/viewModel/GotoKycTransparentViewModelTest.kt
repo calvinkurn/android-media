@@ -97,8 +97,10 @@ class GotoKycTransparentViewModelTest {
         viewModel.getProjectInfo(projectId)
 
         val result = viewModel.projectInfo.getOrAwaitValue()
+        val resultIsAccountLinked = viewModel.isAccountLinked
         assertTrue(result is ProjectInfoResult.NotVerified)
         assertEquals(isAccountLinked, result.isAccountLinked)
+        assertEquals(isAccountLinked, resultIsAccountLinked)
     }
 
     @Test

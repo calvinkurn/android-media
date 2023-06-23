@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import util.getOrAwaitValue
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class DobChallengeViewModelTest {
@@ -42,8 +43,26 @@ class DobChallengeViewModelTest {
         viewModel.getChallenge(challengeId)
 
         val result = viewModel.getChallenge.getOrAwaitValue()
+        val resultQuestionId = viewModel.questionId
         assertTrue(result is GetChallengeResult.Success)
         assertEquals(questionId, result.questionId)
+        assertEquals(questionId, resultQuestionId)
+    }
+
+    @Test
+    fun `when get challenge then return failed from BE`() {
+        val challengeId = "VBRew-SdJdfDf"
+        val throwable = Throwable()
+        val expected = GetChallengeResult.Failed(throwable)
+
+        coEvery { getChallengeUseCase(any()) } returns expected
+        viewModel.getChallenge(challengeId)
+
+        val result = viewModel.getChallenge.getOrAwaitValue()
+        val resultQuestionId = viewModel.questionId
+        assertTrue(result is GetChallengeResult.Failed)
+        assertEquals(throwable, result.throwable)
+        assertNotEquals(challengeId, resultQuestionId)
     }
 
     @Test
