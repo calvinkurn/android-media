@@ -66,8 +66,10 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         isSkipCollapseState = true
         isKeyboardOverlap = false
-        showKnob = false
-        showCloseIcon = true
+        showKnob = true
+        showCloseIcon = false
+        isDragable = true
+        isHideable = true
     }
 
     @Inject
@@ -117,6 +119,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetVoucherDetailBinding.inflate(inflater, container, false)
         setChild(binding?.root)
+        isFullpage = true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
