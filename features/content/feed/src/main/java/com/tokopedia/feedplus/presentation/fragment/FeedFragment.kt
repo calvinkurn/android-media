@@ -1240,13 +1240,13 @@ class FeedFragment :
                 )
             }
 
-            if (userSession.isLoggedIn) {
-                feedPostViewModel.addProductToCart(product)
-//                if (product.hasVariant) openVariantBottomSheet(product)
-//                else feedPostViewModel.addProductToCart(product)
-            } else {
-                feedPostViewModel.suspendAddProductToCart(product)
-                addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            if (product.hasVariant) openVariantBottomSheet(product)
+            else {
+                if (userSession.isLoggedIn) feedPostViewModel.addProductToCart(product)
+                else {
+                    feedPostViewModel.suspendAddProductToCart(product)
+                    addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+                }
             }
         }
     }
