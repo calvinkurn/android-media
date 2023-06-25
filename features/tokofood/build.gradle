@@ -118,6 +118,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
@@ -128,6 +130,14 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
