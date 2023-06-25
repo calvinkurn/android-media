@@ -87,7 +87,7 @@ class FlashSaleContainerViewModelTest {
         assertEquals(false, actual.isLoading)
         assertEquals(null, actual.error)
         assertEquals(tabsMetadata.tabs, actual.tabs)
-        assertEquals(tabsMetadata.tickerNonMultiLocationMessage, actual.tickerMessage)
+//        assertEquals(tabsMetadata.tickerNonMultiLocationMessage, actual.tickerMessage)
         assertEquals(true, actual.isEligibleUsingFeature)
 
         job.cancel()

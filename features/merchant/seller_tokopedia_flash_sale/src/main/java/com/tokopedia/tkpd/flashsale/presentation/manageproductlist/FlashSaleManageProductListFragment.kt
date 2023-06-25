@@ -18,16 +18,22 @@ import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.constant.TickerType
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
@@ -66,6 +72,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -117,6 +124,7 @@ class FlashSaleManageProductListFragment :
             CoachMark2(it)
         }
     }
+    private lateinit var remoteConfig: RemoteConfigInstance
     private var currentOffset: Int = 0
     private var sseProgressDialog: FlashSaleProductSseSubmissionProgressDialog? = null
     private val flashSaleAdapter by lazy {
@@ -136,6 +144,7 @@ class FlashSaleManageProductListFragment :
         configRecyclerView()
         getCampaignDetailBottomSheetData()
         getReservedProductList()
+        loadTickerData()
         observeUiState()
         observeUiEffect()
         getFlashSaleSubmissionProgress(campaignId)
@@ -181,24 +190,114 @@ class FlashSaleManageProductListFragment :
         )
     }
 
+    private fun loadTickerData() {
+        viewModel.processEvent(
+            FlashSaleManageProductListUiEvent.GetTickerData(
+                rollenceValueList = getRollenceValues()
+            )
+        )
+    }
+
+    private fun getRollenceValues(): List<String> {
+        val listOfFilteredRollenceKeys: List<String> = getFilteredRollenceKeys()
+        val listOfFilteredRollenceValues: List<String> = getFilteredRollenceValues(listOfFilteredRollenceKeys)
+        return listOfFilteredRollenceValues
+    }
+
+    private fun getFilteredRollenceKeys(): List<String> {
+        val prefixKey = "CT_"
+        val filteredRollenceKeys = getAbTestPlatform()
+            .getKeysByPrefix(prefix = prefixKey)
+        return filteredRollenceKeys.toList()
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfig.isInitialized) {
+            remoteConfig = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfig.abTestPlatform
+    }
+
+    private fun getFilteredRollenceValues(keyList: List<String>): List<String> {
+        var valueList: MutableList<String> = mutableListOf()
+        for (key in keyList) {
+            val rollenceValue: String = getAbTestPlatform().getString(key)
+            if (rollenceValue.isNotEmpty()) {
+                valueList.add(rollenceValue)
+            }
+        }
+        return valueList
+    }
+
     private fun configTicker(totalProduct: Int) {
-        ticker?.shouldShowWithAction(!totalProduct.isZero()) {
+//        ticker?.shouldShowWithAction(!totalProduct.isZero()) {
+//            ticker?.apply {
+//                tickerType = TYPE_ANNOUNCEMENT
+//                tickerShape = Ticker.SHAPE_LOOSE
+//                setHtmlDescription(
+//                    String.format(getString(R.string.stfs_manage_product_list_ticker_manage_product))
+//                )
+//                setDescriptionClickEvent(object : TickerCallback {
+//                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+//                        redirectToManageProductPage()
+//                    }
+//
+//                    override fun onDismiss() {
+//                    }
+//
+//                })
+//            }
+//        }
+    }
+
+    private fun setupTicker(isShowTicker: Boolean, tickerList : List<RemoteTicker>) {
+        if (isShowTicker) {
+            var tickerDataList: MutableList<TickerData> = mutableListOf()
             ticker?.apply {
-                tickerType = TYPE_ANNOUNCEMENT
-                tickerShape = Ticker.SHAPE_LOOSE
-                setHtmlDescription(
-                    String.format(getString(R.string.stfs_manage_product_list_ticker_manage_product))
-                )
+                isVisible = true
+                tickerList.map {
+                    val description = getTickerDescriptionFormat(
+                        content = it.description,
+                        link = it.actionAppUrl,
+                        textLink = it.actionLabel
+                    )
+
+                    tickerDataList.add(
+                        TickerData(
+                            title = it.title,
+                            description = description,
+                            type = getTickerType(it.type),
+                            isFromHtml = true
+                        )
+                    )
+                }
+
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        redirectToManageProductPage()
+                        routeToUrl(linkUrl.toString())
                     }
 
                     override fun onDismiss() {
                     }
-
                 })
             }
+        }
+    }
+
+    private fun getTickerType(tickerType: String): Int {
+        return when (tickerType.lowercase()) {
+            TickerType.INFO -> TYPE_ANNOUNCEMENT
+            TickerType.WARNING -> Ticker.TYPE_WARNING
+            TickerType.DANGER -> Ticker.TYPE_ERROR
+            else -> Ticker.TYPE_INFORMATION
+        }
+    }
+
+    private fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
+        return if (link.isNotEmpty()) {
+            getString(R.string.stfs_ticker_description_format, content, link, textLink)
+        } else {
+            content
         }
     }
 
@@ -507,7 +606,8 @@ class FlashSaleManageProductListFragment :
                 hideGlobalErrorState()
                 setLoadingShimmeringData(it.isLoading)
                 if (!it.isLoading) {
-                    configTicker(it.totalProduct)
+                    configTicker(it.totalProduct)   // Delete this soon
+                    setupTicker(isShowTicker = it.showTicker, tickerList = it.tickerList)
                     showTotalProduct(it.totalProduct)
                     updateDelegateData(it.listDelegateItem)
                     checkShouldEnableButtonSubmit()
