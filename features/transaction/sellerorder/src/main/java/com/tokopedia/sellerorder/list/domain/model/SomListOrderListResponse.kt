@@ -23,8 +23,19 @@ data class SomListOrderListResponse(
             @SerializedName("subtitle")
             val subTitle: String = "",
             @SerializedName("image_url")
-            val imageUrl: String = ""
-        )
+            val imageUrl: String = "",
+            @SerializedName("cta")
+            val cta: Cta? = null
+        ) {
+            data class Cta(
+                @SerializedName("cta_text")
+                val ctaText: String = "",
+                @SerializedName("cta_action_type")
+                val ctaActionType: String = "",
+                @SerializedName("cta_action_type")
+                val ctaActionValue: String = ""
+            )
+        }
         data class OrderList(
             @SerializedName("cursor_order_id")
             @Expose

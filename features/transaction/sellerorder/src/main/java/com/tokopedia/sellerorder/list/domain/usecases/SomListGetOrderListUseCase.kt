@@ -68,6 +68,11 @@ class SomListGetOrderListUseCase @Inject constructor(
                   title
                   subtitle
                   image_url
+                  cta {
+                    cta_text
+                    cta_action_type
+                    cta_action_value
+                  }
                 }
                 list {
                   order_id

@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import java.util.*
 import javax.inject.Inject
 
 class OrderListMapper @Inject constructor() {
@@ -50,7 +51,9 @@ class OrderListMapper @Inject constructor() {
                     .replace(Regex("\\s{2,}"), " "),
                 courierProductName = it.courierProductName,
                 preOrderType = it.preOrderType,
-                buyerName = it.buyerName.capitalize(),
+                buyerName = it.buyerName.replaceFirstChar { buyerName ->
+                    if (buyerName.isLowerCase()) buyerName.titlecase(Locale.getDefault()) else buyerName.toString()
+                },
                 tickerInfo = it.tickerInfo,
                 buttons = mapButtons(it.buttons),
                 searchParam = keyword,
@@ -64,7 +67,11 @@ class OrderListMapper @Inject constructor() {
             SomListEmptyStateUiModel(
                 title = it.title,
                 description = it.subTitle,
-                imageUrl = it.imageUrl
+                imageUrl = it.imageUrl,
+                showButton = it.cta?.ctaText?.isNotBlank() == true,
+                buttonText = it.cta?.ctaText.orEmpty(),
+                buttonAppLink = it.cta?.ctaActionValue.orEmpty(),
+                buttonActionType = it.cta?.ctaActionType.orEmpty()
             )
         }
     }
