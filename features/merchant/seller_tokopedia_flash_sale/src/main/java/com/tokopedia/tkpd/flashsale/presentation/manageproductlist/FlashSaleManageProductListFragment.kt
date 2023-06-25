@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.campaign.base.BaseCampaignManageProductListFragment
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
@@ -19,7 +17,6 @@ import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.entity.RemoteTicker
-import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -33,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
@@ -65,17 +61,17 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewh
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewholder.FlashSaleManageProductListItemViewHolder
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
+import com.tokopedia.tkpd.flashsale.util.ResourceProvider
+import com.tokopedia.tkpd.flashsale.util.TickerUtil
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT
 import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleManageProductListPageTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class FlashSaleManageProductListFragment :
@@ -195,40 +191,9 @@ class FlashSaleManageProductListFragment :
     private fun loadTickerData() {
         viewModel.processEvent(
             FlashSaleManageProductListUiEvent.GetTickerData(
-                rollenceValueList = getRollenceValues()
+                rollenceValueList = TickerUtil(activity?.application).getRollenceValues()
             )
         )
-    }
-
-    private fun getRollenceValues(): List<String> {
-        val listOfFilteredRollenceKeys: List<String> = getFilteredRollenceKeys()
-        val listOfFilteredRollenceValues: List<String> = getFilteredRollenceValues(listOfFilteredRollenceKeys)
-        return listOfFilteredRollenceValues
-    }
-
-    private fun getFilteredRollenceKeys(): List<String> {
-        val prefixKey = "CT_"
-        val filteredRollenceKeys = getAbTestPlatform()
-            .getKeysByPrefix(prefix = prefixKey)
-        return filteredRollenceKeys.toList()
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfig.isInitialized) {
-            remoteConfig = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfig.abTestPlatform
-    }
-
-    private fun getFilteredRollenceValues(keyList: List<String>): List<String> {
-        var valueList: MutableList<String> = mutableListOf()
-        for (key in keyList) {
-            val rollenceValue: String = getAbTestPlatform().getString(key)
-            if (rollenceValue.isNotEmpty()) {
-                valueList.add(rollenceValue)
-            }
-        }
-        return valueList
     }
 
     private fun configTicker(totalProduct: Int) {
@@ -259,7 +224,7 @@ class FlashSaleManageProductListFragment :
                 isVisible = true
                 tickerShape = Ticker.SHAPE_LOOSE
                 tickerList.map {
-                    val description = getTickerDescriptionFormat(
+                    val description = ResourceProvider(context).getTickerDescriptionFormat(
                         content = it.description,
                         link = it.actionAppUrl,
                         textLink = it.actionLabel
@@ -269,7 +234,7 @@ class FlashSaleManageProductListFragment :
                         TickerData(
                             title = it.title,
                             description = description,
-                            type = getTickerType(it.type),
+                            type = TickerUtil(activity?.application).getTickerType(it.type),
                             isFromHtml = true
                         )
                     )
@@ -295,26 +260,9 @@ class FlashSaleManageProductListFragment :
         }
     }
 
-    private fun getTickerType(tickerType: String): Int {
-        return when (tickerType.lowercase()) {
-            TickerType.INFO -> TYPE_ANNOUNCEMENT
-            TickerType.WARNING -> Ticker.TYPE_WARNING
-            TickerType.DANGER -> Ticker.TYPE_ERROR
-            else -> Ticker.TYPE_INFORMATION
-        }
-    }
-
-    private fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
-        return if (link.isNotEmpty()) {
-            getString(R.string.stfs_ticker_description_format, content, link, textLink)
-        } else {
-            content
-        }
-    }
-
-    private fun redirectToManageProductPage() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-    }
+//    private fun redirectToManageProductPage() {
+//        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+//    }
 
     private fun observeUiEffect() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {

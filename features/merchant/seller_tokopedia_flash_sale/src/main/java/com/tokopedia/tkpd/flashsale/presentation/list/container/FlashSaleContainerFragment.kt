@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
 import com.tokopedia.campaign.entity.RemoteTicker
-import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -30,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -39,21 +36,17 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
+import com.tokopedia.tkpd.flashsale.util.ResourceProvider
+import com.tokopedia.tkpd.flashsale.util.TickerUtil
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class FlashSaleContainerFragment : BaseDaggerFragment() {
@@ -112,7 +105,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
         applyUnifyBackgroundColor()
-        val rollenceValues = getRollenceValues()
+        val rollenceValues = TickerUtil(activity?.application).getRollenceValues()
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValues
@@ -181,12 +174,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         CampaignDetailActivity.start(context ?: return, campaignId)
     }
 
-    private fun getRollenceValues(): List<String> {
-        val listOfFilteredRollenceKeys: List<String> = getFilteredRollenceKeys()
-        val listOfFilteredRollenceValues: List<String> = getFilteredRollenceValues(listOfFilteredRollenceKeys)
-        return listOfFilteredRollenceValues
-    }
-
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
         renderTicker(
@@ -219,7 +206,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderErrorState(error: Throwable?) {
         val isError = error != null
-        val rollenceValues = getRollenceValues()
+        val rollenceValues = TickerUtil(activity?.application).getRollenceValues()
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
             viewModel.processEvent(
@@ -317,11 +304,12 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     }
 
     private fun displayTicker(tickerList: List<RemoteTicker>) {
+        if (context == null) return
         binding?.run {
             ticker.isVisible = true
             var tickerDataList: MutableList<TickerData> = mutableListOf()
             tickerList.map {
-                val description = getTickerDescriptionFormat(
+                val description = ResourceProvider(context).getTickerDescriptionFormat(
                     content = it.description,
                     link = it.actionAppUrl,
                     textLink = it.actionLabel
@@ -331,7 +319,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                     TickerData(
                         title = it.title,
                         description = description,
-                        type = getTickerType(it.type),
+                        type = TickerUtil(activity?.application).getTickerType(it.type),
                         isFromHtml = true
                     )
                 )
@@ -354,23 +342,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 override fun onDismiss() {
                 }
             })
-        }
-    }
-
-    private fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
-        return if (link.isNotEmpty()) {
-            getString(R.string.stfs_ticker_description_format, content, link, textLink)
-        } else {
-            content
-        }
-    }
-
-    private fun getTickerType(tickerType: String): Int {
-        return when (tickerType.lowercase()) {
-            TickerType.INFO -> TYPE_ANNOUNCEMENT
-            TickerType.WARNING -> TYPE_WARNING
-            TickerType.DANGER -> TYPE_ERROR
-            else -> TYPE_INFORMATION
         }
     }
 
@@ -402,28 +373,4 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         tracker.sendClickReadArticleEvent(eventLabel)
     }
 
-    private fun getFilteredRollenceKeys(): List<String> {
-        val prefixKey = "CT_"
-        val filteredRollenceKeys = getAbTestPlatform()
-            .getKeysByPrefix(prefix = prefixKey)
-        return filteredRollenceKeys.toList()
-    }
-
-    private fun getFilteredRollenceValues(keyList: List<String>): List<String> {
-        var valueList: MutableList<String> = mutableListOf()
-        for (key in keyList) {
-            val rollenceValue: String = getAbTestPlatform().getString(key)
-            if (rollenceValue.isNotEmpty()) {
-                valueList.add(rollenceValue)
-            }
-        }
-        return valueList
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfig.isInitialized) {
-            remoteConfig = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfig.abTestPlatform
-    }
 }
