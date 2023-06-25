@@ -73,6 +73,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -255,6 +257,7 @@ class FlashSaleManageProductListFragment :
             var tickerDataList: MutableList<TickerData> = mutableListOf()
             ticker?.apply {
                 isVisible = true
+                tickerShape = Ticker.SHAPE_LOOSE
                 tickerList.map {
                     val description = getTickerDescriptionFormat(
                         content = it.description,
@@ -272,6 +275,14 @@ class FlashSaleManageProductListFragment :
                     )
                 }
 
+                val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
+                tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        routeToUrl(linkUrl.toString())
+                    }
+                })
+
+                addPagerView(tickerAdapter, tickerDataList)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         routeToUrl(linkUrl.toString())
