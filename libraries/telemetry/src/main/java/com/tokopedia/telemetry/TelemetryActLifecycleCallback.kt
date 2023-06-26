@@ -30,10 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.lang.ref.WeakReference
 
-enum class TelemetryType {
-    TYPING, TOUCH, GYRO, ACCEL
-}
-
 data class CapturedTelemetry(
     var capturedTime: Int,
     var count: Int
@@ -77,9 +73,7 @@ class TelemetryActLifecycleCallback(
                     et.addTextChangedListener(TelemetryTextWatcher)
                 }
             }
-            var sensorManager: SensorManager? = null
-            sensorManager =
-                activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+            var sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
             val samplingRate = getSamplingRate()
