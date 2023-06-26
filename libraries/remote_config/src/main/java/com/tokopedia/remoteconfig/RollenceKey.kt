@@ -93,5 +93,5 @@ object RollenceKey {
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
 
     // Share affiliate
-    const val AFFILIATE_SHARE_ICON = "affiliate_shareIcon"
+    const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
 }
