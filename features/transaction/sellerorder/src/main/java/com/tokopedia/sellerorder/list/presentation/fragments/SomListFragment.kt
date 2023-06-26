@@ -86,6 +86,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
@@ -291,11 +292,7 @@ open class SomListFragment :
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
-            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            val tabActiveFilter =
-                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
-            viewModel.setTabActiveFromAppLink(tabActiveFilter)
-            viewModel.setFirstPageOpened(true)
+            setTabActiveFromAppLink()
             arguments?.getString(FILTER_ORDER_TYPE)?.toLongOrNull()
                 ?.let { viewModel.addOrderTypeFilter(it) }
         } else if (savedInstanceState != null) {
@@ -2249,8 +2246,8 @@ open class SomListFragment :
         val isSearchQueryApplied =
             somListHeaderBinding?.searchBarSomList?.searchBarTextField?.text?.isNotBlank() == true
         return somListEmptyStateUiModel.let {
-            it ?:
-            if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
+            it
+                ?: if (isSellerApp && !isTopAdsActive && isNewOrderFilterSelected &&
                 !isNonStatusOrderFilterApplied && !isSearchQueryApplied
             ) {
                 SomListEmptyStateUiModel(
@@ -2815,6 +2812,18 @@ open class SomListFragment :
         somListBinding?.loaderSomList2?.root?.gone()
     }
 
+    private fun setTabActiveFromAppLink() {
+        if (Utils.isEnableOperationalGuideline()) {
+            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+            val tabActiveFilter =
+                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
+            viewModel.setTabActiveFromAppLink(tabActiveFilter)
+            viewModel.setFirstPageOpened(true)
+        } else {
+            viewModel.setTabActiveFromAppLink(arguments?.getString(TAB_ACTIVE) ?: STATUS_ALL_ORDER)
+        }
+    }
+
     protected fun dismissBottomSheets(): Boolean {
         var bottomSheetDismissed = false
         childFragmentManager.fragments.forEach {
@@ -2859,7 +2868,7 @@ open class SomListFragment :
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
-        //this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
         val shouldRefreshOrder = viewModel.getIsFirstPageOpened() &&
             result.data.highLightedStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
 
