@@ -72,7 +72,6 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.system.measureTimeMillis
 
 open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
     SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
