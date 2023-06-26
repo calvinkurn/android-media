@@ -24,9 +24,10 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <include
+            <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressPinpointWidget
                 android:id="@+id/card_address_discom"
-                layout="@layout/card_address_new_loc" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/et_kodepos"

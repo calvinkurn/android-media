@@ -215,7 +215,6 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.appCommon)
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
     implementation projectOrAar(rootProject.ext.features.sellerHome)
@@ -277,7 +276,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.fcm_common)
     implementation projectOrAar(rootProject.ext.features.profileCompletion)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
 
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
@@ -347,6 +345,8 @@ dependencies {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
 
+    implementation rootProject.ext.gotoOneKyc.resource
+
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
@@ -367,6 +367,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
+    implementation rootProject.ext.miscDependencies.lifecycleProcess
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
@@ -397,11 +398,6 @@ dependencies {
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
-    }
-
-
-    implementation('de.hdodenhof:circleimageview:2.1.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary

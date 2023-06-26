@@ -380,6 +380,8 @@ public interface ApplinkConst {
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String KYC = "tokopedia://kyc?projectId=1";
 
+    String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}&source={source}&callback={callback}";
+
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
@@ -611,7 +613,8 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
-        String CATEGORY = "tokopedia://now/category";
+        String OLD_CATEGORY = "tokopedia://now/category";
+        String CATEGORY = "tokopedia://now/category/l1";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
