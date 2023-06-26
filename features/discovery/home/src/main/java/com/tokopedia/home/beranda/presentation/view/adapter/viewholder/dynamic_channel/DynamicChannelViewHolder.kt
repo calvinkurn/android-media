@@ -184,7 +184,7 @@ abstract class DynamicChannelViewHolder(
                 if (channel.header.textColor.isNotEmpty()) {
                     Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
                 } else {
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView.context)
                 }
             )
         } else {
@@ -212,7 +212,7 @@ abstract class DynamicChannelViewHolder(
                 if (channel.header.textColor.isNotEmpty()) {
                     Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
                 } else {
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView.context)
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).invertIfDarkMode(itemView.context)
                 }
             )
         } else {

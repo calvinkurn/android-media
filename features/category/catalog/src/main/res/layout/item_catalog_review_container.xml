@@ -46,7 +46,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                app:icon_color_light_enable="@color/Unify_Y300"
+                app:icon_color_light_enable="@color/Unify_YN300"
                 app:icon_name="STAR_FILLED"
                 app:unify_image_type="rect" />
 
