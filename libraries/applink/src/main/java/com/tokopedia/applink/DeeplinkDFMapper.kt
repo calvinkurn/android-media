@@ -228,6 +228,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTI
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.GOTO_KYC
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -273,6 +274,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TRAVEL = "df_travel"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
+    const val DF_KYC_SELLERAPP = "df_kyc_sellerapp"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
     const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
@@ -628,6 +630,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(GOTO_KYC) }, DF_USER_SETTINGS, R.string.goto_kyc_title))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
@@ -779,8 +782,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST)
                 || it.startsWith(RESERVED_STOCK_BASE) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
-            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
-            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_BASE_SELLER_APP, R.string.user_identification_info_simple))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
@@ -1005,6 +1006,11 @@ object DeeplinkDFMapper : CoroutineScope {
                     }, DF_SELLER_FRONT_FUNNEL, R.string.title_statistic
                 )
             )
+            add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_KYC_SELLERAPP, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_KYC_SELLERAPP, R.string.user_identification_form_title))
+            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_KYC_SELLERAPP, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(GOTO_KYC)}, DF_KYC_SELLERAPP, R.string.goto_kyc_title))
+            add(DFP({ it.startsWithPattern(KYC_LIVENESS_BASE) }, DF_KYC_SELLERAPP, R.string.liveness_title))
         }
     }
 
