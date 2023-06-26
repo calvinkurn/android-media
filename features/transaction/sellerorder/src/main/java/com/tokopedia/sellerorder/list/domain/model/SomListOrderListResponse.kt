@@ -14,24 +14,32 @@ data class SomListOrderListResponse(
         @SerializedName("orderList")
         @Expose
         val orderList: OrderList = OrderList(),
+        @Expose
         @SerializedName("empty_state")
         val emptyState: EmptyState? = null
     ) {
         data class EmptyState(
+            @Expose
             @SerializedName("title")
             val title: String = "",
+            @Expose
             @SerializedName("subtitle")
             val subTitle: String = "",
+            @Expose
             @SerializedName("image_url")
             val imageUrl: String = "",
+            @Expose
             @SerializedName("cta")
             val cta: Cta? = null
         ) {
             data class Cta(
+                @Expose
                 @SerializedName("cta_text")
                 val ctaText: String = "",
+                @Expose
                 @SerializedName("cta_action_type")
                 val ctaActionType: String = "",
+                @Expose
                 @SerializedName("cta_action_type")
                 val ctaActionValue: String = ""
             )

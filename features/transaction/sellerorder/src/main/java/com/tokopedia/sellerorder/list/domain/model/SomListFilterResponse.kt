@@ -24,6 +24,7 @@ data class SomListFilterResponse(
             @SerializedName("sort_by")
             @Expose
             val sortByList: List<SortBy> = listOf(),
+            @Expose
             @SerializedName("highlighted_status_key")
             val highLightedStatusKey: String = ""
         ) {
