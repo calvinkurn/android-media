@@ -96,6 +96,7 @@ data class ShopInvoice(
     val shippingAddress: String?,
     val orderLevelAddOn: OrderLevelAddOn,
     val shouldHideShopInvoice: Boolean,
+    val shouldHideDivider: Boolean,
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)

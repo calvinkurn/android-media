@@ -51,6 +51,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
     private val groupShipping = view.groupShipping
+    private val divider = view.dividerShopShipping
 
     override fun bind(element: ShopInvoice?) {
         element?.let {
@@ -86,7 +87,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
             element.shippingPriceStr?.let {
-                tvInvoiceShopItemShippingValue.text = getString(R.string.thankyou_rp_without_space, element.shippingPriceStr)
+                tvInvoiceShopItemShippingValue.text = element.shippingPriceStr
                 tvInvoiceShopItemShippingValue.visible()
                 tvInvoiceShopItemShipping.visible()
             } ?: run {
@@ -117,7 +118,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
 
             element.shippingInsurancePriceStr?.let {
-                tvInvoiceShopItemShippingInsuranceValue.text = getString(R.string.thankyou_rp_without_space, element.shippingInsurancePriceStr)
+                tvInvoiceShopItemShippingInsuranceValue.text = element.shippingInsurancePriceStr
                 tvInvoiceShopItemShippingInsuranceValue.visible()
                 tvInvoiceShopItemShippingInsurance.visible()
             } ?: run {
@@ -134,7 +135,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
             if (it.shouldHideShopInvoice) groupShipping.gone() else groupShipping.show()
-
+            if (it.shouldHideDivider) divider.gone() else divider.show()
         }
     }
 

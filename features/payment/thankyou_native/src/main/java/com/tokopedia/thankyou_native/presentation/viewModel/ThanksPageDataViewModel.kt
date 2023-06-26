@@ -794,7 +794,7 @@ class ThanksPageDataViewModel @Inject constructor(
                 "                \"validate_engine_data\": \"{\\\"transaction_type\\\":\\\"3\\\"}\"\n" +
                 "            },\n" +
                 "            \"__typename\": \"ThanksData\"\n" +
-                "        }", ThanksPageResponse::class.java).thanksPageData)
+                "        }}", ThanksPageResponse::class.java).thanksPageData)
     }
 
     fun checkForGoPayActivation(thanksPageData: ThanksPageData) {

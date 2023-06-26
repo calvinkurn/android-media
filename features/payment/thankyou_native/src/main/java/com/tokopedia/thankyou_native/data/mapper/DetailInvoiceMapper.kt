@@ -203,9 +203,6 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         if (thanksPageData.orderGroupList.size > 1 ) thanksPageData.shopOrder.sortBy { it.orderGroupId }
         thanksPageData.shopOrder.forEachIndexed { index, shopOrder ->
 
-            if (currentIndex > Int.ZERO) {
-                visitableList.add(ShopDivider())
-            }
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
 
@@ -267,6 +264,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 shopOrder.logisticType + NEW_LINE + shippingDurationOrETA
             }
 
+            val shouldHideShopInvoice = if (index == thanksPageData.shopOrder.size - 1) false else shopOrder.orderGroupId == thanksPageData.shopOrder[index + 1].orderGroupId
+
             val shopInvoice = ShopInvoice(
                 shopName = shopOrder.storeName,
                 orderedItem = orderedItemList,
@@ -286,7 +285,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 shippingAddress = shopOrder.address,
                 // add order level add-ons here
                 orderLevelAddOn = OrderLevelAddOn(shopOrder.addOnSectionDescription, shopOrder.addOnItemList),
-                shouldHideShopInvoice = if (index == thanksPageData.shopOrder.size - 1) false else shopOrder.orderGroupId == thanksPageData.shopOrder[index + 1].orderGroupId
+                shouldHideShopInvoice = shouldHideShopInvoice,
+                shouldHideDivider = shouldHideShopInvoice || currentIndex == thanksPageData.shopOrder.size - 1,
             )
             visitableList.add(shopInvoice)
             currentIndex++
@@ -301,7 +301,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             if (orderGroupList.totalShippingFee > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(orderGroupList.totalShippingFee.toLong(), false)
             else null
         } else {
-            if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null
+            if (shopOrder.shippingAmount > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(shopOrder.shippingAmount.toLong(), false) else null
         }
     }
 
@@ -310,7 +310,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             if (orderGroupList.totalInsurancePrice > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(orderGroupList.totalInsurancePrice.toLong(), false)
             else null
         } else {
-            if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null
+            if (shopOrder.insuranceAmount > 0F) CurrencyFormatUtil.convertPriceValueToIdrFormat(shopOrder.insuranceAmount.toLong(), false) else null
         }
     }
 
