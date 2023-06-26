@@ -3,6 +3,8 @@ package com.tokopedia.productcard.options.item
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.options.ProductCardOptionsListener
 import com.tokopedia.productcard.options.R
 import com.tokopedia.productcard.options.databinding.ProductCardOptionsItemLayoutBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -29,7 +31,10 @@ internal class ProductCardOptionsItemView(context: Context) : BaseCustomView(con
     }
 }
 
-internal class ProductCardOptionsItemViewHolder(view: View): AbstractViewHolder<ProductCardOptionsItemModel>(view) {
+internal class ProductCardOptionsItemViewHolder(
+    view: View,
+    private val listener: ProductCardOptionsListener,
+): AbstractViewHolder<ProductCardOptionsItemModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.product_card_options_item_layout
@@ -41,6 +46,9 @@ internal class ProductCardOptionsItemViewHolder(view: View): AbstractViewHolder<
         productCardOptionsItemTitle.text = element.title
         productCardOptionsItemTitle.setOnClickListener {
             element.onClick()
+        }
+        binding?.root?.addOnImpressionListener(element) {
+            listener.onProductCardOptionsItemImpressed(element, bindingAdapterPosition)
         }
     }
 }
