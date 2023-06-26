@@ -19,7 +19,7 @@ import com.tokopedia.loginregister.shopcreation.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
-import com.tokopedia.loginregister.shopcreation.view.viewmodel.ShopCreationViewModel
+import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo

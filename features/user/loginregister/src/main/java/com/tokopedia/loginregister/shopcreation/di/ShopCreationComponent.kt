@@ -1,9 +1,9 @@
 package com.tokopedia.loginregister.shopcreation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.loginregister.shopcreation.view.fragment.LandingShopCreationFragment
-import com.tokopedia.loginregister.shopcreation.view.fragment.NameShopCreationFragment
-import com.tokopedia.loginregister.shopcreation.view.fragment.PhoneShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.nameshop.NameShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.phoneshop.PhoneShopCreationFragment
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
