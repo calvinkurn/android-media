@@ -33,7 +33,6 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.fragment_home_credit_v2.*
 import timber.log.Timber
 import javax.inject.Inject
 
