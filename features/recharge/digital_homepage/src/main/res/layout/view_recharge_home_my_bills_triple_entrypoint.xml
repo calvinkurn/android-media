@@ -81,7 +81,7 @@
             app:layout_constraintEnd_toEndOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <androidx.viewpager.widget.ViewPager
+        <View
             android:id="@+id/divider_main"
             android:layout_width="match_parent"
             android:layout_height="0.8dp"
