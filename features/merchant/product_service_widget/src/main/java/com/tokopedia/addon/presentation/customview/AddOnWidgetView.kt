@@ -2,6 +2,7 @@ package com.tokopedia.addon.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.LifecycleOwner
@@ -55,7 +56,8 @@ class AddOnWidgetView : BaseCustomView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        val lifecycleOwner = context as? LifecycleOwner
+        val lifecycleOwner = context as? LifecycleOwner ?:
+            (context as? ContextThemeWrapper)?.baseContext as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.errorThrowable.observe(this) {
                 listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
