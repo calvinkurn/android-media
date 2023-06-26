@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.LayoutInitRegisterOtherMethodBottomsheetBinding
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget

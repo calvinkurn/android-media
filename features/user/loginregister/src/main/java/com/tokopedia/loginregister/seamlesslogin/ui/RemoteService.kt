@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.seamlesslogin
+package com.tokopedia.loginregister.seamlesslogin.ui
 
 import android.app.Service
 import android.content.Intent
@@ -9,7 +9,6 @@ import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginModule
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryModule
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginUseCaseModule
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -40,7 +39,6 @@ class RemoteService : Service() {
         super.onCreate()
         DaggerSeamlessLoginComponent.builder()
                 .seamlessLoginModule(SeamlessLoginModule(applicationContext))
-                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
                 .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
                 .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build())
                 .build()

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login.domain
+package com.tokopedia.loginregister.registerpushnotif.domain
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -13,16 +13,6 @@ import javax.inject.Inject
 /**
  * Created by Ade Fulki on 17/09/20.
  */
-
-data class RegisterPushNotificationParamsModel(
-    @SerializedName("publicKey")
-    var publicKey: String = "",
-    @SerializedName("signature")
-    var signature: String = "",
-    @SerializedName("datetime")
-    var datetime: String = ""
-): GqlParam
-
 class RegisterPushNotificationUseCase @Inject constructor(
     @ApplicationContext val repository: GraphqlRepository,
     coroutineDispatchers: CoroutineDispatchers
@@ -51,5 +41,13 @@ class RegisterPushNotificationUseCase @Inject constructor(
         private const val PARAM_DATETIME = "datetime"
         private const val PARAM_PUBLIC_KEY = "publicKey"
     }
-
 }
+
+data class RegisterPushNotificationParamsModel(
+    @SerializedName("publicKey")
+    var publicKey: String = "",
+    @SerializedName("signature")
+    var signature: String = "",
+    @SerializedName("datetime")
+    var datetime: String = ""
+): GqlParam

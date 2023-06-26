@@ -1,8 +1,8 @@
-package com.tokopedia.loginregister.seamlesslogin
+package com.tokopedia.loginregister.seamlesslogin.ui
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyData
+import com.tokopedia.loginregister.seamlesslogin.data.GenerateKeyData
 import com.tokopedia.loginregister.seamlesslogin.usecase.GenerateKeyUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
