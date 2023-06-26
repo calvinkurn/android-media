@@ -1283,7 +1283,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 } else {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_ongoing_without_disc,
-                        model.price,
+                        model.price
                     )
                 }
                 personalizedImage = context.getString(
@@ -1311,7 +1311,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
-            CampaignStatus.END_BY_A_WEEK-> {
+            CampaignStatus.END_BY_A_WEEK -> {
                 if (model.discountPercentage != 0F) {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_endweek_discount,
@@ -1319,10 +1319,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.price
                     )
                 } else {
-                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
-                        model.price,
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price
                     )
                 }
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
