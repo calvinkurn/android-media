@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:node="remove"
         tools:selector="com.google.firebase" />
     <uses-permission
         android:name="android.permission.WRITE_CALL_LOG"
