@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingRight="18dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/tool_selection_item_border"
+        android:padding="1dp"
+        app:cardCornerRadius="8dp"
+        app:card_type="border">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/tool_selection_item_image"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_gravity="center"
+            tools:srcCompat="@drawable/unify_check_ic"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/tool_selection_item_icon"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_gravity="center"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            />
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tool_selection_item_text"
+        app:layout_constraintLeft_toLeftOf="@id/tool_selection_item_border"
+        app:layout_constraintRight_toRightOf="@id/tool_selection_item_border"
+        app:layout_constraintTop_toBottomOf="@id/tool_selection_item_border"
+        android:layout_marginTop="4dp"
+        tools:text="Original"
+        android:gravity="center"
+        app:typographyType="small"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

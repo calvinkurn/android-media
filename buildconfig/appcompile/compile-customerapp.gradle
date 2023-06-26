@@ -93,6 +93,7 @@ includeIfEnabled("features:discovery:autocomplete_component")
 includeIfEnabled("features:discovery:recommendation_widget_common")
 includeIfEnabled("features:discovery:home")
 includeIfEnabled("features:discovery:home_component")
+includeIfEnabled("features:discovery:home_component_header")
 includeIfEnabled("features:discovery:home_recom")
 includeIfEnabled("features:discovery:home_nav")
 includeIfEnabled("features:discovery:topadssdk")
@@ -103,7 +104,6 @@ includeIfEnabled("features:discovery:global_nav_widget")
 includeIfEnabled("features:discovery:video_widget")
 
 includeIfEnabled("features:fintech:home_credit")
-includeIfEnabled("features:fintech:ovo_pay_with_qr")
 includeIfEnabled("features:fintech:saldo_details")
 includeIfEnabled("features:fintech:common_wallet")
 includeIfEnabled("features:fintech:wallet")
@@ -111,7 +111,6 @@ includeIfEnabled("features:fintech:paylater")
 includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
 includeIfEnabled("features:fintech:insurance")
-
 
 includeIfEnabled("features:home:dynamicbanner")
 includeIfEnabled("features:home:navigation")
@@ -186,8 +185,6 @@ includeIfEnabled("features:tokopedianow")
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
 
-includeIfEnabled("features:ovop2p")
-
 includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 includeIfEnabled("features:ordermanagement:buyer_order_detail")
@@ -200,8 +197,6 @@ includeIfEnabled("features:payment:gopay.kyc")
 includeIfEnabled("features:payment:pms")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
-
-includeIfEnabled("features:merchant:gallery")
 
 includeIfEnabled("features:promo:gamification")
 includeIfEnabled("features:promo:merchant_voucher")
@@ -286,7 +281,6 @@ includeIfEnabled("features:user:fcm_common")
 
 includeIfEnabled("features:tokofood")
 
-includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
 

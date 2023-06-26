@@ -11,6 +11,7 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
+import com.tokopedia.kyc_centralized.stubAppGraphqlRepo
 import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
 import com.tokopedia.kyc_centralized.util.MockTimber
 import com.tokopedia.test.application.annotations.UiTest
@@ -30,13 +31,16 @@ class KycAlaCarteGenerateIdTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoSimpleActivity::class.java, false, false
+        UserIdentificationInfoSimpleActivity::class.java,
+        false,
+        false
     )
 
     @Before
     fun setup() {
         timber = MockTimber()
         Timber.plant(timber)
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 

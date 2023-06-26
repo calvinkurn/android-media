@@ -36,23 +36,24 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
-import com.tokopedia.common_compose.components.ButtonSize
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.components.NestLabel
-import com.tokopedia.common_compose.components.NestLabelType
-import com.tokopedia.common_compose.components.ticker.NestTicker
-import com.tokopedia.common_compose.components.ticker.TickerType
-import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestImage
-import com.tokopedia.common_compose.principles.NestSearchBar
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.sort_filter.NestSortFilter
-import com.tokopedia.common_compose.sort_filter.SortFilter
-import com.tokopedia.common_compose.ui.NestNN
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestLabel
+import com.tokopedia.nest.components.NestLabelType
+import com.tokopedia.nest.components.NestSearchBar
+import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestNN
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
+import com.tokopedia.sortfilter.compose.NestSortFilter
+import com.tokopedia.sortfilter.compose.SortFilter
 
 @Composable
 fun CampaignListScreen(
@@ -134,8 +135,8 @@ private fun SearchBar(
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
-        modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
+        modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
@@ -166,7 +167,6 @@ private fun Filter(
     onClearFilter: () -> Unit,
     shouldShowClearFilterIcon: Boolean
 ) {
-
     val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
@@ -184,10 +184,10 @@ private fun Filter(
     val sortFilterItems = arrayListOf(campaignStatus, campaignType)
 
     NestSortFilter(
-        modifier = modifier.fillMaxWidth(),
         items = sortFilterItems,
-        onClearFilter = onClearFilter,
         showClearFilterIcon = shouldShowClearFilterIcon,
+        modifier = modifier.fillMaxWidth(),
+        onClearFilter = onClearFilter,
         onItemClicked = {}
     )
 }
@@ -195,11 +195,15 @@ private fun Filter(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
+        ticker = listOf(
+            NestTickerData(
+                tickerTitle = "",
+                tickerType = TickerType.ANNOUNCEMENT,
+                tickerDescription = stringResource(id = R.string.cl_another_campaign_type_wording)
+            )
+        ),
         modifier = modifier.fillMaxWidth(),
-        title = "",
-        description = stringResource(id = R.string.cl_another_campaign_type_wording),
-        onDismissed = onDismissed,
-        type = TickerType.ANNOUNCEMENT
+        onDismissed = onDismissed
     )
 }
 
@@ -222,8 +226,8 @@ fun CampaignItem(
     ) {
         Column {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-
-                val (ribbon,
+                val (
+                    ribbon,
                     statusImage,
                     campaignType,
                     campaignStatus,
@@ -281,14 +285,14 @@ fun CampaignItem(
                 )
 
                 NestImage(
+                    imageUrl = campaign.campaignPictureUrl,
                     modifier = Modifier
                         .size(62.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .constrainAs(campaignImage) {
                             start.linkTo(parent.start, margin = 12.dp)
                             top.linkTo(campaignType.bottom, margin = 12.dp)
-                        },
-                    imageUrl = campaign.campaignPictureUrl
+                        }
                 )
 
                 NestTypography(
@@ -297,11 +301,17 @@ fun CampaignItem(
                         top.linkTo(campaignImage.top)
                         start.linkTo(campaignImage.end, margin = 12.dp)
                     },
-                    textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = NestTheme.colors.NN._950)
+                    textStyle = NestTheme.typography.display2.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = NestTheme.colors.NN._950
+                    )
                 )
 
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_list_product_quantity_label, campaign.productQty),
+                    text = stringResource(
+                        id = R.string.cl_campaign_list_product_quantity_label,
+                        campaign.productQty
+                    ),
                     modifier = Modifier.constrainAs(productQty) {
                         top.linkTo(campaignName.bottom, margin = 12.dp)
                         start.linkTo(campaignName.start)
@@ -318,9 +328,11 @@ fun CampaignItem(
                     textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
                 )
 
-
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
+                    text = stringResource(
+                        id = R.string.cl_campaign_time_template,
+                        campaign.startTime
+                    ),
                     modifier = Modifier.constrainAs(campaignStartTime) {
                         top.linkTo(campaignStartDate.bottom)
                         start.linkTo(campaignStartDate.start)
@@ -349,7 +361,10 @@ fun CampaignItem(
                 )
 
                 NestTypography(
-                    text = stringResource(id = R.string.cl_campaign_time_template, campaign.endTime),
+                    text = stringResource(
+                        id = R.string.cl_campaign_time_template,
+                        campaign.endTime
+                    ),
                     modifier = Modifier.constrainAs(campaignEndTime) {
                         top.linkTo(campaignStartTime.top)
                         bottom.linkTo(campaignStartTime.bottom)
@@ -359,16 +374,14 @@ fun CampaignItem(
                 )
             }
             NestButton(
+                text = stringResource(id = R.string.cl_action_share),
+                onClick = { onTapShareButton(campaign) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
-                size = ButtonSize.SMALL,
-                text = stringResource(id = R.string.cl_action_share),
-                onClick = { onTapShareButton(campaign) },
+                size = ButtonSize.SMALL
             )
         }
-
-
     }
 }
 
@@ -397,7 +410,7 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
         AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
         else -> NestLabelType.HIGHLIGHT_LIGHT_RED
     }
-    NestLabel(modifier = modifier, labelText = campaignStatus, labelType = nestLabelType)
+    NestLabel(labelText = campaignStatus, labelType = nestLabelType, modifier = modifier)
 }
 
 @Preview(name = "Campaign List - Light Mode")
@@ -414,7 +427,6 @@ private fun CampaignListPreview() {
         endDate = "18/01/2020",
         endTime = "22:00 WIB"
     )
-
 
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),
@@ -455,7 +467,6 @@ private fun CampaignListFilterSelectedPreview() {
         endDate = "18/01/2020",
         endTime = "22:00 WIB"
     )
-
 
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),

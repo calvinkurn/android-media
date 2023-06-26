@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -30,6 +29,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -83,6 +83,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 
 /**
@@ -184,6 +185,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val shopReview: ProductShopReviewDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_REVIEW] as? ProductShopReviewDataModel
 
+    val ongoingCampaignData: OngoingCampaignDataModel?
+        get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
+
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
         loadInitialData: Boolean = false
@@ -206,6 +210,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data?.campaign?.discountedPriceFmt =
                         it.data.campaign.discountedPrice.getCurrencyFormatted()
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
+
+                    shouldShowCampaign = ongoingCampaignData == null
+                    isWishlisted = it.data.isWishlist
+                }
+            }
+
+            updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
+                ongoingCampaignData?.apply {
+                    data = ProductContentMainData(
+                        campaign = it.data.campaign,
+                        thematicCampaign = it.data.thematicCampaign,
+                        cashbackPercentage = it.data.isCashback.percentage,
+                        price = it.data.price,
+                        stockWording = it.data.stock.stockWording,
+                        isVariant = it.data.variant.isVariant,
+                        productName = it.data.name,
+                        isProductActive = it.basic.isActive()
+                    ).apply {
+                        campaign.originalPriceFmt = campaign.originalPrice.getCurrencyFormatted()
+                        campaign.discountedPriceFmt = campaign.discountedPrice.getCurrencyFormatted()
+                    }
                 }
             }
 
@@ -338,7 +363,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             true
                         )
                     ).orEmpty()
-                } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                } else if (tradeinResponse.widgetString.isNotBlank()) {
                     tradeinResponse.widgetString
                 } else {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
@@ -640,6 +665,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         updateUpcoming(productId, upcomingData)
+
+        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
+            ongoingCampaignData?.run {
+                val selectedUpcoming = upcomingData?.get(productId)
+                upcomingNplData = UpcomingNplDataModel(
+                    selectedUpcoming?.upcomingType.orEmpty(),
+                    selectedUpcoming?.campaignTypeName.orEmpty(),
+                    selectedUpcoming?.startDate.orEmpty()
+                )
+            }
+        }
     }
 
     private fun updateUpcoming(
@@ -685,6 +721,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         updateUpcoming(productId, upcomingData)
+
+        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
+            ongoingCampaignData?.run {
+                val selectedUpcoming = upcomingData?.get(productId)
+                upcomingNplData = UpcomingNplDataModel(
+                    selectedUpcoming?.upcomingType.orEmpty(),
+                    selectedUpcoming?.campaignTypeName.orEmpty(),
+                    selectedUpcoming?.startDate.orEmpty()
+                )
+            }
+        }
     }
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
@@ -719,8 +766,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels()
+                        cardModel = data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -828,7 +874,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 recommendationWidgetModel = RecommendationWidgetModel(
                     widget = data,
                     metadata = RecommendationWidgetMetadata(
-                        pageSource = RecommendationWidgetSource.PDP.xSourceValue
+                        pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+                        pageName = data.pageName
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = RecommendationWidgetSource.PDP.trackingValue
@@ -971,7 +1018,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             // update data based on tokonow cart
-            if (recomItem.isRecomProductShowVariantAndCart) {
+            if (recomItem.addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(

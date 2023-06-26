@@ -39,14 +39,16 @@
             android:orientation="horizontal"
             android:gravity="start|center_vertical"
             >
-            <androidx.appcompat.widget.AppCompatImageView
+
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/rating_review_star_catalog"
-                android:layout_width="@dimen/unify_space_24"
-                android:layout_height="@dimen/unify_space_24"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:srcCompat="@drawable/catalog_ic_rating_star_item"
-                />
+                app:icon_color_light_enable="@color/Unify_Y300"
+                app:icon_name="STAR_FILLED"
+                app:unify_image_type="rect" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/review_rating_catalog"

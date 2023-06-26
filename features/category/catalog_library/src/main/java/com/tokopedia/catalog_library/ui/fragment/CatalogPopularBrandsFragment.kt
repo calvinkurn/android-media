@@ -23,7 +23,7 @@ import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
+import com.tokopedia.catalog_library.viewmodel.CatalogPopularBrandsViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -57,7 +57,7 @@ class CatalogPopularBrandsFragment : CatalogLibraryBaseFragment(), CatalogLibrar
 
     private val popularBrandsVM by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogPopularBrandsVM::class.java)
+            ViewModelProvider(this, it).get(CatalogPopularBrandsViewModel::class.java)
         }
     }
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {

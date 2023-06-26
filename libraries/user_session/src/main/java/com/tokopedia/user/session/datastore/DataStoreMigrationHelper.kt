@@ -1,10 +1,8 @@
 package com.tokopedia.user.session.datastore
 
-import android.content.Context
 import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.first
@@ -43,6 +41,9 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setLoginMethod(userSessionInterface.loginMethod.trim())
                 userSessionDataStore.setIsShopOfficialStore(userSessionInterface.isShopOfficialStore)
                 userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
+                userSessionDataStore.setTwitterAccessToken(userSessionInterface.twitterAccessToken.orEmpty())
+                userSessionDataStore.setTwitterAccessTokenSecret(userSessionInterface.twitterAccessTokenSecret.orEmpty())
+                userSessionDataStore.setTwitterShouldPost(userSessionInterface.twitterShouldPost)
             } catch (e: Exception) {
                 ServerLogger.log(
                     Priority.P2,
@@ -56,11 +57,11 @@ object DataStoreMigrationHelper {
         }
     }
 
-    suspend fun checkDataSync(applicationContext: Context): List<String> {
+    suspend fun checkDataSync(
+        dataStore: UserSessionDataStore,
+        userSession: UserSessionInterface
+    ): List<String> {
         val result = mutableListOf<String>()
-        val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
-        val userSession = UserSession(applicationContext)
-
         if (dataStore.getName().first().trim() != userSession.name.trim()) {
             result.add("name")
         }
@@ -135,6 +136,15 @@ object DataStoreMigrationHelper {
         }
         if (dataStore.getTokenType().first().trim() != userSession.tokenType.trim()) {
             result.add("tokenType")
+        }
+        if (dataStore.getTwitterAccessToken().first() != userSession.twitterAccessToken.orEmpty()) {
+            result.add("twitterAccessToken")
+        }
+        if (dataStore.getTwitterAccessTokenSecret().first() != userSession.twitterAccessTokenSecret.orEmpty()) {
+            result.add("twitterAccessTokenSecret")
+        }
+        if (dataStore.getTwitterShouldPost().first() != userSession.twitterShouldPost) {
+            result.add("twitterShouldPost")
         }
         return result
     }
