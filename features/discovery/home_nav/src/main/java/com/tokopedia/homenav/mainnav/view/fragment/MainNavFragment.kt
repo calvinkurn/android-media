@@ -33,11 +33,9 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -336,8 +334,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(trackingPageSource)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(trackingPageSource)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(trackingPageSource)
-            ID_WISHLIST_MENU -> TrackingTransactionSection.clickOnWishlist(userSession.userId, trackingPageSource)
-            ID_FAVORITE_SHOP -> TrackingTransactionSection.clickOnTokoFavorit(userSession.userId, trackingPageSource)
             ID_HOME -> TrackingOthers.onClickBackToHome(trackingPageSource)
             else -> TrackingOthers.clickOnUserMenu(homeNavMenuDataModel.trackerName, trackingPageSource)
         }

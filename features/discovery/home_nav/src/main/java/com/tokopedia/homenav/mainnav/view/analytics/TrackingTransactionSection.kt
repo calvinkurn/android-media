@@ -10,7 +10,6 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object TrackingTransactionSection : BaseTrackerConst() {
-    private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
     private const val PROMOTION_NAME_FORMAT = "/%s - %s"
     private const val GLOBAL_MENU = "global_menu"
@@ -20,9 +19,6 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val PRODUCT_CARD = "product card"
     private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
     private const val ITEM_NAME_WISHLIST = "/global_menu - wishlist_card"
-    private const val ACTION_CLICK_ON_WISHLIST_VIEW_ALL = "click view all wishlist"
-    private const val ACTION_CLICK_ON_REVIEW_VIEW_ALL = "click view all review"
-    private const val FORMAT_DASH_TWO_VALUES = "%s - %s"
 
     /**
      * Tracker ID: 18481
@@ -124,7 +120,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     creative = orderLabel,
-                    id = FORMAT_DASH_TWO_VALUES.format(bannerId, orderId),
+                    id = "%s - %s".format(bannerId, orderId),
                     name = TEMPLATE_GLOBAL_MENU,
                     creativeUrl = "",
                     position = (position + 1).toString()
@@ -137,42 +133,6 @@ object TrackingTransactionSection : BaseTrackerConst() {
             .appendCustomKeyValue(TrackerId.KEY, "30622")
             .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
             .build() as HashMap<String, Any>
-    }
-
-    fun clickOnWishlist(
-        userId: String,
-        pageSource: String
-    ) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = CLICK_NAVIGATION_DRAWER,
-            eventCategory = GLOBAL_MENU,
-            eventAction = "click on Wishlist",
-            eventLabel = Label.NONE
-        )
-        trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    fun clickOnTokoFavorit(
-        userId: String,
-        pageSource: String
-    ) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = CLICK_NAVIGATION_DRAWER,
-            eventCategory = GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_FAVOURITE_SHOP,
-            eventLabel = Label.NONE
-        )
-        trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
-        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
     /**
@@ -421,7 +381,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Category.KEY, GLOBAL_MENU)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_VIEW_ALL)
+        bundle.putString(Action.KEY, "click view all review")
         bundle.putString(Label.KEY, Label.NONE)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
