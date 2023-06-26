@@ -781,19 +781,17 @@ class FeedPostViewModel @Inject constructor(
      */
     fun trackVisitChannel(model: FeedCardVideoContentModel) {
         val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return // only track when post is play channel
+        if (playChannelId.isBlank()) return
 
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                trackVisitChannelUseCase.apply {
-                    setRequestParams(
-                        TrackVisitChannelBroadcasterUseCase.createParams(
-                            playChannelId,
-                            TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                        )
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            trackVisitChannelUseCase.apply {
+                setRequestParams(
+                    TrackVisitChannelBroadcasterUseCase.createParams(
+                        playChannelId,
+                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
                     )
-                }.executeOnBackground()
-            }
+                )
+            }.executeOnBackground()
         }) {
         }
     }
@@ -803,17 +801,15 @@ class FeedPostViewModel @Inject constructor(
         if (playChannelId.isBlank()) return
 
         val productIds = model.products.map { it.id }
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                trackReportTrackViewerUseCase.apply {
-                    setRequestParams(
-                        BroadcasterReportTrackViewerUseCase.createParams(
-                            playChannelId,
-                            productIds
-                        )
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            trackReportTrackViewerUseCase.apply {
+                setRequestParams(
+                    BroadcasterReportTrackViewerUseCase.createParams(
+                        playChannelId,
+                        productIds
                     )
-                }.executeOnBackground()
-            }
+                )
+            }.executeOnBackground()
         }) {
         }
     }
