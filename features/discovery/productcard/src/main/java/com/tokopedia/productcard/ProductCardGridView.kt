@@ -317,8 +317,6 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
 
     fun applyCarousel() {
-        layoutParams?.height = MATCH_PARENT
-
         setCardHeightMatchParent()
     }
 

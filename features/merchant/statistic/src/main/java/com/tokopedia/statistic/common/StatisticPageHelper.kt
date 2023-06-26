@@ -1,12 +1,15 @@
 package com.tokopedia.statistic.common
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import android.content.res.Resources.NotFoundException
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.exception.StatisticException
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -20,12 +23,11 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 15/02/21
  */
 
-class StatisticPageHelper @Inject constructor(
-    @ApplicationContext
-    private val context: Context
-) {
+class StatisticPageHelper @Inject constructor() {
 
     companion object {
+        private const val TOKO = "Toko"
+        private const val STATISTIC_ERROR = "Statistic Error : "
         fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
             val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
             val isOfficialStore = userSession.isShopOfficialStore
@@ -33,8 +35,13 @@ class StatisticPageHelper @Inject constructor(
         }
     }
 
-    fun getShopStatistic(): StatisticPageUiModel {
-        val title = context.getString(R.string.stc_shop)
+    fun getShopStatistic(context: Context): StatisticPageUiModel {
+        val title = try {
+            context.getString(R.string.stc_shop)
+        } catch (e: NotFoundException) {
+            logExceptionToCrashlytics(e, STATISTIC_ERROR)
+            TOKO
+        }
         return StatisticPageUiModel(
             pageTitle = title,
             pageSource = Const.PageSource.SHOP_INSIGHT,
@@ -56,7 +63,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getProductStatistic(): StatisticPageUiModel {
+    fun getProductStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_product)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -79,7 +86,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getBuyerStatistic(): StatisticPageUiModel {
+    fun getBuyerStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -102,7 +109,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getOperationalStatistic(): StatisticPageUiModel {
+    fun getOperationalStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_operational)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -125,7 +132,7 @@ class StatisticPageHelper @Inject constructor(
         )
     }
 
-    fun getTrafficStatistic(): StatisticPageUiModel {
+    fun getTrafficStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_traffic)
         return StatisticPageUiModel(
             pageTitle = title,
@@ -147,6 +154,20 @@ class StatisticPageHelper @Inject constructor(
             dateFilters = getTrafficDateFilters(context),
             exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_buyer_and_operational_exclusive_identifier_desc)
         )
+    }
+
+    private fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
+        runCatching {
+            if (!GlobalConfig.isAllowDebuggingTools()) {
+                val exceptionMessage = "$message - ${throwable.localizedMessage}"
+                FirebaseCrashlytics.getInstance().recordException(
+                    StatisticException(
+                        message = exceptionMessage,
+                        cause = throwable
+                    )
+                )
+            }
+        }
     }
 
     private fun getShopDateFilters(

@@ -14,8 +14,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.databinding.WidgetCreateReviewProductCardBinding
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProductCardUiState
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewProductCard @JvmOverloads constructor(
     context: Context,
@@ -54,19 +52,15 @@ class CreateReviewProductCard @JvmOverloads constructor(
         }
     }
 
-    fun updateUi(uiState: CreateReviewProductCardUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewProductCardUiState) {
         when(uiState) {
             is CreateReviewProductCardUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewProductCardUiState.Showing -> {
                 binding.showProductCard(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
         }
     }
