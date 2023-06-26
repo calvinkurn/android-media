@@ -160,21 +160,13 @@ open class UniversalInboxMenuMapper @Inject constructor(
     private fun UniversalInboxWidgetDataResponse.mapToUiModel(
         allCounter: UniversalInboxAllCounterResponse? = null
     ): UniversalInboxWidgetUiModel? {
-        return when (this.type) {
+        val counter = when (this.type) {
             CHATBOT_TYPE -> {
-                this.mapToWidget(allCounter?.othersUnread?.helpUnread ?: Int.ZERO)
+                allCounter?.othersUnread?.helpUnread ?: Int.ZERO
             }
-            else -> {
-                UniversalInboxWidgetUiModel(
-                    icon = this.icon.toIntOrZero(),
-                    title = this.title,
-                    subtext = this.subtext,
-                    applink = this.applink,
-                    counter = Int.ZERO,
-                    type = this.type
-                )
-            }
+            else -> Int.ZERO
         }
+        return this.mapToWidget(counter)
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToWidget(
