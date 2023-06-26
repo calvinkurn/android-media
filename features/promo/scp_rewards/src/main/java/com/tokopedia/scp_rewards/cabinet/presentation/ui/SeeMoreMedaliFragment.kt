@@ -18,7 +18,7 @@ import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisRe
 import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.cabinet.presentation.adapter.SeeMoreMedalAdapter
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.SeeMoreMedaliViewModel
-import com.tokopedia.scp_rewards.common.data.InfiniteLoading
+import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
@@ -108,16 +108,25 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
                     onLoadingState()
                 }
 
-                is InfiniteLoading -> {
-                    onLoadingMoreState()
+                is Error -> {
+                    onErrorState()
                 }
-
-                else -> {}
             }
         }
         viewModel.hasNextLiveData.observe(viewLifecycleOwner) {
             if (!it) {
                 removeRecyclerViewScrollListener()
+            }
+        }
+    }
+
+    // TODO: Handle Error state as per UI requirement 
+    private fun onErrorState() {
+        with(viewModel) {
+            if (pageCount == 1) {
+
+            } else {
+
             }
         }
     }
@@ -141,15 +150,14 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
 
     private fun onLoadingState() {
         with(viewModel) {
-            visitableList.clear()
-            visitableList.add(LoadingModel())
+            if (pageCount == 1) {
+                visitableList.clear()
+                visitableList.add(LoadingModel())
+            } else {
+                viewModel.visitableList.add(LoadingMoreModel())
+            }
             submitAdapterList(visitableList)
         }
-    }
-
-    private fun onLoadingMoreState() {
-        viewModel.visitableList.add(LoadingMoreModel())
-        submitAdapterList(viewModel.visitableList)
     }
 
     private fun submitAdapterList(list: List<Visitable<*>>) {

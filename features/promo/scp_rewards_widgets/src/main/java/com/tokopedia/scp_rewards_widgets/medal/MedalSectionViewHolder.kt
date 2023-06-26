@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards_widgets.medal
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -66,7 +67,11 @@ class MedalSectionViewHolder(
 
     private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?) {
         if (medalList.isNullOrEmpty()) {
-            binding.ivEmptyList.setImageUrl(bannerData?.imageUrl.orEmpty())
+            if (bannerData?.imageUrl.isNullOrEmpty()) {
+                binding.ivEmptyList.setImageDrawable(ContextCompat.getDrawable(binding.root.context, R.drawable.ic_error_medal_list))
+            } else {
+                binding.ivEmptyList.setImageUrl(bannerData?.imageUrl.orEmpty())
+            }
             binding.ivEmptyList.visible()
             binding.rvMedals.gone()
         } else {

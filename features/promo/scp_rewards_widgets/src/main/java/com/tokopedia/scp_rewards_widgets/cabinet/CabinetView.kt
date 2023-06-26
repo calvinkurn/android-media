@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeaderViewTypeFactory
 import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
+import com.tokopedia.scp_rewards_widgets.medal.MedalError
 import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import com.tokopedia.scp_rewards_widgets.medal.MedalViewTypeFactory
 
@@ -44,8 +44,8 @@ class CabinetView(
     }
 
     private fun bindMedalList(medalList: List<MedalData>) {
-        if (medalList.all { it.medalList.isNullOrEmpty() }) {
-            cabinetMedalSectionAdapter.setVisitables(listOf(EmptyModel().apply { urlRes = medalList[0].bannerData?.imageUrl }))
+        if (medalList.all { it.medalType.isNotEmpty() and it.medalList.isNullOrEmpty() }) {
+            cabinetMedalSectionAdapter.setVisitables(listOf(MedalError(imageUrl = medalList[0].bannerData?.imageUrl)))
         } else {
             cabinetMedalSectionAdapter.setVisitables(medalList)
         }

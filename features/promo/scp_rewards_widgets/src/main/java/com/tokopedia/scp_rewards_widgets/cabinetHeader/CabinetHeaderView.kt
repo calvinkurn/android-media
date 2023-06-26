@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCabinetHeaderBinding
 
@@ -15,7 +16,7 @@ class CabinetHeaderView(context: Context, attrs: AttributeSet?) :
 
     fun bindData(data: CabinetHeader) {
         with(binding) {
-            tvTitle.text = data.title
+            tvTitle.text = HtmlCompat.fromHtml(data.title.orEmpty(), HtmlCompat.FROM_HTML_MODE_LEGACY)
             tvSubTitle.text = data.subTitle
             with(parseColor(data.textColor) ?: Color.WHITE) {
                 tvTitle.setTextColor(this)

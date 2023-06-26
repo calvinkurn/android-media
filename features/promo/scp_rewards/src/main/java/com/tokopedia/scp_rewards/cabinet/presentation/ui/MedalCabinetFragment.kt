@@ -26,8 +26,8 @@ import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.MedalCabinetView
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.MedalClickListener
 import com.tokopedia.scp_rewards_widgets.medal.MedalData
@@ -93,8 +93,14 @@ class MedalCabinetFragment : BaseDaggerFragment() {
                     showData(it.data as MedaliCabinetData)
                 }
 
-                is Loading -> {}
-                is Error -> {}
+                is Loading -> {
+                    binding.mainFlipper.displayedChild = 0
+                }
+
+                is Error -> {
+                    handleError(it.error)
+                }
+
                 else -> {}
             }
         }
@@ -112,9 +118,15 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             )
             binding.viewCabinet.attachMedalClickListener(object : MedalClickListener {
                 override fun onMedalClick(medalItem: MedalItem) {
+                    requireContext().launchLink(
+                        appLink = medalItem.cta?.appLink,
+                        webLink = medalItem.cta?.deepLink)
                 }
 
                 override fun onSeeMoreClick(medalData: MedalData) {
+                    requireContext().launchLink(
+                        appLink = medalData.cta?.appLink,
+                        webLink = medalData.cta?.deepLink)
                 }
             })
         }
