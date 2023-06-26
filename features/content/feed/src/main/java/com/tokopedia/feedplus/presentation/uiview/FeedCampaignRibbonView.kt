@@ -53,6 +53,8 @@ class FeedCampaignRibbonView(
     private var mIsFollowing: Boolean = false
     private var feedPosition: Int = -1
 
+    private val animationStateList = mutableListOf<Int>()
+
     fun bindData(
         modelType: String,
         campaign: FeedCardCampaignModel,
@@ -138,19 +140,13 @@ class FeedCampaignRibbonView(
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient()
-
-                        startDelayProcess(THREE_SECOND) {
-                            root.transitionToState(R.id.availability_state)
-                        }
+                        runLoopAnimation(index = START_ANIMATION_INDEX)
                     }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient()
-
-                        startDelayProcess(THREE_SECOND) {
-                            root.transitionToState(R.id.start_in_state)
-                        }
+                        runLoopAnimation(index = START_ANIMATION_INDEX)
                     }
                 }
             }
@@ -169,31 +165,34 @@ class FeedCampaignRibbonView(
     }
 
     private fun runRecursiveDelayDiscount(index: Int) {
-        if ((mCta?.texts?.size ?: 0) > index) {
-            with(binding) {
-                when (root.currentState) {
-                    R.id.initial_title_with_icon -> {
-                        tyFeedCampaignRibbonTitleSecond.text = mCta?.texts?.get(index) ?: ""
+        mCta?.texts?.let {
+            val ctaIndex = index % it.size
+            if (ctaIndex < it.size) {
+                with(binding) {
+                    when (root.currentState) {
+                        R.id.initial_title_with_icon -> {
+                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
-                        startDelayProcess(THREE_SECOND) {
-                            root.transitionToState(R.id.second_title_with_icon)
-                            runRecursiveDelayDiscount(index + ONE)
+                            startDelayProcess(THREE_SECOND) {
+                                root.transitionToState(R.id.second_title_with_icon)
+                                runRecursiveDelayDiscount(index + ONE)
+                            }
                         }
-                    }
-                    R.id.second_title_with_icon -> {
-                        tyFeedCampaignRibbonTitle.text = mCta?.texts?.get(index) ?: ""
+                        R.id.second_title_with_icon -> {
+                            tyFeedCampaignRibbonTitle.text = it[ctaIndex]
 
-                        startDelayProcess(THREE_SECOND) {
-                            root.transitionToState(R.id.initial_title_with_icon)
-                            runRecursiveDelayDiscount(index + ONE)
+                            startDelayProcess(THREE_SECOND) {
+                                root.transitionToState(R.id.initial_title_with_icon)
+                                runRecursiveDelayDiscount(index + ONE)
+                            }
                         }
-                    }
-                    else -> {
-                        tyFeedCampaignRibbonTitleSecond.text = mCta?.texts?.get(index) ?: ""
+                        else -> {
+                            tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
-                        startDelayProcess(THREE_SECOND) {
-                            root.transitionToState(R.id.second_title_with_icon)
-                            runRecursiveDelayDiscount(index + ONE)
+                            startDelayProcess(THREE_SECOND) {
+                                root.transitionToState(R.id.initial_title_with_icon)
+                                runRecursiveDelayDiscount(index + ONE)
+                            }
                         }
                     }
                 }
@@ -268,6 +267,8 @@ class FeedCampaignRibbonView(
     }
 
     private fun buildRibbonBasedOnType() {
+        animationStateList.clear()
+
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT -> {
@@ -297,6 +298,8 @@ class FeedCampaignRibbonView(
                             }
                         }
                     }
+
+                    root.transitionToState(R.id.initial_title_with_icon)
 
                     root.setOnClickListener {
                         mAuthor?.let { author ->
@@ -344,6 +347,11 @@ class FeedCampaignRibbonView(
                             }
                         }
                     }
+
+                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
+                    animationStateList.add(R.id.initial_title_with_timer_and_icon)
+                    animationStateList.add(R.id.availability_state)
+
                     root.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
@@ -384,15 +392,17 @@ class FeedCampaignRibbonView(
                             mCampaign?.id.toLongOrZero(),
                             !(mCampaign?.isReminderActive ?: false),
                             trackerData,
-                            type,
+                            type
                         )
                     }
+
+                    root.transitionToState(R.id.initial_title_with_icon)
+                    animationStateList.add(R.id.initial_title_with_icon)
+                    animationStateList.add(R.id.start_in_state)
 
                     root.setOnClickListener {}
                 }
             }
-
-            resetAnimationBasedOnType()
         }
     }
 
@@ -411,21 +421,6 @@ class FeedCampaignRibbonView(
         mProduct!!.stockSoldPercentage.toIntSafely()
     } else {
         (mProduct!!.stockSoldPercentage * 100).toIntSafely()
-    }
-
-    private fun resetAnimationBasedOnType() {
-        with(binding) {
-            when (type) {
-                FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT, FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
-                    root.transitionToState(R.id.initial_title_with_icon)
-                    root.progress = 1f
-                }
-                FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
-                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
-                    root.progress = 1f
-                }
-            }
-        }
     }
 
     private fun setupTimer(timeTarget: String, onFinish: () -> Unit) {
@@ -450,7 +445,19 @@ class FeedCampaignRibbonView(
         }
     }
 
+    private fun runLoopAnimation(index: Int) {
+        if (animationStateList.isNotEmpty()) {
+            val animationIndex = index % animationStateList.size
+
+            startDelayProcess(THREE_SECOND) {
+                binding.root.transitionToState(animationStateList[animationIndex])
+                runLoopAnimation(index + ONE)
+            }
+        }
+    }
+
     companion object {
+        private const val HALF_SECOND = 500L
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
         private const val COLOR_TRANSITION_DURATION = 250
