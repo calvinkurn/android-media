@@ -151,6 +151,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 }
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
+            setupSemuaChipAlignment(sortFilterItems)
             it.parentListener = {
                 if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
                     dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
@@ -162,6 +163,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             }
         }
         refreshQuickFilter(filters)
+    }
+    private fun setupSemuaChipAlignment(sortFilterItems: java.util.ArrayList<SortFilterItem>) {
+        if (sortFilterItems.isNotEmpty() && sortFilterItems[0].title == fragment.getString(R.string.semua_kategori))
+            sortFilterItems[0].refChipUnify.chip_text.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
@@ -294,7 +299,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             ?.trackClickDetailedFilter(componentName)
         for (option in filter.options) {
-            if (quickFilterViewModel.isQuickFilterSelected(option)) {
+            if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
                 option.inputState = true.toString()
             } else {
                 option.inputState = ""
