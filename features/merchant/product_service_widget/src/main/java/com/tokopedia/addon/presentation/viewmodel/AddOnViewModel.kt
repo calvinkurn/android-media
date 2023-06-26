@@ -73,8 +73,8 @@ class AddOnViewModel @Inject constructor(
             val addonGroups = AddOnMapper.mapAddonToUiModel(result)
             mGetAddOnResult.value = addonGroups
         }, onError = {
-            mErrorThrowable.value = it
-        })
+                mErrorThrowable.value = it
+            })
     }
 
     fun setSelectedAddOn(selectedAddonIds: List<String>) {
@@ -84,7 +84,13 @@ class AddOnViewModel @Inject constructor(
     fun saveAddOnState(cartId: Long, source: String) {
         mSaveSelectionResult.value = Success(emptyList())
         saveAddOnStateUseCase.setParams(
-            AddOnMapper.mapToSaveAddOnStateRequest(cartId, source, selectedAddonGroup, selectedAddon.value)
+            AddOnMapper.mapToSaveAddOnStateRequest(
+                cartId,
+                source,
+                selectedAddonGroup,
+                selectedAddon.value
+            ),
+            false
         )
         saveAddOnStateUseCase.execute(
             onSuccess = {
@@ -126,9 +132,10 @@ class AddOnViewModel @Inject constructor(
                 getDataErrorMessage = result.error.messages
             )
         }, onError = {
-            mAggregatedData.value = AddOnPageResult.AggregatedData(
-                getDataErrorMessage = ErrorHandler.getErrorMessage(context, it))
-        })
+                mAggregatedData.value = AddOnPageResult.AggregatedData(
+                    getDataErrorMessage = ErrorHandler.getErrorMessage(context, it)
+                )
+            })
     }
 
     fun setAutosave(cartId: Long, atcSource: String) {
@@ -140,8 +147,9 @@ class AddOnViewModel @Inject constructor(
     }
 
     fun restoreSelection() {
-        if (lastSelectedAddOn.isNotEmpty())
+        if (lastSelectedAddOn.isNotEmpty()) {
             mGetAddOnResult.value = lastSelectedAddOn
+        }
     }
 
     fun desimplifyAddonList() {
@@ -149,7 +157,7 @@ class AddOnViewModel @Inject constructor(
         mGetAddOnResult.value = mGetAddOnResult.value
     }
 
-    data class AutoSaveAddonModel (
+    data class AutoSaveAddonModel(
         val isActive: Boolean = false,
         val cartId: Long = 0,
         val atcSource: String = "",
