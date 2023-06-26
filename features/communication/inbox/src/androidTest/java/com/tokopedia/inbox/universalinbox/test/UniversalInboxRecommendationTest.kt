@@ -3,7 +3,7 @@ package com.tokopedia.inbox.universalinbox.test
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.general.GeneralResult.assertInboxRvTotalItem
-import com.tokopedia.inbox.universalinbox.test.robot.general.GeneralRobot.scrollToPosition
+import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertPrePurchaseRecommendation
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertPrePurchaseRecommendationGone
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductRecommendation
@@ -15,12 +15,15 @@ import org.junit.Test
 class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
     @Test
-    fun should_show_recommendation_items() {
+    fun should_show_prepurchase_widget_and_recommendation_items() {
         // When
         launchActivity()
-        scrollToPosition(11)
+        generalRobot {
+            scrollToPosition(9)
+        }
 
         // Then
+        assertPrePurchaseRecommendation(9)
         assertProductRecommendation(11)
     }
 
@@ -31,20 +34,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         launchActivity()
-        scrollToPosition(10)
+        generalRobot {
+            scrollToPosition(10)
+        }
 
         // Then
         assertInboxRvTotalItem(10)
-    }
-
-    @Test
-    fun should_show_prepurchase_widget() {
-        // When
-        launchActivity()
-        scrollToPosition(9)
-
-        // Then
-        assertPrePurchaseRecommendation(9)
     }
 
     @Test
@@ -54,7 +49,9 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         launchActivity()
-        scrollToPosition(9)
+        generalRobot {
+            scrollToPosition(9)
+        }
 
         // Then
         assertPrePurchaseRecommendation(9)
@@ -69,7 +66,9 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         launchActivity()
-        scrollToPosition(9)
+        generalRobot {
+            scrollToPosition(9)
+        }
 
         // Then
         assertPrePurchaseRecommendation(9)

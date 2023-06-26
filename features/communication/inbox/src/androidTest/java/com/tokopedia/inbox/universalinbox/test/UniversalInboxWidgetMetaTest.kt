@@ -7,6 +7,7 @@ import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertW
 import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertWidgetMetaGone
 import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertWidgetMetaLocalLoad
 import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertWidgetMetaTotal
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -37,7 +38,9 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
         }
         GqlResponseStub.widgetMetaResponse.editAndGetResponseObject { response ->
             response.chatInboxWidgetMeta.metaData.forEach {
-                it.isDynamic = false
+                if (it.type == CHATBOT_TYPE) {
+                    it.isDynamic = false
+                }
             }
         }
 

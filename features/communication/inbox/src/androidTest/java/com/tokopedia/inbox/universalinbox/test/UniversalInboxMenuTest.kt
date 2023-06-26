@@ -9,7 +9,7 @@ import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotif
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounterGone
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertSellerChatMenu
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertShopInfo
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuRobot
+import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
@@ -161,7 +161,9 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         }
 
         // When
-        MenuRobot.swipeDown()
+        menuRobot {
+            swipeDown()
+        }
 
         // Then
         assertNotificationCounter("1")

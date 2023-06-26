@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.PARAM_PAGE_NAME
 import com.tokopedia.recommendation_widget_common.PARAM_X_SOURCE
 import com.tokopedia.test.application.graphql.GqlMockUtil
+import com.tokopedia.test.application.graphql.GqlQueryParser
 import javax.inject.Inject
 
 class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
@@ -31,20 +32,23 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         variables: Map<String, Any?>?
     ): GraphqlResponse {
         return when {
-            query.contains(GqlResponseStub.counterResponse.query) -> {
+            (GqlQueryParser.parse(query).first() == GqlResponseStub.counterResponse.query) -> {
                 shouldThrow(GqlResponseStub.counterResponse)
                 GqlMockUtil.createSuccessResponse(
                     GqlResponseStub.counterResponse.responseObject
                 )
             }
-            query.contains(GqlResponseStub.widgetMetaResponse.query) -> {
+            (GqlQueryParser.parse(query).first() == GqlResponseStub.widgetMetaResponse.query) -> {
                 shouldThrow(GqlResponseStub.widgetMetaResponse)
                 GqlMockUtil.createSuccessResponse(
                     GqlResponseStub.widgetMetaResponse.responseObject
                 )
             }
             (
-                query.contains(GqlResponseStub.productRecommendationResponse.query) &&
+                (
+                    GqlQueryParser.parse(query).first() ==
+                        GqlResponseStub.productRecommendationResponse.query
+                    ) &&
                     variables?.get(PARAM_X_SOURCE) == DEFAULT_VALUE_X_SOURCE
                 ) -> {
                 shouldThrow(GqlResponseStub.productRecommendationResponse)
@@ -53,7 +57,10 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                 )
             }
             (
-                query.contains(GqlResponseStub.prePurchaseProductRecommendationResponse.query) &&
+                (
+                    GqlQueryParser.parse(query).first() ==
+                        GqlResponseStub.prePurchaseProductRecommendationResponse.query
+                    ) &&
                     variables?.get(PARAM_PAGE_NAME) == WIDGET_PAGE_NAME
                 ) -> {
                 shouldThrow(GqlResponseStub.prePurchaseProductRecommendationResponse)
@@ -61,7 +68,10 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                     GqlResponseStub.prePurchaseProductRecommendationResponse.responseObject
                 )
             }
-            query.contains(GqlResponseStub.topAdsHeadlineResponse.query) -> {
+            (
+                GqlQueryParser.parse(query).first() ==
+                    GqlResponseStub.topAdsHeadlineResponse.query
+                ) -> {
                 shouldThrow(GqlResponseStub.topAdsHeadlineResponse)
                 GqlMockUtil.createSuccessResponse(
                     GqlResponseStub.topAdsHeadlineResponse.responseObject

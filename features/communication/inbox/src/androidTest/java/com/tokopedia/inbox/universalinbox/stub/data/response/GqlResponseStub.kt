@@ -21,35 +21,35 @@ object GqlResponseStub {
         counterResponse = ResponseStub(
             filePath = "counter/success_get_counter.json",
             type = UniversalInboxCounterWrapperResponse::class.java,
-            query = "query GetAllCounter",
+            query = "notifications",
             isError = false
         )
 
         widgetMetaResponse = ResponseStub(
             filePath = "widget/success_get_widget_meta.json",
             type = UniversalInboxWidgetWrapperResponse::class.java,
-            query = "query GetChatInboxWidgetMeta",
+            query = "chatInboxWidgetMeta",
             isError = false
         )
 
         topAdsHeadlineResponse = ResponseStub(
             filePath = "topads/success_get_headline.json",
             type = TopAdsHeadlineResponse::class.java,
-            query = "uery TopadsCPMHeadlineQuery",
+            query = "displayAdsV3",
             isError = false
         )
 
         productRecommendationResponse = ResponseStub(
             filePath = "recommendation/success_get_recommendation.json",
             type = RecommendationEntity::class.java,
-            query = "query productRecommendation",
+            query = "productRecommendationWidget",
             isError = false
         )
 
         prePurchaseProductRecommendationResponse = ResponseStub(
             filePath = "recommendation/success_get_prepurchase_recommendation.json",
             type = RecommendationEntity::class.java,
-            query = "query productRecommendation",
+            query = "productRecommendationWidget(userID",
             isError = false
         )
     }
