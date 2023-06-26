@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationFragment
 import com.tokopedia.loginregister.shopcreation.view.nameshop.NameShopCreationFragment
 import com.tokopedia.loginregister.shopcreation.view.phoneshop.PhoneShopCreationFragment
@@ -13,7 +14,7 @@ import dagger.Component
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
+@ActivityScope
 @SessionCommonScope
 @Component(modules = [
     ShopCreationModule::class,
