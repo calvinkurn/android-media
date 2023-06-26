@@ -12,7 +12,6 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +31,9 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -49,7 +50,6 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
@@ -72,6 +72,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
     SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
@@ -146,13 +147,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView()
+        setupNavigator()
 
         setupBackground()
         setupToolbar()
         setupStatusBar()
         setupBottomNav()
-        setupNavigator()
-        setupShadow()
 
         setupDefaultPage(savedInstanceState)
 
@@ -246,14 +246,17 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 showToolbarNotificationBadge()
                 checkForSellerAppReview(FragmentType.HOME)
             }
+
             FragmentType.PRODUCT -> {
                 UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
             }
+
             FragmentType.CHAT -> {
                 UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
+
             FragmentType.ORDER -> {
                 if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
                     initSomListLoadTimeMonitoring()
@@ -261,9 +264,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
+
             FragmentType.OTHER -> {
                 UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
+                showToolbar(FragmentType.OTHER)
             }
         }
         return true
@@ -360,6 +365,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     initSomListLoadTimeMonitoring()
                     lastSomTab = page
                 }
+
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 
@@ -392,6 +398,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_HOME_MENU_POSITION)
         navigator = SellerHomeNavigator(
             this,
+            lifecycleScope,
             supportFragmentManager,
             sellerHomeRouter,
             userSession,
@@ -407,23 +414,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             navigationView = binding?.sahBottomNav,
             otherMenuView = navigationOtherMenuView
         )
-    }
-
-    private fun setupShadow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val isAppDarkMode = isDarkMode()
-            if (isAppDarkMode) {
-                ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
-                    binding?.statusBarShadow?.background = it
-                    binding?.navBarShadow?.background = it
-                }
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
-                    binding?.statusBarShadow?.background = it
-                    binding?.navBarShadow?.background = it
-                }
-            }
-        }
     }
 
     private fun showToolbarNotificationBadge() {
@@ -444,18 +434,25 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
-        if (pageType != FragmentType.OTHER && pageType != FragmentType.ORDER) {
-            val pageTitle = navigator?.getPageTitle(pageType)
-            supportActionBar?.title = pageTitle
-            binding?.sahToolbar?.show()
-            binding?.statusBarShadow?.hide()
-        } else {
-            if (!DeviceScreenInfo.isTablet(this)) {
-                binding?.statusBarShadow?.hide()
-            } else {
-                binding?.statusBarShadow?.show()
+        binding?.run {
+            when (pageType) {
+                FragmentType.HOME, FragmentType.PRODUCT, FragmentType.CHAT -> {
+                    val pageTitle = navigator?.getPageTitle(pageType)
+                    supportActionBar?.title = pageTitle
+                    sahToolbar.show()
+                    val showStatusBar = pageType == FragmentType.HOME
+                    statusBarShadow?.isVisible = showStatusBar
+                }
+
+                else -> {
+                    if (!DeviceScreenInfo.isTablet(this@SellerHomeActivity)) {
+                        statusBarShadow?.gone()
+                    } else {
+                        statusBarShadow?.show()
+                    }
+                    sahToolbar.gone()
+                }
             }
-            binding?.sahToolbar?.hide()
         }
     }
 
@@ -514,6 +511,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                         setHomeTitle(shopName)
                     }
                 }
+
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
@@ -661,7 +659,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             )
         )
         binding?.sahBottomNav?.setMenu(menu)
-
         binding?.sahBottomNav?.setMenuClickListener(this)
     }
 
@@ -728,7 +725,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
                 .isNullOrBlank()
 
-        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+        //UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
     }
 
     private fun observeWearDialog() {
@@ -752,7 +749,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                             this@SellerHomeActivity,
                             resources.getString(R.string.wearos_toast_install),
                             Toast.LENGTH_LONG
-                            ).show()
+                        ).show()
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()

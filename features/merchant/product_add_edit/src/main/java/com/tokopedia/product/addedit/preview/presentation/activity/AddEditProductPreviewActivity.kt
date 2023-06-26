@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -22,6 +23,7 @@ import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.launch
 
 open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
 
@@ -125,13 +127,15 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
     }
 
     private fun setupScreenShootGlobalFeedback() {
-        val isEditing = mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
+        val isEditing =
+            mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
         val currentPage = if (isEditing) {
             SellerFeedbackUtil.EDIT_PRODUCT
         } else {
             SellerFeedbackUtil.ADD_PRODUCT
         }
-        SellerFeedbackUtil(applicationContext)
-            .setSelectedPage(currentPage)
+        lifecycleScope.launch {
+            SellerFeedbackUtil(applicationContext).setSelectedPage(currentPage)
+        }
     }
 }
