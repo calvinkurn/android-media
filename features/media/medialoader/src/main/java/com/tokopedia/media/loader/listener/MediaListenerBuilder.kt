@@ -7,6 +7,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
@@ -85,6 +86,13 @@ internal object MediaListenerBuilder {
         }
 
         properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
+
+        if (properties.shouldTrackNetwork) {
+            val result = NetworkResponseManager.getInstance(context)
+
+            properties.setNetworkResponse?.header(result.header())
+            properties.setNetworkResponse?.response(result.response())
+        }
         return false
     }
 }

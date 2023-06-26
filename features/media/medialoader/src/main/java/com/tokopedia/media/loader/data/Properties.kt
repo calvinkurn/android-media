@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.listener.NetworkResponseListener
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
@@ -31,7 +32,9 @@ data class Properties(
     internal var fitCenter: Boolean = false,
     internal var isAdaptiveSizeImageRequest: Boolean = false,
     internal var accessToken: String = "",
-    internal var userId: String = ""
+    internal var userId: String = "",
+    internal var shouldTrackNetwork: Boolean = false,
+    internal var setNetworkResponse: NetworkResponseListener? = null
 ) {
 
     /*
@@ -66,6 +69,10 @@ data class Properties(
 
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
+    }
+
+    fun shouldTrackNetworkResponse(value: Boolean) = apply {
+        this.shouldTrackNetwork = value
     }
 
     // to display the image with specific time to delay (ms)
@@ -150,6 +157,21 @@ data class Properties(
 
             override fun onFailed(error: MediaException?) {
                 onError(error)
+            }
+        }
+    }
+
+    fun networkResponse(
+        header: (String) -> Unit = { _ -> },
+        response: (String) -> Unit = { _ -> }
+    ) = apply {
+        setNetworkResponse = object : NetworkResponseListener {
+            override fun header(data: String) {
+                header(data)
+            }
+
+            override fun response(data: String) {
+                response(data)
             }
         }
     }
