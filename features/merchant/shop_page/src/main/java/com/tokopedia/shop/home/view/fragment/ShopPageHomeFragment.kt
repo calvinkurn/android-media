@@ -116,6 +116,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_H
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
@@ -1889,7 +1890,11 @@ open class ShopPageHomeFragment :
 
     protected open fun getPlayWidgetData() {
         shopHomeAdapter?.getPlayWidgetUiModel()?.let {
-            viewModel?.getPlayWidget(shopId, it)
+            val playWidgetType = if (isOwner)
+                ShopPageWidgetMapper.mapToPlayWidgetTypeSellerApp(shopId)
+            else
+                ShopPageWidgetMapper.mapToPlayWidgetTypeShopPage(shopId)
+            viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
@@ -147,6 +148,24 @@ object ShopPageWidgetMapper {
         )
     }
 
+
+    fun mapToPlayWidgetTypeSellerApp(shopId: String): PlayWidgetUseCase.WidgetType.SellerApp{
+        return PlayWidgetUseCase.WidgetType.SellerApp(
+            shopId = shopId
+        )
+    }
+
+    fun mapToPlayWidgetTypeShopPage(shopId: String): PlayWidgetUseCase.WidgetType.ShopPage{
+        return PlayWidgetUseCase.WidgetType.ShopPage(
+            shopId = shopId
+        )
+    }
+
+    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
+        return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
+            shopId = shopId
+        )
+    }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
         return when (this) {
             0 -> StatusCampaign.UPCOMING

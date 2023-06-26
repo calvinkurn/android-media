@@ -730,12 +730,12 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    fun getPlayWidget(shopId: String, carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel) {
+    fun getPlayWidget(
+        carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel,
+        playWidgetType: PlayWidgetUseCase.WidgetType
+    ) {
         launchCatchError(block = {
-            val response = playWidgetTools.getWidgetFromNetwork(
-                if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                dispatcherProvider.io
-            )
+            val response = playWidgetTools.getWidgetFromNetwork(playWidgetType, dispatcherProvider.io)
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevState = _playWidgetObservable.value?.playWidgetState)
             _playWidgetObservable.postValue(
                 carouselPlayWidgetUiModel.copy(

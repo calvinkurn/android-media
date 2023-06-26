@@ -57,6 +57,7 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
@@ -734,7 +735,8 @@ class ShopPageCampaignFragment :
 
     override fun getPlayWidgetData() {
         shopCampaignTabAdapter.getPlayWidgetUiModel()?.let {
-            viewModel?.getPlayWidget(shopId, it)
+            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(shopId)
+            viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
 
