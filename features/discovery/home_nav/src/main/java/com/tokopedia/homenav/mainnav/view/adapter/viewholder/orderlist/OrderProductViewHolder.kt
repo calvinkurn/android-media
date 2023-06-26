@@ -9,10 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -33,12 +31,10 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         val context = itemView.context
 
         itemView.addOnImpressionListener(productModel)  {
-            mainNavListener.putEEToTrackingQueue(
-                    TrackingTransactionSection.getImpressionOnOrderStatus(
-                        userId = mainNavListener.getUserId(),
-                        orderLabel = productModel.navProductModel.statusText,
-                        position = adapterPosition,
-                        orderId = productModel.navProductModel.id)
+            mainNavListener.onOrderCardImpressed(
+                productModel.navProductModel.statusText,
+                productModel.navProductModel.id,
+                productModel.position
             )
         }
         //title
@@ -102,10 +98,10 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         }
 
         itemView.setOnClickListener {
-            TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    productModel.navProductModel.statusText)
-            RouteManager.route(context, productModel.navProductModel.applink)
+            mainNavListener.onOrderCardClicked(
+                productModel.navProductModel.applink,
+                productModel.navProductModel.statusText
+            )
         }
     }
 }
