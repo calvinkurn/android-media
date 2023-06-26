@@ -305,6 +305,9 @@ object DeeplinkMainApp {
         "gold-merchant-statistic-dashboard" to mutableListOf(
             DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
         ),
+        "goto-kyc" to mutableListOf(
+            DLP.goTo(DeeplinkMapperUser::getRegisteredNavigationUser)
+        ),
         "home" to mutableListOf(
             DLP.goTo(DeeplinkMapperHome::getRegisteredNavigationHome)
         ),

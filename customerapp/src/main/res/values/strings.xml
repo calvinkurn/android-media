@@ -228,4 +228,5 @@
         <item>(check)? my $type1 reservation(s)?</item>
         <item>(view)? my $type1 booking(s)?</item>
     </string-array>
+
 </resources>
