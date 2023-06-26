@@ -63,6 +63,11 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -102,6 +107,7 @@ class ShippingEditorFragment :
 
     private var shippingEditorOnDemandAdapter = ShippingEditorItemAdapter(this, this)
     private var shippingEditorConventionalAdapter = ShippingEditorItemAdapter(this, this)
+    private var finishToastJob: Job? = null
     private var binding by autoClearedNullable<FragmentShippingEditorNewBinding>()
 
     override fun getScreenName(): String = ""
@@ -270,6 +276,11 @@ class ShippingEditorFragment :
             when (it) {
                 is ShippingEditorState.Success -> {
                     binding?.swipeRefresh?.isRefreshing = false
+                    finishToastJob?.cancel()
+                    finishToastJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(FINISH_ACTIVITY_DELAY)
+                        activity?.finish()
+                    }
                     view?.let { view ->
                         Toaster.build(
                             view,
@@ -278,7 +289,6 @@ class ShippingEditorFragment :
                             type = Toaster.TYPE_NORMAL
                         ).show()
                     }
-                    fetchData()
                 }
 
                 is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
@@ -943,6 +953,7 @@ class ShippingEditorFragment :
         private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
 
         private const val COACHMARK_ON_BOARDING_DELAY = 1000L
+        private const val FINISH_ACTIVITY_DELAY = 2000L
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
