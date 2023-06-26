@@ -191,30 +191,9 @@ class FlashSaleManageProductListFragment :
     private fun loadTickerData() {
         viewModel.processEvent(
             FlashSaleManageProductListUiEvent.GetTickerData(
-                rollenceValueList = TickerUtil(activity?.application).getRollenceValues()
+                rollenceValueList = TickerUtil.getRollenceValues()
             )
         )
-    }
-
-    private fun configTicker(totalProduct: Int) {
-//        ticker?.shouldShowWithAction(!totalProduct.isZero()) {
-//            ticker?.apply {
-//                tickerType = TYPE_ANNOUNCEMENT
-//                tickerShape = Ticker.SHAPE_LOOSE
-//                setHtmlDescription(
-//                    String.format(getString(R.string.stfs_manage_product_list_ticker_manage_product))
-//                )
-//                setDescriptionClickEvent(object : TickerCallback {
-//                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                        redirectToManageProductPage()
-//                    }
-//
-//                    override fun onDismiss() {
-//                    }
-//
-//                })
-//            }
-//        }
     }
 
     private fun setupTicker(isShowTicker: Boolean, tickerList : List<RemoteTicker>) {
@@ -234,7 +213,7 @@ class FlashSaleManageProductListFragment :
                         TickerData(
                             title = it.title,
                             description = description,
-                            type = TickerUtil(activity?.application).getTickerType(it.type),
+                            type = TickerUtil.getTickerType(it.type),
                             isFromHtml = true
                         )
                     )
@@ -259,10 +238,6 @@ class FlashSaleManageProductListFragment :
             }
         }
     }
-
-//    private fun redirectToManageProductPage() {
-//        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-//    }
 
     private fun observeUiEffect() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -565,7 +540,6 @@ class FlashSaleManageProductListFragment :
                 hideGlobalErrorState()
                 setLoadingShimmeringData(it.isLoading)
                 if (!it.isLoading) {
-                    configTicker(it.totalProduct)   // Delete this soon
                     setupTicker(isShowTicker = it.showTicker, tickerList = it.tickerList)
                     showTotalProduct(it.totalProduct)
                     updateDelegateData(it.listDelegateItem)

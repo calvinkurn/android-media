@@ -105,7 +105,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
         applyUnifyBackgroundColor()
-        val rollenceValues = TickerUtil(activity?.application).getRollenceValues()
+        val rollenceValues = TickerUtil.getRollenceValues()
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValues
@@ -206,7 +206,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderErrorState(error: Throwable?) {
         val isError = error != null
-        val rollenceValues = TickerUtil(activity?.application).getRollenceValues()
+        val rollenceValues = TickerUtil.getRollenceValues()
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
             viewModel.processEvent(
@@ -319,7 +319,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                     TickerData(
                         title = it.title,
                         description = description,
-                        type = TickerUtil(activity?.application).getTickerType(it.type),
+                        type = TickerUtil.getTickerType(it.type),
                         isFromHtml = true
                     )
                 )

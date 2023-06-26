@@ -1,14 +1,10 @@
 package com.tokopedia.tkpd.flashsale.util
 
-import android.app.Application
 import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class TickerUtil(val application: Application?) {
-
-    private lateinit var remoteConfig: RemoteConfigInstance
+object TickerUtil {
 
     fun getTickerType(tickerType: String): Int {
         return when (tickerType.lowercase()) {
@@ -27,7 +23,7 @@ class TickerUtil(val application: Application?) {
 
     private fun getFilteredRollenceKeys(): List<String> {
         val prefixKey = "CT_"
-        val filteredRollenceKeys = getAbTestPlatform()
+        val filteredRollenceKeys = RemoteConfigInstance.getInstance().abTestPlatform
             .getKeysByPrefix(prefix = prefixKey)
         return filteredRollenceKeys.toList()
     }
@@ -35,19 +31,12 @@ class TickerUtil(val application: Application?) {
     private fun getFilteredRollenceValues(keyList: List<String>): List<String> {
         var valueList: MutableList<String> = mutableListOf()
         for (key in keyList) {
-            val rollenceValue: String = getAbTestPlatform().getString(key)
+            val rollenceValue: String = RemoteConfigInstance.getInstance().abTestPlatform.getString(key)
             if (rollenceValue.isNotEmpty()) {
                 valueList.add(rollenceValue)
             }
         }
         return valueList
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfig.isInitialized) {
-            remoteConfig = RemoteConfigInstance(application)
-        }
-        return remoteConfig.abTestPlatform
     }
 
 }
