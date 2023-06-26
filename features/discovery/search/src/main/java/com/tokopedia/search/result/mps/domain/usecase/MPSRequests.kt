@@ -23,6 +23,7 @@ private const val MPS_GQL_QUERY = """
       ace_search_shop_mps(params: ${'$'}params) {
         header {
           total_data
+          treatment_code
         }
         data {
           id
