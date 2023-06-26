@@ -1,24 +1,24 @@
-package com.tokopedia.rechargegeneral.domain
+package com.tokopedia.common_digital.common.usecase
 
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.rechargegeneral.domain.GetDppoConsentUseCase.Companion.QUERY_NAME
-import com.tokopedia.rechargegeneral.domain.GetDppoConsentUseCase.Companion.QUERY_VALUE
-import com.tokopedia.rechargegeneral.model.RechargeGeneralDppoConsent
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase.Companion.QUERY_NAME
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase.Companion.QUERY_VALUE
 import javax.inject.Inject
 
 @GqlQuery(QUERY_NAME, QUERY_VALUE)
 class GetDppoConsentUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<RechargeGeneralDppoConsent>(graphqlRepository) {
+): GraphqlUseCase<DigitalDppoConsent>(graphqlRepository) {
 
     init {
         setGraphqlQuery(QueryGetDppoConsent())
-        setTypeClass(RechargeGeneralDppoConsent::class.java)
+        setTypeClass(DigitalDppoConsent::class.java)
     }
 
-    suspend fun execute(categoryId: Int): RechargeGeneralDppoConsent {
+    suspend fun execute(categoryId: Int): DigitalDppoConsent {
         setRequestParams(createRequestParams(categoryId))
         return executeOnBackground()
     }

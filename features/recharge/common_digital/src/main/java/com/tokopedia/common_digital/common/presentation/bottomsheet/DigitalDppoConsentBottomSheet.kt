@@ -1,21 +1,18 @@
-package com.tokopedia.rechargegeneral.presentation.bottomsheet
+package com.tokopedia.common_digital.common.presentation.bottomsheet
 
 import android.os.Bundle
-import android.text.Layout
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.rechargegeneral.R
-import com.tokopedia.rechargegeneral.databinding.BottomsheetRechargeGeneralDppoConsentBinding
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.common_digital.databinding.BottomsheetRechargeGeneralDppoConsentBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.common_digital.R
 
-class RechargeDppoConsentBottomSheet(
-    private val description: String
-): BottomSheetUnify() {
+class DigitalDppoConsentBottomSheet(private val description: String): BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeGeneralDppoConsentBinding>()
 
@@ -32,7 +29,7 @@ class RechargeDppoConsentBottomSheet(
     ): View? {
         initView()
         initConsentContent()
-        setTitle(getString(R.string.recharge_dppo_consent))
+        setTitle(getString(R.string.digital_common_dppo_consent))
         setChild(binding?.root)
         setCloseClickListener {
             dismiss()
@@ -57,3 +54,4 @@ class RechargeDppoConsentBottomSheet(
         private const val TAG_GENERAL_CONSENT_BOTTOM_SHEET = "GENERAL_CONSENT_BOTTOM_SHEET"
     }
 }
+
