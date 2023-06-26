@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.list.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import javax.inject.Inject
@@ -14,7 +13,7 @@ class FilterResultMapper @Inject constructor() {
             statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
             sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
             fromCache = fromCache,
-            highLightedStatusKey = resultFilterList.orderFilterSom.highLightedStatusKey
+            highLightedStatusKey = resultFilterList.orderFilterSom.highLightedStatusKey.orEmpty()
         )
     }
 
@@ -75,7 +74,7 @@ class FilterResultMapper @Inject constructor() {
         add(
             SomListFilterUiModel.Status(
                 key = SomConsts.STATUS_ALL_ORDER,
-                status = SomConsts.STATUS_NAME_ALL_ORDER,
+                status = SomConsts.STATUS_NAME_ALL_ORDER
             )
         )
     }

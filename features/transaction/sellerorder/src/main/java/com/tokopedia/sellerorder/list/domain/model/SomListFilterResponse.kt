@@ -26,7 +26,7 @@ data class SomListFilterResponse(
             val sortByList: List<SortBy> = listOf(),
             @Expose
             @SerializedName("highlighted_status_key")
-            val highLightedStatusKey: String = ""
+            val highLightedStatusKey: String? = ""
         ) {
             data class QuickFilter(
                 @SerializedName("id")
