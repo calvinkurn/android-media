@@ -411,7 +411,7 @@ class FeedCampaignRibbonView(
             tyFeedCampaignRibbonSubtitle.text = mProduct?.stockWording
 
             val value = getProgressValue()
-            pbFeedCampaignRibbon.setValue(value, true)
+            pbFeedCampaignRibbon.setValue(value)
         }
     }
 
