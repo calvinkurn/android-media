@@ -36,6 +36,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -1334,7 +1335,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         PlayWidgetReminderType.NotReminded,
-                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown, "", "", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
@@ -1345,6 +1346,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             ),
@@ -1427,7 +1431,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown, "", "", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         true,
@@ -1438,6 +1442,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             )
@@ -1498,7 +1505,7 @@ class ShopHomeViewModelTest {
                         mockTotalView,
                         PlayWidgetPromoType.Default("", false),
                         mockReminderType,
-                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown),
+                        PlayWidgetPartnerUiModel("", "", PartnerType.Unknown, "", "", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),
                         PlayWidgetChannelType.Upcoming,
                         false,
@@ -1509,6 +1516,9 @@ class ShopHomeViewModelTest {
                         false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
                         shouldShowPerformanceDashboard = false,
+                        products = emptyList(),
+                        gridType = PlayGridType.Unknown,
+                        extras = emptyMap(),
                     )
                 )
             ),

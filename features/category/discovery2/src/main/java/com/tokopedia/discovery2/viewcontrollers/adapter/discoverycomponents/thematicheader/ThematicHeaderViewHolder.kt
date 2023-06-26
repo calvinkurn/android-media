@@ -29,11 +29,11 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            thematicHeaderViewModel?.getComponentLiveData()?.observe(it, { componentItem ->
+            thematicHeaderViewModel?.getComponentLiveData()?.observe(it) { componentItem ->
                 componentItem.data?.firstOrNull()?.let { dataItem ->
                     setupView(dataItem)
                 }
-            })
+            }
         }
     }
 
@@ -59,10 +59,12 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     private fun setupBackground(color: String?, backgroundImageURL: String) {
         try {
             backgroundImageView.show()
-            if (!color.isNullOrEmpty())
+            if (!color.isNullOrEmpty()) {
                 backgroundImageView.setBackgroundColor(Color.parseColor(color))
-            if (backgroundImageURL.isNotEmpty())
+            }
+            if (backgroundImageURL.isNotEmpty()) {
                 backgroundImageView.loadImageWithoutPlaceholder(backgroundImageURL)
+            }
         } catch (e: Exception) {
             backgroundImageView.hide()
         }

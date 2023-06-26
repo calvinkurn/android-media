@@ -13,11 +13,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
@@ -32,7 +32,7 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     private val tdnImageView: TopAdsImageView? = itemView.findViewById(R.id.tdn_view)
     private val mHeaderView: FrameLayout? = itemView.findViewById(R.id.header_view)
     private val shimmerView: LoaderUnify? = itemView.findViewById(R.id.shimmer_view)
-    private lateinit var viewModel: DiscoveryTDNBannerViewModel
+    private var viewModel: DiscoveryTDNBannerViewModel? = null
 
     private val inventoryID = "13"
     private val inventoryIDGslp = "22"
@@ -49,7 +49,6 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
         tdnImageView?.setTopAdsImageViewImpression(this)
     }
 
-
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as DiscoveryTDNBannerViewModel
     }
@@ -58,14 +57,19 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
         if (lifecycleOwner != null) {
             itemView.context?.let { context ->
                 if (UserSession(context).isLoggedIn) {
-                    viewModel.componentLiveData.observe(lifecycleOwner, {
+                    viewModel?.componentLiveData?.observe(lifecycleOwner) {
                         val temp = it.design == TOP_ADS_GSLP_TDN
-                        if (isTopAdsGlsp != temp){
+                        if (isTopAdsGlsp != temp) {
                             isTopAdsGlsp = temp
                             if (isTopAdsGlsp) {
-                                if (shouldHitService){
-                                    tdnImageView?.getImageData(inventoryIDGslp, adCount, dimenID, productID = it.recomQueryProdId
-                                        ?: "")
+                                if (shouldHitService) {
+                                    tdnImageView?.getImageData(
+                                        inventoryIDGslp,
+                                        adCount,
+                                        dimenID,
+                                        productID = it.recomQueryProdId
+                                            ?: ""
+                                    )
                                 }
                                 itemView.rootView.setMargin(
                                     itemView.getDimens(R.dimen.dp_12),
@@ -73,32 +77,40 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
                                     itemView.getDimens(R.dimen.dp_12),
                                     itemView.getDimens(R.dimen.dp_12)
                                 )
-
-                            } else if (shouldHitService){
+                            } else if (shouldHitService) {
                                 addCardHeader(it)
-                                tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
-                                    ?: "")
+                                tdnImageView?.getImageData(
+                                    inventoryID,
+                                    adCount,
+                                    dimenID,
+                                    depId = it.data?.firstOrNull()?.depID
+                                        ?: ""
+                                )
                                 itemView.rootView.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
                             }
-                        }else if (shouldHitService){
+                        } else if (shouldHitService) {
                             addCardHeader(it)
-                            tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
-                                ?: "")
+                            tdnImageView?.getImageData(
+                                inventoryID,
+                                adCount,
+                                dimenID,
+                                depId = it.data?.firstOrNull()?.depID
+                                    ?: ""
+                            )
                             itemView.rootView.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
                         }
-                    })
+                    }
                 } else {
                     handleError()
                 }
             }
         }
-
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            viewModel.componentLiveData.removeObservers(it)
+            viewModel?.componentLiveData?.removeObservers(it)
         }
     }
 
@@ -106,21 +118,27 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
         mHeaderView?.removeAllViews()
         componentsItem?.data?.firstOrNull()?.let {
             if (!it.title.isNullOrEmpty() || !it.subtitle.isNullOrEmpty()) {
-                mHeaderView?.addView(CustomViewCreator.getCustomViewObject(itemView.context,
-                        ComponentsList.LihatSemua, componentsItem, fragment))
+                mHeaderView?.addView(
+                    CustomViewCreator.getCustomViewObject(
+                        itemView.context,
+                        ComponentsList.LihatSemua,
+                        componentsItem,
+                        fragment
+                    )
+                )
             }
         }
     }
 
     private fun handleError() {
         mHeaderView?.run {
-            if (childCount > 0)
+            if (childCount > 0) {
                 removeAllViews()
+            }
         }
         shimmerView?.hide()
         tdnImageView?.hide()
     }
-
 
     override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
         shouldHitService = false
@@ -129,10 +147,14 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
             tdnImageView?.show()
             topAdsModel = imageDataList[0]
             impressHolder = topAdsModel.ImpressHolder
-            if (isTopAdsGlsp) tdnImageView?.loadImage(
-                topAdsModel,
-                itemView.rootView.getDimens(R.dimen.dp_8)
-            ) else tdnImageView?.loadImage(topAdsModel)
+            if (isTopAdsGlsp) {
+                tdnImageView?.loadImage(
+                    topAdsModel,
+                    itemView.rootView.getDimens(R.dimen.dp_8)
+                )
+            } else {
+                tdnImageView?.loadImage(topAdsModel)
+            }
         } else {
             shouldHitService = false
             handleError()
@@ -145,20 +167,36 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     }
 
     override fun onTopAdsImageViewClicked(applink: String?) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId,
-                viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
-        if (!applink.isNullOrEmpty() && fragment.context != null)
+        viewModel?.components?.let {
+            viewModel?.position?.let { it1 ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(
+                    it,
+                    UserSession(fragment.context).userId,
+                    it1,
+                    topAdsModel.bannerId ?: "",
+                    topAdsModel.shopId
+                )
+            }
+        }
+        if (!applink.isNullOrEmpty() && fragment.context != null) {
             RouteManager.route(fragment.context, applink)
-
+        }
     }
 
     override fun onTopAdsImageViewImpression(viewUrl: String) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(
-            viewModel.components, UserSession(fragment.context).userId,
-            viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId
-        )
+        viewModel?.position?.let {
+            viewModel?.components?.let { it1 ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(
+                    it1,
+                    UserSession(fragment.context).userId,
+                    it,
+                    topAdsModel.bannerId ?: "",
+                    topAdsModel.shopId
+                )
+            }
+        }
         impressHolder?.let { impressHolder ->
-            if (!impressHolder.isInvoke){
+            if (!impressHolder.isInvoke) {
                 if (fragment.context != null) {
                     TopAdsUrlHitter(fragment.context).hitImpressionUrl(
                         this.javaClass.canonicalName,
