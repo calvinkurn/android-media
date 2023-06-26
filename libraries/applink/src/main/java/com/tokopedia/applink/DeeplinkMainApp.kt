@@ -915,7 +915,9 @@ object DeeplinkMainApp {
             )
         ),
         "shop-penalty" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMarketplace.SHOP_PENALTY)
+            DLP.matchPattern("") { ctx, _, _, _ ->
+                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx)
+            }
         ),
         "shop-penalty-detail" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
