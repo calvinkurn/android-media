@@ -44,7 +44,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class UserProfileViewModel @AssistedInject constructor(
@@ -774,7 +773,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun toggleLikeDislikeStatus(feedbackID: String): UserReviewUiModel.LikeDislike? {
         var selectedLikeDislike: UserReviewUiModel.LikeDislike? = null
 
-        _reviewContent.updateAndGet {
+        _reviewContent.update {
             it.copy(
                 reviewList = it.reviewList.map { item ->
                     if (item.feedbackID == feedbackID) {
