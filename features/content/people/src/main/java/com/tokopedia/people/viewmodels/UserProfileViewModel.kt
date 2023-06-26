@@ -575,19 +575,19 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickLikeReview(review: UserReviewUiModel.Review) {
         launchCatchError(block = {
-            toggleLikeDislikeStatus(review.feedbackID)
+            if (_reviewContent.value.reviewList.find { it.feedbackID == review.feedbackID } == null) {
+                return@launchCatchError
+            }
+
+            val likeDislikeAfterUpdate = toggleLikeDislikeStatus(review.feedbackID)
 
             val response = repo.setLikeStatus(
                 feedbackID = review.feedbackID,
                 likeStatus = review.likeDislike.switchLikeStatus()
             )
 
-            val selectedReview = _reviewContent.value.reviewList.firstOrNull {
-                it.feedbackID == review.feedbackID
-            } ?: return@launchCatchError
-
-            if (response.isLike != selectedReview.likeDislike.isLike) {
-                throw Exception()
+            if (response.isLike != likeDislikeAfterUpdate?.isLike) {
+                throw Exception("like response is not expected.")
             }
         }) { throwable ->
             toggleLikeDislikeStatus(review.feedbackID)
@@ -620,7 +620,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickReviewMedia(feedbackID: String, attachment: UserReviewUiModel.Attachment) {
         launch {
-            val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackID } ?: return@launch
+            val review = _reviewContent.value.reviewList.find { it.feedbackID == feedbackID } ?: return@launch
             val mediaPosition = review.attachments.indexOf(attachment) + 1
 
             _uiEvent.emit(
@@ -770,7 +770,9 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun toggleLikeDislikeStatus(feedbackID: String) {
+    private fun toggleLikeDislikeStatus(feedbackID: String): UserReviewUiModel.LikeDislike? {
+        var selectedLikeDislike: UserReviewUiModel.LikeDislike? = null
+
         _reviewContent.update {
             it.copy(
                 reviewList = it.reviewList.map { item ->
@@ -783,7 +785,9 @@ class UserProfileViewModel @AssistedInject constructor(
                                     item.likeDislike.totalLike + 1
                                 },
                                 likeStatus = item.likeDislike.switchLikeStatus()
-                            )
+                            ).also { likeDislike ->
+                                selectedLikeDislike = likeDislike
+                            }
                         )
                     } else {
                         item
@@ -791,6 +795,8 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
             )
         }
+
+        return selectedLikeDislike
     }
 
     companion object {
