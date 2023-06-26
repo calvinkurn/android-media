@@ -9,6 +9,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
@@ -17,6 +18,7 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import java.util.Collections.max
 import javax.inject.Inject
 
+@SearchScope
 class OnBoardingListenerDelegate @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager,
