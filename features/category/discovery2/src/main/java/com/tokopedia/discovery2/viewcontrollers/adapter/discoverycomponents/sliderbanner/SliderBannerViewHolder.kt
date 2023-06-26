@@ -19,12 +19,14 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_recycler_view.view.*
 
-class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView),
-        DiscoveryBannerView.DiscoveryBannerViewInteraction, BannerDotIndicator.ClickSeeAllInterface {
+class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) :
+    AbstractViewHolder(itemView),
+    DiscoveryBannerView.DiscoveryBannerViewInteraction,
+    BannerDotIndicator.ClickSeeAllInterface {
 
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
     private val sliderBannerView: DiscoveryBannerView = itemView.findViewById(R.id.slider_banner_view)
-    private lateinit var sliderBannerViewModel: SliderBannerViewModel
+    private var sliderBannerViewModel: SliderBannerViewModel? = null
     private var sliderBannerRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private var sliderBannerPagerSnapHelper: SliderBannerPagerSnapHelper? = null
 
@@ -39,13 +41,19 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
     }
 
     private fun setUpObservers() {
-        sliderBannerViewModel.getComponentsLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            sliderBannerTitle.setTextAndCheckShow(item.title)
-        })
+        sliderBannerViewModel?.getComponentsLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                sliderBannerTitle.setTextAndCheckShow(item.title)
+            }
+        )
 
-        sliderBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            sliderBannerRecycleAdapter.setDataList(item)
-        })
+        sliderBannerViewModel?.getListDataLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                sliderBannerRecycleAdapter.setDataList(item)
+            }
+        )
     }
 
     override fun attachRecyclerView() {

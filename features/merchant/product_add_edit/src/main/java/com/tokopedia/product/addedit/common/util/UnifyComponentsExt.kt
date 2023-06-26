@@ -229,6 +229,15 @@ fun Typography.activateHighlight(isActive: Boolean = true) {
     setBackgroundColor(backgroundColor)
 }
 
+fun Typography.setColorToDisabled(isSet: Boolean = true) {
+    val textColor = if (isSet) {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+    } else {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    }
+    setTextColor(textColor)
+}
+
 fun DialogUnify.setDefaultMaxWidth(adjustButtonOrientation: Boolean = true) {
     dialogMaxWidth = DIALOG_MAX_WIDTH
 

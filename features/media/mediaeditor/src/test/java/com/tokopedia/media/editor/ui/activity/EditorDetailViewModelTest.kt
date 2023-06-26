@@ -10,12 +10,12 @@ import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.ResourceProvider
-import com.tokopedia.media.editor.utils.getImageSize
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Runs
@@ -54,6 +54,7 @@ class EditorDetailViewModelTest {
     private val getWatermarkUseCase = mockk<GetWatermarkUseCase>()
     private val addLogoRepository = mockk<AddLogoFilterRepository>()
     private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
+    private val addTextRepository = mockk<AddTextFilterRepository>()
 
     private val viewModel = DetailEditorViewModel(
         resourceProvider,
@@ -66,7 +67,8 @@ class EditorDetailViewModelTest {
         saveImageRepository,
         getWatermarkUseCase,
         bitmapCreationRepository,
-        addLogoRepository
+        addLogoRepository,
+        addTextRepository
     )
 
     @Test
@@ -484,6 +486,64 @@ class EditorDetailViewModelTest {
 
     @Test
     fun `generate add logo overlay with bitmap`() {
+        // Given
+        val bitmapName = "base"
+        var overlayLogo: Bitmap? = null
+        val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { addLogoRepository.generateOverlayImage(any(), any(), any()) } returns expectedResult
+        overlayLogo = viewModel.generateAddLogoOverlay(
+            expectedResult,
+            Pair(10, 10),
+            true
+        )
+
+        // Then
+        assertEquals(overlayLogo, expectedResult)
+    }
+
+    @Test
+    fun `generate add logo overlay with add logo repo failed`() {
+        // Given
+        val bitmapName = "base"
+        var overlayLogo: Bitmap? = null
+        val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { addLogoRepository.generateOverlayImage(any(), any(), any()) } returns null
+        overlayLogo = viewModel.generateAddLogoOverlay(
+            expectedResult,
+            Pair(10, 10),
+            true
+        )
+
+        // Then
+        assertEquals(overlayLogo, null)
+    }
+
+    @Test
+    fun `generate add text overlay`() {
+        // Given
+        val bitmapName = "base"
+        var overlayText: Bitmap? = null
+        val expectedResult = ShadowBitmapFactory.create(bitmapName, BitmapFactory.Options())
+
+        // When
+        every { addTextRepository.generateOverlayText(any(), any()) } returns expectedResult
+        overlayText = viewModel.generateAddTextOverlay(
+            Pair(10, 10),
+            EditorAddTextUiModel(
+                textValue = "test"
+            )
+        )
+
+        // Then
+        assertEquals(overlayText, expectedResult)
+    }
+
+    @Test
+    fun `generate add text overlay with bitmap`() {
         // Given
         val bitmapName = "base"
         var overlayLogo: Bitmap? = null

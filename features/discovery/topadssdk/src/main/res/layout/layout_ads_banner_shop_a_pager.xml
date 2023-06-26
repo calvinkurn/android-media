@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_image"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -26,6 +26,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_type="circle"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography

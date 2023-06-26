@@ -3,7 +3,7 @@ package com.tokopedia.rechargegeneral.model.mapper
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.rechargegeneral.model.RechargeGeneralDppoConsent
+import com.tokopedia.common_digital.common.presentation.model.DigitalDppoConsent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
@@ -148,7 +148,7 @@ class RechargeGeneralMapper @Inject constructor() {
         return productInput
     }
 
-    fun mapDppoConsentToUiModel(data: RechargeGeneralDppoConsent): RechargeGeneralDppoConsentUiModel {
+    fun mapDppoConsentToUiModel(data: DigitalDppoConsent): RechargeGeneralDppoConsentUiModel {
         return RechargeGeneralDppoConsentUiModel(
             description = data.persoData.items.getOrNull(Int.ZERO)?.title ?: ""
         )

@@ -34,7 +34,6 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl4"
         tools:visibility="visible"
-        app:srcCompat="@drawable/catalog_ic_rating_star_item"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />

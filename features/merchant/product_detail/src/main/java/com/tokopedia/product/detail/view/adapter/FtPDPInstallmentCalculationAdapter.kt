@@ -10,30 +10,31 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
 import com.tokopedia.product.detail.data.model.financing.FtTncData
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
-                                         var isOfficialStore: Boolean,
-                                         var partnerDataList: ArrayList<FtCalculationPartnerData>,
-                                         var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FtPDPInstallmentCalculationAdapter(
+    var productPrice: Double?,
+    var isOfficialStore: Boolean,
+    var partnerDataList: ArrayList<FtCalculationPartnerData>,
+    var getDataFromFragment: GetTncDataFromFragment
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val DURATION_ANIMATE_INSTALLMENT = 300L
         private const val ROTATE_ANIMATE_INSTALLMENT = 180f
     }
 
-
     private var expandedPosition = -1
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.pdp_installment_layout, parent, false)
+            .inflate(R.layout.pdp_installment_layout, parent, false)
         return InstallmentItemViewHolder(itemView)
     }
 
@@ -42,7 +43,6 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
     }
 
     override fun onBindViewHolder(vHolder: RecyclerView.ViewHolder, position: Int) {
-
         val mContext = vHolder.itemView.context ?: return
 
         val item = partnerDataList[position]
@@ -68,7 +68,6 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
 
             vHolder.llInstallmentDetail.removeAllViews()
             for (installmentData in item.creditCardInstallmentList) {
-
                 val monthlyProductPrice = (if (isOfficialStore) installmentData.osMonthlyPrice else installmentData.monthlyPrice)
                 val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_data_detail_layout, null, false)
 
@@ -84,8 +83,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                         priceTv.text = "-"
                         tvInstallmentMinimumPriceExt.show()
                         tvInstallmentPriceExt.hide()
-                        tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
+                        tvInstallmentMinimumPriceExt.text = String.format(
+                            mContext.getString(R.string.ft_min_installment_amount),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false)
+                        )
                     } else {
                         if (installmentData.maximumAmount == 0.0) {
                             tvInstallmentMinimumPriceExt.hide()
@@ -97,8 +98,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                                     priceTv.text = "-"
                                     tvInstallmentMinimumPriceExt.show()
                                     tvInstallmentPriceExt.hide()
-                                    tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_max_installment_amount),
-                                            CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false))
+                                    tvInstallmentMinimumPriceExt.text = String.format(
+                                        mContext.getString(R.string.ft_max_installment_amount),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false)
+                                    )
                                 } else {
                                     tvInstallmentMinimumPriceExt.hide()
                                     tvInstallmentPriceExt.show()
@@ -144,7 +147,6 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
     }
 
     private fun inflateInstructionListData(vHolder: InstallmentItemViewHolder, position: Int, context: Context) {
-
         val item = partnerDataList[position]
 
         if (item.creditCardInstructionList.isEmpty()) {
