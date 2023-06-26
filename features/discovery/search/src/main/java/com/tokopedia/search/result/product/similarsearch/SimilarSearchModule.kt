@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.product.similarsearch
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery.common.utils.SharedPrefSimilarSearchCoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
-import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import dagger.Module
@@ -15,7 +15,7 @@ object SimilarSearchModule {
     @Provides
     @SearchScope
     fun provideSimilarSearchLocalCache(
-        @SearchContext context: Context,
+        @ApplicationContext context: Context,
     ): SimilarSearchCoachMarkLocalCache {
         return SharedPrefSimilarSearchCoachMarkLocalCache(context)
     }
