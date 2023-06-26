@@ -146,6 +146,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.product.manage.common.R as productManageR
 
 class AddEditProductPreviewFragment :
     AddEditProductFragment(),
@@ -300,6 +301,7 @@ class AddEditProductPreviewFragment :
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
+        observeHasDTStock()
         observePriceRangeFormatted()
         observeStockFormatted()
         observeImageUrlOrPathList()
@@ -578,12 +580,6 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupVariantViews() {
-        addEditProductVariantButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackAddProductVariant(shopId)
-            }
-            showVariantActivity()
-        }
         addProductVariantTipsLayout?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
@@ -595,11 +591,18 @@ class AddEditProductPreviewFragment :
     private fun setupStatusViews() {
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
+            val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
+
+            if (productInputModel.isCampaignActive ||
+                productInputModel.variantInputModel.isVariantCampaignActive()) {
+                showToasterErrorSetStatusCampaignActive(isChecked)
+                return@setOnClickListener
+            }
 
             if (isChecked && viewModel.isVariantEmpty.value == false) {
-                viewModel.productInputModel.value?.variantInputModel?.getStockStatus()?.let {
-                    activateVariantStatusConfirmation(it)
-                }
+                activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
+            } else if (!isChecked && productInputModel.hasDTStock) {
+                deactivateProductStatusConfirmation(productInputModel.detailInputModel.productName)
             } else {
                 viewModel.updateProductStatus(isChecked)
                 viewModel.setIsDataChanged(true)
@@ -630,35 +633,39 @@ class AddEditProductPreviewFragment :
 
     private fun setupDoneButton(view: View) {
         doneButton?.setOnClickListener {
-            updateProductImage()
-            if (isEditing()) {
-                ProductEditStepperTracking.trackFinishButton(shopId)
-            }
+            processSave(view)
+        }
+    }
 
-            val validateMessage = viewModel.validateProductInput(
-                viewModel.productInputModel.value?.detailInputModel
-                    ?: DetailInputModel()
-            )
-            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
-            val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+    private fun processSave(view: View){
+        updateProductImage()
+        if (isEditing()) {
+            ProductEditStepperTracking.trackFinishButton(shopId)
+        }
 
-            if (mustFillParentWeight) {
-                Toaster.build(
-                    view,
-                    getString(R.string.error_weight_not_filled),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
-            } else if (validateMessage.isNotEmpty()) {
-                Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
-                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-                productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager, context)
-            } else {
-                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
-                    viewModel.validateProductNameInput(it)
-                }
+        val validateMessage = viewModel.validateProductInput(
+            viewModel.productInputModel.value?.detailInputModel
+                ?: DetailInputModel()
+        )
+        val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+        val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+
+        if (mustFillParentWeight) {
+            Toaster.build(
+                view,
+                getString(R.string.error_weight_not_filled),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        } else if (validateMessage.isNotEmpty()) {
+            Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+            productLimitationBottomSheet?.setIsSavingToDraft(true)
+            productLimitationBottomSheet?.show(childFragmentManager, context)
+        } else {
+            viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                viewModel.validateProductNameInput(it)
             }
         }
     }
@@ -989,6 +996,22 @@ class AddEditProductPreviewFragment :
                 showEmptyVariantState(it)
             }
         })
+    }
+
+    private fun observeHasDTStock() {
+        viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
+            addEditProductVariantButton?.setColorToDisabled(hasDTStock)
+            addEditProductVariantButton?.setOnClickListener {
+                if (isEditing()) {
+                    ProductEditStepperTracking.trackAddProductVariant(shopId)
+                }
+                if (hasDTStock) {
+                    showDTDisableVariantChangeDialog()
+                } else {
+                    showVariantActivity()
+                }
+            }
+        }
     }
 
     private fun observePriceRangeFormatted() {
@@ -1479,6 +1502,20 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun showDTDisableVariantChangeDialog() {
+        val dialog = DialogUnify(context ?: return, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_disabled_variant_deactivate_dialog)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_title_disabled_variant_deactivate_dialog))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.action_oke_got_it))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun updateProductImage() {
         if (RemoteConfig.getImagePickerRemoteConfig(context)) {
             updateProductImageList()
@@ -1713,6 +1750,36 @@ class AddEditProductPreviewFragment :
         }.show()
     }
 
+    private fun deactivateProductStatusConfirmation(productName: String) {
+        viewModel.updateProductStatus(true)
+        productStatusSwitch?.isChecked = true
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(
+            productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
+        val successMessage = getString(R.string.product_add_edit_success_to_deactivate_format, productName)
+        dialog.apply {
+            setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
+            setPrimaryCTAClickListener {
+                productStatusSwitch?.isChecked = false
+                viewModel.updateProductStatus(false)
+                Toaster.build(
+                    view?:return@setPrimaryCTAClickListener,
+                    successMessage,
+                    Toaster.LENGTH_LONG,
+                    actionText = getString(R.string.action_oke)
+                ).show()
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun moveToLocationPicker() {
         activity?.let {
             val bundle = Bundle().apply {
@@ -1732,6 +1799,20 @@ class AddEditProductPreviewFragment :
                 getString(R.string.label_for_toaster_success_set_shop_location),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
+                getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
+        }
+    }
+
+    private fun showToasterErrorSetStatusCampaignActive(isChecked: Boolean) {
+        viewModel.updateProductStatus(!isChecked)
+        productStatusSwitch?.isChecked = !isChecked
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.product_add_edit_text_toaster_campaign_deactivate),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }

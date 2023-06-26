@@ -66,6 +66,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -83,6 +84,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.webview.jsinterface.PartnerWebAppInterface;
 import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -127,6 +129,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int REQUEST_CODE_LIVENESS = 1235;
+    private static final int REQUEST_CODE_PARTNER_KYC = 1236;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -276,13 +279,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
-        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, true);
-
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        if (isEnablePrintJsInterface) {
-            webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+        webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+
+        boolean isEnablePartnerKycJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE, true);
+        if (isEnablePartnerKycJsInterface) {
+            webView.addJavascriptInterface(new PartnerWebAppInterface(this::routeToPartnerKyc), "CameraPicker");
         }
+
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -455,6 +460,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
             hasMoveToNativePage = true;
             startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
+        }
+
+        if (requestCode == REQUEST_CODE_PARTNER_KYC && resultCode == Activity.RESULT_OK) {
+            proceedPartnerKyc(intent);
+        }
+
+    }
+
+    private void proceedPartnerKyc(Intent intent) {
+        String imageFilePath = intent.getStringExtra(ApplinkConstInternalFintech.FILE_PATH);
+        String type = intent.getStringExtra(ApplinkConstInternalFintech.TYPE);
+
+        if (!TextUtils.isEmpty(imageFilePath)) {
+            String imageBase64 = WebViewHelper.INSTANCE.getBase64FromImagePath(imageFilePath);
+            if (imageBase64 != null) {
+                String formattedImageBase64 = imageBase64.replace("\n", "");
+                WebViewHelper.INSTANCE.finishTakePicture(type, formattedImageBase64, webView);
+            }
         }
     }
 
@@ -1199,5 +1222,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public interface OnLocationRequestListener {
         void onLocationPermissionRequested(GeolocationPermissions.Callback callback, String origin);
     }
+
+    private void routeToPartnerKyc(String docType, String lang) {
+        String applink = "";
+        if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.TYPE_KTP)) {
+            applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
+        } else {
+            applink = ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE;
+        }
+
+        Intent intent = RouteManager.getIntent(getActivity(), applink);
+        intent.putExtra(ApplinkConstInternalFintech.isV2, true);
+        startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
+    }
+
 
 }

@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -37,7 +36,8 @@ import javax.inject.Inject
 
 class NewAddPhoneFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentNewAddPhoneBinding? by viewBinding()
+    private var _binding: FragmentNewAddPhoneBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -57,7 +57,8 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_new_add_phone, container, false)
+        _binding = FragmentNewAddPhoneBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -285,6 +286,11 @@ class NewAddPhoneFragment : BaseDaggerFragment() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

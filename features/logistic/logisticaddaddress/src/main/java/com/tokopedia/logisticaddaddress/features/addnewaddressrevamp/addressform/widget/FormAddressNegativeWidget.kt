@@ -57,7 +57,7 @@ class FormAddressNegativeWidget : ConstraintLayout {
 
     init {
         binding =
-            FormAddressNewAlamatNegativeBinding.inflate(LayoutInflater.from(context), this, true)
+            FormAddressNewAlamatNegativeBinding.inflate(LayoutInflater.from(context), this)
     }
 
     fun setDistrict(

@@ -115,7 +115,7 @@ ext {
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
 
-            dynamicBanner                   : ":features:home:dynamicbanner",
+			dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",

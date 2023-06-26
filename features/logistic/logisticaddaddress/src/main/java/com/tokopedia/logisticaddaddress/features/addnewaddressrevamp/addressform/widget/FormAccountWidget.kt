@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FormAddressNewAkunBinding
@@ -15,7 +16,7 @@ import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcher
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcherPhone
 
-class FormAccountWidget : LinearLayout {
+class FormAccountWidget : ConstraintLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -33,7 +34,7 @@ class FormAccountWidget : LinearLayout {
         get() = binding?.etNamaPenerima?.textFieldInput?.text.toString()
 
     init {
-        binding = FormAddressNewAkunBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = FormAddressNewAkunBinding.inflate(LayoutInflater.from(context), this)
     }
 
     fun setPhoneNumber(
@@ -72,7 +73,7 @@ class FormAccountWidget : LinearLayout {
                 onClickPhoneNumberFirstIcon.invoke()
             }
             btnInfo.setOnClickListener {
-                onClickBtnInfo
+                onClickBtnInfo.invoke()
             }
         }
     }

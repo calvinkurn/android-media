@@ -40,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
@@ -806,15 +807,43 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun onResultFromChangeAddress(intent: Intent?) {
-        showToaster(
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_edit_address).orEmpty(),
+        showAddressToaster(intent)
+        setPinpointOnResult(intent)
+        loadData()
+    }
+
+    private fun getAddressMessage(isNewAddress: Boolean): String {
+        return if (isNewAddress) {
+            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_add_address).orEmpty()
+        } else {
+            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_edit_address).orEmpty()
+        }
+    }
+
+    private fun getAddressMessageAction(isNewAddress: Boolean): String {
+        return if (isNewAddress) {
+            String.EMPTY
+        } else {
             getOkayMessage()
+        }
+    }
+
+    private fun showAddressToaster(intent: Intent?) {
+        val isNewAddress =
+            intent?.getBooleanExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, false) == true
+        val toasterMessage = getAddressMessage(isNewAddress)
+        val toasterActionMessage = getAddressMessageAction(isNewAddress)
+        showToaster(
+            toasterMessage,
+            toasterActionMessage
         )
+    }
+
+    private fun setPinpointOnResult(intent: Intent?) {
         intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
             val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
             viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
         }
-        loadData()
     }
 
     private fun onResultFromPaymentSuccess() {

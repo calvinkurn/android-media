@@ -42,8 +42,9 @@ class ProductCardSingleViewModel(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+    @JvmField
     @Inject
-    lateinit var productCardsUseCase: ProductCardsUseCase
+    var productCardsUseCase: ProductCardsUseCase? = null
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -63,7 +64,7 @@ class ProductCardSingleViewModel(
 
     private fun fetchProductData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(
+            productCardsUseCase?.loadFirstPageComponents(
                 components.id,
                 components.pageEndPoint,
                 PRODUCT_PER_PAGE
@@ -82,29 +83,26 @@ class ProductCardSingleViewModel(
                 if (it.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && it.isActiveProductCard == true) {
                     it.hasATCWishlist = true
                     it.hasSimilarProductWishlist = false
-                }else if(it.isActiveProductCard != true && it.targetComponentId?.isNotEmpty() == true){
+                } else if (it.isActiveProductCard != true && it.targetComponentId?.isNotEmpty() == true) {
                     it.hasATCWishlist = false
                     it.hasSimilarProductWishlist = true
                 }
             }
             productData.value = prodComponentsItem
-
         }, onError = {
-            components.noOfPagesLoaded = 1
-            components.shouldRefreshComponent = null
-            if (it is UnknownHostException || it is SocketTimeoutException) {
-                components.verticalProductFailState = true
-                _showErrorState.value = true
-            } else {
-                _hideView.value = true
-            }
-        })
+                components.noOfPagesLoaded = 1
+                components.shouldRefreshComponent = null
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideView.value = true
+                }
+            })
     }
 
     fun reload() {
         components.noOfPagesLoaded = 0
         fetchProductData()
     }
-
-
 }

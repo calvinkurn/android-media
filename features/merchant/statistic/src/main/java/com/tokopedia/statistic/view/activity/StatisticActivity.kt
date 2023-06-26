@@ -171,21 +171,21 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-            pageHelper.getShopStatistic(),
-            pageHelper.getProductStatistic(),
-            pageHelper.getTrafficStatistic(),
-            pageHelper.getOperationalStatistic(),
-            pageHelper.getBuyerStatistic()
+            pageHelper.getShopStatistic(this),
+            pageHelper.getProductStatistic(this),
+            pageHelper.getTrafficStatistic(this),
+            pageHelper.getOperationalStatistic(this),
+            pageHelper.getBuyerStatistic(this)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-            pageHelper.getShopStatistic(),
-            pageHelper.getProductStatistic(),
-            pageHelper.getTrafficStatistic(),
-            pageHelper.getOperationalStatistic(),
-            pageHelper.getBuyerStatistic()
+            pageHelper.getShopStatistic(this),
+            pageHelper.getProductStatistic(this),
+            pageHelper.getTrafficStatistic(this),
+            pageHelper.getOperationalStatistic(this),
+            pageHelper.getBuyerStatistic(this)
         )
     }
 

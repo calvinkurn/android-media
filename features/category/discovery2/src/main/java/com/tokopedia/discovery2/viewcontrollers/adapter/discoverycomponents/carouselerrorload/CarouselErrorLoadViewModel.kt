@@ -18,20 +18,26 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class CarouselErrorLoadViewModel(application: Application,
-                                 private val components: ComponentsItem, val position: Int) :
-        DiscoveryBaseViewModel(), CoroutineScope {
+class CarouselErrorLoadViewModel(
+    application: Application,
+    private val components: ComponentsItem,
+    val position: Int
+) :
+    DiscoveryBaseViewModel(), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
 
+    @JvmField
     @Inject
-    lateinit var productCardUseCase: ProductCardsUseCase
+    var productCardUseCase: ProductCardsUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var shopCardUseCase: ShopCardUseCase
+    var shopCardUseCase: ShopCardUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
 
     @JvmField
     @Inject
@@ -39,7 +45,6 @@ class CarouselErrorLoadViewModel(application: Application,
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
 
     fun getParentComponentPosition() = Utils.getParentPosition(components)
     fun getShowLoaderStatus(): LiveData<Boolean> = showLoader
@@ -50,12 +55,12 @@ class CarouselErrorLoadViewModel(application: Application,
             components.let {
                 syncData.value = when (components.parentComponentName) {
                     ComponentNames.ShopCardView.componentName ->
-                        shopCardUseCase.getShopCardPaginatedData(
+                        shopCardUseCase?.getShopCardPaginatedData(
                             components.parentComponentId,
                             components.pageEndPoint
                         )
                     ComponentNames.MerchantVoucherCarousel.componentName ->
-                        merchantVoucherUseCase.getCarouselPaginatedData(
+                        merchantVoucherUseCase?.getCarouselPaginatedData(
                             components.parentComponentId,
                             components.pageEndPoint
                         )
@@ -65,15 +70,14 @@ class CarouselErrorLoadViewModel(application: Application,
                             components.pageEndPoint
                         )
 
-                    else -> productCardUseCase.getCarouselPaginatedData(
+                    else -> productCardUseCase?.getCarouselPaginatedData(
                         components.parentComponentId,
                         components.pageEndPoint
                     )
                 }
-
             }
         }, onError = {
-            showLoader.value = false
-        })
+                showLoader.value = false
+            })
     }
 }

@@ -19,9 +19,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 
-class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TopAdsBannerClickListener {
+class TopAdsHeadlineViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TopAdsBannerClickListener {
 
-    private lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+    private var topAdsHeadlineViewModel: TopAdsHeadlineViewModel? = null
     private val topadsHeadlineView: TopAdsHeadlineView = itemView.findViewById(R.id.topads_headline_view)
 
     init {
@@ -29,7 +29,9 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
         topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
             override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
                 product?.let {
-                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsProductItemListener(position, it, cpmData, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
+                    topAdsHeadlineViewModel?.let { topAdsHeadlineViewModel ->
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsProductItemListener(position, it, cpmData, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
+                    }
                 }
             }
         })
@@ -37,15 +39,16 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         topAdsHeadlineViewModel = discoveryBaseViewModel as TopAdsHeadlineViewModel
-        getSubComponent().inject(topAdsHeadlineViewModel)
+        topAdsHeadlineViewModel?.let {
+            getSubComponent().inject(it)
+        }
         topadsHeadlineView.showShimmerView()
         fetchTopadsHeadlineAds()
     }
 
     private fun fetchTopadsHeadlineAds() {
-        topadsHeadlineView.getHeadlineAds(topAdsHeadlineViewModel.getHeadlineAdsParam(), this::onSuccessResponse, this::hideHeadlineView)
+        topAdsHeadlineViewModel?.getHeadlineAdsParam()?.let { topadsHeadlineView.getHeadlineAds(it, this::onSuccessResponse, this::hideHeadlineView) }
     }
-
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
         showHeadlineView(cpmModel)
@@ -70,7 +73,9 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         data?.let {
             applink?.let { it1 -> RouteManager.route(fragment.context, it1) }
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
+            topAdsHeadlineViewModel?.let { topAdsHeadlineViewModel ->
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it, topAdsHeadlineViewModel.components, topAdsHeadlineViewModel.isUserLoggedIn())
+            }
         }
     }
 }

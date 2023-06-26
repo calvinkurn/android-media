@@ -474,7 +474,7 @@ class DiscomBottomSheetRevamp :
             layoutUseCurrentLoc.visibility = View.GONE
             dividerUseCurrentLocation.visibility = View.GONE
 
-            cardAddressDiscom.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
+            cardAddressDiscom.setAddressDistrict("${data.districtName}, ${data.cityName}, ${data.provinceName}")
             etKodepos.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
