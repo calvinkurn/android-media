@@ -2,7 +2,7 @@ package com.tokopedia.loginregister.seamlesslogin.di
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyPojo
+import com.tokopedia.loginregister.seamlesslogin.data.GenerateKeyPojo
 import dagger.Module
 import dagger.Provides
 

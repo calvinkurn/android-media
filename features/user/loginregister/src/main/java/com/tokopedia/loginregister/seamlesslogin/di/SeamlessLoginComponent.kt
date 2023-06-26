@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.seamlesslogin.di
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
-import com.tokopedia.loginregister.seamlesslogin.RemoteService
+import com.tokopedia.loginregister.seamlesslogin.ui.RemoteService
 import dagger.Component
 
 /**
@@ -10,7 +10,6 @@ import dagger.Component
 @SeamlessLoginScope
 @Component(modules = [
     SeamlessLoginModule::class,
-    SeamlessLoginQueryModule::class,
     SeamlessLoginUseCaseModule::class,
     SeamlessLoginViewModelModule::class
 ], dependencies = [LoginRegisterComponent::class])
