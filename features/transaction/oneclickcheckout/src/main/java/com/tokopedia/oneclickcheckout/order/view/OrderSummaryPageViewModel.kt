@@ -1316,7 +1316,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     companion object {
-        const val DEBOUNCE_TIME = 1000L
+        const val DEBOUNCE_TIME = 0L
 
         const val FAIL_GET_RATES_ERROR_MESSAGE = "Gagal menampilkan pengiriman"
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
