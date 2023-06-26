@@ -23,12 +23,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -164,6 +166,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         setupSellerHomeInsetListener()
         sendNotificationUserSetting()
         observeWearDialog()
+        installDFonBackground()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -764,5 +767,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     .apply()
             }
         }
+    }
+
+    private fun installDFonBackground() {
+        val moduleNameList = listOf(
+            DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
+        )
+        DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
 }
