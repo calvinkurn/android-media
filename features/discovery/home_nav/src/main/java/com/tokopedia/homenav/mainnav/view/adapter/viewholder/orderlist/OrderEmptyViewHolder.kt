@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderEmptyStateRevampBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
@@ -14,6 +15,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
+
+@MePage(MePage.Widget.TRANSACTION)
 class OrderEmptyViewHolder(itemView: View, val mainNavListener: MainNavListener) :
     AbstractViewHolder<OrderEmptyModel>(itemView) {
     private var binding: HolderEmptyStateRevampBinding? by viewBinding()
