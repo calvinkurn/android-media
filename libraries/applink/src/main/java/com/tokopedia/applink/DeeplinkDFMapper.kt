@@ -422,6 +422,11 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_MERCHANT_LOGIN, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({ it.startsWith(ATTACH_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.title_module_attachproduct))
+            add(DFP({
+                it.startsWith(ApplinkConst.SHOP_NIB_CUSTOMER_APP) || it.startsWith(
+                    ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+                )
+            }, DF_BASE, R.string.title_seller_shop_nib))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({
@@ -857,11 +862,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
 
-            add(DFP({
-                it.startsWith(ApplinkConst.SHOP_NIB_CUSTOMER_APP) || it.startsWith(
-                    ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
-                )
-            }, DF_BASE, R.string.title_seller_shop_nib))
             add(DFP(
                 {
                     it.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB) ||
