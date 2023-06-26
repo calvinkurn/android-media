@@ -9,7 +9,9 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import java.util.Collections.max
@@ -19,7 +21,7 @@ class OnBoardingListenerDelegate @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager,
     @SearchContext context: Context,
-) : ContextProvider by WeakReferenceContextProvider(context) {
+) : SimilarSearchOnBoardingView, ContextProvider by WeakReferenceContextProvider(context) {
 
     companion object {
         private const val ON_BOARDING_DELAY_MS: Long = 200
@@ -107,5 +109,51 @@ class OnBoardingListenerDelegate @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun showSimilarSearchThreeDotsCoachmark(
+        item: ProductItemDataView,
+        adapterPosition: Int,
+    ) {
+        if (coachMark != null || !shouldShowCoachmark) return
+
+        buildCoachMark2()
+
+        val view = getProductThreeDotsView(adapterPosition)
+        recyclerViewUpdater.recyclerView?.postDelayed({
+            showThreeDotsCoachmark(view)
+        }, ON_BOARDING_DELAY_MS)
+    }
+
+    private fun getProductThreeDotsView(adapterPosition: Int): View? {
+        val viewHolder = recyclerViewUpdater.recyclerView
+            ?.findViewHolderForAdapterPosition(adapterPosition)
+            ?: return null
+        return if (viewHolder.itemView is IProductCardView) (viewHolder.itemView as IProductCardView).getThreeDotsButton() else null
+    }
+
+    private fun showThreeDotsCoachmark(view: View?) {
+        val coachMark2ItemList = createThreeDotsCoachMark2ItemList(view)
+        if (coachMark2ItemList.isEmpty()) return
+
+        coachMark?.showCoachMark(coachMark2ItemList, null, 0)
+    }
+
+    private fun createThreeDotsCoachMark2ItemList(productCard: View?): ArrayList<CoachMark2Item> {
+        val coachMarkItemList = ArrayList<CoachMark2Item>()
+
+        if (productCard != null)
+            coachMarkItemList.add(createThreeDotsCoachMark2Item(productCard))
+
+        return coachMarkItemList
+    }
+
+    private fun createThreeDotsCoachMark2Item(productCard: View): CoachMark2Item {
+        return CoachMark2Item(
+            productCard,
+            "",
+            context?.getString(R.string.search_product_similar_search_three_dots_onboarding_description)?: "",
+            CoachMark2.POSITION_BOTTOM
+        )
     }
 }
