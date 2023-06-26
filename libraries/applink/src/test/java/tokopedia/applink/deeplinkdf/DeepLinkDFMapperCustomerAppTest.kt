@@ -1085,7 +1085,11 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
         val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/search"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
-
+    @Test
+    fun `check shop nib applink should return DF_COMM_TOKOCHAT in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop-nib"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
     @Test
     fun `check tokochat applink should return DF_COMM_TOKOCHAT in customerapp`() {
         val source = "tokofood"

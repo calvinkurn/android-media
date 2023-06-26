@@ -903,6 +903,9 @@ object DeeplinkMainApp {
                 )
             }
         ),
+        "shop-nib" to mutableListOf(
+            DLP.matchPattern("", ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP)
+        ),
         "shop-admin" to mutableListOf(
             DLP.matchPattern("invitation-page", ApplinkConstInternalMarketplace.ADMIN_INVITATION),
             DLP.matchPattern(
