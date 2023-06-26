@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.score.penalty.di.scope.PenaltyScope
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.old.ShopPenaltyViewModelOld
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,7 +22,12 @@ abstract class PenaltyViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ShopPenaltyViewModel::class)
-    abstract fun penaltyViewModel(shopPenaltyViewModel: ShopPenaltyViewModel): ViewModel
+    abstract fun penaltyOldViewModel(shopPenaltyViewModel: ShopPenaltyViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopPenaltyViewModelOld::class)
+    abstract fun penaltyViewModel(shopPenaltyViewModel: ShopPenaltyViewModelOld): ViewModel
 
     @Binds
     @IntoMap

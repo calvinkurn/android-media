@@ -1119,7 +1119,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check shop penalty appLink then should return tokopedia internal shop penalty in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-penalty"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-penalty-old"
         assertEqualsDeepLinkMapper(ApplinkConst.SHOP_PENALTY, expectedDeepLink)
     }
 
@@ -2682,6 +2682,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val deepLink = ApplinkConst.DilayaniTokopedia.HOME
         val expectedDeepLink = ApplinkConstInternalDilayaniTokopedia.HOME
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check youtube player appLink then should return tokopedia internal youtube player in customerapp`() {
+        val expectedInternalDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/youtube-player/123/"
+        val appLink = UriUtil.buildUri(ApplinkConst.YOUTUBE_PLAYER, "123")
+        assertEqualsDeepLinkMapper(appLink, expectedInternalDeepLink)
     }
 
     @Test

@@ -101,6 +101,9 @@ public interface ApplinkConst {
     String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
     String WEBVIEW_PARENT_HOME_HOST = "webviewbackhome";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
+
+    String YOUTUBE_PLAYER = "tokopedia://youtube-player/{video_id}";
+
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String TELKOMSEL_OMNI = "tokopedia://telkomselomni";
