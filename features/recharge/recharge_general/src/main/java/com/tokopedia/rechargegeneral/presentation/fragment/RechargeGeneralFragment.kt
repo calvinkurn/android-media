@@ -1519,15 +1519,19 @@ class RechargeGeneralFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        val dppoConsentData = viewModel.dppoConsent.value
-        inflater.inflate(R.menu.menu, menu)
-        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
-            menu.showConsentIcon()
-            menu.setupConsentIcon(dppoConsentData.data.description)
-            menu.setupKebabIcon()
-        } else {
-            menu.hideConsentIcon()
-            menu.setupKebabIcon()
+        try {
+            val dppoConsentData = viewModel.dppoConsent.value
+            inflater.inflate(R.menu.menu, menu)
+            if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+                menu.showConsentIcon()
+                menu.setupConsentIcon(dppoConsentData.data.description)
+                menu.setupKebabIcon()
+            } else {
+                menu.hideConsentIcon()
+                menu.setupKebabIcon()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
