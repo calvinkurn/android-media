@@ -60,12 +60,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
-    // Global Menu (Me Page)
-    const val ME_PAGE_EXP = "mepage_secondexp"
-    const val ME_PAGE_CONTROL = "control_variant"
-    const val ME_PAGE_VARIANT_1 = "Mepage_1"
-    const val ME_PAGE_VARIANT_2 = "Mepage_2"
-
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
@@ -90,7 +84,11 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
     //Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+
+    // Tokochat Bubbles
+    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 }

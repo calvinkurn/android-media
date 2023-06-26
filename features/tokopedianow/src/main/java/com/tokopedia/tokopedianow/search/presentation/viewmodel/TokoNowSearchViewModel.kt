@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
@@ -79,12 +80,15 @@ class TokoNowSearchViewModel @Inject constructor (
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
+    private var recommendationCategoryId: String = ""
 
     val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, ProductCardCompactCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
     val query = queryParamMap[SearchApiConst.Q].orEmpty()
 
     override val tokonowSource: String
         get() = TOKONOW
+    override val tickerPageSource: String
+        get() = GetTargetedTickerUseCase.SEARCH_PAGE
 
     override fun loadFirstPage() {
         getSearchFirstPageUseCase.cancelJobs()
@@ -154,6 +158,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomKeywords() = listOf(query)
 
+    override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
+
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
@@ -162,6 +168,7 @@ class TokoNowSearchViewModel @Inject constructor (
         related = searchModel.getRelated()
 
         val searchProductHeader = searchProduct.header
+        recommendationCategoryId = searchProductHeader.meta.categoryId
 
         val headerDataView = HeaderDataView(
                 title = "",

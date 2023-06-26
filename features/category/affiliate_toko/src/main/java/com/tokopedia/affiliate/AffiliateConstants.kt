@@ -2,6 +2,7 @@ package com.tokopedia.affiliate
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.unifyprinciples.Typography
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
@@ -23,6 +24,7 @@ const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
 const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val PAGE_SEGMENT_DISCO_PAGE_LIST = "discopage-list"
+const val PAGE_SEGMENT_PROMO_PAGE = "promosikan"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"
@@ -69,10 +71,9 @@ const val QUERY_CONST = "titlebar=false"
 
 val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
 
-const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
+const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
-val APP_LINK_KYC =
-    "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalUserPlatform.PARAM_CALL_BACK}=$uri"
+val APP_LINK_KYC = ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 

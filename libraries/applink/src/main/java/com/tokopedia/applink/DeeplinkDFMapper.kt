@@ -56,9 +56,9 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.ApplinkConst.SellerApp.STATISTIC_DASHBOARD
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -228,6 +228,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTI
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.GOTO_KYC
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -273,13 +274,13 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TRAVEL = "df_travel"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
+    const val DF_KYC_SELLERAPP = "df_kyc_sellerapp"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
     const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
-    const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_SHOP_SETTINGS_SELLER_APP = "df_shop_settings_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
@@ -291,7 +292,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
-    const val DF_SELLER_PERSONA = "df_seller_persona"
+    const val DF_SELLER_FRONT_FUNNEL = "df_seller_front_funnel"
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
@@ -411,7 +412,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_SELLER, R.string.title_open_shop))
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
 
@@ -433,6 +434,17 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(PM_BENEFIT_PACKAGE)
                     || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
+                    || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                    || it.startsWith(SHOP_PENALTY)
+                    || it.startsWith(SHOP_PENALTY_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            }, DF_MERCHANT_SELLER, R.string.title_shop_score_sellerapp))
+
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
@@ -618,6 +630,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
             add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_USER_SETTINGS, R.string.user_identification_form_title))
             add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(GOTO_KYC) }, DF_USER_SETTINGS, R.string.goto_kyc_title))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
@@ -717,6 +730,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
+                    it.startsWith(TokopediaNow.OLD_CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
@@ -726,6 +740,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TokopediaNow.RECIPE_AUTO_COMPLETE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.OLD_CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
                     it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||
@@ -767,8 +782,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST)
                 || it.startsWith(RESERVED_STOCK_BASE) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
-            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
-            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_BASE_SELLER_APP, R.string.user_identification_info_simple))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
@@ -782,7 +795,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 || it.startsWith(SHOP_PENALTY_DETAIL)
                 || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
                 || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
-            }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
+            }, DF_SELLER_FRONT_FUNNEL, R.string.title_shop_score_sellerapp))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME) }, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH) || it.startsWith(ApplinkConstInternalSellerapp.SELLER_SEARCH) }, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
@@ -842,6 +855,15 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CAMPAIGN_LIST) || it.startsWith(SellerApp.CAMPAIGN_LIST) }, DF_CAMPAIGN_LIST, R.string.title_campaign_list))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_PRODUCT_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
             add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE_SHOP_VOUCHER)}, DF_BASE_SELLER_APP, R.string.title_seller_mvc_create))
+            add(DFP(
+                {
+                    it.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB) ||
+                        it.startsWith(ApplinkConstInternalSellerapp.SELLER_SHOP_NIB)
+                },
+                DF_BASE_SELLER_APP,
+                R.string.title_seller_shop_nib
+                )
+            )
 
             // Content
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_comment))
@@ -873,7 +895,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
                 regexMatcherExternalAppLink.matches(it)
             }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
@@ -941,7 +962,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(SellerApp.SELLER_PERSONA) || it.startsWith(
                     ApplinkConstInternalSellerapp.SELLER_PERSONA
                 )
-            }, DF_SELLER_PERSONA, R.string.title_seller_persona))
+            }, DF_SELLER_FRONT_FUNNEL, R.string.title_seller_persona))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
@@ -969,6 +990,20 @@ object DeeplinkDFMapper : CoroutineScope {
                     R.string.title_seller_feedback
                 )
             )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
+                            MERCHANT_STATISTIC_DASHBOARD
+                        ) || it.startsWithPattern(STATISTIC_DASHBOARD)
+                    }, DF_SELLER_FRONT_FUNNEL, R.string.title_statistic
+                )
+            )
+            add(DFP({ it.startsWithPattern(KYC_INFO) }, DF_KYC_SELLERAPP, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(KYC_FORM) }, DF_KYC_SELLERAPP, R.string.user_identification_form_title))
+            add(DFP({ it.startsWithPattern(KYC_ALA_CARTE) }, DF_KYC_SELLERAPP, R.string.user_identification_info_simple))
+            add(DFP({ it.startsWithPattern(GOTO_KYC)}, DF_KYC_SELLERAPP, R.string.goto_kyc_title))
+            add(DFP({ it.startsWithPattern(KYC_LIVENESS_BASE) }, DF_KYC_SELLERAPP, R.string.liveness_title))
         }
     }
 
