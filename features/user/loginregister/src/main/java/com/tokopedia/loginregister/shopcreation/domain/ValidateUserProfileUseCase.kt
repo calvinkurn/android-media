@@ -1,12 +1,11 @@
-package com.tokopedia.loginregister.shopcreation.domain.usecase
+package com.tokopedia.loginregister.shopcreation.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.shopcreation.domain.param.ValidateUserProfileParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidatePojo
-import com.tokopedia.loginregister.shopcreation.domain.query.MutationUserProfileValidate
+import com.tokopedia.loginregister.shopcreation.data.param.ValidateUserProfileParam
+import com.tokopedia.loginregister.shopcreation.data.entity.UserProfileValidatePojo
 import javax.inject.Inject
 
 class ValidateUserProfileUseCase @Inject constructor(
@@ -15,10 +14,25 @@ class ValidateUserProfileUseCase @Inject constructor(
 ) : CoroutineUseCase<ValidateUserProfileParam, UserProfileValidatePojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return MutationUserProfileValidate.getQuery()
+        return getQuery()
     }
 
     override suspend fun execute(params: ValidateUserProfileParam): UserProfileValidatePojo {
         return graphqlRepository.request(graphqlQuery(), params.toMap())
+    }
+
+    private fun getQuery(): String = """
+        mutation userProfileValidate($phone: String, $email: String, $validateToken: String) {
+            userProfileValidate(phone: $phone, email: $email, validateToken: $validateToken) {
+                isValid,
+                message
+            }
+        }
+    """.trimIndent()
+
+    companion object {
+        private const val phone = "\$phone"
+        private const val email = "\$email"
+        private const val validateToken = "\$validateToken"
     }
 }

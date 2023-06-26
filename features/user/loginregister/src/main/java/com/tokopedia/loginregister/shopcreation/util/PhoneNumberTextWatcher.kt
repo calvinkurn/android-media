@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.shopcreation.view.util
+package com.tokopedia.loginregister.shopcreation.util
 
 import android.text.Editable
 import android.text.TextWatcher

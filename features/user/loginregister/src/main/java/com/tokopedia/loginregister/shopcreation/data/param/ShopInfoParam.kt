@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.shopcreation.domain.param
+package com.tokopedia.loginregister.shopcreation.data.param
 
 /**
  * Created by Ade Fulki on 2020-02-06.

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.shopcreation.domain.pojo
+package com.tokopedia.loginregister.shopcreation.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.termprivacy.view.activity
+package com.tokopedia.loginregister.termprivacy
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

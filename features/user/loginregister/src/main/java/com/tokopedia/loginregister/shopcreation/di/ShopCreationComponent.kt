@@ -18,7 +18,6 @@ import dagger.Component
 @Component(modules = [
     ShopCreationModule::class,
     ShopCreationViewModelModule::class,
-    ShopCreationQueryModule::class,
     SessionModule::class
 ], dependencies = [BaseAppComponent::class])
 interface ShopCreationComponent {

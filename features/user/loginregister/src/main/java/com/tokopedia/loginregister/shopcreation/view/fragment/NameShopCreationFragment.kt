@@ -23,7 +23,7 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.databinding.FragmentNameShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
-import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
+import com.tokopedia.loginregister.shopcreation.view.viewmodel.ShopCreationViewModel
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.Toaster

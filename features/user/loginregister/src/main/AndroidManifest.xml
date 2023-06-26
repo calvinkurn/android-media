@@ -178,7 +178,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".termprivacy.view.activity.TermPrivacyActivity"
+            android:name=".termprivacy.TermPrivacyActivity"
             android:label="@string/title_activity_term_and_privacy"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
