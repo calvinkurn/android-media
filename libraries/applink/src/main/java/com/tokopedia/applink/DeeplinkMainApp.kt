@@ -987,7 +987,12 @@ object DeeplinkMainApp {
         ),
         "www.tokopedia.com" to mutableListOf(
             DLP.goTo(DeeplinkMapperContent::getWebHostWebViewLink)
-        )
+        ),
+        "youtube-player" to mutableListOf(
+            DLP.matchPattern("{video_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
+            }
+        ),
 
     )
 }
