@@ -12,7 +12,10 @@ fun MacrobenchmarkRule.measureTokopediaApps(
 ) = measureRepeated(
     packageName = packageName,
     metrics = metrics,
-    compilationMode = CompilationMode.Partial(BaselineProfileMode.UseIfAvailable),
+    compilationMode = CompilationMode.Partial(
+        BaselineProfileMode.UseIfAvailable,
+        3
+        ),
     iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
     startupMode = startupMode,
     setupBlock = {
