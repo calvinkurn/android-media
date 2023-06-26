@@ -27,5 +27,7 @@ data class OptionV3(
         @SerializedName("video")
         val video: Boolean = true,
         @SerializedName("variant")
-        val variant: Boolean = true
+        val variant: Boolean = true,
+        @SerializedName("campaign")
+        val campaign: Boolean = true
 )
