@@ -275,6 +275,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.measurementApi
+    implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint

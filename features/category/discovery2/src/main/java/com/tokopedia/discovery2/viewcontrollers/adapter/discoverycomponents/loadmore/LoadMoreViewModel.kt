@@ -20,14 +20,21 @@ import kotlin.coroutines.CoroutineContext
 
 class LoadMoreViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
+    @JvmField
     @Inject
-    lateinit var productCardUseCase: ProductCardsUseCase
+    var productCardUseCase: ProductCardsUseCase? = null
+
+    @JvmField
     @Inject
-    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
+
+    @JvmField
     @Inject
-    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+    var bannerInfiniteUseCase: BannerInfiniteUseCase? = null
+
+    @JvmField
     @Inject
-    lateinit var shopCardInfiniteUseCase: ShopCardUseCase
+    var shopCardInfiniteUseCase: ShopCardUseCase? = null
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -39,28 +46,27 @@ class LoadMoreViewModel(val application: Application, private val components: Co
         super.onAttachToViewHolder()
         launchCatchError(block = {
             if (!getViewOrientation()) {
-                syncData.value = when(components.parentComponentName){
+                syncData.value = when (components.parentComponentName) {
                     ComponentNames.MerchantVoucherList.componentName ->
-                        merchantVoucherUseCase.getPaginatedData(components.id,components.pageEndPoint)
+                        merchantVoucherUseCase?.getPaginatedData(components.id, components.pageEndPoint)
                     ComponentNames.BannerInfinite.componentName ->
-                        bannerInfiniteUseCase.getBannerUseCase(components.id,components.pageEndPoint, isDarkMode = isDarkMode )
+                        bannerInfiniteUseCase?.getBannerUseCase(components.id, components.pageEndPoint, isDarkMode = isDarkMode)
                     ComponentNames.ShopCardInfinite.componentName ->
-                        shopCardInfiniteUseCase.getShopCardUseCase(components.id,components.pageEndPoint )
-                    else -> productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+                        shopCardInfiniteUseCase?.getShopCardUseCase(components.id, components.pageEndPoint)
+                    else -> productCardUseCase?.getProductCardsUseCase(components.id, components.pageEndPoint)
                 }
             }
         }, onError = {
-            getComponent(
-                components.parentComponentId,
-                components.pageEndPoint
-            )?.verticalProductFailState = true
-            syncData.value = true
-        })
+                getComponent(
+                    components.parentComponentId,
+                    components.pageEndPoint
+                )?.verticalProductFailState = true
+                syncData.value = true
+            })
     }
 
-
-    fun checkForDarkMode(context: Context?){
-        if(context != null) {
+    fun checkForDarkMode(context: Context?) {
+        if (context != null) {
             isDarkMode = context.isDarkMode()
         }
     }
