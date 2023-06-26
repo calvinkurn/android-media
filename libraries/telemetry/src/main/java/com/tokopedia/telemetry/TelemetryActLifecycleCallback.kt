@@ -24,6 +24,7 @@ import com.tokopedia.telemetry.sensorlistener.TelemetryAccelListener
 import com.tokopedia.telemetry.sensorlistener.TelemetryGyroListener
 import com.tokopedia.telemetry.sensorlistener.TelemetryTextWatcher
 import com.tokopedia.telemetry.sensorlistener.TelemetryTouchListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -49,7 +50,7 @@ class TelemetryActLifecycleCallback(
         var remoteConfig: RemoteConfig? = null
         var telemetryConfig: TelemetryConfig? = null
         var hasFetch = false
-        val mapSectionToCount = mutableMapOf<Pair<String, TelemetryType>, CapturedTelemetry>()
+        val mapSectionToCount = mutableMapOf<String, CapturedTelemetry>()
     }
 
     private fun getRemoteConfig(context: Context): RemoteConfig {
@@ -63,79 +64,56 @@ class TelemetryActLifecycleCallback(
         }
     }
 
-    private fun registerTelemetryListener(activity: AppCompatActivity) {
-        activity.lifecycleScope.launch {
-            try {
-                yield()
-                if (activity.isDestroyed || activity.isFinishing) {
-                    return@launch
-                }
-                val telConfig = fetchConfig(activity)
-                if (checkNeedCollect(activity, telConfig, TelemetryType.TYPING)) {
-                    activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
-                        if (newFocus is EditText) {
-                            val et: EditText = newFocus
-                            et.removeTextChangedListener(TelemetryTextWatcher)
-                            et.addTextChangedListener(TelemetryTextWatcher)
-                        }
-                    }
-                }
-                var sensorManager: SensorManager? = null
-                if (checkNeedCollect(activity, telConfig, TelemetryType.ACCEL)) {
-                    sensorManager =
-                        activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-                    val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-                    val samplingRate = getSamplingRate()
-                    sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
-                    TelemetryAccelListener.setActivity(activity)
-                }
-
-                if (checkNeedCollect(activity, telConfig, TelemetryType.GYRO)) {
-                    if (sensorManager == null) {
-                        sensorManager =
-                            activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-                    }
-                    val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-                    val samplingRate = getSamplingRate()
-                    sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
-                    TelemetryGyroListener.setActivity(activity)
-                }
-
-                if (checkNeedCollect(activity, telConfig, TelemetryType.TOUCH)) {
-                    if (activity is BaseActivity) {
-                        activity.addListener(TelemetryTouchListener)
-                    }
-                }
-                // store this activity so it can be stopped later
-                prevActivityRef = WeakReference(activity)
-            } catch (ignored: Throwable) {
+    private suspend fun registerTelemetryListener(activity: AppCompatActivity) {
+        try {
+            yield()
+            if (activity.isDestroyed || activity.isFinishing) {
+                return
             }
+            activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
+                if (newFocus is EditText) {
+                    val et: EditText = newFocus
+                    et.removeTextChangedListener(TelemetryTextWatcher)
+                    et.addTextChangedListener(TelemetryTextWatcher)
+                }
+            }
+            var sensorManager: SensorManager? = null
+            sensorManager =
+                activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+            val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+            val samplingRate = getSamplingRate()
+            sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
+            TelemetryAccelListener.setActivity(activity)
+
+            if (sensorManager == null) {
+                sensorManager =
+                    activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+            }
+            val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+            sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
+            TelemetryGyroListener.setActivity(activity)
+
+            if (activity is BaseActivity) {
+                activity.addListener(TelemetryTouchListener)
+            }
+            // store this activity so it can be stopped later
+            prevActivityRef = WeakReference(activity)
+        } catch (ignored: Throwable) {
         }
     }
 
     private fun checkNeedCollect(
         activity: Activity,
-        telemetryConfig: TelemetryConfig,
-        teleType: TelemetryType
+        telemetryConfig: TelemetryConfig
     ): Boolean {
         if (activity !is ITelemetryActivity) return true
         val sectionName = activity.getTelemetrySectionName()
-        val configCount = when (teleType) {
-            TelemetryType.TYPING -> telemetryConfig.typeConfig.count
-            TelemetryType.ACCEL -> telemetryConfig.accelConfig.count
-            TelemetryType.GYRO -> telemetryConfig.gyroConfig.count
-            TelemetryType.TOUCH -> telemetryConfig.touchConfig.count
-        }
-        val configInterval = when (teleType) {
-            TelemetryType.TYPING -> telemetryConfig.typeConfig.interval
-            TelemetryType.ACCEL -> telemetryConfig.accelConfig.interval
-            TelemetryType.GYRO -> telemetryConfig.gyroConfig.interval
-            TelemetryType.TOUCH -> telemetryConfig.touchConfig.interval
-        }
+        val configCount = telemetryConfig.count
+        val configInterval = telemetryConfig.interval
         if (configCount >= 0 && configInterval >= 20) {
             // do checking count and interval
-            var telemetryInPage = mapSectionToCount[sectionName to teleType]
+            var telemetryInPage = mapSectionToCount[sectionName]
             if (telemetryInPage == null) {
                 telemetryInPage = CapturedTelemetry(0, 0)
             }
@@ -152,17 +130,12 @@ class TelemetryActLifecycleCallback(
                     telemetryInPage.capturedTime
                 }
                 val newCount = telemetryInPage.count + 1
-                mapSectionToCount[sectionName to teleType] =
+                mapSectionToCount[sectionName] =
                     CapturedTelemetry(capturedTime, newCount)
                 return true
             }
         }
-        val configRate = when (teleType) {
-            TelemetryType.TYPING -> telemetryConfig.typeSamplingInt
-            TelemetryType.ACCEL -> telemetryConfig.accelSamplingInt
-            TelemetryType.GYRO -> telemetryConfig.gyroSamplingInt
-            TelemetryType.TOUCH -> telemetryConfig.touchSamplingInt
-        }
+        val configRate = telemetryConfig.samplingInt
         return configRate.isInSamplingArea()
     }
 
@@ -249,10 +222,10 @@ class TelemetryActLifecycleCallback(
             // check if it is already past section duration or not
             val elapsedDiff = Telemetry.getElapsedDiff()
             if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
-                registerTelemetryListener(activity)
                 // timer to stop after telemetry duration
-                activity.lifecycleScope.launch {
+                activity.lifecycleScope.launch(Dispatchers.Default) {
                     try {
+                        registerTelemetryListener(activity)
                         val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
                         delay(remainingDurr)
                         stopTelemetryListener(activity)
@@ -271,17 +244,22 @@ class TelemetryActLifecycleCallback(
     private fun collectTelemetry(activity: AppCompatActivity, sectionName: String) {
         // stop time for prev telemetry
         Telemetry.addStopTime(sectionName)
-        TelemetryWorker.scheduleWorker(activity.applicationContext)
-
-        Telemetry.addSection(sectionName)
-        registerTelemetryListener(activity)
 
         // timer to stop after telemetry duration
-        activity.lifecycleScope.launch {
+        activity.lifecycleScope.launch(Dispatchers.Default) {
             try {
-                delay(SECTION_TELEMETRY_DURATION)
-                stopTelemetryListener(activity)
-                Telemetry.addStopTime()
+                val telConfig = fetchConfig(activity)
+                yield()
+                if (checkNeedCollect(activity, telConfig)) {
+                    TelemetryWorker.scheduleWorker(activity.applicationContext)
+
+                    Telemetry.addSection(sectionName)
+                    registerTelemetryListener(activity)
+
+                    delay(SECTION_TELEMETRY_DURATION)
+                    stopTelemetryListener(activity)
+                    Telemetry.addStopTime()
+                }
             } catch (ignored: Throwable) {
             }
         }

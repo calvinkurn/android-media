@@ -6,29 +6,15 @@ import kotlin.math.roundToInt
 
 const val TELEMETRY_REMOTE_CONFIG_KEY = "android_customer_telemetry_config"
 
-data class ConfigItem(
+data class TelemetryConfig(
     @SerializedName("rate")
     var rate: Float = 50.0F,
     @SerializedName("cnt")
     var count: Int = 10,
     @SerializedName("itv")
     var interval: Int = 300
-)
-
-data class TelemetryConfig(
-    @SerializedName("touch")
-    var touchConfig: ConfigItem = ConfigItem(),
-    @SerializedName("type")
-    var typeConfig: ConfigItem = ConfigItem(),
-    @SerializedName("gyro")
-    var gyroConfig: ConfigItem = ConfigItem(),
-    @SerializedName("accel")
-    var accelConfig: ConfigItem = ConfigItem()
 ) {
-    val touchSamplingInt = touchConfig.rate.trimToInt()
-    val typeSamplingInt = typeConfig.rate.trimToInt()
-    val gyroSamplingInt = gyroConfig.rate.trimToInt()
-    val accelSamplingInt = accelConfig.rate.trimToInt()
+    val samplingInt = rate.trimToInt()
 
     private fun Float.trimToInt(): Int = if (this > 100F) {
         100
