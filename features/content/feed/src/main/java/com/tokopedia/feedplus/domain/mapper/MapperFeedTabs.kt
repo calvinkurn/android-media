@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.mapper
 
-import com.tokopedia.feedplus.data.FeedXHeader
+import com.tokopedia.content.common.model.FeedXHeader
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType

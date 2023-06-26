@@ -1073,6 +1073,7 @@ class PlayViewModel @AssistedInject constructor(
                 updateCommentConfig()
             }
             is ShowVariantAction -> handleAtcVariant(action.product, action.forcePushTop)
+            HideBottomSheet -> hideBottomSheet()
         }
     }
 
@@ -2548,11 +2549,14 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAtcVariant(product: PlayProductUiModel.Product, forcePushTop: Boolean) {
-        needLogin {
-            viewModelScope.launch {
-                _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
-            }
+        viewModelScope.launch {
+            _isBottomSheetsShown.update { true }
+            _uiEvent.emit(ShowVariantSheet(product, forcePushTop))
         }
+    }
+
+    private fun hideBottomSheet() {
+        _isBottomSheetsShown.update { false }
     }
 
     /**
@@ -2821,6 +2825,8 @@ class PlayViewModel @AssistedInject constructor(
         authenticated {
             viewModelScope.launchCatchError(block = {
                 val result = repo.updateReminder(channelId, reminderType)
+                val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
+                _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
                     _exploreWidget.update {
                         it.copy(

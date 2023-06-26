@@ -3,12 +3,22 @@ package com.tokopedia.play.broadcaster.shorts.di
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
+import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
@@ -38,6 +48,10 @@ import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
@@ -67,6 +81,14 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsGeneralAnalytic(analytic: PlayShortsGeneralAnalyticImpl): PlayShortsGeneralAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAffiliateAnalytic(analytic: PlayShortsAffiliateAnalyticImpl): PlayShortsAffiliateAnalytic
 
     @Binds
     @PlayShortsScope
@@ -120,6 +142,14 @@ abstract class PlayShortsBindTestModule {
     @PlayShortsScope
     abstract fun bindPlayPerformanceDashboardEntryPointAnalytic(playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
 
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcastBeautificationAnalytic(playBroadcastBeautificationAnalytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcasterAnalyticSender(analytic: PlayBroadcasterAnalyticSenderImpl): PlayBroadcasterAnalyticSender
+
     /** Play Broadcaster Config Store */
     @Binds
     @PlayShortsScope
@@ -148,4 +178,19 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+
+    /**
+     * Beautification
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindContentCoachMarkSharedPref(contentCoachMarkSharedPref: ContentCoachMarkSharedPrefImpl): ContentCoachMarkSharedPref
 }

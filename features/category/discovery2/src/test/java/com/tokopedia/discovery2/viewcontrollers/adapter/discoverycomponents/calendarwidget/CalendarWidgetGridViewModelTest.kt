@@ -30,7 +30,6 @@ class CalendarWidgetGridViewModelTest {
         spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
     private val calenderWidgetUseCase: ProductCardsUseCase = mockk()
 
-
     @Before
     @Throws(Exception::class)
     fun setup() {
@@ -45,10 +44,21 @@ class CalendarWidgetGridViewModelTest {
     }
 
     @Test
+    fun `test for useCase`() {
+        val viewModel: CalendarWidgetGridViewModel =
+            spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
+
+        val calenderWidgetUseCase = mockk<ProductCardsUseCase>()
+        viewModel.calenderWidgetUseCase = calenderWidgetUseCase
+
+        assert(viewModel.calenderWidgetUseCase === calenderWidgetUseCase)
+    }
+
+    @Test
     fun `test for onAttachToViewHolder`() {
         runBlocking {
-            every { componentsItem.properties?.calendarType } returns "dynamic"
             viewModel.calenderWidgetUseCase = calenderWidgetUseCase
+            every { componentsItem.properties?.calendarType } returns "dynamic"
             coEvery {
                 calenderWidgetUseCase.loadFirstPageComponents(
                     any(),

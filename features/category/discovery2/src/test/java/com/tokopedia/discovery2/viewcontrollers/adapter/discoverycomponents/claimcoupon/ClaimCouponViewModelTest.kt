@@ -47,7 +47,6 @@ class ClaimCouponViewModelTest {
         assert(viewModel.components == componentsItem)
     }
 
-
     /**************************** onAttachToViewHolder() *******************************************/
 
     @Test
@@ -69,7 +68,6 @@ class ClaimCouponViewModelTest {
     }
 
     /**************************** onAttachToViewHolder() *******************************************/
-
 
     @After
     fun shutDown() {

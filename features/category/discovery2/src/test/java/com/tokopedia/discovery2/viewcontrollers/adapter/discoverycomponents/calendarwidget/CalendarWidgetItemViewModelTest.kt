@@ -65,39 +65,45 @@ class CalendarWidgetItemViewModelTest {
     }
 
     @Test
+    fun `test for useCase`() {
+        val viewModel: CalendarWidgetItemViewModel =
+            spyk(CalendarWidgetItemViewModel(application, componentsItem, 99))
+
+        val checkPushStatusUseCase = mockk<CheckPushStatusUseCase>()
+        viewModel.checkPushStatusUseCase = checkPushStatusUseCase
+
+        assert(viewModel.checkPushStatusUseCase === checkPushStatusUseCase)
+    }
+
+    @Test
     fun `test for subscribeUserForPushNotification`() {
         runBlocking {
-
             every { viewModel.isUserLoggedIn() } returns true
             coEvery { application.getString(any()) } returns stringTest
             viewModel.subScribeToUseCase = subScribeToUseCase
-            coEvery { subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
+            coEvery { viewModel.subScribeToUseCase?.subscribeToPush(any()) } returns pushSubscriptionResponse
 
             viewModel.subscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getPushBannerStatusData().value, Pair(true, stringTest))
 
-
             every { viewModel.isUserLoggedIn() } returns false
 
             viewModel.subscribeUserForPushNotification("1")
-
         }
     }
 
     @Test
     fun `test for unSubscribeUserForPushNotification`() {
         runBlocking {
-
             every { viewModel.isUserLoggedIn() } returns true
-            coEvery { application.getString(any()) } returns stringTest
             viewModel.subScribeToUseCase = subScribeToUseCase
-            coEvery { subScribeToUseCase.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse
+            coEvery { application.getString(any()) } returns stringTest
+            coEvery { viewModel.subScribeToUseCase?.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse
 
             viewModel.unSubscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getPushBannerStatusData().value, Pair(false, stringTest))
-
 
             every { viewModel.isUserLoggedIn() } returns false
 
@@ -118,7 +124,6 @@ class CalendarWidgetItemViewModelTest {
             viewModel.unSubscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getShowErrorToastData().value != null, true)
-
         }
     }
 

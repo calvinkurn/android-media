@@ -63,6 +63,17 @@ class CalendarWidgetCarouselViewModelTest {
     }
 
     @Test
+    fun `test for useCase`() {
+        val viewModel: CalendarWidgetCarouselViewModel =
+            spyk(CalendarWidgetCarouselViewModel(application, componentsItem, 99))
+
+        val calenderWidgetUseCase = mockk<ProductCardsUseCase>()
+        viewModel.calenderWidgetUseCase = calenderWidgetUseCase
+
+        assert(viewModel.calenderWidgetUseCase === calenderWidgetUseCase)
+    }
+
+    @Test
     fun `test for handleErrorState`() {
         every { componentsItem.verticalProductFailState } returns true
 
@@ -132,7 +143,7 @@ class CalendarWidgetCarouselViewModelTest {
         every { componentsItem.shouldRefreshComponent } returns false
         every { viewModel.getCalendarList() } returns mockk(relaxed = true)
         coEvery {
-            viewModel.calenderWidgetUseCase.loadFirstPageComponents(
+            viewModel.calenderWidgetUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -149,7 +160,7 @@ class CalendarWidgetCarouselViewModelTest {
         every { componentsItem.shouldRefreshComponent } returns false
         every { viewModel.getCalendarList() } returns mockk(relaxed = true)
         coEvery {
-            viewModel.calenderWidgetUseCase.loadFirstPageComponents(
+            viewModel.calenderWidgetUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -159,14 +170,14 @@ class CalendarWidgetCarouselViewModelTest {
         viewModel.fetchProductCarouselData()
 
         assertEquals(viewModel.getCalendarLoadState().value, true)
-
     }
 
     @Test
     fun `test for fetchCarouselPaginatedCalendars`() {
         runBlocking {
+            viewModel.calenderWidgetUseCase = calenderWidgetUseCase
             coEvery {
-                viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
+                viewModel.calenderWidgetUseCase?.getCarouselPaginatedData(
                     any(),
                     any(),
                     any()

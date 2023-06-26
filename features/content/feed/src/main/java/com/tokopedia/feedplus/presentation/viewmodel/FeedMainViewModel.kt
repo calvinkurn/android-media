@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
-import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
-import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
