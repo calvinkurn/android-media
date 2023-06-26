@@ -381,6 +381,7 @@
 /libraries/weaver/									    @tokopedia/android-core-dev
 /libraries/websocket/									@tokopedia/android-core-dev
 /libraries/webview/										@tokopedia/android-core-dev
+/libraries/youtube_player/								@tokopedia/android-core-dev
 /libraries/williamchart/								@tokopedia/android-core-dev
 /libraries/youtubeutil/									@tokopedia/android-core-dev
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev

@@ -76,9 +76,6 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
-    implementation('de.hdodenhof:circleimageview:2.2.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 
     //test

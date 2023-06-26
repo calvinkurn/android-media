@@ -290,7 +290,6 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
@@ -325,6 +324,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.appCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -334,6 +334,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.gotoOneKyc.resource
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging

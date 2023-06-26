@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -20,7 +21,7 @@ import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setOnTouchLabelAddre
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcher
 import com.tokopedia.unifycomponents.TextFieldUnify
 
-class FormAddressPositiveWidget : LinearLayout {
+class FormAddressPositiveWidget : ConstraintLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -53,7 +54,7 @@ class FormAddressPositiveWidget : LinearLayout {
         get() = etLabel?.textFieldInput?.text.toString()
 
     init {
-        binding = FormAddressNewAlamatBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = FormAddressNewAlamatBinding.inflate(LayoutInflater.from(context), this)
     }
 
     fun renderView(
