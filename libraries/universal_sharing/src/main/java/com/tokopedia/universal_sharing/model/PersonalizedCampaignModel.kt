@@ -47,6 +47,7 @@ data class PersonalizedCampaignModel(
             CampaignStatus.ON_GOING -> ongoingCampaignName
             CampaignStatus.END_SOON -> ongoingCampaignName
             CampaignStatus.UPCOMING -> upcomingCampaignName
+            CampaignStatus.END_BY_A_WEEK -> ongoingCampaignName
         }
     }
 
