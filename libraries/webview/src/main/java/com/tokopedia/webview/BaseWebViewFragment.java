@@ -421,6 +421,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
                         if(!images.isEmpty()){
                             results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
+                            Context context = getContext();
+                            if (context != null) {
+                                boolean isDisableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(context, webView.getUrl());
+                                if (isDisableGalleryPicker) {
+                                    results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0)), Uri.parse("true")};
+                                }
+                            }
                         }
                     }
                 }
@@ -575,7 +582,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
                         getContext(),
                         hasVideo(fileChooserParams),
-                        false
+                        WebViewHelper.isWhitelistDisableGalleryPicker(getContext(), webView.getUrl())
                 );
                 intentArray[0] = mediaPickerIntent;
             }
