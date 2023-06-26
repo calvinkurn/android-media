@@ -199,8 +199,9 @@ class CalendarWidgetCarouselViewModelTest {
     @Test
     fun `test for fetchCarouselPaginatedCalendars returns false`() {
         runBlocking {
+            viewModel.calenderWidgetUseCase = calenderWidgetUseCase
             coEvery {
-                viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
+                viewModel.calenderWidgetUseCase?.getCarouselPaginatedData(
                     any(),
                     any(),
                     any()
@@ -219,8 +220,9 @@ class CalendarWidgetCarouselViewModelTest {
     @Test
     fun `test for fetchCarouselPaginatedCalendars throws error`() {
         runBlocking {
+            viewModel.calenderWidgetUseCase = calenderWidgetUseCase
             coEvery {
-                viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
+                viewModel.calenderWidgetUseCase?.getCarouselPaginatedData(
                     any(),
                     any(),
                     any()
