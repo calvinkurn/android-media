@@ -75,7 +75,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class FlashSaleManageProductListFragment :
@@ -229,27 +228,6 @@ class FlashSaleManageProductListFragment :
             }
         }
         return valueList
-    }
-
-    private fun configTicker(totalProduct: Int) {
-//        ticker?.shouldShowWithAction(!totalProduct.isZero()) {
-//            ticker?.apply {
-//                tickerType = TYPE_ANNOUNCEMENT
-//                tickerShape = Ticker.SHAPE_LOOSE
-//                setHtmlDescription(
-//                    String.format(getString(R.string.stfs_manage_product_list_ticker_manage_product))
-//                )
-//                setDescriptionClickEvent(object : TickerCallback {
-//                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                        redirectToManageProductPage()
-//                    }
-//
-//                    override fun onDismiss() {
-//                    }
-//
-//                })
-//            }
-//        }
     }
 
     private fun setupTicker(isShowTicker: Boolean, tickerList : List<RemoteTicker>) {
@@ -617,7 +595,6 @@ class FlashSaleManageProductListFragment :
                 hideGlobalErrorState()
                 setLoadingShimmeringData(it.isLoading)
                 if (!it.isLoading) {
-                    configTicker(it.totalProduct)   // Delete this soon
                     setupTicker(isShowTicker = it.showTicker, tickerList = it.tickerList)
                     showTotalProduct(it.totalProduct)
                     updateDelegateData(it.listDelegateItem)
