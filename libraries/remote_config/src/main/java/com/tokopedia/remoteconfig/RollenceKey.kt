@@ -29,7 +29,6 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
-
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
@@ -92,12 +91,12 @@ object RollenceKey {
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
-    //Feed
+    // Feed
     const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
 
     // Tokochat Bubbles
     const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
 
-    //Seller Order Management
-    const val KEY_SOM_OPERATIONAL_GUIDELINE = "som_operational_guideline"
+    // Seller Order Management
+    const val KEY_SOM_OPERATIONAL_GUIDELINE = "android_som_operational_guideline"
 }
