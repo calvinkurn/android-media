@@ -22,22 +22,6 @@ import kotlin.test.assertNotNull
 
 class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
     @Test
-    fun `loadFirstPageNotification verify haven't interaction`() {
-        // when
-        viewModel.loadFirstPageNotification(null)
-
-        // then
-        verify(exactly = 0) {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        }
-    }
-
-    @Test
     fun `loadFirstPageNotification that haven't filter should return only notifItems properly`() {
         // given
         val role = RoleType.SELLER
@@ -264,22 +248,6 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
     }
 
     @Test
-    fun `loadMoreEarlier verify haven't interaction`() {
-        // when
-        viewModel.loadMoreEarlier(null)
-
-        // then
-        verify(exactly = 0) {
-            notifcenterDetailUseCase.getMoreEarlierNotifications(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        }
-    }
-
-    @Test
     fun `loadMoreEarlier should return correctly`() {
         // given
         val expectedValue = NotifcenterDetailMapper().mapEarlierSection(
@@ -342,26 +310,6 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
     }
 
     @Test
-    fun `loadMoreNew verify haven't interaction`() {
-        // given
-        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
-        val onError: (Throwable) -> Unit = {}
-
-        // when
-        viewModel.loadMoreNew(null, onSuccess, onError)
-
-        // then
-        verify(exactly = 0) {
-            notifcenterDetailUseCase.getMoreNewNotifications(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        }
-    }
-
-    @Test
     fun `loadMoreNew with lambda should called getMoreNewNotifications() in usecase`() {
         // given
         val role = RoleType.BUYER
@@ -373,26 +321,6 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
 
         // then
         verify(exactly = 1) { notifcenterDetailUseCase.getMoreNewNotifications(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `loadMoreEarlier with lambda verify haven't interaction`() {
-        // given
-        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
-        val onError: (Throwable) -> Unit = {}
-
-        // when
-        viewModel.loadMoreEarlier(null, onSuccess, onError)
-
-        // then
-        verify(exactly = 0) {
-            notifcenterDetailUseCase.getMoreEarlierNotifications(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        }
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.ui.viewmodel.test
 
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
-import io.mockk.every
+import io.mockk.coEvery
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -27,7 +27,9 @@ class NotificationFilterViewModelTest : NotificationViewModelTestFixture() {
             // given
             val expectedValue = Resource.error(Throwable(), null)
             val flow = flow { emit(expectedValue) }
-            every { notifcenterFilterUseCase.getFilter(any()) } returns flow
+            coEvery {
+                notifcenterFilterUseCase(any())
+            } returns flow
 
             // when
             viewModel.loadNotificationFilter(0)
@@ -45,7 +47,9 @@ class NotificationFilterViewModelTest : NotificationViewModelTestFixture() {
         runBlocking {
             // given
             val expectedThrowable = Throwable("Oops!")
-            every { notifcenterFilterUseCase.getFilter(any()) } throws expectedThrowable
+            coEvery {
+                notifcenterFilterUseCase(any())
+            } throws expectedThrowable
 
             // when
             viewModel.loadNotificationFilter(0)

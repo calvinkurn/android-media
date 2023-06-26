@@ -75,7 +75,7 @@ class NotificationTopAdsViewModelTest : NotificationViewModelTestFixture() {
         val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
         val expectedResponse = WishlistModel()
         every {
-            topAdsWishlishedUseCase.createObservable(any<RequestParams>()).toBlocking().single()
+            topAdsWishlishedUseCase.createObservable(any()).toBlocking().single()
         } returns expectedResponse
 
         // When
@@ -83,6 +83,24 @@ class NotificationTopAdsViewModelTest : NotificationViewModelTestFixture() {
 
         // Then
         verify(exactly = 0) {
+            testCallback.invoke(any(), any())
+        }
+    }
+
+    @Test
+    fun should_invoke_callback_error_when_fail_get_topAds_wishlist() {
+        // Given
+        val testRecommendationItem = RecommendationItem()
+        val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
+        every {
+            topAdsWishlishedUseCase.createObservable(any()).toBlocking().single()
+        } throws Throwable("Oops!")
+
+        // When
+        viewModel.addWishListTopAds(testRecommendationItem, testCallback)
+
+        // Then
+        verify(exactly = 1) {
             testCallback.invoke(any(), any())
         }
     }

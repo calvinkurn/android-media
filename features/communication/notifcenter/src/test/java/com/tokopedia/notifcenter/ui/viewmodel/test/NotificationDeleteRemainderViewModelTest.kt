@@ -4,7 +4,7 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
-import io.mockk.every
+import io.mockk.coEvery
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -18,7 +18,9 @@ class NotificationDeleteRemainderViewModelTest : NotificationViewModelTestFixtur
             val expectedValue = Resource.success(deleteReminderResponse)
             val flow = flow { emit(expectedValue) }
 
-            every { deleteReminderUseCase.deleteReminder(any(), any()) } returns flow
+            coEvery {
+                deleteReminderUseCase(any())
+            } returns flow
 
             // when
             viewModel.deleteReminder(ProductData(), NotificationUiModel())
@@ -38,7 +40,9 @@ class NotificationDeleteRemainderViewModelTest : NotificationViewModelTestFixtur
             val expectedValue = Resource.error(Throwable(), null)
             val flow = flow { emit(expectedValue) }
 
-            every { deleteReminderUseCase.deleteReminder(any(), any()) } returns flow
+            coEvery {
+                deleteReminderUseCase(any())
+            } returns flow
 
             // when
             viewModel.deleteReminder(ProductData(), NotificationUiModel())
@@ -57,7 +61,9 @@ class NotificationDeleteRemainderViewModelTest : NotificationViewModelTestFixtur
             // given
             val expectedThrowable = Throwable("Oops!")
 
-            every { deleteReminderUseCase.deleteReminder(any(), any()) } throws expectedThrowable
+            coEvery {
+                deleteReminderUseCase(any())
+            } throws expectedThrowable
 
             // when
             viewModel.deleteReminder(ProductData(), NotificationUiModel())

@@ -12,16 +12,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class NotificationOrderListViewModelTest : NotificationViewModelTestFixture() {
-    @Test
-    fun `loadNotifOrderList verify no interaction if role is null`() {
-        // when
-        viewModel.loadNotifOrderList(null)
-
-        // then
-        verify(exactly = 0) {
-            notifOrderListUseCase.getOrderList(any())
-        }
-    }
 
     @Test
     fun `loadNotifOrderList propagate success data`() {
