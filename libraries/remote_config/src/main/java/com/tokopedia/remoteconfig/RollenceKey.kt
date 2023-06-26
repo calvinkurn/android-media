@@ -70,7 +70,6 @@ object RollenceKey {
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
     // Logistic
-    const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
     const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
