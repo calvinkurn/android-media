@@ -343,7 +343,7 @@ class AddressFormFragment :
         }
 
         viewModel.pinpointValidation.observe(viewLifecycleOwner) {
-            binding?.loaderAddressForm?.visibility = View.GONE
+            binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
                     if (it.data.result) {
@@ -383,7 +383,7 @@ class AddressFormFragment :
 
     private fun observeAddressDetail() {
         viewModel.addressDetail.observe(viewLifecycleOwner) {
-            binding?.loaderAddressForm?.visibility = View.GONE
+            binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
                     if (viewModel.isEdit) {
@@ -1091,7 +1091,7 @@ class AddressFormFragment :
         setSaveAddressDataModel()
         viewModel.saveDataModel?.let {
             if (it.hasPinpoint()) {
-                binding?.loaderAddressForm?.visibility = View.VISIBLE
+                binding?.loaderAddressForm?.visible()
                 viewModel.validatePinpoint(it)
             } else {
                 checkLocation(it)

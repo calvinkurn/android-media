@@ -53,6 +53,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.dpToPx
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.analytics.AFFILIATE
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
@@ -221,7 +222,6 @@ open class DiscoveryFragment :
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
-    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
@@ -407,8 +407,6 @@ open class DiscoveryFragment :
                     )
             )
         }
-        bottomNav = view.findViewById(R.id.bottomNav)
-        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
 
     private fun initView(view: View) {
@@ -820,17 +818,6 @@ open class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    setBottomNavigationComp(it)
-                }
-                is Fail -> {
-                    bottomNav?.hide()
-                }
-            }
-        })
-
         discoveryViewModel.getDiscoveryAnchorTabLiveData().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
@@ -1029,15 +1016,17 @@ open class DiscoveryFragment :
     private fun setupObserveAndShowAnchor() {
         if (!stickyHeaderShowing) {
             anchorViewHolder?.let {
-                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers()) {
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-                }
-                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                    mAnchorHeaderView.removeAllViews()
-                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-                        anchorViewHolder?.itemView
-                    )
-                    mAnchorHeaderView.addView(it.itemView)
+                it.viewModel?.let { anchorTabsViewModel ->
+                    if (!anchorTabsViewModel.getCarouselItemsListData().hasActiveObservers()) {
+                        anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                    }
+                    if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                        mAnchorHeaderView.removeAllViews()
+                        (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                            anchorViewHolder?.itemView
+                        )
+                        mAnchorHeaderView.addView(it.itemView)
+                    }
                 }
             }
         }
@@ -1084,33 +1073,6 @@ open class DiscoveryFragment :
                 )
             )
             coachMark.showCoachMark(coachMarkItem)
-        }
-    }
-
-    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
-        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
-            bottomNav?.let { bottomTabHolder ->
-                bottomTabHolder.tabLayout.apply {
-                    tabMode = TabLayout.MODE_FIXED
-                    removeAllTabs()
-                    setBackgroundResource(0)
-                }
-                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
-                it.data.data!!.forEach { item ->
-                    if (item.image.isNotEmpty()) {
-                        val tab = bottomTabHolder.tabLayout.newTab()
-                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
-                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
-                            findViewById<Typography>(R.id.tab_text).apply {
-                                text = item.name
-                                setTextColor(getTabTextColor(this.context, item.fontColor))
-                            }
-                        }
-                        bottomTabHolder.tabLayout.addTab(tab, false)
-                    }
-                }
-                bottomTabHolder.show()
-            }
         }
     }
 
@@ -2081,7 +2043,6 @@ open class DiscoveryFragment :
             } else {
                 miniCartWidget?.updateData(data)
             }
-            bottomNav?.hide()
         } else {
             miniCartWidget?.hide()
         }
@@ -2166,10 +2127,15 @@ open class DiscoveryFragment :
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
                     }
+
+                    override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+                        return super.calculateDyToMakeVisible(view, snapPreference) + dpToPx(55).toInt()
+                    }
                 }
             smoothScroller.targetPosition = position
-            if (this.isResumed)
+            if (this.isResumed) {
                 staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            }
         } catch (e: Exception) {
         }
     }
@@ -2292,6 +2258,12 @@ open class DiscoveryFragment :
         } else {
             initInjector()
             discoveryComponent.provideSubComponent()
+        }
+    }
+
+    fun scrollToNextComponent(currentCompPosition: Int?) {
+        if(currentCompPosition != null && currentCompPosition + 1 < discoveryAdapter.itemCount) {
+            smoothScrollToComponentWithPosition(currentCompPosition + 1)
         }
     }
 }

@@ -69,6 +69,7 @@
     <string name="text_purchase_add_order">Tambah Pesanan</string>
     <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
     <string name="text_purchase_success_edit_address">Berhasil mengubah alamat</string>
+    <string name="text_purchase_success_add_address">Alamat berhasil ditambahkan!</string>
     <string name="text_purchase_main_address">Utama</string>
     <string name="text_purchase_choose_other_address">Pilih Alamat Lain</string>
     <string name="text_purchase_delivery_address">Alamat Pengiriman</string>

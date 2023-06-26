@@ -25,10 +25,11 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), SortFilterBottomSheet.Callback,
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
+    SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback {
+    private var quickFilterViewModel: QuickFilterViewModel? = null
     private val delay: Long = 1000L
-    private lateinit var quickFilterViewModel: QuickFilterViewModel
     private val quickSortFilter: SortFilter = itemView.findViewById(R.id.quick_sort_filter)
     private var sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
     private val filterGeneralBottomSheet: FilterGeneralDetailBottomSheet by lazy {
@@ -42,7 +43,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
 
     init {
         quickSortFilter.dismissListener = {
-            quickFilterViewModel.clearQuickFilters()
+            quickFilterViewModel?.clearQuickFilters()
         }
     }
 
@@ -66,66 +67,68 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
-        getSubComponent().inject(quickFilterViewModel)
-        quickFilterViewModel.fetchDynamicFilterModel()
+        quickFilterViewModel?.let {
+            getSubComponent().inject(it)
+        }
+        quickFilterViewModel?.fetchDynamicFilterModel()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            quickFilterViewModel.getDynamicFilterModelLiveData().observe(it, { filterModel ->
+            quickFilterViewModel?.getDynamicFilterModelLiveData()?.observe(it) { filterModel ->
                 if (filterModel != null) {
                     dynamicFilterModel = filterModel
                 }
-            })
-            if(!quickFilterViewModel.getSyncPageLiveData().hasObservers()) {
-                quickFilterViewModel.getSyncPageLiveData().observe(it) { item ->
+            }
+            if (quickFilterViewModel?.getSyncPageLiveData()?.hasObservers() == false) {
+                quickFilterViewModel?.getSyncPageLiveData()?.observe(it) { item ->
                     if (item) {
                         (fragment as DiscoveryFragment).reSync()
-                        quickFilterViewModel.fetchQuickFilters()
+                        quickFilterViewModel?.fetchQuickFilters()
                     }
                 }
             }
 
-            quickFilterViewModel.productCountLiveData.observe(it, { count ->
+            quickFilterViewModel?.productCountLiveData?.observe(it) { count ->
                 if (!count.isNullOrEmpty()) {
                     sortFilterBottomSheet.setResultCountText(count)
                 } else {
                     sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
                 }
-            })
-            quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
+            }
+            quickFilterViewModel?.getQuickFilterLiveData()?.observe(fragment.viewLifecycleOwner) { filters ->
                 setQuickFilters(filters)
-            })
+            }
 
-            quickFilterViewModel.filterCountLiveData.observe(fragment.viewLifecycleOwner,{ filterCount ->
+            quickFilterViewModel?.filterCountLiveData?.observe(fragment.viewLifecycleOwner) { filterCount ->
                 quickSortFilter.indicatorCounter = filterCount
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            quickFilterViewModel.getDynamicFilterModelLiveData().removeObservers(it)
-            quickFilterViewModel.getSyncPageLiveData().removeObservers(it)
-            quickFilterViewModel.productCountLiveData.removeObservers(it)
-            quickFilterViewModel.getQuickFilterLiveData().removeObservers(it)
-            quickFilterViewModel.filterCountLiveData.removeObservers(it)
+            quickFilterViewModel?.getDynamicFilterModelLiveData()?.removeObservers(it)
+            quickFilterViewModel?.getSyncPageLiveData()?.removeObservers(it)
+            quickFilterViewModel?.productCountLiveData?.removeObservers(it)
+            quickFilterViewModel?.getQuickFilterLiveData()?.removeObservers(it)
+            quickFilterViewModel?.filterCountLiveData?.removeObservers(it)
         }
     }
 
     private fun setQuickFilters(filters: ArrayList<Filter>) {
-        if (quickFilterViewModel.components.data?.isEmpty() == true) return
+        if (quickFilterViewModel?.components?.data?.isEmpty() == true) return
         val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
-        componentName = quickFilterViewModel.getTargetComponent()?.name
-        val prop = quickFilterViewModel.components.properties
+        componentName = quickFilterViewModel?.getTargetComponent()?.name
+        val prop = quickFilterViewModel?.components?.properties
         if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
-                sortFilterItems.add(createSemuaKategoriFilterItem())
+            sortFilterItems.add(createSemuaKategoriFilterItem())
         }
         for (filter in filters) {
-            if(filter.options.size == 1)
+            if (filter.options.size == 1) {
                 sortFilterItems.add(createSortFilterItem(filter.options.first()))
-            else{
+            } else {
                 sortFilterItems.add(createDropDownSortFilterItem(filter))
             }
         }
@@ -162,9 +165,9 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
-        var icon : Drawable? = null
+        var icon: Drawable? = null
         val item =
-            if (quickFilterViewModel.components.isFromCategory) {
+            if (quickFilterViewModel?.components?.isFromCategory == true) {
                 when (option.name) {
                     "Official Store" -> {
                         icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
@@ -182,17 +185,17 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 SortFilterItem(option.name, iconUrl = option.iconUrl)
             }
         item.listener = {
-            quickFilterViewModel.onQuickFilterSelected(option)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName, option.value, quickFilterViewModel.isQuickFilterSelected(option))
+            quickFilterViewModel?.onQuickFilterSelected(option)
+            quickFilterViewModel?.isQuickFilterSelected(option)?.let { (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName, option.value, it) }
         }
-        if (quickFilterViewModel.isQuickFilterSelected(option)) {
+        if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
             item.type = ChipsUnify.TYPE_SELECTED
             item.typeUpdated = false
         }
         return item
     }
 
-    private fun createDropDownSortFilterItem(filter: Filter):SortFilterItem {
+    private fun createDropDownSortFilterItem(filter: Filter): SortFilterItem {
         val item = SortFilterItem(filter.title)
         item.listener = {
             onClickDropDownItem(filter)
@@ -200,8 +203,8 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         item.chevronListener = {
             onClickDropDownItem(filter)
         }
-        for(option in filter.options) {
-            if (quickFilterViewModel.isQuickFilterSelected(option)) {
+        for (option in filter.options) {
+            if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
                 item.type = ChipsUnify.TYPE_SELECTED
                 item.typeUpdated = false
             }
@@ -229,7 +232,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         filterGeneralBottomSheet.show(
             fragment.childFragmentManager,
             filter,
-            this,
+            this
         )
     }
 
@@ -243,21 +246,22 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             if (filters.size != it.size) return
         }
         filters.forEachIndexed { filterIndex, filter ->
-            var isOptionSelected  = false
+            var isOptionSelected = false
             for (option in filter.options) {
-                if(quickFilterViewModel.isQuickFilterSelected(option)){
+                if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
                     isOptionSelected = true
                     option.inputState = true.toString()
-                }else{
+                } else {
                     option.inputState = ""
                 }
             }
             if (isOptionSelected) {
                 setQuickFilterChipsSelected(filterIndex)
-            } else
+            } else {
                 setQuickFilterChipsNormal(filterIndex)
+            }
         }
-        quickFilterViewModel.getSelectedFilterCount()
+        quickFilterViewModel?.getSelectedFilterCount()
     }
 
     private fun setQuickFilterChipsSelected(position: Int) {
@@ -279,10 +283,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     private fun openBottomSheetFilterRevamp() {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickDetailedFilter(componentName)
         sortFilterBottomSheet.show(
-                fragment.childFragmentManager,
-                quickFilterViewModel.getSearchParameterHashMap(),
-                dynamicFilterModel,
-                this
+            fragment.childFragmentManager,
+            quickFilterViewModel?.getSearchParameterHashMap(),
+            dynamicFilterModel,
+            this
         )
     }
 
@@ -304,21 +308,22 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        quickFilterViewModel.onApplySortFilter(applySortFilterModel)
+        quickFilterViewModel?.onApplySortFilter(applySortFilterModel)
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.mapParameter)
-        quickFilterViewModel.getSelectedFilterCount()
+        quickFilterViewModel?.getSelectedFilterCount()
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        if(quickFilterViewModel.components.showFilterCount)
-            quickFilterViewModel.filterProductsCount(mapParameter)
-        else
+        if (quickFilterViewModel?.components?.showFilterCount == true) {
+            quickFilterViewModel?.filterProductsCount(mapParameter)
+        } else {
             sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
+        }
     }
 
     override fun onApplyButtonClicked(optionList: List<Option>?) {
-        if (!optionList.isNullOrEmpty())
-            quickFilterViewModel.onDropDownFilterSelected(optionList)
+        if (!optionList.isNullOrEmpty()) {
+            quickFilterViewModel?.onDropDownFilterSelected(optionList)
+        }
     }
-
 }
