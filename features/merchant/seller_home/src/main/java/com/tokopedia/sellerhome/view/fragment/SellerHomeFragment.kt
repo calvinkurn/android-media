@@ -79,7 +79,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
@@ -238,9 +237,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
-
-    @Inject
     lateinit var newRelic: SellerHomeNewRelic
 
     @Inject
@@ -277,7 +273,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         NotificationDotBadge()
     }
     private val isNewLazyLoad by lazy {
-        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1
     }
 
     private var notifCenterCount = 0

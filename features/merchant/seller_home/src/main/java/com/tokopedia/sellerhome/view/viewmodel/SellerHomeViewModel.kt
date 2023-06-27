@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.common.SellerHomeConst
-import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -73,11 +72,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -110,7 +108,6 @@ class SellerHomeViewModel @Inject constructor(
     private val getShopStateInfoUseCase: Lazy<GetShopStateInfoUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
     private val widgetSse: Lazy<SellerHomeWidgetSSE>,
-    private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -222,31 +219,24 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             val useCase = getTickerUseCase.get()
-            try {
-                _homeTicker.value = Success(
+            val result = try {
+                useCase.execute(
+                    shopId = userSession.get().shopId,
+                    page = TICKER_PAGE_NAME,
+                    isFromCache = false
+                )
+            } catch (networkException: Exception) {
+                try {
                     useCase.execute(
                         shopId = userSession.get().shopId,
                         page = TICKER_PAGE_NAME,
-                        isFromCache = false
+                        isFromCache = true
                     )
-                )
-            } catch (networkException: Exception) {
-                if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
-                    try {
-                        _homeTicker.value = Success(
-                            useCase.execute(
-                                shopId = userSession.get().shopId,
-                                page = TICKER_PAGE_NAME,
-                                isFromCache = true
-                            )
-                        )
-                    } catch (_: Exception) {
-                        throw networkException
-                    }
-                } else {
+                } catch (_: Exception) {
                     throw networkException
                 }
             }
+            _homeTicker.value = Success(result)
         }, onError = {
             _homeTicker.value = Fail(it)
         })
@@ -564,16 +554,12 @@ class SellerHomeViewModel @Inject constructor(
             liveData.value = Success(result)
             onSuccess(result)
         } catch (networkException: Exception) {
-            if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
-                try {
-                    useCase.setUseCache(true)
-                    val result = useCase.executeUseCase()
-                    liveData.value = Success(result)
-                    onSuccess(result)
-                } catch (_: Exception) {
-                    throw networkException
-                }
-            } else {
+            try {
+                useCase.setUseCache(true)
+                val result = useCase.executeUseCase()
+                liveData.value = Success(result)
+                onSuccess(result)
+            } catch (_: Exception) {
                 throw networkException
             }
         }
@@ -583,7 +569,7 @@ class SellerHomeViewModel @Inject constructor(
         useCase: BaseGqlUseCase<WidgetLayoutUiModel>,
         getTransformerFlow: suspend (widgets: WidgetLayoutUiModel, isFromCache: Boolean) -> Flow<List<BaseWidgetUiModel<*>>>
     ) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+        if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
