@@ -6,12 +6,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 
-fun Fragment.showToasterError(view: View, throwable: Throwable) {
+fun Fragment.showToasterError(view: View, throwable: Throwable, anchorView: View? = null) {
     if (!isAdded) return
 
     val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-    Toaster.build(view.rootView, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).apply {
-        anchorView = view
+    Toaster.build(view, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).apply {
+        this.anchorView = anchorView
         show()
     }
 }
