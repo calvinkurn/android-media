@@ -44,6 +44,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
@@ -344,6 +345,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onStickyChipsClick)
         groupDetailChipsRv?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        groupDetailChipsRv?.addItemDecoration(ChipsInsightItemDecoration())
         groupDetailChipsRv?.adapter = groupDetailsChipsAdapter
     }
 
@@ -529,7 +531,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         this.adGroupId = groupId
         this.insightType = INSIGHT_TYPE_ALL
         this.adGroupName = groupName
-        viewModel.selectDefaultChips(insightType)
+        viewModel.selectDefaultChips(insightType, adType)
         loadDetailPageOnAction(
             adType,
             groupId,

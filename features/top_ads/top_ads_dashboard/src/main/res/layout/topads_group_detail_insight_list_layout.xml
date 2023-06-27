@@ -33,8 +33,7 @@
             android:id="@+id/groupCardRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="16dp"
             tools:itemCount="4"
             tools:listitem="@layout/topads_group_card_item_layout" />
     </com.tokopedia.unifycomponents.CardUnify2>

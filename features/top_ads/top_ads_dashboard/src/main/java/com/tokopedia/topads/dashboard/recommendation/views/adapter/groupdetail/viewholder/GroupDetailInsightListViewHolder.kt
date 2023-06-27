@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
@@ -24,6 +25,11 @@ class GroupDetailInsightListViewHolder(
     }
 
     override fun bind(element: GroupDetailInsightListUiModel?) {
+        val itemDecoration = RecommendationInsightItemDecoration(
+            view.context,
+            LinearLayoutManager.VERTICAL
+        )
+        groupCardRecyclerView.addItemDecoration(itemDecoration)
         groupCardRecyclerView.layoutManager = layoutManager
         groupCardRecyclerView.adapter = insightListAdapter
         insightListAdapter.submitList(element?.adGroups)

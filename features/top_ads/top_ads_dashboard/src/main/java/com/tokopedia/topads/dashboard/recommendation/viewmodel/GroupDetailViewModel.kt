@@ -43,6 +43,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsig
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
@@ -163,7 +164,8 @@ class GroupDetailViewModel @Inject constructor(
         return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
     }
 
-    fun selectDefaultChips(insightType: Int) {
+    fun selectDefaultChips(insightType: Int, adType: Int = TYPE_PRODUCT_VALUE) {
+        if (adType == TYPE_PRODUCT_VALUE) groupDetailMapper.detailPageDataMap[TYPE_CHIPS] = GroupDetailChipsUiModel()
         chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
             groupDetailChipsItemUiModel.isSelected = (index == insightType)
         }
