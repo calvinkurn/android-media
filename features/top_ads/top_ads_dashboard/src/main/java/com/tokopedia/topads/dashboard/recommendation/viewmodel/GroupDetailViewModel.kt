@@ -40,8 +40,8 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianN
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
@@ -194,8 +194,7 @@ class GroupDetailViewModel @Inject constructor(
             input,
             userSession.shopId,
             groupId,
-            HEADLINE_INSIGHT_MUTATION_SOURCE,
-            groupName
+            HEADLINE_INSIGHT_MUTATION_SOURCE
         )
         launchCatchError(
             block = {

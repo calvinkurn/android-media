@@ -87,10 +87,7 @@ class GroupDetailMapper @Inject constructor() {
             if (index == selectedIndex) {
                 detailPageDataMap[index]?.let {
                     expandedModel(it, clickedChips)?.let { expandedModel ->
-                        map.put(
-                            index,
-                            expandedModel
-                        )
+                        map[index] = expandedModel
                         detailPageDataMap.put(
                             index,
                             expandedModel
@@ -123,8 +120,9 @@ class GroupDetailMapper @Inject constructor() {
 
     private fun handleChipsData(adGroupType: Int) {
         if (adGroupType == TYPE_PRODUCT_VALUE) {
-            if (!detailPageDataMap.contains(TYPE_CHIPS))
-            detailPageDataMap[TYPE_CHIPS] = GroupDetailChipsUiModel()
+            if (!detailPageDataMap.contains(TYPE_CHIPS) && checkIfInsightAvailable()) {
+                detailPageDataMap[TYPE_CHIPS] = GroupDetailChipsUiModel()
+            }
         } else {
             detailPageDataMap.remove(TYPE_CHIPS)
         }
@@ -158,13 +156,8 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     private fun checkAndPutDataForUnoptimisedGroup() {
-        var isAnyInsightAvailable = false
-        for (value in detailPageDataMap.values) {
-            if ((value as? GroupInsightsUiModel)?.isAvailable() == true) {
-                isAnyInsightAvailable = true
-                break
-            }
-        }
+        val isAnyInsightAvailable = checkIfInsightAvailable()
+
         if (!isAnyInsightAvailable && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
             detailPageDataMap.remove(TYPE_CHIPS)
             val adGroups =
@@ -179,6 +172,17 @@ class GroupDetailMapper @Inject constructor() {
         } else if (isAnyInsightAvailable) {
             detailPageDataMap.remove(TYPE_UN_OPTIMIZED_GROUP)
         }
+    }
+
+    private fun checkIfInsightAvailable(): Boolean {
+        var isAnyInsightAvailable = false
+        for (value in detailPageDataMap.values) {
+            if ((value as? GroupInsightsUiModel)?.isAvailable() == true) {
+                isAnyInsightAvailable = true
+                break
+            }
+        }
+        return isAnyInsightAvailable
     }
 
     private fun getEmptyStateData(type: Int): GroupDetailEmptyStateUiModel {
@@ -308,11 +312,10 @@ class GroupDetailMapper @Inject constructor() {
         input: TopadsManagePromoGroupProductInput?,
         shopId: String,
         groupId: String?,
-        source: String,
-        groupName: String?
+        source: String
     ): TopAdsManageHeadlineInput2 {
         val keywords = mutableListOf<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>()
-        input?.keywordOperation?.forEachIndexed { index, keywordEditInput ->
+        input?.keywordOperation?.forEachIndexed { _, keywordEditInput ->
             keywords.add(
                 TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
                     action = keywordEditInput?.action.toString(),
@@ -365,7 +368,7 @@ class GroupDetailMapper @Inject constructor() {
         return impressionSum
     }
 
-    private fun getInsightInputModel(isInsightAvailable: Boolean): TopadsManagePromoGroupProductInput?{
+    private fun getInsightInputModel(isInsightAvailable: Boolean): TopadsManagePromoGroupProductInput? {
         return if (isInsightAvailable) TopadsManagePromoGroupProductInput() else null
     }
 }
