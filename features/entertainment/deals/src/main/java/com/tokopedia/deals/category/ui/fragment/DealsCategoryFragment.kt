@@ -75,6 +75,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var categories: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is DealsCategoryFilterBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
     }
@@ -350,12 +355,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
 
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is DealsCategoryFilterBottomSheet) {
-            childFragment.setListener(this)
-        }
-    }
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventClickBrandPopular(brand, position, true)

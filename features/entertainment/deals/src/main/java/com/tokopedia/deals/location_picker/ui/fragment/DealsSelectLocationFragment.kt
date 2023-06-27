@@ -9,7 +9,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -398,8 +397,8 @@ class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
 
         fun createInstance(selectedLocation: String?,
                            location: Location?,
-                           isLandmarkPage: Boolean): Fragment {
-            val fragment: Fragment = DealsSelectLocationFragment()
+                           isLandmarkPage: Boolean): DealsSelectLocationFragment {
+            val fragment = DealsSelectLocationFragment()
             val bundle = Bundle()
             bundle.putString(DealsLocationConstants.SELECTED_LOCATION, selectedLocation)
             bundle.putParcelable(DealsLocationConstants.LOCATION_OBJECT, location)

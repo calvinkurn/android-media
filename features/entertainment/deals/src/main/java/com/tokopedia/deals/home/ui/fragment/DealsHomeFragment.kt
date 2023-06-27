@@ -65,6 +65,11 @@ class DealsHomeFragment : DealsBaseFragment(),
     @Inject
     lateinit var analytics: DealsAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is DealsCategoryBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
@@ -214,13 +219,6 @@ class DealsHomeFragment : DealsBaseFragment(),
             DEALS_SEARCH_REQUEST_CODE, DEALS_CATEGORY_REQUEST_CODE, DEALS_BRAND_REQUEST_CODE -> {
                 changeLocationAndLoadData()
             }
-        }
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is DealsCategoryBottomSheet) {
-            childFragment.setListener(this)
         }
     }
 

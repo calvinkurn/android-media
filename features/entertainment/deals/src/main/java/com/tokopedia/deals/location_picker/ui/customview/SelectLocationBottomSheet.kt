@@ -25,6 +25,13 @@ class SelectLocationBottomSheet : BottomSheetUnify() {
     private var isLandmarkPage: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is DealsSelectLocationFragment) {
+                callback?.let { callback->
+                    fragment.setCallback(callback)
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
         selectedLocation = arguments?.getString(DealsLocationConstants.SELECTED_LOCATION)
         currentLocation = arguments?.getParcelable(DealsLocationConstants.LOCATION_OBJECT)
@@ -35,15 +42,6 @@ class SelectLocationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is DealsSelectLocationFragment) {
-            callback?.let { callback->
-                childFragment.setCallback(callback)
-            }
-        }
     }
 
     private fun initBottomSheet() {
@@ -57,9 +55,12 @@ class SelectLocationBottomSheet : BottomSheetUnify() {
     }
     private fun initView() {
         setLayoutMargin()
-        val fragment = DealsSelectLocationFragment.createInstance(selectedLocation, currentLocation, isLandmarkPage)
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.layout_location, fragment).commit()
+        callback?.let { callback ->
+            val fragment = DealsSelectLocationFragment.createInstance(selectedLocation, currentLocation, isLandmarkPage)
+            fragment.setCallback(callback)
+            val fragmentTransaction = childFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.layout_location, fragment).commit()
+        }
     }
 
     private fun setLayoutMargin() {

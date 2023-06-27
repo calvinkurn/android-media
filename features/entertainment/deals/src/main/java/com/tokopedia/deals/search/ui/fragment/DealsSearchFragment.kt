@@ -93,6 +93,15 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     private var binding by autoCleared<FragmentDealsSearchBinding>()
     private var binding2 by autoCleared<LayoutDealsSearchBarBinding>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SelectLocationBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDealsSearchBinding.inflate(inflater, container, false)
         binding2 = LayoutDealsSearchBarBinding.bind(binding.root)
@@ -271,13 +280,6 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
             bottomSheet = SelectLocationBottomSheet.createInstance(binding2.tvLocation.text.toString(), currentLocation, false)
             bottomSheet?.setCallback(this)
             childFragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
-        }
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is SelectLocationBottomSheet) {
-            childFragment.setCallback(this)
         }
     }
 
