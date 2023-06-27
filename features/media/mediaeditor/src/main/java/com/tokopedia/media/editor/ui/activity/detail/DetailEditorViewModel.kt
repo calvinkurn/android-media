@@ -80,10 +80,12 @@ class DetailEditorViewModel @Inject constructor(
 
     fun setContrast(value: Float?, sourceBitmap: Bitmap?) {
         if (value == null || sourceBitmap == null) return
-        _contrastFilter.value = contrastFilterRepository.contrast(
+        contrastFilterRepository.contrast(
             value,
             sourceBitmap.copy(sourceBitmap.config, true)
-        )
+        )?.let {
+            _contrastFilter.value = it
+        }
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {

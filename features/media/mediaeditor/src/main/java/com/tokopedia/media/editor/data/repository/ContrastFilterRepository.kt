@@ -5,19 +5,26 @@ import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import javax.inject.Inject
 
 interface ContrastFilterRepository {
-    fun contrast(value: Float, source: Bitmap): Bitmap
+    fun contrast(value: Float, source: Bitmap): Bitmap?
 }
 
-class ContrastFilterRepositoryImpl @Inject constructor() : ContrastFilterRepository {
+class ContrastFilterRepositoryImpl @Inject constructor(
+    private val bitmapCreationRepository: BitmapCreationRepository
+) : ContrastFilterRepository {
     /**
      * @param source mutable copy of target bitmap
      * @param value float value for contrast adjustment
      */
-    override fun contrast(value: Float, source: Bitmap): Bitmap {
+    override fun contrast(value: Float, source: Bitmap): Bitmap? {
         val standardContrastValue = ContrastToolsUiComponent.contrastRawToStdValue(value)
         if (standardContrastValue == 0f) return source
         val width = source.width
         val height = source.height
+
+        if (bitmapCreationRepository.isBitmapOverflow(width, height)) {
+            return null
+        }
+
         val pixels = IntArray(width * height)
         source.getPixels(pixels, 0, width, 0, 0, width, height)
         shiftPixel(
