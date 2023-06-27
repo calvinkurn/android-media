@@ -59,7 +59,7 @@ class MedalRewardsView @JvmOverloads constructor(
     }
 
     fun renderCoupons(data: List<MedalRewardsModel>, onErrorAction: () -> Unit) {
-        if (data.size == 1 && data.last().status == CouponState.ERROR) {
+        if (isErrorCase(data)) {
             setErrorState(
                 RewardsErrorModel(
                     imageUrl = data.last().imageUrl,
@@ -74,12 +74,13 @@ class MedalRewardsView @JvmOverloads constructor(
         }
     }
 
+    private fun isErrorCase(data: List<MedalRewardsModel>): Boolean {
+        return data.size == 1 &&
+            (data.last().status == CouponState.ERROR || data.last().status == CouponState.HIDDEN)
+    }
+
     private fun setErrorState(error: RewardsErrorModel) {
-        rewardsAdapter.setVisitables(
-            listOf(
-                error
-            )
-        )
+        rewardsAdapter.setVisitables(listOf(error))
     }
 
 }
