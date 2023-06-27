@@ -614,4 +614,5 @@
     <string name="topads_yes_apply">Ya, Terapkan</string>
     <string name="min_budget_rp">Min. anggaran Rp%d</string>
     <string name="max_budget_rp">Maks. anggaran Rp%d</string>
+    <string name="topads_dashboard_saran_ads_info_sheet_desc">Kumpulan rekomendasi untuk iklanmu yang masih bisa dimaksimalkan.</string>
 </resources>
