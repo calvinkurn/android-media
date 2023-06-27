@@ -474,34 +474,6 @@ class OrderProductCard(
     }
 
     private fun renderAddOnsProduct() {
-        product.addOnsProductData = AddOnsProductDataModel(
-            title = "testing dulu",
-            bottomsheet = AddOnsProductDataModel.Bottomsheet(
-                title = "hello",
-                applink = "tokopedia://now",
-                isShown = true
-            ),
-            data = listOf(
-                AddOnsProductDataModel.Data(
-                    id = "12121",
-                    uniqueId = "11111",
-                    price = 100000,
-                    infoLink = "121212",
-                    name = "Jasa Pasang Standar",
-                    status = 2,
-                    type = 1
-                ),
-                AddOnsProductDataModel.Data(
-                    id = "12122",
-                    uniqueId = "11113",
-                    price = 10000,
-                    infoLink = "121212",
-                    name = "Proteksi Rusak",
-                    status = 1,
-                    type = 2
-                )
-            )
-        )
         val addOnsProductData = product.addOnsProductData
         binding.addOnsProduct.root.showIfWithBlock(addOnsProductData.data.isNotEmpty()) {
             binding.addOnsProduct.run {

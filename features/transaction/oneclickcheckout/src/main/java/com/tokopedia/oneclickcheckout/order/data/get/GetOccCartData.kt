@@ -52,16 +52,7 @@ class GetOccCartData(
     @SerializedName("add_on_wording")
     val addOnWording: AddOnGiftingWording = AddOnGiftingWording(),
     @SerializedName("summary_add_ons")
-    val summaryAddOns: List<SummaryAddOnProductResponse> = listOf(
-        SummaryAddOnProductResponse(
-            wording = "Total Jasa Pasang ({{qty}} Jasa)",
-            type = 1
-        ),
-        SummaryAddOnProductResponse(
-            wording = "Total Biaya Proteksi ({{qty}} Polis)",
-            type = 2
-        )
-    )
+    val summaryAddOns: List<SummaryAddOnProductResponse> = listOf()
 )
 
 class CustomerData(
