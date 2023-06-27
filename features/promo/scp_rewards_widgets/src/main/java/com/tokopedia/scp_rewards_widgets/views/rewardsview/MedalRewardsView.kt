@@ -6,7 +6,6 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.scp_rewards_widgets.common.VerticalSpacing
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.model.RewardsErrorModel
@@ -16,10 +15,6 @@ class MedalRewardsView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-
-    companion object {
-        private const val ITEM_VERTICAL_SPACING = 16
-    }
 
     private var rewardsRv: RecyclerView? = null
     private val rewardsAdapter: BaseAdapter<RewardsViewTypeFactory> by lazy {
@@ -54,7 +49,6 @@ class MedalRewardsView @JvmOverloads constructor(
         rewardsRv?.apply {
             adapter = rewardsAdapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(VerticalSpacing(ITEM_VERTICAL_SPACING))
         }
     }
 
