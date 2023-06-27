@@ -9,6 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
@@ -119,8 +120,8 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
     }
 
     private fun updateActivityToolbar() {
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
-            setSupportActionBar(it)
+        findViewById<HeaderUnify>(R.id.toolbar)?.let {
+            it.isShowBackButton = true
         }
     }
 
