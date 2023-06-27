@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVA
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.common.robot.waitForBottomSheet
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -96,7 +97,7 @@ class OrderSummaryPageActivityTrackingTest {
             }
 
             // wait for bottom sheet to fully close
-            Thread.sleep(2000)
+            waitForBottomSheet()
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE

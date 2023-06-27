@@ -42,7 +42,7 @@ import org.junit.Assert.assertEquals
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
 
 fun waitForBottomSheet() {
-    Thread.sleep(500)
+    Thread.sleep(100)
 }
 
 class OrderSummaryPageRobot {
