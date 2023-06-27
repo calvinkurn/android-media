@@ -174,7 +174,6 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-//                                root.transitionToState(R.id.second_title_with_icon)
                                 root.setTransition(root.currentState, R.id.second_title_with_icon)
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
@@ -184,7 +183,6 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitle.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-//                                root.transitionToState(R.id.initial_title_with_icon)
                                 root.setTransition(root.currentState, R.id.initial_title_with_icon)
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
@@ -194,7 +192,6 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-//                                root.transitionToState(R.id.initial_title_with_icon)
                                 root.setTransition(root.currentState, R.id.initial_title_with_icon)
                                 root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
@@ -305,7 +302,6 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-//                    root.transitionToState(R.id.initial_title_with_icon)
                     root.setTransition(root.currentState, R.id.initial_title_with_icon)
                     root.transitionToEnd()
 
@@ -356,7 +352,6 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-//                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
                     root.setTransition(root.currentState, R.id.initial_title_with_timer_and_icon)
                     root.transitionToEnd()
 
@@ -407,7 +402,6 @@ class FeedCampaignRibbonView(
                         )
                     }
 
-//                    root.transitionToState(R.id.initial_title_with_icon)
                     root.setTransition(root.currentState, R.id.initial_title_with_icon)
                     root.transitionToEnd()
 
@@ -465,7 +459,6 @@ class FeedCampaignRibbonView(
 
             with(binding) {
                 startDelayProcess(THREE_SECOND) {
-//                binding.root.transitionToState(animationStateList[animationIndex])
                     root.setTransition(root.currentState, animationStateList[animationIndex])
                     root.transitionToEnd()
                     runLoopAnimation(index + ONE)
@@ -475,7 +468,6 @@ class FeedCampaignRibbonView(
     }
 
     companion object {
-        private const val HALF_SECOND = 500L
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
         private const val COLOR_TRANSITION_DURATION = 250
