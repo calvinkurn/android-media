@@ -12,6 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -23,10 +26,12 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -56,6 +61,7 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
+import com.tokopedia.shop.common.CropTopImageByHeightPercentageTransformation
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
@@ -113,6 +119,7 @@ class ShopPageCampaignFragment :
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
         private const val QUERY_PARAM_TAB = "tab"
+        private const val PATTERN_CROP_TOP_PERCENTAGE = 0.25
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -125,6 +132,7 @@ class ShopPageCampaignFragment :
 
     private val viewBindingCampaignTab: FragmentShopPageCampaignBinding? by viewBinding()
     private var listCampaignTabBackgroundColor: List<String> = listOf()
+    private var listPatternImage: List<String> = listOf()
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
@@ -153,6 +161,7 @@ class ShopPageCampaignFragment :
     }
 
     private var globalErrorShopPage: GlobalError? = null
+    private var viewBackgroundColor: View? = null
 
     @Inject
     lateinit var shopCampaignTabTracker: ShopCampaignTabTracker
@@ -326,6 +335,7 @@ class ShopPageCampaignFragment :
 
     override fun initView() {
         globalErrorShopPage = viewBindingCampaignTab?.globalError
+        viewBackgroundColor = viewBindingCampaignTab?.viewBgColor
     }
 
     override fun observeShopHomeWidgetContentData() {
@@ -335,6 +345,7 @@ class ShopPageCampaignFragment :
                     is Success -> {
                         onSuccessGetShopHomeWidgetContentData(it.data)
                         renderCampaignTabBackgroundColor()
+                        renderPatternBackground()
                     }
 
                     is Fail -> {
@@ -363,6 +374,25 @@ class ShopPageCampaignFragment :
         }
     }
 
+    private fun renderPatternBackground() {
+        viewBindingCampaignTab?.imageBackgroundPattern?.apply {
+            if (drawable == null) {
+                val patternUrl = listPatternImage.getOrNull(Int.ZERO).orEmpty()
+                shouldShowWithAction(patternUrl.isNotEmpty()) {}
+                Glide.with(context)
+                    .load(listPatternImage.getOrNull(Int.ZERO))
+                    .apply(RequestOptions().override(Target.SIZE_ORIGINAL))
+                    .override(Target.SIZE_ORIGINAL)
+                    .transform(
+                        CropTopImageByHeightPercentageTransformation(
+                            PATTERN_CROP_TOP_PERCENTAGE
+                        )
+                    )
+                    .into(this)
+            }
+        }
+    }
+
     override fun observePlayWidget() {
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner) { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
@@ -386,7 +416,7 @@ class ShopPageCampaignFragment :
                                     .indexOfFirst { it is CarouselPlayWidgetUiModel }
                             val finalPosition = min(
                                 ShopUtil.getActualPositionFromIndex(widgetPosition),
-                                shopCampaignTabAdapter?.itemCount.orZero()
+                                shopCampaignTabAdapter.itemCount.orZero()
                             )
                             recyclerView.stepScrollToPositionWithDelay(
                                 finalPosition,
@@ -582,9 +612,16 @@ class ShopPageCampaignFragment :
     }
 
     private fun renderCampaignTabBackgroundColor() {
-        if (listCampaignTabBackgroundColor.isNotEmpty()) {
-            getRecyclerView(view)?.apply {
-                setBackgroundColor(parseColor(listCampaignTabBackgroundColor.firstOrNull().orEmpty()))
+        viewBackgroundColor?.apply {
+            if (listCampaignTabBackgroundColor.isNotEmpty()) {
+                show()
+                setBackgroundColor(
+                    parseColor(
+                        listCampaignTabBackgroundColor.firstOrNull().orEmpty()
+                    )
+                )
+            } else {
+                hide()
             }
         }
     }
@@ -1047,5 +1084,9 @@ class ShopPageCampaignFragment :
 
     override fun getListBackgroundColor(): List<String> {
         return listCampaignTabBackgroundColor
+    }
+
+    fun setListPatternImage(listPatternImage: List<String>) {
+        this.listPatternImage = listPatternImage
     }
 }

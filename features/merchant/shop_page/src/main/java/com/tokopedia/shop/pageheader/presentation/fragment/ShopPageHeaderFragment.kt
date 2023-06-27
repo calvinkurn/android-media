@@ -2152,6 +2152,7 @@ class ShopPageHeaderFragment :
     ): Fragment {
         return ShopPageCampaignFragment.createInstance(shopId).apply {
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
+            setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)
         }
     }
