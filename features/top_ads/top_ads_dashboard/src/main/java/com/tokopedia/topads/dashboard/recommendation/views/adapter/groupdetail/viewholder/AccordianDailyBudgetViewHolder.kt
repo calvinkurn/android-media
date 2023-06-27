@@ -1,8 +1,12 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.text.Editable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.style.ClickableSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -56,11 +60,41 @@ class AccordianDailyBudgetViewHolder(
                 if(errorMsg.isEmpty()){
                     hasError = false
                     dailyBudget.isInputError = false
+                    if(dailyBudgetBid == element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily?.toDouble()){
+                        dailyBudget.setMessage(getString(R.string.biaya_optimal))
+                    } else {
+                        val msg = String.format(
+                            getString(R.string.topads_insight_recommended_bid_apply),
+                            element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
+                        )
+                        val ss = SpannableString(msg)
+                        val cs = object : ClickableSpan() {
+                            override fun onClick(p0: View) {
+                                dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull())
+                            }
+
+                            override fun updateDrawState(ds: TextPaint) {
+                                ds.isUnderlineText = false
+                                ds.color = ContextCompat.getColor(
+                                    dailyBudget.context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                )
+                                ds.isFakeBoldText = true
+                            }
+                        }
+                        ss.setSpan(
+                            cs,
+                            msg.length - 8,
+                            msg.length,
+                            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        dailyBudget.setMessage(ss)
+                    }
                 } else {
                     hasError = true
                     dailyBudget.isInputError = true
+                    dailyBudget.setMessage(errorMsg)
                 }
-                dailyBudget.setMessage(errorMsg)
                 setDailyBudgetIntoInputModel(dailyBudgetBid)
                 onInsightAction.invoke(hasError)
             }
@@ -70,12 +104,12 @@ class AccordianDailyBudgetViewHolder(
     private fun validateDailyBudgetBidInput(budget: Double, element: AccordianDailyBudgetUiModel?): String {
         return if (budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull())
             String.format(
-                getString(R.string.topads_insight_min_bid_error_msg_format),
+                getString(R.string.min_budget_rp),
                 element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()
             )
         else if (budget > INSIGHT_DAILY_BUDGET_MAX_BID)
             String.format(
-                getString(R.string.topads_insight_max_bid_error_msg_format),
+                getString(R.string.max_budget_rp),
                 INSIGHT_DAILY_BUDGET_MAX_BID
             )
         else String.EMPTY

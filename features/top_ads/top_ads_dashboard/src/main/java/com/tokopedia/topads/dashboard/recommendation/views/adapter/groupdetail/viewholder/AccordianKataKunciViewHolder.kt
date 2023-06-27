@@ -76,7 +76,7 @@ class AccordianKataKunciViewHolder(
                             if(bid == element.suggestionBid) {
                                 keywordCost.setMessage(getString(R.string.biaya_optimal))
                             } else {
-                                val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), bid)
+                                val msg = String.format(getString(R.string.topads_insight_recommended_bid_apply), element.suggestionBid)
                                 val ss = SpannableString(msg)
                                 val cs = object : ClickableSpan() {
                                     override fun onClick(p0: View) {

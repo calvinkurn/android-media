@@ -34,29 +34,26 @@ class GroupInsightsViewHolder(
         accordionUnify.apply {
             accordionData.clear()
             removeAllViews()
-            val accordionUnifyData = AccordionDataUnify(
-                title = element.title,
-                subtitle = getSubtitle(element, true),
-                isExpanded = element.isExpanded,
-                expandableView = getView(element.expandItemDataModel),
-                icon = getAccordianIcon(element.type)
-            )
+            val accordionUnifyData = getAccordianData(element)
             accordionUnifyData.setContentPadding(8.toPx(), 16.toPx(), 8.toPx(), 16.toPx())
             addGroup(accordionUnifyData)
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
                 onAccordianItemClick.invoke(element)
                 removeAllViews()
-                val accordionUnifyData = AccordionDataUnify(
-                    title = element.title,
-                    subtitle = if(element.isExpanded) getSubtitle(element, false) else getSubtitle(element, true),
-                    isExpanded = element.isExpanded,
-                    expandableView = getView(element.expandItemDataModel),
-                    icon = getAccordianIcon(element.type)
-                )
-                addGroup(accordionUnifyData)
+                addGroup(getAccordianData(element))
             }
         }
+    }
+
+    private fun getAccordianData(element: GroupInsightsUiModel): AccordionDataUnify{
+        return AccordionDataUnify(
+            title = element.title,
+            subtitle = if(element.isExpanded) getSubtitle(element, false) else getSubtitle(element, true),
+            isExpanded = element.isExpanded,
+            expandableView = getView(element.expandItemDataModel),
+            icon = getAccordianIcon(element.type)
+        )
     }
 
     private fun getAccordianIcon(type: Int): Drawable? {

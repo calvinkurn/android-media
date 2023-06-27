@@ -1,9 +1,13 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.text.Editable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextWatcher
+import android.text.style.ClickableSpan
 import android.view.View
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -119,17 +123,13 @@ class AccordianGroupBidViewHolder(
                 val bid = text.toString().toIntOrZero()
                 updateSearchTypeBid(element, bid)
                 val errorMsg = validateInput(bid, getSearchTypeCurrentBid(element))
-                if(errorMsg.isEmpty()){
+                if (errorMsg.isEmpty()) {
                     searchCost.isInputError = false
-                    if (text.toString().toIntOrZero() == getSearchTypeSuggestionBid(element))
+                    if (text.toString().toIntOrZero() == getSearchTypeSuggestionBid(element)) {
                         searchCost.setMessage(getString(R.string.biaya_optimal))
-                    else
-                        searchCost.setMessage(
-                            String.format(
-                                getString(R.string.topads_insight_recommended_bid_apply),
-                                getSearchTypeSuggestionBid(element)
-                            )
-                        )
+                    } else {
+                        attachClickableSpan(searchCost, getSearchTypeSuggestionBid(element))
+                    }
                 } else {
                     searchCost.isInputError = true
                     searchCost.setMessage(errorMsg)
@@ -149,17 +149,12 @@ class AccordianGroupBidViewHolder(
                 val errorMsg = validateInput(bid, getBrowseTypeCurrentBid(element))
                 if(errorMsg.isEmpty()){
                     recommendationCost.isInputError = false
-                    if (text.toString()
-                            .toIntOrZero() == getBrowseTypeSuggestionBid(element)
-                    )
+                    if (text.toString().toIntOrZero() == getBrowseTypeSuggestionBid(element)) {
                         recommendationCost.setMessage(getString(R.string.biaya_optimal))
-                    else
-                        recommendationCost.setMessage(
-                            String.format(
-                                getString(R.string.topads_insight_recommended_bid_apply),
-                                getBrowseTypeSuggestionBid(element)
-                            )
-                        )
+                    }
+                    else {
+                        attachClickableSpan(recommendationCost, getBrowseTypeSuggestionBid(element))
+                    }
                 } else {
                     recommendationCost.isInputError = true
                     recommendationCost.setMessage(errorMsg)
@@ -211,15 +206,53 @@ class AccordianGroupBidViewHolder(
     }
 
     private fun checkForErrors(element: AccordianGroupBidUiModel?): Boolean {
-        return validateInput(
-            searchCost.editText.text.toString().toIntOrZero(),
-            getSearchTypeCurrentBid(element))
-            .isEmpty()
-            &&
-            validateInput(
-                recommendationCost.editText.text.toString().toIntOrZero(),
-                getBrowseTypeCurrentBid(element))
-                .isEmpty()
+        if (searchCheckBox.isChecked) {
+            if (validateInput(
+                    searchCost.editText.text.toString().toIntOrZero(),
+                    getSearchTypeCurrentBid(element))
+                    .isNotEmpty()
+            )
+                return true
+        }
+        if (recommendationCheckBox.isChecked) {
+            if (validateInput(
+                    recommendationCost.editText.text.toString().toIntOrZero(),
+                    getBrowseTypeCurrentBid(element))
+                    .isNotEmpty()
+            )
+                return true
+        }
+
+        return false
+    }
+
+    private fun attachClickableSpan(view: com.tokopedia.unifycomponents.TextFieldUnify2, suggestionBid: Int){
+        val msg = String.format(
+            getString(R.string.topads_insight_recommended_bid_apply),
+            suggestionBid
+        )
+        val ss = SpannableString(msg)
+        val cs = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                view.editText.setText(suggestionBid)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(
+                    view.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+                ds.isFakeBoldText = true
+            }
+        }
+        ss.setSpan(
+            cs,
+            msg.length - 8,
+            msg.length,
+            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        view.setMessage(ss)
     }
 
     companion object {
