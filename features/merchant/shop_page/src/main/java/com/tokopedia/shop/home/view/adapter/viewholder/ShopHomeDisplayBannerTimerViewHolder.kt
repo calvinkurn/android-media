@@ -65,6 +65,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -314,11 +315,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun hideRemindMeText(model: ShopWidgetDisplayBannerTimerUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.totalNotifyWording.orEmpty()
         remindMeText?.apply {
-            val colorText = if(isRemindMe){
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-            }
+            val colorText = TOTAL_NOTIFY_TEXT_COLOR
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED
             } else {

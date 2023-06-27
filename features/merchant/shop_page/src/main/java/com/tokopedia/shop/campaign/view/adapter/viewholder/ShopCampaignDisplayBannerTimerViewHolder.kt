@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.common.util.ShopUtil
@@ -76,6 +75,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         private val STATIC_WHITE_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         private val UNIFY_NN950_DARK = R.color.dms_static_Unify_NN950_dark
         private val UNIFY_NN950_LIGHT = R.color.dms_static_Unify_NN950_light
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -296,11 +296,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private fun hideRemindMeText(model: ShopWidgetDisplayBannerTimerUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.totalNotifyWording.orEmpty()
         remindMeText?.apply {
-            val colorText = if (isRemindMe) {
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-            }
+            val colorText = TOTAL_NOTIFY_TEXT_COLOR
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED
             } else {
@@ -354,13 +350,4 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         return statusCampaign == StatusCampaign.UPCOMING
     }
 
-    private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {
-        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
-    }
-
-    private fun getHeightRatio(uiModel: ShopWidgetDisplayBannerTimerUiModel): Float {
-        val indexZero = getIndexRatio(uiModel, 0).toFloat()
-        val indexOne = getIndexRatio(uiModel, 1).toFloat()
-        return (indexOne / indexZero)
-    }
 }
