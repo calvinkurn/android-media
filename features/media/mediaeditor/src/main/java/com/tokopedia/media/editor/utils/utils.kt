@@ -4,13 +4,10 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
@@ -46,45 +43,6 @@ fun getUCropTempResultPath(): Uri {
 fun isGranted(context: Context, permission: String): Boolean {
     return ContextCompat.checkSelfPermission(context, permission) ==
         PackageManager.PERMISSION_GRANTED
-}
-
-//formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
-// if total of dark pixel > total of pixel * 0.45 count that as dark image
-fun Bitmap.isDark(): Boolean {
-    try {
-        val ratio = this.width.toFloat() / this.height
-        val widthBitmapChecker = 50
-        val heightBitmapChecker = widthBitmapChecker * ratio
-        val bitmapChecker =
-            Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker.toInt(), false)
-        val darkThreshold = bitmapChecker.width * bitmapChecker.height * 0.45f
-        var darkPixels = 0
-        val pixels = IntArray(bitmapChecker.width * bitmapChecker.height)
-        bitmapChecker.getPixels(
-            pixels,
-            0,
-            bitmapChecker.width,
-            0,
-            0,
-            bitmapChecker.width,
-            bitmapChecker.height
-        )
-        val luminanceThreshold = 150
-        for (i in pixels.indices) {
-            val color = pixels[i]
-            val r = Color.red(color)
-            val g = Color.green(color)
-            val b = Color.blue(color)
-            val luminance = 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
-            if (luminance < luminanceThreshold) {
-                darkPixels++
-            }
-        }
-        bitmapChecker.recycle()
-        return darkPixels >= darkThreshold
-    } catch (t: Throwable) {
-        return false
-    }
 }
 
 fun cropCenterImage(
@@ -138,6 +96,7 @@ fun cropCenterImage(
             cropRatio = cropRaw.ratio
         }
 
+        bitmap.recycle()
         return Pair(bitmapResult, cropDetail)
     }
     return null
@@ -158,7 +117,7 @@ fun Fragment.delay(action: () -> Unit, delayTime: Long) {
     }, delayTime)
 }
 
-fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
+private fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
     val imagePxDrawThreshold = 25_000_000 // 25 million pixel
     return (width * height) >= imagePxDrawThreshold
 }
@@ -177,6 +136,7 @@ fun getImageSize(path: String): Pair<Int, Int> {
 }
 
 // scale down image size (if needed) until canvas draw limit size (25 million pixel)
+// used only when implement image to imageView
 fun validateImageSize(source: Bitmap): Bitmap {
     // used to decide scaled result value for each scaled down iteration
     // each iteration will reduce image size 10% (100px -> 90px -> 81px -> etc)
