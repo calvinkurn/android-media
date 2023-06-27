@@ -34,6 +34,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -76,6 +80,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -133,6 +144,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -185,6 +203,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -231,6 +256,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -277,6 +309,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -322,6 +361,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -367,6 +413,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -428,6 +481,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -490,6 +550,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -537,6 +604,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -584,6 +658,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -633,6 +714,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -705,6 +793,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -888,6 +983,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = STATUS_OK,
             result = CheckoutOccResult(success = 0, prompt = prompt)
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -918,6 +1020,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 error = CheckoutOccErrorData(message = errorMessage)
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -941,6 +1050,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val exception = IOException()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws exception
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -966,6 +1082,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(
             errorMessage
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1001,6 +1124,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 error = CheckoutOccErrorData(ERROR_CODE_PRICE_CHANGE)
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1040,6 +1170,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 error = CheckoutOccErrorData("000", message = errorMessage)
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1069,6 +1206,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = STATUS_OK,
             result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData("000"))
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1099,6 +1243,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = "",
             headerMessage = responseMessage
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1125,6 +1276,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
         } returns ValidateUsePromoRevampUiModel()
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = "")
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1152,6 +1310,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         } returns ValidateUsePromoRevampUiModel()
         val response = Throwable()
         coEvery { checkoutOccUseCase.executeSuspend(any()) } throws response
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1279,6 +1444,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -1332,6 +1504,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -1385,6 +1564,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -1429,6 +1615,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -1479,6 +1672,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = "OK",
             errorCode = "200"
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)

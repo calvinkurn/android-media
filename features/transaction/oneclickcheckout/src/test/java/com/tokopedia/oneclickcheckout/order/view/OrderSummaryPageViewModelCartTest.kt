@@ -17,6 +17,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -61,8 +62,12 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -1109,6 +1114,13 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isSuccess = false
@@ -2047,8 +2059,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "456",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2076,8 +2088,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateEmptyResult
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -2109,8 +2121,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "123",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2138,8 +2150,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateProductLevelResult
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),
@@ -2171,8 +2183,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 OrderProduct(
                     cartId = "123",
                     orderQuantity = 1,
-                    addOn = AddOnsDataModel(
-                        addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 1000.0))
+                    addOn = AddOnGiftingDataModel(
+                        addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 1000.0))
                     )
                 )
             ),
@@ -2200,8 +2212,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val saveAddOnStateResult = helper.saveAddOnStateShopLevelResultNegativeTest
         orderSummaryPageViewModel.orderCart = OrderCart(
             shop = OrderShop(
-                addOn = AddOnsDataModel(
-                    addOnsDataItemModelList = listOf(AddOnDataItemModel(addOnPrice = 2000.0))
+                addOn = AddOnGiftingDataModel(
+                    addOnsDataItemModelList = listOf(AddOnGiftingDataItemModel(addOnPrice = 2000.0))
                 ),
                 isFulfillment = true
             ),

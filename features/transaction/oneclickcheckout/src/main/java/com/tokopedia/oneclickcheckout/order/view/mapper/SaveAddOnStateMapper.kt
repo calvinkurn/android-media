@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.mapper
 
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
@@ -13,8 +12,8 @@ import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.A
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 
 internal object SaveAddOnStateMapper {
-    private const val SAVE_ADD_ON_STATE_QUANTITY = 1
     private const val SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE = 1
+    const val SAVE_ADD_ON_STATE_QUANTITY = 1
 
     fun generateSaveAddOnStateRequestParams(
         newAddOnProductData: AddOnsProductDataModel.Data,
@@ -23,7 +22,7 @@ internal object SaveAddOnStateMapper {
         return SaveAddOnStateRequest(
             addOns = listOf(
                 AddOnRequest(
-                    addOnKey = String.EMPTY,
+                    addOnKey = product.cartId,
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                     cartProducts = listOf(
                         CartProduct(
@@ -69,7 +68,7 @@ internal object SaveAddOnStateMapper {
         return SaveAddOnStateRequest(
             addOns = products.filter { it.addOnsProductData.data.isNotEmpty() }.map { product ->
                 AddOnRequest(
-                    addOnKey = String.EMPTY,
+                    addOnKey = product.cartId,
                     addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                     cartProducts = listOf(
                         CartProduct(

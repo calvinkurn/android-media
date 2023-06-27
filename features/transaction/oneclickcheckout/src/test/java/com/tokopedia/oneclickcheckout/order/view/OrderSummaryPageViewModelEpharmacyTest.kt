@@ -10,6 +10,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
@@ -222,6 +226,13 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -287,6 +298,13 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(AddOnResponse())
+            )
+        )
+        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false

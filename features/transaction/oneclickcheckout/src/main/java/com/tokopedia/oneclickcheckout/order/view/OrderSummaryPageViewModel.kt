@@ -1345,7 +1345,6 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
 
         job.invokeOnCompletion {
-            saveAddOnProductStateJobs[newAddOnProductData.id]?.cancel()
             saveAddOnProductStateJobs.remove(newAddOnProductData.id)
         }
         saveAddOnProductStateJobs[newAddOnProductData.id] = job
