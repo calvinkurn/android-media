@@ -928,7 +928,7 @@ class ShopPageCampaignFragment :
         showVoucherDetailBottomSheet(
             model.slug,
             model.couponCode,
-            parentUiModel.getCampaignId(),
+            "",
             parentUiModel.widgetId
         )
     }

@@ -166,7 +166,7 @@ class ShopCampaignViewModel @Inject constructor(
                     ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
                         voucherModel.slug,
                         voucherModel.couponCode,
-                        parentVoucherUiModel.getCampaignId(),
+                        "",
                         parentVoucherUiModel.widgetId,
                         redeemResult
                     )
