@@ -94,6 +94,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.iconunify.R as unifyIconR
+import com.tokopedia.universal_sharing.R as sharingR
 
 /**
  * Created by Rafli Syam 20/07/2020
@@ -385,7 +386,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
             thumbNailImageUrlFallback = tnImage
-            thumbNailTitle = getString(com.tokopedia.universal_sharing.R.string.screenshoot_success_title)
+            thumbNailTitle = getString(sharingR.string.screenshoot_success_title)
             imageOptionsList = null
         } else {
             thumbNailTitle = tnTitle
