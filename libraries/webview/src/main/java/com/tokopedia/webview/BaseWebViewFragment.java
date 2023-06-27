@@ -573,27 +573,34 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             uploadMessageAfterLolipop = filePathCallback;
 
-            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[0];
             if (getContext() != null) {
-                intentArray = new Intent[1];
+                boolean disableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(getContext(), webView.getUrl());
                 Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
                         getContext(),
                         hasVideo(fileChooserParams),
-                        WebViewHelper.isWhitelistDisableGalleryPicker(getContext(), webView.getUrl())
+                        disableGalleryPicker
                 );
-                intentArray[0] = mediaPickerIntent;
+
+                if (disableGalleryPicker) {
+                    startActivityForResult(mediaPickerIntent, ATTACH_FILE_REQUEST);
+                } else {
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    Intent[] intentArray = new Intent[0];
+                    if (getContext() != null) {
+                        intentArray = new Intent[1];
+                        intentArray[0] = mediaPickerIntent;
+                    }
+
+                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                    startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+                }
             }
-
-            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
             return true;
-
         }
 
         private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
