@@ -16,8 +16,8 @@ object GetProductAdsQuery : GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query displayAdsV3(${'$'}params: String) {
-          displayAdsV3($DISPLAY_PARAMS: ${'$'}params) {
+        query displayAdsV3(${'$'}$DISPLAY_PARAMS: String) {
+          displayAdsV3($DISPLAY_PARAMS: ${'$'}$DISPLAY_PARAMS) {
             status {
               error_code
               message

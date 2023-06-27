@@ -237,7 +237,10 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchLoadMorePageSuccess(searchModel: SearchModel) {
-        val contentDataView = ContentDataView(aceSearchProductData = searchModel.searchProduct.data)
+        val contentDataView = ContentDataView(
+            aceSearchProductData = searchModel.searchProduct.data,
+            productAds = searchModel.productAds
+        )
         onGetLoadMorePageSuccess(contentDataView)
     }
 
