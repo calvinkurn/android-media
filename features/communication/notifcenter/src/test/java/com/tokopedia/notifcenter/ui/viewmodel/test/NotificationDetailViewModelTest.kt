@@ -66,7 +66,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
     }
 
@@ -95,7 +95,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
         Assert.assertEquals(
             topAdsImageView,
@@ -138,7 +138,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             notifResponse,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
         assertNotNull(viewModel.affiliateEducationArticle.value)
     }
@@ -168,7 +168,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             notifResponse,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
         Assert.assertEquals(
             null,
@@ -191,7 +191,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Fail).throwable
+            (viewModel.notificationItems.value?.result as Fail).throwable
         )
     }
 
@@ -218,7 +218,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
     }
 
