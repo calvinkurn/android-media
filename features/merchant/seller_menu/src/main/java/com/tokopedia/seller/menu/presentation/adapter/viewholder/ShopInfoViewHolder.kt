@@ -156,6 +156,7 @@ class ShopInfoViewHolder(
                                 RouteManager.route(
                                     context,
                                     String.format(
+                                        Locale.getDefault(),
                                         "%s?allow_override=%b&url=%s",
                                         ApplinkConst.WEBVIEW,
                                         false,
