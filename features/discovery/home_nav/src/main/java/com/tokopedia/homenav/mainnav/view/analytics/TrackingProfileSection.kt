@@ -1,12 +1,11 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import android.os.Bundle
-import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.CLICK_NAVIGATION_DRAWER
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.FORMAT_PAGE_SOURCE
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.GLOBAL_MENU
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
 
 object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_ON_PROFILE_SECTION_NON_LOGIN = "click on profile section - non login"
@@ -30,7 +29,7 @@ object TrackingProfileSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .constructBasicGeneralClick(
-                    event = CLICK_NAVIGATION_DRAWER,
+                    event = CLICK_HOMEPAGE,
                     eventCategory = GLOBAL_MENU,
                     eventAction = CLICK_ON_PROFILE_SECTION_NON_LOGIN,
                     eventLabel = CLICK_LOGIN
@@ -53,7 +52,7 @@ object TrackingProfileSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .constructBasicGeneralClick(
-                    event = CLICK_NAVIGATION_DRAWER,
+                    event = CLICK_HOMEPAGE,
                     eventCategory = GLOBAL_MENU,
                     eventAction = CLICK_ON_PROFILE_SECTION_NON_LOGIN,
                     eventLabel = CLICK_LOGIN_REMINDER
@@ -76,7 +75,7 @@ object TrackingProfileSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .constructBasicGeneralClick(
-                    event = CLICK_NAVIGATION_DRAWER,
+                    event = CLICK_HOMEPAGE,
                     eventCategory = GLOBAL_MENU,
                     eventAction = CLICK_ON_PROFILE_SECTION_NON_LOGIN,
                     eventLabel = CLICK_REGISTER
@@ -100,7 +99,7 @@ object TrackingProfileSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
                 .constructBasicGeneralClick(
-                    event = CLICK_NAVIGATION_DRAWER,
+                    event = CLICK_HOMEPAGE,
                     eventCategory = GLOBAL_MENU,
                     eventAction = CLICK_ON_PROFILE_SECTION_LOGIN,
                     eventLabel = eventLabel
@@ -120,34 +119,22 @@ object TrackingProfileSection: BaseTrackerConst() {
     fun onClickTokopediaPlus(
         isSubscriber: Boolean,
         pageSource: String
-    ){
-        val bundle = Bundle().apply {
-            putString(Event.KEY, Event.CLICK_HOMEPAGE)
-            putString(Category.KEY, GLOBAL_MENU)
-            putString(
-                Label.KEY,
-                Value.EMPTY
-            )
-
-            if(isSubscriber){
-                putString(
-                    Action.KEY,
-                    "click on gotoplus - subscriber"
+    ) {
+        val action = if(isSubscriber) "click on gotoplus - subscriber" else "click on gotoplus - non subscriber"
+        val trackerId = if(isSubscriber) "33342" else "33341"
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
+                .constructBasicGeneralClick(
+                    event = CLICK_HOMEPAGE,
+                    eventCategory = GLOBAL_MENU,
+                    eventAction = action,
+                    eventLabel = Label.NONE
                 )
-                putString(TrackerId.KEY, "33342")
-            } else {
-                putString(
-                    Action.KEY,
-                    "click on gotoplus - non subscriber"
-                )
-                putString(TrackerId.KEY, "33341")
-            }
-
-            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-            putString(KEY_PAGE_SOURCE, pageSource)
-        }
-
-        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCustomKeyValue(TrackerId.KEY, trackerId)
+                .appendCustomKeyValue(KEY_PAGE_SOURCE, FORMAT_PAGE_SOURCE.format(pageSource))
+                .build()
+        )
     }
 }

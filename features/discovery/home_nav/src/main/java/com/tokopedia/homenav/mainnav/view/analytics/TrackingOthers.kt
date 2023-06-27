@@ -1,11 +1,11 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.CLICK_NAVIGATION_DRAWER
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.FORMAT_PAGE_SOURCE
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.GLOBAL_MENU
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
 
 object TrackingOthers: BaseTrackerConst() {
 
@@ -19,7 +19,7 @@ object TrackingOthers: BaseTrackerConst() {
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
-                .appendEvent(CLICK_NAVIGATION_DRAWER)
+                .appendEvent(CLICK_HOMEPAGE)
                 .appendEventCategory(GLOBAL_MENU)
                 .appendEventAction(Action.CLICK.format("business unit list"))
                 .appendEventLabel(title)
@@ -41,7 +41,7 @@ object TrackingOthers: BaseTrackerConst() {
     ) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
-                .appendEvent(CLICK_NAVIGATION_DRAWER)
+                .appendEvent(CLICK_HOMEPAGE)
                 .appendEventCategory(GLOBAL_MENU)
                 .appendEventAction("click on user menu")
                 .appendEventLabel(menuTrackerName)
@@ -62,7 +62,7 @@ object TrackingOthers: BaseTrackerConst() {
     ){
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
-                .appendEvent(CLICK_NAVIGATION_DRAWER)
+                .appendEvent(CLICK_HOMEPAGE)
                 .appendEventCategory(GLOBAL_MENU)
                 .appendEventAction("click back to home")
                 .appendEventLabel(Label.NONE)
@@ -83,7 +83,7 @@ object TrackingOthers: BaseTrackerConst() {
     ){
         TrackingOthers.getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
-                .appendEvent(CLICK_NAVIGATION_DRAWER)
+                .appendEvent(CLICK_HOMEPAGE)
                 .appendEventCategory(GLOBAL_MENU)
                 .appendEventAction("click close button")
                 .appendEventLabel(Label.NONE)

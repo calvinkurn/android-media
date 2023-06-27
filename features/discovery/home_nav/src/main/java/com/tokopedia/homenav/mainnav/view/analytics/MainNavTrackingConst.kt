@@ -20,6 +20,7 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_CART = "Cart"
     private const val PAGE_SOURCE_NOTIF = "Notification Page"
     private const val PAGE_SOURCE_THANK_YOU = "Thank you"
+    private const val PAGE_SOURCE_SOS = "Serbu Official Store"
 
     fun String.asTrackingPageSource(): String {
         return when(this) {
@@ -29,6 +30,7 @@ internal object MainNavTrackingConst {
             ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST,
             ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2,
             ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION -> PAGE_SOURCE_WISHLIST
+            ApplinkConsInternalNavigation.SOURCE_HOME_SOS -> PAGE_SOURCE_SOS
             else -> this
         }
     }
