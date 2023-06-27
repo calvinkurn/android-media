@@ -600,7 +600,10 @@ class FeedBaseFragment :
 
             mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
                 .setCreateContentView(
-                    if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                    if (meta.isCreationActive &&
+                        !feedMainViewModel.hasShownCreateContent() &&
+                        feedMainViewModel.isShortEntryPointShowed
+                    ) {
                         binding.btnFeedCreatePost
                     } else {
                         null
