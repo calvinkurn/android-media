@@ -48,7 +48,7 @@ data class SomListOrderListResponse(
                     @SerializedName("cta_action_type")
                     val ctaActionType: String = "",
                     @Expose
-                    @SerializedName("cta_action_type")
+                    @SerializedName("cta_action_value")
                     val ctaActionValue: String = ""
                 )
             }
