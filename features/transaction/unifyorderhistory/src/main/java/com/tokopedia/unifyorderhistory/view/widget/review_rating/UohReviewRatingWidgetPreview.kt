@@ -18,7 +18,7 @@ val previewConfig: MutableState<UohReviewRatingWidgetConfig> = mutableStateOf(cr
 private fun UohReviewRatingWidgetPreview() {
     NestTheme {
         Column(modifier = Modifier.fillMaxWidth()) {
-            UohReviewRatingWidget(modifier = Modifier.fillMaxWidth(), config = previewConfig.value)
+            UohReviewRatingWidget(config = previewConfig.value)
             NestButton(
                 text = "Show GoPay with stars",
                 onClick = { previewConfig.value = createGoPayWithStars() }

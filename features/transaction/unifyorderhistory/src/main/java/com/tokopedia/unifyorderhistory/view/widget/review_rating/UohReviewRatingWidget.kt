@@ -1,9 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.widget.review_rating
 
 import android.content.res.Resources
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,34 +49,27 @@ private const val CONTENT_PADDING = 8
 private const val DELAY_RATING_CHANGED_REDIRECTION = 500L
 
 @Composable
-fun UohReviewRatingWidget(
-    modifier: Modifier = Modifier,
-    config: UohReviewRatingWidgetConfig
-) {
+fun UohReviewRatingWidget(config: UohReviewRatingWidgetConfig) {
     var rating by rememberRating(config.componentData)
     SetupRatingChangedListener(rating, config)
-    AnimatedVisibility(
-        visible = config.show,
-        enter = EnterTransition.None,
-        exit = shrinkVertically()
-    ) {
-        DrawContent(
-            modifier = modifier,
+    DrawContent(
+        modifier = Modifier.fillMaxWidth(),
+        config = config,
+        reviewRatingWidgetConfig = rememberReviewRatingWidgetConfig(
             config = config,
-            reviewRatingWidgetConfig = rememberReviewRatingWidgetConfig(
-                config = config,
-                rating = rating,
-                onRatingChanged = { newRating -> rating = newRating }
-            )
+            rating = rating,
+            onRatingChanged = { newRating -> rating = newRating }
         )
-    }
+    )
 }
 
 @Composable
 private fun SetupRatingChangedListener(rating: Int, config: UohReviewRatingWidgetConfig) {
     LaunchedEffect(rating) {
-        delay(DELAY_RATING_CHANGED_REDIRECTION)
-        config.onRatingChanged(composeAppLink(rating, config.componentData.action.appUrl))
+        if (rating != Int.ZERO) {
+            delay(DELAY_RATING_CHANGED_REDIRECTION)
+            config.onRatingChanged(composeAppLink(rating, config.componentData.action.appUrl))
+        }
     }
 }
 

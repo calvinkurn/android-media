@@ -72,7 +72,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
         fun onImpressionPmsButton()
         fun onPmsButtonClicked()
-        fun onReviewRatingClicked(appLink: String)
+        fun onReviewRatingClicked(index: Int, orderUUID: String, appLink: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -191,6 +191,17 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         try {
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
+        } catch (ex: Exception) {
+            ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_update", "err" to Log.getStackTraceString(ex)))
+        }
+    }
+
+    fun resetReviewRatingWidgetAtIndex(orderIdNeedUpdated: String) {
+        try {
+            val index = listTypeData.indexOfFirst {
+                it.dataObject is UohListOrder.UohOrders.Order && it.dataObject.orderUUID == orderIdNeedUpdated
+            }
+            if (index != RecyclerView.NO_POSITION) notifyItemChanged(index)
         } catch (ex: Exception) {
             ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_update", "err" to Log.getStackTraceString(ex)))
         }

@@ -436,9 +436,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 onSuccessCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            } else {
+                onCancelCreateReview()
             }
-        } else if (requestCode == BULK_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+        } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+            } else if (resultCode == Activity.RESULT_FIRST_USER) {
+                onFailCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            } else {
+                onCancelCreateReview()
+            }
         } else if (requestCode == UOH_CANCEL_ORDER) {
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
@@ -2389,7 +2397,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onReviewRatingClicked(appLink: String) {
+    override fun onReviewRatingClicked(index: Int, orderUUID: String, appLink: String) {
+        currIndexNeedUpdate = index
+        orderIdNeedUpdated = orderUUID
         handleRouting(appLink)
     }
 
@@ -2492,11 +2502,21 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun onSuccessCreateReview(message: String) {
         view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke)).show() }
-        refreshHandler?.startRefresh()
+        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+        loadOrderHistoryList(orderIdNeedUpdated)
     }
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
+        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
+        orderIdNeedUpdated = ""
+        currIndexNeedUpdate = -1
+    }
+
+    private fun onCancelCreateReview() {
+        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
+        orderIdNeedUpdated = ""
+        currIndexNeedUpdate = -1
     }
 
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {

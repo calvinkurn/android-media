@@ -1,13 +1,11 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -200,40 +198,42 @@ class UohOrderListViewHolder(
                 }
             }
 
-            setupReviewRatingWidget(item.dataObject.metadata)
+            setupReviewRatingWidget(item.dataObject.metadata, item.dataObject.orderUUID)
 
             actionListener?.trackViewOrderCard(item.dataObject, position)
         }
     }
 
-    private fun setupReviewRatingWidget(metadata: UohListOrder.UohOrders.Order.Metadata) {
-        binding.layoutReviewRating.setContent {
-            val config = remember { mutableStateOf(UohReviewRatingWidgetConfig()) }
-            val componentData = remember(metadata.extraComponents) {
-                mutableStateOf(metadata.getReviewRatingComponent())
-            }
-            SetupConfigUpdater(componentData, config)
-            UohReviewRatingWidget(config = config.value)
-        }
-    }
-
-    @Composable
-    private fun SetupConfigUpdater(
-        componentData: MutableState<UohListOrder.UohOrders.Order.Metadata.ExtraComponent?>,
-        config: MutableState<UohReviewRatingWidgetConfig>
+    private fun setupReviewRatingWidget(
+        metadata: UohListOrder.UohOrders.Order.Metadata,
+        orderUUID: String
     ) {
-        LaunchedEffect(componentData, actionListener) {
-            componentData.value.let { componentDataValue ->
-                config.value = if (componentDataValue == null) {
-                    config.value.copy(show = false)
-                } else {
-                    UohReviewRatingWidgetConfig(
-                        show = true,
-                        componentData = componentDataValue,
-                        onRatingChanged = { actionListener?.onReviewRatingClicked(it) }
+        binding.layoutReviewRating.apply {
+            setContent {
+                val componentData = metadata.getReviewRatingComponent()
+                val config = remember(orderUUID, componentData, actionListener) {
+                    mutableStateOf(
+                        if (componentData == null) {
+                            UohReviewRatingWidgetConfig()
+                        } else {
+                            UohReviewRatingWidgetConfig(
+                                show = true,
+                                componentData = componentData,
+                                onRatingChanged = { appLink ->
+                                    actionListener?.onReviewRatingClicked(
+                                        index = bindingAdapterPosition,
+                                        orderUUID = orderUUID,
+                                        appLink = appLink
+                                    )
+                                }
+                            )
+                        }
                     )
                 }
+                UohReviewRatingWidget(config = config.value)
             }
+
+            showWithCondition(metadata.getReviewRatingComponent() != null)
         }
     }
 
