@@ -998,7 +998,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
         return try {
             extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             ""
         }
     }

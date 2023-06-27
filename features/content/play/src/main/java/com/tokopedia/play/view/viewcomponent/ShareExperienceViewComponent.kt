@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -39,7 +38,7 @@ class ShareExperienceViewComponent(
     private val listener: Listener,
     private val context: Context,
     private val dispatchers: CoroutineDispatchers,
-    private val source: Source = Source.PlayRoom,
+    private val source: Source = Source.PlayRoom
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = rootView as IconUnify
@@ -69,7 +68,7 @@ class ShareExperienceViewComponent(
         ivShareLink.setOnClickListener {
             listener.onShareIconClick(this)
         }
-        ivShareLink.setImage(newIconId = if(source == Source.Upcoming) IconUnify.SHARE_MOBILE else IconUnify.SHARE)
+        ivShareLink.setImage(newIconId = if (source == Source.Upcoming) IconUnify.SHARE_MOBILE else IconUnify.SHARE)
     }
 
     fun setIsShareable(isShow: Boolean) {
@@ -140,7 +139,7 @@ class ShareExperienceViewComponent(
                     }
                 )
             )
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             listener.onHandleShareFallback(this@ShareExperienceViewComponent)
         }
     }
