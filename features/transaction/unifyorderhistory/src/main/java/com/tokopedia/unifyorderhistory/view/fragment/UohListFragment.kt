@@ -442,8 +442,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
-            } else if (resultCode == Activity.RESULT_FIRST_USER) {
-                onFailCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
             } else {
                 onCancelCreateReview()
             }
