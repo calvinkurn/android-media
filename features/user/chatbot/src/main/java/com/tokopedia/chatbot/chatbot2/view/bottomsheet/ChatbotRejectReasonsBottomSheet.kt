@@ -195,7 +195,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
             }
         }
 
-        const val MINIMUM_LINES = 3
+        const val MINIMUM_LINES = 5
         const val MINIMUM_CHAR = 30
         const val ZERO = 0
         const val GRID_SPAN_1 = 1
