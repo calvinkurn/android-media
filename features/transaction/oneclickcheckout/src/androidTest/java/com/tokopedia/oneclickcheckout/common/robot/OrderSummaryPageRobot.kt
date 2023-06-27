@@ -44,6 +44,8 @@ fun waitForBottomSheet() {
     Thread.sleep(100)
 }
 
+const val DEBOUNCE_TIME = 200L
+
 class OrderSummaryPageRobot {
 
     fun closeBottomSheet() {
@@ -68,7 +70,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(100L)
+        Thread.sleep(DEBOUNCE_TIME)
     }
 
     fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
@@ -85,7 +87,7 @@ class OrderSummaryPageRobot {
                         for (i in 0 until times) {
                             minusButton.performClick()
                         }
-                        Thread.sleep(100L)
+                        Thread.sleep(DEBOUNCE_TIME)
                     }
                 }
             )
