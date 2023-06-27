@@ -28,13 +28,33 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
 
     override suspend fun getAllDraftsFlow(): Flow<List<ProductDraft>> =
         draftDataSource.getAllDraftsFlow(userSession.shopId).map { list ->
-            list.map {  AddEditProductDraftMapper.mapDraftToProductInput(it) }
+            list.map {
+                try {
+                    AddEditProductDraftMapper.mapDraftToProductInput(it)
+                } catch (e: Exception) {
+                    ProductDraft(
+                        draftId = it.id,
+                        isCorrupt = true,
+                        corruptedData = it.data
+                    )
+                }
+            }
         }
 
     override fun getAllDrafts(): List<ProductDraft> {
         val shopId = userSession.shopId
         val listEntities = draftDataSource.getAllDrafts(shopId)
-        return listEntities.map { AddEditProductDraftMapper.mapDraftToProductInput(it) }
+        return listEntities.map {
+            try {
+                AddEditProductDraftMapper.mapDraftToProductInput(it)
+            } catch (e: Exception) {
+                ProductDraft(
+                    draftId = it.id,
+                    isCorrupt = true,
+                    corruptedData = it.data
+                )
+            }
+        }
     }
 
     override fun getAllDraftsCountFlow(): Flow<Long> {
