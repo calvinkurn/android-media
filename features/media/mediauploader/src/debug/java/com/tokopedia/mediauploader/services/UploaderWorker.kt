@@ -1,13 +1,19 @@
 package com.tokopedia.mediauploader.services
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
-import com.tokopedia.mediauploader.di.MediaUploaderTestModule
 import com.tokopedia.mediauploader.manager.UploadMediaNotificationManager
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
@@ -100,8 +106,6 @@ class UploaderWorker(
     private fun initInjector() {
         DaggerMediaUploaderTestComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .mediaUploaderTestModule(MediaUploaderTestModule(applicationContext))
-            .mediaUploaderModule(MediaUploaderModule())
             .build()
             .inject(this)
     }
