@@ -174,7 +174,9 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.transitionToState(R.id.second_title_with_icon)
+//                                root.transitionToState(R.id.second_title_with_icon)
+                                root.setTransition(root.currentState, R.id.second_title_with_icon)
+                                root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }
                         }
@@ -182,7 +184,9 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitle.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.transitionToState(R.id.initial_title_with_icon)
+//                                root.transitionToState(R.id.initial_title_with_icon)
+                                root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                                root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }
                         }
@@ -190,7 +194,9 @@ class FeedCampaignRibbonView(
                             tyFeedCampaignRibbonTitleSecond.text = it[ctaIndex]
 
                             startDelayProcess(THREE_SECOND) {
-                                root.transitionToState(R.id.initial_title_with_icon)
+//                                root.transitionToState(R.id.initial_title_with_icon)
+                                root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                                root.transitionToEnd()
                                 runRecursiveDelayDiscount(index + ONE)
                             }
                         }
@@ -299,7 +305,9 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-                    root.transitionToState(R.id.initial_title_with_icon)
+//                    root.transitionToState(R.id.initial_title_with_icon)
+                    root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                    root.transitionToEnd()
 
                     root.setOnClickListener {
                         mAuthor?.let { author ->
@@ -348,7 +356,10 @@ class FeedCampaignRibbonView(
                         }
                     }
 
-                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
+//                    root.transitionToState(R.id.initial_title_with_timer_and_icon)
+                    root.setTransition(root.currentState, R.id.initial_title_with_timer_and_icon)
+                    root.transitionToEnd()
+
                     animationStateList.add(R.id.initial_title_with_timer_and_icon)
                     animationStateList.add(R.id.availability_state)
 
@@ -396,7 +407,10 @@ class FeedCampaignRibbonView(
                         )
                     }
 
-                    root.transitionToState(R.id.initial_title_with_icon)
+//                    root.transitionToState(R.id.initial_title_with_icon)
+                    root.setTransition(root.currentState, R.id.initial_title_with_icon)
+                    root.transitionToEnd()
+
                     animationStateList.add(R.id.initial_title_with_icon)
                     animationStateList.add(R.id.start_in_state)
 
@@ -449,9 +463,13 @@ class FeedCampaignRibbonView(
         if (animationStateList.isNotEmpty()) {
             val animationIndex = index % animationStateList.size
 
-            startDelayProcess(THREE_SECOND) {
-                binding.root.transitionToState(animationStateList[animationIndex])
-                runLoopAnimation(index + ONE)
+            with(binding) {
+                startDelayProcess(THREE_SECOND) {
+//                binding.root.transitionToState(animationStateList[animationIndex])
+                    root.setTransition(root.currentState, animationStateList[animationIndex])
+                    root.transitionToEnd()
+                    runLoopAnimation(index + ONE)
+                }
             }
         }
     }
