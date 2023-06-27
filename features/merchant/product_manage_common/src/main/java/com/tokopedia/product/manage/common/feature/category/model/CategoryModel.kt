@@ -1,4 +1,4 @@
-package com.tokopedia.core.common.category.domain.model
+package com.tokopedia.product.manage.common.feature.category.model
 
 data class CategoryModel (
         var id: Long = 0L,

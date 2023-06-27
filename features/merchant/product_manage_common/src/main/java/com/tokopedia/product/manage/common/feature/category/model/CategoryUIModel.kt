@@ -1,14 +1,13 @@
-package com.tokopedia.core.common.category.view.model
+package com.tokopedia.product.manage.common.feature.category.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
 
 /**
  * @author sebastianuskh on 4/4/17.
  */
-class CategoryViewModel(var name:String = "", var id:Long=0,
-                        var isHasChild: Boolean=false) : Parcelable {
+class CategoryUIModel(var name:String = "", var id:Long=0,
+                      var isHasChild: Boolean=false) : Parcelable {
 
 
 
@@ -31,13 +30,13 @@ class CategoryViewModel(var name:String = "", var id:Long=0,
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<CategoryViewModel> =
-            object : Parcelable.Creator<CategoryViewModel> {
-                override fun createFromParcel(source: Parcel): CategoryViewModel {
-                    return CategoryViewModel(source)
+        val CREATOR: Parcelable.Creator<CategoryUIModel> =
+            object : Parcelable.Creator<CategoryUIModel> {
+                override fun createFromParcel(source: Parcel): CategoryUIModel {
+                    return CategoryUIModel(source)
                 }
 
-                override fun newArray(size: Int): Array<CategoryViewModel?> {
+                override fun newArray(size: Int): Array<CategoryUIModel?> {
                     return arrayOfNulls(size)
                 }
             }

@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.category.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.core.common.category.domain.interactor.GetCategoryLiteTreeUseCase
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.domain.GetCategoryLiteTreeUseCase
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +20,7 @@ import org.junit.Test
 import org.junit.jupiter.api.AfterEach
 
 @ExperimentalCoroutinesApi
-class AddEditProductCategoryViewModelTest {
+class AddEditProductCategoryUIModelTest {
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 

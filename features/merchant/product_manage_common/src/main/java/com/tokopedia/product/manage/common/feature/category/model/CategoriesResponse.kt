@@ -1,4 +1,4 @@
-package com.tokopedia.core.common.category.domain.model
+package com.tokopedia.product.manage.common.feature.category.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
