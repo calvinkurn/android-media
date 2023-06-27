@@ -62,7 +62,7 @@ class OrderListMapper @Inject constructor() {
         }
     }
 
-    fun mapToEmptyState(emptyState: SomListOrderListResponse.Data.EmptyState?): SomListEmptyStateUiModel? {
+    fun mapToEmptyState(emptyState: SomListOrderListResponse.Data.OrderList.EmptyState?): SomListEmptyStateUiModel? {
         return emptyState?.let {
             SomListEmptyStateUiModel(
                 title = it.title,

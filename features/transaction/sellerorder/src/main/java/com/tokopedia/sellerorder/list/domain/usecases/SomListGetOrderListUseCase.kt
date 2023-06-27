@@ -36,7 +36,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                     response.orderList.list,
                     searchKeyword
                 ),
-                mapper.mapToEmptyState(response.emptyState)
+                mapper.mapToEmptyState(response.orderList.emptyState)
             )
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
