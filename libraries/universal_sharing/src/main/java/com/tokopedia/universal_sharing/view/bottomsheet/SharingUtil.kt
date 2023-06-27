@@ -6,23 +6,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.MediaLoaderTarget
-import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
@@ -84,18 +79,18 @@ object SharingUtil {
 
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                MediaLoaderTarget.loadImage(
-                    context,
-                    Properties().setSource(shareImageUrl),
-                    MediaBitmapEmptyTarget(onReady = { resource ->
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        resource,
-                        Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile != null) {
-                        imageSaved(savedFile.absolutePath)
-                    }
-                }))
+                loadImageWithEmptyTarget(
+                    context = context, url = shareImageUrl,
+                    mediaTarget = MediaBitmapEmptyTarget(onReady = { resource ->
+                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                            resource,
+                            Bitmap.CompressFormat.PNG
+                        )
+                        if (savedFile != null) {
+                            imageSaved(savedFile.absolutePath)
+                        }
+                    })
+                )
             }
         }, onError = {
                 it.printStackTrace()
@@ -273,13 +268,13 @@ object SharingUtil {
     }
 
     fun executeShareIntent(
-            shareModel: ShareModel,
-            linkerShareData: LinkerShareResult?,
-            activity: Activity?,
-            view: View?,
-            shareStringContainer: String,
-            onSuccessCopyLink: (() -> Unit)? = null
-        ) {
+        shareModel: ShareModel,
+        linkerShareData: LinkerShareResult?,
+        activity: Activity?,
+        view: View?,
+        shareStringContainer: String,
+        onSuccessCopyLink: (() -> Unit)? = null
+    ) {
         try {
             var shareImageFileUri: Uri? = null
             if (!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
@@ -297,11 +292,15 @@ object SharingUtil {
                             ClipboardHandler().copyToClipboard(activity, it)
                         }
                     }
-                    if (onSuccessCopyLink == null) {view.let {
-                        if (it != null) {
-                            Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
-                        }
-                    }} else onSuccessCopyLink.invoke()
+                    if (onSuccessCopyLink == null) {
+                        view.let {
+                            if (it != null) {
+                                Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
+                            }
+                        } 
+                    } else {
+                        onSuccessCopyLink.invoke()
+                    }
                 }
 
                 is ShareModel.Instagram, is ShareModel.Facebook -> {

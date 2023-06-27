@@ -1,10 +1,7 @@
 package com.tokopedia.universal_sharing.di
 
-import android.util.Log
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.universal_sharing.data.api.ExtractBranchLinkApi
 import com.tokopedia.universal_sharing.data.model.BranchLinkErrorResponse
@@ -17,7 +14,6 @@ import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.url.Url
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -31,7 +27,6 @@ open class UniversalShareUseCaseModule {
     @Provides
     fun provideExtractBranchLinkApi(retrofitBuilder: Retrofit.Builder, logger: HttpLoggingInterceptor): ExtractBranchLinkApi {
         val baseUrl = TokopediaUrl.getInstance().WEB
-        Log.d("BaseUrlToko", baseUrl)
         return retrofitBuilder.client(
             OkHttpClient.Builder()
                 .addInterceptor(logger)
@@ -46,7 +41,7 @@ open class UniversalShareUseCaseModule {
         abstract fun bindRepo(dataStore: ExtractBranchLinkDataStore): ExtractBranchLinkRepository
 
         @Binds
-        abstract fun bindImageGeneratorUseCase(imageGeneratorUseCase: ImageGeneratorUseCase):  GraphqlUseCase<ImageGeneratorModel>
+        abstract fun bindImageGeneratorUseCase(imageGeneratorUseCase: ImageGeneratorUseCase): GraphqlUseCase<ImageGeneratorModel>
 
         @Binds
         abstract fun bindImagePolicyUseCase(imagePolicyUseCase: ImagePolicyUseCase): CoroutineUseCase<String, ImagePolicyResponse>
