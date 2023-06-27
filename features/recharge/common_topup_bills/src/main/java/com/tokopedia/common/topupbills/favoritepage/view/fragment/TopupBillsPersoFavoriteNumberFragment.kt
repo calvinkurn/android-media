@@ -143,6 +143,13 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is PersoFavoriteNumberMenuBottomSheet) {
+                fragment.setListener(this)
+            } else if(fragment is PersoFavoriteNumberModifyBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
@@ -537,15 +544,6 @@ class TopupBillsPersoFavoriteNumberFragment :
         )
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "")
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is PersoFavoriteNumberMenuBottomSheet) {
-            childFragment.setListener(this)
-        } else if(childFragment is PersoFavoriteNumberModifyBottomSheet) {
-            childFragment.setListener(this)
-        }
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsPersoFavNumberDataView) {
