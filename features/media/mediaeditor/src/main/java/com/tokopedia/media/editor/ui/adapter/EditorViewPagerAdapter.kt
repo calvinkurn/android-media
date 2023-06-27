@@ -23,9 +23,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.picker.common.utils.isVideoFormat
@@ -97,8 +97,8 @@ class EditorViewPagerAdapter(
             imgPreviewRef.visible()
 
             imgPreviewRef.loadImage(filePath) {
-                setCacheStrategy(EditorViewPager.CACHE_STRATEGY)
-                useCache(EditorViewPager.IS_USING_CACHE)
+                setCacheStrategy(EditorFragment.CACHE_STRATEGY)
+                useCache(EditorFragment.IS_USING_CACHE)
                 listener(
                     onSuccess = { bitmap, _ ->
                         bitmap?.let {

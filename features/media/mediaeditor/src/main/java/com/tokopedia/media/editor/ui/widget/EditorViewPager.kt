@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
 import com.tokopedia.media.editor.ui.adapter.viewPagerTag
+import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.clearImage
@@ -76,7 +77,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
         val view = layout?.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl) {
-            useCache(IS_USING_CACHE)
+            useCache(EditorFragment.IS_USING_CACHE)
             listener(
                 onSuccess = { _, _ ->
                     view.post {
@@ -134,8 +135,8 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                 layout?.findViewById<ImageView>(R.id.img_main_preview)?.loadImage(
                     data[it].getImageUrl()
                 ) {
-                    setCacheStrategy(CACHE_STRATEGY)
-                    useCache(IS_USING_CACHE)
+                    setCacheStrategy(EditorFragment.CACHE_STRATEGY)
+                    useCache(EditorFragment.IS_USING_CACHE)
                 }
             }
         }
@@ -161,7 +162,5 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
 
     companion object {
         private const val INITIAL_VIEW_PAGER_INDEX = 0
-        const val IS_USING_CACHE = false
-        val CACHE_STRATEGY = MediaCacheStrategy.NONE
     }
 }
