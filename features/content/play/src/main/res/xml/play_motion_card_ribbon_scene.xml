@@ -7,7 +7,6 @@
             android:id="@+id/play_iv_ribbon"
             android:layout_width="@dimen/layout_lvl1"
             android:layout_height="19dp"
-            android:layout_marginTop="0dp"
             app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
             app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
             app:layout_constraintTop_toTopOf="@id/play_tv_ribbon"
