@@ -11,7 +11,6 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
-import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,8 +25,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase,
     private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    private val preferenceDataStore: PreferenceDataStore
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     data class UiState(
