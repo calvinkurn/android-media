@@ -249,8 +249,8 @@ object ProductTrackingConstant {
         const val PROMO_VIEW = "promoView"
         const val PROMOTIONS = "promotions"
 
-        const val CLICK_SHARE_REGULER = "share-reguler"
-        const val CLICK_SHARE_AFFILIATE_ICON = "share-affiliate icon"
+        const val CLICK_SHARE_REGULER = "general"
+        const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
     }
 
     object Label {
