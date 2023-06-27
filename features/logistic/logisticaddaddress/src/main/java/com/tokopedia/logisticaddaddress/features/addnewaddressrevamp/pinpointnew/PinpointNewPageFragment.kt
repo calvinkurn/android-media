@@ -60,9 +60,9 @@ import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
@@ -78,11 +78,17 @@ import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isAdd
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEditOrPinpointOnly
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isPinpointOnly
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.toAddressUiState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
@@ -133,13 +139,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var isPositiveFlow: Boolean = true
     private var showIllustrationMap: Boolean = false
     private var isFromAddressForm: Boolean = false
-    private var isEdit: Boolean = false
+
     private var isPolygon: Boolean = false
     private var source: String? = ""
-    private var isGetPinPointOnly: Boolean = false
 
-    private val isEditOrGetPinPointOnly: Boolean
-        get() = isEdit || isGetPinPointOnly
+    private var addressUiState: AddressUiState = AddressUiState.AddAddress
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(
@@ -196,11 +200,15 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (!isGetPinPointOnly) {
-                        if (isEdit) {
+                    when (addressUiState) {
+                        AddressUiState.EditAddress -> {
                             EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
-                        } else {
+                        }
+                        AddressUiState.AddAddress -> {
                             AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                        }
+                        else -> {
+                            // no op
                         }
                     }
                     activity?.finish()
@@ -228,7 +236,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun getLitePinpointIntent(context: Context): Intent {
-        if (isEditOrGetPinPointOnly) {
+        if (addressUiState.isEditOrPinpointOnly()) {
             if (viewModel.getAddress().hasPinpoint()) {
                 return PinpointWebviewActivity.getIntent(
                     context = context,
@@ -260,7 +268,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initView() {
-        if (isEdit) {
+        if (addressUiState.isEdit()) {
             binding?.bottomsheetLocation?.let {
                 it.btnPrimary.text = getString(R.string.choose_this_location)
                 it.btnSecondary.visibility = View.GONE
@@ -296,7 +304,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onResultFromSearchPage(data: Intent?) {
-        if (isEditOrGetPinPointOnly) {
+        if (addressUiState.isEditOrPinpointOnly()) {
             currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
             val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
             val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
@@ -313,14 +321,6 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
             isFromAddressForm?.let { finishActivity(newAddress, it) }
-        }
-    }
-
-    private fun onResultFromGpsRequest() {
-        bottomSheetLocUndefined?.dismiss()
-        if (allPermissionsGranted()) {
-            showLoading()
-            Handler().postDelayed({ getLocation() }, GPS_DELAY)
         }
     }
 
@@ -344,19 +344,19 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 } else {
                     showBottomSheetLocUndefined(false)
                 }
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
                 }
             }
 
             PERMISSION_DENIED -> {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
             }
 
             PERMISSION_DONT_ASK_AGAIN -> {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
                 showBottomSheetLocUndefined(true)
@@ -492,9 +492,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
             isPolygon = getBoolean(EXTRA_IS_POLYGON, false)
             isFromAddressForm = getBoolean(EXTRA_FROM_ADDRESS_FORM)
-            isEdit = getBoolean(EXTRA_IS_EDIT)
             source = getString(PARAM_SOURCE, "")
-            isGetPinPointOnly = getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+            addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
 
             viewModel.setDistrictAndCityName(
                 districtName = getString(EXTRA_DISTRICT_NAME),
@@ -525,9 +524,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         outState.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         outState.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-        outState.putBoolean(EXTRA_IS_EDIT, isEdit)
+        outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         outState.putString(PARAM_SOURCE, source)
-        outState.putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
 
         super.onSaveInstanceState(outState)
     }
@@ -546,7 +544,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun fetchData() {
         if (!currentPlaceId.isNullOrEmpty()) {
             currentPlaceId?.let { viewModel.getDistrictLocation(it) }
-        } else if (isGetPinPointOnly || isPositiveFlow) {
+        } else if (addressUiState.isPinpointOnly() || isPositiveFlow) {
             if (viewModel.getAddress().hasPinpoint()) {
                 viewModel.getLocationFromLatLong()
             } else if (viewModel.getAddress().hasDistrictAndCityName) {
@@ -721,7 +719,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             wholeLoadingContainer.visibility = View.GONE
             invalidLayout.visibility = View.GONE
 
-            if (isGetPinPointOnly) {
+            if (addressUiState.isPinpointOnly()) {
                 btnPrimary.text = getString(R.string.btn_choose_this_location)
                 btnSecondary.gone()
             }
@@ -796,7 +794,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun setViewListener() {
         binding?.run {
             bottomsheetLocation.btnInfo.setOnClickListener {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
                 }
                 bottomsheetLocation.root.hide()
@@ -804,10 +802,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                if (isGetPinPointOnly.not()) {
-                    if (isEdit) {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
-                    } else {
+                    }
+                    AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
                         } else {
@@ -816,6 +815,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                 SUCCESS
                             )
                         }
+                    }
+                    else -> {
+                        // no op
                     }
                 }
                 onChoosePinpoint()
@@ -844,26 +846,34 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             chipsCurrentLoc.chipImageResource =
                 context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
-                if (isGetPinPointOnly.not()) {
-                    if (isEdit) {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
-                    } else {
+                    }
+                    AddressUiState.AddAddress -> {
                         AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
                 getCurrentLocation()
             }
-            if (isEdit) {
+            if (addressUiState.isEdit()) {
                 chipsSearch.chipText = getString(R.string.pinpointpage_chips_search_edit)
             }
             chipsSearch.chipImageResource =
                 context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
-                if (isGetPinPointOnly.not()) {
-                    if (isEdit) {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
                         EditAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
-                    } else {
+                    }
+                    AddressUiState.AddAddress -> {
                         AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
                 goToSearchPage()
@@ -872,7 +882,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onChoosePinpoint() {
-        if (isEditOrGetPinPointOnly) {
+        if (addressUiState.isEditOrPinpointOnly()) {
             setResultAddressFormNegative()
         } else {
             if (isPositiveFlow) {
@@ -927,7 +937,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
                 }
                 dismiss()
@@ -952,7 +962,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -1096,11 +1106,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         if (isPolygon) {
             if (data.districtId != viewModel.getAddress().districtId) {
-                if (!isEditOrGetPinPointOnly) {
+                if (addressUiState.isAdd()) {
                     AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
                 }
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (!isEditOrGetPinPointOnly) {
+                    if (addressUiState.isAdd()) {
                         AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
                             userSession.userId,
                             NOT_SUCCESS
@@ -1117,7 +1127,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             } else {
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (!isEditOrGetPinPointOnly) {
+                    if (addressUiState.isAdd()) {
                         AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
                             userSession.userId,
                             SUCCESS
@@ -1148,29 +1158,39 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun updateInvalidBottomSheetData(type: Int) {
         if (type == BOTTOMSHEET_OUT_OF_INDO) {
-            if (isGetPinPointOnly.not()) {
-                if (isEdit) {
+            when (addressUiState) {
+                AddressUiState.EditAddress -> {
                     EditAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
-                } else {
+                }
+
+                AddressUiState.AddAddress -> {
                     AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+                }
+
+                else -> {
+                    // no op
                 }
             }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
                 tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
                 tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
-                if (isEditOrGetPinPointOnly) {
+                if (addressUiState.isEditOrPinpointOnly()) {
                     btnAnaNegative.visibility = View.GONE
                 }
             }
         } else {
-            if (isGetPinPointOnly.not()) {
-                if (isEdit) {
+            when (addressUiState) {
+                AddressUiState.EditAddress -> {
                     EditAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
-                } else {
+                }
+                AddressUiState.AddAddress -> {
                     AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
                         userSession.userId
                     )
+                }
+                else -> {
+                    // no op
                 }
             }
             if (showIllustrationMap) {
@@ -1181,9 +1201,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
-                if (isEditOrGetPinPointOnly) {
+                if (addressUiState.isEditOrPinpointOnly()) {
                     tvInvalidLoc.text = getString(R.string.undetected_location_new_edit)
-                    if (viewModel.getAddress().hasPinpoint() || isGetPinPointOnly) {
+                    if (viewModel.getAddress().hasPinpoint() || addressUiState.isPinpointOnly()) {
                         tvInvalidLocDetail.text =
                             getString(R.string.undetected_location_desc_edit_w_pinpoint)
                         btnAnaNegative.visibility = View.GONE
@@ -1207,7 +1227,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
-            if (!isEditOrGetPinPointOnly) {
+            if (addressUiState.isAdd()) {
                 if (type == BOTTOMSHEET_OUT_OF_INDO) {
                     AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
                 } else {
@@ -1222,13 +1242,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        if (isEditOrGetPinPointOnly) {
+        if (addressUiState.isEditOrPinpointOnly()) {
             context?.let {
                 startActivityForResult(
                     Intent(it, SearchPageActivity::class.java).apply {
-                        putExtra(EXTRA_IS_EDIT, isEdit)
                         putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
+                        putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
                     },
                     REQUEST_SEARCH_PAGE
                 )
@@ -1254,12 +1273,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToAddressForm() {
         val saveModel = viewModel.getAddress()
-        if (isEditOrGetPinPointOnly) {
+        if (addressUiState.isEditOrPinpointOnly()) {
             activity?.run {
                 setResult(
                     Activity.RESULT_OK,
                     Intent().apply {
-                        putExtra(EXTRA_IS_EDIT, true)
                         putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                     }
                 )
@@ -1270,6 +1288,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                 putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
                 putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
                 putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
@@ -1285,9 +1304,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                     putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
                     putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                    putExtra(EXTRA_IS_EDIT, isEdit)
                     putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                    putExtra(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
                 }
             )
             finish()
@@ -1316,6 +1333,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         const val NOT_SUCCESS = "not success"
 
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
+            val state = if (extra.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY, false)) {
+                AddressUiState.PinpointOnly.name
+            } else {
+                extra.getString(EXTRA_ADDRESS_STATE, AddressUiState.PinpointOnly.name)
+            }
             return PinpointNewPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
@@ -1328,12 +1350,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
                     )
                     putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
-                    putBoolean(EXTRA_IS_EDIT, extra.getBoolean(EXTRA_IS_EDIT))
+                    putString(EXTRA_ADDRESS_STATE, state)
                     putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE))
-                    putBoolean(
-                        EXTRA_IS_GET_PINPOINT_ONLY,
-                        extra.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
-                    )
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putString(EXTRA_CITY_NAME, extra.getString(EXTRA_CITY_NAME))
                 }

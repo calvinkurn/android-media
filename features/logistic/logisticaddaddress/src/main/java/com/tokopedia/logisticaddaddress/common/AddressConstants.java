@@ -29,6 +29,7 @@ public class AddressConstants {
     public static final String EXTRA_IS_MISMATCH = "EXTRA_IS_MISMATCH";
     public static final String EXTRA_IS_MISMATCH_SOLVED = "EXTRA_IS_ORIGIN_MISMATCH_SOLVED";
     public static final String EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON";
+    public static final String EXTRA_ADDRESS_STATE = "EXTRA_ADDRESS_STATE";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
     public static final String EXTRA_IS_EDIT = "EXTRA_IS_EDIT";
     public static final String EXTRA_ADDRESS_ID = "EXTRA_ADDRESS_ID";

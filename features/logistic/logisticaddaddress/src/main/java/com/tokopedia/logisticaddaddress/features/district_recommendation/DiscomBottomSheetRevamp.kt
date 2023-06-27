@@ -43,8 +43,10 @@ import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.AddressUiState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.isEdit
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
@@ -77,7 +79,7 @@ class DiscomBottomSheetRevamp :
     private var discomRevampListener: DiscomRevampListener? = null
     private var chipsLayoutManagerZipCode: ChipsLayoutManager? = null
     private var isPinpoint: Boolean = false
-    private var isEdit: Boolean = false
+    private var addressUiState: AddressUiState = AddressUiState.AddAddress
     private var isGmsAvailable: Boolean = true
     private var input: String = ""
     private var mIsInitialLoading: Boolean = false
@@ -138,15 +140,15 @@ class DiscomBottomSheetRevamp :
         setViewListener()
     }
 
-    fun setData(isPinpoint: Boolean = false, gmsAvailable: Boolean, isEdit: Boolean) {
+    fun setData(isPinpoint: Boolean = false, gmsAvailable: Boolean, state: AddressUiState) {
         this.isPinpoint = isPinpoint
         this.isGmsAvailable = gmsAvailable
-        this.isEdit = isEdit
+        this.addressUiState = state
     }
 
     private fun setCurrentLocationProvider() {
         context?.let {
-            if (isEdit && isGmsAvailable) {
+            if (addressUiState.isEdit() && isGmsAvailable) {
                 fusedLocationClient = FusedLocationProviderClient(it)
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
@@ -174,19 +176,31 @@ class DiscomBottomSheetRevamp :
         setTitle(getString(R.string.kota_kecamatan))
         setCloseClickListener {
             if (isKodePosShown) {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                when (addressUiState) {
+                    AddressUiState.AddAddress -> {
+                        AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                    }
+                    AddressUiState.EditAddress -> {
+                        EditAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
                 setTitle(getString(R.string.kota_kecamatan))
                 hideZipCode()
                 setViewListener()
             } else {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                when (addressUiState) {
+                    AddressUiState.AddAddress -> {
+                        AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                    }
+                    AddressUiState.EditAddress -> {
+                        EditAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
                 dismiss()
             }
@@ -230,7 +244,7 @@ class DiscomBottomSheetRevamp :
                     adapter = listDistrictAdapter
                 }
 
-                if (isEdit && isGmsAvailable) {
+                if (addressUiState.isEdit() && isGmsAvailable) {
                     layoutUseCurrentLoc.visibility = View.VISIBLE
                     dividerUseCurrentLocation.visibility = View.VISIBLE
                 }
@@ -242,18 +256,30 @@ class DiscomBottomSheetRevamp :
         viewBinding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                    when (addressUiState) {
+                        AddressUiState.AddAddress -> {
+                            AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                        }
+                        AddressUiState.EditAddress -> {
+                            EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                        }
+                        else -> {
+                            // no op
+                        }
                     }
                 }
             }
             setOnClickListener {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
-                } else {
-                    EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                when (addressUiState) {
+                    AddressUiState.AddAddress -> {
+                        AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+                    }
+                    AddressUiState.EditAddress -> {
+                        EditAddressRevampAnalytics.onClickFieldCariKotaKecamatan(userSession.userId)
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
             }
 
@@ -273,7 +299,7 @@ class DiscomBottomSheetRevamp :
                         viewBinding?.emptyStateDistrict?.visibility = View.GONE
                         viewBinding?.llPopularCity?.visibility = View.VISIBLE
                         viewBinding?.rvListDistrict?.visibility = View.GONE
-                        if (isEdit) {
+                        if (addressUiState.isEdit()) {
                             viewBinding?.layoutUseCurrentLoc?.visibility = View.VISIBLE
                             viewBinding?.dividerUseCurrentLocation?.visibility = View.VISIBLE
                         }
@@ -297,19 +323,31 @@ class DiscomBottomSheetRevamp :
 
         viewBinding?.btnChooseZipcode?.setOnClickListener {
             if (viewBinding?.etKodepos?.textFieldInput?.text.toString().length < MIN_TEXT_LENGTH) {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
-                    AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
-                } else {
-                    EditAddressRevampAnalytics.onViewErrorToaster(userSession.userId)
-                    EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, false)
+                when (addressUiState) {
+                    AddressUiState.AddAddress -> {
+                        AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
+                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                    }
+                    AddressUiState.EditAddress -> {
+                        EditAddressRevampAnalytics.onViewErrorToaster(userSession.userId)
+                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, false)
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
-                } else {
-                    EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, true)
+                when (addressUiState) {
+                    AddressUiState.AddAddress -> {
+                        AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                    }
+                    AddressUiState.EditAddress -> {
+                        EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, true)
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
                 viewBinding?.etKodepos?.textFieldInput?.text?.let { input -> this.postalCode = input.toString() }
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
@@ -334,10 +372,16 @@ class DiscomBottomSheetRevamp :
     }
 
     override fun onZipCodeClicked(zipCode: String) {
-        if (!isEdit) {
-            AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
-        } else {
-            EditAddressRevampAnalytics.onClickChipsKodePos(userSession.userId)
+        when (addressUiState) {
+            AddressUiState.AddAddress -> {
+                AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
+            }
+            AddressUiState.EditAddress -> {
+                EditAddressRevampAnalytics.onClickChipsKodePos(userSession.userId)
+            }
+            else -> {
+                // no op
+            }
         }
         viewBinding?.rvKodeposChips?.visibility = View.GONE
         viewBinding?.etKodepos?.textFieldInput?.run {
@@ -346,10 +390,16 @@ class DiscomBottomSheetRevamp :
     }
 
     override fun onCityChipClicked(city: String) {
-        if (!isEdit) {
-            AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
-        } else {
-            EditAddressRevampAnalytics.onClickChipsKotaKecamatan(userSession.userId)
+        when (addressUiState) {
+            AddressUiState.AddAddress -> {
+                AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
+            }
+            AddressUiState.EditAddress -> {
+                EditAddressRevampAnalytics.onClickChipsKotaKecamatan(userSession.userId)
+            }
+            else -> {
+                // no op
+            }
         }
         viewBinding?.searchPageInput?.run {
             searchBarTextField.setText(city)
@@ -391,7 +441,7 @@ class DiscomBottomSheetRevamp :
     override fun showEmpty() {
         viewBinding?.run {
             tvDescInputDistrict.visibility = View.GONE
-            if (isEdit) {
+            if (addressUiState.isEdit()) {
                 layoutUseCurrentLoc.visibility = View.VISIBLE
                 dividerUseCurrentLocation.visibility = View.VISIBLE
             }
@@ -435,10 +485,16 @@ class DiscomBottomSheetRevamp :
     }
 
     override fun onDistrictItemRevampClicked(districtModel: Address) {
-        if (!isEdit) {
-            AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
-        } else {
-            EditAddressRevampAnalytics.onClickDropDownSuggestionKota(userSession.userId)
+        when (addressUiState) {
+            AddressUiState.AddAddress -> {
+                AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
+            }
+            AddressUiState.EditAddress -> {
+                EditAddressRevampAnalytics.onClickDropDownSuggestionKota(userSession.userId)
+            }
+            else -> {
+                // no op
+            }
         }
         context?.let {
             setTitle(getString(R.string.title_post_code))
@@ -478,20 +534,32 @@ class DiscomBottomSheetRevamp :
             etKodepos.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        if (!isEdit) {
-                            AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
-                        } else {
-                            EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                        when (addressUiState) {
+                            AddressUiState.AddAddress -> {
+                                AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                            }
+                            AddressUiState.EditAddress -> {
+                                EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                            }
+                            else -> {
+                                // no op
+                            }
                         }
                         openSoftKeyboard()
                         showZipCodes(data)
                     }
                 }
                 setOnClickListener {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                    when (addressUiState) {
+                        AddressUiState.AddAddress -> {
+                            AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                        }
+                        AddressUiState.EditAddress -> {
+                            EditAddressRevampAnalytics.onClickFieldKodePos(userSession.userId)
+                        }
+                        else -> {
+                            // no op
+                        }
                     }
                     openSoftKeyboard()
                     showZipCodes(data)
@@ -525,7 +593,7 @@ class DiscomBottomSheetRevamp :
             searchPageInput.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
             emptyStateDistrict.visibility = View.GONE
-            if (isEdit) {
+            if (addressUiState.isEdit()) {
                 layoutUseCurrentLoc.visibility = View.VISIBLE
                 dividerUseCurrentLocation.visibility = View.VISIBLE
             }
