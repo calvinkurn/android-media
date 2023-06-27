@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.domain.entity
 
-import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
@@ -8,7 +7,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
 import com.tokopedia.utils.date.toDate
-import kotlinx.parcelize.Parcelize
 
 data class VoucherDetailData(
     val voucherId: Long = 0,
@@ -73,7 +71,6 @@ data class VoucherDetailData(
         val chilProductId: List<Long>? = listOf()
     )
 
-    @Parcelize
     data class LabelVoucher(
         val labelQuota: Int = 0,
         val labelQuotaFormatted: String = "",
@@ -85,21 +82,18 @@ data class VoucherDetailData(
         val labelSubsidyInfoFormatted: String = "",
         val labelSubsidyInfoColorType: String = "default",
         val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
-    ) : Parcelable {
-        @Parcelize
+    ) {
         data class LabelBudgetVoucher(
             val labelBudgetVoucher: Int = 0,
             val labelBudgetVoucherFormatted: String = "",
             val labelBudgetVoucherValue: Int = 0
-        ) : Parcelable
+        )
     }
 
-    @Parcelize
     data class SubsidyDetail(
         val programDetail: ProgramDetail = ProgramDetail(),
-    val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
-    ) : Parcelable {
-        @Parcelize
+        val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
+    ) {
         data class ProgramDetail(
             val programName: String = "",
             val programStatus: Int = 0,
@@ -107,19 +101,19 @@ data class VoucherDetailData(
             val programLabelDetail: String = "",
             val promotionStatus: Int = 0,
             val promotionLabel: String = ""
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class QuotaSubsidized(
             val voucherQuota: Int = 0,
             val remainingQuota: Int = 0,
             val bookedGlobalQuota: Int = 0,
             val confirmedGlobalQuota: Int = 0
-        ) : Parcelable
+        )
     }
 
     fun toVoucherConfiguration(): VoucherConfiguration {
-        val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
+        val selectedParentProductIds =
+            productIds.map { parentProduct -> parentProduct.parentProductId }
 
         return VoucherConfiguration(
             voucherId = voucherId,

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.common.util.SourceBudgetConstant
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherDataBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherHeaderBinding
@@ -43,28 +44,56 @@ class VouchersViewHolder(
         val processColor: Int
         when (voucher.status) {
             VoucherStatus.DELETED -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
-                tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_deleted_text)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                )
+                tfStatusTitle.text =
+                    context.getString(R.string.smvc_voucherlist_status_deleted_text)
             }
+
             VoucherStatus.PROCESSING -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_processing_text)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+                tfStatusTitle.text =
+                    context.getString(R.string.smvc_voucherlist_status_processing_text)
             }
+
             VoucherStatus.NOT_STARTED -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_notstarted_text)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+                tfStatusTitle.text =
+                    context.getString(R.string.smvc_voucherlist_status_notstarted_text)
             }
+
             VoucherStatus.ONGOING -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-                tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_ongoing_text)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+                tfStatusTitle.text =
+                    context.getString(R.string.smvc_voucherlist_status_ongoing_text)
             }
+
             VoucherStatus.ENDED -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_ended_text)
             }
+
             VoucherStatus.STOPPED -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
-                tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_stopped_text)
+                processColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                )
+                tfStatusTitle.text =
+                    context.getString(R.string.smvc_voucherlist_status_stopped_text)
             }
         }
         setupHeaderSubsidy(voucher)
@@ -80,7 +109,7 @@ class VouchersViewHolder(
         tfSubsidy.gone()
         if (voucher.isVps) {
             tfVps.visible()
-        } else if (voucher.isSubsidy) {
+        } else if (voucher.isSubsidy || voucher.subsidyDetail.programDetail.promotionStatus == SourceBudgetConstant.SOURCE_TOKOPEDIA) {
             tfSubsidy.visible()
         }
     }
@@ -106,10 +135,17 @@ class VouchersViewHolder(
     }
 
     private fun SmvcItemVoucherPeriodBinding.setupPeriod(voucher: Voucher) {
-        val startDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.startTime)
-        val finishDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.finishTime)
-        tfPeriodDate.text = root.context.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
-        tfMultiPeriodMore.text = root.context.getString(R.string.smvc_voucherlist_format_multiperiod, voucher.totalChild)
+        val startDate =
+            DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.startTime)
+        val finishDate =
+            DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS, DEFAULT_VIEW_FORMAT, voucher.finishTime)
+        tfPeriodDate.text = root.context.getString(
+            R.string.smvc_voucherlist_voucher_date_format,
+            startDate,
+            finishDate
+        )
+        tfMultiPeriodMore.text =
+            root.context.getString(R.string.smvc_voucherlist_format_multiperiod, voucher.totalChild)
         tfMultiPeriodMore.isVisible = voucher.totalChild.isMoreThanZero()
         iconMenu.isVisible = voucher.totalChild.isMoreThanZero()
         tfMultiPeriodMore.setOnClickListener {
@@ -122,8 +158,8 @@ class VouchersViewHolder(
 
     private fun Typography.setVoucherProgram(voucher: Voucher) {
         this.apply {
-            text = voucher.subsidyDetail.programDetail.programName
-            showWithCondition(voucher.subsidyDetail.programDetail.programName.isNotEmpty())
+            text = voucher.subsidyDetail.programDetail.promotionLabel
+            showWithCondition(voucher.subsidyDetail.programDetail.promotionLabel.isNotEmpty())
         }
     }
 
@@ -159,7 +195,8 @@ class VouchersViewHolder(
 
     private fun getPromoName(context: Context, promoType: Int): String {
         return try {
-            val arrPromoTypeName = context.resources.getStringArray(R.array.voucher_list_promo_type_items)
+            val arrPromoTypeName =
+                context.resources.getStringArray(R.array.voucher_list_promo_type_items)
             arrPromoTypeName.getOrNull(promoType.dec()).orEmpty()
         } catch (e: Exception) {
             ""

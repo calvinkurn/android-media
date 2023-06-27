@@ -86,7 +86,7 @@
     <string name="smvc_voucherlist_bookedquota_text">Kupon di keranjang</string>
     <string name="smvc_voucherlist_buyertarget_text">Target</string>
     <string name="smvc_voucherlist_vps_text">Paket Promosi</string>
-    <string name="smvc_voucherlist_subsidi_text">Dari Tokopedia</string>
+    <string name="smvc_voucherlist_subsidi_text">Dibuat Tokopedia</string>
     <string name="smvc_voucherlist_voucher_usage_delimiter">" dari "</string>
     <string name="smvc_voucherlist_error_quota_format">Kupon aktif maks. %d per periode (%d hari)</string>
     <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
@@ -257,6 +257,7 @@
     <string name="smvc_total_voucher_performance_label">Total Performa Kupon</string>
     <string name="smvc_all_quota_subsidized_label">(Semua quota disubsidi)</string>
     <string name="smvc_some_quota_subsidized_placeholder">(%d dari %2d quota disubsidi)</string>
+    <string name="smvc_placeholder_vps_package_name">Dari Paket Promosi %s</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>

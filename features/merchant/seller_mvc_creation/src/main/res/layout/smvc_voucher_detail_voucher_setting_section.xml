@@ -156,7 +156,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                tools:text="Cashback awal"
+                android:text="Cashback awal"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler" />
@@ -189,7 +189,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                tools:text="Tambahan subsidi"
+                android:text="Tambahan subsidi"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler" />

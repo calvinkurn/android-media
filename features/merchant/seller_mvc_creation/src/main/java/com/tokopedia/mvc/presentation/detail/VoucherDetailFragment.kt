@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.disable
-import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -46,6 +45,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.SharedPreferencesUtil
+import com.tokopedia.mvc.common.util.SourceBudgetConstant
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
@@ -302,9 +302,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupRecapSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus != VoucherStatus.ENDED || data.isSubsidy == FALSE) return
-            if (layoutRecap.parent != null) {
-                layoutRecap.inflate()
+            if (data.voucherStatus == VoucherStatus.ENDED && isSubsidy(data)) {
+                if (layoutRecap.parent != null) {
+                    layoutRecap.inflate()
+                }
             }
         }
         recapBinding?.run {
@@ -334,9 +335,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 data.voucherQuota
             )
             tpgQuotaFromSubsidy.text =
-                data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toString()
-            tpgQuotaNonSubsidy.text =
                 data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+            tpgQuotaNonSubsidy.text =
+                data.confirmedGlobalQuota.toString()
         }
     }
 
@@ -379,36 +380,24 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setPackage(data: VoucherDetailData) {
         headerBinding?.run {
-//            if (data.isVps == FALSE && data.isSubsidy == FALSE) {
-//                labelVoucherSource.invisible()
-//                tpgVpsPackage.gone()
-//            } else {
-//                setPackageName(data)
-//            }
-            labelVoucherSource.apply {
-                text = data.labelVoucher.labelSubsidyInfoFormatted
-                showWithCondition(data.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
-            }
-        }
-    }
-
-    private fun setPackageName(data: VoucherDetailData) {
-        headerBinding?.run {
             if (data.isVps == TRUE) {
-                labelVoucherSource.apply {
-                    visible()
-                    text = getString(R.string.smvc_promotion_package_label)
-                }
                 tpgVpsPackage.apply {
                     visible()
-                    text = data.packageName
+                    text = getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
                 }
             } else {
-                labelVoucherSource.apply {
-                    visible()
-                    text = getString(R.string.smvc_from_tokopedia_label)
+                if (data.subsidyDetail.programDetail.programStatus == SourceBudgetConstant.SOURCE_MERCHANT) {
+                    tpgVpsPackage.gone()
+                } else {
+                    tpgVpsPackage.apply {
+                        visible()
+                        text = data.labelVoucher.labelCreatorFormatted
+                    }
                 }
-                tpgVpsPackage.gone()
+            }
+            labelVoucherSource.apply {
+                text = data.labelVoucher.labelSubsidyInfoFormatted
+                showWithCondition(isSubsidy(data))
             }
         }
     }
@@ -457,8 +446,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.NOT_STARTED -> {
                     btnUbahKupon.apply {
                         visible()
-                        if (data.isSubsidy == FALSE) return
-                        isEnabled = data.isEditable
+                        isEditable(data.isEditable)
                     }
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -491,9 +479,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE || data.isSubsidy == TRUE || data.isChild == TRUE) {
-                btnUbahKupon.invisible()
-            }
             btnUbahKupon.setOnClickListener {
                 val intent = SummaryActivity.buildEditModeIntent(context, data.voucherId)
                 startActivity(intent)
@@ -512,9 +497,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupPerformanceSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus != VoucherStatus.ONGOING || data.isSubsidy == FALSE) return
-            if (layoutPerformance.parent != null) {
-                layoutPerformance.inflate()
+            if (data.voucherStatus == VoucherStatus.ONGOING && isSubsidy(data)) {
+                if (layoutPerformance.parent != null) {
+                    layoutPerformance.inflate()
+                }
             }
             performanceBinding?.run {
                 iconChevron.setOnClickListener {
@@ -541,9 +527,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     data.voucherQuota
                 )
                 tpgQuotaFromSubsidy.text =
-                    data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toString()
-                tpgQuotaNonSubsidy.text =
                     data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+                tpgQuotaNonSubsidy.text =
+                    data.confirmedGlobalQuota.toString()
             }
         }
     }
@@ -670,13 +656,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                                 getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
-                            if (data.isSubsidy == TRUE) {
+                            if (isSubsidy(data)) {
                                 llParentInitialCashback.visible()
                                 llParentAdditionalSubsidy.visible()
                                 tpgInitialCashback.text =
-                                    data.labelVoucher.labelBudgetsVoucher.last().labelBudgetVoucherValue.getPercentFormatted()
-                                tpgAdditionalSubsidy.text =
                                     data.labelVoucher.labelBudgetsVoucher.first().labelBudgetVoucherValue.getPercentFormatted()
+                                tpgAdditionalSubsidy.text =
+                                    data.labelVoucher.labelBudgetsVoucher.last().labelBudgetVoucherValue.getPercentFormatted()
                             }
                         }
                     }
@@ -729,18 +715,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setSubsidyQuota(data: VoucherDetailData) {
         voucherSettingBinding?.run {
-            if (data.isSubsidy == FALSE) return
+            if (!isSubsidy(data)) return
             val wording =
-                if (data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toLong() == data.voucherQuota) {
+                if (data.subsidyDetail.quotaSubsidized.voucherQuota.toLong() == data.voucherQuota) {
                     getString(R.string.smvc_all_quota_subsidized_label)
                 } else {
                     getString(
                         R.string.smvc_some_quota_subsidized_placeholder,
-                        data.subsidyDetail.quotaSubsidized.bookedGlobalQuota,
+                        data.subsidyDetail.quotaSubsidized.voucherQuota,
                         data.voucherQuota
                     )
                 }
-            tpgVoucherQuotaSubsidyLabel.text = wording
+            tpgVoucherQuotaSubsidyLabel.apply {
+                visible()
+                text = wording
+            }
         }
     }
 
@@ -779,7 +768,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
         val description = when {
             data.isVps == TRUE -> getString(R.string.smvc_spending_estimation_description_2)
-            data.isSubsidy == TRUE -> getString(R.string.smvc_spending_estimation_description_3)
+            isSubsidy(data) -> getString(R.string.smvc_spending_estimation_description_3)
             else -> getString(R.string.smvc_spending_estimation_description_1)
         }
         binding?.run {
@@ -1144,7 +1133,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isVps == TRUE || data.isSubsidy == TRUE) {
+        if (data.isVps == TRUE || isSubsidy(data)) {
             showCallTokopediaCareDialog(data.voucherStatus)
         } else {
             showConfirmationStopVoucherDialog(data)
@@ -1289,5 +1278,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
+    }
+
+    private fun Typography.isEditable(isEditable: Boolean) {
+        this.isEnabled = isEditable
+        if (isEditable) {
+            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        } else {
+            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        }
+    }
+
+    private fun isSubsidy(voucherDetail: VoucherDetailData): Boolean {
+        return voucherDetail.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()
     }
 }

@@ -172,7 +172,9 @@ data class MerchantPromotionGetMVDataByIDResponse(
 
         data class SubsidyDetail(
             @SerializedName("program_detail")
-            val programDetail: ProgramDetail = ProgramDetail()
+            val programDetail: ProgramDetail = ProgramDetail(),
+            @SerializedName("quota_subsidized")
+            val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
         ) {
             data class ProgramDetail(
                 @SerializedName("program_name")
@@ -187,6 +189,17 @@ data class MerchantPromotionGetMVDataByIDResponse(
                 val promotionStatus: Int = 0,
                 @SerializedName("promotion_label")
                 val promotionLabel: String = ""
+            )
+
+            data class QuotaSubsidized(
+                @SerializedName("voucher_quota")
+                val voucherQuota: Int = 0,
+                @SerializedName("remaining_quota")
+                val remainingQuota: Int = 0,
+                @SerializedName("booked_global_quota")
+                val bookedGlobalQuota: Int = 0,
+                @SerializedName("confirmed_global_quota")
+                val confirmedGlobalQuota: Int = 0,
             )
         }
 

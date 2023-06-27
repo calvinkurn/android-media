@@ -109,7 +109,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -884,7 +883,7 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isSubsidy) {
+        if (voucher.isSubsidy || voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()) {
             showCallTokopediaCareDialog(voucher.status)
         } else {
             showConfirmationStopVoucherDialog(voucher)

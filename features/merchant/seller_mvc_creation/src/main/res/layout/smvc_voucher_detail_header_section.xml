@@ -83,28 +83,28 @@
         app:layout_constraintEnd_toEndOf="@+id/img_voucher"
         app:layout_constraintStart_toStartOf="@+id/img_voucher" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_voucher_source"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        app:labelType="general_light_blue"
-        app:layout_constraintStart_toEndOf="@+id/img_voucher"
-        app:layout_constraintTop_toTopOf="@+id/img_voucher"
-        tools:labelTitle="Paket Promosi" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_vps_package"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/label_voucher_source"
-        app:layout_constraintTop_toBottomOf="@+id/label_voucher_source"
+        app:layout_constraintStart_toEndOf="@+id/img_voucher"
+        app:layout_constraintTop_toTopOf="@+id/img_voucher"
         app:typographyType="paragraph_3"
         app:typographyWeight="reguler"
         tools:text="Paket WIB Premium Max" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_voucher_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:labelType="general_light_blue"
+        app:layout_constraintStart_toStartOf="@+id/tpg_vps_package"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_vps_package"
+        tools:labelTitle="Paket Promosi" />
 
     <LinearLayout
         android:id="@+id/ll_period"
@@ -118,7 +118,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/img_voucher"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_vps_package">
+        app:layout_constraintTop_toBottomOf="@+id/label_voucher_source">
 
         <com.tokopedia.mvc.common.customview.VerticalDateTimeView
             android:id="@+id/tpg_date_time_start"

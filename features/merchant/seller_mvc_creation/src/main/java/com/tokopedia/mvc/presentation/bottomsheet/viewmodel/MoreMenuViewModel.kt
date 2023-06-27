@@ -106,7 +106,11 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu, isVps is always false here
         else if (voucher.isSubsidy) {
             getOngoingVpsSubsidyMenu()
-        } else {
+        }
+        else if (isSubsidy(voucher)) {
+            getOngoingVpsSubsidyMenu()
+        }
+        else {
             // return seller create voucher menu
             getOngoingOptionsListMenu()
         }
@@ -119,6 +123,9 @@ class MoreMenuViewModel @Inject constructor(
         }
         // return subsidy voucher menu
         else if (voucher.isSubsidy) {
+            getUpcomingVpsSubsidyMenu()
+        }
+        else if (isSubsidy(voucher)) {
             getUpcomingVpsSubsidyMenu()
         }
         // return seller created voucher menu
@@ -136,6 +143,8 @@ class MoreMenuViewModel @Inject constructor(
             getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else if (voucher.isSubsidy) {
             getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
+        } else if (isSubsidy(voucher)) {
+            getCancelledVpsSubsidyListMenu(isDiscountPromoTypeEnabled)
         } else {
             getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled, isDiscountPromoType)
         }
@@ -150,7 +159,10 @@ class MoreMenuViewModel @Inject constructor(
             getEndedVpsSubsidyListMenu()
         } else if (voucher.isSubsidy) {
             getEndedVpsSubsidyListMenu()
-        } else {
+        } else if (isSubsidy(voucher)) {
+            getEndedVpsSubsidyListMenu()
+        }
+        else {
             getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled, isDiscountPromoType)
         }
     }
@@ -339,5 +351,9 @@ class MoreMenuViewModel @Inject constructor(
                 StringHandler.ResourceString(R.string.voucher_bs_ubah_batalkan)
             )
         )
+    }
+
+    private fun isSubsidy(voucher: Voucher): Boolean {
+        return voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()
     }
 }
