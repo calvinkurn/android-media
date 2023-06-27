@@ -159,7 +159,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             CommentAction.RefreshComment -> resetQuery(needToRefresh = true)
             CommentAction.DismissComment -> resetQuery(needToRefresh = false)
             is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
-            is CommentAction.PermanentRemoveComment -> deleteComment()
+            is CommentAction.PermanentRemoveComment -> deleteComment(action.itemId)
             is CommentAction.ReportComment -> reportComment(action.param)
             CommentAction.RequestReportAction -> handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
@@ -237,9 +237,9 @@ class ContentCommentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun deleteComment() {
+    private fun deleteComment(id: String) {
         viewModelScope.launchCatchError(block = {
-            repo.deleteComment(_selectedComment.value.first.id)
+            repo.deleteComment(id)
         }) {
             undoComment()
             _event.emit(

@@ -177,14 +177,14 @@ class ContentCommentBottomSheet @Inject constructor(
         object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-
-                viewModel.submitAction(CommentAction.PermanentRemoveComment)
+                viewModel.submitAction(CommentAction.PermanentRemoveComment(toaster?.view?.tag.toString()))
             }
         }
     }
 
     private var analytics: IContentCommentAnalytics? = null
     private var isFromChild: Boolean = false
+    private var toaster : Snackbar? = null
 
     // to escape Emoji length
     private fun String.getGraphemeLength(): Int {
@@ -299,7 +299,7 @@ class ContentCommentBottomSheet @Inject constructor(
             viewModel.event.collect { event ->
                 when (event) {
                     is CommentEvent.ShowSuccessToaster -> {
-                        val toaster = Toaster.build(
+                        toaster = Toaster.build(
                             requireView().rootView,
                             text = getString(R.string.comment_delete_kembali),
                             actionText = getString(R.string.comment_delete_undo),
@@ -308,8 +308,8 @@ class ContentCommentBottomSheet @Inject constructor(
                                 viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = true))
                             }
                         )
-                        toaster.addCallback(toasterCallback)
-                        toaster.show()
+                        toaster?.addCallback(toasterCallback)
+                        toaster?.show()
                     }
                     is CommentEvent.ShowErrorToaster -> {
                         val view =
@@ -498,7 +498,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.Delete -> deleteCommentChecker()
+            FeedMenuIdentifier.Delete -> deleteCommentChecker(contentId)
             FeedMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
@@ -507,10 +507,11 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    private fun deleteCommentChecker() {
+    private fun deleteCommentChecker(itemId: String) {
         requireInternet {
             analytics?.clickRemoveComment()
             viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
+            toaster?.view?.tag = itemId
         }
     }
 
