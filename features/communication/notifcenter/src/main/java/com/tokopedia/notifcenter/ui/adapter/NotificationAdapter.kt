@@ -23,7 +23,7 @@ import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.notifcenter.ui.adapter.common.NotificationAdapterListener
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
 import com.tokopedia.notifcenter.ui.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder

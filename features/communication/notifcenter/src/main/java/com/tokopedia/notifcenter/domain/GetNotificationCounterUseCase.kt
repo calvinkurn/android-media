@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -8,7 +9,7 @@ import com.tokopedia.notifcenter.data.entity.NotificationResponse
 import javax.inject.Inject
 
 class GetNotificationCounterUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
+    @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<String, NotificationResponse>(dispatcher.io) {
 

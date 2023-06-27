@@ -34,7 +34,7 @@ import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
 import com.tokopedia.notifcenter.ui.listener.WishlistListener
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

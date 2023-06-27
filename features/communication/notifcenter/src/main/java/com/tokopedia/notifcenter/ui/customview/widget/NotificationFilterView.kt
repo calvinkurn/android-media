@@ -15,7 +15,7 @@ import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.ui.adapter.NotificationFilterAdapter
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationFilterTypeFactoryImpl
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationFilterTypeFactoryImpl
 
 class NotificationFilterView : LinearLayout {
 

@@ -3,12 +3,12 @@ package com.tokopedia.notifcenter.ui.affiliate
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
-import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -18,17 +18,30 @@ import javax.inject.Inject
 class NotificationAffiliateActivity : BaseSimpleActivity() {
 
     @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
     @JvmField
     var userSessionInterface: UserSessionInterface? = null
 
     override fun getLayoutRes(): Int = R.layout.activity_notification_affiliate
-    override fun getNewFragment(): Fragment = NotificationAffiliateFragment()
+    override fun getNewFragment(): Fragment {
+        return NotificationAffiliateFragment.getFragment(
+            supportFragmentManager,
+            classLoader
+        )
+    }
     override fun getParentViewResourceID(): Int = R.id.fragment_container
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initInjector()
+        setupFragmentFactory()
+        super.onCreate(savedInstanceState)
         setupToolbar()
+    }
+
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
     private fun setupToolbar() {
@@ -54,6 +67,5 @@ class NotificationAffiliateActivity : BaseSimpleActivity() {
     private fun generateDaggerComponent(): NotificationComponent =
         DaggerNotificationComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .commonModule(CommonModule(this))
             .build()
 }

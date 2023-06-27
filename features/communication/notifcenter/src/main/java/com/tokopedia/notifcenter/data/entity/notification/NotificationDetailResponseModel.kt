@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.data.entity.notification
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
 
 class NotificationDetailResponseModel constructor(
     val items: List<Visitable<NotificationTypeFactory>>,

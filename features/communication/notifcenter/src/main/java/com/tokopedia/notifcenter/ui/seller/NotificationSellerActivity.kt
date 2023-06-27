@@ -6,28 +6,67 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
+import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.ui.NotificationFragment
+import javax.inject.Inject
 
 /**
  * Created by faisalramd on 05/02/20.
  */
 
-class NotificationSellerActivity : BaseSimpleActivity(), NotificationFragmentContainer {
+class NotificationSellerActivity :
+    BaseSimpleActivity(),
+    HasComponent<NotificationComponent>,
+    NotificationFragmentContainer
+{
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    private var notificationComponent: NotificationComponent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setupFragmentFactory()
+        setupInjector()
         setThemeWhiteIfSellerApp()
         super.onCreate(savedInstanceState)
         setWhiteStatusBarIfSellerApp()
         setupBackground()
     }
 
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun initializeNotificationComponent(): NotificationComponent {
+        return NotificationActivityComponentFactory
+            .instance
+            .createNotificationComponent(application).also {
+                notificationComponent = it
+            }
+    }
+
+    override fun getComponent(): NotificationComponent {
+        return notificationComponent ?: initializeNotificationComponent()
+    }
+
+    private fun setupInjector() {
+        component.inject(this)
+    }
+
     override fun getNewFragment(): Fragment {
-        return NotificationFragment()
+        return NotificationFragment.getFragment(
+            supportFragmentManager,
+            classLoader
+        )
     }
 
     private fun setThemeWhiteIfSellerApp() {
@@ -48,12 +87,6 @@ class NotificationSellerActivity : BaseSimpleActivity(), NotificationFragmentCon
             setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         supportActionBar?.elevation = 0F
-    }
-
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, NotificationSellerActivity::class.java)
-        }
     }
 
     override val role: Int

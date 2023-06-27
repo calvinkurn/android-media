@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.ui.adapter.typefactory.notification
+package com.tokopedia.notifcenter.ui.adapter.typefactory
 
 import android.view.LayoutInflater
 import android.view.View

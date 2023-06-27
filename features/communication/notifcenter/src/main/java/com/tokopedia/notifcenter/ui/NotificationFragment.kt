@@ -9,11 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -46,16 +45,14 @@ import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
-import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.ui.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.ui.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.ui.adapter.decoration.RecommendationItemDecoration
 import com.tokopedia.notifcenter.ui.adapter.listener.NotificationEndlessRecyclerViewScrollListener
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.ui.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.BottomSheetFactory
@@ -80,7 +77,14 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
-open class NotificationFragment :
+class NotificationFragment @Inject constructor(
+    private val topAdsAnalytic: NotificationTopAdsAnalytic,
+    private val analytic: NotificationAnalytic,
+    private val markAsSeenAnalytic: MarkAsSeenAnalytic,
+    private val userSession: UserSessionInterface,
+    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel,
+    private val viewModel: NotificationViewModel
+) :
     BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
     InboxFragment,
     NotificationItemListener,
@@ -88,25 +92,6 @@ open class NotificationFragment :
     NotificationEndlessRecyclerViewScrollListener.Listener,
     NotificationAdapter.Listener,
     NotificationLongerContentBottomSheet.Listener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var topAdsAnalytic: NotificationTopAdsAnalytic
-
-    @Inject
-    lateinit var analytic: NotificationAnalytic
-
-    @Inject
-    lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    private val topAdsHeadlineViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TopAdsHeadlineViewModel::class.java]
-    }
 
     var remoteConfig: RemoteConfig? = null
 
@@ -121,10 +106,6 @@ open class NotificationFragment :
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
     private val scrollState = ScrollToBottomState()
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
-    }
 
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -571,7 +552,6 @@ open class NotificationFragment :
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
-        if (!::viewModelFactory.isInitialized) return
         val previousRole = getOppositeRole(role)
         viewModel.cancelAllUseCase()
         viewModel.reset()
@@ -604,14 +584,7 @@ open class NotificationFragment :
         rv?.scrollToPosition(0)
     }
 
-    override fun initInjector() {
-        generateDaggerComponent().inject(this)
-    }
-
-    protected open fun generateDaggerComponent() = DaggerNotificationComponent.builder()
-        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-        .commonModule(context?.let { CommonModule(it) })
-        .build()
+    override fun initInjector() {}
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)
@@ -876,8 +849,23 @@ open class NotificationFragment :
     }
 
     companion object {
+        private const val TAG = "NotificationFragment"
         private const val REQUEST_CHECKOUT = 0
         private const val SHOPADS_LOAD_FAIL_ERROR = "Failed to load Shopads in NotifCenter"
         private const val ERROR = "error"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle = Bundle()
+        ): NotificationFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? NotificationFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                NotificationFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as NotificationFragment
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.uimodel.filter.FilterLoadingUiModel
 import com.tokopedia.notifcenter.data.uimodel.filter.FilterUiModel
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationFilterTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationFilterTypeFactory
 import com.tokopedia.notifcenter.ui.adapter.viewholder.filter.FilterViewHolder
 import com.tokopedia.notifcenter.ui.customview.widget.NotificationFilterView
 

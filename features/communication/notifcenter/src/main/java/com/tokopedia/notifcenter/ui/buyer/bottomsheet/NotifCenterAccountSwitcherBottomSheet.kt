@@ -10,8 +10,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
-import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.ui.buyer.customview.NotifCenterBaseAccountSwitcherMenuItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,10 +31,10 @@ class NotifCenterAccountSwitcherBottomSheet : BottomSheetUnify() {
     }
 
     private fun initInject() {
-        DaggerNotificationComponent.builder()
-            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
-            .commonModule(context?.let { CommonModule(it) })
-            .build().inject(this)
+        NotificationActivityComponentFactory
+            .instance
+            .createNotificationComponent(context?.applicationContext as BaseMainApplication)
+            .inject(this)
     }
 
     private fun initTitle() {

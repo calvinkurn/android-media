@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -33,17 +32,14 @@ import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
-import com.tokopedia.notifcenter.di.NotificationComponent
-import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.ui.NotificationViewModel
 import com.tokopedia.notifcenter.ui.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.ui.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.ui.adapter.listener.NotificationEndlessRecyclerViewScrollListener
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactory
-import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
+import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.ui.customview.widget.NotificationFilterView
@@ -59,7 +55,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-open class NotificationAffiliateFragment :
+class NotificationAffiliateFragment @Inject constructor(
+    private val viewModel: NotificationViewModel,
+    private val analytic: NotificationAnalytic,
+    private val markAsSeenAnalytic: MarkAsSeenAnalytic,
+    private val userSession: UserSessionInterface
+) :
     BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
     NotificationItemListener,
     LoadMoreViewHolder.Listener,
@@ -67,18 +68,6 @@ open class NotificationAffiliateFragment :
     NotificationAdapter.Listener,
     NotificationLongerContentBottomSheet.Listener,
     NotificationAffiliateEduEventListener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var analytic: NotificationAnalytic
-
-    @Inject
-    lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private var remoteConfig: RemoteConfig? = null
 
@@ -89,10 +78,6 @@ open class NotificationAffiliateFragment :
     private var rvTypeFactory: NotificationTypeFactoryImpl? = null
     private var filter: NotificationFilterView? = null
     private val scrollState = ScrollToBottomState()
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NotificationViewModel::class.java]
-    }
 
     private var isEmptyState = false
 
@@ -383,15 +368,7 @@ open class NotificationAffiliateFragment :
         MarkAsSeenService.startService(context, RoleType.AFFILIATE, markAsSeenAnalytic)
     }
 
-    override fun initInjector() {
-        generateDaggerComponent().inject(this)
-    }
-
-    protected open fun generateDaggerComponent(): NotificationComponent =
-        DaggerNotificationComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .commonModule(context?.let { CommonModule(it) })
-            .build()
+    override fun initInjector() {}
 
     override fun showLongerContent(element: NotificationUiModel) = Unit
 
@@ -509,5 +486,22 @@ open class NotificationAffiliateFragment :
             TokopediaUrl.getInstance().AFFILIATE + "/edu/",
             slug
         )
+    }
+
+    companion object {
+        private const val TAG = "NotificationAffiliateFragment"
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle = Bundle()
+        ): NotificationAffiliateFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? NotificationAffiliateFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                NotificationAffiliateFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as NotificationAffiliateFragment
+        }
     }
 }

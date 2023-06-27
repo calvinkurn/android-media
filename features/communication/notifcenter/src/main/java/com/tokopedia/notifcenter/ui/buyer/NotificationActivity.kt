@@ -9,9 +9,10 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentFactory
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
@@ -19,7 +20,6 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.common.config.NotifCenterConfig
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationNavAnalytic
-import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.util.cache.NotifCenterCacheState
 import com.tokopedia.notifcenter.ui.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
 import com.tokopedia.notifcenter.ui.buyer.customview.NotifCenterNavigationHeader
@@ -36,7 +36,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
-import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
+import com.tokopedia.notifcenter.di.NotificationComponent
 
 /**
  * How to go to this page
@@ -88,10 +89,17 @@ import com.tokopedia.notifcenter.di.DaggerNotificationComponent
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-open class NotificationActivity : BaseActivity(), NotifCenterConfig.ConfigListener,
+open class NotificationActivity : BaseActivity(),
+    HasComponent<NotificationComponent>,
+    NotifCenterConfig.ConfigListener,
     NotificationFragmentContainer {
 
     private var source = ""
+
+    private var notificationComponent: NotificationComponent? = null
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -117,9 +125,10 @@ open class NotificationActivity : BaseActivity(), NotifCenterConfig.ConfigListen
     override val role: Int get() = NotifCenterConfig.role
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        setupFragmentFactory()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
-        setupInjector()
         setupOptionalParameter()
         trackOpenInbox()
         setupView()
@@ -133,20 +142,30 @@ open class NotificationActivity : BaseActivity(), NotifCenterConfig.ConfigListen
         setupSwitcher()
     }
 
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
     override fun onResume() {
         super.onResume()
         analytic.trackOpenInboxPage(NotifCenterConfig.role)
     }
 
-    private fun setupInjector() {
-        createDaggerComponent()
-            .inject(this)
+    private fun initializeNotificationComponent(): NotificationComponent {
+        return NotificationActivityComponentFactory
+            .instance
+            .createNotificationComponent(application).also {
+                notificationComponent = it
+            }
     }
 
-    private fun createDaggerComponent() = DaggerNotificationComponent.builder()
-        .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-        .commonModule(CommonModule(this))
-        .build()
+    override fun getComponent(): NotificationComponent {
+        return notificationComponent ?: initializeNotificationComponent()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
+    }
 
     private fun setupOptionalParameter() {
         val data = intent?.data ?: return
@@ -312,7 +331,10 @@ open class NotificationActivity : BaseActivity(), NotifCenterConfig.ConfigListen
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.notifcenter_fragment_container,
-                NotificationFragment(),
+                NotificationFragment.getFragment(
+                    supportFragmentManager,
+                    classLoader
+                ),
                 NotificationFragment::class.simpleName
             )
             .commit()
