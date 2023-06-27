@@ -18,6 +18,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.OCC_QUANTITY_DEBOUNCE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
@@ -78,6 +79,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 class OrderSummaryPageViewModel @Inject constructor(
     private val executorDispatchers: CoroutineDispatchers,
@@ -89,7 +91,8 @@ class OrderSummaryPageViewModel @Inject constructor(
     private val calculator: OrderSummaryPageCalculator,
     private val userSession: UserSessionInterface,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    @Named(OCC_QUANTITY_DEBOUNCE) private val debounceTime: Long
 ) : BaseViewModel(executorDispatchers.immediate) {
 
     init {
@@ -313,7 +316,7 @@ class OrderSummaryPageViewModel @Inject constructor(
     private fun debounce() {
         debounceJob?.cancel()
         debounceJob = launch(executorDispatchers.immediate) {
-            delay(DEBOUNCE_TIME)
+            delay(debounceTime)
             if (isActive) {
                 updateCart()
                 if (orderProfile.value.isValidProfile) {

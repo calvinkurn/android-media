@@ -7,6 +7,7 @@ import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
+import com.tokopedia.oneclickcheckout.common.OCC_QUANTITY_DEBOUNCE
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -56,5 +57,12 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
         return EPharmacyAnalytics(userSession.userId)
+    }
+
+    @Provides
+    @OrderSummaryPageScope
+    @Named(OCC_QUANTITY_DEBOUNCE)
+    open fun provideQuantityDebounceLength(): Long {
+        return 1000L
     }
 }

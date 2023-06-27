@@ -20,7 +20,6 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -69,7 +68,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+        Thread.sleep(100L)
     }
 
     fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
@@ -86,7 +85,7 @@ class OrderSummaryPageRobot {
                         for (i in 0 until times) {
                             minusButton.performClick()
                         }
-                        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+                        Thread.sleep(100L)
                     }
                 }
             )
