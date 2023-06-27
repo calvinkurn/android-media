@@ -43,6 +43,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
@@ -56,16 +58,15 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_SEARCH_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -270,6 +271,9 @@ abstract class BaseSearchCategoryViewModel(
     private val blockAddToCartMutableLiveData = MutableLiveData<Unit>()
     val blockAddToCartLiveData: LiveData<Unit> = blockAddToCartMutableLiveData
 
+    private val updateAdsCarouselMutableLiveData = MutableLiveData<Pair<Int, TokoNowAdsCarouselUiModel>>()
+    val updateAdsCarouselLiveData: LiveData<Pair<Int, TokoNowAdsCarouselUiModel>> = updateAdsCarouselMutableLiveData
+
     var isEmptyResult:Boolean = false
 
     init {
@@ -401,17 +405,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    private fun createProductAdsParam(): String {
-        val query = queryParamMutable[SearchApiConst.Q].orEmpty()
-        val warehouseIds = AddressMapper.mapToWarehouseIds(chooseAddressData)
-        val requestParam = GetProductAdsParam(
-            query = query,
-            warehouseIds = warehouseIds,
-            src = SRC_SEARCH_TOKONOW,
-            userId = userSession.userId
-        )
-        return requestParam.generateQueryParams()
-    }
+    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -803,6 +797,17 @@ abstract class BaseSearchCategoryViewModel(
         updatedProductIndices?.add(index)
     }
 
+    private fun updateAdsCarouselQuantity(
+        adsCarouselUiModel: TokoNowAdsCarouselUiModel,
+        index: Int
+    ) {
+        val newItems = adsCarouselUiModel.items.map { productUiModel ->
+            productUiModel.copy(productCardModel = createProductCardCompactModel(productUiModel))
+        }
+        val newAdsCarousel = adsCarouselUiModel.copy(items = newItems)
+        updateAdsCarouselMutableLiveData.postValue(Pair(index, newAdsCarousel))
+    }
+
     private fun createUpdatedRepurchaseWidgetQuantity(
         repurchaseProduct: TokoNowProductCardUiModel,
     ): ProductCardModel {
@@ -818,6 +823,16 @@ abstract class BaseSearchCategoryViewModel(
             nonVariant = nonVariant,
             variant = variant,
         )
+    }
+
+    private fun createProductCardCompactModel(
+        product: ProductCardCompactCarouselItemUiModel,
+    ): ProductCardCompactUiModel {
+        val quantity = cartService.getProductQuantity(
+            product.getProductId(),
+            product.parentId,
+        )
+        return product.productCardModel.copy(orderQuantity = quantity)
     }
 
     private fun MutableList<Visitable<*>>.addFooter() {
@@ -1135,6 +1150,8 @@ abstract class BaseSearchCategoryViewModel(
                 updateProductItemQuantity(index, visitable, updatedProductIndices)
             is TokoNowRepurchaseUiModel ->
                 updateRepurchaseWidgetQuantity(visitable, index, updatedProductIndices)
+            is TokoNowAdsCarouselUiModel ->
+                updateAdsCarouselQuantity(visitable, index)
             is BroadMatchDataView ->
                 updateBroadMatchQuantities(visitable, index, updatedProductIndices)
         }

@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.common.domain.param
 data class GetProductAdsParam(
     val query: String = "",
     val categoryId: String = "",
-    val warehouseIds: String,
-    val src: String,
+    val warehouseIds: String = "",
+    val src: String = "",
     val page: Int = 1,
-    val userId: String
+    val userId: String = ""
 ) {
 
     companion object {

@@ -71,6 +71,7 @@ import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomShee
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
@@ -237,6 +238,13 @@ abstract class BaseSearchCategoryFragment:
 
     private fun updateToolbarNotification(update: Boolean) {
         if(update) navToolbar?.updateNotification()
+    }
+
+    private fun updateAdsProductCarousel(data: Pair<Int, TokoNowAdsCarouselUiModel>) {
+        val visitables = getViewModel().visitableListLiveData.value.orEmpty()
+        val newList = visitables.toMutableList()
+        newList[data.first] = data.second
+        searchCategoryAdapter?.submitList(newList)
     }
 
     protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
@@ -519,6 +527,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
+        getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
             showToasterWhenAddToCartBlocked()
