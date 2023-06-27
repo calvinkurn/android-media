@@ -58,8 +58,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeData()
-
         binding?.btnBs?.setOnClickListener {
             MedalCelebrationBottomSheet.show(childFragmentManager, "UNILEVER_CLUB")
         }

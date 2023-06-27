@@ -128,3 +128,7 @@ data class ScpRewardsCelebrationModel(
         }
     }
 }
+
+fun ScpRewardsCelebrationModel.getBenefitCta(key:String) : ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton?{
+    return scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.find { it.unifiedStyle == key }
+}

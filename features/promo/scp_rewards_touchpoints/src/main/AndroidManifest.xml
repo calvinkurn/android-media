@@ -5,7 +5,21 @@
     <application>
         <activity
             android:name=".TestActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/TransParentTheme"
+            >
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="scp-rewards"
+                    android:pathPattern="/medali/celebration-bottomsheet/.*"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

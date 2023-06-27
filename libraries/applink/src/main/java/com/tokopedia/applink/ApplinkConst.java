@@ -508,6 +508,10 @@ public interface ApplinkConst {
         String HISTORY = "tokopedia://tokopoints/history";
     }
 
+    interface ScpRewards{
+        String CELEBRATION_BOTTOMSHEET = "tokopedia://medali/celebration-bottomsheet";
+    }
+
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
     String DISCOVERY_DEALS = "tokopedia://discovery/deals";

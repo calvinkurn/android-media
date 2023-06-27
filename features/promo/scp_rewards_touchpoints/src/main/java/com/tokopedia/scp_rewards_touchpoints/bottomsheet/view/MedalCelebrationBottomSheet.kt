@@ -6,6 +6,8 @@ import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -32,6 +34,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -42,23 +46,22 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.constants.EASE_IN
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCelebrationModel
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getBenefitCta
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.AudioFactory
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.DeviceInfo
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.dpToPx
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.isNullOrZero
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
+import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.celebration_main_layout.*
-import kotlinx.android.synthetic.main.celebration_main_layout.view.*
-import kotlinx.android.synthetic.main.layout_scp_coupon_view.view.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class MedalCelebrationBottomSheet: BottomSheetUnify() {
-
-    private val childLayoutRes = R.layout.celebration_fragment_layout
 
     // Assets
     private var badge_image: Drawable? = null
@@ -71,6 +74,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
     private var isSoundLoading = false
     private var isBackgroundImageAvailable = false
     private var audioManager: AudioFactory? = null
+    private var bgColor:String? = ""
 
     // urls
     private var badgeUrl = ""
@@ -97,16 +101,15 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     private val medalCelebrationViewModel: MedalCelebrationViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(MedalCelebrationViewModel::class.java)
+        viewModelProvider[MedalCelebrationViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.intent?.let {
-            medaliSlug = it.data?.pathSegments?.last() ?: "UNILEVER_CLUB"
+            medaliSlug = it.data?.pathSegments?.last() ?: ""
         }
 //        setStyle(STYLE_NORMAL, R.style.ScpTransparentBottomSheetStyle)
-
     }
 
     override fun onAttach(context: Context) {
@@ -130,6 +133,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupCloseButtonBehaviour()
         initStatusBarSetup()
 
         bottomSheetWrapper.apply{
@@ -148,10 +152,11 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                 }
                 is Error -> {
 //                    CelebrationAnalytics.sendImpressionCelebrationError(medaliSlug)
-                    showErrorView()
+                    showErrorView(it.error)
                 }
                 is Loading -> {
                     binding?.mainFlipper?.displayedChild = LOADING_STATE
+                    hideCloseButton()
                 }
 
                 else -> {}
@@ -166,13 +171,29 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         setupBackground()
     }
 
+    @SuppressLint("Range")
     private fun setupBackground() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.apply {
-                val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                mainView.container.setBackgroundColor(parseColor(color) ?: Color.WHITE)
+                bgColor = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
+                mainView.container.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
             }
         }
+    }
+
+    private fun setupCloseButtonBehaviour() {
+        binding?.btnClose?.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    private fun setCloseBtnColor(whiteBtn:Boolean = true){
+        val iconColor = if(whiteBtn) ResourcesCompat.getColor(resources,R.color.Unify_NN0,null)
+        else ResourcesCompat.getColor(resources,R.color.Unify_NN900,null)
+        binding?.btnClose?.setImage(
+            newLightEnable = iconColor,
+            newDarkEnable = iconColor
+        )
     }
 
     @SuppressLint("DeprecatedMethod")
@@ -317,6 +338,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         binding?.mainView?.animationViewFlipper?.displayedChild =
             HAPPY_STATE
         initViewSetup()
+        setupCouponCtaListeners()
         handler.postDelayed(
             {
                 startPageAnimation()
@@ -330,15 +352,18 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         binding?.mainView?.apply {
             celebrationHeading.alpha = 0f
             badgeName.alpha = 0f
-            badgeDescription.alpha = 0f
+//            badgeDescription.alpha = 0f
             sunflare.alpha = 0f
             sponsorCard.alpha = 0f
             spotlight.alpha = 0f
             badgeImage.alpha = 0f
+            binding?.mainView?.couponUi?.root?.alpha = 0f
             celebrationView.setImageDrawable(null)
             lottieStars.setImageDrawable(null)
             setAllText()
             setupSponsorCard()
+            showCloseButton()
+            setCloseBtnColor()
         }
     }
 
@@ -357,10 +382,9 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         binding?.mainView?.apply {
             (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
                 celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
-                celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
                 badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
-                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
-                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
+//                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
+//                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
                 val primaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst{ it.unifiedStyle == "primary" }
                 val secondaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst{ it.unifiedStyle == "secondary" }
                 couponUi.btnPrimary.setText(primaryIndex?.let {
@@ -396,10 +420,6 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     private fun hideSponsorCard() {
         binding?.mainView?.sponsorCard?.hide()
-        binding?.mainView?.badgeName?.apply {
-            val lp = layoutParams as ConstraintLayout.LayoutParams
-//            lp.topMargin = resources.getDimensionPixelSize(R.dimen.margin_20_dp)
-        }
     }
 
     private fun configureBackgroundImage(bgImage: Drawable) {
@@ -437,6 +457,20 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
             val translatePvh = getTranslationPropertyValueHolder(from, to)
             val opacityPvh = getOpacityPropertyValueHolder()
             ObjectAnimator.ofPropertyValuesHolder(view, translatePvh, opacityPvh).apply {
+                this.duration = duration
+                interpolator = when (interpolatorType) {
+                    EASE_IN -> AccelerateDecelerateInterpolator()
+                    else -> PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
+                }
+                start()
+            }
+        }
+    }
+
+    private fun fadeView(view: View?, duration: Long, from: Int = 0, to: Int = 255, interpolatorType: Int){
+        view?.let {
+            val opacityPvh = getOpacityPropertyValueHolder()
+            ObjectAnimator.ofPropertyValuesHolder(view,opacityPvh).apply {
                 this.duration = duration
                 interpolator = when (interpolatorType) {
                     EASE_IN -> AccelerateDecelerateInterpolator()
@@ -533,6 +567,16 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         )
     }
 
+    private fun setupCouponCtaListeners(){
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply{
+            binding?.mainView?.couponUi?.apply{
+                btnSecondary.setOnClickListener{
+                    RouteManager.route(context,getBenefitCta("secondary")?.appLink)
+                }
+            }
+        }
+    }
+
     private fun animateBadge() {
         val badgeDrawable = if (isFallbackCase) {
 //            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
@@ -568,6 +612,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         } else {
             coupon_image
         }
+        binding?.mainView?.couponUi?.couponImage?.circularEdgeColor = Color.parseColor(bgColor)
         binding?.mainView?.couponUi?.couponImage?.setImageDrawable(couponDrawable)
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -582,7 +627,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         context?.let {
             val dimen53 = it.resources.getDimension(R.dimen.dimen_53).toInt()
             translateView(
-                view = coupon_ui,
+                view = binding?.mainView?.couponUi?.root,
                 duration = ANIMATION_DURATION,
                 from = dpToPx(it, dimen53).toInt(),
                 interpolatorType = EASE_IN
@@ -639,19 +684,17 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
     private fun animateRest() {
         binding?.mainView?.apply {
             context?.let {
-                val dimen53 = it.resources.getDimension(R.dimen.dimen_53).toInt()
                 val dimen40 = it.resources.getDimension(R.dimen.dimen_40).toInt()
                 val dimen44 = it.resources.getDimension(R.dimen.dimen_44).toInt()
-                translateView(
+                fadeView(
                     view = celebrationHeading,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, -dimen53).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = badgeName,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, dimen40).toInt(),
+                    from = dpToPx(it, dimen44).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
@@ -660,12 +703,12 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                     from = dpToPx(it, dimen44).toInt(),
                     interpolatorType = EASE_IN
                 )
-                translateView(
-                    view = badgeDescription,
-                    duration = ANIMATION_DURATION,
-                    from = dpToPx(it, dimen40).toInt(),
-                    interpolatorType = EASE_IN
-                )
+//                translateView(
+//                    view = badgeDescription,
+//                    duration = ANIMATION_DURATION,
+//                    from = dpToPx(it, dimen40).toInt(),
+//                    interpolatorType = EASE_IN
+//                )
             }
         }
     }
@@ -708,33 +751,42 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun showErrorView() {
+    private fun showErrorView(error:Throwable) {
         context?.let {
             val defaultBg = ContextCompat.getColor(it, R.color.white)
-            binding?.mainFlipper?.setBackgroundColor(defaultBg)
+            binding?.mainFlipper?.backgroundTintList= ColorStateList.valueOf(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
-        binding?.errorView?.apply {
-            errorSecondaryAction.show()
-            if (errorSecondaryAction is UnifyButton) {
-                (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
-            }
-            errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-            errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
-            val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            errorSecondaryAction.setBackgroundColor(buttonColor)
-            setActionClickListener {
-//                CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
-                resetPage()
-            }
-            setSecondaryActionClickListener {
+        showCloseButton()
+        setCloseBtnColor(false)
+        if (error is UnknownHostException || error is SocketTimeoutException) {
+            binding?.errorView?.setType(GlobalError.NO_CONNECTION)
+
+        }
+        else{
+            binding?.errorView?.apply {
+                errorSecondaryAction.show()
+                if (errorSecondaryAction is UnifyButton) {
+                    (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                }
+                errorSecondaryAction.text = context?.getString(R.string.go_back_text)
+                errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
+                val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                errorSecondaryAction.setBackgroundColor(buttonColor)
+                setSecondaryActionClickListener {
 //                CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
-                activity?.finish()
+                    activity?.finish()
+                }
             }
+        }
+        binding?.errorView?.setActionClickListener {
+            //                CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
+            resetPage()
         }
     }
 
     private fun resetPage() {
+        hideCloseButton()
         binding?.mainFlipper?.displayedChild = LOADING_STATE
         medalCelebrationViewModel.getRewards(medaliSlug, "medali_celebration_bottomsheet")
     }
@@ -808,6 +860,19 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         setChild(binding?.root)
         setupViewModelObservers()
         medalCelebrationViewModel.getRewards(medaliSlug, "medali_celebration_bottomsheet")
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        activity?.finish()
+    }
+
+    private fun hideCloseButton(){
+        binding?.btnClose?.hide()
+    }
+
+    private fun showCloseButton(){
+        binding?.btnClose?.show()
     }
 
     companion object {

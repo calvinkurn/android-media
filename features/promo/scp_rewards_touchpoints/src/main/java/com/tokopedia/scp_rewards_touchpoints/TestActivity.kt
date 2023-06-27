@@ -1,35 +1,40 @@
 package com.tokopedia.scp_rewards_touchpoints
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.view.MedalCelebrationBottomSheet
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.view.MedalCelebrationFragment
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
-import com.tokopedia.scp_rewards_touchpoints.common.Error
-import com.tokopedia.scp_rewards_touchpoints.common.Loading
-import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.CelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
-import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
-import com.tokopedia.scp_rewards_touchpoints.toaster.viewmodel.ScpToasterViewModel
-import com.tokopedia.scp_rewards_touchpoints.view.toaster.ScpRewardsToaster
-import javax.inject.Inject
 
-class TestActivity : BaseSimpleActivity(), HasComponent<CelebrationComponent>{
+class TestActivity : BaseActivity(), HasComponent<CelebrationComponent>{
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_test)
         super.onCreate(savedInstanceState)
+//        setContentView(R.layout.test_act)
+        MedalCelebrationBottomSheet.show(supportFragmentManager, "UNILEVER_CLUB")
+//        getNewFragment()
     }
 
-    override fun getNewFragment(): Fragment {
-        return MedalCelebrationFragment()
+    private fun handleDeeplink(){
+        intent.data?.let {
+            if(it.toString().startsWith(ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET)){
+                openCelebrationBottomSheet(it.pathSegments.last())
+            }
+        }
+    }
+
+    private fun openCelebrationBottomSheet(slug:String){
+        MedalCelebrationBottomSheet.show(supportFragmentManager,slug)
+    }
+
+    fun getNewFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.test_act_con, MedalCelebrationFragment(), "getTagFragment()")
+            .commit()
     }
 
     override fun getComponent(): CelebrationComponent {

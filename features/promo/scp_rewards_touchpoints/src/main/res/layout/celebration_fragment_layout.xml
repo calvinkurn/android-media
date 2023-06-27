@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_flipper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    >
+    <ViewFlipper
+        android:id="@+id/main_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="decorative" />
+
+        <include
+            android:id="@+id/main_view"
+            layout="@layout/celebration_main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/error_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:globalerrors_type="SERVER_ERROR" />
+    </ViewFlipper>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_close"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginStart="19dp"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="decorative" />
-
-    <include
-        android:id="@+id/main_view"
-        layout="@layout/celebration_main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/error_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:globalerrors_type="SERVER_ERROR" />
-</ViewFlipper>
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

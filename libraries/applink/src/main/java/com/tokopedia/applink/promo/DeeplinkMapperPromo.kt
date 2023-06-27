@@ -127,6 +127,14 @@ fun getRegisteredNavigationPromoFromHttp(deeplink:Uri) : String{
     return ""
 }
 
+fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
+    return if (deeplink.pathSegments.size < 2) ""
+    else UriUtil.buildUri(
+        ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
+        deeplink.pathSegments.last()
+    )
+}
+
 fun getPromoRegexMap() : MutableMap<String,Regex> {
     val couponDetailRegex = "^(/.*/voucher/[0-9]+)"
     return mutableMapOf(

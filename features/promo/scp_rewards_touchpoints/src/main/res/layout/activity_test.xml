@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/test_root"
+    android:background="@android:color/transparent"
     tools:context="com.tokopedia.scp_rewards_touchpoints.TestActivity">
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:unifyButtonType="transaction"
         android:id="@+id/btn_bs"
         android:text="Open Bottomsheet"
         android:textAllCaps="false"
@@ -23,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:id="@+id/btn_toaster"
+        app:unifyButtonType="transaction"
         android:text="Show Toaster"
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@id/btn_bs"

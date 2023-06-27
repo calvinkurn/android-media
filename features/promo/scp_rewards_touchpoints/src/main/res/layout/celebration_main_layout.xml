@@ -33,16 +33,6 @@
             android:layout_height="match_parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/btn_close"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginStart="19dp"
-                android:src="@drawable/iconunify_close"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/spotlight"
                 android:layout_width="359dp"
                 android:layout_height="637dp"
@@ -55,7 +45,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_loop="true"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/celebration_heading"
@@ -87,7 +79,9 @@
                 app:layout_constraintBottom_toBottomOf="@+id/sunflare"
                 app:layout_constraintEnd_toEndOf="@+id/sunflare"
                 app:layout_constraintStart_toStartOf="@+id/sunflare"
-                app:layout_constraintTop_toTopOf="@+id/sunflare" />
+                app:layout_constraintTop_toTopOf="@+id/sunflare"
+                app:lottie_loop="true"
+                />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/badge_image"
@@ -155,8 +149,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/badge_name"
-                app:layout_constraintBottom_toBottomOf="parent"
                 layout="@layout/layout_scp_coupon_view"
+                android:layout_marginTop="20dp"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
