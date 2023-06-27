@@ -25,6 +25,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAffiliateAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseWrapper
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
@@ -35,8 +36,9 @@ import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEdu
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
-import com.tokopedia.notifcenter.ui.listener.NotificationAffiliateEduEventListener
-import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.service.MarkAsSeenService
+import com.tokopedia.notifcenter.ui.NotificationViewModel
 import com.tokopedia.notifcenter.ui.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.ui.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.ui.adapter.listener.NotificationEndlessRecyclerViewScrollListener
@@ -44,9 +46,9 @@ import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.Notificatio
 import com.tokopedia.notifcenter.ui.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.NotificationLongerContentBottomSheet
-import com.tokopedia.notifcenter.ui.NotificationViewModel
-import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.ui.customview.widget.NotificationFilterView
+import com.tokopedia.notifcenter.ui.listener.NotificationAffiliateEduEventListener
+import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -220,24 +222,15 @@ open class NotificationAffiliateFragment :
     }
 
     private fun setupObserver() {
-        viewModel.notificationItems.observe(
-            viewLifecycleOwner
-        ) {
-            when (it) {
-                is Success -> {
-                    if (viewModel.hasFilter()) {
-                        rvAdapter?.removeLoadingComponents()
-                    }
-                    renderNotifications(it.data)
-                    if (!viewModel.hasFilter() && isVisible) {
-                        viewModel.clearNotifCounter(RoleType.AFFILIATE)
-                    }
-                    if (viewModel.hasFilter() && !isListEmpty && !isEmptyState) {
-                        rvAdapter?.removeAffiliateBanner()
-                        rvAdapter?.reAddAffiliateBanner()
-                    }
+        viewModel.notificationItems.observe(viewLifecycleOwner) {
+            when (it.loadType) {
+                NotifcenterDetailUseCase.NotificationDetailLoadType.FIRST_PAGE -> {
+                    handleFirstPageNotificationItems(it.result)
                 }
-                is Fail -> showGetListError(it.throwable)
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_NEW,
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_EARLIER -> {
+                    handleLoadMoreNotification(it)
+                }
             }
         }
 
@@ -250,6 +243,48 @@ open class NotificationAffiliateFragment :
         viewModel.affiliateEducationArticle.observe(viewLifecycleOwner) {
             if (!isListEmpty && !isEmptyState) {
                 rvAdapter?.addAffiliateEducationArticles(it)
+            }
+        }
+    }
+
+    private fun handleFirstPageNotificationItems(
+        result: com.tokopedia.usecase.coroutines.Result<NotificationDetailResponseModel>
+    ) {
+        when (result) {
+            is Success<NotificationDetailResponseModel> -> {
+                if (viewModel.hasFilter()) {
+                    rvAdapter?.removeLoadingComponents()
+                }
+                renderNotifications(result.data)
+                if (!viewModel.hasFilter() && isVisible) {
+                    viewModel.clearNotifCounter(RoleType.AFFILIATE)
+                }
+                if (viewModel.hasFilter() && !isListEmpty && !isEmptyState) {
+                    rvAdapter?.removeAffiliateBanner()
+                    rvAdapter?.reAddAffiliateBanner()
+                }
+            }
+            is Fail -> showGetListError(result.throwable)
+        }
+    }
+
+    private fun handleLoadMoreNotification(
+        result: NotificationDetailResponseWrapper
+    ) {
+        when (result.result) {
+            is Success -> {
+                rvAdapter?.insertNotificationData(
+                    lastKnownPosition = result.lastKnownPair?.first ?: RecyclerView.NO_POSITION,
+                    element = result.lastKnownPair?.second as LoadMoreUiModel,
+                    response = result.result.data
+                )
+            }
+            is Fail -> {
+                rvAdapter?.failLoadMoreNotification(
+                    lastKnownPosition = result.lastKnownPair?.first ?: RecyclerView.NO_POSITION,
+                    element = result.lastKnownPair?.second as LoadMoreUiModel
+                )
+                showErrorMessage(result.result.throwable)
             }
         }
     }
@@ -319,13 +354,8 @@ open class NotificationAffiliateFragment :
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(
             RoleType.AFFILIATE,
-            {
-                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-            },
-            {
-                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                showErrorMessage(it)
-            }
+            lastKnownPosition,
+            element
         )
     }
 
@@ -336,13 +366,8 @@ open class NotificationAffiliateFragment :
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(
             RoleType.AFFILIATE,
-            {
-                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-            },
-            {
-                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                showErrorMessage(it)
-            }
+            lastKnownPosition,
+            element
         )
     }
 

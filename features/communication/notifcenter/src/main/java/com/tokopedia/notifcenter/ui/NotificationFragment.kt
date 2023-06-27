@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -36,6 +35,7 @@ import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseWrapper
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
@@ -48,6 +48,7 @@ import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.ui.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.ui.adapter.decoration.NotificationItemDecoration
@@ -153,9 +154,11 @@ open class NotificationFragment :
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         if (rvAdapter?.lastItemIsErrorNetwork() == true) return
+        // The bottom part of non-filtered is product recommendation
         if (!viewModel.hasFilter()) {
             viewModel.loadRecommendations(page)
         } else {
+            // The bottom part of filtered is still notification items
             containerListener?.role?.let {
                 viewModel.loadMoreEarlier(it)
             }
@@ -293,94 +296,109 @@ open class NotificationFragment :
     }
 
     private fun setupObserver() {
-        viewModel.notificationItems.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        renderNotifications(it.data)
-                        if (!viewModel.hasFilter() && isVisible) {
-                            containerListener?.role?.let {
-                                viewModel.clearNotifCounter(it)
-                            }
-                        }
-                    }
-                    is Fail -> showGetListError(it.throwable)
-                    else -> {
-                    }
+        viewModel.notificationItems.observe(viewLifecycleOwner) {
+            when (it.loadType) {
+                NotifcenterDetailUseCase.NotificationDetailLoadType.FIRST_PAGE -> {
+                    handleFirstPageNotificationItems(it.result)
+                }
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_NEW,
+                NotifcenterDetailUseCase.NotificationDetailLoadType.LOAD_MORE_EARLIER -> {
+                    handleLoadMoreNotification(it)
                 }
             }
-        )
+        }
 
-        viewModel.topAdsBanner.observe(
-            viewLifecycleOwner,
-            Observer {
-                rvAdapter?.addTopAdsBanner(it)
-            }
-        )
+        viewModel.topAdsBanner.observe(viewLifecycleOwner) {
+            rvAdapter?.addTopAdsBanner(it)
+        }
 
-        viewModel.recommendations.observe(
-            viewLifecycleOwner,
-            Observer {
-                renderRecomList(it)
-            }
-        )
+        viewModel.recommendations.observe(viewLifecycleOwner) {
+            renderRecomList(it)
+        }
 
-        viewModel.filterList.observe(
-            viewLifecycleOwner,
-            Observer {
-                filter?.updateFilterState(it)
-            }
-        )
+        viewModel.filterList.observe(viewLifecycleOwner) {
+            filter?.updateFilterState(it)
+        }
 
-        viewModel.clearNotif.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it.status) {
-                    Status.SUCCESS -> containerListener?.clearNotificationCounter()
-                    else -> {
-                    }
+        viewModel.clearNotif.observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> containerListener?.clearNotificationCounter()
+                else -> {
                 }
             }
-        )
+        }
 
-        viewModel.bumpReminder.observe(
-            viewLifecycleOwner,
-            Observer {
-                updateReminderState(
-                    resource = it,
-                    isBumpReminder = true
-                )
-            }
-        )
+        viewModel.bumpReminder.observe(viewLifecycleOwner) {
+            updateReminderState(
+                resource = it,
+                isBumpReminder = true
+            )
+        }
 
-        viewModel.deleteReminder.observe(
-            viewLifecycleOwner,
-            Observer {
-                updateReminderState(
-                    resource = it,
-                    isBumpReminder = false
-                )
-            }
-        )
+        viewModel.deleteReminder.observe(viewLifecycleOwner) {
+            updateReminderState(
+                resource = it,
+                isBumpReminder = false
+            )
+        }
 
-        viewModel.orderList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it.status) {
-                    Status.LOADING -> {
-                        if (rvAdapter?.hasNotifOrderList() == false) {
-                            updateOrRenderOrderListState(it.data)
-                        }
-                    }
-                    Status.SUCCESS -> {
+        viewModel.orderList.observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.LOADING -> {
+                    if (rvAdapter?.hasNotifOrderList() == false) {
                         updateOrRenderOrderListState(it.data)
                     }
-                    else -> {
+                }
+                Status.SUCCESS -> {
+                    updateOrRenderOrderListState(it.data)
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun handleFirstPageNotificationItems(
+        result: com.tokopedia.usecase.coroutines.Result<NotificationDetailResponseModel>
+    ) {
+        when (result) {
+            is Success<NotificationDetailResponseModel> -> {
+                renderNotifications(result.data)
+                if (!viewModel.hasFilter() && isVisible) {
+                    containerListener?.role?.let { role ->
+                        viewModel.clearNotifCounter(role)
                     }
                 }
             }
-        )
+            is Fail -> showGetListError(result.throwable)
+        }
+    }
+
+    private fun handleLoadMoreNotification(
+        result: NotificationDetailResponseWrapper
+    ) {
+        when (result.result) {
+            is Success -> {
+                if (result.lastKnownPair != null) {
+                    rvAdapter?.insertNotificationData(
+                        lastKnownPosition = result.lastKnownPair.first,
+                        element = result.lastKnownPair.second as LoadMoreUiModel,
+                        response = result.result.data
+                    )
+                } else {
+                    renderNotifications(result.result.data)
+                }
+            }
+            is Fail -> {
+                if (result.lastKnownPair != null) {
+                    rvAdapter?.failLoadMoreNotification(
+                        lastKnownPosition = result.lastKnownPair.first,
+                        element = result.lastKnownPair.second as LoadMoreUiModel
+                    )
+                }
+                showErrorMessage(result.result.throwable)
+            }
+        }
     }
 
     private fun updateOrRenderOrderListState(data: NotifOrderListResponse?) {
@@ -516,16 +534,7 @@ open class NotificationFragment :
         analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
         containerListener?.role?.let { role ->
-            viewModel.loadMoreNew(
-                role,
-                {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-                },
-                {
-                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                    showErrorMessage(it)
-                }
-            )
+            viewModel.loadMoreNew(role, lastKnownPosition, element)
         }
     }
 
@@ -536,16 +545,7 @@ open class NotificationFragment :
         analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
         containerListener?.role?.let { role ->
-            viewModel.loadMoreEarlier(
-                role,
-                {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-                },
-                {
-                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                    showErrorMessage(it)
-                }
-            )
+            viewModel.loadMoreEarlier(role, lastKnownPosition, element)
         }
     }
 
