@@ -123,6 +123,7 @@ class GroupDetailMapper @Inject constructor() {
 
     private fun handleChipsData(adGroupType: Int) {
         if (adGroupType == TYPE_PRODUCT_VALUE) {
+            if (!detailPageDataMap.contains(TYPE_CHIPS))
             detailPageDataMap[TYPE_CHIPS] = GroupDetailChipsUiModel()
         } else {
             detailPageDataMap.remove(TYPE_CHIPS)

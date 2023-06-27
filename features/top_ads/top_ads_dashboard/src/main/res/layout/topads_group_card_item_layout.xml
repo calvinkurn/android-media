@@ -4,33 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/groupCardTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="Cuci Gudang Agustus fhgrhtghuuhuhh"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintBottom_toTopOf="@id/groupCardSubTitle"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Cuci Gudang Agustus fhgrhtghuuhuhh" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/groupCardSubTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/groupCardTitle"
         app:layout_constraintTop_toBottomOf="@id/groupCardTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Cuci Gudang Agustus fhgrhtghuuhuhh"

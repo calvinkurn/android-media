@@ -25,6 +25,7 @@ import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductIn
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_NAME_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_TYPE_KEY
@@ -43,16 +44,16 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottomSheetItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
@@ -94,7 +95,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         updateApplyInsightCtaTag(element.type)
         showApplyInsightCta(element.isExpanded)
         updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(element.type))
-        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(element.type),false))
+        setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(element.type), false))
     }
 
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
@@ -166,7 +167,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         }
     }
 
-    private fun updateApplyInsightCtaTitle(input: TopadsManagePromoGroupProductInput?){
+    private fun updateApplyInsightCtaTitle(input: TopadsManagePromoGroupProductInput?) {
         input?.let {
             saveButton?.text = when (saveButton?.tag) {
                 TYPE_POSITIVE_KEYWORD -> {
@@ -232,10 +233,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if(it.data.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty() && it.data.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty())
+                    if (it.data.topadsManageGroupAds.groupResponse.errors.isNullOrEmpty() && it.data.topadsManageGroupAds.keywordResponse.errors.isNullOrEmpty()) {
                         successfulInsightSubmission()
-                    else
+                    } else {
                         showFailedInsightApplyDialog()
+                    }
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
@@ -246,10 +248,11 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if(it.data.topadsManageHeadlineAd.errors.isNullOrEmpty())
+                    if (it.data.topadsManageHeadlineAd.errors.isNullOrEmpty()) {
                         successfulInsightSubmission()
-                    else
+                    } else {
                         showFailedInsightApplyDialog()
+                    }
                 }
                 is Fail -> {
                     showFailedInsightApplyDialog()
@@ -260,7 +263,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun successfulInsightSubmission() {
         confirmationDailog?.dismiss()
-        val successMsg = when(saveButton?.tag) {
+        val successMsg = when (saveButton?.tag) {
             TYPE_POSITIVE_KEYWORD -> getString(R.string.topads_insight_kata_kunci_submit_success_toast_msg)
             TYPE_KEYWORD_BID -> getString(R.string.topads_insight_biaya_kata_kunci_submit_success_toast_msg)
             TYPE_GROUP_BID -> getString(R.string.topads_insight_biaya_iklan_submit_success_toast_msg)
@@ -342,6 +345,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsChipsAdapter = GroupDetailsChipsAdapter(onStickyChipsClick)
         groupDetailChipsRv?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        groupDetailChipsRv?.addItemDecoration(ChipsInsightItemDecoration())
         groupDetailChipsRv?.adapter = groupDetailsChipsAdapter
     }
 
@@ -432,7 +436,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 DialogUnify.HORIZONTAL_ACTION,
                 DialogUnify.WITH_ILLUSTRATION
             )
-        val description : String = when(saveButton?.tag){
+        val description: String = when (saveButton?.tag) {
             TYPE_POSITIVE_KEYWORD -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_kata_kunci), input?.keywordOperation?.size ?: 0, adGroupName)
             TYPE_KEYWORD_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_kata_kunci), adGroupName)
             TYPE_GROUP_BID -> String.format(getString(R.string.topads_insight_confirmation_dialog_desc_biaya_iklan), adGroupName)
@@ -465,15 +469,15 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         showApplyInsightCta(viewModel.getInputDataFromMapper(saveButton?.tag as? Int) != null)
     }
 
-    private fun updateApplyInsightCtaTag(tag: Int){
+    private fun updateApplyInsightCtaTag(tag: Int) {
         saveButton?.tag = tag
     }
 
-    private fun setApplyInsightCtaState(isEnabled: Boolean){
+    private fun setApplyInsightCtaState(isEnabled: Boolean) {
         saveButton?.isEnabled = isEnabled
     }
 
-    private fun showApplyInsightCta(isVisible: Boolean){
+    private fun showApplyInsightCta(isVisible: Boolean) {
         saveButton?.showWithCondition(isVisible)
     }
 
@@ -490,9 +494,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 childFragmentManager,
                 getString(R.string.topads_insight_ad_type),
                 list,
-                ListBottomSheet.CHOOSE_AD_TYPE_BOTTOMSHEET,
+                ListBottomSheet.CHOOSE_AD_TYPE_BOTTOM_SHEET,
                 this,
-                if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                utils.convertAdTypeToInt(adType),
                 String.EMPTY // don't send group id in case of choose ad type bottomsheet
             )
         } else {
@@ -513,7 +517,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 childFragmentManager,
                 getString(R.string.topads_insight_ad_group),
                 list,
-                ListBottomSheet.CHOOSE_AD_GROUP_BOTTOMSHEET,
+                ListBottomSheet.CHOOSE_AD_GROUP_BOTTOM_SHEET,
                 this,
                 if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
                 this.adGroupId
@@ -527,7 +531,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         this.adGroupId = groupId
         this.insightType = INSIGHT_TYPE_ALL
         this.adGroupName = groupName
-        viewModel.selectDefaultChips(insightType)
+        viewModel.selectDefaultChips(insightType, adType)
         loadDetailPageOnAction(
             adType,
             groupId,
@@ -537,12 +541,12 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    val onInsightAction = {hasErrors: Boolean ->
+    val onInsightAction = { hasErrors: Boolean ->
         setApplyInsightCtaState(validateInsightData(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors))
         updateApplyInsightCtaTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
-    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = String.EMPTY){
+    private fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = String.EMPTY) {
         viewModel.loadDetailPageOnAction(
             adType,
             adgroupID,
@@ -553,8 +557,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         showApplyInsightCta(false)
     }
 
-    private fun validateInsightData(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
-        if(hasErrors) {
+    private fun validateInsightData(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean {
+        if (hasErrors) {
             return false
         } else {
             input?.let {

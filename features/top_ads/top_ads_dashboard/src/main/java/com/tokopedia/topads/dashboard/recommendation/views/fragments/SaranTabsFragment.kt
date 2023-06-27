@@ -29,6 +29,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -127,6 +128,7 @@ class SaranTabsFragment : BaseDaggerFragment() {
         chipsAdapter = ChipsAdapter(onClick())
         chipsRecyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        chipsRecyclerView?.addItemDecoration(ChipsInsightItemDecoration())
         chipsRecyclerView?.adapter = chipsAdapter
         viewModel?.let { chipsAdapter?.submitList(it.getChipsData()) }
     }

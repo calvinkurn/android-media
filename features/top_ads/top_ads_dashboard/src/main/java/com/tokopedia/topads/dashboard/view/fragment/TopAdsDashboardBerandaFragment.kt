@@ -46,6 +46,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.MANAGE_RECOMMENDATION_URL
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -265,12 +266,17 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun setInsightRecyclerView() {
-        var insightRecyclerView = binding.layoutInsight.insightRecyclerview
+        val insightRecyclerView = binding.layoutInsight.insightRecyclerview
+        val itemDecoration = RecommendationInsightItemDecoration(
+            context,
+            LinearLayoutManager.VERTICAL
+        )
         insightRecyclerView.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL,
             false
         )
+        insightRecyclerView.addItemDecoration(itemDecoration)
         insightRecyclerView.adapter = insightListAdapter
     }
 
