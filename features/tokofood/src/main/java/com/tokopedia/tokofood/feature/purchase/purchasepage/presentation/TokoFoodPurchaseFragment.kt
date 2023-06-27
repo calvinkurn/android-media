@@ -134,6 +134,7 @@ class TokoFoodPurchaseFragment :
 
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
+    private var isPaymentButtonLoading: Boolean = false
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -172,6 +173,7 @@ class TokoFoodPurchaseFragment :
         collectShouldRefreshCartData()
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
+        collectIsPaymentButtonLoading()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -647,6 +649,15 @@ class TokoFoodPurchaseFragment :
         }
     }
 
+    private fun collectIsPaymentButtonLoading() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.isPaymentButtonLoading
+                .collect { isLoading ->
+                    isPaymentButtonLoading = isLoading
+                }
+        }
+    }
+
     private fun renderRecyclerView() {
         viewBinding?.let {
             it.layoutGlobalErrorPurchase.gone()
@@ -1091,16 +1102,20 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onQuantityChanged() {
-        viewModel.triggerEditQuantity()
+        if (!isPaymentButtonLoading) {
+            viewModel.triggerEditQuantity()
+        }
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(
-            cartId = element.cartId,
-            productId = element.id,
-            source = SOURCE,
-            shouldRefreshCart = false
-        )
+        if (!isPaymentButtonLoading) {
+            activityViewModel?.deleteProduct(
+                cartId = element.cartId,
+                productId = element.id,
+                source = SOURCE,
+                shouldRefreshCart = false
+            )
+        }
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
