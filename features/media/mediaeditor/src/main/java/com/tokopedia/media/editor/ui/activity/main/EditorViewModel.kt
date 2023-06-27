@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreationModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
@@ -161,6 +164,19 @@ class EditorViewModel @Inject constructor(
 
     fun isMemoryOverflow(width: Int, height: Int): Boolean {
         return bitmapCreationRepository.isBitmapOverflow(width, height)
+    }
+
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
+        )
     }
 
     private fun updateEditedItem(originalUrl: String) {

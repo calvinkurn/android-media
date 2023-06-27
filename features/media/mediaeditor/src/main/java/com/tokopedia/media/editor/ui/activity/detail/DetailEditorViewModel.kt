@@ -234,6 +234,19 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
+        )
+    }
+
     private fun initializeWatermarkAsset() {
         if (!watermarkFilterRepository.isAssetInitialize()) {
             resourceProvider.getWatermarkLogoDrawable()?.let {

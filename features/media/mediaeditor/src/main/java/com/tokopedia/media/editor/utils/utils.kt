@@ -48,7 +48,7 @@ fun isGranted(context: Context, permission: String): Boolean {
 fun cropCenterImage(
     sourceBitmap: Bitmap?,
     cropRaw: ImageRatioType
-): Pair<Bitmap, EditorCropRotateUiModel>? {
+): EditorCropRotateUiModel? {
     sourceBitmap?.let { bitmap ->
         // ratio height to width (to get height value)
         val autoCropRatio = cropRaw.getRatioY().toFloat() / cropRaw.getRatioX()
@@ -81,8 +81,6 @@ fun cropCenterImage(
             topMargin = (bitmapHeight - newHeight) / 2
         }
 
-        val bitmapResult = Bitmap.createBitmap(bitmap, leftMargin, topMargin, newWidth, newHeight)
-
         val cropDetail = EditorCropRotateUiModel().apply {
             offsetX = leftMargin
             offsetY = topMargin
@@ -96,8 +94,7 @@ fun cropCenterImage(
             cropRatio = cropRaw.ratio
         }
 
-        bitmap.recycle()
-        return Pair(bitmapResult, cropDetail)
+        return cropDetail
     }
     return null
 }

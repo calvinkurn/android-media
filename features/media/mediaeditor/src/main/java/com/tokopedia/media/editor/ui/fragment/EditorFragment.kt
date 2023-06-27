@@ -187,22 +187,24 @@ class EditorFragment @Inject constructor(
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
 
-        cropCenterImage(bitmap, cropRatio)?.apply {
-            viewModel.saveToCache(
-                first,
-                sourcePath = originalPath
-            )?.apply {
-                first.recycle()
+        cropCenterImage(bitmap, cropRatio)?.let { cropRotateData ->
+            viewModel.cropImage(bitmap, cropRotateData)?.let { croppedBitmap ->
+                viewModel.saveToCache(
+                    croppedBitmap,
+                    sourcePath = originalPath
+                )?.let {
+                    croppedBitmap.recycle()
 
-                val newEditorDetailUiModel = EditorDetailUiModel(
-                    originalUrl = originalPath,
-                    editorToolType = EditorToolType.CROP,
-                    resultUrl = this.absolutePath,
-                    originalRatio = imageRatio
-                )
+                    val newEditorDetailUiModel = EditorDetailUiModel(
+                        originalUrl = originalPath,
+                        editorToolType = EditorToolType.CROP,
+                        resultUrl = it.absolutePath,
+                        originalRatio = imageRatio
+                    )
 
-                newEditorDetailUiModel.cropRotateValue = second
-                viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+                    newEditorDetailUiModel.cropRotateValue = cropRotateData
+                    viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+                }
             }
         }
     }
