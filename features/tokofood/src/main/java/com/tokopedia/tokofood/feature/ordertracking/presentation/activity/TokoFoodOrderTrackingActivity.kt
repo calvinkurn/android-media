@@ -16,7 +16,7 @@ import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import javax.inject.Inject
 
-class TokoFoodOrderTrackingActivity :
+open class TokoFoodOrderTrackingActivity :
     BaseSimpleActivity(),
     HasComponent<TokoFoodOrderTrackingComponent> {
 

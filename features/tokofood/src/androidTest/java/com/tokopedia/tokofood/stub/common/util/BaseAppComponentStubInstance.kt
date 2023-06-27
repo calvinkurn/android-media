@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.stub.common.util
 
 import android.content.Context
 import com.tokopedia.tokofood.stub.common.di.component.BaseAppComponentStub
+import com.tokopedia.tokofood.stub.common.di.component.DaggerBaseAppComponentStub
 import com.tokopedia.tokofood.stub.common.di.module.AppModuleStub
 
 class BaseAppComponentStubInstance {

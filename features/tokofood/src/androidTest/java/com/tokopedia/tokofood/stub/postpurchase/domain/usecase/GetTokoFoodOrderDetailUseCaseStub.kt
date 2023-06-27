@@ -1,15 +1,15 @@
 package com.tokopedia.tokofood.stub.postpurchase.domain.usecase
 
+import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.stub.common.graphql.interactor.GraphqlUseCaseStub
-import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.TokoFoodOrderDetailMapperStub
 
 class GetTokoFoodOrderDetailUseCaseStub(
     private val useCase: GraphqlUseCaseStub<TokoFoodOrderDetailResponse>,
-    private val tokoFoodOrderDetailMapperStub: TokoFoodOrderDetailMapperStub
-) : GetTokoFoodOrderDetailUseCase(useCase, tokoFoodOrderDetailMapperStub) {
+    private val tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
+) : GetTokoFoodOrderDetailUseCase(useCase, tokoFoodOrderDetailMapper) {
 
     var responseStub = TokoFoodOrderDetailResponse()
         set(value) {
@@ -20,6 +20,6 @@ class GetTokoFoodOrderDetailUseCaseStub(
     override suspend fun execute(orderId: String): OrderDetailResultUiModel {
         useCase.setRequestParams(createRequestParamsOrderDetail(orderId))
         val response = useCase.executeOnBackground().tokofoodOrderDetail
-        return tokoFoodOrderDetailMapperStub.mapToOrderDetailResultUiModel(response)
+        return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }
 }

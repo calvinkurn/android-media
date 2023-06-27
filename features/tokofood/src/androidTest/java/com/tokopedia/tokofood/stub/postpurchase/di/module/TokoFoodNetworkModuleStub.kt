@@ -4,7 +4,6 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
@@ -74,7 +73,7 @@ object TokoFoodNetworkModuleStub {
     }
 
     @Provides
-    @TokoChatQualifier
+    @TokoFoodOrderTrackingScope
     fun provideOkHttpClient(
         retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,

@@ -1,7 +1,10 @@
 package com.tokopedia.tokofood.stub.postpurchase.di.module
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import com.gojek.conversations.courier.BabbleCourierClient
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.DriverPhoneNumberMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
@@ -18,6 +21,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOr
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.stub.common.graphql.interactor.GraphqlUseCaseStub
 import com.tokopedia.tokofood.stub.common.graphql.repository.GraphqlRepositoryStub
+import com.tokopedia.tokofood.stub.common.util.UserSessionStub
 import com.tokopedia.tokofood.stub.postpurchase.data.repository.TokoChatRepositoryStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.DriverPhoneNumberMapperStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.TokoFoodOrderDetailMapperStub
@@ -25,12 +29,22 @@ import com.tokopedia.tokofood.stub.postpurchase.domain.mapper.TokoFoodOrderStatu
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetDriverPhoneNumberUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderDetailUseCaseStub
 import com.tokopedia.tokofood.stub.postpurchase.domain.usecase.GetTokoFoodOrderStatusUseCaseStub
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 
 @Module(includes = [TokoFoodOrderTrackingViewModelModuleStub::class, TokoFoodCourierConversationModuleStub::class, TokoFoodNetworkModuleStub::class])
 class TokoFoodOrderTrackingModuleStub {
+
+    @Provides
+    @TokoFoodOrderTrackingScope
+    fun provideSavedStateHandle(): SavedStateHandle = SavedStateHandle()
+
+    @TokoFoodOrderTrackingScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
+        UserSessionStub(context)
 
     @TokoFoodOrderTrackingScope
     @Provides
@@ -52,38 +66,47 @@ class TokoFoodOrderTrackingModuleStub {
 
     @TokoFoodOrderTrackingScope
     @Provides
+    fun provideTokoFoodOrderDetailMapperStub(
+        orderLiveTrackingMapper: ITokoFoodOrderLiveTrackingMapper,
+        orderCompletedMapper: ITokoFoodOrderCompletedMapper
+    ): TokoFoodOrderDetailMapper {
+        return TokoFoodOrderDetailMapperStub(orderLiveTrackingMapper, orderCompletedMapper)
+    }
+
+    @TokoFoodOrderTrackingScope
+    @Provides
     fun provideTokoFoodOrderDetailUseCaseStub(
         useCaseStub: GraphqlUseCaseStub<TokoFoodOrderDetailResponse>,
-        tokoFoodOrderDetailMapperStub: TokoFoodOrderDetailMapperStub
+        tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
     ): GetTokoFoodOrderDetailUseCase {
-        return GetTokoFoodOrderDetailUseCaseStub(useCaseStub, tokoFoodOrderDetailMapperStub)
+        return GetTokoFoodOrderDetailUseCaseStub(useCaseStub, tokoFoodOrderDetailMapper)
     }
 
     @TokoFoodOrderTrackingScope
     @Provides
     fun provideTokoFoodOrderStatusUseCaseStub(
         useCaseStub: GraphqlUseCaseStub<TokoFoodOrderStatusResponse>,
-        tokoFoodOrderStatusMapperStub: TokoFoodOrderStatusMapperStub
+        tokoFoodOrderStatusMapper: TokoFoodOrderStatusMapper
     ): GetTokoFoodOrderStatusUseCase {
-        return GetTokoFoodOrderStatusUseCaseStub(useCaseStub, tokoFoodOrderStatusMapperStub)
+        return GetTokoFoodOrderStatusUseCaseStub(useCaseStub, tokoFoodOrderStatusMapper)
     }
 
     @TokoFoodOrderTrackingScope
     @Provides
     fun provideDriverPhoneNumberUseCaseStub(
         useCaseStub: GraphqlUseCaseStub<DriverPhoneNumberResponse>,
-        driverPhoneNumberMapperStub: DriverPhoneNumberMapperStub
+        driverPhoneNumberMapper: DriverPhoneNumberMapper
     ): GetDriverPhoneNumberUseCase {
-        return GetDriverPhoneNumberUseCaseStub(useCaseStub, driverPhoneNumberMapperStub)
+        return GetDriverPhoneNumberUseCaseStub(useCaseStub, driverPhoneNumberMapper)
     }
 
     @Provides
     @TokoFoodOrderTrackingScope
     fun provideTokoChatRepositoryStub(
         retrofit: Retrofit,
-        context: Context,
+        @ApplicationContext context: Context,
         babbleCourierClient: BabbleCourierClient
-    ): TokoChatRepositoryStub {
+    ): TokoChatRepository {
         return TokoChatRepositoryStub(retrofit, context, babbleCourierClient)
     }
 
@@ -103,15 +126,6 @@ class TokoFoodOrderTrackingModuleStub {
     @Provides
     fun provideDriverPhoneNumberMapperStub(): DriverPhoneNumberMapper {
         return DriverPhoneNumberMapperStub()
-    }
-
-    @TokoFoodOrderTrackingScope
-    @Provides
-    fun provideTokoFoodOrderDetailMapperStub(
-        orderLiveTrackingMapper: ITokoFoodOrderLiveTrackingMapper,
-        orderCompletedMapper: ITokoFoodOrderCompletedMapper
-    ): TokoFoodOrderDetailMapper {
-        return TokoFoodOrderDetailMapperStub(orderLiveTrackingMapper, orderCompletedMapper)
     }
 
     @TokoFoodOrderTrackingScope
