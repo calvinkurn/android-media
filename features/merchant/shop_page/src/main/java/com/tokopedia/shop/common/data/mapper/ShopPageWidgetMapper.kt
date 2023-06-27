@@ -25,7 +25,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         data = mapToBannerItemWidget(widgetResponse.data.firstOrNull())
     )
@@ -67,7 +67,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         listHighlightProductData = mapToListHighlightProductData(widgetResponse.data)
     )
@@ -89,7 +89,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = ShopPageHomeMapper.mapCampaignListProduct(
             widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
@@ -105,9 +105,8 @@ object ShopPageWidgetMapper {
         widgetResponse.layoutOrder,
         widgetResponse.name,
         widgetResponse.type,
-        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
-        widgetLayout?.isFestivity.orFalse(),
-        widgetLayout?.header?.data?.map { it.link }.orEmpty()
+        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        widgetLayout?.isFestivity.orFalse()
     )
 
     fun mapToShopPageWidgetRequest(listWidgetLayout: List<ShopPageWidgetUiModel>): List<ShopPageWidgetRequestModel> {

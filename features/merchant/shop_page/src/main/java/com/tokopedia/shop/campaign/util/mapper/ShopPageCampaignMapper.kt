@@ -1,6 +1,8 @@
 package com.tokopedia.shop.campaign.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
@@ -185,5 +187,19 @@ object ShopPageCampaignMapper {
             }
         }
     }
+
+    fun mapToShopCampaignRedeemPromoVoucherResult(
+        slug: String,
+        couponCode: String,
+        campaignId: String,
+        widgetId: String,
+        redeemResult: RedeemPromoVoucherResult,
+    ) = ShopCampaignRedeemPromoVoucherResult(
+        slug,
+        couponCode,
+        campaignId,
+        widgetId,
+        redeemResult
+    )
 
 }

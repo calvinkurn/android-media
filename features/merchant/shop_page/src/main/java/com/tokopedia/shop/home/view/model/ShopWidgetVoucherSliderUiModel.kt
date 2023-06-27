@@ -15,17 +15,25 @@ data class ShopWidgetVoucherSliderUiModel(
     override val type: String = "",
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val listCategorySlug: List<String> = listOf(),
     val listVoucher: List<ExclusiveLaunchVoucher> = listOf(),
     val isError: Boolean = false,
     var rvState: Parcelable? = null
 ) : BaseShopHomeWidgetUiModel() {
 
+    companion object{
+        const val CATALOG_ID_LINK_TYPE = "catalog"
+    }
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return if (typeFactory is ShopCampaignTabAdapterTypeFactory) {
             typeFactory.type(this)
         } else {
             Int.ZERO
         }
+    }
+
+    fun getListCategorySlug(): List<String>{
+        return header.data.filter {
+            it.linkType.lowercase() == CATALOG_ID_LINK_TYPE
+        }.map { it.link }
     }
 }

@@ -75,6 +75,7 @@ class ShopCampaignVoucherSliderViewHolder(
         val voucherListModel = getVoucherListModel(uiModel)
         rvVoucherList?.addHorizontalSpacing()
         rvVoucherList?.adapter = adapterShopCampaignVoucherSlider
+        adapterShopCampaignVoucherSlider.setParentUiModel(uiModel)
         adapterShopCampaignVoucherSlider.submit(voucherListModel)
     }
 
@@ -86,7 +87,7 @@ class ShopCampaignVoucherSliderViewHolder(
                 add(
                     ExclusiveLaunchMoreVoucherUiModel(
                         totalRemainingVoucher = uiModel.listVoucher.size - MAXIMUM_VOUCHER,
-                        listCategorySlug = uiModel.listCategorySlug
+                        listCategorySlug = uiModel.getListCategorySlug()
                     )
                 )
             }

@@ -45,7 +45,7 @@ import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
-import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
@@ -87,6 +87,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -919,23 +920,36 @@ class ShopPageCampaignFragment :
     ) {
     }
 
-    override fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int) {
-        showVoucherDetailBottomSheet(model)
+    override fun onCampaignVoucherSliderItemClick(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher,
+        position: Int
+    ) {
+        showVoucherDetailBottomSheet(
+            model.slug,
+            model.couponCode,
+            parentUiModel.getCampaignId(),
+            parentUiModel.widgetId
+        )
     }
 
     override fun onCampaignVoucherSliderItemCtaClaimClick(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
         if (isLogin) {
-            redeemCampaignVoucherSlider(model)
+            redeemCampaignVoucherSlider(parentUiModel, model)
         } else {
             redirectToLoginPage()
         }
     }
 
-    private fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
-        viewModelCampaign?.redeemCampaignVoucherSlider(model)
+    private fun redeemCampaignVoucherSlider(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher
+    ) {
+        viewModelCampaign?.redeemCampaignVoucherSlider(parentUiModel, model)
     }
 
     override fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>) {
@@ -953,28 +967,48 @@ class ShopPageCampaignFragment :
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
+    private fun showVoucherDetailBottomSheet(
+        slug: String,
+        couponCode: String,
+        campaignId: String,
+        widgetId: String
+    ) {
         if (!isAdded) return
 
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
             shopId = shopId,
-            voucherSlug = selectedVoucher.slug,
-            promoVoucherCode = selectedVoucher.couponCode,
-            campaignId = "", //TODO: replace with real id
-            widgetId = "" //TODO: replace with real id
+            voucherSlug = slug,
+            promoVoucherCode = couponCode,
+            campaignId = campaignId,
+            widgetId = widgetId
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
-                handleRedeemVoucherSuccess(redeemResult)
+                handleRedeemVoucherSuccess(ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
+                    slug,
+                    couponCode,
+                    campaignId,
+                    widgetId,
+                    redeemResult
+                ))
             }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
-        if (redeemResult.redeemMessage.isNotEmpty()) {
+    private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
+        if (shopCampaignRedeemPromo.redeemResult.redeemMessage.isNotEmpty()) {
             showToaster(
-                redeemResult.redeemMessage,
+                shopCampaignRedeemPromo.redeemResult.redeemMessage,
                 view ?: return,
+                "Lihat",
+                {
+                    showVoucherDetailBottomSheet(
+                        shopCampaignRedeemPromo.slug,
+                        shopCampaignRedeemPromo.couponCode,
+                        shopCampaignRedeemPromo.campaignId,
+                        shopCampaignRedeemPromo.widgetId
+                    )
+                }
             )
             getVoucherSliderData()
         }

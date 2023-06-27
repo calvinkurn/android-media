@@ -16,9 +16,17 @@ fun Fragment.showToasterError(view: View, throwable: Throwable, anchorView: View
     }
 }
 
-fun Fragment.showToaster(message: String, view: View, anchorView: View? = null) {
+fun Fragment.showToaster(
+    message: String,
+    view: View,
+    ctaText: String = "",
+    onCtaClicked: () -> Unit,
+    anchorView: View? = null
+) {
     if (!isAdded) return
-    Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).apply {
+    Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {
+        onCtaClicked.invoke()
+    }.apply {
         this.anchorView = anchorView
         show()
     }

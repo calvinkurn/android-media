@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherListUseCase
 import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
@@ -52,8 +53,8 @@ class ShopCampaignViewModel @Inject constructor(
     private val _shopCampaignWidgetContentDataError =
         MutableSharedFlow<List<ShopPageWidgetUiModel>>()
 
-    private val _redeemResult = MutableLiveData<Result<RedeemPromoVoucherResult>>()
-    val redeemResult: LiveData<Result<RedeemPromoVoucherResult>>
+    private val _redeemResult = MutableLiveData<Result<ShopCampaignRedeemPromoVoucherResult>>()
+    val redeemResult: LiveData<Result<ShopCampaignRedeemPromoVoucherResult>>
         get() = _redeemResult
 
     private val _voucherSliderWidgetData = MutableLiveData<Result<ShopWidgetVoucherSliderUiModel>>()
@@ -150,15 +151,26 @@ class ShopCampaignViewModel @Inject constructor(
     }
 
     private suspend fun getPromoVoucherData(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
-        return getPromoVoucherListUseCase.execute(uiModel.listCategorySlug)
+        return getPromoVoucherListUseCase.execute(uiModel.getListCategorySlug())
     }
 
-    fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
+    fun redeemCampaignVoucherSlider(
+        parentVoucherUiModel: ShopWidgetVoucherSliderUiModel,
+        voucherModel: ExclusiveLaunchVoucher
+    ) {
         launchCatchError(
             dispatcherProvider.io,
             block = {
-                val redeemResult = doRedeemPromoVoucher(model)
-                _redeemResult.postValue(Success(redeemResult))
+                val redeemResult = doRedeemPromoVoucher(voucherModel)
+                _redeemResult.postValue(Success(
+                    ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
+                        voucherModel.slug,
+                        voucherModel.couponCode,
+                        parentVoucherUiModel.getCampaignId(),
+                        parentVoucherUiModel.widgetId,
+                        redeemResult
+                    )
+                ))
             },
             onError = { throwable ->
                 _redeemResult.postValue(Fail(throwable))
