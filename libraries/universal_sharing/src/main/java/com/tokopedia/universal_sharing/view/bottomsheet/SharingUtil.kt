@@ -21,6 +21,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.MediaLoaderTarget
+import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
@@ -77,30 +80,22 @@ object SharingUtil {
         shareImageUrl: String,
         imageSaved: (savedImgPath: String) -> Unit
     ) {
+        if (context == null) return
+
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                ImageHandler.loadImageWithTarget(
+                MediaLoaderTarget.loadImage(
                     context,
-                    shareImageUrl,
-                    object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                                resource,
-                                Bitmap.CompressFormat.PNG
-                            )
-                            if (savedFile != null) {
-                                imageSaved(savedFile.absolutePath)
-                            }
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            // no op
-                        }
+                    Properties().setSource(shareImageUrl),
+                    MediaBitmapEmptyTarget(onReady = { resource ->
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        resource,
+                        Bitmap.CompressFormat.PNG
+                    )
+                    if (savedFile != null) {
+                        imageSaved(savedFile.absolutePath)
                     }
-                )
+                }))
             }
         }, onError = {
                 it.printStackTrace()

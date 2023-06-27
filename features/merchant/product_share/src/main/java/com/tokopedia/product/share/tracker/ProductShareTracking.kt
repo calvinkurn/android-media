@@ -77,7 +77,7 @@ object ProductShareTracking {
             EVENT_VIEW_IRIS_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             eventAction,
-            userType + " - " + productId + " - " + campaignId + " - " + bundleId
+            "$userType - $productId - $campaignId - $bundleId"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -88,7 +88,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES,
-            label + " - " + productId
+            "$label - $productId"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -106,8 +106,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
-            channel + " - " + userType + " - " + productId + " - " + campaignId + " - " +
-                bundleId + " - " + UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
+            "$channel - $userType - $productId - $campaignId - $bundleId - ${UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT}"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         mapEvent[ProductShareConstant.TRACKER_ID] = ProductShareConstant.TRACKER_ID_CLICK_SHARING_CHANNEL
@@ -126,7 +125,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET,
-            channel + " - " + userType + " - " + productId + " - " + campaignId + " - " + bundleId
+            "$channel - $userType - $productId - $campaignId - $bundleId"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -143,7 +142,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_SHARE_BOTTOMSHEET,
-            userType + " - " + productId + " - " + campaignId + " - " + bundleId
+            "$userType - $productId - $campaignId - $bundleId"
         )
 
         mapEvent.appendDefaultTracker(userId, productId)
@@ -161,7 +160,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_SCREENSHOT_SHARE_BOTTOMSHEET,
-            userType + " - " + productId + " - " + campaignId + " - " + bundleId
+            "$userType - $productId - $campaignId - $bundleId"
         )
 
         mapEvent.appendDefaultTracker(userId, productId)

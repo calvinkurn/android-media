@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.test.R
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 
 class UniversalShareFragmentTest : Fragment() {
