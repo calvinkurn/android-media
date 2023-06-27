@@ -22,27 +22,36 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView),
-    YoutubeWebViewEventListener.EventVideoPaused, YoutubeWebViewEventListener.EventVideoPlaying,
-    YoutubeWebViewEventListener.EventVideoEnded, YoutubeWebViewEventListener.EventVideoCued,
-    YoutubeCustomViewListener, YoutubeWebViewEventListener.EventPlayerReady {
+    YoutubeWebViewEventListener.EventVideoPaused,
+    YoutubeWebViewEventListener.EventVideoPlaying,
+    YoutubeWebViewEventListener.EventVideoEnded,
+    YoutubeWebViewEventListener.EventVideoCued,
+    YoutubeCustomViewListener,
+    YoutubeWebViewEventListener.EventPlayerReady {
 
     private var youtubeWebView: YoutubeWebView? = itemView.findViewById(R.id.youtube_webview)
     private val shimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
     private val parent: ConstraintLayout = itemView.findViewById(R.id.parent)
-    private lateinit var youTubeViewViewModel: YouTubeViewViewModel
+    private var youTubeViewViewModel: YouTubeViewViewModel? = null
     private var videoId: String = ""
     private var videoName: String = ""
     private val widthOfPlayer: Int =
-        ((Resources.getSystem().displayMetrics.widthPixels - (2 * itemView.context.resources.getDimensionPixelSize(
-            R.dimen.disco_youtube_horizontal_padding
-        ))) / Resources.getSystem().displayMetrics.density).toInt()
+        (
+            (
+                Resources.getSystem().displayMetrics.widthPixels - (
+                    2 * itemView.context.resources.getDimensionPixelSize(
+                        R.dimen.disco_youtube_horizontal_padding
+                    )
+                    )
+                ) / Resources.getSystem().displayMetrics.density
+            ).toInt()
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
     private val autoPlayObserver = Observer<String> {
-        if (youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PLAYING
-            && youTubeViewViewModel.shouldPause()
+        if (youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PLAYING &&
+            youTubeViewViewModel?.shouldPause() == true
         ) {
-            youTubeViewViewModel.disableAutoplay()
+            youTubeViewViewModel?.disableAutoplay()
             youtubeWebView?.pause()
         } else {
             onVideoCued()
@@ -52,7 +61,6 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     init {
         youtubeWebView?.customViewInterface = this
     }
-
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         if (youtubeWebView == null) {
@@ -83,27 +91,33 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObserver() {
-        youTubeViewViewModel.getVideoId().observe(fragment.viewLifecycleOwner, Observer {
-            videoId = it.videoId ?: ""
-            videoName = it.name ?: ""
-            showVideoInWebView()
-        })
-        youTubeViewViewModel.currentlyAutoPlaying()?.observe(fragment.viewLifecycleOwner,autoPlayObserver)
+        youTubeViewViewModel?.getVideoId()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                videoId = it.videoId ?: ""
+                videoName = it.name ?: ""
+                showVideoInWebView()
+            }
+        )
+        youTubeViewViewModel?.currentlyAutoPlaying()?.observe(fragment.viewLifecycleOwner, autoPlayObserver)
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            youTubeViewViewModel.getVideoId().removeObservers(it)
-            youTubeViewViewModel.currentlyAutoPlaying()?.removeObserver(autoPlayObserver)
+            youTubeViewViewModel?.getVideoId()?.removeObservers(it)
+            youTubeViewViewModel?.currentlyAutoPlaying()?.removeObserver(autoPlayObserver)
         }
     }
 
     private fun showVideoInWebView() {
         if (youtubeWebView?.youtubeJSInterface == null) {
             youtubeWebView?.setUpEventListeners(
-                youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this,
-                youtubeEventVideoEnded = this, youtubeEventVideoCued = this, playerReady = this
+                youtubeEventVideoPlaying = this,
+                youtubeEventVideoPaused = this,
+                youtubeEventVideoEnded = this,
+                youtubeEventVideoCued = this,
+                playerReady = this
             )
         }
         youtubeWebView?.loadVideo(videoId, widthOfPlayer)
@@ -113,14 +127,15 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onVideoPaused(time: Int) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             ?.trackClickVideo(videoId, videoName, time.toString())
-        if(youTubeViewViewModel.isAutoPlayEnabled()) {
+        if (youTubeViewViewModel?.isAutoPlayEnabled() == true) {
             val videoID = videoId
 //            this check is required because video gets paused for a very
 //            short time during seek as well
             mainThreadHandler.postDelayed({
                 if (videoID != youtubeWebView?.videoId ||
-                    youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PAUSED) {
-                    youTubeViewViewModel.disableAutoplay()
+                    youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PAUSED
+                ) {
+                    youTubeViewViewModel?.disableAutoplay()
                 }
             }, DELAY_FOR_STATE_CHANGE)
         }
@@ -130,8 +145,8 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             ?.trackClickVideo(videoId, videoName, time.toString())
         mainThreadHandler.post {
-            if (youTubeViewViewModel.isAutoPlayEnabled()) {
-                if(youTubeViewViewModel.pauseOtherVideos()){
+            if (youTubeViewViewModel?.isAutoPlayEnabled() == true) {
+                if (youTubeViewViewModel?.pauseOtherVideos() == true) {
                     youtubeWebView?.unMute()
                 }
             } else {
@@ -142,10 +157,11 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun onShowCustomView(view: View) {
         (fragment as? DiscoveryFragment)?.showCustomContent(view)
-        if (youTubeViewViewModel.isAutoPlayEnabled())
+        if (youTubeViewViewModel?.isAutoPlayEnabled() == true) {
             mainThreadHandler.post {
                 youtubeWebView?.unMute()
             }
+        }
     }
 
     override fun onHideCustomView() {
@@ -168,21 +184,20 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun onVideoEnded(time: Int) {
         mainThreadHandler.post {
-            youTubeViewViewModel.autoPlayNext()
+            youTubeViewViewModel?.autoPlayNext()
         }
     }
 
     override fun onVideoCued() {
         mainThreadHandler.post {
-            if (youTubeViewViewModel.shouldAutoPlay()) {
+            if (youTubeViewViewModel?.shouldAutoPlay() == true) {
                 youtubeWebView?.play()
                 youtubeWebView?.mute()
             }
         }
     }
 
-    companion object{
+    companion object {
         const val DELAY_FOR_STATE_CHANGE: Long = 1000
     }
-
 }

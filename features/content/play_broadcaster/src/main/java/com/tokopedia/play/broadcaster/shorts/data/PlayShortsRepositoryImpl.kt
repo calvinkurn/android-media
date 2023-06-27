@@ -46,7 +46,12 @@ class PlayShortsRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.execute(authorId, authorType)
+        val response = getConfigurationUseCase(
+            GetConfigurationUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+            )
+        )
 
         mapper.mapShortsConfig(response)
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-
 
 /**
  * Created by mzennis on 25/06/20.
@@ -45,6 +45,8 @@ data class Config(
         val scheduledTime: ScheduledTime = ScheduledTime(),
         @SerializedName("tnc")
         val tnc: List<GetBroadcasterAuthorConfigResponse.TermsAndCondition> = emptyList(),
+        @SerializedName("beautificationConfig")
+        val beautificationConfig: BeautificationConfig = BeautificationConfig()
 ) {
         data class ScheduledTime(
                 @SerializedName("minimum")
@@ -54,4 +56,62 @@ data class Config(
                 @SerializedName("default")
                 val default: String = ""
         )
+
+        data class BeautificationConfig(
+            @SerializedName("license")
+            val license: String = "",
+            @SerializedName("model")
+            val model: String = "",
+            @SerializedName("custom_face")
+            val customFace: CustomFace = CustomFace(),
+            @SerializedName("presets")
+            val presets: List<Preset> = emptyList(),
+        ) {
+
+            data class CustomFace(
+                @SerializedName("asset_android")
+                val assetAndroid: String = "",
+                @SerializedName("menu")
+                val menu: List<Menu> = emptyList(),
+            ) {
+
+                data class Menu(
+                    @SerializedName("id")
+                    val id: String = "",
+                    @SerializedName("name")
+                    val name: String = "",
+                    @SerializedName("active")
+                    val active: Boolean = false,
+                    @SerializedName("min_value")
+                    val minValue: Double = 0.0,
+                    @SerializedName("max_value")
+                    val maxValue: Double = 0.0,
+                    @SerializedName("default_value")
+                    val defaultValue: Double = 0.0,
+                    @SerializedName("value")
+                    val value: Double = 0.0,
+                )
+            }
+
+            data class Preset(
+                @SerializedName("id")
+                val id: String = "",
+                @SerializedName("name")
+                val name: String = "",
+                @SerializedName("active")
+                val active: Boolean = false,
+                @SerializedName("min_value")
+                val minValue: Double = 0.0,
+                @SerializedName("max_value")
+                val maxValue: Double = 0.0,
+                @SerializedName("default_value")
+                val defaultValue: Double = 0.0,
+                @SerializedName("value")
+                val value: Double = 0.0,
+                @SerializedName("url_icon")
+                val urlIcon: String = "",
+                @SerializedName("asset_link")
+                val assetLink: String = "",
+            )
+        }
 }

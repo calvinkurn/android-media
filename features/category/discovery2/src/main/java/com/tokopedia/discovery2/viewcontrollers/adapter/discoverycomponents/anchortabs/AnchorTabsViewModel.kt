@@ -41,11 +41,13 @@ class AnchorTabsViewModel(
     var selectedSectionId = ""
     private var sectionDeleted = false
 
+    @JvmField
     @Inject
-    lateinit var anchorTabsUseCase: AnchorTabsUseCase
+    var anchorTabsUseCase: AnchorTabsUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var coroutineDispatchers: CoroutineDispatchers
+    var coroutineDispatchers: CoroutineDispatchers? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -56,31 +58,35 @@ class AnchorTabsViewModel(
     }
 
     private fun mapToComponents() {
-        launchCatchError(block = {
-            if (components.noOfPagesLoaded != 1) {
-                components.noOfPagesLoaded = 1
-                components.data?.let {
-                    sectionPositionMap.clear()
-                    val compList = withContext(coroutineDispatchers.default) {
-                        DiscoveryDataMapper.discoveryDataMapper.mapAnchorListToComponentList(
-                            itemList = it,
-                            subComponentName = ComponentNames.AnchorTabsItem.componentName,
-                            parentComponentName = ComponentNames.AnchorTabs.componentName,
-                            position = position,
-                            compId = components.id,
-                            anchorMap = sectionPositionMap
-                        )
+        launchCatchError(
+            block = {
+                if (components.noOfPagesLoaded != 1) {
+                    components.noOfPagesLoaded = 1
+                    components.data?.let {
+                        sectionPositionMap.clear()
+                        val compList = coroutineDispatchers?.default?.let { it1 ->
+                            withContext(it1) {
+                                DiscoveryDataMapper.discoveryDataMapper.mapAnchorListToComponentList(
+                                    itemList = it,
+                                    subComponentName = ComponentNames.AnchorTabsItem.componentName,
+                                    parentComponentName = ComponentNames.AnchorTabs.componentName,
+                                    position = position,
+                                    compId = components.id,
+                                    anchorMap = sectionPositionMap
+                                )
+                            }
+                        } ?: listOf()
+                        if (selectedSectionId.isNotEmpty() && anchorTabsUseCase?.selectedId?.isEmpty() == true) {
+                            anchorTabsUseCase?.selectedId = selectedSectionId
+                        }
+                        components.setComponentsItem(compList)
+                        carouselList.value = compList
                     }
-                    if (selectedSectionId.isNotEmpty() && anchorTabsUseCase.selectedId.isEmpty()) {
-                        anchorTabsUseCase.selectedId = selectedSectionId
-                    }
-                    components.setComponentsItem(compList)
-                    carouselList.value = compList
                 }
+            },
+            onError = {
+                Utils.logException(it)
             }
-        }, onError = {
-            Utils.logException(it)
-        }
         )
     }
 
@@ -93,17 +99,18 @@ class AnchorTabsViewModel(
         if (newPos != selectedSectionPos && newPos >= 0 && newPos < getListSize()) {
             val newItem = components.getComponentsItem()?.get(newPos)
             newItem?.shouldRefreshComponent = true
-            if(selectedSectionPos < getListSize()) {
+            if (selectedSectionPos < getListSize()) {
                 val oldItem = components.getComponentsItem()?.get(selectedSectionPos)
                 oldItem?.shouldRefreshComponent = true
             }
             if (isClickNotify || !pauseDispatchChanges) {
-                anchorTabsUseCase.selectedId = sectionId
+                anchorTabsUseCase?.selectedId = sectionId
                 selectedSectionPos = newPos
                 updatePositions.value = true
             }
-            if (isClickNotify)
+            if (isClickNotify) {
                 pauseDispatchChanges = true
+            }
             selectedSectionId = sectionId
         } else if (getPositionForSectionID(sectionId) == selectedSectionPos) {
             selectedSectionId = sectionId
@@ -117,10 +124,10 @@ class AnchorTabsViewModel(
             if (!components.data.isNullOrEmpty()) {
                 components.data?.forEach { dataItem ->
                     if (sectionID == dataItem.targetSectionID) {
-                        if (sectionID == anchorTabsUseCase.selectedId) {
+                        if (sectionID == anchorTabsUseCase?.selectedId) {
                             selectedSectionPos = Integer.MAX_VALUE
                             selectedSectionId = ""
-                            anchorTabsUseCase.selectedId = ""
+                            anchorTabsUseCase?.selectedId = ""
                             this.pauseDispatchChanges = false
                             _showMissingSectionToaster.value = true
                         }
@@ -139,7 +146,7 @@ class AnchorTabsViewModel(
         }
     }
 
-    fun wasSectionDeleted():Boolean{
+    fun wasSectionDeleted(): Boolean {
         val temp = sectionDeleted
         sectionDeleted = false
         return temp
@@ -148,6 +155,4 @@ class AnchorTabsViewModel(
     fun getListSize(): Int {
         return components.getComponentsItem()?.size ?: 0
     }
-
-
 }
