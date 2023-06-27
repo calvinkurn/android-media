@@ -265,7 +265,10 @@ class ShippingEditorFragment :
                     validateSaveData(it.data)
                 }
 
-                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                is ShippingEditorState.Fail -> {
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                    binding?.swipeRefresh?.isRefreshing = false
+                }
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
@@ -281,19 +284,26 @@ class ShippingEditorFragment :
                         delay(FINISH_ACTIVITY_DELAY)
                         activity?.finish()
                     }
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            getString(R.string.success_save_shipping),
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_NORMAL
-                        ).show()
-                    }
+                    showToaster(getString(R.string.success_save_shipping), Toaster.TYPE_NORMAL)
                 }
 
-                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                is ShippingEditorState.Fail -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                }
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
+        }
+    }
+
+    private fun showToaster(error: String, type: Int) {
+        view?.let { view ->
+            Toaster.build(
+                view,
+                error,
+                Toaster.LENGTH_SHORT,
+                type = type
+            ).show()
         }
     }
 
@@ -736,14 +746,7 @@ class ShippingEditorFragment :
             shippingEditorConventionalAdapter.getActiveSpIds()
         )
         if (activatedSpIds.isEmpty()) {
-            view?.let {
-                Toaster.build(
-                    it,
-                    EditShippingConstant.DEFAULT_ERROR_SHIPPING_EDITOR,
-                    Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_ERROR
-                ).show()
-            }
+            showToaster(EditShippingConstant.DEFAULT_ERROR_SHIPPING_EDITOR, Toaster.TYPE_ERROR)
         } else {
             viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
         }
@@ -775,37 +778,21 @@ class ShippingEditorFragment :
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
 
                     else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.build(
-                                it,
-                                EditShippingConstant.DEFAULT_ERROR_MESSAGE,
-                                Toaster.LENGTH_SHORT,
-                                type = Toaster.TYPE_ERROR
-                            ).show()
-                        }!!
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                        showToaster(EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.TYPE_ERROR)
                     }
                 }
             }
             else -> {
-                view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                    if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
-                        Toaster.build(
-                            it,
-                            getString(R.string.txt_error_no_access),
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    } else {
-                        Toaster.build(
-                            it,
-                            throwable.message
-                                ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE,
-                            Toaster.LENGTH_SHORT,
-                            type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
+                showGlobalError(GlobalError.SERVER_ERROR)
+                if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
+                    showToaster(getString(R.string.txt_error_no_access), Toaster.TYPE_ERROR)
+                } else {
+                    showToaster(
+                        throwable.message
+                            ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
         }
