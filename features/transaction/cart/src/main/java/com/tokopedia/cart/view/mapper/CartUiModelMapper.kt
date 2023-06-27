@@ -809,10 +809,10 @@ object CartUiModelMapper {
 
         val mapSummary = getShoppingSummaryAddOns(summariesItemList)
         for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                wording = addOnWording,
+                wording = addOnWording ?: "",
                 type = entry.key,
                 qty = entry.value.second,
                 priceLabel = addOnPrice,

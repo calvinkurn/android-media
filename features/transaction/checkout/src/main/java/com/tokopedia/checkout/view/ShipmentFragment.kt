@@ -3875,6 +3875,7 @@ class ShipmentFragment :
         }
         shipmentViewModel.saveAddOnsProduct(cartItemModel)
         shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
+        shipmentAdapter.updateSubtotal()
     }
 
     override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {

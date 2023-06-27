@@ -48,7 +48,9 @@ data class GroupShop(
     val groupInfoName: String = "",
     val groupInfoBadgeUrl: String = "",
     val groupInfoDescription: String = "",
-    val groupInfoDescriptionBadgeUrl: String = ""
+    val groupInfoDescriptionBadgeUrl: String = "",
+
+    var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList()
 ) : Parcelable {
 
     companion object {
