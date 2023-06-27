@@ -2503,14 +2503,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun onSuccessCreateReview(message: String) {
         view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke)).show() }
         uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
-        loadOrderHistoryList(orderIdNeedUpdated)
+        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
-        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
-        orderIdNeedUpdated = ""
-        currIndexNeedUpdate = -1
+        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
     private fun onCancelCreateReview() {
