@@ -4,6 +4,7 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.data.state.Resource
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.ui.viewmodel.base.NotificationViewModelTestFixture
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -223,6 +224,60 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
     }
 
     @Test
+    fun `loadMoreEarlier with lastKnownPair should return correctly`() {
+        // given
+        val expectedValue = NotifcenterDetailMapper().mapEarlierSection(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false,
+            needDivider = false
+        )
+        val lastKnownPair = Pair(-1, LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.EARLIER))
+        val role = RoleType.BUYER
+        viewModel.reset() // filter id
+
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
+
+        // when
+        viewModel.loadMoreEarlier(role, lastKnownPair.first, lastKnownPair.second)
+
+        // then
+        Assert.assertEquals(
+            expectedValue,
+            (viewModel.notificationItems.value?.result as Success).data
+        )
+    }
+
+    @Test
+    fun `loadMoreNewshould return correctly`() {
+        // given
+        val expectedValue = NotifcenterDetailMapper().mapEarlierSection(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false,
+            needDivider = false
+        )
+        val lastKnownPair = Pair(-1, LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.NEW))
+        val role = RoleType.BUYER
+        viewModel.reset() // filter id
+
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
+
+        // when
+        viewModel.loadMoreNew(role, lastKnownPair.first, lastKnownPair.second)
+
+        // then
+        Assert.assertEquals(
+            expectedValue,
+            (viewModel.notificationItems.value?.result as Success).data
+        )
+    }
+
+    @Test
     fun `loadMoreEarlier should throw the Fail state`() {
         // given
         val expectedValue = Throwable("")
@@ -233,6 +288,25 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
 
         // when
         viewModel.loadMoreEarlier(0)
+
+        // then
+        Assert.assertEquals(
+            expectedValue,
+            (viewModel.notificationItems.value?.result as Fail).throwable
+        )
+    }
+
+    @Test
+    fun `loadMoreNew should throw the Fail state`() {
+        // given
+        val expectedValue = Throwable("")
+        val lastKnownPair = Pair(-1, LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.NEW))
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } throws expectedValue
+
+        // when
+        viewModel.loadMoreNew(0, lastKnownPair.first, lastKnownPair.second)
 
         // then
         Assert.assertEquals(

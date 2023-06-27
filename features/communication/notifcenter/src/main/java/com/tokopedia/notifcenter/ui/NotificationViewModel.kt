@@ -137,7 +137,7 @@ class NotificationViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                notifOrderListUseCase.getOrderList(role).collect {
+                notifOrderListUseCase(role).collect {
                     _orderList.value = it
                 }
             } catch (throwable: Throwable) {
@@ -285,10 +285,11 @@ class NotificationViewModel @Inject constructor(
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
         viewModelScope.launch {
             try {
-                bumpReminderUseCase.bumpReminder(
-                    product.productId,
-                    notif.notifId
-                ).collect {
+                val param = NotifcenterSetReminderBumpUseCase.Param(
+                    productId = product.productId,
+                    notifId = notif.notifId
+                )
+                bumpReminderUseCase(param).collect {
                     it.referer = product.productId
                     _bumpReminder.value = it
                 }
@@ -485,7 +486,7 @@ class NotificationViewModel @Inject constructor(
     private fun loadAffiliateEducationArticles() {
         viewModelScope.launch {
             try {
-                affiliateEducationArticleUseCase.getEducationArticles().collect { response ->
+                affiliateEducationArticleUseCase(Unit).collect { response ->
                     if (response.data != null && !response.data.cardsArticle?.data?.cards.isNullOrEmpty()) {
                         response.data.cardsArticle?.data?.cards?.get(0)?.let {
                             _affiliateEducationArticle.postValue(

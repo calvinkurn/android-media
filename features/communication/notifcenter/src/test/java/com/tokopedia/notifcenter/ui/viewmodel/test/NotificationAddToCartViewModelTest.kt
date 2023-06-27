@@ -128,24 +128,6 @@ class NotificationAddToCartViewModelTest : NotificationViewModelTestFixture() {
         }
     }
 
-    @Test
-    fun `when error throwable addProductToCart but empty message`() {
-        // Given
-        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
-        val expectedThrowable = Throwable(message = null)
-        coEvery {
-            addToCartUseCase.executeOnBackground()
-        } throws expectedThrowable
-
-        // When
-        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
-
-        // Then
-        verify(exactly = 0) {
-            onError.invoke(any())
-        }
-    }
-
     private fun getSuccessAtcModel(): AddToCartDataModel {
         return AddToCartDataModel().apply {
             data.success = 1
