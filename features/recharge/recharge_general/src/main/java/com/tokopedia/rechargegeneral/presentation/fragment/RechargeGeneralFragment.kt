@@ -184,6 +184,11 @@ class RechargeGeneralFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is AddSmartBillsInquiryBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
@@ -1316,13 +1321,6 @@ class RechargeGeneralFragment :
 
     override fun onInquiryClose() {
         commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is AddSmartBillsInquiryBottomSheet) {
-            childFragment.setCallback(this)
-        }
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {

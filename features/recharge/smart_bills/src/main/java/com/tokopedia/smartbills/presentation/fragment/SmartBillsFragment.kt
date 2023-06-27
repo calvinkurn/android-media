@@ -139,6 +139,13 @@ class SmartBillsFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SmartBillsCatalogBottomSheet) {
+                fragment.setListener(this)
+            } else if (fragment is SmartBillsDeleteBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
 
         // Initialize performance monitoring
@@ -673,15 +680,6 @@ class SmartBillsFragment :
         val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(ArrayList(catalogList))
         catalogBottomSheet.setListener(this)
         catalogBottomSheet.show(childFragmentManager, "")
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is SmartBillsCatalogBottomSheet) {
-            childFragment.setListener(this)
-        } else if (childFragment is SmartBillsDeleteBottomSheet) {
-            childFragment.setListener(this)
-        }
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {

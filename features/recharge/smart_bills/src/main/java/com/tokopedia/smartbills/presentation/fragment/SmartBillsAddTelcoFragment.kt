@@ -99,6 +99,13 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCal
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SmartBillsNominalBottomSheet) {
+                fragment.setCallback(this)
+            } else if (fragment is AddSmartBillsInquiryBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -394,14 +401,6 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCal
         }
     }
 
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if (childFragment is SmartBillsNominalBottomSheet) {
-            childFragment.setCallback(this)
-        } else if (childFragment is AddSmartBillsInquiryBottomSheet) {
-            childFragment.setCallback(this)
-        }
-    }
     override fun onProductClicked(rechargeProduct: RechargeProduct) {
         renderSelectedProduct(rechargeProduct)
         setErrorNominal(false, "")
