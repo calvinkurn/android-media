@@ -155,7 +155,12 @@ class ShopInfoViewHolder(
                             if (WebViewHelper.isUrlValid(linkUrl.toString())) {
                                 RouteManager.route(
                                     context,
-                                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                                    String.format(
+                                        "%s?allow_override=%b&url=%s",
+                                        ApplinkConst.WEBVIEW,
+                                        false,
+                                        link
+                                    )
                                 )
                             } else {
                                 RouteManager.route(context, link)
