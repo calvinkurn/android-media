@@ -209,6 +209,9 @@ class MedalCabinetFragment : BaseDaggerFragment() {
             binding.loadContainer.medalCabinetError.apply {
                 setType(GlobalError.SERVER_ERROR)
                 errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
+                setSecondaryActionClickListener {
+                    activity?.finish()
+                }
             }
         }
     }

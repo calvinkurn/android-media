@@ -45,7 +45,7 @@ class CabinetView(
 
     private fun bindMedalList(medalList: List<MedalData>) {
         if (medalList.all { it.medalType.isNotEmpty() and it.medalList.isNullOrEmpty() }) {
-            cabinetMedalSectionAdapter.setVisitables(listOf(MedalError(imageUrl = medalList[0].bannerData?.imageUrl)))
+            cabinetMedalSectionAdapter.setVisitables(listOf(MedalError(imageUrl = medalList.firstOrNull()?.bannerData?.imageUrl)))
         } else {
             cabinetMedalSectionAdapter.setVisitables(medalList)
         }

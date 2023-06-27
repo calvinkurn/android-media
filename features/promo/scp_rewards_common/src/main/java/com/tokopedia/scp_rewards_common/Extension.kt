@@ -5,10 +5,12 @@ import android.animation.ValueAnimator
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 fun LottieAnimationView.loadLottieFromUrl(
@@ -59,5 +61,24 @@ fun Typography.showTextOrHide(text: String?) {
     } else {
         this.text = text
         visible()
+    }
+}
+
+fun ImageUnify.loadImageOrFallback(imageUrl: String?, fallback: Int = 0) {
+    imageUrl?.let { safeUrl ->
+        this.setImageUrl(safeUrl)
+        this.onUrlLoaded = { isSuccess ->
+            if (isSuccess.not() && fallback != 0) {
+                this.post {
+                    this.setImageDrawable(
+                        ContextCompat.getDrawable(this.context, fallback)
+                    )
+                }
+            }
+        }
+    } ?: run {
+        if (fallback != 0) {
+            this.setImageDrawable(ContextCompat.getDrawable(this.context, fallback))
+        }
     }
 }
