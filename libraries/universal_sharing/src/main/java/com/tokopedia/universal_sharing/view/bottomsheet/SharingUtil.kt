@@ -273,7 +273,7 @@ class SharingUtil {
         ) {
             try {
                 var shareImageFileUri: Uri? = null
-                if (!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
+                if (!TextUtils.isEmpty(shareModel.savedImageFilePath) && shareModel.savedImageFilePath != UniversalShareBottomSheet.MEDIA_VALUE_PLACEHOLDER) {
                     shareImageFileUri = MethodChecker.getUri(activity, File(shareModel.savedImageFilePath))
                     shareModel.appIntent?.clipData = ClipData.newRawUri("", shareImageFileUri)
                     shareModel.appIntent?.removeExtra(Intent.EXTRA_STREAM)
@@ -294,7 +294,9 @@ class SharingUtil {
                                     Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
                                 }
                             }
-                        } else onSuccessCopyLink.invoke()
+                        } else {
+                            onSuccessCopyLink.invoke()
+                        }
                     }
                     is ShareModel.Instagram, is ShareModel.Facebook -> {
                         if (shareModel.shareOnlyLink) {

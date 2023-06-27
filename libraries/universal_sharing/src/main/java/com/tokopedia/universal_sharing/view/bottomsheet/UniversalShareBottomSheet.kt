@@ -161,6 +161,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         const val KEY_IMAGE_DEFAULT = "default"
         const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
         const val KEY_PRODUCT_ID = "productId"
+        const val MEDIA_VALUE_PLACEHOLDER = "{media_image}"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -1558,7 +1559,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
-        savedImagePath = "{media_image}"
+        savedImagePath = MEDIA_VALUE_PLACEHOLDER
     }
 
     fun setImageGeneratorParam(param: ImageGeneratorParamModel) {
