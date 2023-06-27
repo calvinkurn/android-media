@@ -26,7 +26,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

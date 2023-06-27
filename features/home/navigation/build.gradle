@@ -37,7 +37,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

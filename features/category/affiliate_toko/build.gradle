@@ -63,7 +63,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.linker)
 

@@ -14,9 +14,6 @@ buildscript {
 }
 
 dependencies {
-
-    implementation projectOrAar(rootProject.ext.libraries.utils)
-
     api rootProject.ext.miscDependencies.window
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

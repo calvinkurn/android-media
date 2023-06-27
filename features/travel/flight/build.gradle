@@ -95,8 +95,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.firebase.crashlytics
-    implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

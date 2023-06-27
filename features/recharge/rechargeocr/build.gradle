@@ -32,7 +32,6 @@ android {
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.track)

@@ -76,7 +76,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)

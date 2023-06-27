@@ -36,7 +36,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout

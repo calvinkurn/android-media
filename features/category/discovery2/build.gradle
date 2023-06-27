@@ -59,7 +59,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     // Libraries Dependency
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)

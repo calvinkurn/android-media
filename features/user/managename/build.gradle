@@ -56,7 +56,6 @@ dependencies {
     // Support Library
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     // Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

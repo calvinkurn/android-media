@@ -48,7 +48,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.bannerDynamic)
