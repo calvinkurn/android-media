@@ -31,10 +31,12 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
@@ -157,6 +159,11 @@ class HomeTopAdsVerificationTest {
                     if (grid.isTopads) count++
                 }
             }
+            is FlashSaleDataModel -> {
+                for (grid in item.channelModel.channelGrids) {
+                    if (grid.isTopads) count++
+                }
+            }
         }
         return count
     }
@@ -203,6 +210,9 @@ class HomeTopAdsVerificationTest {
             }
             is Lego4ProductViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+            }
+            is FlashSaleViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
             }
         }
     }

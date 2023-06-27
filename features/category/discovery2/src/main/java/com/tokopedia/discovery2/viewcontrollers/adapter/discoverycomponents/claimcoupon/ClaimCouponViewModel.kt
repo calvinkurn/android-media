@@ -19,10 +19,9 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
 
+    @JvmField
     @Inject
-    lateinit var claimCouponUseCase: ClaimCouponUseCase
-
-
+    var claimCouponUseCase: ClaimCouponUseCase? = null
 
     fun getComponentList(): LiveData<ArrayList<ComponentsItem>> {
         return componentList
@@ -36,15 +35,13 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
-
     private fun getClickCouponData() {
         launchCatchError(block = {
-            claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint,getClaimCoupleBundle(components.properties))
+            claimCouponUseCase?.getClickCouponData(components.id, components.pageEndPoint, getClaimCoupleBundle(components.properties))
             componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     private fun getClaimCoupleBundle(properties: Properties?): ClaimCouponRequest {
@@ -53,5 +50,4 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
             categorySlug = properties?.categorySlug ?: ""
         )
     }
-
 }
