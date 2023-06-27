@@ -145,7 +145,6 @@ ext {
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetailAdditionalInfo     : ":features:merchant:product_detail_additional_info",
-            variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
             productAddEdit                  : ":features:merchant:product_add_edit",
