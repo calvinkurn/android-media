@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.ui.viewmodel.test
 
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
-import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
@@ -12,9 +11,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.invoke
-import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import org.junit.Assert
 import org.junit.Test
@@ -31,17 +27,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
             needLoadMoreButton = false
         )
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                any(),
-                any(),
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
 
         viewModel.filter = NotifcenterDetailUseCase.FILTER_NONE
 
@@ -51,7 +39,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Success).data
+            (viewModel.notificationItems.value?.result as Success).data
         )
         coVerify(exactly = 0) { topAdsImageViewUseCase.getImageData(any()) }
     }
@@ -68,17 +56,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         val role = RoleType.SELLER
         viewModel.reset() // filter id
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                viewModel.filter,
-                role,
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
 
         // when
         viewModel.loadFirstPageNotification(role)
@@ -105,17 +85,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
 
         coEvery { topAdsImageViewUseCase.getImageData(any()) } returns topAdsImageView
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                viewModel.filter,
-                role,
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
 
         // when
         viewModel.loadFirstPageNotification(role)
@@ -156,17 +128,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
 
         coEvery { affiliateEducationArticleUseCase.getEducationArticles() } returns flow
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                viewModel.filter,
-                role,
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(notifResponse)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns notifResponse
 
         // when
         viewModel.loadFirstPageNotification(role)
@@ -194,17 +158,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
 
         coEvery { affiliateEducationArticleUseCase.getEducationArticles() } throws expectedThrowable
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                viewModel.filter,
-                role,
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(notifResponse)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns notifResponse
 
         // when
         viewModel.loadFirstPageNotification(role)
@@ -225,17 +181,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // given
         val expectedValue = Throwable("")
 
-        every {
-            notifcenterDetailUseCase.getFirstPageNotification(
-                any(),
-                any(),
-                any(),
-                captureLambda()
-            )
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } throws expectedValue
 
         // when
         viewModel.loadFirstPageNotification(RoleType.BUYER)
@@ -260,17 +208,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         val role = RoleType.BUYER
         viewModel.reset() // filter id
 
-        every {
-            notifcenterDetailUseCase.getMoreEarlierNotifications(
-                viewModel.filter,
-                role,
-                captureLambda(),
-                any()
-            )
-        } answers {
-            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
-            onSuccess.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } returns expectedValue
 
         // when
         viewModel.loadMoreEarlier(role)
@@ -287,17 +227,9 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // given
         val expectedValue = Throwable("")
 
-        every {
-            notifcenterDetailUseCase.getMoreEarlierNotifications(
-                any(),
-                any(),
-                any(),
-                captureLambda()
-            )
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(expectedValue)
-        }
+        coEvery {
+            notifcenterDetailUseCase(any())
+        } throws expectedValue
 
         // when
         viewModel.loadMoreEarlier(0)
@@ -305,35 +237,7 @@ class NotificationDetailViewModelTest : NotificationViewModelTestFixture() {
         // then
         Assert.assertEquals(
             expectedValue,
-            (viewModel.notificationItems.value as Fail).throwable
+            (viewModel.notificationItems.value?.result as Fail).throwable
         )
-    }
-
-    @Test
-    fun `loadMoreNew with lambda should called getMoreNewNotifications() in usecase`() {
-        // given
-        val role = RoleType.BUYER
-        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
-        val onError: (Throwable) -> Unit = {}
-
-        // when
-        viewModel.loadMoreNew(role, onSuccess, onError)
-
-        // then
-        verify(exactly = 1) { notifcenterDetailUseCase.getMoreNewNotifications(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `loadMoreEarlier with lambda should called getMoreEarlierNotifications() in usecase`() {
-        // given
-        val role = RoleType.BUYER
-        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
-        val onError: (Throwable) -> Unit = {}
-
-        // when
-        viewModel.loadMoreEarlier(role, onSuccess, onError)
-
-        // then
-        verify(exactly = 1) { notifcenterDetailUseCase.getMoreEarlierNotifications(any(), any(), any(), any()) }
     }
 }
