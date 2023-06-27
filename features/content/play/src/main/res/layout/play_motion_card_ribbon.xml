@@ -7,15 +7,26 @@
     app:layoutDescription="@xml/play_motion_card_ribbon_scene">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_back_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:srcCompat="@drawable/ic_play_back_ribbon" />
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/play_iv_ribbon"
         android:layout_width="0dp"
         android:layout_height="19dp"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/play_tv_ribbon"
+        android:src="@drawable/bg_play_ribbon_front"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
-        app:layout_constraintStart_toStartOf="@id/play_tv_ribbon"
-        app:layout_constraintTop_toTopOf="@+id/play_tv_ribbon"
-        android:src="@drawable/bg_play_ribbon_front" />
+        app:layout_constraintStart_toEndOf="@+id/iv_back_ribbon"
+        app:layout_constraintTop_toTopOf="@+id/iv_back_ribbon"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/play_tv_ribbon"
@@ -25,13 +36,13 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_2"
+        android:text="Terlaris"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_back_ribbon"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:layout_constraintVertical_bias="0.0"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
-        android:text="Terlaris" />
-
+        app:typographyWeight="bold" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
