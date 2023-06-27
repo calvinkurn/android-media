@@ -22,9 +22,10 @@ android {
 //        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
-//    testOptions {
+    testOptions {
+        animationsDisabled = true
 //        execution 'ANDROIDX_TEST_ORCHESTRATOR'
-//    }
+    }
 
     buildFeatures {
         viewBinding true

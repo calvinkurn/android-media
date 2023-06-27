@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_DEBIT
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.common.robot.waitForBottomSheet
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
@@ -248,7 +249,7 @@ class OrderSummaryPageActivityCreditCardRevampTest {
             assertPaymentButtonEnable(true)
 
             // Temporary to prevent onClick not triggered
-            Thread.sleep(1000)
+            waitForBottomSheet()
         } pay {
             assertGoToPayment(
                 redirectUrl = "https://www.tokopedia.com/payment",
