@@ -26,6 +26,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.oneclickcheckout.utils.TestUtil.getPrivateField
+import com.tokopedia.oneclickcheckout.utils.TestUtil.mockPrivateField
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnDataResponse
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
@@ -36,6 +38,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import org.junit.Assert
 import org.junit.Test
 
@@ -470,6 +473,8 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
     @Test
     fun `WHEN save all addons on product is executed but the result is successful THEN final update will not be blocked`() {
         // Given
+        orderSummaryPageViewModel.mockPrivateField("saveAddOnProductStateJobs", mutableMapOf("123" to Job(), "444" to Job()))
+
         val productId = "1233"
         val productOrderQuantity = 2
         val productPrice = 100000.0
@@ -591,6 +596,8 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
     @Test
     fun `WHEN save all addons on product is executed but the result is failed THEN it will block the final update and show the toaster`() {
         // Given
+        orderSummaryPageViewModel.mockPrivateField("saveAddOnProductStateJobs", mutableMapOf("123" to Job(), "444" to Job()))
+
         val productId = "1233"
         val productOrderQuantity = 2
         val productPrice = 100000.0
@@ -652,6 +659,20 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         Assert.assertEquals(
             expectedGlobalEvent,
             orderSummaryPageViewModel.globalEvent.value,
+        )
+    }
+
+    @Test
+    fun `WHEN call onCleared THEN cancel and remove all jobs from saveAddOnProductStateJobs`() {
+        orderSummaryPageViewModel.mockPrivateField("saveAddOnProductStateJobs", mutableMapOf("123" to Job(), "444" to Job()))
+
+        val method = orderSummaryPageViewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(orderSummaryPageViewModel)
+
+        Assert.assertEquals(
+            emptyMap<String, Job>(),
+            orderSummaryPageViewModel.getPrivateField("saveAddOnProductStateJobs")
         )
     }
 
