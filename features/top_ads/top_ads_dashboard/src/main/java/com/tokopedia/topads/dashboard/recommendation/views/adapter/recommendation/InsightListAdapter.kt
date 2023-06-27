@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -67,7 +68,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             groupCardCountWarning.hide()
-            setProgressBar(item.count)
+            setProgressBar(item.count, item.adGroupType)
             view.setOnClickListener {
                 val list = ArrayList<AdGroupUiModel>()
                 this@InsightListAdapter.currentList.map {
@@ -79,11 +80,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             }
         }
 
-        private fun setProgressBar(count: Int) {
+        private fun setProgressBar(count: Int, adGroupType: String) {
             when (count) {
                 CONST_5 -> {
                     groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_5), false)
-                    groupCardCountWarning.show()
+                    if (adGroupType == PRODUCT_KEY) groupCardCountWarning.show() else groupCardCountWarning.hide()
                 }
                 CONST_4 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
@@ -126,17 +127,23 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                     groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_2), false)
                 }
                 CONST_1 -> {
-                    groupCardProgressBar.progressBarColor = intArrayOf(
-                        ContextCompat.getColor(
-                            view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_GN200
-                        ),
-                        ContextCompat.getColor(
-                            view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                    if (adGroupType == HEADLINE_KEY) {
+                        groupCardCountWarning.show()
+                        groupCardProgressBar.setValue(Int.ZERO, false)
+                    } else {
+                        groupCardProgressBar.progressBarColor = intArrayOf(
+                            ContextCompat.getColor(
+                                view.context,
+                                com.tokopedia.unifycomponents.R.color.Unify_GN200
+                            ),
+                            ContextCompat.getColor(
+                                view.context,
+                                com.tokopedia.unifycomponents.R.color.Unify_GN200
+                            )
                         )
-                    )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_1), false)
+                        groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_1), false)
+                        groupCardCountWarning.hide()
+                    }
                 }
             }
         }
