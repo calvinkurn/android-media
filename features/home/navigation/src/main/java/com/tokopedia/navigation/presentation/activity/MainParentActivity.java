@@ -186,7 +186,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
-    private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
 
     public static final String UOH_PAGE = "UohListFragment";
 
@@ -286,12 +285,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void sendNotificationUserSetting() {
-        boolean isSettingsSent = cacheManager.getBoolean(NOTIFICATION_USER_SETTING_KEY, false);
-        if (userSession.get().isLoggedIn() && !isSettingsSent) {
+        if (userSession.get().isLoggedIn()) {
             new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
-            cacheManager.edit()
-                    .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
-                    .apply();
         }
     }
 
