@@ -1,13 +1,13 @@
 package com.tokopedia.notifcenter.stub.common
 
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import java.lang.reflect.Type
 
 object NotificationCacheManagerStub : NotifCenterCacheManager {
 
     private var cacheBooleanResult = false
-    private var cacheIntResult = Int.ZERO
+    private var cacheIntResult = Int.ONE
     private var cacheObjMapResult: HashMap<String, Any> = hashMapOf()
 
     override fun saveCache(key: String, obj: Any) {

@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.stub.common.ActivityScenarioTestRule
@@ -51,7 +53,7 @@ abstract class BaseNotificationTest {
         } else {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         }
-        val intent = Intent(context, NotificationActivity::class.java)
+        val intent = RouteManager.getIntent(context, ApplinkConst.BUYER_INFO)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
     }
