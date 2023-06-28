@@ -2,6 +2,7 @@ package com.tokopedia.applink.promo
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.ScpRewards.SEE_MORE_MEDAL
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -138,6 +139,20 @@ object DeeplinkMapperPromo {
 
     fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
         return pattern?.matches(link) ?: false
+    }
+
+    fun getInternalDeeplinkForScpMedalCabinet(deeplink: Uri): String {
+        return UriUtil.appendDeeplinkWithQuery(
+            ApplinkConstInternalPromo.MEDAL_CABINET,
+            deeplink.query.orEmpty()
+        )
+    }
+
+    fun getInternalDeeplinkForScpMedalCabinetSeeMore(deeplink: Uri): String {
+        return UriUtil.appendDeeplinkWithQuery(
+            ApplinkConstInternalPromo.SEE_MORE_MEDALI,
+            deeplink.query.orEmpty()
+        )
     }
 
     fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri): String {
