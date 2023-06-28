@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
@@ -895,19 +897,31 @@ class PromoCheckoutViewModel @Inject constructor(
         order: OrdersItem,
         validateUsePromoRequest: ValidateUsePromoRequest
     ) {
+        val promoCode: String
+        val uniqueId: String
+        val shopId: Int
+        val additionalBoData: List<AdditionalBoData>
+        if (promoListItemUiModel.uiData.useSecondaryPromo) {
+            promoCode = promoListItemUiModel.uiData.secondaryCoupons.first().code
+            uniqueId = promoListItemUiModel.uiData.secondaryCoupons.first().uniqueId
+            shopId = promoListItemUiModel.uiData.secondaryCoupons.first().shopId.toIntOrZero()
+            additionalBoData = promoListItemUiModel.uiData.secondaryCoupons.first().additionalBoData
+        } else {
+            promoCode = promoListItemUiModel.uiData.promoCode
+            uniqueId = promoListItemUiModel.uiData.uniqueId
+            shopId = promoListItemUiModel.uiData.shopId
+            additionalBoData = promoListItemUiModel.uiData.boAdditionalData
+        }
         if (promoListItemUiModel.uiState.isSelected && !promoListItemUiModel.uiState.isDisabled &&
-            promoListItemUiModel.uiData.currentClashingPromo.isEmpty()
+            !promoListItemUiModel.uiData.hasClashingPromo
         ) {
             // If coupon is selected, not disabled, and not clashing, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
-                !order.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                order.codes.add(promoListItemUiModel.uiData.promoCode)
+            if (uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
+                order.codes.add(promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
-                val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                val boData = additionalBoData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (!it.codes.contains(boData.code)) {
@@ -928,21 +942,16 @@ class PromoCheckoutViewModel @Inject constructor(
                         it.etaText = boData.etaText
                     }
                 }
-            } else if (promoListItemUiModel.uiData.shopId == 0 &&
-                !validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                validateUsePromoRequest.codes.add(promoListItemUiModel.uiData.promoCode)
+            } else if (shopId == 0 && !validateUsePromoRequest.codes.contains(promoCode)) {
+                validateUsePromoRequest.codes.add(promoCode)
             }
         } else {
             // If coupon is unselected, disabled, or clashing, remove from request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
-                order.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                order.codes.remove(promoListItemUiModel.uiData.promoCode)
+            if (uniqueId == order.uniqueId && order.codes.contains(promoCode)) {
+                order.codes.remove(promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
-                val boData =
-                    promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                val boData = additionalBoData.firstOrNull { order.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order.let {
                         if (it.codes.contains(boData.code)) {
@@ -959,10 +968,8 @@ class PromoCheckoutViewModel @Inject constructor(
                         }
                     }
                 }
-            } else if (promoListItemUiModel.uiData.shopId == 0 &&
-                validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)
-            ) {
-                validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)
+            } else if (shopId == 0 && validateUsePromoRequest.codes.contains(promoCode)) {
+                validateUsePromoRequest.codes.remove(promoCode)
             }
         }
     }
@@ -2049,7 +2056,11 @@ class PromoCheckoutViewModel @Inject constructor(
             this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
                 .isNotEmpty()
         } else {
-            this.contains(promoListItemUiModel.uiData.promoCode)
+            if (promoListItemUiModel.uiData.useSecondaryPromo) {
+                this.contains(promoListItemUiModel.uiData.secondaryCoupons.first().code)
+            } else {
+                this.contains(promoListItemUiModel.uiData.promoCode)
+            }
         }
     }
 
