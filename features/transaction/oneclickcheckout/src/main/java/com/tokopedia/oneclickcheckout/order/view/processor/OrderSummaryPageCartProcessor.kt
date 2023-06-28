@@ -296,7 +296,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                     saveAddOnStateRequest = generateSaveAddOnStateRequestParams(
                         newAddOnProductData = newAddOnProductData,
                         product = product
-                    )
+                    ),
+                    isFireAndForget = true
                 )
                 val response = saveAddOnStateUseCase.executeOnBackground()
                 val errorMessage: String = response.saveAddOns.errorMessage.joinToString(separator = ", ")
@@ -331,7 +332,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 saveAddOnStateUseCase.setParams(
                     saveAddOnStateRequest = generateSaveAllAddOnsStateRequestParams(
                         products = products
-                    )
+                    ),
+                    isFireAndForget = false
                 )
                 val response = saveAddOnStateUseCase.executeOnBackground()
                 val errorMessage: String = response.saveAddOns.errorMessage.joinToString(separator = ", ")

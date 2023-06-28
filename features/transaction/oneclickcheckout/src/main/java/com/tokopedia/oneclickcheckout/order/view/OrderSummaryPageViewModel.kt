@@ -992,24 +992,28 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (validateSelectedTerm()) {
                         finalUpdateJob?.cancel()
                         finalUpdateJob = launch(executorDispatchers.immediate) {
-                            // before save all addons of all products making sure all jobs canceled
-                            saveAddOnProductStateJobs.values.forEach { it.cancel() }
-                            saveAddOnProductStateJobs.clear()
+                            // if there is at least one addon should follow logic to save all addons
+                            val isAddOnProductAvailable = orderProducts.value.any { it.addOnsProductData.data.isNotEmpty() }
+                            if (isAddOnProductAvailable) {
+                                // before save all addons of all products making sure all jobs canceled
+                                saveAddOnProductStateJobs.values.forEach { it.cancel() }
+                                saveAddOnProductStateJobs.clear()
 
-                            // save all addons of all products
-                            val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
-                                products = orderProducts.value
-                            )
-
-                            // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
-                            if (!saveAddOnState.isSuccess) {
-                                globalEvent.value = OccGlobalEvent.ToasterAction(
-                                    toast = OccToasterAction(
-                                        message = saveAddOnState.message,
-                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
-                                    )
+                                // save all addons of all products
+                                val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
+                                    products = orderProducts.value
                                 )
-                                return@launch
+
+                                // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
+                                if (!saveAddOnState.isSuccess) {
+                                    globalEvent.value = OccGlobalEvent.ToasterAction(
+                                        toast = OccToasterAction(
+                                            message = saveAddOnState.message,
+                                            ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
+                                        )
+                                    )
+                                    return@launch
+                                }
                             }
 
                             // if save all addons of all products is successful then do final validation
@@ -1406,10 +1410,5 @@ class OrderSummaryPageViewModel @Inject constructor(
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 
         const val TRANSACTION_ID_KEY = "transaction_id"
-
-        const val ADD_ONS_PRODUCT_DEFAULT_STATUS = 0
-        const val ADD_ONS_PRODUCT_CHECK_STATUS = 1
-        const val ADD_ONS_PRODUCT_UNCHECK_STATUS = 2
-        const val ADD_ONS_PRODUCT_MANDATORY_STATUS = 3
     }
 }

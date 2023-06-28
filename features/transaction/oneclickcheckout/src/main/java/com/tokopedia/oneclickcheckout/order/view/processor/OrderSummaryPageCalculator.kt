@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_CHECK_STATUS
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
@@ -482,7 +482,7 @@ class OrderSummaryPageCalculator @Inject constructor(
                         totalAddOnPrice += addOnProductLevel.addOnPrice
                         hasAddOn = true
                     }
-                    product.addOnsProductData.data.filter {it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.forEach { addOnProductChecked ->
+                    product.addOnsProductData.data.filter {it.status == ADD_ON_PRODUCT_STATUS_CHECK }.forEach { addOnProductChecked ->
                         totalAddOnProductPrice += addOnProductChecked.price * product.orderQuantity
                         addOnsProductSelectedList.add(addOnProductChecked.copy(productQuantity = product.orderQuantity))
                     }

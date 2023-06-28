@@ -3,13 +3,13 @@ package com.tokopedia.oneclickcheckout.order.view.mapper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnMetadataRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 
 internal object SaveAddOnStateMapper {
     private const val SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE = 1
@@ -57,7 +57,7 @@ internal object SaveAddOnStateMapper {
                     }
                 )
             ),
-            source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
+            source = SOURCE_ONE_CLICK_CHECKOUT,
             featureType = SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE
         )
     }
@@ -92,7 +92,7 @@ internal object SaveAddOnStateMapper {
                     }
                 )
             },
-            source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
+            source = SOURCE_ONE_CLICK_CHECKOUT,
             featureType = SAVE_ADD_ON_AS_PRODUCT_SERVICE_FEATURE_TYPE
         )
     }

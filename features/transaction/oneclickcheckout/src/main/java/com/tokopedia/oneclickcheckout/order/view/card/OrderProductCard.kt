@@ -22,12 +22,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_CHECK_STATUS
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_DEFAULT_STATUS
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_MANDATORY_STATUS
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_UNCHECK_STATUS
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_DEFAULT
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
@@ -68,6 +68,7 @@ class OrderProductCard(
     private var oldQtyValue: Int = 0
 
     private var resetQuantityJob: Job? = null
+    private var checkAddOnProductItemJob: Job? = null
 
     fun setData(product: OrderProduct, shop: OrderShop, productIndex: Int) {
         this.product = product
@@ -534,7 +535,6 @@ class OrderProductCard(
             // hide shimmer
             loaderIcProductAddon.gone()
             loaderTvTitle.gone()
-            llAddonProductLoaders.gone()
 
             addOnsProductData.data.forEach { addOn ->
                 val addOnView = ItemShipmentAddonProductItemBinding.inflate(
@@ -567,10 +567,13 @@ class OrderProductCard(
                         changeAddOnProductStatus(
                             addOn = addOn
                         )
-                        listener.onCheckAddOnProduct(
-                            newAddOnProductData = addOn,
-                            product = product
-                        )
+                        checkAddOnProductItemJob = launch {
+                            delay(DEBOUNCE_CHECK_ADD_ON_PRODUCT_MS)
+                            listener.onCheckAddOnProduct(
+                                newAddOnProductData = addOn,
+                                product = product
+                            )
+                        }
                     }
                     icProductAddonInfo.showIfWithBlock(addOn.infoLink.isNotBlank()) {
                         setOnClickListener {
@@ -609,10 +612,10 @@ class OrderProductCard(
     ) {
         binding.apply {
             when (addOn.status) {
-                ADD_ONS_PRODUCT_DEFAULT_STATUS, ADD_ONS_PRODUCT_UNCHECK_STATUS -> {
+                ADD_ON_PRODUCT_STATUS_DEFAULT, ADD_ON_PRODUCT_STATUS_UNCHECK -> {
                     cbAddonItem.isChecked = false
                 }
-                ADD_ONS_PRODUCT_CHECK_STATUS -> {
+                ADD_ON_PRODUCT_STATUS_CHECK -> {
                     cbAddonItem.isChecked = true
                 }
                 else -> {
@@ -627,9 +630,9 @@ class OrderProductCard(
         addOn: AddOnsProductDataModel.Data
     ) {
         addOn.status = when (addOn.status) {
-            ADD_ONS_PRODUCT_DEFAULT_STATUS, ADD_ONS_PRODUCT_UNCHECK_STATUS -> ADD_ONS_PRODUCT_CHECK_STATUS
-            ADD_ONS_PRODUCT_CHECK_STATUS -> ADD_ONS_PRODUCT_UNCHECK_STATUS
-            else -> ADD_ONS_PRODUCT_MANDATORY_STATUS
+            ADD_ON_PRODUCT_STATUS_DEFAULT, ADD_ON_PRODUCT_STATUS_UNCHECK -> ADD_ON_PRODUCT_STATUS_CHECK
+            ADD_ON_PRODUCT_STATUS_CHECK -> ADD_ON_PRODUCT_STATUS_UNCHECK
+            else -> ADD_ON_PRODUCT_STATUS_MANDATORY
         }
     }
 
@@ -664,7 +667,7 @@ class OrderProductCard(
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
-
+        private const val DEBOUNCE_CHECK_ADD_ON_PRODUCT_MS = 500L
         private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
     }
 
@@ -673,5 +676,6 @@ class OrderProductCard(
 
     fun clearJob() {
         resetQuantityJob?.cancel()
+        checkAddOnProductItemJob?.cancel()
     }
 }
