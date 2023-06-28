@@ -3,6 +3,9 @@ package com.tokopedia.mvc.domain.entity
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
@@ -75,10 +78,10 @@ data class VoucherDetailData(
         val labelQuota: Int = 0,
         val labelQuotaFormatted: String = "",
         val labelQuotaColorType: String = "default",
-        val labelCreator: Int = 0,
+        val labelCreator: VoucherCreator = VoucherCreator.SELLER,
         val labelCreatorFormatted: String = "",
         val labelCreatorColorType: String = "default",
-        val labelSubsidyInfo: Int = 0,
+        val labelSubsidyInfo: SubsidyInfo = SubsidyInfo.NOT_SUBSIDIZED,
         val labelSubsidyInfoFormatted: String = "",
         val labelSubsidyInfoColorType: String = "default",
         val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
@@ -99,7 +102,7 @@ data class VoucherDetailData(
             val programStatus: Int = 0,
             val programLabel: String = "",
             val programLabelDetail: String = "",
-            val promotionStatus: Int = 0,
+            val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
             val promotionLabel: String = ""
         )
 

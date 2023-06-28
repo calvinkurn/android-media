@@ -4,6 +4,9 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.Voucher.*
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import javax.inject.Inject
@@ -70,10 +73,14 @@ class GetVoucherListMapper @Inject constructor() {
             labelQuota = labelVoucher.labelQuota,
             labelQuotaFormatted = labelVoucher.labelQuotaFormatted,
             labelQuotaColorType = labelVoucher.labelQuotaColorType,
-            labelCreator = labelVoucher.labelCreator,
+            labelCreator = VoucherCreator.values().firstOrNull { value ->
+                value.id == labelVoucher.labelCreator
+            } ?: VoucherCreator.SELLER,
             labelCreatorFormatted = labelVoucher.labelCreatorFormatted,
             labelCreatorColorType = labelVoucher.labelCreatorColorType,
-            labelSubsidyInfo = labelVoucher.labelSubsidyInfo,
+            labelSubsidyInfo = SubsidyInfo.values().firstOrNull { value ->
+                value.id == labelVoucher.labelSubsidyInfo
+            } ?: SubsidyInfo.NOT_SUBSIDIZED,
             labelSubsidyInfoFormatted = labelVoucher.labelSubsidyInfoFormatted,
             labelSubsidyInfoColorType = labelVoucher.labelSubsidyInfoColorType,
             labelBudgetsVoucher = labelVoucher.labelBudgetsVoucher.map {
@@ -93,7 +100,9 @@ class GetVoucherListMapper @Inject constructor() {
                 programStatus = programDetail.programStatus,
                 programLabel = programDetail.programLabel,
                 programLabelDetail = programDetail.programLabelDetail,
-                promotionStatus = programDetail.promotionStatus,
+                promotionStatus = PromotionStatus.values().firstOrNull { value ->
+                    value.id == programDetail.promotionStatus
+                } ?: PromotionStatus.REGISTERED,
                 promotionLabel = programDetail.promotionLabel
             )
         )

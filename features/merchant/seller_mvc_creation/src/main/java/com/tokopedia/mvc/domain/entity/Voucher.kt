@@ -3,6 +3,9 @@ package com.tokopedia.mvc.domain.entity
 import android.os.Parcelable
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil
@@ -64,35 +67,35 @@ data class Voucher(
         val labelQuota: Int = 0,
         val labelQuotaFormatted: String = "",
         val labelQuotaColorType: String = "default",
-        val labelCreator: Int = 0,
+        val labelCreator: VoucherCreator = VoucherCreator.SELLER,
         val labelCreatorFormatted: String = "",
         val labelCreatorColorType: String = "default",
-        val labelSubsidyInfo: Int = 0,
+        val labelSubsidyInfo: SubsidyInfo = SubsidyInfo.NOT_SUBSIDIZED,
         val labelSubsidyInfoFormatted: String = "",
         val labelSubsidyInfoColorType: String = "default",
         val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
-    ): Parcelable {
+    ) : Parcelable {
         @Parcelize
         data class LabelBudgetVoucher(
             val labelBudgetVoucher: Int = 0,
             val labelBudgetVoucherFormatted: String = "",
             val labelBudgetVoucherValue: Int = 0
-        ): Parcelable
+        ) : Parcelable
     }
 
     @Parcelize
     data class SubsidyDetail(
         val programDetail: ProgramDetail = ProgramDetail()
-    ): Parcelable {
+    ) : Parcelable {
         @Parcelize
         data class ProgramDetail(
             val programName: String = "",
             val programStatus: Int = 0,
             val programLabel: String = "",
             val programLabelDetail: String = "",
-            val promotionStatus: Int = 0,
+            val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
             val promotionLabel: String = ""
-        ): Parcelable
+        ) : Parcelable
     }
 
     fun toVoucherConfiguration(): VoucherConfiguration {

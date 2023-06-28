@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
@@ -106,11 +107,9 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu, isVps is always false here
         else if (voucher.isSubsidy) {
             getOngoingVpsSubsidyMenu()
-        }
-        else if (isSubsidy(voucher)) {
+        } else if (isSubsidy(voucher)) {
             getOngoingVpsSubsidyMenu()
-        }
-        else {
+        } else {
             // return seller create voucher menu
             getOngoingOptionsListMenu()
         }
@@ -124,8 +123,7 @@ class MoreMenuViewModel @Inject constructor(
         // return subsidy voucher menu
         else if (voucher.isSubsidy) {
             getUpcomingVpsSubsidyMenu()
-        }
-        else if (isSubsidy(voucher)) {
+        } else if (isSubsidy(voucher)) {
             getUpcomingVpsSubsidyMenu()
         }
         // return seller created voucher menu
@@ -161,8 +159,7 @@ class MoreMenuViewModel @Inject constructor(
             getEndedVpsSubsidyListMenu()
         } else if (isSubsidy(voucher)) {
             getEndedVpsSubsidyListMenu()
-        }
-        else {
+        } else {
             getEndedOrCancelledOptionsListMenu(isDiscountPromoTypeEnabled, isDiscountPromoType)
         }
     }
@@ -354,6 +351,13 @@ class MoreMenuViewModel @Inject constructor(
     }
 
     private fun isSubsidy(voucher: Voucher): Boolean {
-        return voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()
+        return when (voucher.labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
     }
 }

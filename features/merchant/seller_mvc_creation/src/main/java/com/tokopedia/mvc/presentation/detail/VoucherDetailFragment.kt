@@ -45,7 +45,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.SharedPreferencesUtil
-import com.tokopedia.mvc.common.util.SourceBudgetConstant
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
@@ -63,6 +62,9 @@ import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
@@ -302,7 +304,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupRecapSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus == VoucherStatus.ENDED && isSubsidy(data)) {
+            if (data.voucherStatus == VoucherStatus.ENDED && isSubsidy(data) && !isPromotionRejected(data)) {
                 if (layoutRecap.parent != null) {
                     layoutRecap.inflate()
                 }
@@ -380,24 +382,26 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setPackage(data: VoucherDetailData) {
         headerBinding?.run {
-            if (data.isVps == TRUE) {
-                tpgVpsPackage.apply {
-                    visible()
-                    text = getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
+            when (data.labelVoucher.labelCreator) {
+                VoucherCreator.SELLER -> {
+                    tpgVpsPackage.invisible()
                 }
-            } else {
-                if (data.subsidyDetail.programDetail.programStatus == SourceBudgetConstant.SOURCE_MERCHANT) {
-                    tpgVpsPackage.gone()
-                } else {
+                VoucherCreator.INTOOLS -> {
+                    tpgVpsPackage.apply {
+                        showWithCondition(!isPromotionRejected(data))
+                        text = data.labelVoucher.labelCreatorFormatted
+                    }
+                }
+                VoucherCreator.VPS -> {
                     tpgVpsPackage.apply {
                         visible()
-                        text = data.labelVoucher.labelCreatorFormatted
+                        text = getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
                     }
                 }
             }
             labelVoucherSource.apply {
+                showWithCondition(isSubsidy(data) && !isPromotionRejected(data))
                 text = data.labelVoucher.labelSubsidyInfoFormatted
-                showWithCondition(isSubsidy(data))
             }
         }
     }
@@ -656,7 +660,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                                 getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
-                            if (isSubsidy(data)) {
+                            if (isSubsidy(data) && !isPromotionRejected(data)) {
                                 llParentInitialCashback.visible()
                                 llParentAdditionalSubsidy.visible()
                                 tpgInitialCashback.text =
@@ -715,7 +719,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setSubsidyQuota(data: VoucherDetailData) {
         voucherSettingBinding?.run {
-            if (!isSubsidy(data)) return
+            if (!isSubsidy(data) || isPromotionRejected(data)) return
             val wording =
                 if (data.subsidyDetail.quotaSubsidized.voucherQuota.toLong() == data.voucherQuota) {
                     getString(R.string.smvc_all_quota_subsidized_label)
@@ -767,7 +771,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             else -> getString(R.string.smvc_spending_estimation_title_1)
         }
         val description = when {
-            data.isVps == TRUE -> getString(R.string.smvc_spending_estimation_description_2)
+            isVps(data) -> getString(R.string.smvc_spending_estimation_description_2)
             isSubsidy(data) -> getString(R.string.smvc_spending_estimation_description_3)
             else -> getString(R.string.smvc_spending_estimation_description_1)
         }
@@ -1133,7 +1137,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isVps == TRUE || isSubsidy(data)) {
+        if (isVps(data) || isSubsidy(data)) {
             showCallTokopediaCareDialog(data.voucherStatus)
         } else {
             showConfirmationStopVoucherDialog(data)
@@ -1290,6 +1294,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun isSubsidy(voucherDetail: VoucherDetailData): Boolean {
-        return voucherDetail.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty()
+        return when (voucherDetail.labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
+    }
+
+    private fun isVps(voucherDetail: VoucherDetailData): Boolean {
+        return voucherDetail.labelVoucher.labelCreator == VoucherCreator.VPS
+    }
+
+    private fun isPromotionRejected(voucherDetail: VoucherDetailData): Boolean {
+        return voucherDetail.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REJECTED
     }
 }

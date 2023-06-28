@@ -10,13 +10,14 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.common.util.SourceBudgetConstant
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherDataBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherHeaderBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherPeriodBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherStatsBinding
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.unifyprinciples.Typography
@@ -105,12 +106,19 @@ class VouchersViewHolder(
     }
 
     private fun SmvcItemVoucherHeaderBinding.setupHeaderSubsidy(voucher: Voucher) {
-        tfVps.gone()
-        tfSubsidy.gone()
-        if (voucher.isVps) {
-            tfVps.visible()
-        } else if (voucher.isSubsidy || voucher.subsidyDetail.programDetail.promotionStatus == SourceBudgetConstant.SOURCE_TOKOPEDIA) {
-            tfSubsidy.visible()
+        when (voucher.labelVoucher.labelCreator) {
+            VoucherCreator.SELLER -> {
+                tfVps.gone()
+                tfSubsidy.gone()
+            }
+            VoucherCreator.INTOOLS -> {
+                tfVps.gone()
+                tfSubsidy.visible()
+            }
+            VoucherCreator.VPS -> {
+                tfVps.visible()
+                tfSubsidy.gone()
+            }
         }
     }
 
@@ -159,14 +167,16 @@ class VouchersViewHolder(
     private fun Typography.setVoucherProgram(voucher: Voucher) {
         this.apply {
             text = voucher.subsidyDetail.programDetail.promotionLabel
-            showWithCondition(voucher.subsidyDetail.programDetail.promotionLabel.isNotEmpty())
+            val isPromotionRejected = voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REJECTED
+            showWithCondition(voucher.subsidyDetail.programDetail.promotionLabel.isNotEmpty() && !isPromotionRejected)
         }
     }
 
     private fun Typography.setVoucherSubsidy(voucher: Voucher) {
         this.apply {
             text = voucher.labelVoucher.labelSubsidyInfoFormatted
-            showWithCondition(voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
+            val isPromotionRejected = voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REJECTED
+            showWithCondition(voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty() && !isPromotionRejected)
         }
     }
 

@@ -6,6 +6,9 @@ import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.ProgramDe
 import com.tokopedia.mvc.domain.entity.VoucherDetailData.SubsidyDetail.QuotaSubsidized
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.util.constant.DiscountTypeConstant
@@ -99,10 +102,14 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
             labelQuota = labelVoucher.labelQuota,
             labelQuotaFormatted = labelVoucher.labelQuotaFormatted,
             labelQuotaColorType = labelVoucher.labelQuotaColorType,
-            labelCreator = labelVoucher.labelCreator,
+            labelCreator = VoucherCreator.values().firstOrNull { value ->
+                value.id == labelVoucher.labelCreator
+            } ?: VoucherCreator.SELLER,
             labelCreatorFormatted = labelVoucher.labelCreatorFormatted,
             labelCreatorColorType = labelVoucher.labelCreatorColorType,
-            labelSubsidyInfo = labelVoucher.labelSubsidyInfo,
+            labelSubsidyInfo = SubsidyInfo.values().firstOrNull { value ->
+                value.id == labelVoucher.labelSubsidyInfo
+            } ?: SubsidyInfo.NOT_SUBSIDIZED,
             labelSubsidyInfoFormatted = labelVoucher.labelSubsidyInfoFormatted,
             labelSubsidyInfoColorType = labelVoucher.labelSubsidyInfoColorType,
             labelBudgetsVoucher = labelVoucher.labelBudgetsVoucher.map {
@@ -122,7 +129,9 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 programStatus = subsidyDetail.programDetail.programStatus,
                 programLabel = subsidyDetail.programDetail.programLabel,
                 programLabelDetail = subsidyDetail.programDetail.programLabelDetail,
-                promotionStatus = subsidyDetail.programDetail.promotionStatus,
+                promotionStatus = PromotionStatus.values().firstOrNull { value ->
+                    value.id == subsidyDetail.programDetail.promotionStatus
+                } ?: PromotionStatus.REJECTED,
                 promotionLabel = subsidyDetail.programDetail.promotionLabel
             ),
             quotaSubsidized = QuotaSubsidized(
