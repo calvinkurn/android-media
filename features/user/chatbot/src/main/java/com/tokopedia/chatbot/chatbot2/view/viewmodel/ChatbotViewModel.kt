@@ -36,6 +36,7 @@ import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.SmallReplyBoxAttrib
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.chatbot2.data.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput

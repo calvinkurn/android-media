@@ -31,6 +31,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.CustomC
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.LeftChatMessageUnifyViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.RightChatMessageUnifyViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicAttachmentTextViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicOwocInvoiceViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicStickyButtonViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSelectionViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSentViewHolder
@@ -46,6 +47,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUplo
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
@@ -130,6 +132,10 @@ open class ChatbotTypeFactoryImpl(
                 chatLinkHandlerListener,
                 dynamicStickyButtonListener
             )
+            DynamicOwocInvoiceViewHolder.LAYOUT -> DynamicOwocInvoiceViewHolder(
+                parent,
+                chatLinkHandlerListener
+            )
             else -> createViewHolder(parent, type)
         }
     }
@@ -152,6 +158,10 @@ open class ChatbotTypeFactoryImpl(
 
     override fun type(dynamicAttachmentTextUiModel: DynamicAttachmentTextUiModel): Int {
         return DynamicAttachmentTextViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicOwocInvoiceUiModel: DynamicOwocInvoiceUiModel): Int {
+        return DynamicOwocInvoiceViewHolder.LAYOUT
     }
 
     override fun type(chatSepratorUiModel: ChatSepratorUiModel): Int {
