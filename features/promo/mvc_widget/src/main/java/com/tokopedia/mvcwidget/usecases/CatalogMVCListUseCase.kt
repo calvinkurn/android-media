@@ -24,7 +24,10 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
     ): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         variables[TokopointsCatalogMVCParams.SHOP_ID] = shopId
-        variables[TokopointsCatalogMVCParams.ADDITIONAL_PARAM_JSON] = additionalParamJson
+
+        if (additionalParamJson.isNotEmpty()) {
+            variables[TokopointsCatalogMVCParams.ADDITIONAL_PARAM_JSON] = additionalParamJson
+        }
 
         if(productId.isNullOrEmpty().not()){
             variables[TokopointsCatalogMVCParams.PRODUCT_ID] = productId

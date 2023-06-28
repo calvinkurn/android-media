@@ -2000,11 +2000,13 @@ open class DynamicProductDetailFragment :
     override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
         context?.let {
             startActivityForResult(
+                //TODO: Pass real additionalParamsJson
                 TransParentActivity.getIntent(
                     it,
                     shopId,
                     source,
-                    productId = productId
+                    productId = productId,
+                    additionalParamJson = ""
                 ),
                 MvcView.REQUEST_CODE
             )

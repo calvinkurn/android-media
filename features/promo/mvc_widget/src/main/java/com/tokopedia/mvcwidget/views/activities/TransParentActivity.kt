@@ -39,8 +39,18 @@ class TransParentActivity : BaseActivity() {
         const val REDIRECTION_LINK = "redirectionLink"
         const val SHOP_NAME = "shopName"
         const val DATA_HASH_CODE = "dataHash"
+        const val ADDITIONAL_PARAM_JSON = "additionalParamJson"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0, productId: String = ""): Intent {
+        fun getIntent(
+            context: Context,
+            shopId: String,
+            @MvcSource source: Int,
+            redirectionLink: String = "",
+            shopName: String = "",
+            hashCode: Int = 0,
+            productId: String = "",
+            additionalParamJson: String = ""
+        ): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(PRODUCT_ID, productId)
@@ -48,6 +58,7 @@ class TransParentActivity : BaseActivity() {
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
             intent.putExtra(SHOP_NAME, shopName)
             intent.putExtra(DATA_HASH_CODE,hashCode)
+            intent.putExtra(ADDITIONAL_PARAM_JSON, additionalParamJson)
             return intent
         }
 
@@ -57,6 +68,7 @@ class TransParentActivity : BaseActivity() {
     lateinit var userSession: UserSession
     lateinit var shopId: String
     lateinit var productId: String
+    lateinit var additionalParamJson: String
 
     @MvcSource
     var mvcSource = MvcSource.DEFAULT
@@ -67,6 +79,7 @@ class TransParentActivity : BaseActivity() {
         handleDimming()
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         productId = intent.extras?.getString(PRODUCT_ID, "") ?: ""
+        additionalParamJson = intent.extras?.getString(ADDITIONAL_PARAM_JSON, "") ?: ""
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
         shopName = intent.extras?.getString(SHOP_NAME, "") ?: ""
@@ -122,7 +135,7 @@ class TransParentActivity : BaseActivity() {
         }
         bottomSheet.setChild(childView)
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
-        childView?.show(shopId, false, mvcSource, mvcTracker, productId)
+        childView?.show(shopId, false, mvcSource, mvcTracker, productId, additionalParamJson)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
