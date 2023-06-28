@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -451,7 +452,7 @@ class ShipmentCartItemViewHolder(
                         .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
                         .removeDecimalSuffix()
                     addOnView.apply {
-                        cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
                             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                 listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
