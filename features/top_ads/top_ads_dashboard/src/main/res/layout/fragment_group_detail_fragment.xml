@@ -12,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/saveButton"
+        app:layout_constraintBottom_toTopOf="@id/saveButtonContainer"
         app:layout_constraintVertical_bias="0.0"
         android:layout_marginBottom="8dp"/>
 
@@ -49,17 +49,26 @@
         app:unifyEmptyStateTitle="@string/topads_insight_global_error_title"
         app:unifyEmptyStateType="page" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/saveButton"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/saveButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unifyButtonType="main"
-        app:unifyButtonSize="medium"
-        tools:text="Tambah 5 Kata Kunci"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
-        android:layout_marginVertical="8dp"
-        android:layout_marginHorizontal="16dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:card_type="shadow"
+        android:layout_marginStart="-10dp"
+        android:layout_marginEnd="-10dp">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"
+            tools:text="Tambah 5 Kata Kunci"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="25dp"/>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
