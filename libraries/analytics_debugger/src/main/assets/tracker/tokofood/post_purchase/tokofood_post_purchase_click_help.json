@@ -1,0 +1,25 @@
+{
+  "readme": "TokoFood Post Purchase - click help cta",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": ".*",
+      "shopId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click bantuan",
+      "eventCategory": ".*",
+      "eventLabel": ".*",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "shopId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

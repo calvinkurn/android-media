@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.DriverPhoneNumberMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
@@ -45,6 +47,14 @@ class TokoFoodOrderTrackingModuleStub {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
         UserSessionStub(context)
+
+    @Provides
+    @TokoFoodOrderTrackingScope
+    fun providesRemoteConfig(
+        @ApplicationContext context: Context
+    ): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @TokoFoodOrderTrackingScope
     @Provides

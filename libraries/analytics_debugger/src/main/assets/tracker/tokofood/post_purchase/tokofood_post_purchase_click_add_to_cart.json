@@ -1,0 +1,41 @@
+{
+  "readme": "TokoFood Post Purchase - click add to cart",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": ".*",
+      "shopId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click buy again",
+      "eventCategory": ".*",
+      "eventLabel": ".* - .*",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "category_id": ".*",
+          "dimension45": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".+",
+          "price": ".+",
+          "quantity": ".+",
+          "shop_id": ".*",
+          "shop_name": ".*",
+          "shop_type": ".*"
+        }
+      ],
+      "shopId": ".*",
+      "userId": ".*"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "readme": "TokoFood Post Purchase - click call driver in bottomsheet",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true|false",
+      "screenName": ".*",
+      "shopId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click call driver",
+      "eventCategory": ".*",
+      "eventLabel": ".*",
+      "businessUnit": ".*",
+      "currentSite": "tokopediamarketplace",
+      "shopId": ".*",
+      "userId": ".*"
+    }
+  ]
+}
