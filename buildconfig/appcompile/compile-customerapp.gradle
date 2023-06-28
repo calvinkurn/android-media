@@ -80,7 +80,6 @@ includeIfEnabled("features:entertainment:common_entertainment")
 
 //includeIfEnabled("features:salam:umrah")
 
-includeIfEnabled("features:discovery:category_common")
 includeIfEnabled("features:discovery:discovery_common")
 includeIfEnabled("features:discovery:productcard")
 includeIfEnabled("features:discovery:productcard_options")
@@ -111,7 +110,6 @@ includeIfEnabled("features:fintech:paylater")
 includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
 includeIfEnabled("features:fintech:insurance")
-
 
 includeIfEnabled("features:home:dynamicbanner")
 includeIfEnabled("features:home:navigation")

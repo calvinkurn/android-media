@@ -33,11 +33,7 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.MetaModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -543,7 +539,7 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive) {
+        if (meta.isCreationActive && userSession.isLoggedIn) {
             binding.btnFeedCreatePost.show()
         } else {
             binding.btnFeedCreatePost.hide()
