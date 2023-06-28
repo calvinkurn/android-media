@@ -35,16 +35,31 @@
             android:layout_height="56dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:translationZ="3dp"
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_preview_overlay"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <RelativeLayout
+            android:id="@+id/img_preview_overlay_container"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:translationZ="2dp" />
+            android:translationZ="2dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_preview_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:translationZ="2dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_preview_overlay_secondary"
+                android:elevation="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -106,6 +121,13 @@
         <!--    Add Logo Tool-->
         <include
             layout="@layout/ui_component_tool_add_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
+        <!--    Add Logo Tool-->
+        <include
+            layout="@layout/ui_component_tool_add_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/action_btn_container" />

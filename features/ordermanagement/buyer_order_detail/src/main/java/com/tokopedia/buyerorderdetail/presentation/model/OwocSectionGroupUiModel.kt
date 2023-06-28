@@ -1,0 +1,20 @@
+package com.tokopedia.buyerorderdetail.presentation.model
+
+import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
+
+
+class OwocSectionGroupUiModel(
+    val baseOwocProductListUiModel: List<BaseOwocVisitableUiModel>
+) : BaseOwocSectionGroupUiModel {
+
+    override fun shouldShow(context: Context?): Boolean {
+        return true
+    }
+
+    override fun type(typeFactory: OwocSectionGroupTypeFactoryImpl): Int {
+        return typeFactory.type(this)
+    }
+
+}

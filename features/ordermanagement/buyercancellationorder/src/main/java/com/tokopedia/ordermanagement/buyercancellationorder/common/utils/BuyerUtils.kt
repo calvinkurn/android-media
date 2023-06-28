@@ -1,7 +1,11 @@
 package com.tokopedia.ordermanagement.buyercancellationorder.common.utils
 
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.ordermanagement.buyercancellationorder.common.constants.BuyerConsts
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 object BuyerUtils {
 
@@ -20,6 +24,13 @@ object BuyerUtils {
             else -> {
                 Ticker.TYPE_ANNOUNCEMENT
             }
+        }
+    }
+
+    fun Throwable.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
         }
     }
 }

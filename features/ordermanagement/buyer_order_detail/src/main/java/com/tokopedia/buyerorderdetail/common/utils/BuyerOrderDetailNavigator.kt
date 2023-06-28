@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -42,6 +43,20 @@ class BuyerOrderDetailNavigator(
             com.tokopedia.resources.common.R.anim.slide_right_in_medium,
             com.tokopedia.resources.common.R.anim.slide_left_out_medium
         )
+    }
+
+    fun goToBomDetailPage(orderId: String) {
+        val appLink =
+            Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL).buildUpon()
+                .appendQueryParameter(DeeplinkMapperUoh.PATH_ORDER_ID, orderId)
+                .build()
+                .toString()
+        val intent = RouteManager.getIntent(activity, appLink).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
+        applyTransition()
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {
@@ -106,6 +121,9 @@ class BuyerOrderDetailNavigator(
         if (uiState is BuyerOrderDetailUiState.HasData) {
             val orderStatusUiModel = uiState.orderStatusUiState.data
             val productListUiModel = uiState.productListUiState.data
+            val shipmentInfoUiModel = uiState.shipmentInfoUiState.data
+            val owocInfoUiModel = shipmentInfoUiModel.owocInfoUiModel
+
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
             val payload: Map<String, Any?> = mapOf(
                 BuyerRequestCancellationIntentParamKey.SHOP_NAME to productListUiModel.productListHeaderUiModel.shopName,
@@ -114,7 +132,8 @@ class BuyerOrderDetailNavigator(
                 BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
                 BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
                 BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
-                BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId
+                BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId,
+                BuyerRequestCancellationIntentParamKey.PARAM_TX_ID to owocInfoUiModel?.txId.orEmpty()
             )
             val cacheId = cacheManager.generateUniqueRandomNumber()
             cacheManager.put(cacheId, payload)

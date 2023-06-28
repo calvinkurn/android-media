@@ -19,11 +19,9 @@ import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeDataRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineRechargeRecommendationRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineSalamWIdgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeFlagRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
@@ -40,6 +38,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRe
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -155,9 +154,8 @@ fun createHomeDynamicChannelUseCase(
     homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
     homeDataMapper: HomeDataMapper = mockk(relaxed = true),
     homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
-    homeDataRepository: HomeDataRepository = mockk(relaxed = true),
     homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
-    homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
+    homeUserStatusRepository: HomeUserStatusRepository = mockk(relaxed = true),
     homePageBannerRepository: HomePageBannerRepository = mockk(relaxed = true),
     homeTickerRepository: HomeTickerRepository = mockk(relaxed = true),
     homeIconRepository: HomeIconRepository = mockk(relaxed = true),
@@ -186,9 +184,8 @@ fun createHomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
         homeDataMapper = homeDataMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
-        homeDataRepository = homeDataRepository,
         atfDataRepository = homeAtfRepository,
-        homeFlagRepository = homeFlagRepository,
+        homeUserStatusRepository = homeUserStatusRepository,
         homePageBannerRepository = homePageBannerRepository,
         homeTickerRepository = homeTickerRepository,
         homeIconRepository = homeIconRepository,
