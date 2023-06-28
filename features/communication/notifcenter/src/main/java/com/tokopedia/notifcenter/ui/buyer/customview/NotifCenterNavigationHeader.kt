@@ -3,10 +3,10 @@ package com.tokopedia.notifcenter.ui.buyer.customview
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.notifcenter.common.config.NotifCenterConfig
-import com.tokopedia.notifcenter.R
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.notifcenter.util.view.NotifCenterBadgeCounterUtil
+import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.ui.customview.NotifCenterBadgeCounterUtil
+import com.tokopedia.notifcenter.util.NotifCenterConfig
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,7 +17,7 @@ import javax.inject.Inject
  * see [R.layout.partial_notification_nav_content_view]
  */
 class NotifCenterNavigationHeader @Inject constructor(
-        private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) {
 
     var thumbnail: ImageUnify? = null
@@ -33,19 +33,19 @@ class NotifCenterNavigationHeader @Inject constructor(
     fun bindValue() {
         when (NotifCenterConfig.role) {
             RoleType.SELLER -> bindValue(
-                    userName = userSession.shopName,
-                    thumbnailUrl = userSession.shopAvatar
+                userName = userSession.shopName,
+                thumbnailUrl = userSession.shopAvatar
             )
             RoleType.BUYER -> bindValue(
-                    userName = userSession.name,
-                    thumbnailUrl = userSession.profilePicture
+                userName = userSession.name,
+                thumbnailUrl = userSession.profilePicture
             )
         }
     }
 
     private fun bindValue(
-            userName: String,
-            thumbnailUrl: String
+        userName: String,
+        thumbnailUrl: String
     ) {
         bindImageProfile(thumbnailUrl)
         bindUserName(userName)
@@ -63,5 +63,4 @@ class NotifCenterNavigationHeader @Inject constructor(
     fun setBadgeCount(count: Int) {
         NotifCenterBadgeCounterUtil.setBadgeCounter(badgeCounter, count)
     }
-
 }

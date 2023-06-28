@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.util.view
+package com.tokopedia.notifcenter.ui.customview
 
 import android.graphics.Paint
 import android.graphics.Rect

@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.common.config
+package com.tokopedia.notifcenter.util
 
 import com.tokopedia.notifcenter.data.entity.Notifications
 import com.tokopedia.inboxcommon.RoleType

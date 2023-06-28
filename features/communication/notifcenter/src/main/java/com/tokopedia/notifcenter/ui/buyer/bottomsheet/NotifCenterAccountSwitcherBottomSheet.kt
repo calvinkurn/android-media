@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.notifcenter.common.config.NotifCenterConfig
-import com.tokopedia.notifcenter.R
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.ui.buyer.customview.NotifCenterBaseAccountSwitcherMenuItem
+import com.tokopedia.notifcenter.util.NotifCenterConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -42,7 +42,9 @@ class NotifCenterAccountSwitcherBottomSheet : BottomSheetUnify() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         initContentView()
         initViewConfig()

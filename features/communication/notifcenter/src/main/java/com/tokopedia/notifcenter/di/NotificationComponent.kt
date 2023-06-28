@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.notifcenter.di.module.NotificationCommonModule
 import com.tokopedia.notifcenter.di.module.NotificationFragmentModule
 import com.tokopedia.notifcenter.di.module.NotificationModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule

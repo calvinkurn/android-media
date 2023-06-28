@@ -6,12 +6,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.notifcenter.data.entity.InboxCounter
-import com.tokopedia.notifcenter.R
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.notifcenter.util.view.NotifCenterBadgeCounterUtil
+import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.InboxCounter
+import com.tokopedia.notifcenter.ui.customview.NotifCenterBadgeCounterUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 

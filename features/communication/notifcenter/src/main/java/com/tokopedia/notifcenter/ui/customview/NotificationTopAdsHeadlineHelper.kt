@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.util
+package com.tokopedia.notifcenter.ui.customview
 
 import com.tokopedia.topads.sdk.utils.*
 

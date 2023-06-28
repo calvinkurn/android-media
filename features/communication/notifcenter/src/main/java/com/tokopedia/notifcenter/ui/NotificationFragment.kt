@@ -55,12 +55,12 @@ import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
 import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.ui.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.ui.customview.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.ui.customview.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.ui.customview.widget.NotificationFilterView
 import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
 import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
-import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

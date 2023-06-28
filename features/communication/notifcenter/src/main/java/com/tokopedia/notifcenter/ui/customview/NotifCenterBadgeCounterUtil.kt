@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.util.view
+package com.tokopedia.notifcenter.ui.customview
 
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide

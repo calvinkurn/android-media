@@ -11,14 +11,14 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
-import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.ui.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.util.OrderWidgetDiffUtil
-import com.tokopedia.notifcenter.util.view.ShadowGenerator
+import com.tokopedia.notifcenter.ui.customview.ShadowGenerator
 import com.tokopedia.notifcenter.ui.customview.widget.ItemOrderListLinearLayout
+import com.tokopedia.notifcenter.ui.listener.NotificationItemListener
 
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
@@ -31,7 +31,9 @@ class NotificationOrderListViewHolder constructor(
     private val typeFactory = DefaultOrderListTypeFactory(notificationItemListener)
     private val rvAdapter = OrderListAdapter(typeFactory)
     private val rvLm = LinearLayoutManager(
-        itemView?.context, LinearLayoutManager.HORIZONTAL, false
+        itemView?.context,
+        LinearLayoutManager.HORIZONTAL,
+        false
     )
 
     interface Listener {
@@ -116,7 +118,8 @@ class NotificationOrderListViewHolder constructor(
         ): AbstractViewHolder<out Visitable<*>> {
             return when (type) {
                 OrderItemViewHolder.LAYOUT -> OrderItemViewHolder(
-                    parent, notificationItemListener
+                    parent,
+                    notificationItemListener
                 )
                 else -> super.createViewHolder(parent, type)
             }

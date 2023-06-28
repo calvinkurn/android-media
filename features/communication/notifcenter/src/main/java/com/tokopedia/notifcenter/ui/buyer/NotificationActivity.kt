@@ -15,16 +15,18 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.inboxcommon.InboxFragment
-import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.notifcenter.common.config.NotifCenterConfig
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationNavAnalytic
-import com.tokopedia.notifcenter.util.cache.NotifCenterCacheState
-import com.tokopedia.notifcenter.ui.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
-import com.tokopedia.notifcenter.ui.buyer.customview.NotifCenterNavigationHeader
+import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
+import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.ui.NotificationFragment
 import com.tokopedia.notifcenter.ui.NotificationViewModel
+import com.tokopedia.notifcenter.ui.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
+import com.tokopedia.notifcenter.ui.buyer.customview.NotifCenterNavigationHeader
+import com.tokopedia.notifcenter.ui.listener.NotificationFragmentContainer
+import com.tokopedia.notifcenter.util.NotifCenterConfig
+import com.tokopedia.notifcenter.util.cache.NotifCenterCacheState
 import com.tokopedia.notifcenter.util.getRoleName
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
@@ -36,8 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
-import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
-import com.tokopedia.notifcenter.di.NotificationComponent
 
 /**
  * How to go to this page
@@ -89,7 +89,8 @@ import com.tokopedia.notifcenter.di.NotificationComponent
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-open class NotificationActivity : BaseActivity(),
+open class NotificationActivity :
+    BaseActivity(),
     HasComponent<NotificationComponent>,
     NotifCenterConfig.ConfigListener,
     NotificationFragmentContainer {
@@ -216,7 +217,9 @@ open class NotificationActivity : BaseActivity(),
         setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
-            this, R.layout.partial_notifcenter_nav_content_view, null
+            this,
+            R.layout.partial_notifcenter_nav_content_view,
+            null
         ).also {
             navHeader.bindNavHeaderView(it)
             navHeader.bindValue()
@@ -293,7 +296,8 @@ open class NotificationActivity : BaseActivity(),
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-            this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
@@ -304,7 +308,8 @@ open class NotificationActivity : BaseActivity(),
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             window.statusBarColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         }
     }
