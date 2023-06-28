@@ -38,18 +38,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.scp_rewards_touchpoints.R
-import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.analytics.CelebrationBottomSheetAnalytics
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.constants.EASE_IN
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.CouponAutoApplyResponseModel
-import com.tokopedia.scp_rewards_touchpoints.common.Loading
-import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getBenefitCta
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getMessage
@@ -61,7 +56,11 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.launchLink
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.common.Loading
+import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
+import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationFragmentLayoutBinding
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -70,7 +69,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class MedalCelebrationBottomSheet: BottomSheetUnify() {
+class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     // Assets
     private var badge_image: Drawable? = null
@@ -83,7 +82,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
     private var isSoundLoading = false
     private var isBackgroundImageAvailable = false
     private var audioManager: AudioFactory? = null
-    private var bgColor:String? = ""
+    private var bgColor: String? = ""
 
     // urls
     private var badgeUrl = ""
@@ -124,7 +123,6 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         super.onAttach(context)
 
         DaggerCelebrationComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
-
     }
 
     override fun onCreateView(
@@ -143,8 +141,8 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupCloseButtonBehaviour()
         initStatusBarSetup()
-        bottomSheetWrapper.apply{
-            setPadding(0,0,0,0)
+        bottomSheetWrapper.apply {
+            setPadding(0, 0, 0, 0)
         }
 //        CelebrationAnalytics.sendImpressionCelebrationLoading(medaliSlug)
     }
@@ -152,7 +150,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
     private fun setupViewModelObservers() {
         medalCelebrationViewModel.badgeLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                 is Success<*> -> {
+                is Success<*> -> {
                     changeStatusBarIconsToLight()
                     showMainView()
                     downloadAssets()
@@ -218,13 +216,17 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     private fun setupCloseButtonBehaviour() {
         binding?.btnClose?.setOnClickListener {
+            CelebrationBottomSheetAnalytics.clickCloseBottomSheet(medaliSlug, getBenefitCta("primary")?.couponCode ?: "")
             dismiss()
         }
     }
 
-    private fun setCloseBtnColor(whiteBtn:Boolean = true){
-        val iconColor = if(whiteBtn) ResourcesCompat.getColor(resources,R.color.Unify_NN0,null)
-        else ResourcesCompat.getColor(resources,R.color.Unify_NN900,null)
+    private fun setCloseBtnColor(whiteBtn: Boolean = true) {
+        val iconColor = if (whiteBtn) {
+            ResourcesCompat.getColor(resources, R.color.Unify_NN0, null)
+        } else {
+            ResourcesCompat.getColor(resources, R.color.Unify_NN900, null)
+        }
         binding?.btnClose?.setImage(
             newLightEnable = iconColor,
             newDarkEnable = iconColor
@@ -420,13 +422,15 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                 badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
 //                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
 //                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
-                val primaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst{ it.unifiedStyle == "primary" }
-                val secondaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst{ it.unifiedStyle == "secondary" }
-                couponUi.btnPrimary.setText(primaryIndex?.let {
-                    scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.get(
-                        it
-                    )
-                }?.text)
+                val primaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst { it.unifiedStyle == "primary" }
+                val secondaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst { it.unifiedStyle == "secondary" }
+                couponUi.btnPrimary.setText(
+                    primaryIndex?.let {
+                        scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.get(
+                            it
+                        )
+                    }?.text
+                )
                 couponUi.btnSecondary.text = secondaryIndex?.let {
                     scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.get(
                         it
@@ -502,10 +506,10 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun fadeView(view: View?, duration: Long, from: Int = 0, to: Int = 255, interpolatorType: Int){
+    private fun fadeView(view: View?, duration: Long, from: Int = 0, to: Int = 255, interpolatorType: Int) {
         view?.let {
             val opacityPvh = getOpacityPropertyValueHolder()
-            ObjectAnimator.ofPropertyValuesHolder(view,opacityPvh).apply {
+            ObjectAnimator.ofPropertyValuesHolder(view, opacityPvh).apply {
                 this.duration = duration
                 interpolator = when (interpolatorType) {
                     EASE_IN -> AccelerateDecelerateInterpolator()
@@ -594,7 +598,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         playSound()
         handler.postDelayed(
             {
-//                CelebrationAnalytics.sendImpressionMedalCelebration(medaliSlug)
+                CelebrationBottomSheetAnalytics.impressionCelebrationBottomSheet(medaliSlug, getBenefitCta("primary")?.couponCode ?: "")
                 showCelebrationConfetti()
                 showStarsConfetti()
             },
@@ -602,18 +606,21 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         )
     }
 
-    private fun setupCouponCtaListeners(){
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply{
-            binding?.mainView?.couponUi?.apply{
-                btnSecondary.setOnClickListener{
-                    RouteManager.route(context,getBenefitCta("secondary")?.appLink)
+    private fun setupCouponCtaListeners() {
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            binding?.mainView?.couponUi?.apply {
+                val benefitCta = getBenefitCta("primary")
+                btnSecondary.setOnClickListener {
+                    CelebrationBottomSheetAnalytics.clickSecondaryCta(medaliSlug, benefitCta?.couponCode ?: "")
+                    RouteManager.route(context, getBenefitCta("secondary")?.appLink)
+                    activity?.finish()
                 }
                 btnPrimary.setOnClickListener {
-                    val benefitCta = getBenefitCta("primary")
                     medalCelebrationViewModel.autoApplyCoupon(
                         couponCode = benefitCta?.couponCode ?: "",
                         benefitData = benefitCta
                     )
+                    CelebrationBottomSheetAnalytics.clickPrimaryCta(medaliSlug, benefitCta?.couponCode ?: "")
                 }
             }
         }
@@ -793,19 +800,17 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun showErrorView(error:Throwable) {
+    private fun showErrorView(error: Throwable) {
         context?.let {
             val defaultBg = ContextCompat.getColor(it, R.color.white)
-            binding?.mainFlipper?.backgroundTintList= ColorStateList.valueOf(defaultBg)
+            binding?.mainFlipper?.backgroundTintList = ColorStateList.valueOf(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
         showCloseButton()
         setCloseBtnColor(false)
         if (error is UnknownHostException || error is SocketTimeoutException) {
             binding?.errorView?.setType(GlobalError.NO_CONNECTION)
-
-        }
-        else{
+        } else {
             binding?.errorView?.apply {
                 errorSecondaryAction.show()
                 if (errorSecondaryAction is UnifyButton) {
@@ -909,11 +914,11 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         activity?.finish()
     }
 
-    private fun hideCloseButton(){
+    private fun hideCloseButton() {
         binding?.btnClose?.hide()
     }
 
-    private fun showCloseButton(){
+    private fun showCloseButton() {
         binding?.btnClose?.show()
     }
 
@@ -922,7 +927,6 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         appLink: String?,
         url: String?
     ) {
-
         Toaster.apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 toasterCustomBottomHeight = getNavigationBarHeight() - 8.toPx()
@@ -955,6 +959,16 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private fun getBenefitCta(key: String): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
+        return if (medalCelebrationViewModel.badgeLiveData.value is Success<*>) {
+            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.getBenefitCta(
+                key
+            )
+        } else {
+            null
+        }
+    }
+
     companion object {
 
         private const val ANIMATION_DURATION = 300L
@@ -974,7 +988,7 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
         fun show(
             childFragmentManager: FragmentManager,
-            medaliSlug: String,
+            medaliSlug: String
         ) {
             val bundle = Bundle()
             bundle.putString(BUNDLE_SCP_MEDALI_SLUG, medaliSlug)
@@ -983,6 +997,5 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
             }
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
-
     }
 }
