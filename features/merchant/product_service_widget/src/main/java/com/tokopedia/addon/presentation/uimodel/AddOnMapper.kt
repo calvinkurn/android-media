@@ -61,8 +61,7 @@ object AddOnMapper {
         return addonGroupList.map {
             it.copy(
                 addon = it.addon.map { addon ->
-                    val isPreselected = if (addon.id in selectedAddonIds) true
-                    else addon.isSelected
+                    val isPreselected = addon.id in selectedAddonIds
                     addon.copy(
                         isSelected = isPreselected,
                         isPreselected = isPreselected

@@ -31,10 +31,6 @@ import javax.inject.Inject
 
 class AddOnWidgetView : BaseCustomView {
 
-    companion object {
-        private const val DEFAULT_INVALID_INDEX = -1
-    }
-
     @Inject
     lateinit var viewModel: AddOnViewModel
     private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
@@ -64,7 +60,7 @@ class AddOnWidgetView : BaseCustomView {
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
-                viewModel.setSelectedAddons(it, DEFAULT_INVALID_INDEX)
+                viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
@@ -157,7 +153,7 @@ class AddOnWidgetView : BaseCustomView {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
-        viewModel.setSelectedAddons(addOnGroupUIModels, index)
+        viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {

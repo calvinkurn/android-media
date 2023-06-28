@@ -38,7 +38,14 @@ class AddOnViewModel @Inject constructor(
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
     private val mModifiedAddOnGroups = MutableLiveData<List<AddOnGroupUIModel>>()
-    val modifiedAddOnGroups: LiveData<List<AddOnGroupUIModel>> get() = mModifiedAddOnGroups
+    val modifiedAddOnGroups = Transformations.map(mModifiedAddOnGroups) { addonGroups ->
+        addonGroups.forEach { addon ->
+            addon.addon.forEach {
+                it.isPreselected = it.id in preselectedAddonIds
+            }
+        }
+        addonGroups
+    }
 
     private val mAggregatedData = MutableLiveData<AddOnPageResult.AggregatedData>()
     val aggregatedData: LiveData<AddOnPageResult.AggregatedData> get() = mAggregatedData
@@ -104,7 +111,7 @@ class AddOnViewModel @Inject constructor(
         )
     }
 
-    fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>, index: Int) {
+    fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>) {
         mModifiedAddOnGroups.value = addOnGroupUIModels
         mAutoSave.value?.let {
             if (it.isActive) {
