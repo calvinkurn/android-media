@@ -3,7 +3,7 @@ package com.tokopedia.notifcenter.data.entity.orderlist
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.ui.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
 
 data class OrderWidgetUiModel(
         @SerializedName("counter_str")

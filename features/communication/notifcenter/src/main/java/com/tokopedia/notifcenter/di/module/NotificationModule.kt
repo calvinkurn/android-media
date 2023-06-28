@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManagerImpl
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
@@ -52,4 +53,7 @@ object NotificationModule {
     ): TopAdsImageViewUseCase {
         return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
     }
+
+    @Provides
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }

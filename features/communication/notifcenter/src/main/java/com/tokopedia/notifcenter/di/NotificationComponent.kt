@@ -6,16 +6,15 @@ import com.tokopedia.notifcenter.di.module.NotificationFragmentModule
 import com.tokopedia.notifcenter.di.module.NotificationModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.service.MarkAsSeenService
-import com.tokopedia.notifcenter.ui.affiliate.NotificationAffiliateActivity
-import com.tokopedia.notifcenter.ui.buyer.NotificationActivity
-import com.tokopedia.notifcenter.ui.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
-import com.tokopedia.notifcenter.ui.seller.NotificationSellerActivity
+import com.tokopedia.notifcenter.view.affiliate.NotificationAffiliateActivity
+import com.tokopedia.notifcenter.view.buyer.NotificationActivity
+import com.tokopedia.notifcenter.view.buyer.bottomsheet.NotifCenterAccountSwitcherBottomSheet
+import com.tokopedia.notifcenter.view.seller.NotificationSellerActivity
 import dagger.Component
 
 @ActivityScope
 @Component(
     modules = [
-        NotificationCommonModule::class,
         NotificationViewModelModule::class,
         NotificationModule::class,
         NotificationFragmentModule::class

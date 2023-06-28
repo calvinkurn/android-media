@@ -5,16 +5,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.state.Resource
+import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 open class NotifcenterFilterV2UseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    private val cacheManager: NotifcenterCacheManager,
+    private val cacheManager: NotifCenterCacheManager,
     dispatcher: CoroutineDispatchers
 ) : FlowUseCase<Int, Resource<NotifcenterFilterResponse>>(dispatcher.io) {
 

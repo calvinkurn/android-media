@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.notifcenter.data.entity.notification.*
-import com.tokopedia.notifcenter.ui.adapter.typefactory.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 import java.util.*
 
 @SuppressLint("Invalid Data Type")

@@ -5,8 +5,8 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.notifcenter.ui.NotificationFragment
-import com.tokopedia.notifcenter.ui.affiliate.NotificationAffiliateFragment
+import com.tokopedia.notifcenter.view.NotificationFragment
+import com.tokopedia.notifcenter.view.affiliate.NotificationAffiliateFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
