@@ -40,7 +40,7 @@ class TransParentActivity : BaseActivity() {
         const val SHOP_NAME = "shopName"
         const val DATA_HASH_CODE = "dataHash"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0, productId: String = ""): Intent {
+        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0, productId: String = "", additionalData: String = ""): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(PRODUCT_ID, productId)
