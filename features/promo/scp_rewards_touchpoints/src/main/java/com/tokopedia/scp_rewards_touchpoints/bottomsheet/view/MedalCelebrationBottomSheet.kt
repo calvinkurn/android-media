@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.ColorStateList
@@ -20,6 +21,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -32,6 +34,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -39,24 +42,30 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.scp_rewards_touchpoints.R
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationFragmentLayoutBinding
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.constants.EASE_IN
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.CouponAutoApplyResponseModel
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getBenefitCta
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.model.getMessage
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.AudioFactory
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.DeviceInfo
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.dpToPx
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.isNullOrZero
+import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.launchLink
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.parseColor
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -109,7 +118,6 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         activity?.intent?.let {
             medaliSlug = it.data?.pathSegments?.last() ?: ""
         }
-//        setStyle(STYLE_NORMAL, R.style.ScpTransparentBottomSheetStyle)
     }
 
     override fun onAttach(context: Context) {
@@ -135,7 +143,6 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupCloseButtonBehaviour()
         initStatusBarSetup()
-
         bottomSheetWrapper.apply{
             setPadding(0,0,0,0)
         }
@@ -157,6 +164,34 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                 is Loading -> {
                     binding?.mainFlipper?.displayedChild = LOADING_STATE
                     hideCloseButton()
+                }
+
+                else -> {}
+            }
+        }
+
+        medalCelebrationViewModel.autoApplyLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is MedalCelebrationViewModel.AutoApplyState.SuccessCoupon -> {
+                    binding?.mainView?.couponUi?.btnPrimary?.isLoading = false
+                    showToastAndNavigateToLink(
+                        message = it.autoApplyData.getMessage(),
+                        url = it.benefitData?.url ?: "",
+                        appLink = it.benefitData?.appLink ?: ""
+                    )
+                }
+
+                is MedalCelebrationViewModel.AutoApplyState.Error -> {
+                    binding?.mainView?.couponUi?.btnPrimary?.isLoading = false
+                    showToastAndNavigateToLink(
+                        message = it.throwable.localizedMessage ?: "",
+                        url = it.benefitData?.url ?: "",
+                        appLink = it.benefitData?.appLink ?: ""
+                    )
+                }
+
+                is MedalCelebrationViewModel.AutoApplyState.Loading -> {
+                    binding?.mainView?.couponUi?.btnPrimary?.isLoading = true
                 }
 
                 else -> {}
@@ -573,6 +608,13 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
                 btnSecondary.setOnClickListener{
                     RouteManager.route(context,getBenefitCta("secondary")?.appLink)
                 }
+                btnPrimary.setOnClickListener {
+                    val benefitCta = getBenefitCta("primary")
+                    medalCelebrationViewModel.autoApplyCoupon(
+                        couponCode = benefitCta?.couponCode ?: "",
+                        benefitData = benefitCta
+                    )
+                }
             }
         }
     }
@@ -873,6 +915,44 @@ class MedalCelebrationBottomSheet: BottomSheetUnify() {
 
     private fun showCloseButton(){
         binding?.btnClose?.show()
+    }
+
+    private fun showToastAndNavigateToLink(
+        message: String?,
+        appLink: String?,
+        url: String?
+    ) {
+
+        Toaster.apply {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                toasterCustomBottomHeight = getNavigationBarHeight() - 8.toPx()
+            }
+        }
+            .build(binding?.root!!, message.orEmpty())
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    requireContext().launchLink(appLink, url)
+                    activity?.finish()
+                }
+            })
+            .show()
+    }
+
+    private fun getNavigationBarHeight(): Int {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            val imm =
+                activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+        val resources = context?.resources
+        val resourceId: Int =
+            resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        return if (resourceId > 0) {
+            resources?.getDimensionPixelSize(resourceId) ?: 0
+        } else {
+            0
+        }
     }
 
     companion object {
