@@ -93,6 +93,7 @@ open class DeepLinkMapperTestFixture {
         mockReverseList()
         val actualResultReversed = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResultReversed)
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
     protected fun assertEqualsDeeplinkParameters(
