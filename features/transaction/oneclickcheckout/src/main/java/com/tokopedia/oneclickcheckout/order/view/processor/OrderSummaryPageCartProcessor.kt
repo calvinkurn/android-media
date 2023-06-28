@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -312,10 +311,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                         message = errorMessage
                     )
                 }
-            } catch (e: Throwable) {
+            } catch (throwable: Throwable) {
                 return@withContext SaveAddOnState(
                     isSuccess = false,
-                    message = String.EMPTY
+                    throwable = throwable
                 )
             }
         }
@@ -348,10 +347,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                         message = errorMessage
                     )
                 }
-            } catch (e: Throwable) {
+            } catch (throwable: Throwable) {
                 return@withContext SaveAddOnState(
                     isSuccess = false,
-                    message = String.EMPTY
+                    throwable = throwable
                 )
             }
         }

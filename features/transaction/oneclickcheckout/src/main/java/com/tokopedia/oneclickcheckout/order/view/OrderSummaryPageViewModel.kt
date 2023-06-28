@@ -1006,11 +1006,10 @@ class OrderSummaryPageViewModel @Inject constructor(
 
                                 // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
                                 if (!saveAddOnState.isSuccess) {
-                                    globalEvent.value = OccGlobalEvent.ToasterAction(
-                                        toast = OccToasterAction(
-                                            message = saveAddOnState.message,
-                                            ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
-                                        )
+                                    globalEvent.value = OccGlobalEvent.Error(
+                                        errorMessage = saveAddOnState.message,
+                                        throwable = saveAddOnState.throwable,
+                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
                                     )
                                     return@launch
                                 }

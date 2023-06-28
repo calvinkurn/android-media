@@ -802,7 +802,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 ErrorHandler.getErrorMessage(context, it.throwable)
                             }
                         }
-                        Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(v, message, type = Toaster.TYPE_ERROR, actionText = it.ctaText).show()
                     }
                 }
                 is OccGlobalEvent.PriceChangeError -> {
