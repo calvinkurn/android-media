@@ -65,6 +65,10 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 if (contains(EditorToolType.ADD_LOGO)) {
                                     withAddLogo()
                                 }
+
+                                if (contains(EditorToolType.ADD_TEXT)) {
+                                    withAddText()
+                                }
                             }
 
                             when (fromEditorJson.autoCropRatio()) {

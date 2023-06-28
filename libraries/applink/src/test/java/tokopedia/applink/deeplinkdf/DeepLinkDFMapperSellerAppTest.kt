@@ -5,6 +5,7 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -34,9 +35,15 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check user identification form appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+    fun `check user identification form appLink then should return DF_KYC_SELLERAPP in sellerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-form?projectId=123456"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
+    }
+
+    @Test
+    fun `check user identification form appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/liveness-detection?projectId=123456"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
     }
 
     @Test
@@ -148,9 +155,33 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check play broadcaster appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+    fun `check play broadcaster appLink then should return DF_CONTENT_PLAY_BROADCASTER in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
+
+    @Test
+    fun `check play shorts appLink then should return DF_CONTENT_PLAY_BROADCASTER in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-shorts"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
+
+    @Test
+    fun `check media picker appLink then should return DF_CONTENT_PLAY_BROADCASTER in sellerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/media-picker"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
+
+    @Test
+    fun `check media picker album appLink then should return DF_CONTENT_PLAY_BROADCASTER in sellerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/media-picker-album"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
+
+    @Test
+    fun `check media picker preview appLink then should return DF_CONTENT_PLAY_BROADCASTER in sellerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/media-picker-preview"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
     }
 
     @Test
@@ -361,4 +392,29 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
         val appLink = "sellerapp://seller-persona"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL)
     }
+
+    @Test
+    fun `check goto kyc from applink then should return DF_KYC_SELLERAPP in seller app`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc?projectId=123456"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
+    }
+
+    @Test
+    fun `check user identification form appLink then should return DF_KYC_SELLERAPP in seller app`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-form?projectId=123456"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
+    }
+
+    @Test
+    fun `check user identification info appLink then should return DF_KYC_SELLERAPP in seller app`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-info?projectId=123456"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
+    }
+
+    @Test
+    fun `check user identification only appLink then should return DF_KYC_SELLERAPP in seller app`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/user-identification-only?projectId=123456"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
+    }
+
 }
