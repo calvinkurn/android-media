@@ -23,12 +23,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -89,10 +91,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
-        private const val TRACKER_PREF_NAME = "NotificationUserSettings"
         private const val WEAR_PREF_NAME = "WearPopupSharedPref"
 
-        private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
     }
@@ -127,9 +127,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
-    private val sharedPreference: SharedPreferences by lazy {
-        applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
-    }
     private val wearSharedPreference: SharedPreferences by lazy {
         applicationContext.getSharedPreferences(WEAR_PREF_NAME, MODE_PRIVATE)
     }
@@ -164,6 +161,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         setupSellerHomeInsetListener()
         sendNotificationUserSetting()
         observeWearDialog()
+        installDFonBackground()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -293,13 +291,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun sendNotificationUserSetting() {
-        val isSettingsSent: Boolean =
-            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
-        if (userSession.isLoggedIn && !isSettingsSent) {
+        if (userSession.isLoggedIn) {
             NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
-            sharedPreference.edit()
-                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
-                .apply()
         }
     }
 
@@ -764,5 +757,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     .apply()
             }
         }
+    }
+
+    private fun installDFonBackground() {
+        val moduleNameList = listOf(
+            DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
+        )
+        DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
 }

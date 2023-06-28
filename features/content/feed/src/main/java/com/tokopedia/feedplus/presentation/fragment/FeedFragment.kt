@@ -468,6 +468,7 @@ class FeedFragment :
     ) {
         feedAnalytics.eventWatchVideoPost()
         feedPostViewModel.trackVisitChannel(model)
+        feedPostViewModel.trackChannelPerformance(model)
     }
 
     override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {

@@ -12,7 +12,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
+class QuickEditVariantViewModelTest : QuickEditVariantViewModelTestFixture() {
 
     @Test
     fun `given variant list is NOT empty when get variants success should set variants result`() {
@@ -133,7 +133,8 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             productVariants,
             emptyList(),
             emptyList(),
-            editStock = true
+            editStock = true,
+            variantNameUpdates = arrayListOf("", "")
         )
 
         viewModel.onClickSaveButton
@@ -167,7 +168,8 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
             productVariants,
             emptyList(),
             emptyList(),
-            editStatus = true
+            editStatus = true,
+            variantNameUpdates = arrayListOf("", "")
         )
 
         viewModel.onClickSaveButton
