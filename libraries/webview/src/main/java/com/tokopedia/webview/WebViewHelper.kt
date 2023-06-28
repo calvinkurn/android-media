@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.util.Base64
 import android.webkit.WebView
+import android.text.TextUtils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
@@ -24,6 +25,7 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import org.json.JSONArray
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -40,6 +42,7 @@ object WebViewHelper {
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
     private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+    private const val APP_SCP_WHITELISTED_ROUTES = "android_scp_whitelisted_routes"
     var whiteListedDomains = WhiteListedDomains()
     var whiteListedFintechPath = WhiteListedFintechPath()
 
@@ -464,6 +467,32 @@ object WebViewHelper {
             }
         }
         return false
+    }
+
+    @JvmStatic
+    fun isScpUrl(context: Context?, url: String): Boolean{
+        try {
+            context?.let {
+                val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it.applicationContext)
+                val whiteListedScpDomains = firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
+                if(!TextUtils.isEmpty(whiteListedScpDomains)){
+                    val domainArray = JSONArray(whiteListedScpDomains)
+                    if(domainArray.length() > 0 && !TextUtils.isEmpty(url)){
+                        for(i in 0 until domainArray.length()){
+                            val domainObj = domainArray.get(i)
+                            val domainStr = domainObj?.toString()
+                            if(!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())){
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+            return false
+        }catch (ex:Exception){
+            FirebaseCrashlytics.getInstance().recordException(ex)
+            return false
+        }
     }
 
     // Handler to inject image back to webview
