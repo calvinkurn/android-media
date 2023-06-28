@@ -16,6 +16,7 @@ import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -25,6 +26,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class PdpCartCheckoutJourneyTest {
 
     @get:Rule
@@ -33,7 +35,7 @@ class PdpCartCheckoutJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
 
@@ -43,21 +45,25 @@ class PdpCartCheckoutJourneyTest {
         productDetailInterceptor.customP1ResponsePath = RESPONSE_P1_PATH
         productDetailInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_PATH
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(MockInterceptor(
-                        object : MockModelConfig() {
-                            override fun createMockModel(context: Context): MockModelConfig {
-                                addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CartPageMocks.UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SAVE_SHIPMENT_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.RATES_V3_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.VALIDATE_USE_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.CHECKOUT_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                return this
-                            }
-                        }.createMockModel(context)
-                ), AtcInterceptor(context), productDetailInterceptor),
-                context)
+            listOf(
+                MockInterceptor(
+                    object : MockModelConfig() {
+                        override fun createMockModel(context: Context): MockModelConfig {
+                            addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CartPageMocks.UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CheckoutPageMocks.SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SAVE_SHIPMENT_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CheckoutPageMocks.RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.RATES_V3_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CheckoutPageMocks.VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.VALIDATE_USE_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            addMockResponse(CheckoutPageMocks.CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.CHECKOUT_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                            return this
+                        }
+                    }.createMockModel(context)
+                ),
+                AtcInterceptor(context), productDetailInterceptor
+            ),
+            context
+        )
     }
 
     @Test
