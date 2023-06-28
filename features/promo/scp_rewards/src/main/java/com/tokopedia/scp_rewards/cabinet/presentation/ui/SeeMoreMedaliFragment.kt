@@ -12,13 +12,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.MEDALI_QUERY_PARAM
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.cabinet.di.MedalCabinetComponent
 import com.tokopedia.scp_rewards.cabinet.domain.model.ScpRewardsGetUserMedalisResponse
 import com.tokopedia.scp_rewards.cabinet.mappers.MedaliListMapper
 import com.tokopedia.scp_rewards.cabinet.presentation.adapter.SeeMoreMedalAdapter
 import com.tokopedia.scp_rewards.cabinet.presentation.viewmodel.SeeMoreMedaliViewModel
-import com.tokopedia.scp_rewards.common.data.InfiniteLoading
+import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
@@ -28,6 +31,8 @@ import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
 import com.tokopedia.scp_rewards_widgets.medal.MedalViewHolder
 import com.tokopedia.scp_rewards_widgets.medal.SeeMoreMedalTypeFactory
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class SeeMoreMedaliFragment : BaseDaggerFragment() {
@@ -108,16 +113,46 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
                     onLoadingState()
                 }
 
-                is InfiniteLoading -> {
-                    onLoadingMoreState()
+                is Error -> {
+                    onErrorState(it)
                 }
-
-                else -> {}
             }
         }
         viewModel.hasNextLiveData.observe(viewLifecycleOwner) {
             if (!it) {
                 removeRecyclerViewScrollListener()
+            }
+        }
+    }
+
+    private fun onErrorState(result: Error) {
+        with(viewModel) {
+            if (pageCount == 1) {
+                handleError(result.error)
+            } else {
+                if (visitableList.last() is LoadingMoreModel) {
+                    visitableList.removeLast()
+                }
+            }
+        }
+    }
+
+    private fun handleError(error: Throwable) {
+        binding?.let {
+            with(it) {
+                badgeRv.gone()
+                viewError.visible()
+                if (error is UnknownHostException || error is SocketTimeoutException) {
+                    viewError.setType(GlobalError.NO_CONNECTION)
+                } else {
+                    viewError.apply {
+                        setType(GlobalError.SERVER_ERROR)
+                        errorSecondaryAction.text = context.getText(R.string.goto_main_page_text)
+                        setSecondaryActionClickListener {
+                            activity?.finish()
+                        }
+                    }
+                }
             }
         }
     }
@@ -135,21 +170,22 @@ class SeeMoreMedaliFragment : BaseDaggerFragment() {
                 MedaliListMapper.getMedalList(response, badgeType)
             )
             submitAdapterList(visitableList)
+            binding?.viewError?.gone()
+            binding?.badgeRv?.visible()
             rvScrollListener?.updateStateAfterGetData()
         }
     }
 
     private fun onLoadingState() {
         with(viewModel) {
-            visitableList.clear()
-            visitableList.add(LoadingModel())
+            if (pageCount == 1) {
+                visitableList.clear()
+                visitableList.add(LoadingModel())
+            } else {
+                viewModel.visitableList.add(LoadingMoreModel())
+            }
             submitAdapterList(visitableList)
         }
-    }
-
-    private fun onLoadingMoreState() {
-        viewModel.visitableList.add(LoadingMoreModel())
-        submitAdapterList(viewModel.visitableList)
     }
 
     private fun submitAdapterList(list: List<Visitable<*>>) {

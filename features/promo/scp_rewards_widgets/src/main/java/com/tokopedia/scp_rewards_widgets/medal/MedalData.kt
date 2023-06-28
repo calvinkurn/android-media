@@ -48,3 +48,7 @@ data class Cta(
     val appLink: String? = null,
     val deepLink: String? = null
 )
+
+class MedalError(val imageUrl: String?) : Visitable<MedalViewTypeFactory> {
+    override fun type(typeFactory: MedalViewTypeFactory) = typeFactory.type(this)
+}

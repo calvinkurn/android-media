@@ -11,8 +11,11 @@ open class MedalViewTypeFactory(private val listener: MedalClickListener? = null
 
     fun type(model: MedalItem) = MedalViewHolder.LAYOUT
 
+    fun type(model: MedalError) = MedalEmptyViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            MedalEmptyViewHolder.LAYOUT -> MedalEmptyViewHolder(parent)
             MedalSectionViewHolder.LAYOUT -> MedalSectionViewHolder(parent, listener)
             MedalViewHolder.LAYOUT -> MedalViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)

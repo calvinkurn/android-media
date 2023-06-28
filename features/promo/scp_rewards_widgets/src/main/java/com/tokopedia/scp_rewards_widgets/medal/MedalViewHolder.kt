@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.grayscale
+import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.loadLottieFromUrl
 import com.tokopedia.scp_rewards_common.showTextOrHide
 import com.tokopedia.scp_rewards_widgets.R
@@ -48,12 +49,12 @@ class MedalViewHolder(
         tvMedalCaption.text = item.extraInfo
         if (item.isDisabled == true) {
             ivMedal.grayscale()
-            ivMedal.setImageUrl(item.imageUrl.orEmpty())
+            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
         } else {
             medalClickListener?.let {
                 this.root.setOnClickListener { medalClickListener.onMedalClick(item) }
             }
-            ivMedal.setImageUrl(item.imageUrl.orEmpty())
+            ivMedal.loadImageOrFallback(item.imageUrl, R.drawable.ic_empty_medal)
         }
         handleProgressBar(item)
     }

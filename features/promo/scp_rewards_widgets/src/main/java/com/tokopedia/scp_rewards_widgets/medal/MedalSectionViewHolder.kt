@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.common.GridSpacing
@@ -66,7 +67,7 @@ class MedalSectionViewHolder(
 
     private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?) {
         if (medalList.isNullOrEmpty()) {
-            binding.ivEmptyList.setImageUrl(bannerData?.imageUrl.orEmpty())
+            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list)
             binding.ivEmptyList.visible()
             binding.rvMedals.gone()
         } else {
