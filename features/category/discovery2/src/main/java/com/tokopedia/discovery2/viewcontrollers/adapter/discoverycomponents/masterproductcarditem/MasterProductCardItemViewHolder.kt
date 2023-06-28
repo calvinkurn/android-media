@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -38,12 +39,15 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
     private var buttonNotify: UnifyButton? = null
+    private var lastClickTime = 0L
+    private var interval : Int = 500
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
         masterProductCardItemViewModel?.let {
             getSubComponent().inject(it)
         }
+        lastClickTime = 0L
         initView()
     }
 
@@ -52,6 +56,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
             buttonNotify = masterProductCardListView?.getNotifyMeButton()
             masterProductCardListView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel?.subscribeUser()
             }
@@ -76,6 +84,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel?.subscribeUser()
                 showNotificationReminderPrompt()

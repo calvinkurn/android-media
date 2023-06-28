@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.model.CategoryUIModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -90,8 +90,8 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         val intent = Intent()
         categories?.let {
             val modelCategories = CategoryMapper.mapCategoryUiModelToCategoryModel(categories)
-            intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, modelCategories as ArrayList<CategoryViewModel?>?)
-            val chosenCategory: CategoryViewModel = modelCategories[categories.size - 1]
+            intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, modelCategories as? ArrayList<CategoryUIModel?>)
+            val chosenCategory: CategoryUIModel = modelCategories[categories.size - 1]
             intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.id)
             intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.name)
             intent.putExtra(CATEGORY_RESULT_FULL_NAME, getCategoryResultFullName(modelCategories))
@@ -100,7 +100,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         activity?.finish()
     }
 
-    private fun getCategoryResultFullName(listCategory: List<CategoryViewModel>?): String? {
+    private fun getCategoryResultFullName(listCategory: List<CategoryUIModel>?): String? {
         val sb = StringBuilder()
         if (listCategory != null) {
             var prefix = ""
