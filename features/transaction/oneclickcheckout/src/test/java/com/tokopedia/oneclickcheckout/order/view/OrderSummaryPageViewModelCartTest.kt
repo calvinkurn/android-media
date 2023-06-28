@@ -1114,13 +1114,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isSuccess = false

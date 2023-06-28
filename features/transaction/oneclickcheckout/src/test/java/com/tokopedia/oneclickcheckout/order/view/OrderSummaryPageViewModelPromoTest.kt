@@ -506,13 +506,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -543,13 +536,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -590,13 +576,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = lastResponse
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -616,13 +595,6 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isSuccess = false

@@ -226,13 +226,6 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
@@ -298,13 +291,6 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val saveAddOnsResponse = SaveAddOnsResponse(
-            status = STATUS_OK,
-            data = DataResponse(
-                addOns = listOf(AddOnResponse())
-            )
-        )
-        coEvery { saveAddOnStateUseCase.executeOnBackground() } returns SaveAddOnStateResponse(saveAddOnsResponse)
 
         // When
         var isOnSuccessCalled = false
