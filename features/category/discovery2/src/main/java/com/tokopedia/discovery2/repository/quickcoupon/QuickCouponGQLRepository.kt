@@ -10,20 +10,44 @@ import javax.inject.Inject
 
 open class QuickCouponGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), QuickCouponRepository {
     override suspend fun getQuickCouponDetailData(pageIdentifier: String): QuickCouponDetailResponse {
-        return getGQLData(getGQLString(R.raw.quick_coupon_gql),
-                QuickCouponDetailResponse::class.java, mapOf("discovery_page" to pageIdentifier))
+        return getGQLData(quickCouponGql,
+            QuickCouponDetailResponse::class.java, mapOf("discovery_page" to pageIdentifier))
     }
 
     override suspend fun getMobileVerificationData(): PhoneVerificationResponse {
-        return getGQLData(getGQLString(R.raw.mobile_verification_gql),
-                PhoneVerificationResponse::class.java, mapOf())
+        return getGQLData(mobileVerificationGql,
+            PhoneVerificationResponse::class.java, mapOf())
     }
 
     override suspend fun applyUserQuickCoupon(promoCode: String): ApplyCouponResponse {
-        return getGQLData(getGQLString(R.raw.apply_quick_coupon_gql),
-                ApplyCouponResponse::class.java, mapOf("promoCode" to promoCode))
+        return getGQLData(applyQuickCouponGql,
+            ApplyCouponResponse::class.java, mapOf("promoCode" to promoCode))
     }
 
+    private val quickCouponGql: String = """query GetOneClickCoupon(${'$'}discovery_page: String) {
+    GetOneClickCoupon(discovery_page : ${'$'}discovery_page) {
+      coupon_applied
+      is_applicable
+	   	code_promo
+	  	real_code
+		  catalog_title
+		  coupon_app_link
+		  message_using_success
+		  message_using_failed
+    }
+  }""".trimIndent()
+
+    private val mobileVerificationGql: String = """query getProfile {
+    profile {
+      phone_verified
+    }
+  }""".trimIndent()
+
+    private val applyQuickCouponGql: String = """mutation save_cache_auto_apply(${'$'}promoCode: String) {
+    save_cache_auto_apply(promoCode: ${'$'}promoCode) {
+      Success
+    }
+  }""".trimIndent()
 }
 
 

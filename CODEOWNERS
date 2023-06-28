@@ -13,6 +13,7 @@
 /features/discovery/topadssdk/                      	@tokopedia/android-minionsolo-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
+/features/discovery/home_component_header/              @tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
@@ -54,7 +55,6 @@
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
 
-/features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
@@ -109,6 +109,7 @@
 /features/merchant/product_manage_common/               @tokopedia/android-minionken-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
+/features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
@@ -204,7 +205,7 @@
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
-/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 /features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
@@ -306,6 +307,7 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
+/libraries/byteplus_effect/						        @tokopedia/android-minionlance-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -371,6 +373,7 @@
 /libraries/weaver/									    @tokopedia/android-core-dev
 /libraries/websocket/									@tokopedia/android-core-dev
 /libraries/webview/										@tokopedia/android-core-dev
+/libraries/youtube_player/								@tokopedia/android-core-dev
 /libraries/williamchart/								@tokopedia/android-core-dev
 /libraries/youtubeutil/									@tokopedia/android-core-dev
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
@@ -403,7 +406,6 @@
 /tkpdseller/                                        	@tokopedia/android-core-dev
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeperlegacy-dev
-/tkpdcore/                                          	@tokopedia/android-gatekeeperlegacy-dev
 /tkpdabstraction/                                   	@tokopedia/android-gatekeeperlegacy-dev
 
 /customerapp/                                       	@tokopedia/android-core-dev

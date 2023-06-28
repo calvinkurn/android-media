@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.device.info.DeviceScreenInfo
@@ -47,12 +48,13 @@ class ItemPenaltyViewHolder(
                 penaltyIndicator.background = getColoredIndicator(root.context, it)
                 tvTitleStatusPenalty.setTextColor(ContextCompat.getColor(root.context, it))
             }
-            tvTitleStatusPenalty.text = element.statusPenalty
+            tvTitleStatusPenalty.text = getStatusTitle(element.statusPenalty, element.statusPenaltyRes)
             tvEndDateStatusPenalty.text = element.endDate
             tvDateStatusPenalty.text = element.startDate
             tvTitleTypePenalty.text = element.typePenalty
 
-            tvInvoiceTransactionPenalty.text = element.invoicePenalty
+            tvInvoiceTransactionPenalty.text =
+                element.productName ?: element.invoicePenalty
 
             icTransactionPenaltyToDetail.setOnClickListener {
                 itemDetailPenaltyListener.onItemPenaltyClick(element)
@@ -70,5 +72,11 @@ class ItemPenaltyViewHolder(
                 shopPenaltySelected?.showWithCondition(isSelected)
             }
         }
+    }
+
+    private fun getStatusTitle(message: String, @StringRes statusPenaltyRes: Int?): String {
+        return statusPenaltyRes?.let {
+            getString(it)
+        } ?: message
     }
 }

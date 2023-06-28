@@ -63,22 +63,16 @@
             app:typographyWeight="bold"
             tools:text="Rp150.000" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_product_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_play_discount_badge"
-            android:paddingStart="@dimen/spacing_lvl2"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_RN400"
+            app:labelType="highlight_light_red"
             app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
             app:layout_constraintStart_toEndOf="@+id/tv_current_price"
             app:layout_constraintTop_toTopOf="@+id/tv_current_price"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:ignore="TextContrastCheck,TextContrastCheck"
             tools:text="100%" />
 
         <com.tokopedia.unifyprinciples.Typography

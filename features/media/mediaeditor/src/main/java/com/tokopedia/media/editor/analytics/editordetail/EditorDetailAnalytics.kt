@@ -5,6 +5,9 @@ interface EditorDetailAnalytics {
     fun clickRotationRotate()
     fun clickAddLogoUpload()
     fun clickAddLogoLoadRetry()
+    fun clickAddTextFreeText()
+    fun clickAddTextBackgroundText()
+    fun clickAddTextTemplate()
     fun clickSave(
         editorText: String,
         brightnessValue: Int,
@@ -13,6 +16,7 @@ interface EditorDetailAnalytics {
         rotateValue: Int,
         watermarkText: String,
         removeBackgroundText: String,
-        addLogoValue: String
+        addLogoValue: String,
+        addTextValue: String
     )
 }

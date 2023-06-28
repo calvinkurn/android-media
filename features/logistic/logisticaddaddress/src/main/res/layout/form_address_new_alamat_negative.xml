@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/form_address_negative"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_counter="30"
-        app:text_field_label="Label Alamat"/>
+        app:text_field_label="Label Alamat"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_label_alamat_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/et_label"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_kota_kecamatan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
-        app:text_field_label="@string/txt_kota_kecamatan"/>
+        app:text_field_label="@string/txt_kota_kecamatan"
+        app:layout_constraintTop_toBottomOf="@id/rv_label_alamat_chips"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_alamat"
@@ -32,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_label="@string/txt_alamat_lengkap"
-        app:text_field_counter="200"/>
+        app:text_field_counter="200"
+        app:layout_constraintTop_toBottomOf="@id/et_kota_kecamatan"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_courier_note"
@@ -41,6 +44,7 @@
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_counter="45"
         app:text_field_label="Catatan Untuk Kurir (Opsional)"
-        app:text_field_message="Warna rumah, patokan, pesan khusus, dll"/>
+        app:text_field_message="Warna rumah, patokan, pesan khusus, dll"
+        app:layout_constraintTop_toBottomOf="@id/et_alamat"/>
 
-</LinearLayout>
+</merge>
