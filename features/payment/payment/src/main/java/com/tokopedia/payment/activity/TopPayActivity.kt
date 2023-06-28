@@ -272,6 +272,10 @@ class TopPayActivity :
         startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
     }
 
+    fun navigateAutoReload(goToIntent: Intent) {
+        startActivityForResult(goToIntent, REQURST_CODE_AUTO_RELOAD)
+    }
+
     fun navigateToActivityAndFinish(goToIntent: Intent) {
         startActivity(goToIntent)
         setResult(Activity.RESULT_OK)
@@ -475,6 +479,10 @@ class TopPayActivity :
             if (reloadUrl.contains(getBaseUrlDomainPayment())) {
                 reloadPayment()
             }
+        } else if (requestCode == REQURST_CODE_AUTO_RELOAD) {
+            if (reloadUrl.contains(getBaseUrlDomainPayment())) {
+                reloadPayment()
+            }
         }
     }
 
@@ -653,7 +661,11 @@ class TopPayActivity :
                     val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
                         data = Uri.parse(url)
                     }
-                    if (isGoPayTopUpLink(url)) {
+                    if (isURLReloadParamExist(url)) {
+                        reloadUrl = scroogeWebView?.url.orEmpty()
+                        navigateAutoReload(intent)
+                    }
+                    else if (isGoPayTopUpLink(url)) {
                         reloadUrl = scroogeWebView?.url.orEmpty()
                         navigateToActivity(intent)
                     } else {
@@ -899,6 +911,11 @@ class TopPayActivity :
 
     private fun isGoPayTopUpLink(url: String) = url.contains(GOPAY_TOP_UP)
 
+    private fun isURLReloadParamExist(url: String): Boolean {
+        val decodedURL = URLDecoder.decode(url, "UTF-8")
+        return decodedURL.contains("payment_reload=true")
+    }
+
     private fun redirectToLinkAjaApp(url: String) {
         try {
             val uri = Uri.parse(url)
@@ -945,6 +962,7 @@ class TopPayActivity :
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
         private const val REQUEST_CODE_GOPAY_TOP_UP = 102
+        private const val REQURST_CODE_AUTO_RELOAD = 103
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {
