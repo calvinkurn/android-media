@@ -209,6 +209,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private ApplicationUpdate appUpdate;
     private LottieBottomNavbar bottomNavigation;
+
+    private View lineBottomNav;
     List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
@@ -389,6 +391,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList = fragments();
 
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        lineBottomNav = findViewById(R.id.line_bottom_nav);
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
             @NotNull
@@ -626,7 +629,11 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
-        bottomNavigation.forceDarkMode(getIsFragmentForceDarkModeNavigationBar(fragment));
+        boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
+        bottomNavigation.forceDarkMode(isForceDarkMode);
+
+        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_N75;
+        lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
     private void scrollToTop(Fragment fragment) {
