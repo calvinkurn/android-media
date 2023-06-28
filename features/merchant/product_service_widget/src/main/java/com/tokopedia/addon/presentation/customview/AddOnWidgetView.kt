@@ -85,11 +85,14 @@ class AddOnWidgetView : BaseCustomView {
                     }
                     is Success -> {
                         if (it.data.isNotEmpty()) {
-                            val selectedAddon = viewModel.selectedAddon.value ?: return@observe
-                            val selectedAddonGroup = AddOnMapper.deepCopyAddonGroup(it.data)
-                            listener?.onSaveAddonSuccess(viewModel.selectedAddonIds,
-                                selectedAddon, selectedAddonGroup)
-                            viewModel.lastSelectedAddOn = selectedAddonGroup
+                            val addonGroups = AddOnMapper.deepCopyAddonGroup(it.data)
+                            viewModel.preselectedAddonIds = AddOnMapper.getSelectedAddonsIds(addonGroups)
+                            listener?.onSaveAddonSuccess(
+                                viewModel.preselectedAddonIds,
+                                AddOnMapper.flatmapToChangedAddonSelection(addonGroups),
+                                addonGroups
+                            )
+                            viewModel.lastSelectedAddOn = addonGroups
                         } else {
                             listener?.onSaveAddonLoading()
                         }
@@ -97,7 +100,7 @@ class AddOnWidgetView : BaseCustomView {
                 }
             }
             viewModel.autoSave.observe(this) {
-                if (it.addOnGroupUIModels.isNotEmpty())
+                if (it.isActive)
                     viewModel.saveAddOnState(it.cartId, it.atcSource)
             }
         }
@@ -181,7 +184,7 @@ class AddOnWidgetView : BaseCustomView {
     }
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {
-        viewModel.setSelectedAddOn(selectedAddonIds)
+        viewModel.setPreselectedAddOn(selectedAddonIds)
     }
 
     fun saveAddOnState(cartId: Long, source: String) {

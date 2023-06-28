@@ -61,9 +61,12 @@ object AddOnMapper {
         return addonGroupList.map {
             it.copy(
                 addon = it.addon.map { addon ->
-                    addon.copy(isSelected =
-                        if (addon.id in selectedAddonIds) true
-                        else addon.isSelected)
+                    val isPreselected = if (addon.id in selectedAddonIds) true
+                    else addon.isSelected
+                    addon.copy(
+                        isSelected = isPreselected,
+                        isPreselected = isPreselected
+                    )
                 }
             )
         }
@@ -86,31 +89,26 @@ object AddOnMapper {
     fun mapToSaveAddOnStateRequest(
         cartId: Long,
         source: String,
-        addOnGroup: AddOnGroupUIModel?,
-        selectedAddons: List<AddOnUIModel>?
+        addonGroups: List<AddOnGroupUIModel>?
     ): SaveAddOnStateRequest {
-        val addons = selectedAddons
-            .orEmpty()
-            .map {
+        val addons = flatmapToChangedAddonSelection(addonGroups)
+        val request = AddOnRequest(
+            addOnLevel = addonGroups?.firstOrNull()?.addOnLevel.orEmpty(),
+            cartProducts = listOf(
+                CartProduct(
+                    cartId = cartId,
+                    productId = addonGroups?.firstOrNull()?.productId.orZero()
+                )
+            ),
+            addOnData = addons.map {
                 AddOnDataRequest(
                     addOnId = it.id.toLongOrZero(),
                     addOnQty = ATC_ADDON_DEFAULT_QTY,
                     addOnUniqueId = it.uniqueId,
                     addOnType = it.addOnType.toRequestAddonType(),
-                    addOnStatus = if (it.isSelected)
-                        ATC_ADDON_STATUS_SELECTING else ATC_ADDON_STATUS_DESELECTING,
+                    addOnStatus = it.getSelectedStatus().value
                 )
             }
-
-        val request = AddOnRequest(
-            addOnLevel = addOnGroup?.addOnLevel.orEmpty(),
-            cartProducts = listOf(
-                CartProduct(
-                    cartId = cartId,
-                    productId = addOnGroup?.productId.orZero()
-                )
-            ),
-            addOnData = addons
         )
 
         return SaveAddOnStateRequest(
@@ -118,6 +116,14 @@ object AddOnMapper {
             source = source,
             featureType = ATC_ADDON_SERVICE_FEATURE_TYPE
         )
+    }
+
+    fun flatmapToChangedAddonSelection(
+        addonGroups: List<AddOnGroupUIModel>?
+    ): List<AddOnUIModel> {
+        return addonGroups.orEmpty()
+            .flatMap { it.addon }
+            .filter { it.getSelectedStatus() != AddOnSelectedStatus.DEFAULT }
     }
 
     fun deepCopyAddonGroup(addonGroups: List<AddOnGroupUIModel>): List<AddOnGroupUIModel> {
