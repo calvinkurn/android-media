@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetOrderPriceSummaryBinding
-import com.tokopedia.oneclickcheckout.databinding.ItemBottomsheetOrderPriceSummaryBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemAddOnProductSummaryBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemPaymentFeeBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -124,7 +124,7 @@ class OrderPriceSummaryBottomSheet {
                 // addons product selected are filtered based on summary type to know how many total quantities and price
                 val addOnsProductSelectedFiltered = orderCost.addOnsProductSelectedList.filter { it.type == summaryAddOnProduct.type }
                 if (addOnsProductSelectedFiltered.isNotEmpty()) {
-                    ItemBottomsheetOrderPriceSummaryBinding.inflate(
+                    ItemAddOnProductSummaryBinding.inflate(
                         inflater,
                         null,
                         false

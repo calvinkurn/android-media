@@ -12,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/occ_lbl_total_item_price"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Jasa Pasang Standar"/>
 
@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:gravity="end"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Rp10.000"/>
 
