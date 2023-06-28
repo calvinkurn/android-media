@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.draft.data.db.repository
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
@@ -32,12 +33,12 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
                 try {
                     AddEditProductDraftMapper.mapDraftToProductInput(it)
                 } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     ProductDraft(
                         draftId = it.id,
                         isCorrupt = true,
                         corruptedData = it.data
                     )
-                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
         }
@@ -49,12 +50,12 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
             try {
                 AddEditProductDraftMapper.mapDraftToProductInput(it)
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 ProductDraft(
                     draftId = it.id,
                     isCorrupt = true,
                     corruptedData = it.data
                 )
-                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
