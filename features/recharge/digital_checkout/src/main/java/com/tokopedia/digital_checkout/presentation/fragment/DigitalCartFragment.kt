@@ -764,8 +764,9 @@ class DigitalCartFragment :
                 renderCrossSellConsentJob?.cancel()
                 renderCrossSellConsentJob = lifecycleScope.launch {
                     val consentParam = ConsentCollectionParam(
-                        collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        identifier = userSession.userId
                     )
                     checkoutBottomViewWidget.setCrossSellConsentWidget(
                         viewLifecycleOwner,
@@ -784,8 +785,9 @@ class DigitalCartFragment :
                 renderProductConsentJob?.cancel()
                 renderProductConsentJob = lifecycleScope.launch {
                     val consentParam = ConsentCollectionParam(
-                        collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        identifier = userSession.userId
                     )
                     checkoutBottomViewWidget.setProductConsentWidget(
                         viewLifecycleOwner,
