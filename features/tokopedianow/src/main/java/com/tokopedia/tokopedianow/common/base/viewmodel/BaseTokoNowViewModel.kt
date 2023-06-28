@@ -81,7 +81,7 @@ open class BaseTokoNowViewModel(
 
     var miniCartSource: MiniCartSource? = null
 
-    protected open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+    open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
         setMiniCartData(miniCartData)
     }
 

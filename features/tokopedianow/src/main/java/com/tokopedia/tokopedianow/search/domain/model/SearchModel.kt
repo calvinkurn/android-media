@@ -15,7 +15,7 @@ data class SearchModel(
     @Expose
     val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse(),
 
-    @SerializedName("product_ads")
+    @SerializedName("displayAdsV3")
     @Expose
     val productAds: ProductAdsResponse = ProductAdsResponse(),
 
