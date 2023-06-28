@@ -19,7 +19,7 @@ data class RewardsGetMedaliDetail(
 data class MedaliDetailPage(
     @SerializedName("backgroundImageURL") val backgroundImageURL: String? = null,
     @SerializedName("backgroundImageColor") val backgroundImageColor: String? = null,
-    @SerializedName("frameImageURL") val frameImageURL: String? = null,
+    @SerializedName("frameAltImageURL") val frameImageURL: String? = null,
     @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
     @SerializedName("maskingImageURL") val shutterMaskingImageURL: String? = null,
     @SerializedName("frameMaskingImageURL") val frameMaskingImageURL: String? = null,
