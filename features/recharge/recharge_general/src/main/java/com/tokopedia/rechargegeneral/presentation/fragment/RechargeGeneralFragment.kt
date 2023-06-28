@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -1312,9 +1310,7 @@ class RechargeGeneralFragment :
 
     override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
         commonTopupBillsAnalytics.clickAddInquiry(categoryName)
-        Log.d("CUAKS", "Yoi")
         inputData[PARAM_CLIENT_NUMBER]?.let {
-            Log.d("CUAKS", it)
             addBills(productId, it)
         }
     }
