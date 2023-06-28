@@ -3,12 +3,8 @@ package com.tokopedia.inbox.view.activity.base.notifcenter
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -22,7 +18,6 @@ import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
-
 
 abstract class InboxNotifcenterTest : InboxTest() {
 
@@ -56,11 +51,11 @@ abstract class InboxNotifcenterTest : InboxTest() {
     protected fun setShowBottomNav(intent: Intent, isShow: Boolean) {
         val uri = intent.data?.buildUpon()
         uri?.appendQueryParameter(
-            ApplinkConst.Inbox.PARAM_SHOW_BOTTOM_NAV, isShow.toString()
+            ApplinkConst.Inbox.PARAM_SHOW_BOTTOM_NAV,
+            isShow.toString()
         )
         intent.data = uri?.build()
     }
-
 }
 
 /**
@@ -84,20 +79,6 @@ object NotifcenterAction {
         onView(withId(R.id.rv_order_list)).perform(
             smoothScrollTo(position)
         )
-    }
-
-    fun clickFilterAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.rv_filter)
-                .atPositionOnView(position, R.id.chips_filter)
-        ).perform(click())
-    }
-
-    fun clickLoadMoreAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.btn_loading)
-        ).perform(click())
     }
 }
 
@@ -123,52 +104,9 @@ object NotifcenterAssertion {
         assertRecyclerviewItem(hasTotalItemOf(size))
     }
 
-    fun assertSectionTitleTextAt(position: Int, title: String) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.txt_section_title)
-        ).check(matches(withText(title)))
-    }
-
-    fun assertLoadMoreTitle(position: Int, title: String) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.btn_loading)
-        ).check(matches(withText(title)))
-    }
-
-    fun assertEmptyNotifStateWithRecomText(position: Int, @StringRes msgRes: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tv_empty_title)
-        ).check(matches(withText(msgRes)))
-    }
-
-    fun assertEmptyNotifStateIllustrationImageVisibility(
-        position: Int, visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tp_empty_notification_title)
-        ).check(matches(visibilityMatcher))
-    }
-
-    fun assertEmptyNotifStateIllustrationTitle(position: Int, @StringRes msgRes: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tp_empty_notification_title)
-        ).check(matches(withText(msgRes)))
-    }
-
-    fun assertEmptyNotifStateIllustrationDescription(position: Int, @StringRes msgRes: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tp_empty_filter)
-        ).check(matches(withText(msgRes)))
-    }
-
     fun assertNotifOrderCardTextAtPosition(
-        position: Int, msg: String
+        position: Int,
+        msg: String
     ) {
         onView(
             withRecyclerView(R.id.rv_order_list)
@@ -177,7 +115,8 @@ object NotifcenterAssertion {
     }
 
     fun assertOrderWidgetCardAt(
-        position: Int, matcher: Matcher<in View>
+        position: Int,
+        matcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.rv_order_list)

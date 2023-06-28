@@ -22,6 +22,6 @@ object NotificationModuleStub {
     @Provides
     @ActivityScope
     internal fun provideNotifCenterCacheManager(): NotifCenterCacheManager {
-        return NotificationCacheManagerStub()
+        return NotificationCacheManagerStub
     }
 }

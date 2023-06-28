@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.notifcenter.di.module.NotificationFragmentModule
 import com.tokopedia.notifcenter.di.module.NotificationModule
+import com.tokopedia.notifcenter.di.module.NotificationUseCaseModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.view.affiliate.NotificationAffiliateActivity
@@ -17,7 +18,8 @@ import dagger.Component
     modules = [
         NotificationViewModelModule::class,
         NotificationModule::class,
-        NotificationFragmentModule::class
+        NotificationFragmentModule::class,
+        NotificationUseCaseModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )

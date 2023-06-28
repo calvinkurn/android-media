@@ -40,9 +40,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -67,7 +65,6 @@ class NotificationViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
     private val userSessionInterface: UserSessionInterface,
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
@@ -409,29 +406,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun addWishListTopAds(
-        model: RecommendationItem,
-        callback: ((Boolean, Throwable?) -> Unit)
-    ) {
-        viewModelScope.launch {
-            try {
-                val params = RequestParams.create()?.apply {
-                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-                }
-                val response = withContext(dispatcher.io) {
-                    return@withContext topAdsWishlishedUseCase.createObservable(params)
-                        .toBlocking().single()
-                }
-                if (response.data != null) {
-                    callback.invoke(true, null)
-                }
-            } catch (throwable: Throwable) {
-                callback.invoke(false, throwable)
-            }
-        }
-    }
-
-    fun loadTopAdsBannerData() {
+    private fun loadTopAdsBannerData() {
         viewModelScope.launch {
             try {
                 val results = getTopAdsImageData()

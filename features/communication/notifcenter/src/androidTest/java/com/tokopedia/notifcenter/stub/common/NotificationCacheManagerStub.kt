@@ -4,18 +4,18 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import java.lang.reflect.Type
 
-class NotificationCacheManagerStub : NotifCenterCacheManager {
+object NotificationCacheManagerStub : NotifCenterCacheManager {
 
     private var cacheBooleanResult = false
     private var cacheIntResult = Int.ZERO
-    private var cacheObjResult: Any = Any()
+    private var cacheObjMapResult: HashMap<String, Any> = hashMapOf()
 
     override fun saveCache(key: String, obj: Any) {
-        cacheObjResult = obj
+        cacheObjMapResult[key] = obj
     }
 
     override fun <T> loadCache(key: String, type: Type): T {
-        return cacheObjResult as T
+        return cacheObjMapResult[key] as T
     }
 
     override fun saveCacheInt(key: String, int: Int) {

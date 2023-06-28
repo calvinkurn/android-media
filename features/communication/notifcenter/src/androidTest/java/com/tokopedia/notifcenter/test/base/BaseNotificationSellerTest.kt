@@ -3,7 +3,7 @@ package com.tokopedia.notifcenter.test.base
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.notifcenter.stub.common.ActivityScenarioTestRule
-import com.tokopedia.notifcenter.ui.seller.NotificationSellerActivity
+import com.tokopedia.notifcenter.view.seller.NotificationSellerActivity
 import org.junit.Rule
 
 abstract class BaseNotificationSellerTest {
