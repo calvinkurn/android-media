@@ -36,9 +36,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.ProductYoutubePlayerActivity"
-            android:screenOrientation="landscape" />
-        <activity
             android:name=".view.activity.WholesaleActivity"
             android:label="@string/label_product_wholesale"
             android:screenOrientation="portrait"

@@ -22,9 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".performance.presentation.activity.ShopPerformanceYoutubeActivity"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
             android:name=".penalty.presentation.old.activity.ShopPenaltyPageOldActivity"
             android:label="@string/title_penalty_shop_score"
             android:theme="@style/Theme.WhiteUnify"
