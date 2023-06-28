@@ -11,7 +11,6 @@ data class ShipmentCostModel(
     var totalWeight: Double = 0.0,
     var shippingFee: Double = 0.0,
     var insuranceFee: Double = 0.0,
-    var priorityFee: Double = 0.0,
     var totalPurchaseProtectionItem: Int = 0,
     var purchaseProtectionFee: Double = 0.0,
     var additionalFee: Double = 0.0,
@@ -36,5 +35,6 @@ data class ShipmentCostModel(
     var cashbackAmount: Int = 0,
     var totalAddOnPrice: Double = 0.0,
     var hasAddOn: Boolean = false,
-    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel()
+    var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
+    var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList()
 ) : Parcelable

@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.data.Properties
 
+/** @suppress */
 open class DebugMediaLoaderActivity : AppCompatActivity() {
 
     private val btnShow by lazy { findViewById<Button>(R.id.btn_show) }

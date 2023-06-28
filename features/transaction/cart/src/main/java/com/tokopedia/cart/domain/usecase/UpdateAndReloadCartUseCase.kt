@@ -2,7 +2,9 @@ package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.domain.mapper.mapUpdateCartData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
@@ -14,7 +16,9 @@ class UpdateAndReloadCartUseCase @Inject constructor(
 
     override suspend fun execute(params: UpdateCartWrapperRequest): UpdateAndReloadCartListData {
         val updateAndReloadCartListData = UpdateAndReloadCartListData()
-        val updateCartData = updateCartUseCase(params)
+        updateCartUseCase.setParams(params.updateCartRequestList, params.source)
+        val updateCartDataResponse = updateCartUseCase.executeOnBackground()
+        val updateCartData = mapUpdateCartData(updateCartDataResponse)
         updateAndReloadCartListData.updateCartData = updateCartData
         updateAndReloadCartListData.cartId = params.cartId
         updateAndReloadCartListData.getCartState = params.getCartState

@@ -5,6 +5,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_CHECKOUT
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
@@ -109,7 +110,7 @@ object AddOnMapper {
         return AddOnProductData(
             bottomSheetType = bottomSheetType,
             bottomSheetTitle = addOn.addOnsBottomSheetModel.headerTitle,
-            source = AddOnProductData.SOURCE_ONE_CLICK_CHECKOUT,
+            source = SOURCE_ONE_CLICK_CHECKOUT,
             availableBottomSheetData = availableBottomSheetData,
             unavailableBottomSheetData = unavailableBottomSheetData
         )

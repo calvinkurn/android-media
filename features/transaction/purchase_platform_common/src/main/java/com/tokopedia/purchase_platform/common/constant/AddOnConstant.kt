@@ -14,4 +14,13 @@ object AddOnConstant {
     const val ADD_ON_LEVEL_ORDER = "order"
     const val ADD_ON_SOURCE_OCC = "order summary"
     const val ADD_ON_SOURCE_CHECKOUT = "courier selection"
+
+    const val SOURCE_NORMAL_CHECKOUT = "normal"
+    const val SOURCE_ONE_CLICK_SHIPMENT = "ocs"
+    const val SOURCE_ONE_CLICK_CHECKOUT = "occ"
+
+    const val ADD_ON_PRODUCT_STATUS_DEFAULT = 0
+    const val ADD_ON_PRODUCT_STATUS_CHECK = 1
+    const val ADD_ON_PRODUCT_STATUS_UNCHECK = 2
+    const val ADD_ON_PRODUCT_STATUS_MANDATORY = 3
 }

@@ -1,39 +1,40 @@
 package com.tokopedia.checkout.view.viewholder
 
 import android.content.Context
-import android.graphics.Typeface
 import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutScheduleDeliveryAnalytics
 import com.tokopedia.checkout.databinding.ItemShipmentGroupFooterBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.view.adapter.ShipmentAddOnSubtotalAdapter
 import com.tokopedia.checkout.view.converter.RatesDataConverter
-import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryHolderData
+import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSubtotalModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -41,15 +42,13 @@ import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import rx.Emitter
 import rx.Observable
 import rx.Subscriber
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
+import java.util.HashMap
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
@@ -57,8 +56,7 @@ class ShipmentCartItemBottomViewHolder(
     itemView: View,
     private val ratesDataConverter: RatesDataConverter,
     private val listener: Listener? = null,
-    private val actionListener: ShipmentAdapterActionListener? = null,
-    private val scheduleDeliveryCompositeSubscription: CompositeSubscription? = null
+    private val actionListener: ShipmentAdapterActionListener? = null
 ) : RecyclerView.ViewHolder(itemView), ShippingWidget.ShippingWidgetListener {
 
     companion object {
@@ -68,7 +66,6 @@ class ShipmentCartItemBottomViewHolder(
 
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
-        private const val FIRST_ELEMENT = 0
         private const val DROPSHIPPER_MIN_NAME_LENGTH = 3
         private const val DROPSHIPPER_MAX_NAME_LENGTH = 100
         private const val DROPSHIPPER_MIN_PHONE_LENGTH = 6
@@ -84,16 +81,16 @@ class ShipmentCartItemBottomViewHolder(
         PlusCoachmarkPrefs(itemView.context)
     }
     private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
-    private var isPriorityChecked: Boolean = false
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
-    private var scheduleDeliverySubscription: Subscription? = null
+
+//    private var scheduleDeliverySubscription: Subscription? = null
     private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
-    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
+//    private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
 
     init {
         initSaveStateDebouncer()
-        initScheduleDeliveryPublisher()
+//        initScheduleDeliveryPublisher()
     }
 
     fun bind(
@@ -103,7 +100,6 @@ class ShipmentCartItemBottomViewHolder(
         if (recipientAddress != null) {
             renderShipping(shipmentCartItemModel, recipientAddress, ratesDataConverter)
         }
-        renderPrioritas(shipmentCartItemModel)
         renderInsurance(shipmentCartItemModel)
         val isCornerAddress = recipientAddress != null && recipientAddress.isCornerAddress
         renderDropshipper(shipmentCartItemModel, isCornerAddress)
@@ -272,87 +268,6 @@ class ShipmentCartItemBottomViewHolder(
         }
     }
 
-    private fun renderPrioritas(shipmentCartItemModel: ShipmentCartItemModel) {
-        with(binding.containerShippingOptions) {
-            val cartItemModelList = ArrayList(shipmentCartItemModel.cartItemModels)
-            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
-            var renderOrderPriority = false
-            val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
-            if (selectedShipmentDetailData != null) {
-                renderOrderPriority = if (isTradeInDropOff) {
-                    selectedShipmentDetailData.selectedCourierTradeInDropOff != null
-                } else {
-                    selectedShipmentDetailData.selectedCourier != null
-                }
-            }
-            if (bindingAdapterPosition != RecyclerView.NO_POSITION && renderOrderPriority) {
-                if (!cartItemModelList.removeAt(FIRST_ELEMENT).isPreOrder) {
-                    cbPrioritas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                            isPriorityChecked = isChecked
-                            selectedShipmentDetailData!!.isOrderPriority =
-                                isChecked
-                            actionListener?.onPriorityChecked(bindingAdapterPosition)
-                            actionListener?.onNeedUpdateRequestData()
-                        }
-                    }
-                }
-                val spanText = SpannableString(
-                    tvPrioritasTicker.resources.getString(R.string.label_hardcoded_courier_ticker)
-                )
-                spanText.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    43,
-                    52,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                val courierItemData: CourierItemData? = if (isTradeInDropOff) {
-                    selectedShipmentDetailData!!.selectedCourierTradeInDropOff
-                } else {
-                    selectedShipmentDetailData!!.selectedCourier
-                }
-                val isCourierSelected = courierItemData != null
-                if (isCourierSelected && !shipmentCartItemModel.isError) {
-                    if (isCourierInstantOrSameday(courierItemData!!.shipperId)) {
-                        if (!shipmentCartItemModel.isOrderPrioritasDisable && courierItemData.now!! && !shipmentCartItemModel.isProductIsPreorder) {
-                            tvOrderPrioritasInfo.text = courierItemData.priorityCheckboxMessage
-                            llPrioritas.visibility = View.VISIBLE
-                            llPrioritasTicker.visibility = View.VISIBLE
-                        } else {
-                            llPrioritas.visibility = View.GONE
-                            llPrioritasTicker.visibility = View.GONE
-                        }
-                    } else {
-                        hideAllTicker()
-                    }
-                } else {
-                    hideAllTicker()
-                }
-                if (courierItemData != null && isPriorityChecked) {
-                    tvPrioritasTicker.text = courierItemData.priorityWarningboxMessage
-                } else {
-                    tvPrioritasTicker.text = spanText
-                }
-            } else {
-                hideAllTicker()
-            }
-            imgPrioritasInfo.setOnClickListener { actionListener?.onPriorityTncClicker() }
-        }
-    }
-
-    private fun hideAllTicker() {
-        binding.containerShippingOptions.llPrioritas.visibility = View.GONE
-        binding.containerShippingOptions.llPrioritasTicker.visibility = View.GONE
-    }
-
-    private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
-        val ids = CourierConstant.INSTANT_SAMEDAY_COURIER
-        for (id in ids) {
-            if (shipperId == id) return true
-        }
-        return false
-    }
-
     private fun renderInsurance(shipmentCartItemModel: ShipmentCartItemModel) {
         with(binding.containerShippingOptions) {
             var renderInsurance = false
@@ -373,7 +288,6 @@ class ShipmentCartItemBottomViewHolder(
                             actionListener?.onInsuranceCheckedForTrackingAnalytics()
                         }
                         actionListener?.onInsuranceChecked(bindingAdapterPosition)
-                        actionListener?.onNeedUpdateRequestData()
                         saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
                     }
                 }
@@ -803,7 +717,8 @@ class ShipmentCartItemBottomViewHolder(
             var additionalPrice = 0
             var subTotalPrice: Long = 0
             var totalItemPrice: Long = 0
-            var totalAddOnPrice = 0
+            var totalGiftingAddOnPrice = 0
+            var totalAddOnProductPrice = 0.0
             var hasAddOnSelected = false
             if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded) {
                 rlShipmentCost.visibility = View.VISIBLE
@@ -831,8 +746,16 @@ class ShipmentCartItemBottomViewHolder(
                     if (cartItemModel.addOnGiftingProductLevelModel.status == 1) {
                         if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                             for (addOnsData in cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
-                                totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                                totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                                 hasAddOnSelected = true
+                            }
+                        }
+                    }
+                    if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
+                        renderSubtotalAddOn(cartItemModel, itemView.context, shipmentCartItemModel.subtotalAddOnMap)
+                        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+                            if (it.addOnDataStatus == 1) {
+                                totalAddOnProductPrice += it.addOnDataPrice * cartItemModel.quantity
                             }
                         }
                     }
@@ -842,7 +765,7 @@ class ShipmentCartItemBottomViewHolder(
             if (addOnsOrderLevelModel.status == 1) {
                 if (addOnsOrderLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                     for (addOnsData in addOnsOrderLevelModel.addOnsDataItemModelList) {
-                        totalAddOnPrice += addOnsData.addOnPrice.toInt()
+                        totalGiftingAddOnPrice += addOnsData.addOnPrice.toInt()
                         hasAddOnSelected = true
                     }
                 }
@@ -899,7 +822,7 @@ class ShipmentCartItemBottomViewHolder(
             } else {
                 subTotalPrice = totalItemPrice
             }
-            subTotalPrice += totalAddOnPrice.toLong()
+            subTotalPrice += totalGiftingAddOnPrice.toLong() + totalAddOnProductPrice.toLong()
             tvSubTotalPrice.setTextAndContentDescription(
                 if (subTotalPrice == 0L) {
                     "-"
@@ -972,7 +895,7 @@ class ShipmentCartItemBottomViewHolder(
                 tvAddOnPrice.visibility = View.VISIBLE
                 tvAddOnPrice.text =
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        totalAddOnPrice,
+                        totalGiftingAddOnPrice,
                         false
                     )
                         .removeDecimalSuffix()
@@ -1311,36 +1234,63 @@ class ShipmentCartItemBottomViewHolder(
     }
 
     private fun initScheduleDeliveryPublisher() {
-        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
-            scheduleDeliverySubscription?.unsubscribe()
-        }
-        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
-            scheduleDeliveryDonePublisher?.onCompleted()
-        }
-        scheduleDeliverySubscription = Observable.create(
-            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
-                scheduleDeliveryDebouncedListener =
-                    object : ScheduleDeliveryDebouncedListener {
-                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
-                            emitter.onNext(shipmentScheduleDeliveryHolderData)
-                        }
+//        if (scheduleDeliverySubscription?.isUnsubscribed == false) {
+//            scheduleDeliverySubscription?.unsubscribe()
+//        }
+//        if (scheduleDeliveryDonePublisher?.hasCompleted() == false) {
+//            scheduleDeliveryDonePublisher?.onCompleted()
+//        }
+//        scheduleDeliverySubscription = Observable.create(
+//            Action1 { emitter: Emitter<ShipmentScheduleDeliveryHolderData> ->
+//                scheduleDeliveryDebouncedListener =
+//                    object : ScheduleDeliveryDebouncedListener {
+//                        override fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?) {
+//                            emitter.onNext(shipmentScheduleDeliveryHolderData)
+//                        }
+//                    }
+//            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
+//            Emitter.BackpressureMode.LATEST
+//        )
+//            .observeOn(AndroidSchedulers.mainThread(), false, 1)
+//            .subscribeOn(AndroidSchedulers.mainThread())
+//            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
+//                scheduleDeliveryDonePublisher = PublishSubject.create()
+//                actionListener?.onChangeScheduleDelivery(
+//                    scheduleDeliveryUiModel,
+//                    position,
+//                    scheduleDeliveryDonePublisher!!
+//                )
+//                scheduleDeliveryDonePublisher
+//            }
+//            .subscribe()
+//        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
+    }
+
+    private fun renderSubtotalAddOn(cartItemModel: CartItemModel, context: Context, subtotalAddOnMap: HashMap<Int, String>) {
+        if (cartItemModel.addOnProduct.listAddOnProductData.isNotEmpty()) {
+        val listShipmentAddOnSubtotalModel = arrayListOf<ShipmentAddOnSubtotalModel>()
+            for ((key, value) in subtotalAddOnMap) {
+                cartItemModel.addOnProduct.listAddOnProductData.forEach {
+                    if (it.addOnDataType == key && it.addOnDataStatus == 1) {
+                        val shipmentAddOnSubtotalModel = ShipmentAddOnSubtotalModel(
+                                wording = value.replace(CartConstant.QTY_ADDON_REPLACE, cartItemModel.quantity.toString()),
+                                priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat((it.addOnDataPrice * cartItemModel.quantity), false).removeDecimalSuffix()
+                        )
+                        listShipmentAddOnSubtotalModel.add(shipmentAddOnSubtotalModel)
                     }
-            } as Action1<Emitter<ShipmentScheduleDeliveryHolderData>>,
-            Emitter.BackpressureMode.LATEST
-        )
-            .observeOn(AndroidSchedulers.mainThread(), false, 1)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .concatMap { (scheduleDeliveryUiModel, position): ShipmentScheduleDeliveryHolderData ->
-                scheduleDeliveryDonePublisher = PublishSubject.create()
-                actionListener?.onChangeScheduleDelivery(
-                    scheduleDeliveryUiModel,
-                    position,
-                    scheduleDeliveryDonePublisher!!
-                )
-                scheduleDeliveryDonePublisher
+                }
             }
-            .subscribe()
-        scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
+
+            val addOnSubtotalAdapter = ShipmentAddOnSubtotalAdapter(listShipmentAddOnSubtotalModel)
+            binding.containerSubtotal.rvSubtotalAddon.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                setHasFixedSize(true)
+                adapter = addOnSubtotalAdapter
+                visible()
+            }
+        } else {
+            binding.containerSubtotal.rvSubtotalAddon.gone()
+        }
     }
 
     fun unsubscribeDebouncer() {
@@ -1426,10 +1376,10 @@ class ShipmentCartItemBottomViewHolder(
         fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
     }
 
-    private interface ScheduleDeliveryDebouncedListener {
-
-        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
-    }
+//    private interface ScheduleDeliveryDebouncedListener {
+//
+//        fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
+//    }
 
     interface Listener {
 

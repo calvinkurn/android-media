@@ -24,6 +24,6 @@ data class VoucherOrdersItem(
     @SerializedName("sp_id")
     val spId: Int = 0,
 
-    @SerializedName("cart_string_grouping")
+    @SerializedName("cart_string_group")
     val cartStringGroup: String = ""
 )

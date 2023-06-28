@@ -17,6 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnPro
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import rx.subjects.PublishSubject
+import java.util.ArrayList
 
 interface ShipmentAdapterActionListener {
     fun onCancelVoucherLogisticClicked(
@@ -46,10 +47,8 @@ interface ShipmentAdapterActionListener {
 
 //    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>)
     fun onInsuranceChecked(position: Int)
-    fun onPriorityChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
     fun onInsuranceTncClicked()
-    fun onPriorityTncClicker()
     fun onOntimeDeliveryClicked(url: String)
     fun onNeedUpdateRequestData()
     fun onDropshipCheckedForTrackingAnalytics()
@@ -138,7 +137,9 @@ interface ShipmentAdapterActionListener {
 
     fun updateShipmentCostModel()
 
-    fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+    fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
-    fun onClickAddonProductInfoIcon()
+    fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
+
+    fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>)
 }

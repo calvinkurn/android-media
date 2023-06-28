@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class AddOnProductDataItemModel(
     var addOnDataId: Long = 0L,
     var addOnDataPrice: Double = 0.0,
+    var addOnDataUniqueId: String = "",
     var addOnDataInfoLink: String = "",
     var addOnDataName: String = "",
     var addOnDataStatus: Int = -1,

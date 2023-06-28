@@ -157,7 +157,7 @@ class AddOnViewModel @Inject constructor(
     fun saveAddOnState(addOnProductData: AddOnProductData) {
         val addOnUiModel = _addOnUiModel.value
         val params = AddOnRequestMapper.generateSaveAddOnStateRequestParams(addOnProductData, addOnUiModel)
-        saveAddOnStateUseCase.setParams(params)
+        saveAddOnStateUseCase.setParams(params, false)
         saveAddOnStateUseCase.execute(
             onSuccess = {
                 handleOnSuccessSaveAddOnState(it)

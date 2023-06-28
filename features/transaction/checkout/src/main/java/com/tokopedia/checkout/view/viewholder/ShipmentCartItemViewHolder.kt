@@ -20,9 +20,9 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
-import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductLoaderBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -48,7 +48,8 @@ class ShipmentCartItemViewHolder(
     }
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
-    // private val llAddOnProduct: LinearLayout = itemView.findViewById(R.id.ll_addon_product)
+
+    private val listSelectedAddOnId: ArrayList<Long> = arrayListOf()
 
     fun bind(
         cartItem: CartItemModel
@@ -420,9 +421,6 @@ class ShipmentCartItemViewHolder(
 
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
         binding.itemShipmentAddonProduct.apply {
-            loaderIcProductAddon.gone()
-            loaderTvTitle.gone()
-            llAddonProductLoaders.gone()
             icProductAddon.visible()
             tvTitleAddonProduct.visible()
             llAddonProductItems.visible()
@@ -451,15 +449,17 @@ class ShipmentCartItemViewHolder(
                     addOnName.text = addon.addOnDataName
                     val addOnPrice = addOnView.tvShipmentAddOnPrice
                     addOnPrice.text = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-                            .removeDecimalSuffix()
+                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                        .removeDecimalSuffix()
                     addOnView.apply {
-                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                            showLoaderAddOnProduct(cartItemModel)
-                            listener?.onCheckboxAddonProductListener(addon)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == ADD_ON_PRODUCT_STATUS_CHECK)
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
+                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
+                            }
                         }
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon()
+                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }
                     }
                     binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
@@ -468,29 +468,9 @@ class ShipmentCartItemViewHolder(
         }
     }
 
-    private fun showLoaderAddOnProduct(cartItemModel: CartItemModel) {
-        binding.itemShipmentAddonProduct.apply {
-            icProductAddon.gone()
-            tvTitleAddonProduct.gone()
-            tvSeeAllAddonProduct.gone()
-            llAddonProductItems.gone()
-            loaderIcProductAddon.visible()
-            loaderTvTitle.visible()
-            llAddonProductLoaders.visible()
-        }
-        binding.itemShipmentAddonProduct.llAddonProductLoaders.removeAllViews()
-        cartItemModel.addOnProduct.listAddOnProductData.forEach {
-            val loaderView = ItemShipmentAddonProductLoaderBinding.inflate(layoutInflater, null, false)
-            binding.itemShipmentAddonProduct.llAddonProductLoaders.addView(loaderView.root)
-        }
-    }
-
     private fun renderAddOnBundlingProduct(cartItemModel: CartItemModel) {
         binding.llAddonProduct.gone()
         binding.itemShipmentAddonProductBundling.apply {
-            loaderIcProductAddon.gone()
-            loaderTvTitle.gone()
-            llAddonProductLoaders.gone()
             icProductAddon.visible()
             tvTitleAddonProduct.visible()
             llAddonProductItems.visible()
@@ -505,6 +485,14 @@ class ShipmentCartItemViewHolder(
                 tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
                 if (cartItemModel.addOnProduct.bottomsheet.isShown) {
                     tvSeeAllAddonProduct.visible()
+                    tvSeeAllAddonProduct.setOnClickListener {
+                        cartItemModel.addOnProduct.listAddOnProductData.forEach { addOnItem ->
+                            if (addOnItem.addOnDataStatus == 1) {
+                                listSelectedAddOnId.add(addOnItem.addOnDataId)
+                            }
+                        }
+                        listener?.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
+                    }
                 } else {
                     tvSeeAllAddonProduct.gone()
                 }
@@ -519,15 +507,15 @@ class ShipmentCartItemViewHolder(
                     addOnName.text = addon.addOnDataName
                     val addOnPrice = addOnView.tvShipmentAddOnPrice
                     addOnPrice.text = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
-                            .removeDecimalSuffix()
+                        .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                        .removeDecimalSuffix()
                     addOnView.apply {
-                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                            showLoaderAddOnProduct(cartItemModel)
-                            listener?.onCheckboxAddonProductListener(addon)
+                        cbAddonItem.isChecked = (addon.addOnDataStatus == 1)
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, isChecked ->
+                            listener?.onCheckboxAddonProductListener(isChecked, addon, cartItemModel, bindingAdapterPosition)
                         }
                         icProductAddonInfo.setOnClickListener {
-                            listener?.onClickAddonProductInfoIcon()
+                            listener?.onClickAddonProductInfoIcon(addon.addOnDataInfoLink)
                         }
                     }
                     binding.itemShipmentAddonProductBundling.llAddonProductItems.addView(addOnView.root)
@@ -546,8 +534,10 @@ class ShipmentCartItemViewHolder(
 
         fun onImpressionAddOnProductLevel(productId: String)
 
-        fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+        fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int)
 
-        fun onClickAddonProductInfoIcon()
+        fun onClickAddonProductInfoIcon(addOnDataInfoLink: String)
+
+        fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: ArrayList<Long>)
     }
 }

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ShipmentStateShopProductData(
     @SerializedName("cart_string_group")
     var cartStringGroup: String = "",
+    @SerializedName("shop_id")
+    var shopId: Long = 0,
     @SerializedName("is_preorder")
     var isPreorder: Int = 0,
     @SerializedName("warehouse_id")

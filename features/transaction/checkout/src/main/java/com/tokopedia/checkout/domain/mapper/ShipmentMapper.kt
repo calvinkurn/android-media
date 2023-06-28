@@ -15,7 +15,9 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDe
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentSummaryAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.SubtotalAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
@@ -38,6 +40,8 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSummaryAddOnData
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
@@ -163,6 +167,7 @@ class ShipmentMapper @Inject constructor() {
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp && false
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
             shipmentPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
+            listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
         }
     }
 
@@ -214,7 +219,9 @@ class ShipmentMapper @Inject constructor() {
                     groupType = it.groupType,
                     uiGroupType = it.uiGroupType,
                     groupInfoName = it.groupInformation.name,
-                    groupInfoBadgeUrl = it.groupInformation.badgeUrl
+                    groupInfoBadgeUrl = it.groupInformation.badgeUrl,
+                    groupInfoDescription = it.groupInformation.description,
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
                 ).apply {
                     isError = it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
@@ -239,8 +246,8 @@ class ShipmentMapper @Inject constructor() {
                     listPromoCodes = it.listPromoCodes
                     isFulfillment = it.isFulfillment
                     fulfillmentId = it.warehouse.warehouseId
-                    fulfillmentBadgeUrl = it.tokoCabangInfo.badgeUrl
-                    fulfillmentName = it.tokoCabangInfo.message
+                    fulfillmentBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    fulfillmentName = it.groupInformation.description
                     shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                     val mapGroupShopV2List = mapGroupShopV2List(
                         it,
@@ -259,6 +266,7 @@ class ShipmentMapper @Inject constructor() {
                     courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
         }
@@ -580,6 +588,20 @@ class ShipmentMapper @Inject constructor() {
             )
         }
         return listAddOnDataItem
+    }
+
+    private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
+        val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
+
+        subtotalAddOns.forEach {
+            val shipmentSubtotalAddOnData = ShipmentSubtotalAddOnData(
+                    wording = it.wording,
+                    type = it.type
+            )
+            listSubtotal.add(shipmentSubtotalAddOnData)
+        }
+
+        return listSubtotal
     }
 
     private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
@@ -1186,6 +1208,18 @@ class ShipmentMapper @Inject constructor() {
             additionalData = platformFee.additionalData,
             profileCode = platformFee.profileCode
         )
+    }
+
+    private fun mapSummaryAddOn(listSummaryAddOns: List<ShipmentSummaryAddOn>): List<ShipmentSummaryAddOnData> {
+        val listShipmentSummaryAddOn: ArrayList<ShipmentSummaryAddOnData> = arrayListOf()
+        listSummaryAddOns.forEach { item ->
+            val shipmentSummaryAddOnData = ShipmentSummaryAddOnData(
+                    wording = item.wording,
+                    type = item.type
+            )
+            listShipmentSummaryAddOn.add(shipmentSummaryAddOnData)
+        }
+        return listShipmentSummaryAddOn
     }
 
     companion object {

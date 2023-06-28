@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
@@ -20,6 +21,7 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentSubtotalAddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -218,6 +220,8 @@ class ShipmentDataConverter @Inject constructor() {
                 uiGroupType = groupShop.uiGroupType,
                 groupInfoName = groupShop.groupInfoName,
                 groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
+                groupInfoDescription = groupShop.groupInfoDescription,
+                groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
                 isDropshipperDisable = cartShipmentAddressFormData.isDropshipperDisable,
                 isOrderPrioritasDisable = cartShipmentAddressFormData.isOrderPrioritasDisable,
                 isBlackbox = cartShipmentAddressFormData.isBlackbox,
@@ -276,7 +280,8 @@ class ShipmentDataConverter @Inject constructor() {
                 isAutoCourierSelection = groupShop.autoCourierSelection,
                 hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
-                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description
+                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
+                subtotalAddOnMap =  mapSubtotalAddons(groupShop.listSubtotalAddOn)
             )
             for (cartItemModel in cartItemModels) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
@@ -336,7 +341,10 @@ class ShipmentDataConverter @Inject constructor() {
                     isFulfillment = shipmentCartItemModel.isFulfillment,
                     fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl,
                     uiGroupType = shipmentCartItemModel.uiGroupType,
-                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl
+                    groupInfoName = shipmentCartItemModel.groupInfoName,
+                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl,
+                    groupInfoDescription = shipmentCartItemModel.groupInfoDescription,
+                    groupInfoDescriptionBadgeUrl = shipmentCartItemModel.groupInfoDescriptionBadgeUrl
                 )
             shipmentCartItemModels.add(shipmentCartItemTopModel)
             if (shipmentCartItemModel.isStateAllItemViewExpanded) {
@@ -357,6 +365,14 @@ class ShipmentDataConverter @Inject constructor() {
             shipmentCartItemModels.add(shipmentCartItemModel)
         }
         return shipmentCartItemModels
+    }
+
+    private fun mapSubtotalAddons(listSubtotalAddOn: List<ShipmentSubtotalAddOnData>): HashMap<Int, String> {
+        val mapSubtotal = hashMapOf<Int, String>()
+        for (subtotalItem in listSubtotalAddOn) {
+            mapSubtotal[subtotalItem.type] = subtotalItem.wording
+        }
+        return mapSubtotal
     }
 
     private fun setCartItemModelError(shipmentCartItemModel: ShipmentCartItemModel) {

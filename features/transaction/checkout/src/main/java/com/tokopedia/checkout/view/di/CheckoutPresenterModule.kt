@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.checkout.view.ShipmentPresenter
+import com.tokopedia.checkout.view.ShipmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,6 +20,6 @@ abstract class CheckoutPresenterModule {
     @Binds
     @ActivityScope
     @IntoMap
-    @ViewModelKey(ShipmentPresenter::class)
-    abstract fun bindShipmentPresenter(shipmentPresenter: ShipmentPresenter): ViewModel
+    @ViewModelKey(ShipmentViewModel::class)
+    abstract fun bindShipmentViewModel(shipmentViewModel: ShipmentViewModel): ViewModel
 }

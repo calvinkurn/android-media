@@ -792,7 +792,7 @@ object CartUiModelMapper {
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
         var qtyAddOn = 0
-        var totalPriceAddOn = 0.0
+        var totalPriceAddOn: Double
         shopLoop@ for (groupShop in availableGroupGroups) {
             groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
                 cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
@@ -809,10 +809,10 @@ object CartUiModelMapper {
 
         val mapSummary = getShoppingSummaryAddOns(summariesItemList)
         for (entry in countMapSummaries) {
-            val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
             val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
             val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                wording = addOnWording,
+                wording = addOnWording ?: "",
                 type = entry.key,
                 qty = entry.value.second,
                 priceLabel = addOnPrice,

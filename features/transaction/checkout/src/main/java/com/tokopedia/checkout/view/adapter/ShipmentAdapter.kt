@@ -26,7 +26,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
-import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -119,16 +118,18 @@ class ShipmentAdapter @Inject constructor(
             }
             return field
         }
-    private var scheduleDeliverySubscription: CompositeSubscription? = CompositeSubscription()
-        get() {
-            if (field == null || field?.isUnsubscribed == false) {
-                return CompositeSubscription()
-            }
-            return field
-        }
+
+//    private var scheduleDeliverySubscription: CompositeSubscription? = CompositeSubscription()
+//        get() {
+//            if (field == null || field?.isUnsubscribed == false) {
+//                return CompositeSubscription()
+//            }
+//            return field
+//        }
     private var isShowOnboarding = false
     var lastChooseCourierItemPosition = 0
     var lastServiceId = 0
+    var indexSubtotal = 0
 
     fun setShowOnboarding(showOnboarding: Boolean) {
         isShowOnboarding = showOnboarding
@@ -236,7 +237,8 @@ class ShipmentAdapter @Inject constructor(
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
                 return ShipmentCostViewHolder(
                     ViewItemShipmentCostDetailsBinding.bind(view),
-                    layoutInflater
+                    layoutInflater,
+                    shipmentAdapterActionListener
                 )
             }
 
@@ -288,7 +290,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             LAYOUT -> {
-                return ShipmentTickerAnnouncementViewHolder(view, null)
+                return ShipmentTickerAnnouncementViewHolder(view)
             }
 
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
@@ -340,8 +342,7 @@ class ShipmentAdapter @Inject constructor(
                     view,
                     ratesDataConverter,
                     this@ShipmentAdapter,
-                    shipmentAdapterActionListener,
-                    scheduleDeliverySubscription
+                    shipmentAdapterActionListener
                 )
             }
 
@@ -461,7 +462,6 @@ class ShipmentAdapter @Inject constructor(
 
     fun clearCompositeSubscription() {
         compositeSubscription?.clear()
-        scheduleDeliverySubscription?.clear()
     }
 
     fun clearData() {
@@ -1001,7 +1001,7 @@ class ShipmentAdapter @Inject constructor(
                         skipValidateUse
                     )
                 }
-//                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
+                shipmentAdapterActionListener.checkPlatformFee()
                 return true
             }
         }
@@ -1035,6 +1035,16 @@ class ShipmentAdapter @Inject constructor(
         get() {
             for (i in shipmentDataList.indices) {
                 if (shipmentDataList[i] is ShipmentCartItemModel) {
+                    return i
+                }
+            }
+            return 0
+        }
+
+    val shipmentSubtotalPosition: Int
+        get() {
+            for (i in shipmentDataList.indices) {
+                if (shipmentDataList[i] is ShipmentCostModel) {
                     return i
                 }
             }
@@ -1334,34 +1344,42 @@ class ShipmentAdapter @Inject constructor(
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
+        indexSubtotal = position
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
     }
 
-    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
-        if (shipmentCostModel != null) {
-            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
-        }
+//    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
+//        if (shipmentCostModel != null) {
+//            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
+//        }
+//    }
+
+//    fun getShipmentCostItemIndex(): Int {
+//        var index = 0
+//        if (shipmentCostModel != null) {
+//            index = shipmentDataList.indexOf(shipmentCostModel!!)
+//        }
+//        return index
+//    }
+
+    override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        shipmentAdapterActionListener.onCheckboxAddonProductListener(isChecked, addOnProductDataItemModel, cartItemModel, bindingAdapterPosition)
     }
 
-    fun getShipmentCostItemIndex(): Int {
-        var index = 0
-        if (shipmentCostModel != null) {
-            index = shipmentDataList.indexOf(shipmentCostModel!!)
-        }
-        return index
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        shipmentAdapterActionListener.onClickAddonProductInfoIcon(addOnDataInfoLink)
     }
 
-    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {
-        shipmentAdapterActionListener.onCheckboxAddonProductListener(addOnProductDataItemModel)
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel, listSelectedAddOnId: java.util.ArrayList<Long>) {
+        shipmentAdapterActionListener.onClickSeeAllAddOnProductService(cartItemModel, listSelectedAddOnId)
     }
-
-    override fun onClickAddonProductInfoIcon() {
-        shipmentAdapterActionListener.onClickAddonProductInfoIcon()
-    }
-
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
         notifyItemChanged(position)
+    }
+
+    fun updateSubtotal() {
+        notifyItemChanged(indexSubtotal)
     }
 }

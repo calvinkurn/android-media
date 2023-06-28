@@ -29,7 +29,10 @@ data class ShipmentCartItemTopModel(
     val fulfillmentBadgeUrl: String = "",
 
     val uiGroupType: Int = 0,
+    val groupInfoName: String = "",
     val groupInfoBadgeUrl: String = "",
+    val groupInfoDescription: String = "",
+    val groupInfoDescriptionBadgeUrl: String = "",
 
     override val cartStringGroup: String
 ) : ShipmentCartItem
