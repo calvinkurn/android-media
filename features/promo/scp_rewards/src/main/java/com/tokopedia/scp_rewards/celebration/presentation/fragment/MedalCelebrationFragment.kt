@@ -30,14 +30,17 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
 import com.tokopedia.scp_rewards.celebration.domain.model.ScpRewardsCelebrationModel
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel
 import com.tokopedia.scp_rewards.common.constants.EASE_IN
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -50,6 +53,8 @@ import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.unifycomponents.UnifyButton
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")
@@ -147,7 +152,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 }
                 is Error -> {
                     CelebrationAnalytics.sendImpressionCelebrationError(medaliSlug)
-                    showErrorView()
+                    handleError(it)
                 }
                 is Loading -> {
                     binding?.mainFlipper?.displayedChild = LOADING_STATE
@@ -648,28 +653,51 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorView() {
+    private fun handleError(scpError: Error) {
         context?.let {
             val defaultBg = ContextCompat.getColor(it, R.color.white)
             binding?.mainFlipper?.setBackgroundColor(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
-        binding?.errorView?.apply {
-            errorSecondaryAction.show()
-            if (errorSecondaryAction is UnifyButton) {
-                (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+
+        val error = scpError.error
+        when {
+            error is UnknownHostException || error is SocketTimeoutException -> {
+                binding?.errorView?.setType(GlobalError.NO_CONNECTION)
             }
-            errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-            errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
-            val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            errorSecondaryAction.setBackgroundColor(buttonColor)
-            setActionClickListener {
-                CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
-                resetPage()
+            scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                binding?.errorView?.apply {
+                    setType(GlobalError.PAGE_NOT_FOUND)
+                    errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
+                    errorDescription.text = context.getText(R.string.error_non_whitelisted_user_description)
+                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    setActionClickListener {
+                        CelebrationAnalytics.sendNonWhitelistedUserCtaClick()
+                        RouteManager.route(context, ApplinkConst.HOME)
+                        activity?.finish()
+                    }
+                }
+                CelebrationAnalytics.sendImpressionNonWhitelistedError()
             }
-            setSecondaryActionClickListener {
-                CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
-                activity?.finish()
+            else -> {
+                binding?.errorView?.apply {
+                    errorSecondaryAction.show()
+                    if (errorSecondaryAction is UnifyButton) {
+                        (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                    }
+                    errorSecondaryAction.text = context?.getString(R.string.go_back_text)
+                    errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
+                    val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                    errorSecondaryAction.setBackgroundColor(buttonColor)
+                    setActionClickListener {
+                        CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
+                        resetPage()
+                    }
+                    setSecondaryActionClickListener {
+                        CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
+                        activity?.finish()
+                    }
+                }
             }
         }
     }
@@ -729,5 +757,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             lottieStars.clearAnimation()
         }
         audioManager?.releaseMediaPlayer()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        val state = medalCelebrationViewModel.badgeLiveData.value
+        if (state is Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
+            CelebrationAnalytics.sendNonWhitelistedBackClick()
+        }
+        return super.onFragmentBackPressed()
     }
 }

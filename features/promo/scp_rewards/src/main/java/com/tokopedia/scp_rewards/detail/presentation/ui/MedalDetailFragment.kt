@@ -20,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
@@ -220,7 +223,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
                     is Error -> {
                         setWhiteStatusBar()
-                        handleError(safeResult.error)
+                        handleError(safeResult)
                     }
 
                     is Loading -> {
@@ -464,17 +467,36 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(error: Throwable) {
+    private fun handleError(scpError: Error) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
         setToolbarBackButtonTint(R.color.Unify_NN900)
-        if (error is UnknownHostException || error is SocketTimeoutException) {
-            binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
-        } else {
-            binding.loadContainer.mdpError.apply {
-                setType(GlobalError.SERVER_ERROR)
-                errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
-                setActionClickListener {
-                    resetPage()
+        val error = scpError.error
+
+        when {
+            error is UnknownHostException || error is SocketTimeoutException -> {
+                binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
+            }
+            scpError.errorCode == NON_WHITELISTED_USER_ERROR_CODE -> {
+                binding.loadContainer.mdpError.apply {
+                    setType(GlobalError.PAGE_NOT_FOUND)
+                    errorTitle.text = context.getText(R.string.error_non_whitelisted_user_title)
+                    errorDescription.text = context.getText(R.string.error_non_whitelisted_user_description)
+                    errorAction.text = context.getText(R.string.error_non_whitelisted_user_action)
+                    setActionClickListener {
+                        MedalDetailAnalyticsImpl.sendNonWhitelistedUserCtaClick()
+                        RouteManager.route(context, ApplinkConst.HOME)
+                        activity?.finish()
+                    }
+                }
+                MedalDetailAnalyticsImpl.sendImpressionNonWhitelistedError()
+            }
+            else -> {
+                binding.loadContainer.mdpError.apply {
+                    setType(GlobalError.SERVER_ERROR)
+                    errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
+                    setActionClickListener {
+                        resetPage()
+                    }
                 }
             }
         }
@@ -532,7 +554,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        val state = medalDetailViewModel.badgeLiveData.value
+        if (state is Error && state.errorCode == NON_WHITELISTED_USER_ERROR_CODE) {
+            MedalDetailAnalyticsImpl.sendNonWhitelistedBackClick()
+        } else {
+            MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        }
         return super.onFragmentBackPressed()
     }
 
