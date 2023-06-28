@@ -52,6 +52,8 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpCelebration
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation
@@ -992,6 +994,10 @@ object DeeplinkMainApp {
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
             }
+        ),
+        "medali" to mutableListOf(
+            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
+            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) }
         ),
 
     )
