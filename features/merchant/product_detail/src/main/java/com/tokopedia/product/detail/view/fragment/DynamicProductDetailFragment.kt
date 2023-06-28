@@ -2002,9 +2002,9 @@ open class DynamicProductDetailFragment :
             startActivityForResult(
                 //TODO: Pass real additionalParamsJson
                 TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    source,
+                    context = it,
+                    shopId = shopId,
+                    source = source,
                     productId = productId,
                     additionalParamJson = ""
                 ),
