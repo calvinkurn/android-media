@@ -44,7 +44,7 @@ fun waitForBottomSheet() {
     Thread.sleep(100)
 }
 
-const val DEBOUNCE_TIME = 500L
+const val DEBOUNCE_TIME = 100L
 
 class OrderSummaryPageRobot {
 
