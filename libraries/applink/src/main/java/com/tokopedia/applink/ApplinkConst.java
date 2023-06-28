@@ -98,6 +98,9 @@ public interface ApplinkConst {
     String WEBVIEW_DOWNLOAD_HTML = "tokopedia://webview-download-html";
     String WEBVIEW_PARENT_HOME_HOST = "webviewbackhome";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
+
+    String YOUTUBE_PLAYER = "tokopedia://youtube-player/{video_id}";
+
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String TELKOMSEL_OMNI = "tokopedia://telkomselomni";
@@ -379,6 +382,8 @@ public interface ApplinkConst {
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String KYC = "tokopedia://kyc?projectId=1";
+
+    String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}&source={source}&callback={callback}";
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
