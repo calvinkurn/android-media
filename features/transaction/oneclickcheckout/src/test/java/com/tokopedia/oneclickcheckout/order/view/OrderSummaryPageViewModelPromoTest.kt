@@ -16,10 +16,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
-import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
-import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
-import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
