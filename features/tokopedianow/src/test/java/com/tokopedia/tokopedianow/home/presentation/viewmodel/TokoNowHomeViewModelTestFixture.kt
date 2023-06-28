@@ -34,7 +34,6 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -64,8 +63,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -126,6 +123,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
+
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
@@ -159,7 +157,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
-    protected lateinit var viewModel : TokoNowHomeViewModel
+    protected lateinit var viewModel: TokoNowHomeViewModel
 
     private val privateHomeLayoutItemList by lazy {
         viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel?>>("homeLayoutItemList")
@@ -191,7 +189,7 @@ abstract class TokoNowHomeViewModelTestFixture {
             deleteCartUseCase,
             affiliateService,
             getTargetedTickerUseCase,
-            addressData,
+            addressData
         )
     }
 
@@ -285,25 +283,36 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
-    protected fun verifyGetCarouselChipsRecomCalled(times: Int = 1, pageName: String) {
+    protected fun verifyGetCarouselChipsRecomCalled(
+        times: Int = 1,
+        pageName: String,
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = times) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
     }
 
-    protected fun verifyGetCarouselChipsRecomNotCalled(pageName: String = anyString()) {
+    protected fun verifyGetCarouselChipsRecomNotCalled(
+        pageName: String = anyString(),
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = 0) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
@@ -472,7 +481,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetProductBundleRecom_thenReturn(errorThrowable: Throwable) {
-        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws  errorThrowable
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws errorThrowable
     }
 
     protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {
