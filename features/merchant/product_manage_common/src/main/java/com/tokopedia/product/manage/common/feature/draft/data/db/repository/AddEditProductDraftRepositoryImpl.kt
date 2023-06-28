@@ -37,6 +37,7 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
                         isCorrupt = true,
                         corruptedData = it.data
                     )
+                    FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
         }
@@ -53,6 +54,7 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
                     isCorrupt = true,
                     corruptedData = it.data
                 )
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
