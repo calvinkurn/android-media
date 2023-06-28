@@ -146,12 +146,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView()
+        setupNavigator()
 
         setupBackground()
         setupToolbar()
         setupStatusBar()
         setupBottomNav()
-        setupNavigator()
         setupShadow()
 
         setupDefaultPage(savedInstanceState)
