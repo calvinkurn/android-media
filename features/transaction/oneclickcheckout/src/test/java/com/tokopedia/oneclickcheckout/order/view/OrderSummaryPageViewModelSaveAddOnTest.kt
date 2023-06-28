@@ -7,8 +7,6 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_CHECK_STATUS
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ADD_ONS_PRODUCT_UNCHECK_STATUS
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.SAVE_ADD_ON_STATE_QUANTITY
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
@@ -16,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
@@ -28,6 +26,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.oneclickcheckout.utils.TestUtil.getPrivateField
 import com.tokopedia.oneclickcheckout.utils.TestUtil.mockPrivateField
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnDataResponse
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnResponse
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.DataResponse
@@ -63,18 +63,18 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val newAddOnProduct = addOnProduct1.copy(
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -119,8 +119,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
-
+        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
         Assert.assertEquals(
             expectedGlobalEvent,
             orderSummaryPageViewModel.globalEvent.value,
@@ -154,18 +153,18 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val newAddOnProduct = addOnProduct1.copy(
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -234,7 +233,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
+        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
 
         Assert.assertEquals(
             expectedGlobalEvent,
@@ -270,18 +269,18 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val newAddOnProduct = addOnProduct1.copy(
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -337,7 +336,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         // Then
         val expectedGlobalEvent = OccGlobalEvent.Normal
         val expectedOrderProducts = listOf(orderProduct.copy(productId = actualProductId, finalPrice = productPrice))
-        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
+        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
 
         Assert.assertEquals(
             expectedGlobalEvent,
@@ -373,19 +372,19 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val newAddOnProduct = addOnProduct1.copy(
             id = newAddOnProductId,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -454,7 +453,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
+        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
         Assert.assertEquals(
             expectedGlobalEvent,
             orderSummaryPageViewModel.globalEvent.value,
@@ -485,25 +484,24 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         val addOnProduct2Price = 40000L
         val addOnProduct2Quantity = 2
         val newAddOnProductId = "1222313"
-        val deltaAssertEquals = .1
 
         val addOnProduct1 = AddOnsProductDataModel.Data(
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val newAddOnProduct = addOnProduct1.copy(
             id = newAddOnProductId,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -551,18 +549,12 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         )
 
         // When
-        orderSummaryPageViewModel.updateAddOnProduct(
-            newAddOnProductData = newAddOnProduct,
-            product = orderProduct
-        )
-
         orderSummaryPageViewModel.finalUpdate(
             onSuccessCheckout = {},
             skipCheckIneligiblePromo = false
         )
 
         // Then
-        val expectedGlobalEvent = OccGlobalEvent.Normal
         val expectedOrderProducts = listOf(
             orderProduct.copy(
                 addOnsProductData = orderProduct.addOnsProductData.copy(
@@ -577,19 +569,79 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
                 )
             )
         )
-        val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ONS_PRODUCT_CHECK_STATUS }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
-        Assert.assertEquals(
-            expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
-        )
         Assert.assertEquals(
             expectedOrderProducts,
             orderSummaryPageViewModel.orderProducts.value,
         )
+    }
+
+    @Test
+    fun `WHEN save all addons on product is executed but there is no addons THEN final update will not be blocked`() {
+        // Given
+        orderSummaryPageViewModel.mockPrivateField("saveAddOnProductStateJobs", mutableMapOf("123" to Job(), "444" to Job()))
+
+        val productId = "1233"
+        val productOrderQuantity = 2
+        val productPrice = 100000.0
+        val addOnProduct1Id = "123"
+        val addOnProduct1Price = 20000L
+        val addOnProduct2Id = "125"
+        val addOnProduct2Price = 40000L
+
+        val orderProduct = OrderProduct(
+            productId = productId,
+            orderQuantity = productOrderQuantity,
+            productPrice = productPrice,
+            addOnsProductData = AddOnsProductDataModel(
+                data = listOf()
+            )
+        )
+
+        setupDummyDataForCalculationPurpose(
+            orderProduct = orderProduct
+        )
+
+        val saveAddOnsResponse = SaveAddOnsResponse(
+            status = STATUS_OK,
+            data = DataResponse(
+                addOns = listOf(
+                    AddOnResponse(
+                        addOnData = listOf(
+                            AddOnDataResponse(
+                                addOnId = addOnProduct1Id,
+                                addOnPrice = addOnProduct1Price.toDouble(),
+                                addOnQty = SAVE_ADD_ON_STATE_QUANTITY
+                            ),
+                            AddOnDataResponse(
+                                addOnId = addOnProduct2Id,
+                                addOnPrice = addOnProduct2Price.toDouble(),
+                                addOnQty = SAVE_ADD_ON_STATE_QUANTITY
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            saveAddOnStateUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse(
+            saveAddOns = saveAddOnsResponse
+        )
+
+        // When
+        orderSummaryPageViewModel.finalUpdate(
+            onSuccessCheckout = {},
+            skipCheckIneligiblePromo = false
+        )
+
+        // Then
+        val expectedOrderProducts = listOf(
+            orderProduct
+        )
         Assert.assertEquals(
-            expectedTotalPrice,
-            orderSummaryPageViewModel.orderTotal.value.orderCost.totalPrice,
-            deltaAssertEquals
+            expectedOrderProducts,
+            orderSummaryPageViewModel.orderProducts.value,
         )
     }
 
@@ -608,19 +660,20 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         val addOnProduct2Price = 40000L
         val addOnProduct2Quantity = 2
         val errorCta = "Oke"
+        val errorThrowable = Throwable()
 
         val addOnProduct1 = AddOnsProductDataModel.Data(
             id = addOnProduct1Id,
             price = addOnProduct1Price,
             productQuantity = addOnProduct1Quantity,
-            status = ADD_ONS_PRODUCT_UNCHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_UNCHECK
         )
 
         val addOnProduct2 = AddOnsProductDataModel.Data(
             id = addOnProduct2Id,
             price = addOnProduct2Price,
             productQuantity = addOnProduct2Quantity,
-            status = ADD_ONS_PRODUCT_CHECK_STATUS
+            status = ADD_ON_PRODUCT_STATUS_CHECK
         )
 
         val orderProduct = OrderProduct(
@@ -641,7 +694,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
 
         coEvery {
             saveAddOnStateUseCase.executeOnBackground()
-        } throws Throwable()
+        } throws errorThrowable
 
         // When
         orderSummaryPageViewModel.finalUpdate(
@@ -650,11 +703,9 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         )
 
         // Then
-        val expectedGlobalEvent = OccGlobalEvent.ToasterAction(
-            OccToasterAction(
-                message = String.EMPTY,
-                ctaText = errorCta
-            )
+        val expectedGlobalEvent = OccGlobalEvent.Error(
+            throwable = errorThrowable,
+            ctaText = errorCta
         )
         Assert.assertEquals(
             expectedGlobalEvent,
@@ -769,7 +820,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         } returns creditCardTenorListData
         coEvery {
             updateCartOccUseCase.executeSuspend(any())
-        } returns null
+        } returns OccPrompt()
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
         } returns ValidateUsePromoRevampUiModel()
