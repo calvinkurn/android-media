@@ -7,7 +7,6 @@ import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
-import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
@@ -50,7 +49,6 @@ import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -489,7 +487,7 @@ object ShopPageHomeMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header),
+        header = mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase)
     )
@@ -502,7 +500,7 @@ object ShopPageHomeMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header),
+        header = mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         showcaseListItem = mapToShowcaseListItemUiModel(
             widgetResponse.data,
@@ -523,7 +521,7 @@ object ShopPageHomeMapper {
             layoutOrder = widgetResponse.layoutOrder,
             name = widgetResponse.name,
             type = widgetResponse.type,
-            header = mapToHeaderModel(header),
+            header = mapToHeaderModel(header, widgetLayout),
             isFestivity = widgetLayout?.isFestivity.orFalse(),
         )
     }
@@ -537,7 +535,7 @@ object ShopPageHomeMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header),
+        header = mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name, shopId)
     )
@@ -590,7 +588,7 @@ object ShopPageHomeMapper {
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
-            mapToHeaderModel(widgetResponse.header),
+            mapToHeaderModel(widgetResponse.header, widgetLayout),
             widgetLayout?.isFestivity.orFalse(),
             mapToListNewProductLaunchCampaignItem(widgetResponse.data, isLoggedIn)
         )
@@ -606,7 +604,7 @@ object ShopPageHomeMapper {
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
-            mapToHeaderModel(widgetResponse.header),
+            mapToHeaderModel(widgetResponse.header, widgetLayout),
             widgetLayout?.isFestivity.orFalse(),
             mapToFlashSaleUiModelList(widgetResponse.data, isEnableDirectPurchase)
         )
@@ -756,7 +754,7 @@ object ShopPageHomeMapper {
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
-            mapToHeaderModel(widgetResponse.header),
+            mapToHeaderModel(widgetResponse.header, widgetLayout),
             widgetLayout?.isFestivity.orFalse()
         )
     }
@@ -770,7 +768,7 @@ object ShopPageHomeMapper {
             widgetResponse.layoutOrder,
             widgetResponse.name,
             widgetResponse.type,
-            mapToHeaderModel(widgetResponse.header),
+            mapToHeaderModel(widgetResponse.header, widgetLayout),
             widgetLayout?.isFestivity.orFalse(),
             mapToListDisplayWidgetItem(widgetResponse.data)
         )
@@ -856,13 +854,16 @@ object ShopPageHomeMapper {
             widgetModel.layoutOrder,
             widgetModel.name,
             widgetModel.type,
-            mapToHeaderModel(widgetModel.header),
+            mapToHeaderModel(widgetModel.header, widgetLayout),
             widgetLayout?.isFestivity.orFalse(),
             mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct, isEnableDirectPurchase)
         )
     }
 
-    fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
+    fun mapToHeaderModel(
+        header: ShopLayoutWidget.Widget.Header,
+        widgetLayout: ShopPageWidgetUiModel?
+    ): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
             header.title,
             header.subtitle,
@@ -871,8 +872,19 @@ object ShopPageHomeMapper {
             header.cover,
             header.ratio,
             header.isAtc,
-            header.etalaseId
+            header.etalaseId,
+            mapToHeaderData(widgetLayout)
         )
+    }
+
+    private fun mapToHeaderData(data: ShopPageWidgetUiModel?): List<BaseShopHomeWidgetUiModel.Header.Data> {
+        return data?.header?.data?.map {
+            BaseShopHomeWidgetUiModel.Header.Data(
+                it.linkType,
+                it.linkID,
+                it.link
+            )
+        }.orEmpty()
     }
 
     private fun mapToWidgetProductListPersonalization(
@@ -1000,7 +1012,7 @@ object ShopPageHomeMapper {
         layoutOrder = model.layoutOrder,
         name = model.name,
         type = model.type,
-        header = mapToHeaderModel(model.header),
+        header = mapToHeaderModel(model.header, widgetLayout),
         widgetLayout?.isFestivity.orFalse()
     )
 

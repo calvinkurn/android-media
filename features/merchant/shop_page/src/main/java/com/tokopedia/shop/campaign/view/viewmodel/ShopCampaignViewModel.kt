@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherListUseCase
 import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
@@ -21,7 +22,6 @@ import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCa
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
-import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Provider
 
 class ShopCampaignViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
@@ -54,8 +53,8 @@ class ShopCampaignViewModel @Inject constructor(
     private val _shopCampaignWidgetContentDataError =
         MutableSharedFlow<List<ShopPageWidgetUiModel>>()
 
-    private val _redeemResult = MutableLiveData<Result<RedeemPromoVoucherResult>>()
-    val redeemResult: LiveData<Result<RedeemPromoVoucherResult>>
+    private val _redeemResult = MutableLiveData<Result<ShopCampaignRedeemPromoVoucherResult>>()
+    val redeemResult: LiveData<Result<ShopCampaignRedeemPromoVoucherResult>>
         get() = _redeemResult
 
     private val _voucherSliderWidgetData = MutableLiveData<Result<ShopWidgetVoucherSliderUiModel>>()
@@ -69,6 +68,10 @@ class ShopCampaignViewModel @Inject constructor(
     val latestShopCampaignWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
         get() = _latestShopCampaignWidgetLayoutData
     private val _latestShopCampaignWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
+
+    private val _updatedBannerTimerUiModelData = MutableLiveData<ShopWidgetDisplayBannerTimerUiModel?>()
+    val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
+        get() = _updatedBannerTimerUiModelData
 
     fun getWidgetContentData(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -135,9 +138,7 @@ class ShopCampaignViewModel @Inject constructor(
         launchCatchError(
             dispatcherProvider.io,
             block = {
-                val listVoucherPromo = getPromoVoucherDataAsync(uiModel).filter {
-                    it.remainingQuota > Int.ZERO
-                }
+                val listVoucherPromo = getPromoVoucherData(uiModel)
                 val updatedWidgetVoucherSliderUiModel = uiModel.copy(
                     listVoucher = listVoucherPromo
                 )
@@ -149,16 +150,27 @@ class ShopCampaignViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getPromoVoucherDataAsync(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
-        return getPromoVoucherListUseCase.execute(uiModel.listCategorySlug)
+    private suspend fun getPromoVoucherData(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
+        return getPromoVoucherListUseCase.execute(uiModel.getListCategorySlug())
     }
 
-    fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
+    fun redeemCampaignVoucherSlider(
+        parentVoucherUiModel: ShopWidgetVoucherSliderUiModel,
+        voucherModel: ExclusiveLaunchVoucher
+    ) {
         launchCatchError(
             dispatcherProvider.io,
             block = {
-                val redeemResult = doRedeemPromoVoucher(model)
-                _redeemResult.postValue(Success(redeemResult))
+                val redeemResult = doRedeemPromoVoucher(voucherModel)
+                _redeemResult.postValue(Success(
+                    ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
+                        voucherModel.slug,
+                        voucherModel.couponCode,
+                        "",
+                        parentVoucherUiModel.widgetId,
+                        redeemResult
+                    )
+                ))
             },
             onError = { throwable ->
                 _redeemResult.postValue(Fail(throwable))
@@ -245,8 +257,8 @@ class ShopCampaignViewModel @Inject constructor(
 
     fun showBannerTimerRemindMeLoading(newList: MutableList<Visitable<*>>) {
         launchCatchError(dispatcherProvider.io, block = {
-            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
-                nplCampaignUiModel.let {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { bannerTimerUiModel ->
+                bannerTimerUiModel.let {
                     it.data?.showRemindMeLoading = true
                     it.isNewData = true
                 }
@@ -264,8 +276,8 @@ class ShopCampaignViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
-                .onEach { nplCampaignUiModel ->
-                    nplCampaignUiModel.data?.let {
+                .onEach { bannerTimerUiModel ->
+                    bannerTimerUiModel.data?.let {
                         it.isRemindMe = isRemindMe
                         if (isClickRemindMe) {
                             if (isRemindMe)
@@ -274,9 +286,10 @@ class ShopCampaignViewModel @Inject constructor(
                                 --it.totalNotify
                         }
                         it.showRemindMeLoading = false
-                        nplCampaignUiModel.isNewData = true
+                        bannerTimerUiModel.isNewData = true
                     }
                 }
+            _updatedBannerTimerUiModelData.postValue(newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull())
             _campaignWidgetListVisitable.postValue(Success(newList))
         }) { throwable ->
             _campaignWidgetListVisitable.postValue(Fail(throwable))
@@ -284,4 +297,20 @@ class ShopCampaignViewModel @Inject constructor(
     }
 
 
+    fun updateBannerTimerWidgetUiModel(
+        newList: MutableList<Visitable<*>>,
+        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            if(position != -1){
+                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                    isNewData = true
+                })
+            }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
 }

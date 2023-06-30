@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
@@ -24,7 +25,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         data = mapToBannerItemWidget(widgetResponse.data.firstOrNull())
     )
@@ -66,7 +67,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         listHighlightProductData = mapToListHighlightProductData(widgetResponse.data)
     )
@@ -88,7 +89,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = ShopPageHomeMapper.mapCampaignListProduct(
             widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty(),
@@ -104,9 +105,8 @@ object ShopPageWidgetMapper {
         widgetResponse.layoutOrder,
         widgetResponse.name,
         widgetResponse.type,
-        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
-        widgetLayout?.isFestivity.orFalse(),
-        widgetLayout?.header?.data?.map { it.link }.orEmpty()
+        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        widgetLayout?.isFestivity.orFalse()
     )
 
     fun mapToShopPageWidgetRequest(listWidgetLayout: List<ShopPageWidgetUiModel>): List<ShopPageWidgetRequestModel> {
@@ -147,6 +147,24 @@ object ShopPageWidgetMapper {
         )
     }
 
+
+    fun mapToPlayWidgetTypeSellerApp(shopId: String): PlayWidgetUseCase.WidgetType.SellerApp{
+        return PlayWidgetUseCase.WidgetType.SellerApp(
+            shopId = shopId
+        )
+    }
+
+    fun mapToPlayWidgetTypeShopPage(shopId: String): PlayWidgetUseCase.WidgetType.ShopPage{
+        return PlayWidgetUseCase.WidgetType.ShopPage(
+            shopId = shopId
+        )
+    }
+
+    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
+        return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
+            shopId = shopId
+        )
+    }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
         return when (this) {
             0 -> StatusCampaign.UPCOMING

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -47,6 +48,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private val viewBinding: ItemShopHomeDisplayBannerTimerBinding? by viewBinding()
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
+    private var isRemindMe: Boolean? = null
     private val imageBanner: ImageUnify? = viewBinding?.imageBanner
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
@@ -63,6 +65,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
+        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -275,26 +278,29 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun setRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         hideAllRemindMeLayout()
-        uiModel.data?.isRemindMe?.let { isRemindMe ->
+        isRemindMe = uiModel.data?.isRemindMe
+        isRemindMe?.let {
             buttonRemindMe?.show()
             buttonRemindMe?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
                     listener.onClickRemindMe(uiModel)
                 }
             }
-            if (isRemindMe) {
-                hideRemindMeText(uiModel, isRemindMe)
-                uiModel.data.isHideRemindMeTextAfterXSeconds = true
+            if (it) {
+                hideRemindMeText(uiModel, true)
+                uiModel.data?.isHideRemindMeTextAfterXSeconds = true
             } else {
-                val isHideRemindMeTextAfterXSeconds = uiModel.data.isHideRemindMeTextAfterXSeconds
+                val isHideRemindMeTextAfterXSeconds = uiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
                 if (isHideRemindMeTextAfterXSeconds) {
-                    hideRemindMeText(uiModel, isRemindMe)
+                    hideRemindMeText(uiModel, false)
                 }else{
                     buttonRemindMe?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
-                        hideRemindMeText(uiModel, isRemindMe)
-                        uiModel.data.isHideRemindMeTextAfterXSeconds = true
+                        if (isRemindMe == false) {
+                            hideRemindMeText(uiModel, false)
+                        }
+                        uiModel.data?.isHideRemindMeTextAfterXSeconds = true
                     }) {}
                 }
             }
@@ -309,11 +315,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun hideRemindMeText(model: ShopWidgetDisplayBannerTimerUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.totalNotifyWording.orEmpty()
         remindMeText?.apply {
-            val colorText = if(isRemindMe){
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-            }
+            val colorText = TOTAL_NOTIFY_TEXT_COLOR
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED
             } else {

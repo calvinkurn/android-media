@@ -53,11 +53,29 @@ class ShopCampaignVoucherSliderViewHolder(
     private var textReload: Typography? = binding?.voucherSliderReload?.textReload
     private var imageReload: ImageView? = binding?.voucherSliderReload?.imageReload
     private var textReloadDesc: Typography? = binding?.voucherSliderReload?.textReloadDesc
-
+    private var model: ShopWidgetVoucherSliderUiModel? = null
+    init {
+        rvVoucherList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                model?.rvState = recyclerView.layoutManager?.onSaveInstanceState()
+            }
+        })
+    }
     override fun bind(uiModel: ShopWidgetVoucherSliderUiModel) {
+        model = uiModel
+        setVoucherList(uiModel)
+    }
+
+    private fun setVoucherList(uiModel: ShopWidgetVoucherSliderUiModel) {
+        val rvState = model?.rvState
+        if (null != rvState) {
+            rvVoucherList?.layoutManager?.onRestoreInstanceState(rvState)
+        }
         val voucherListModel = getVoucherListModel(uiModel)
         rvVoucherList?.addHorizontalSpacing()
         rvVoucherList?.adapter = adapterShopCampaignVoucherSlider
+        adapterShopCampaignVoucherSlider.setParentUiModel(uiModel)
         adapterShopCampaignVoucherSlider.submit(voucherListModel)
     }
 
@@ -69,7 +87,7 @@ class ShopCampaignVoucherSliderViewHolder(
                 add(
                     ExclusiveLaunchMoreVoucherUiModel(
                         totalRemainingVoucher = uiModel.listVoucher.size - MAXIMUM_VOUCHER,
-                        listCategorySlug = uiModel.listCategorySlug
+                        listCategorySlug = uiModel.getListCategorySlug()
                     )
                 )
             }
@@ -93,20 +111,22 @@ class ShopCampaignVoucherSliderViewHolder(
     }
 
     private fun RecyclerView.addHorizontalSpacing() {
-        addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: android.graphics.Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                val position = parent.getChildAdapterPosition(view)
-                if (position != RecyclerView.NO_POSITION) {
-                    outRect.right = context.resources.getDimensionPixelSize(
-                        R.dimen.voucher_slider_widget_item_spacing
-                    )
+        if(itemDecorationCount == 0) {
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: android.graphics.Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position != RecyclerView.NO_POSITION) {
+                        outRect.right = context.resources.getDimensionPixelSize(
+                            R.dimen.voucher_slider_widget_item_spacing
+                        )
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 }

@@ -12,6 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -23,10 +26,12 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -40,7 +45,7 @@ import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
-import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
@@ -56,7 +61,9 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
+import com.tokopedia.shop.common.CropTopImageByHeightPercentageTransformation
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
@@ -80,6 +87,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -112,6 +120,7 @@ class ShopPageCampaignFragment :
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
         private const val QUERY_PARAM_TAB = "tab"
+        private const val PATTERN_CROP_TOP_PERCENTAGE = 0.25
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -124,6 +133,7 @@ class ShopPageCampaignFragment :
 
     private val viewBindingCampaignTab: FragmentShopPageCampaignBinding? by viewBinding()
     private var listCampaignTabBackgroundColor: List<String> = listOf()
+    private var listPatternImage: List<String> = listOf()
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
@@ -152,6 +162,7 @@ class ShopPageCampaignFragment :
     }
 
     private var globalErrorShopPage: GlobalError? = null
+    private var viewBackgroundColor: View? = null
 
     @Inject
     lateinit var shopCampaignTabTracker: ShopCampaignTabTracker
@@ -176,6 +187,28 @@ class ShopPageCampaignFragment :
         observeRedeemResult()
         observeCampaignWidgetListVisitable()
         observeLatestShopCampaignWidgetLayoutData()
+        observeUpdatedBannerTimerUiModelData()
+        observeShopReminderButtonStatusSharedVieModel()
+    }
+
+    private fun observeShopReminderButtonStatusSharedVieModel() {
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            if (!shopCampaignTabAdapter.isLoading && getSelectedFragment() != this) {
+                bannerTimerUiModel?.let {
+                    viewModelCampaign?.updateBannerTimerWidgetUiModel(
+                        shopCampaignTabAdapter.getNewVisitableItems().toMutableList(),
+                        it
+                    )
+                }
+            }
+        }
+    }
+    private fun observeUpdatedBannerTimerUiModelData() {
+        viewModelCampaign?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+            bannerTimerUiModel?.let {
+                shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
+            }
+        }
     }
 
     private fun observeLatestShopCampaignWidgetLayoutData() {
@@ -303,6 +336,7 @@ class ShopPageCampaignFragment :
 
     override fun initView() {
         globalErrorShopPage = viewBindingCampaignTab?.globalError
+        viewBackgroundColor = viewBindingCampaignTab?.viewBgColor
     }
 
     override fun observeShopHomeWidgetContentData() {
@@ -312,6 +346,7 @@ class ShopPageCampaignFragment :
                     is Success -> {
                         onSuccessGetShopHomeWidgetContentData(it.data)
                         renderCampaignTabBackgroundColor()
+                        renderPatternBackground()
                     }
 
                     is Fail -> {
@@ -340,6 +375,25 @@ class ShopPageCampaignFragment :
         }
     }
 
+    private fun renderPatternBackground() {
+        viewBindingCampaignTab?.imageBackgroundPattern?.apply {
+            if (drawable == null) {
+                val patternUrl = listPatternImage.getOrNull(Int.ZERO).orEmpty()
+                shouldShowWithAction(patternUrl.isNotEmpty()) {}
+                Glide.with(context)
+                    .load(listPatternImage.getOrNull(Int.ZERO))
+                    .apply(RequestOptions().override(Target.SIZE_ORIGINAL))
+                    .override(Target.SIZE_ORIGINAL)
+                    .transform(
+                        CropTopImageByHeightPercentageTransformation(
+                            PATTERN_CROP_TOP_PERCENTAGE
+                        )
+                    )
+                    .into(this)
+            }
+        }
+    }
+
     override fun observePlayWidget() {
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner) { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
@@ -363,7 +417,7 @@ class ShopPageCampaignFragment :
                                     .indexOfFirst { it is CarouselPlayWidgetUiModel }
                             val finalPosition = min(
                                 ShopUtil.getActualPositionFromIndex(widgetPosition),
-                                shopCampaignTabAdapter?.itemCount.orZero()
+                                shopCampaignTabAdapter.itemCount.orZero()
                             )
                             recyclerView.stepScrollToPositionWithDelay(
                                 finalPosition,
@@ -559,9 +613,16 @@ class ShopPageCampaignFragment :
     }
 
     private fun renderCampaignTabBackgroundColor() {
-        if (listCampaignTabBackgroundColor.isNotEmpty()) {
-            getRecyclerView(view)?.apply {
-                setBackgroundColor(parseColor(listCampaignTabBackgroundColor.firstOrNull().orEmpty()))
+        viewBackgroundColor?.apply {
+            if (listCampaignTabBackgroundColor.isNotEmpty()) {
+                show()
+                setBackgroundColor(
+                    parseColor(
+                        listCampaignTabBackgroundColor.firstOrNull().orEmpty()
+                    )
+                )
+            } else {
+                hide()
             }
         }
     }
@@ -712,7 +773,8 @@ class ShopPageCampaignFragment :
 
     override fun getPlayWidgetData() {
         shopCampaignTabAdapter.getPlayWidgetUiModel()?.let {
-            viewModel?.getPlayWidget(shopId, it)
+            val playWidgetType = ShopPageWidgetMapper.mapToPlayWidgetTypeExclusiveLaunch(shopId)
+            viewModel?.getPlayWidget(it, playWidgetType)
         }
     }
 
@@ -858,23 +920,36 @@ class ShopPageCampaignFragment :
     ) {
     }
 
-    override fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int) {
-        showVoucherDetailBottomSheet(model)
+    override fun onCampaignVoucherSliderItemClick(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher,
+        position: Int
+    ) {
+        showVoucherDetailBottomSheet(
+            model.slug,
+            model.couponCode,
+            "",
+            parentUiModel.widgetId
+        )
     }
 
     override fun onCampaignVoucherSliderItemCtaClaimClick(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
         if (isLogin) {
-            redeemCampaignVoucherSlider(model)
+            redeemCampaignVoucherSlider(parentUiModel, model)
         } else {
             redirectToLoginPage()
         }
     }
 
-    private fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
-        viewModelCampaign?.redeemCampaignVoucherSlider(model)
+    private fun redeemCampaignVoucherSlider(
+        parentUiModel: ShopWidgetVoucherSliderUiModel,
+        model: ExclusiveLaunchVoucher
+    ) {
+        viewModelCampaign?.redeemCampaignVoucherSlider(parentUiModel, model)
     }
 
     override fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>) {
@@ -892,26 +967,49 @@ class ShopPageCampaignFragment :
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
+    private fun showVoucherDetailBottomSheet(
+        slug: String,
+        couponCode: String,
+        campaignId: String,
+        widgetId: String
+    ) {
         if (!isAdded) return
 
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
             shopId = shopId,
-            voucherSlug = selectedVoucher.slug,
-            promoVoucherCode = selectedVoucher.couponCode,
-            campaignId = "", //TODO: replace with real id
-            widgetId = "" //TODO: replace with real id
+            voucherSlug = slug,
+            promoVoucherCode = couponCode,
+            campaignId = campaignId,
+            widgetId = widgetId
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
-                handleRedeemVoucherSuccess(redeemResult)
+                handleRedeemVoucherSuccess(ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
+                    slug,
+                    couponCode,
+                    campaignId,
+                    widgetId,
+                    redeemResult
+                ))
             }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
-        if (redeemResult.redeemMessage.isNotEmpty()) {
-            showToaster(view ?: return, redeemResult.redeemMessage)
+    private fun handleRedeemVoucherSuccess(shopCampaignRedeemPromo: ShopCampaignRedeemPromoVoucherResult) {
+        if (shopCampaignRedeemPromo.redeemResult.redeemMessage.isNotEmpty()) {
+            showToaster(
+                shopCampaignRedeemPromo.redeemResult.redeemMessage,
+                view ?: return,
+                "Lihat",
+                {
+                    showVoucherDetailBottomSheet(
+                        shopCampaignRedeemPromo.slug,
+                        shopCampaignRedeemPromo.couponCode,
+                        shopCampaignRedeemPromo.campaignId,
+                        shopCampaignRedeemPromo.widgetId
+                    )
+                }
+            )
             getVoucherSliderData()
         }
     }
@@ -1020,5 +1118,9 @@ class ShopPageCampaignFragment :
 
     override fun getListBackgroundColor(): List<String> {
         return listCampaignTabBackgroundColor
+    }
+
+    fun setListPatternImage(listPatternImage: List<String>) {
+        this.listPatternImage = listPatternImage
     }
 }

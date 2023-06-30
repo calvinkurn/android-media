@@ -11,19 +11,29 @@ import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.view.customview.ExclusiveLaunchVoucherView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.databinding.ShopCampaignVoucherSliderItemBinding
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignVoucherSliderItemViewHolder(
     itemView: View,
     private val shopCampaignListener: ShopCampaignInterface,
     private val listener: Listener,
-    private val itemCount: Int
+    private val itemCount: Int,
+    private val parentUiModel: ShopWidgetVoucherSliderUiModel?
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface Listener {
         fun onCampaignVoucherSliderItemImpression(model: ExclusiveLaunchVoucher, position: Int)
-        fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int)
-        fun onCampaignVoucherSliderItemCtaClaimClick(model: ExclusiveLaunchVoucher, position: Int)
+        fun onCampaignVoucherSliderItemClick(
+            parentUiModel: ShopWidgetVoucherSliderUiModel,
+            model: ExclusiveLaunchVoucher,
+            position: Int
+        )
+        fun onCampaignVoucherSliderItemCtaClaimClick(
+            parentUiModel: ShopWidgetVoucherSliderUiModel,
+            model: ExclusiveLaunchVoucher,
+            position: Int
+        )
     }
 
     companion object {
@@ -66,17 +76,23 @@ class ShopCampaignVoucherSliderItemViewHolder(
             setVoucherName(uiModel.voucherName)
             if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
             setOnClickListener {
-                listener.onCampaignVoucherSliderItemClick(
-                    uiModel,
-                    bindingAdapterPosition
-                )
+                parentUiModel?.let {
+                    listener.onCampaignVoucherSliderItemClick(
+                        it,
+                        uiModel,
+                        bindingAdapterPosition
+                    )
+                }
             }
             val ctaText = uiModel.buttonStr
             setOnPrimaryCtaClick {
-                listener.onCampaignVoucherSliderItemCtaClaimClick(
-                    uiModel,
-                    bindingAdapterPosition
-                )
+                parentUiModel?.let {
+                    listener.onCampaignVoucherSliderItemCtaClaimClick(
+                        it,
+                        uiModel,
+                        bindingAdapterPosition
+                    )
+                }
             }
             setPrimaryCta(ctaText = ctaText, isClickable = !uiModel.isDisabledButton)
         }

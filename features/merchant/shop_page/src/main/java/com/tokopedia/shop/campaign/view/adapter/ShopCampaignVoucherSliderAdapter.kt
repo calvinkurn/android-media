@@ -10,12 +10,15 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ExclusiveLaunchMoreVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 
 class ShopCampaignVoucherSliderAdapter(
     private val shopCampaignListener: ShopCampaignInterface,
     private val voucherSliderItemListener: ShopCampaignVoucherSliderItemViewHolder.Listener,
     private val voucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var parentUiModel: ShopWidgetVoucherSliderUiModel? = null
 
     private val differCallback = object :
         DiffUtil.ItemCallback<Any>() {
@@ -37,7 +40,8 @@ class ShopCampaignVoucherSliderAdapter(
                 view,
                 shopCampaignListener,
                 voucherSliderItemListener,
-                itemCount
+                itemCount,
+                parentUiModel
             )
 
             else -> ShopCampaignVoucherSliderMoreItemViewHolder(
@@ -69,6 +73,10 @@ class ShopCampaignVoucherSliderAdapter(
 
     fun submit(data: List<Any>) {
         differ.submitList(data)
+    }
+
+    fun setParentUiModel(uiModel: ShopWidgetVoucherSliderUiModel) {
+        this.parentUiModel = uiModel
     }
 
 }

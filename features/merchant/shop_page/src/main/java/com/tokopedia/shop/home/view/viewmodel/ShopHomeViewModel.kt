@@ -231,6 +231,14 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkBannerTimerRemindMeStatusData
     private val _checkBannerTimerRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
+    private val _homeWidgetListVisitable = MutableLiveData<Result<List<Visitable<*>>>>()
+    val homeWidgetListVisitable: LiveData<Result<List<Visitable<*>>>>
+        get() = _homeWidgetListVisitable
+
+    private val _updatedBannerTimerUiModelData = MutableLiveData<ShopWidgetDisplayBannerTimerUiModel?>()
+    val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
+        get() = _updatedBannerTimerUiModelData
+
     fun getNewProductList(
         shopId: String,
         page: Int,
@@ -722,12 +730,12 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    fun getPlayWidget(shopId: String, carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel) {
+    fun getPlayWidget(
+        carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel,
+        playWidgetType: PlayWidgetUseCase.WidgetType
+    ) {
         launchCatchError(block = {
-            val response = playWidgetTools.getWidgetFromNetwork(
-                if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                dispatcherProvider.io
-            )
+            val response = playWidgetTools.getWidgetFromNetwork(playWidgetType, dispatcherProvider.io)
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevState = _playWidgetObservable.value?.playWidgetState)
             _playWidgetObservable.postValue(
                 carouselPlayWidgetUiModel.copy(
@@ -1317,5 +1325,49 @@ class ShopHomeViewModel @Inject constructor(
             )
             _bannerTimerRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
         }) {}
+    }
+
+    fun updateBannerTimerWidgetData(
+        newList: MutableList<Visitable<Any>>,
+        isRemindMe: Boolean,
+        isClickRemindMe: Boolean
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .onEach { bannerTimerUiModel ->
+                    bannerTimerUiModel.data?.let {
+                        it.isRemindMe = isRemindMe
+                        if (isClickRemindMe) {
+                            if (isRemindMe)
+                                ++it.totalNotify
+                            else
+                                --it.totalNotify
+                        }
+                        it.showRemindMeLoading = false
+                        bannerTimerUiModel.isNewData = true
+                    }
+                }
+            _updatedBannerTimerUiModelData.postValue(newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull())
+            _homeWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _homeWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
+    fun updateBannerTimerWidgetUiModel(
+        newList: MutableList<Visitable<*>>,
+        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            if(position != -1){
+                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                    isNewData = true
+                })
+            }
+            _homeWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _homeWidgetListVisitable.postValue(Fail(throwable))
+        }
     }
 }
