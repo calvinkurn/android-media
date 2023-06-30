@@ -939,7 +939,9 @@ class ShopPageCampaignFragment :
         position: Int
     ) {
         if (isLogin) {
-            redeemCampaignVoucherSlider(parentUiModel, model)
+            if(viewModelCampaign?.isLoadingRedeemVoucher() == false) {
+                redeemCampaignVoucherSlider(parentUiModel, model)
+            }
         } else {
             redirectToLoginPage()
         }
