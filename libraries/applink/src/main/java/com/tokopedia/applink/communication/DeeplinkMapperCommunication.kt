@@ -14,9 +14,9 @@ import com.tokopedia.user.session.UserSession
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
-    private const val KEY_ROLLENCE_UNIVERSAL_INBOX = "inbox_universal"
-    private const val ROLLENCE_TYPE_A = "inbox_varA"
-    private const val ROLLENCE_TYPE_B = "inbox_varB"
+    const val KEY_ROLLENCE_UNIVERSAL_INBOX = "inbox_universal"
+    const val ROLLENCE_TYPE_A = "inbox_varA"
+    const val ROLLENCE_TYPE_B = "inbox_varB"
 
     const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
@@ -49,6 +49,14 @@ object DeeplinkMapperCommunication {
         } catch (throwable: Throwable) {
             ""
         }
+    }
+
+    /**
+     * User Session Util
+     */
+    fun isUserLoggedIn(context: Context): Boolean {
+        val userSession = UserSession(context)
+        return userSession.isLoggedIn
     }
 
     /**
@@ -86,8 +94,7 @@ object DeeplinkMapperCommunication {
      * Inbox mapper with remote config
      */
     fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
-        val userSession = UserSession(context)
-        return if (userSession.isLoggedIn) {
+        return if (isUserLoggedIn(context)) {
             val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
                 isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
             return if (useUnivInbox) {
