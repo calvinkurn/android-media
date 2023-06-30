@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.models
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 
-//mappers -> loadFilters -> mergeWithCurrent -> Update Tabs -> select tab -> loadFilters
+// mappers -> loadFilters -> mergeWithCurrent -> Update Tabs -> select tab -> loadFilters
 data class SomListFilterUiModel(
     val statusList: List<Status> = listOf(),
     val sortByList: List<SortBy> = listOf(),
@@ -26,11 +26,12 @@ data class SomListFilterUiModel(
                 childStatuses.forEach { childStatus ->
                     childStatus.isChecked = true
                 }
+                getOrderListParam.statusKey = key
                 getOrderListParam.statusList = id
             }
         }
-        //highlightedStatusKey: new order, all order, confirm_shipping when it first load
-        else if (highLightedStatusKey.isNotBlank() && isFirstPageOpened){
+        // highlightedStatusKey: new order, all order, confirm_shipping when it first load
+        else if (highLightedStatusKey.isNotBlank() && isFirstPageOpened) {
             statusList.find {
                 it.key == highLightedStatusKey
             }?.run {
@@ -38,11 +39,12 @@ data class SomListFilterUiModel(
                 childStatuses.forEach { childStatus ->
                     childStatus.isChecked = true
                 }
+                getOrderListParam.statusKey = key
                 getOrderListParam.statusList = id
             }
         } else {
             statusList.forEach { status ->
-                 if (status.key == SomConsts.STATUS_ALL_ORDER) {
+                if (status.key == SomConsts.STATUS_ALL_ORDER) {
                     status.isChecked = getOrderListParam.statusList.isEmpty()
                 } else {
                     status.isChecked = getOrderListParam.statusList.any {

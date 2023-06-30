@@ -539,8 +539,8 @@ class SomListViewModel @Inject constructor(
                 _filterResult.value = Success(result)
             }
         }, onError = {
-            _filterResult.value = Fail(it)
-        })
+                _filterResult.value = Fail(it)
+            })
     }
 
     fun getHeaderIconsInfo() {
@@ -621,8 +621,9 @@ class SomListViewModel @Inject constructor(
         return (topAdsGetShopInfoSuccess == SomConsts.TOPADS_MANUAL_ADS || topAdsGetShopInfoSuccess == SomConsts.TOPADS_AUTO_ADS)
     }
 
-    fun setStatusOrderFilter(ids: List<Int>) {
+    fun setStatusOrderFilter(ids: List<Int>, statusKey: String) {
         getOrderListParams.statusList = ids
+        getOrderListParams.statusKey = statusKey
         SomListFilterUtil.updateStatusOrderFilter(somFilterUiModelList, ids)
         resetNextOrderId()
     }

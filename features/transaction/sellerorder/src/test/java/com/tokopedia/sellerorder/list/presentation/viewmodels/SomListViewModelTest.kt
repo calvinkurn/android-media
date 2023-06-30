@@ -2030,10 +2030,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun setStatusOrderFilterTest() = coroutineTestRule.runTest {
         val statusOrderIds = listOf(220, 400)
+        val statusKey = "new_order"
         setGetDataOrderListParams()
-        viewModel.setStatusOrderFilter(statusOrderIds)
+        viewModel.setStatusOrderFilter(statusOrderIds, statusKey)
 
         assert(viewModel.getDataOrderListParams().statusList == statusOrderIds)
+        assert(viewModel.getDataOrderListParams().statusKey == statusKey)
     }
 
     @Test
@@ -2377,8 +2379,10 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
         `filterResult should equals to Success when get filters from cache and cloud is success`()
-        viewModel.setStatusOrderFilter(listOf(220))
+        val statusKey = "new_order"
+        viewModel.setStatusOrderFilter(listOf(220), statusKey)
         assertEquals("new_order", viewModel.getTabActive())
+        assertEquals(statusKey, viewModel.getDataOrderListParams().statusKey)
     }
 
     @Test
