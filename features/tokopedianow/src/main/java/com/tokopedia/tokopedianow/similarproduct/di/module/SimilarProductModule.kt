@@ -12,7 +12,6 @@ import dagger.Provides
 
 @Module
 class SimilarProductModule {
-
     @SimilarProductScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

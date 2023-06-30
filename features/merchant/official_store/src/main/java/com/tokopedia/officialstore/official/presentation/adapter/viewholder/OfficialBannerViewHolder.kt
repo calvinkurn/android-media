@@ -3,7 +3,9 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -69,7 +71,8 @@ class OfficialBannerViewHolder(view: View, val dcEventHandler: DynamicChannelEve
         officialStoreTracking?.eventClickAllBanner(
                 elementBanner?.categoryName.toEmptyStringIfNull())
 
-        RouteManager.route(itemView.context, ApplinkConstant.OFFICIAL_PROMO_NATIVE)
+        val applink = UriUtil.buildUri(ApplinkConst.DISCOVERY_PAGE, "deals")
+        RouteManager.route(itemView.context, applink)
     }
 
     override fun onPromoDragEnd() {}

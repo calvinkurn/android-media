@@ -13,8 +13,14 @@
         android:id="@+id/container_mccm_full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_mccm">
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_mccm_background"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
             android:id="@+id/header_mccm_full"

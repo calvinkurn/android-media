@@ -25,27 +25,29 @@ class ChatFilterView : LinearLayout {
     private var rvFilterAdapter: ChatFilterAdapter? = null
 
     private val sellerFilter = arrayListOf(
-            ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD),
-            ChatFilterUiModel(R.string.filter_chat_unreplied, PARAM_FILTER_UNREPLIED)
+        ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD),
+        ChatFilterUiModel(R.string.filter_chat_unreplied, PARAM_FILTER_UNREPLIED)
     )
     private val buyerFilter = listOf(
-            ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD),
+        ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD)
     )
 
     interface FilterListener {
         fun onFilterChanged(filterType: String)
     }
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
     }
 
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
         initView(context)
     }
@@ -101,7 +103,9 @@ class ChatFilterView : LinearLayout {
         rvFilter?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(
-                    context, LinearLayoutManager.HORIZONTAL, false
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
             )
             adapter = rvFilterAdapter
         }
@@ -131,5 +135,4 @@ class ChatFilterView : LinearLayout {
             rvFilterAdapter?.addTopBotFilter(topBotFilter)
         }
     }
-
 }

@@ -48,11 +48,14 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
-    private fun setSubtitleText(){
+
+    private fun setSubtitleText() {
         getBindingView().subMessageDescription.let {
-        when(campaignStatus){
-                FeedXCampaign.UPCOMING -> it.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
-                FeedXCampaign.ONGOING -> it.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+            when (campaignStatus) {
+                FeedXCampaign.UPCOMING -> it.text =
+                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
+                FeedXCampaign.ONGOING -> it.text =
+                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
             }
         }
     }
@@ -60,7 +63,7 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     fun show(
         fragmentManager: FragmentManager,
         listener: Listener?,
-        position:Int = 0,
+        position: Int = 0,
         status: String
     ) {
         this.listener = listener
@@ -87,7 +90,8 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
         private const val TAG = "FeedFollowersOnlyBottomSheet"
 
         fun getOrCreate(fragmentManager: FragmentManager): FeedFollowersOnlyBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedFollowersOnlyBottomSheet
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? FeedFollowersOnlyBottomSheet
             return oldInstance ?: FeedFollowersOnlyBottomSheet()
         }
     }

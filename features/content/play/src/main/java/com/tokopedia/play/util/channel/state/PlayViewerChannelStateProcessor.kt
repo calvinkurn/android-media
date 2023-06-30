@@ -109,6 +109,9 @@ class PlayViewerChannelStateProcessor constructor(
 
                 invalidateState()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

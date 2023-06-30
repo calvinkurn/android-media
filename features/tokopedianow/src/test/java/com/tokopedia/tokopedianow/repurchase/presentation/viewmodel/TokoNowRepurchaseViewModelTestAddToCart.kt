@@ -6,8 +6,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse
@@ -18,18 +18,20 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 1000L
     }
 
     @Test
     fun `given mini cart item is null when onClickAddToCart should set miniCartAdd success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -55,7 +57,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -70,7 +72,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given mini cart item is null when addToCart error should set miniCartAdd fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "1"
             val quantity = 5
             val shopId = "5"
@@ -96,7 +98,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartError)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -108,7 +110,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given mini cart item is null when onClickAddToCart should hit add to cart tracker`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId1 = "1"
             val productId2 = "2"
             val quantity = 5
@@ -139,7 +141,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId2, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId2, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -154,7 +156,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
                             category = "",
                             categoryId = "",
                             parentId = "",
-                            productCardModel = TokoNowProductCardViewUiModel(
+                            productCardModel = ProductCardCompactUiModel(
                                 productId = "2",
                                 isSimilarProductShown = true,
                                 isWishlistShown = true,
@@ -169,7 +171,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given mini cart item is null when onClickAddToCart should not hit add to cart tracker`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId1 = "1"
             val productId2 = "2"
             val productId3 = "3"
@@ -201,7 +203,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
             onAddToCart_thenReturn(addToCartResponse)
 
             viewModel.getLayoutData()
-            viewModel.onCartQuantityChanged(productId3, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId3, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyAddToCartUseCaseCalled()
@@ -214,7 +216,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given quantity is 0 when onClickAddToCart should set miniCartRemove success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val productId = "1"
             val quantity = 0
@@ -246,7 +248,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -262,7 +264,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given quantity is 0 when remove cart item error should set miniCartRemove fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val productId = "1"
             val quantity = 0
@@ -295,7 +297,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -308,7 +310,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given mini cart item is NOT null when onClickAddToCart should set miniCartUpdate success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val productId = "1"
             val quantity = 5
@@ -341,7 +343,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -357,7 +359,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given mini cart item is NOT null when update cart item error should set miniCartUpdate fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val productId = "1"
             val quantity = 5
@@ -390,7 +392,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()
@@ -403,7 +405,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
     @Test
     fun `given product not found in miniCartItems when onClickAddToCart should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val warehouseId = "1"
             val productId = "1"
             val quantity = 0
@@ -436,7 +438,7 @@ class TokoNowRepurchaseViewModelTestAddToCart: TokoNowRepurchaseViewModelTestFix
 
             viewModel.getLayoutData()
             viewModel.getMiniCart(listOf(shopId), warehouseId)
-            viewModel.onCartQuantityChanged(productId, quantity, type, shopId)
+            viewModel.onCartQuantityChanged(productId, quantity, type, shopId, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyGetMiniCartUseCaseCalled()

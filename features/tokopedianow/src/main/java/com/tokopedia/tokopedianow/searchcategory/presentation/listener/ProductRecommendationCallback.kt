@@ -10,17 +10,14 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
@@ -29,6 +26,7 @@ data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val baseSearchCategoryViewModel: BaseSearchCategoryViewModel,
     private val activity: FragmentActivity?,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
 
     /**
@@ -79,11 +77,13 @@ data class ProductRecommendationCallback(
 
     override fun productCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
         val recommendationItem = mapProductItemToRecommendationItem(product)
+        val appLink = baseSearchCategoryViewModel.createAffiliateLink(product.appLink)
+
         SearchResultTracker.trackClickProduct(
             position,
             eventLabel,
@@ -94,12 +94,12 @@ data class ProductRecommendationCallback(
             recommendationItem
         )
 
-        RouteManager.route(activity, product.appLink)
+        RouteManager.route(activity, appLink)
     }
 
     override fun productCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) {
@@ -116,7 +116,7 @@ data class ProductRecommendationCallback(
     }
 
     override fun seeMoreClicked(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         directToSeeMorePage(seeMoreUiModel.appLink)
     }
@@ -127,11 +127,13 @@ data class ProductRecommendationCallback(
         directToSeeMorePage(appLink)
     }
 
+    override fun productCardAddToCartBlocked() = onAddToCartBlocked()
+
     private fun directToSeeMorePage(
         appLink: String
     ) {
         val newAppLink = if (eventCategory == TOKONOW_CATEGORY_PAGE) {
-            CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
+            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
             modifySeeMoreAppLink(appLink)
         } else {
             SearchResultTracker.sendRecommendationSeeAllClickEvent(query)

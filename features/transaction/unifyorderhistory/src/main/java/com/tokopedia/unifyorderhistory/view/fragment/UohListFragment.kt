@@ -1,7 +1,5 @@
 package com.tokopedia.unifyorderhistory.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -28,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst.Transaction
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
@@ -59,6 +58,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -323,6 +323,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_MESSAGE = "create_review_message"
         const val CREATE_REVIEW_REQUEST_CODE = 200
+        const val BULK_REVIEW_REQUEST_CODE = 201
         const val REQUEST_CODE_LOGIN = 288
         const val MIN_KEYWORD_CHARACTER_COUNT = 3
         const val LABEL_0 = 0
@@ -436,6 +437,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
             }
+        } else if (requestCode == BULK_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
         } else if (requestCode == UOH_CANCEL_ORDER) {
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
@@ -2469,6 +2472,14 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     URLDecoder.decode(applink, UohConsts.UTF_8)
                 ),
                 CREATE_REVIEW_REQUEST_CODE
+            )
+        } else if (applink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
+            startActivityForResult(
+                RouteManager.getIntent(
+                    context,
+                    URLDecoder.decode(applink, UohConsts.UTF_8)
+                ),
+                BULK_REVIEW_REQUEST_CODE
             )
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))

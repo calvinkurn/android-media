@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 buildscript {
     repositories {
@@ -61,6 +55,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.carousel
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 /**
 * Created By : Jonathan Darwin on December 01, 2021
@@ -35,4 +36,8 @@ data class PlayWebSocketLogEntity (
 
     @ColumnInfo(name = "warehouse_id")
     val warehouseId: String,
+
+    @SerializedName("header")
+    @ColumnInfo(name = "header")
+    val header: String,
 )

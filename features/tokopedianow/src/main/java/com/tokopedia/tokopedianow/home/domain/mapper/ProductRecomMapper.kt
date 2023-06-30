@@ -6,11 +6,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getBooleanValue
 import com.tokopedia.tokopedianow.common.util.QueryParamUtil.getStringValue
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -35,8 +35,9 @@ object ProductRecomMapper {
 
     private fun mapChannelGridToProductCard(
         channelGrid: ChannelGrid,
-        miniCartData: MiniCartSimplifiedData? = null
-    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        miniCartData: MiniCartSimplifiedData? = null,
+        hasBlockedAddToCart: Boolean
+    ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
@@ -60,6 +61,7 @@ object ProductRecomMapper {
                 imageUrl = it.url
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 
@@ -73,7 +75,8 @@ object ProductRecomMapper {
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData? = null,
-        warehouseId: String
+        warehouseId: String,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val channelModel = ChannelMapper.mapToChannelModel(response)
 
@@ -85,10 +88,10 @@ object ProductRecomMapper {
             id = channelModel.id,
             title = channelModel.channelHeader.name,
             productList = channelModel.channelGrids.map { channelGrid ->
-                TokoNowProductCardCarouselItemUiModel(
+                ProductCardCompactCarouselItemUiModel(
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
-                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, hasBlockedAddToCart),
                     shopId = channelGrid.shopId,
                     shopName = channelGrid.shop.shopName,
                     shopType = getShopType(channelGrid.shop),
@@ -98,7 +101,7 @@ object ProductRecomMapper {
                     categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             },
-            seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
+            seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
                 id = channelModel.channelHeader.id,
                 headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink

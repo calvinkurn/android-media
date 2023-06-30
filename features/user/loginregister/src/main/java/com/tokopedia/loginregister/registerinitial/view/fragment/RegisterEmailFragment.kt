@@ -18,9 +18,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -40,13 +38,11 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestDa
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.PasswordUtils
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -56,7 +52,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by nisie on 10/25/18.

@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 android {
 
@@ -104,6 +98,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.retrofit
 
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)

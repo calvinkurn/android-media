@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -29,6 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -66,6 +65,7 @@ import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageR
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.VideoReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
@@ -75,9 +75,13 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CreateReviewFragment : BaseDaggerFragment(),
-    ImageClickListener, TextAreaListener, ReviewScoreClickListener,
-    ReviewPerformanceMonitoringContract, VideoReviewViewHolder.Listener {
+class CreateReviewFragment :
+    BaseDaggerFragment(),
+    ImageClickListener,
+    TextAreaListener,
+    ReviewScoreClickListener,
+    ReviewPerformanceMonitoringContract,
+    VideoReviewViewHolder.Listener {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
@@ -160,13 +164,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.createReviewScrollView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.createReviewScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.createReviewScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
@@ -235,6 +239,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> onSuccessGetReviewDetail(it.data)
                 is Fail -> onFailGetReviewDetail(it.fail)
+                else -> {
+                    // no op
+                }
             }
         }
 
@@ -268,29 +275,30 @@ class CreateReviewFragment : BaseDaggerFragment(),
         imgAnimationView = view.findViewById(R.id.img_animation_review)
         animatedReviewPicker.resetStars()
         animatedReviewPicker.setListener(object :
-            AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-            override fun onClick(position: Int) {
-                CreateReviewTracking.reviewOnRatingChangedTracker(
-                    orderId = "",
-                    productId = productId,
-                    ratingValue = (position).toString(),
-                    isSuccessful = true,
-                    isEditReview = true,
-                    feedbackId = feedbackId
-                )
-                reviewClickAt = position
-                shouldPlayAnimation = true
-                context?.let {
-                    if (isLowDevice) {
-                        generatePeddieImageByIndex()
-                    } else {
-                        playAnimation()
+                AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
+                override fun onClick(position: Int) {
+                    CreateReviewTracking.reviewOnRatingChangedTracker(
+                        CreateReviewRatingUiState.Showing.TrackerData.create(
+                            rating = position,
+                            orderId = "",
+                            productId = productId,
+                            editMode = true,
+                            feedbackId = feedbackId
+                        )
+                    )
+                    reviewClickAt = position
+                    shouldPlayAnimation = true
+                    context?.let {
+                        if (isLowDevice) {
+                            generatePeddieImageByIndex()
+                        } else {
+                            playAnimation()
+                        }
                     }
+                    updateViewBasedOnSelectedRating(position)
+                    clearFocusAndHideSoftInput(view)
                 }
-                updateViewBasedOnSelectedRating(position)
-                clearFocusAndHideSoftInput(view)
-            }
-        })
+            })
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator) {

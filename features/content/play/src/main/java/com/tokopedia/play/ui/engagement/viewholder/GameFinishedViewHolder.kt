@@ -16,6 +16,9 @@ class GameFinishedViewHolder(
         when (item.game) {
             is GameUiModel.Giveaway -> binding.setupGiveaway()
             is GameUiModel.Quiz -> binding.setupQuiz()
+            else -> {
+                //no-op
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUse
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -26,7 +27,7 @@ abstract class MerchantPageViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: MerchantPageViewModel
 

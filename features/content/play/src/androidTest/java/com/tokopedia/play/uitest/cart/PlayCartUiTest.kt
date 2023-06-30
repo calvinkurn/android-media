@@ -47,18 +47,17 @@ class PlayCartUiTest {
 
     private val channelId = "12669"
 
-
     init {
         coEvery { userSession.isLoggedIn } returns true
 
-        coEvery { repo.getTagItem(channelId, any(), any()) } returns buildTagItems()
+        coEvery { repo.getTagItem(channelId, any(), any(), any()) } returns buildTagItems()
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
                 .playTestModule(
                     PlayTestModule(
                         targetContext,
-                        userSession = { userSession },
+                        userSession = { userSession }
                     )
                 )
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
@@ -121,10 +120,9 @@ class PlayCartUiTest {
      * Test Helper
      */
 
-
     private fun buildTagItems(
         numOfSections: Int = 1,
-        numOfProducts: Int = 5,
+        numOfProducts: Int = 5
     ): TagItemUiModel {
         return uiModelBuilder.buildTagItem(
             product = uiModelBuilder.buildProductModel(
@@ -136,38 +134,40 @@ class PlayCartUiTest {
                                 shopId = "2",
                                 title = "Product $productIndex",
                                 stock = StockAvailable(1),
-                                price = OriginalPrice("${productIndex}000", productIndex * 1000.0),
+                                price = OriginalPrice("${productIndex}000", productIndex * 1000.0)
                             )
                         }
                     )
                 },
-                canShow = true,
+                canShow = true
             ),
             maxFeatured = 3,
             bottomSheetTitle = "Product List",
-            resultState = ResultState.Success,
+            resultState = ResultState.Success
         )
     }
 
     private fun buildPagingChannel(
-        showCart: Boolean = true,
+        showCart: Boolean = true
     ) = PagingChannel(
         channelList = listOf(
             uiModelBuilder.buildChannelData(
                 id = channelId,
                 channelDetail = uiModelBuilder.buildChannelDetail(
-                    showCart = showCart,
+                    showCart = showCart
                 ),
                 tagItems = buildTagItems(),
                 videoMetaInfo = PlayVideoMetaInfoUiModel(
-                    //Use YouTube for now because non Youtube shows Unify Loader that can prevent app from being Idle
+                    // Use YouTube for now because non Youtube shows Unify Loader that can prevent app from being Idle
                     videoPlayer = PlayVideoPlayerUiModel.YouTube(""),
                     videoStream = PlayVideoStreamUiModel(
-                        "", VideoOrientation.Vertical, "Video Keren"
-                    ),
-                ),
+                        "",
+                        VideoOrientation.Vertical,
+                        "Video Keren"
+                    )
+                )
             )
         ),
-        cursor = "",
+        cursor = ""
     )
 }

@@ -18,7 +18,9 @@ class DeveloperOptionTypeFactoryImpl(
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener,
-    private val loginHelperListener: LoginHelperListener
+    private val loginHelperListener: LoginHelperListener,
+    private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
+    private val branchListener: BranchLinkViewHolder.BranchListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
@@ -70,6 +72,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
     override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
+    override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
+    override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
+    override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -122,6 +127,9 @@ class DeveloperOptionTypeFactoryImpl(
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
             TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
             LoginHelperViewHolder.LAYOUT -> LoginHelperViewHolder(view, loginHelperListener)
+            DevOptsAuthorizationViewHolder.LAYOUT -> DevOptsAuthorizationViewHolder(view, authorizeListener)
+            DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
+            BranchLinkViewHolder.LAYOUT -> BranchLinkViewHolder(branchListener, view)
             else -> super.createViewHolder(view, type)
         }
     }

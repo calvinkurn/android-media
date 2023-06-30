@@ -13,15 +13,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
-import com.tokopedia.product.detail.postatc.base.CommonTracker
 import com.tokopedia.product.detail.postatc.base.ComponentTrackData
 import com.tokopedia.product.detail.postatc.base.PostAtcAdapter
 import com.tokopedia.product.detail.postatc.base.PostAtcLayoutManager
 import com.tokopedia.product.detail.postatc.base.PostAtcListener
-import com.tokopedia.product.detail.postatc.base.PostAtcTracking
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.di.DaggerPostAtcComponent
 import com.tokopedia.product.detail.postatc.di.PostAtcModule
+import com.tokopedia.product.detail.postatc.tracker.CommonTracker
+import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
+import com.tokopedia.product.detail.postatc.tracker.RecommendationTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
@@ -29,7 +30,6 @@ import com.tokopedia.product.detail.postatc.view.component.recommendation.Recomm
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Result
@@ -42,9 +42,6 @@ import javax.inject.Inject
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
-
-        private const val TOPADS_CLASS_NAME = "com.tokopedia.product.detail.postatc.view.PostATCBottomSheet"
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
@@ -119,6 +116,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
+        isHideable = true
+        showKnob = true
+        showHeader = false
 
         binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
             setupView(it)
@@ -160,8 +160,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         result.doSuccessOrFail(success = {
             adapter.replaceComponents(it.data)
         }, fail = {
-            showError(it)
-        })
+                showError(it)
+            })
         commonTracker?.let {
             PostAtcTracking.impressionPostAtcBottomSheet(trackingQueue, it.get())
         }
@@ -176,8 +176,8 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
                     widget = data
                 }
             }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
+                    adapter.removeComponent(uiModelId)
+                })
         }
 
     private fun showError(it: Throwable) {
@@ -218,15 +218,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
         RouteManager.route(context, appLink)
     }
 
-    override fun goToProduct(productId: String) {
-        RouteManager.route(
-            context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        dismiss()
-    }
-
     override fun refreshPage() {
         initData()
     }
@@ -258,33 +249,28 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
-        if (recommendationItem.isTopAds) {
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitClickUrl(
-                TOPADS_CLASS_NAME,
-                recommendationItem.clickUrl,
-                productId,
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
+        commonTracker?.let {
+            RecommendationTracking.onClickProductCard(it, recommendationItem, trackingQueue)
         }
-        goToProduct(productId)
+        onClickProduct(productId)
     }
 
     override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
-        if (recommendationItem.isTopAds) {
-            val context = context ?: return
-            TopAdsUrlHitter(context).hitImpressionUrl(
-                TOPADS_CLASS_NAME,
-                recommendationItem.trackerImageUrl,
-                recommendationItem.productId.toString(),
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
+        commonTracker?.let {
+            RecommendationTracking.onImpressionProductCard(it, recommendationItem, trackingQueue)
         }
     }
 
     /**
      * Listener Area - End
      */
+
+    var onClickProduct: (String) -> Unit = { productId ->
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        dismiss()
+    }
 }

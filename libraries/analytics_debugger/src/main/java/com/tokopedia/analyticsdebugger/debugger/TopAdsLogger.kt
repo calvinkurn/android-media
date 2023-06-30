@@ -4,12 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.TopAdsLogModel
-import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.TopAdsDebuggerActivity
+import com.tokopedia.analyticsdebugger.util.NotificationHelper
 import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
 import rx.schedulers.Schedulers
-
 
 class TopAdsLogger private constructor(private val context: Context) : TopAdsLoggerInterface {
     private val dbSource: TopAdsLogDBSource
@@ -23,13 +22,15 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
         this.cache = LocalCacheHandler(context, TOPADS_DEBUGGER)
     }
 
-    override fun save(url: String,
-                      eventType: String,
-                      sourceName: String,
-                      productId: String,
-                      productName: String,
-                      imageUrl: String,
-                      componentName: String) {
+    override fun save(
+        url: String,
+        eventType: String,
+        sourceName: String,
+        productId: String,
+        productName: String,
+        imageUrl: String,
+        componentName: String
+    ) {
         try {
             val topAdsLogModel = TopAdsLogModel()
             topAdsLogModel.url = url
@@ -62,7 +63,6 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
     private fun defaultSubscriber(): Subscriber<in Boolean> {
         return object : Subscriber<Boolean>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable) {
@@ -82,7 +82,7 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
         private var instance: TopAdsLoggerInterface? = null
 
         @JvmStatic
-        fun getInstance(context: Context) : TopAdsLoggerInterface {
+        fun getInstance(context: Context): TopAdsLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
                     instance = TopAdsLogger(context.applicationContext)
@@ -99,22 +99,21 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(url: String,
-                                  eventType: String,
-                                  sourceName: String,
-                                  productId: String,
-                                  productName: String,
-                                  imageUrl: String,
-                                  componentName: String) {
-
+                override fun save(
+                    url: String,
+                    eventType: String,
+                    sourceName: String,
+                    productId: String,
+                    productName: String,
+                    imageUrl: String,
+                    componentName: String
+                ) {
                 }
 
                 override fun openActivity() {
-
                 }
 
                 override fun enableNotification(status: Boolean) {
-
                 }
             }
         }

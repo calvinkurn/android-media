@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var emptyStateViewModel: EmptyStateViewModel
+    private var emptyStateViewModel: EmptyStateViewModel? = null
     private val horizontalView: ConstraintLayout = itemView.findViewById(R.id.horizontal_view)
     private val verticalView: ConstraintLayout = itemView.findViewById(R.id.vertical_view)
     private val verticalTitle: Typography = itemView.findViewById(R.id.vertical_title_tv)
@@ -36,13 +36,15 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as EmptyStateViewModel
-        getSubComponent().inject(emptyStateViewModel)
+        emptyStateViewModel?.let {
+            getSubComponent().inject(it)
+        }
         init()
     }
 
     private fun init() {
-        emptyStateViewModel.getEmptyStateData().let {
-            if(it.isHorizontal){
+        emptyStateViewModel?.getEmptyStateData().let {
+            if (it?.isHorizontal == true) {
                 horizontalView.show()
                 verticalView.hide()
                 horizontalTitle.text = it.title
@@ -56,25 +58,29 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         }
                     }
                     if (!it.imageURL.isNullOrEmpty()) {
-                        horizontalImageView.loadRemoteImageDrawable(DISCO_EMPTY_STATE_IMG, it.imageURL
-                            ?: "")
+                        horizontalImageView.loadRemoteImageDrawable(
+                            DISCO_EMPTY_STATE_IMG,
+                            it.imageURL
+                                ?: ""
+                        )
                     } else {
                         horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
                     }
                     return@let
-                }
-                else if (it.isFilterState) {
+                } else if (it.isFilterState) {
                     horizontalButton.show()
                     horizontalButton.setOnClickListener {
-                        emptyStateViewModel.handleEmptyStateReset()
+                        emptyStateViewModel?.handleEmptyStateReset()
                     }
-                    horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
-                }else{
+                    horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+                } else {
                     horizontalButton.hide()
                     horizontalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
                 }
             } else {
-                setVerticalState(it)
+                if (it != null) {
+                    setVerticalState(it)
+                }
             }
         }
     }
@@ -88,8 +94,11 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
             verticalButton.show()
             verticalButton.text = emptyStateModel.buttonText
             if (!emptyStateModel.imageURL.isNullOrEmpty()) {
-                verticalImageView.loadRemoteImageDrawable(DISCO_EMPTY_STATE_IMG, emptyStateModel.imageURL
-                    ?: "")
+                verticalImageView.loadRemoteImageDrawable(
+                    DISCO_EMPTY_STATE_IMG,
+                    emptyStateModel.imageURL
+                        ?: ""
+                )
             } else {
                 verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
             }
@@ -99,14 +108,13 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 }
             }
             return
-        }
-        else if (emptyStateModel.isFilterState) {
+        } else if (emptyStateModel.isFilterState) {
             verticalButton.show()
-            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
+            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
             verticalButton.setOnClickListener {
-                emptyStateViewModel.handleEmptyStateReset()
+                emptyStateViewModel?.handleEmptyStateReset()
             }
-        }else{
+        } else {
             verticalButton.hide()
             verticalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
         }
@@ -115,9 +123,9 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            emptyStateViewModel.getSyncPageLiveData().observe(lifecycle, {
+            emptyStateViewModel?.getSyncPageLiveData()?.observe(lifecycle) {
                 if (it) (fragment as DiscoveryFragment).reSync()
-            })
+            }
         }
     }
 }

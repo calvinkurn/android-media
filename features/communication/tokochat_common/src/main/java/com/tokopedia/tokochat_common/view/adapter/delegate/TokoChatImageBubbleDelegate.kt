@@ -7,11 +7,12 @@ import com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history.TokoCh
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
 
-class TokoChatImageBubbleDelegate (
+class TokoChatImageBubbleDelegate(
     private val imageAttachmentListener: TokoChatImageAttachmentListener
-): TypedAdapterDelegate<TokoChatImageBubbleUiModel, Any, TokoChatImageBubbleViewHolder>(
+) : TypedAdapterDelegate<TokoChatImageBubbleUiModel, Any, TokoChatImageBubbleViewHolder>(
     TokoChatImageBubbleViewHolder.LAYOUT
 ) {
+
     override fun onBindViewHolder(item: TokoChatImageBubbleUiModel, holder: TokoChatImageBubbleViewHolder) {
         holder.bind(item)
     }

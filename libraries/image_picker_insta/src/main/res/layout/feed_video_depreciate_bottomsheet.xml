@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_feed_new_video_uploader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="@string/title_feed_new_video_uploader"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/desc_feed_new_video_uploader"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_feed_new_video_uploader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:text="@string/label_feed_new_video"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_feed_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/label_ok"
+            app:unifyButtonSize="medium" />
+
+    </LinearLayout>
+
+</LinearLayout>

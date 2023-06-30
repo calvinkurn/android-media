@@ -25,7 +25,7 @@ class CouponCatalogRepository @Inject constructor(private val map: Map<String, S
     suspend fun getcatalogDetail(uniqueCatalogCode: String): GraphqlResponse = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.SLUG] = uniqueCatalogCode
-        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "3.0.0"
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_CATALOG_DETAIL],
                 CatalogDetailOuter::class.java,
                 variables, false)

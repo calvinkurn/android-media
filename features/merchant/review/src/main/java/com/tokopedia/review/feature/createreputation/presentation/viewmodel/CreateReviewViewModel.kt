@@ -22,6 +22,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -77,7 +78,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
@@ -508,12 +508,16 @@ class CreateReviewViewModel @Inject constructor(
         isAnyBadRatingCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
     ): CreateReviewProgressBarState {
-        val textAreaFilled = reviewTextAreaTextUiModel.text.isNotBlank()
+        val isTestimonyComplete = if (hasIncentive() || hasOngoingChallenge()) {
+            reviewTextAreaTextUiModel.text.length >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD
+        } else {
+            reviewTextAreaTextUiModel.text.isNotBlank()
+        }
         val badRatingCategoriesShowed = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return CreateReviewProgressBarState(
             isGoodRating = isGoodRating,
             isPhotosFilled = !isMediaEmpty(),
-            isTextAreaFilled = textAreaFilled,
+            isTestimonyComplete = isTestimonyComplete,
             isBadRatingReasonSelected = badRatingCategoriesShowed && isAnyBadRatingCategorySelected
         )
     }
@@ -536,13 +540,34 @@ class CreateReviewViewModel @Inject constructor(
         feedbackId: String
     ): CreateReviewRatingUiState {
         return if (canRenderForm) {
-            CreateReviewRatingUiState.Showing(
+            CreateReviewRatingUiState.Showing.create(
                 rating = rating,
-                trackerData = CreateReviewRatingUiState.Showing.TrackerData(
-                    orderId, productId, editMode, feedbackId
-                )
+                onStarClicked = { previousRating, currentRating ->
+                    if (previousRating != currentRating) {
+                        trackRatingChanged(currentRating, orderId, productId, editMode, feedbackId)
+                        setRating(currentRating)
+                    }
+                }
             )
         } else CreateReviewRatingUiState.Loading
+    }
+
+    private fun trackRatingChanged(
+        rating: Int,
+        orderId: String,
+        productId: String,
+        editMode: Boolean,
+        feedbackId: String
+    ) {
+        CreateReviewTracking.reviewOnRatingChangedTracker(
+            CreateReviewRatingUiState.Showing.TrackerData.create(
+                rating = rating,
+                orderId = orderId,
+                productId = productId,
+                editMode = editMode,
+                feedbackId = feedbackId
+            )
+        )
     }
 
     private fun mapTickerUiState(

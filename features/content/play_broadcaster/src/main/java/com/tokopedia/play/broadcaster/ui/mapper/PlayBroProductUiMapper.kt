@@ -1,19 +1,17 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetProductTagSummarySectionResponse
-import com.tokopedia.play.broadcaster.domain.model.product.GetShopProductsResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -70,29 +68,6 @@ class PlayBroProductUiMapper @Inject constructor() {
         }
     }
 
-    fun mapProductsInEtalase(response: GetShopProductsResponse): PagedDataUiModel<ProductUiModel> {
-        return PagedDataUiModel(
-            dataList = response.response.data.map { data ->
-                ProductUiModel(
-                    id = data.productId,
-                    name = data.name,
-                    imageUrl = data.primaryImage.thumbnail,
-                    stock = data.stock.toLong(),
-                    price = if (data.campaign.discountedPercentage == "0") {
-                        OriginalPrice(data.price.textIdr, 0.0)
-                    } else DiscountedPrice(
-                        originalPrice = data.campaign.originalPriceFmt,
-                        originalPriceNumber = 0.0,
-                        discountPercent = data.campaign.discountedPercentage.toLong(),
-                        discountedPrice = data.campaign.discountedPriceFmt,
-                        discountedPriceNumber = 0.0,
-                    )
-                )
-            },
-            hasNextPage = response.response.links.next.isNotBlank(),
-        )
-    }
-
     fun mapProductsInEtalase(
         response: GetProductsByEtalaseResponse,
     ): PagedDataUiModel<ProductUiModel> {
@@ -106,7 +81,13 @@ class PlayBroProductUiMapper @Inject constructor() {
                     price = OriginalPrice(
                         priceFormat.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
-                    ), //No discounted price because it is not supported in the current gql
+                    ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -133,7 +114,13 @@ class PlayBroProductUiMapper @Inject constructor() {
                     } else OriginalPrice(
                         price = data.campaign.originalPrice,
                         priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                    )
+                    ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
@@ -164,7 +151,12 @@ class PlayBroProductUiMapper @Inject constructor() {
                                 discountedPriceNumber = product.price,
                             )
                         },
-                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable)
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
+                        number = product.productNumber.toString(),
+                        hasCommission = false,
+                        commissionFmt = "",
+                        commission = 0L,
+                        extraCommission = false,
                     )
                 }
             )
@@ -182,6 +174,10 @@ class PlayBroProductUiMapper @Inject constructor() {
                     ProductUiModel(
                         id = product.productID,
                         name = product.productName,
+                        hasCommission = product.hasCommission,
+                        commissionFmt = product.commissionFmt,
+                        commission = product.commission,
+                        extraCommission = product.extraCommission,
                         imageUrl = product.imageURL,
                         stock = product.quantity.toLong(),
                         price = if(product.discount == "0") {
@@ -195,6 +191,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                             discountedPriceNumber = product.price.toDouble(),
                         ),
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
+                        number = product.productNumber.toString(),
                     )
                 }
             )

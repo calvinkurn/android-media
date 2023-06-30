@@ -28,10 +28,10 @@ constructor(@ApplicationContext private val context: Context) : GraphqlUseCase()
 
     init {
         this.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
-                        .setSessionIncluded(true)
-                        .build()
+            GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+                .setSessionIncluded(true)
+                .build()
         )
     }
 
@@ -48,20 +48,20 @@ constructor(@ApplicationContext private val context: Context) : GraphqlUseCase()
 
     fun getRequest(variables: HashMap<String, Any>): GraphqlRequest {
         return GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.query_whitelist),
-                WhitelistQuery::class.java,
-                variables,
-                false
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_whitelist),
+            WhitelistQuery::class.java,
+            variables,
+            false
         )
     }
 
     fun execute(variables: HashMap<String, Any>,
                 subscriber: Subscriber<GraphqlResponse>) {
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.query_whitelist),
-                WhitelistQuery::class.java,
-                variables,
-                false
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_whitelist),
+            WhitelistQuery::class.java,
+            variables,
+            false
         )
         this.clearRequest()
         this.addRequest(graphqlRequest)

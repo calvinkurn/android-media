@@ -19,6 +19,7 @@ import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -27,25 +28,20 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.checkMemoryOverflow
-import com.tokopedia.media.editor.utils.cropCenterImage
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.showErrorLoadToaster
-import com.tokopedia.media.editor.utils.showMemoryLimitToast
+import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class EditorFragment @Inject constructor(
-    private val editorHomeAnalytics: EditorHomeAnalytics
+    private val editorHomeAnalytics: EditorHomeAnalytics,
+    private val featureToggleManager: FeatureToggleManager
 ) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
@@ -126,44 +122,33 @@ class EditorFragment @Inject constructor(
         data.isAutoCropped = true
         if (data.editList.size == 0 && !data.isVideo) {
             val filePath = data.getOriginalUrl()
-            var memoryOverflow: Boolean
 
-            val imageSize = getImageSize(filePath).apply {
-                val usageEstimation = first * second * PIXEL_BYTE_SIZE
-                memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
-            }
-
-            if (memoryOverflow) {
-                activity?.showMemoryLimitToast(imageSize)
-                return
-            } else {
-                loadImageWithEmptyTarget(requireContext(),
-                    filePath,
-                    properties = {
-                        listener(
-                            onError = {
-                                it?.let { exception ->
-                                    loader?.dismiss()
-                                    viewBinding?.mainEditorFragmentLayout?.let { view ->
-                                        showErrorLoadToaster(view, exception.message ?: "")
-                                    }
-
+            loadImageWithEmptyTarget(requireContext(),
+                filePath,
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                loader?.dismiss()
+                                viewBinding?.mainEditorFragmentLayout?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
                                 }
+
                             }
+                        }
+                    )
+                },
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        imageCrop(bitmap, data.getOriginalUrl())
+                        thumbnailDrawerComponent.refreshItem(
+                            currentProcess,
+                            viewModel.editStateList.values.toList()
                         )
+                        iterateCrop(listData, currentProcess + 1)
                     },
-                    mediaTarget = MediaBitmapEmptyTarget(
-                        onReady = { bitmap ->
-                            imageCrop(bitmap, data.getOriginalUrl())
-                            thumbnailDrawerComponent.refreshItem(
-                                currentProcess,
-                                viewModel.editStateList.values.toList()
-                            )
-                            iterateCrop(listData, currentProcess + 1)
-                        },
-                        onCleared = {}
-                    ))
-            }
+                    onCleared = {}
+                ))
         } else {
             iterateCrop(listData, currentProcess + 1)
         }
@@ -177,6 +162,9 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
+        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
+            activity?.finish()
+        }
         cropCenterImage(bitmap, cropRatio)?.apply {
             viewModel.saveToCache(
                 first,
@@ -204,6 +192,7 @@ class EditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
             EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
+            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickAddText()
         }
     }
 
@@ -224,6 +213,7 @@ class EditorFragment @Inject constructor(
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
                     paramData.addLogoValue = item.addLogoValue
+                    paramData.addTextValue = item.addTextValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
@@ -276,7 +266,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -297,7 +288,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -357,11 +349,18 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            val isAddLogoEnable =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
-            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
+            // show/hide add logo base on rollence
+            if (!featureToggleManager.isAddLogoEnable() || !viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
+            // show/hide add text base on rollence
+            if (!featureToggleManager.isAddTextEnable()) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
                     remove(removeIndex)
                 }
             }
@@ -401,7 +400,8 @@ class EditorFragment @Inject constructor(
                 viewBinding?.viewPager?.updateImage(
                     it,
                     editorUiModel.getImageUrl(),
-                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                    overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
             }
         }
@@ -446,7 +446,6 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
-        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }

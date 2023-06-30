@@ -53,7 +53,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
 
@@ -94,6 +93,8 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.firebase.crashlytics
+
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -118,6 +119,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    //Tracker
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
 }
 

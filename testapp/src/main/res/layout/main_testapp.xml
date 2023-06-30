@@ -75,15 +75,6 @@
             android:text="Developer Options"
             android:textColor="#FFFFFF" />
 
-        <Button
-            android:id="@+id/loginHelperButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="Login Helper"
-            android:textColor="#FFFFFF" />
-
         <EditText
             android:id="@+id/etAppLink"
             android:layout_width="match_parent"

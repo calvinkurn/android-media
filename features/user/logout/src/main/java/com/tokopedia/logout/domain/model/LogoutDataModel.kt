@@ -9,6 +9,8 @@ data class LogoutDataModel(
     data class Response(
             @SerializedName("success")
             val success: Boolean = false,
+            @SerializedName("ocl_jwt_token")
+            val token: String = "",
             @SerializedName("errors")
             val errors: MutableList<Errors> = mutableListOf()
     )

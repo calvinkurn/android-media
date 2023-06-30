@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmDeactivationRatingQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pm_label_rating_power_merchant_experience"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+        android:id="@+id/ratingPmDeactivation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:star_height="@dimen/pm_spacing_28dp"
+        app:star_width="@dimen/pm_spacing_28dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/Unify_N75" />
+</LinearLayout>

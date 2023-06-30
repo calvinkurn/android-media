@@ -108,6 +108,6 @@ class ChatRatingViewHolder(
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.item_chat_rating
+        val LAYOUT = R.layout.item_chatbot_tutd_rating
     }
 }

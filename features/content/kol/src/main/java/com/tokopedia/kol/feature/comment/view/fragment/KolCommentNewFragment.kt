@@ -587,6 +587,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     override fun dismissProgressDialog() {
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onSuccessGetCommentsFirstTime(kolComments: KolComments?) {
         globalError.gone()
         removeLoading()

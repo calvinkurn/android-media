@@ -219,7 +219,7 @@ class DenomFullViewHolder(
 
                 setOnClickListener {
                     if (denomFull.status != DenomConst.DENOM_STATUS_OUT_OF_STOCK) {
-                        denomFullListener.onChevronDenomClicked(denomFull, position, denomType)
+                        denomFullListener.onChevronDenomClicked(denomFull, position, denomType, "")
                         if (!isSelectedItem) {
                             denomFullListener.onDenomFullClicked(denomFull, denomType, position, "", true)
                         }
@@ -229,7 +229,7 @@ class DenomFullViewHolder(
 
             cardDenomFull.run {
                 if (!isPlacebo) {
-                    layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
+                    layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE || isOnlyOneSize){
                         ViewGroup.LayoutParams.MATCH_PARENT
                     } else getDimens(R.dimen.widget_denom_full_width)
 
@@ -255,7 +255,7 @@ class DenomFullViewHolder(
             }
 
             root.addOnImpressionListener(denomFull) {
-                denomFullListener.onDenomFullImpression(denomFull, denomType, position)
+                denomFullListener.onDenomFullImpression(denomFull, denomType, position, "")
             }
         }
     }

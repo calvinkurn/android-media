@@ -8,28 +8,41 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
-import com.tokopedia.notifcenter.data.uimodel.*
+import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 class NotificationAdapter constructor(
-        private val typeFactory: NotificationTypeFactory,
-        private val listener: Listener
+    private val typeFactory: NotificationTypeFactory,
+    private val listener: Listener
 ) : BaseListAdapter<Visitable<*>, NotificationTypeFactory>(
-        typeFactory
-), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener,
+    typeFactory
+),
+    NotificationAdapterListener,
+    CarouselProductNotificationViewHolder.Listener,
     NotificationOrderListViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
@@ -39,6 +52,7 @@ class NotificationAdapter constructor(
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
     private var recommendationTitlePosition: Int? = null
     var shopAdsWidgetAdded = false
+    var affiliateBannerPair: Pair<Int, NotificationAffiliateEducationUiModel>? = null
 
     interface Listener {
         fun hasFilter(): Boolean
@@ -49,7 +63,7 @@ class NotificationAdapter constructor(
     }
 
     override fun getSavedOrderCarouselState(key: String): Parcelable? {
-       return orderWidgetCarouselState[key]
+        return orderWidgetCarouselState[key]
     }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
@@ -69,7 +83,8 @@ class NotificationAdapter constructor(
     }
 
     override fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {
         return typeFactory.onCreateViewHolder(parent, viewType, this)
     }
@@ -122,9 +137,9 @@ class NotificationAdapter constructor(
     }
 
     fun insertNotificationData(
-            lastKnownPosition: Int,
-            element: LoadMoreUiModel,
-            response: NotificationDetailResponseModel
+        lastKnownPosition: Int,
+        element: LoadMoreUiModel,
+        response: NotificationDetailResponseModel
     ) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
@@ -139,32 +154,33 @@ class NotificationAdapter constructor(
 
     fun loadingStateReminder(viewHolderState: ViewHolderState?) {
         updateLoadingBumpReminderFor(
-                viewHolderState = viewHolderState,
-                isLoading = true
+            viewHolderState = viewHolderState,
+            isLoading = true
         )
     }
 
     fun successUpdateReminderState(
-            viewHolderState: ViewHolderState?,
-            isBumpReminder: Boolean
+        viewHolderState: ViewHolderState?,
+        isBumpReminder: Boolean
     ) {
         updateLoadingBumpReminderFor(
-                viewHolderState = viewHolderState,
-                isLoading = false,
-                hasReminder = isBumpReminder
+            viewHolderState = viewHolderState,
+            isLoading = false,
+            hasReminder = isBumpReminder
         )
     }
 
     private fun updateLoadingBumpReminderFor(
-            viewHolderState: ViewHolderState?,
-            isLoading: Boolean,
-            hasReminder: Boolean? = null
+        viewHolderState: ViewHolderState?,
+        isLoading: Boolean,
+        hasReminder: Boolean? = null
     ) {
         viewHolderState ?: return
         val notificationItem = viewHolderState.visitable
-                as? NotificationUiModel ?: return
+            as? NotificationUiModel ?: return
         val itemMetaData = getUpToDateUiModelPosition(
-                viewHolderState.previouslyKnownPosition, notificationItem
+            viewHolderState.previouslyKnownPosition,
+            notificationItem
         )
         val itemPosition = itemMetaData.first
         val product = viewHolderState.payload
@@ -187,6 +203,42 @@ class NotificationAdapter constructor(
     fun addTopAdsBanner(banner: NotificationTopAdsBannerUiModel) {
         if (visitables.add(banner)) {
             notifyItemInserted(visitables.size - 1)
+        }
+    }
+
+    fun addAffiliateEducationArticles(banner: NotificationAffiliateEducationUiModel) {
+        if (visitables.add(banner)) {
+            affiliateBannerPair = Pair(visitables.size - 1, banner)
+            notifyItemInserted(visitables.size - 1)
+        }
+    }
+
+    fun removeLoadingComponents() {
+        for (i in visitables.size - 1 downTo 0) {
+            if (visitables[i] is LoadingMoreModel) {
+                visitables.removeAt(i)
+                notifyItemRemoved(i)
+                // updating banner position as now the list size is decreased
+                affiliateBannerPair = affiliateBannerPair?.copy(visitables.size - 1)
+                return
+            }
+        }
+    }
+
+    fun reAddAffiliateBanner() {
+        affiliateBannerPair?.second?.let {
+            visitables.add(it)
+            notifyItemInserted(visitables.size - 1)
+            // refresh the cache
+            affiliateBannerPair = Pair(visitables.size - 1, it)
+        }
+    }
+
+    fun removeAffiliateBanner() {
+        val position = affiliateBannerPair?.first ?: -1
+        if (position > -1) {
+            visitables.removeAt(position)
+            notifyItemRemoved(position)
         }
     }
 
@@ -248,8 +300,8 @@ class NotificationAdapter constructor(
     }
 
     fun updateOrRenderOrderListState(
-            response: NotifOrderListResponse?,
-            inserted: () -> Unit = {}
+        response: NotifOrderListResponse?,
+        inserted: () -> Unit = {}
     ) {
         if (response == null) return
         if (hasNotifOrderList()) {
@@ -276,7 +328,8 @@ class NotificationAdapter constructor(
     }
 
     private inline fun <reified T : Visitable<NotificationTypeFactory>> getUpToDateUiModelPosition(
-            lastKnownPosition: Int, element: T
+        lastKnownPosition: Int,
+        element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
         if (item == element) {
@@ -313,5 +366,4 @@ class NotificationAdapter constructor(
     companion object {
         private const val SHOPADS_POSITION_8 = 8
     }
-
 }

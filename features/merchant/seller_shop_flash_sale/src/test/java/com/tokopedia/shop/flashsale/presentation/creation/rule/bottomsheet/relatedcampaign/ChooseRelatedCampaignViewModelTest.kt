@@ -11,6 +11,7 @@ import com.tokopedia.shop.flashsale.domain.usecase.GetRelatedCampaignsUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.relatedcampaign.adapter.RelatedCampaignItem
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -28,6 +29,9 @@ class ChooseRelatedCampaignViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = CoroutineTestRule()
 
     private lateinit var viewModel: ChooseRelatedCampaignViewModel
 

@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -82,7 +84,7 @@ class PlayUpcomingFragment @Inject constructor(
     private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
-    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers, ShareExperienceViewComponent.Source.Upcoming) }
     private val description by viewComponent { UpcomingDescriptionViewComponent(it, R.id.tv_upcoming_description, this) }
 
     private val toaster by viewLifecycleBound(
@@ -360,6 +362,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onClickActionButton() {
         handleUpcomingClickAnalytic()
+        showNotificationReminderPrompt()
         playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
@@ -375,6 +378,17 @@ class PlayUpcomingFragment @Inject constructor(
                 analytic.clickWatchNow(channelId)
             }
             else -> {}
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val status = playUpcomingViewModel.remindState
+        if ((status is PlayUpcomingState.ReminderStatus) && !status.isReminded) {
+            activity?.let {
+                val view = NotificationGeneralPromptLifecycleCallbacks()
+                    .notificationGeneralPromptView(it, LIVE_SHOPPING)
+                NotificationReminderPrompt(view).showReminderPrompt(it, LIVE_SHOPPING)
+            }
         }
     }
 
@@ -483,5 +497,6 @@ class PlayUpcomingFragment @Inject constructor(
     companion object {
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val LIVE_SHOPPING = "liveShopping"
     }
 }

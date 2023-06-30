@@ -251,6 +251,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     is TalkGoToWrite -> {
                         goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -351,6 +354,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
                 }
+                else -> {
+                    //no-op
+                }
             }
 
         })
@@ -368,6 +374,9 @@ open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                             renderDiscussionData(TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(data), data.hasNext)
                         }
                     }
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

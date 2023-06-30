@@ -9,10 +9,9 @@ import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import java.lang.Exception
 
 @ExperimentalCoroutinesApi
-class ShopScheduleViewModelTest: ShopSettingsInfoViewModelTestFixture() {
+class ShopScheduleViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
     @Test
     fun `when get shop basic data should return success`() {
@@ -54,7 +53,6 @@ class ShopScheduleViewModelTest: ShopSettingsInfoViewModelTestFixture() {
                 updateShopScheduleUseCase.getData(any())
             } returns "success"
 
-
             shopScheduleViewModel.updateShopSchedule(3, true, "", "", "")
 
             val updateShopSchedule = shopScheduleViewModel.message.observeAwaitValue()
@@ -69,7 +67,6 @@ class ShopScheduleViewModelTest: ShopSettingsInfoViewModelTestFixture() {
             every {
                 updateShopScheduleUseCase.getData(any())
             } throws Exception()
-
 
             shopScheduleViewModel.updateShopSchedule(3, true, "", "", "")
 

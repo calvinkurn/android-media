@@ -132,6 +132,9 @@ class PlayErrorFragment @Inject constructor(
                     state.config,
                     it.currentValue.firstOrNull()?.id.orEmpty()
                 )
+                else -> {
+                    //no-op
+                }
             }
         })
     }

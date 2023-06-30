@@ -21,10 +21,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class WaitingForSelectionDelegateAdapter(
     private val onProductItemClicked: (Int) -> Unit,
-    private val onCheckBoxClicked: (Int, Boolean) -> Unit):
-DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
-WaitingForSelectionItem::class.java
-) {
+    private val onCheckBoxClicked: (Int, Boolean) -> Unit
+) :
+    DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
+        WaitingForSelectionItem::class.java
+    ) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductWaitingForSelectionBinding.inflate(
@@ -46,11 +47,9 @@ WaitingForSelectionItem::class.java
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener { onProductItemClicked(adapterPosition) }
-            binding.run{
-                checkProductItem.apply {
-                    setOnClickListener {
-                        onCheckBoxClicked(checkProductItem.isChecked)
-                    }
+            binding.run {
+                checkProductItem.setOnCheckedChangeListener { _, isChecked ->
+                    onCheckBoxClicked(isChecked)
                 }
             }
         }
@@ -77,7 +76,6 @@ WaitingForSelectionItem::class.java
                 item.discountedPrice.upperPrice.getCurrencyFormatted()
             } else {
                 "${item.discountedPrice.lowerPrice.getCurrencyFormatted()} - ${item.discountedPrice.upperPrice.getCurrencyFormatted()}"
-
             }
         }
 
@@ -106,6 +104,7 @@ WaitingForSelectionItem::class.java
                         item.campaignStock
                     )
                 )
+
                 SINGLE_VARIANT_MULTI_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_single_multiloc_placeholder,
@@ -113,6 +112,7 @@ WaitingForSelectionItem::class.java
                         item.countLocation
                     )
                 )
+
                 MULTI_VARIANT_SINGLE_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_variant_singleloc_placeholder,
@@ -120,6 +120,7 @@ WaitingForSelectionItem::class.java
                         item.campaignStock
                     )
                 )
+
                 MULTI_VARIANT_MULTI_LOCATION -> MethodChecker.fromHtml(
                     context.getString(
                         R.string.stfs_variant_stock_variant_multiloc_placeholder,

@@ -107,6 +107,8 @@
         app:behavior_hideable="true"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
-    <include layout="@layout/bottom_sheet_dropoff" />
+    <include
+        android:id="@+id/bottom_sheet_dropoff"
+        layout="@layout/bottom_sheet_dropoff" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -14,9 +14,13 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.model.TickerModel
+import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
@@ -32,8 +36,8 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +54,8 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
-    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase
 ) : ViewModel() {
 
     companion object {
@@ -76,12 +81,6 @@ class ManageAddressViewModel @Inject constructor(
         get() = source == ManageAddressSource.TOKONOW.source
     val isFromMoneyIn: Boolean
         get() = source == ManageAddressSource.MONEY_IN.source
-
-    val isEligibleShareAddress: Boolean
-        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            KEY_SHARE_ADDRESS_LOGI,
-            ""
-        ) == KEY_SHARE_ADDRESS_LOGI
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -112,13 +111,22 @@ class ManageAddressViewModel @Inject constructor(
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
 
+    private val _tickerState = MutableLiveData<Result<TickerModel>>()
+    val tickerState: LiveData<Result<TickerModel>>
+        get() = _tickerState
+
+    val deleteCollectionId: String
+        get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_STAGING
+        } else {
+            ManageAddressConstant.DELETE_ADDRESS_COLLECTION_ID_PRODUCTION
+        }
+
     private val compositeSubscription = CompositeSubscription()
 
     fun setupDataFromArgument(bundle: Bundle?) {
-        if (isEligibleShareAddress) {
-            receiverUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
-            senderUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
-        }
+        receiverUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
+        senderUserId = bundle?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
         source = bundle?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
     }
 
@@ -187,11 +195,17 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String) {
+    fun deletePeopleAddress(id: String, consentJson: String) {
         viewModelScope.launchCatchError(
             block = {
                 val resultDelete =
-                    deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow))
+                    deletePeopleAddressUseCase(
+                        DeleteAddressParam(
+                            id.toLong(),
+                            isTokonow,
+                            consentJson
+                        )
+                    )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                     resultDelete.response.data.success == STATUS_SUCCESS
                 ) {
@@ -214,7 +228,7 @@ class ManageAddressViewModel @Inject constructor(
         setAsStateChosenAddress: Boolean,
         prevState: Int,
         localChosenAddrId: Long,
-        isWhiteListChosenAddress: Boolean,
+        isWhiteListChosenAddress: Boolean
     ) {
         viewModelScope.launchCatchError(
             block = {
@@ -315,7 +329,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsReceiver(senderUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsReceiverParam(
                     senderUserId = senderUserId,
                     source = getSourceValue()
@@ -327,11 +340,9 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
     }
@@ -339,7 +350,6 @@ class ManageAddressViewModel @Inject constructor(
     private fun validateShareAddressAsSender(receiverUserId: String) {
         viewModelScope.launchCatchError(
             block = {
-                showValidateShareAddressLoadingState(true)
                 val params = ValidateShareAddressAsSenderParam(
                     receiverUserId = receiverUserId,
                     source = getSourceValue()
@@ -351,17 +361,11 @@ class ManageAddressViewModel @Inject constructor(
                     } else {
                         ValidateShareAddressState.Fail
                     }
-                showValidateShareAddressLoadingState(false)
             },
             onError = {
                 _validateShareAddressState.value = ValidateShareAddressState.Fail
-                showValidateShareAddressLoadingState(false)
             }
         )
-    }
-
-    private fun showValidateShareAddressLoadingState(isShowLoading: Boolean) {
-        _validateShareAddressState.value = ValidateShareAddressState.Loading(isShowLoading)
     }
 
     fun getSourceValue(): String {
@@ -372,8 +376,27 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        compositeSubscription.clear()
+    fun getTargetedTicker(firstTickerContent: String? = null) {
+        viewModelScope.launchCatchError(
+            block = {
+                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
+                _tickerState.value = Success(
+                    convertTargetedTickerToUiModel(
+                        targetedTickerData = response.getTargetedTickerData,
+                        firstTickerContent = firstTickerContent
+                    )
+                )
+            }, onError = {
+                if (firstTickerContent?.isNotBlank() == true) {
+                    _tickerState.value = Success(
+                        convertTargetedTickerToUiModel(
+                            firstTickerContent = firstTickerContent
+                        )
+                    )
+                } else {
+                    _tickerState.value = Fail(it)
+                }
+            }
+        )
     }
 }

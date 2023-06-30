@@ -1,14 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 android {
 
@@ -69,8 +63,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.subViewModel)
 
-    implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -115,6 +109,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

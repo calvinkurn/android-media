@@ -29,6 +29,7 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeVi
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.feature.home.presentation.sharedpref.TokofoodHomeSharedPref
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -63,6 +64,9 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: TokoFoodHomeViewModel
 

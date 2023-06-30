@@ -16,12 +16,17 @@ import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +38,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: DigitalPDPTagihanViewModel
 
@@ -96,13 +101,13 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any())
         } returns response
     }
 
     protected fun onGetAddToCart_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any())
         } throws errorThrowable
     }
 
@@ -143,7 +148,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
-        coVerify { repo.addToCart(any(), any(), any(), any(), any()) }
+        coVerify { repo.addToCart(any(), any(), any()) }
     }
 
     protected fun verifyInquiryProductRepoGetCalled() {
@@ -350,8 +355,8 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertEquals(expected.attributes.description, actual.attributes.description)
     }
 
-    protected fun TestCoroutineScope.skipValidatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
+    protected fun TestScope.skipValidatorDelay() {
+        advanceUntilIdle()
     }
 
     companion object {

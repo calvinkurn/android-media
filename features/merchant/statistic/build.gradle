@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 android {
@@ -71,6 +70,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.firebase.crashlytics
 

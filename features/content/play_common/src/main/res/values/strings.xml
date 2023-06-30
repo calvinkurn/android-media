@@ -9,7 +9,7 @@
     <string name="play_interactive_ends_in">Berakhir</string>
     <string name="play_interactive_winner">Pemenang</string>
     <string name="play_interactive_winner_chat">Chat</string>
-    <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini</string>
+    <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini.</string>
     <string name="play_interactive_leaderboard_empty_title">Yaah, gagal menampilkan hasil.</string>
     <string name="play_interactive_leaderboard_empty_desc">Cek notifikasi atau tunggu chat dari toko jika kamu menang.</string>
     <string name="play_interactive_leaderboard_empty_action">Coba Lagi</string>
@@ -34,4 +34,12 @@
     <string name="play_interactive_retry">Coba Lagi</string>
     <string name="play_game_reward_type">Hadiah:</string>
     <string name="play_leaderboard_reward_name">Hadiah: %s</string>
+
+    <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
+    <string name="play_widget_watch_desc">
+        Download aplikasi Tokopedia buat
+        tonton video di Tokopedia Play!
+    </string>
+    <string name="play_widget_download_tokopedia">Download Tokopedia</string>
+    <string name="play_widget_watch_later">Nanti Dulu</string>
 </resources>

@@ -10,115 +10,63 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.registerinitial.RegisterEmailBase
-import com.tokopedia.loginregister.utils.TextFieldUnifyMatcher
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.core.AnyOf.anyOf
-import org.hamcrest.core.Is.`is`
 import org.junit.Test
 
 @UiTest
-class RegisterEmailNegativeCase: RegisterEmailBase() {
+class RegisterEmailNegativeCase : RegisterEmailBase() {
 
-    val emptyErrorText = "Harus diisi"
-    val lengthLessThan3Text = "Minimum 3 karakter"
-
-    @Test
-    /* Disable Wrapper Email on Created */
-    fun disableEmailInput() {
-        runTest {
-            TextFieldUnifyMatcher.isEnabled(`is`(R.id.wrapper_email), `is`(false))
-        }
-    }
+    private val emptyErrorText = "Harus diisi"
+    private val lengthLessThan3Text = "Minimum 3 karakter"
 
     @Test
-    /* Disable button "Daftar" when input name is empty */
     fun disableNextButton_ifNameEmpty() {
         runTest {
+            emailInputIsEnabled(R.id.wrapper_email)
+            /* Disable button "Daftar" when input name is empty */
             inputName("")
             inputPassword("abcdefg12345")
             shouldBeDisabled(R.id.register_button)
-        }
-    }
 
-    @Test
-   /* Disable button "Daftar" when input password is empty */
-    fun disableNextButton_ifPwEmpty() {
-        runTest {
             inputName("Yoris Prayogo")
             inputPassword("")
             shouldBeDisabled(R.id.register_button)
-        }
-    }
 
-    @Test
-    /* Disable button "Daftar" when password length is less than 8 character */
-    fun disableNextButton_ifPwLengthLessThan8() {
-        runTest {
+            /* Disable button "Daftar" when password length is less than 8 character */
             inputName("Yoris Prayogo")
             inputPassword("1234567")
+            onView(anyOf(withText("minimum 8 karakter"))).check(matches(isDisplayed()))
             shouldBeDisabled(R.id.register_button)
-        }
-    }
 
-    @Test
-    /* Enable Email when passing empty params */
-    fun enableEmailIfEmptyParams() {
-        runTest {
-            shouldBeEnabled(R.id.wrapper_email)
-        }
-    }
+            /* Show error if name length < 3 */
+            inputName("yo")
+            onView(anyOf(withText(lengthLessThan3Text))).check(matches(isDisplayed()))
 
-    @Test
-    /* Show error if name is empty */
-    fun showError_IfNameDeleted() {
-        runTest {
-            inputName("Yoris Prayogo")
-            onView(allOf(
-                    withId(R.id.text_field_input),
-                    isDescendantOfA(withId(R.id.wrapper_name))
-                )
-            ).perform(clearText())
-
-            onView(anyOf(withText(emptyErrorText)))
-                .check(matches(isDisplayed()))
-        }
-    }
-
-    @Test
-    /* Show error if password is empty */
-    fun showError_IfPassDeleted() {
-        runTest {
+            /* Show error if password is empty */
             inputPassword("abcdefg123456")
             onView(
-                CoreMatchers.allOf(
+                allOf(
                     withId(R.id.text_field_input),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(clearText())
 
-            onView(anyOf(withText(emptyErrorText)))
+            onView(allOf(withText(emptyErrorText), isDescendantOfA(withId(R.id.wrapper_password))))
                 .check(matches(isDisplayed()))
-        }
-    }
 
-    @Test
-    /* Show error if name length < 3 */
-    fun showError_IfNameLengthLessThan3() {
-        runTest {
-            inputName("yo")
-            onView(anyOf(withText(lengthLessThan3Text)))
-                .check(matches(isDisplayed()))
-        }
-    }
+            /* Show error if name is empty */
+            inputName("Yoris Prayogo")
+            onView(
+                allOf(
+                    withId(R.id.text_field_input),
+                    isDescendantOfA(withId(R.id.wrapper_name))
+                )
+            ).perform(clearText())
 
-    @Test
-    /* Show password hint */
-    fun showPasswordHint() {
-        runTest {
-            inputPassword("abcdef")
-            onView(anyOf(withText("minimum 8 karakter")))
+            onView(allOf(withText(emptyErrorText), isDescendantOfA(withId(R.id.wrapper_name))))
                 .check(matches(isDisplayed()))
         }
     }
@@ -127,13 +75,14 @@ class RegisterEmailNegativeCase: RegisterEmailBase() {
     /* Show error when show password icon clicked while password is empty */
     fun showError_IfShowPassClickedWhenEmpty() {
         runTest {
-            onView(allOf(
+            onView(
+                allOf(
                     withId(R.id.text_field_icon_1),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(click())
 
-            onView(anyOf(withText(emptyErrorText)))
+            onView(withText(emptyErrorText))
                 .check(matches(isDisplayed()))
         }
     }

@@ -2,9 +2,6 @@
 <resources>
     <dimen name="font_time_ticker_size">30sp</dimen>
     <dimen name="indicator_icon_size">50dp</dimen>
-    <item name="font_alpha_38" format="float" type="dimen">0.38</item>
-    <item name="font_alpha_70" format="float" type="dimen">0.7</item>
-    <item name="font_alpha_100" format="float" type="dimen">1.0</item>
 
     <!-- Topchat -->
     <dimen name="max_width_chat_bubble">270dp</dimen>
@@ -23,35 +20,6 @@
     <dimen name="online_status_text_line_spacing">9sp</dimen>
     <dimen name="chat_person_tag_text_size">9sp</dimen>
 
-
-    <dimen name="font_smaller">13sp</dimen>
-    <dimen name="font_title">16sp</dimen>
-
-    <dimen name="textsize_big">18sp</dimen>
-    <dimen name="margin_padding_small">4dp</dimen>
-
-    <dimen name="layout_bav_width_min">80dp</dimen>
-
-    <dimen name="divider_height_thin">2dp</dimen>
-    <dimen name="lv_min_title_width">100dp</dimen>
-    <dimen name="font_title_big">20sp</dimen>
-    <dimen name="new_margin_very_huge">54dp</dimen>
-
-
-    <dimen name="new_margin_med_sm">19dp</dimen>
-
-    <dimen name="product_item_margin">15dp</dimen>
-
-    <dimen name="default_card_corner_radius">4dp</dimen>
-    <dimen name="margin_vms">6dp</dimen>
-
-    <dimen name="card_iv_size">60dp</dimen>
-    <dimen name="font_tiny">11sp</dimen>
-
-    <dimen name="new_margin_medsmall">12dp</dimen>
-
-    <dimen name="margin_default">16dp</dimen>
-
     <dimen name="font_micro">12sp</dimen>
 
     <!--need for setting padding-->
@@ -59,23 +27,12 @@
     <dimen name="contact_us_text_toolbar_height_expanded">168dp</dimen>
     <dimen name="help_rate_height">124dp</dimen>
     
-    <dimen name="screen_per_4_pad">80dp</dimen>
-    <dimen name="new_margin_sm">24dp</dimen>
-    <dimen name="margin_ms">8dp</dimen>
-    <dimen name="new_margin_small">8dp</dimen>
-    <dimen name="padding_vvvs">2dp</dimen>
-    <dimen name="new_margin_med">16dp</dimen>
-
     <dimen name="sp_11">11sp</dimen>
-
 
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="padding_small">10dp</dimen>
-    <dimen name="img_thumb_m">50dp</dimen>
     <dimen name="padding_med">20dp</dimen>
-    <dimen name="margin_vvs">3.3dp</dimen>
     <dimen name="font_medium">16sp</dimen>
-    <dimen name="med_dp">20dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_small">10dp</dimen>
     <dimen name="chat_widget_margin">236dp</dimen>

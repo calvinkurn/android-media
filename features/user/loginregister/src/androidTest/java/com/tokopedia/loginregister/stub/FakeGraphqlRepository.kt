@@ -55,6 +55,7 @@ class FakeGraphqlRepository : GraphqlRepository {
                             ), ""
                         )
                     )
+                    is Config.Error -> throw Exception("mocked error")
                     else -> DiscoverPojo()
                 }
                 GqlMockUtil.createSuccessResponse(obj)

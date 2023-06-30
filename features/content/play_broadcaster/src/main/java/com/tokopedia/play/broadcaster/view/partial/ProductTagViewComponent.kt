@@ -66,7 +66,7 @@ class ProductTagViewComponent(
 
     private val adapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            if (itemCount > 0) rvProductTag.smoothScrollToPosition(0)
+            if (itemCount > 0) rvProductTag.scrollToPosition(0)
         }
     }
 

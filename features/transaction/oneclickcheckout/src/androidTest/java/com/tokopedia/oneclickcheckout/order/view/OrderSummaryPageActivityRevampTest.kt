@@ -467,10 +467,7 @@ class OrderSummaryPageActivityRevampTest {
                 chooseCourierWithText("Next Day (1 hari)")
             }
 
-            assertShipmentPromoRevamp(
-                hasPromo = true,
-                promoDescription = "Tersedia Bebas Ongkir (4-6 hari)"
-            )
+            assertShipmentPromoRevamp(hasPromo = false)
 
             assertShipmentRevamp(
                 shippingDuration = "Pengiriman Next Day (1 hari)",

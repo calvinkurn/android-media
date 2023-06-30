@@ -15,5 +15,8 @@ data class PickerResult(
     val compressedImages: List<String> = emptyList(),
 
     // if picker using editor feature
-    val editedImages: List<String> = emptyList()
+    val editedImages: List<String> = emptyList(),
+
+    // list of selected of included media from picker param
+    val selectedIncludeMedia: List<String> = emptyList()
 ) : Parcelable

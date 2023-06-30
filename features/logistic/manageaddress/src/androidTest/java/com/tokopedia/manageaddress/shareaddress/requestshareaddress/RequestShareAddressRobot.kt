@@ -74,7 +74,7 @@ class ShareAddressRobot {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun waitForData(millis: Long = 1000L) {
+    private fun waitForData(millis: Long = 500L) {
         Thread.sleep(millis)
     }
 

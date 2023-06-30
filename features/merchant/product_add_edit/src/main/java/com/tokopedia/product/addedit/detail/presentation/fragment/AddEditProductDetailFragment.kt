@@ -793,7 +793,7 @@ class AddEditProductDetailFragment :
             if (viewModel.isFirstMoved) {
                 inputAllDataInProductInputModel()
                 dataBackPressed = DETAIL_DATA
-                viewModel.productInputModel.requestCode = arrayOf(DETAIL_DATA, NO_DATA, NO_DATA)
+                viewModel.productInputModel.requestCode = arrayListOf(DETAIL_DATA, NO_DATA, NO_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
@@ -1187,17 +1187,20 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToShopInfo() {
-        viewModel.shopInfo.observe(viewLifecycleOwner, { shopInfoResponse ->
+        viewModel.shopInfo.observe(viewLifecycleOwner) { shopInfoResponse ->
             val shopInfo = shopInfoResponse.shopInfoById.result.firstOrNull()
             shopInfo?.run {
                 val totalTxSuccess = shopInfo.shopStats.totalTxSuccess.toIntOrZero()
                 viewModel.shopTier = shopInfo.goldOSData.shopTier
-                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
+                viewModel.isFreeOfServiceFee =
+                    viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
                 if (viewModel.isFreeOfServiceFee) {
                     setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
                     if (viewModel.shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE) {
                         commissionInfoTipsView?.hide()
-                    } else { commissionInfoTipsView?.show() }
+                    } else {
+                        commissionInfoTipsView?.animateExpand()
+                    }
                 } else {
                     // display commission info tips when drafting or editing
                     val categoryIdStr = viewModel.productInputModel.detailInputModel.categoryId
@@ -1207,10 +1210,10 @@ class AddEditProductDetailFragment :
                     }
                 }
             }
-        })
-        viewModel.shopInfoError.observe(viewLifecycleOwner, {
+        }
+        viewModel.shopInfoError.observe(viewLifecycleOwner) {
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+        }
     }
 
     private fun subscribeToCommissionInfo() {
@@ -2431,7 +2434,7 @@ class AddEditProductDetailFragment :
         val result = MediaPicker.result(data)
         val newUpdatedPhotos = viewModel.updateProductPhotos(
             result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList()
+            result.selectedIncludeMedia.toMutableList()
         )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)

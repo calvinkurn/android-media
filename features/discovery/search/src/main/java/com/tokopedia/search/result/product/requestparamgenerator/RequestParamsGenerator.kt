@@ -5,9 +5,9 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.utils.getValueString
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.utils.getUserId
+import com.tokopedia.search.utils.getValueString
 import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
@@ -96,6 +96,7 @@ class RequestParamsGenerator @Inject constructor(
             putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
             putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
             putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
+            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_TDN_BANNER, isLocalSearch)
             putString(TopAdsConstants.SEEN_ADS, seenAds)
         }
     }

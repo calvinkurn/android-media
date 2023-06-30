@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,12 +23,11 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.CONSTANT_0
-import com.tokopedia.discovery2.CONSTANT_11
-import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.*
+import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
+import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -82,6 +82,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.*
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -104,7 +105,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
-    private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -347,8 +347,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
-                            findCustomTopChatComponentsIfAny(it.components)
-                            findBottomTabNavDataComponentsIfAny(it.components)
                             findAnchorTabComponentsIfAny(it.components)
                         }
                     }
@@ -378,22 +376,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {
-        val customTopChatComponent = components?.find {
-            it.name == ComponentNames.CustomTopchat.componentName
-        }
-        if (customTopChatComponent != null) {
-            discoveryFabLiveData.postValue(Success(customTopChatComponent))
-        } else {
-            discoveryFabLiveData.postValue(Fail(Throwable()))
-        }
-    }
-
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
-    fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
@@ -474,6 +460,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
+        if (!bundle?.getString(DISCOVERY_APPLINK).isNullOrEmpty()) {
+            try {
+                val uri = Uri.parse(bundle?.getString(DISCOVERY_APPLINK))
+                return HashMap<String, String?>().apply {
+                    putAll(getMapOfQueryParameter(uri))
+                    put(CATEGORY_ID, getCategoryId(get(CATEGORY_ID)))
+                }
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+        }
         return mutableMapOf(
                 SOURCE to bundle?.getString(SOURCE, ""),
                 COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
@@ -481,7 +478,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-                CATEGORY_ID to getCategoryId(bundle),
+                CATEGORY_ID to getCategoryId(bundle?.getString(CATEGORY_ID, "")),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
                 RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,""),
                 DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE,""),
@@ -495,27 +492,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         )
     }
 
-    private fun getCategoryId(bundle: Bundle?): String? {
+    private fun getCategoryId(categoryID: String?): String? {
         discoComponentQuery?.let {
             return if (it[CATEGORY_ID].isNullOrEmpty()) {
-                bundle?.getString(CATEGORY_ID, "") ?: ""
+                categoryID ?: ""
             } else {
                 it[CATEGORY_ID]
             }
         }
-        return bundle?.getString(CATEGORY_ID, "") ?: ""
+        return categoryID ?: ""
     }
 
-    private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
-        bottomTabNavDataComponent = components?.find {
-            it.name == ComponentNames.BottomNavigation.componentName && it.renderByDefault
-        }
-        if (bottomTabNavDataComponent != null) {
-            discoveryBottomNavLiveData.postValue(Success(bottomTabNavDataComponent!!))
-        } else {
-            discoveryBottomNavLiveData.postValue(Fail(Throwable()))
-        }
-    }
     private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
         val tabDataComponent = components?.find {
             it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault
@@ -651,5 +638,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             randomUUIDAffiliate = Utils.generateRandomUUID()
         }
         return randomUUIDAffiliate ?: ""
+    }
+
+    override fun doOnStop() {
+        super.doOnStop()
+        preSelectedTab = Constant.RESETTING_SELECTED_TAB
     }
 }

@@ -1,15 +1,16 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,7 +21,7 @@ class HomeProductRecomViewHolder(
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
-    TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
@@ -72,8 +73,10 @@ class HomeProductRecomViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         listener?.onSeeAllClicked(
             channelId = channelId,
@@ -83,7 +86,7 @@ class HomeProductRecomViewHolder(
     }
 
     override fun onSeeMoreClicked(
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         listener?.onSeeMoreClicked(
             channelId = channelId,
@@ -92,9 +95,13 @@ class HomeProductRecomViewHolder(
         )
     }
 
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
+    }
+
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductRecomClicked(
             product = product,
@@ -106,7 +113,7 @@ class HomeProductRecomViewHolder(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductRecomImpressed(
             product = product,
@@ -118,7 +125,7 @@ class HomeProductRecomViewHolder(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         listener?.onProductRecomQuantityChanged(
@@ -130,7 +137,7 @@ class HomeProductRecomViewHolder(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener?.onProductCardAddVariantClicked(
             product = product,
@@ -142,13 +149,13 @@ class HomeProductRecomViewHolder(
 
     interface HomeProductRecomListener {
         fun onProductRecomClicked(
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             channelId: String,
             headerName: String,
             position: Int
         )
         fun onProductRecomImpressed(
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             channelId: String,
             headerName: String,
             position: Int
@@ -164,13 +171,14 @@ class HomeProductRecomViewHolder(
             headerName: String
         )
         fun onProductRecomQuantityChanged(
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             quantity: Int,
             channelId: String
         )
         fun onProductCardAddVariantClicked(
-            product: TokoNowProductCardCarouselItemUiModel,
+            product: ProductCardCompactCarouselItemUiModel,
             position: Int
         )
+        fun onProductCardAddToCartBlocked()
     }
 }

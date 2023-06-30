@@ -14,12 +14,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.TickerModel
+import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
@@ -30,6 +34,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -56,9 +62,6 @@ class ManageAddressFragment :
             }
         }
     }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -100,12 +103,66 @@ class ManageAddressFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupDataFromArgument(arguments)
+        observeTickerState()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
+            showLoading(true)
             viewModel.doValidateShareAddress()
         } else {
             bindView()
         }
+    }
+
+    private fun showLoading(active: Boolean) {
+        binding?.run {
+            if (active) {
+                llMainView.gone()
+                progressBar.visible()
+            } else {
+                llMainView.visible()
+                progressBar.gone()
+            }
+        }
+    }
+
+    private fun observeTickerState() {
+        viewModel.tickerState.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showTicker(it.data)
+                }
+                is Fail -> {
+                    hideTicker()
+                }
+            }
+        }
+    }
+
+    private fun showTicker(tickerItem: TickerModel) {
+        context?.let {
+            binding?.tickerManageAddress?.renderTargetedTickerView(
+                it,
+                tickerItem,
+                onClickUrl = { url ->
+                    RouteManager.route(
+                        context,
+                        "${ApplinkConst.WEBVIEW}?url=$url"
+                    )
+                },
+                onClickApplink = { applink ->
+                    startActivity(
+                        RouteManager.getIntent(
+                            context,
+                            applink
+                        )
+                    )
+                }
+            )
+        }
+    }
+
+    private fun hideTicker() {
+        binding?.tickerManageAddress?.gone()
     }
 
     private fun observerValidateShareAddress() {
@@ -133,18 +190,8 @@ class ManageAddressFragment :
                     }
                     bindView()
                 }
-                is ValidateShareAddressState.Loading -> {
-                    binding?.apply {
-                        if (it.isShowLoading) {
-                            llMainView.gone()
-                            progressBar.visible()
-                        } else {
-                            llMainView.visible()
-                            progressBar.gone()
-                        }
-                    }
-                }
             }
+            showLoading(false)
         }
     }
 
@@ -175,9 +222,7 @@ class ManageAddressFragment :
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.offscreenPageLimit = fragments.size
             vpManageAddress.isUserInputEnabled = false
-            if (viewModel.isEligibleShareAddress.not()) {
-                tlManageAddress.gone()
-            } else if (viewModel.isNeedToShareAddress) {
+            if (viewModel.isNeedToShareAddress) {
                 tlManageAddress.gone()
                 manageAddressListener?.setToolbarTitle(
                     getString(R.string.title_select_share_address),
@@ -193,19 +238,19 @@ class ManageAddressFragment :
                 }
 
                 vpManageAddress.registerOnPageChangeCallback(object :
-                    ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        if (isFirstLoad) {
-                            isFirstLoad = false
-                        } else {
-                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                                ShareAddressAnalytics.onClickMainTab()
+                        ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            if (isFirstLoad) {
+                                isFirstLoad = false
                             } else {
-                                ShareAddressAnalytics.onClickFromFriendTab()
+                                if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                    ShareAddressAnalytics.onClickMainTab()
+                                } else {
+                                    ShareAddressAnalytics.onClickFromFriendTab()
+                                }
                             }
                         }
-                    }
-                })
+                    })
 
                 if (viewModel.isReceiveShareAddress) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -249,7 +294,7 @@ class ManageAddressFragment :
     }
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
-        return if (viewModel.isEligibleShareAddress.not() || viewModel.isNeedToShareAddress) {
+        return if (viewModel.isNeedToShareAddress) {
             listOf(
                 Pair(
                     getString(R.string.tablayout_label_main),
@@ -330,5 +375,8 @@ class ManageAddressFragment :
             onClick()
         }
     }
-}
 
+    override fun setupTicker(firstTicker: String?) {
+        viewModel.getTargetedTicker(firstTicker)
+    }
+}

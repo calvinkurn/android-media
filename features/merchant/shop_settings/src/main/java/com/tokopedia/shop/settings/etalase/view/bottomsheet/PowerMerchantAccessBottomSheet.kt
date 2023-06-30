@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.shop.settings.databinding.FragmentPowerMerchantAccessBinding
 import com.tokopedia.shop.settings.etalase.data.PowerMerchantAccessModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
+class PowerMerchantAccessBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val MODEL = "model"

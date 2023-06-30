@@ -9,6 +9,7 @@ import java.util.*
  */
 class ShopProductEtalaseHighlightUiModel : BaseShopProductViewModel {
     private var etalaseHighlightCarouselUiModelList: List<EtalaseHighlightCarouselUiModel>? = null
+    var isNewData: Boolean = false
 
     constructor() {
         etalaseHighlightCarouselUiModelList = ArrayList()

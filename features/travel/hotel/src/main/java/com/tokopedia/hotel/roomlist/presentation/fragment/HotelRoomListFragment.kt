@@ -350,9 +350,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
-        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
-        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
-
+        val minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),

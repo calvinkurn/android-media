@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.byteplus.effect.EffectManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
@@ -24,6 +25,7 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
@@ -66,8 +68,10 @@ class PlayBroadcastModule(
 
     @ActivityRetainedScope
     @Provides
-    fun provideBroadcaster(): Broadcaster {
-        return BroadcastManager()
+    fun provideBroadcaster(
+        effectManager: EffectManager
+    ): Broadcaster {
+        return BroadcastManager(effectManager)
     }
 
     @Provides
@@ -117,6 +121,8 @@ class PlayBroadcastModule(
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+        playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -130,6 +136,8 @@ class PlayBroadcastModule(
             pinProductAnalytic,
             accountAnalytic,
             shortsEntryPointAnalytic,
+            playBroadcastPerformanceDashboardEntryPointAnalytic,
+            beautificationAnalytic,
         )
     }
 
@@ -147,8 +155,8 @@ class PlayBroadcastModule(
 
     @ActivityRetainedScope
     @Provides
-    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser)
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser, assetChecker: AssetChecker): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser, assetChecker)
     }
 
     @ActivityRetainedScope

@@ -10,14 +10,14 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShop
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-abstract class ShopSettingsInfoViewModelTestFixture  {
+abstract class ShopSettingsInfoViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -47,19 +47,19 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     fun setup() {
         MockKAnnotations.init(this)
         shopSettingsInfoViewModel = ShopSettingsInfoViewModel(
-                checkOsMerchantUseCase,
-                getShopBasicDataUseCase,
-                getShopStatusUseCase,
-                shopOperationalHoursListUseCase,
-                updateShopScheduleUseCase,
-                getShopInfoUseCase,
-                CoroutineTestDispatchersProvider
+            checkOsMerchantUseCase,
+            getShopBasicDataUseCase,
+            getShopStatusUseCase,
+            shopOperationalHoursListUseCase,
+            updateShopScheduleUseCase,
+            getShopInfoUseCase,
+            CoroutineTestDispatchersProvider
         )
 
         shopScheduleViewModel = ShopScheduleViewModel(
-                updateShopScheduleUseCase,
-                getShopBasicDataUseCase,
-                CoroutineTestDispatchersProvider
+            updateShopScheduleUseCase,
+            getShopBasicDataUseCase,
+            CoroutineTestDispatchersProvider
         )
     }
 }

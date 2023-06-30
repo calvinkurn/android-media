@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -11,14 +12,14 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
-import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
+import com.tokopedia.productcard.compact.productcardcarousel.helper.ProductCardCompactCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
-import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImpl
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImplCompact
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -50,7 +51,7 @@ class HomeLeftCarouselAtcViewHolder(
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
-            typeFactory = HomeLeftCarouselAtcProductCardTypeFactoryImpl(
+            typeFactory = HomeLeftCarouselAtcProductCardTypeFactoryImplCompact(
                 productCardListener = homeLeftCarouselAtcCallback,
                 productCardSeeMoreListener = homeLeftCarouselAtcCallback
             ),
@@ -58,7 +59,7 @@ class HomeLeftCarouselAtcViewHolder(
         )
     }
 
-    private val layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(itemView.context)
+    private val layoutManager: LinearLayoutManager = ProductCardCompactCarouselLinearLayoutManager(itemView.context)
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -212,13 +213,19 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) =
         object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
-            override fun onSeeAllClicked(headerName: String, appLink: String) {
+            override fun onSeeAllClicked(
+                context: Context,
+                headerName: String,
+                appLink: String,
+                widgetId: String
+            ) {
                 homeLeftCarouselAtcCallback?.onSeeMoreClicked(
                     appLink = appLink,
                     channelId = element.id,
                     headerName = element.header.title
                 )
             }
+
             override fun onChannelExpired() {
                 homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(element.id)
             }

@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 
 class TokoNowChipListAdapterTypeFactory(
-    private val chipListener: ChipListener
+    private val chipListener: ChipListener?
 ) : BaseAdapterTypeFactory(), TokoNowChipTypeFactory {
 
     override fun type(uiModel: TokoNowChipUiModel): Int = TokoNowChipViewHolder.LAYOUT

@@ -48,21 +48,6 @@ class HydraSharedPreferences @Inject constructor(
                 ).apply()
     }
 
-    fun isFirstSwitchAccount(): Boolean {
-        return mSharedPrefs.getBoolean(
-            String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
-            true
-        )
-    }
-
-    fun setNotFirstSwitchAccount() {
-        mSharedPrefs.edit()
-            .putBoolean(
-                String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
-                false
-            ).apply()
-    }
-
     fun isShowSetupCoverCoachMark(): Boolean {
         return mSharedPrefs.getBoolean(
             String.format(KEY_SETUP_COVER_COACH_MARK, userSession.userId),
@@ -177,7 +162,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_PERMISSION = "permission_%s"
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
-        private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"
         private const val KEY_SETUP_COVER_COACH_MARK = "setup_cover_coach_mark_%s"
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
         private const val KEY_SAVED_SELECTED_AUTO_GENERATED_COVER = "saved_selected_auto_generated_cover_%s_%s"

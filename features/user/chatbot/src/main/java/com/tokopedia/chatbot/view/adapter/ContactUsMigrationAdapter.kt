@@ -1,22 +1,17 @@
 package com.tokopedia.chatbot.view.adapter
 
-import android.text.SpannableString
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.databinding.ListitemContactUsMigrationBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotContactUsMigrationBinding
 import com.tokopedia.unifyprinciples.Typography
-
 
 class ContactUsMigrationAdapter :
     RecyclerView.Adapter<ContactUsMigrationAdapter.ContactUsViewHolder>() {
 
-    val list = mutableListOf<Pair<Int,String>>()
+    val list = mutableListOf<Pair<Int, String>>()
 
-    inner class ContactUsViewHolder(itemView: ListitemContactUsMigrationBinding) : RecyclerView.ViewHolder(itemView.root) {
+    inner class ContactUsViewHolder(itemView: ItemChatbotContactUsMigrationBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val contentTitle: Typography? =
             itemView.contentText
         private val contentIndex: Typography? =
@@ -30,7 +25,7 @@ class ContactUsMigrationAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactUsViewHolder {
-        val view = ListitemContactUsMigrationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val view = ItemChatbotContactUsMigrationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ContactUsViewHolder(view)
     }
 
@@ -42,12 +37,9 @@ class ContactUsMigrationAdapter :
         return list.size
     }
 
-    fun setList(list: List<Pair<Int,String>>) {
+    fun setList(list: List<Pair<Int, String>>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
     }
 }
-
-
-
