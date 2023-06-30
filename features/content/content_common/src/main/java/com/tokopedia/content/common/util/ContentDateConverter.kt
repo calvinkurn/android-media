@@ -32,21 +32,21 @@ object ContentDateConverter {
         } else {
             val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
             val diff = DateUtil.getCurrentCalendar().time.time - convert.time
-            val minute = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
+            val minute = TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS)
             val hour = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
             val day = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
-            Converted(minute = minute, hour = hour, day = day, yearMonth = "${convert.month} ${convert.year}")
+
+            val yearMonth = DateUtil.formatDate(currentFormat = DateUtil.YYYY_MM_DD_T_HH_MM_SS, newFormat = "MMM yyyy", date)
+
+            Converted(minute = minute, hour = hour, day = day, yearMonth = yearMonth)
         }
-        return if (data.day in 1..90) {
-            "${data.day} $DAY"
-        } else if (data.day > 90) {
-            data.yearMonth
-        } else if (data.hour in 1..24) {
-            "${data.hour} $HOUR"
-        } else if (data.minute in 1..60) {
-            "${data.minute} $MINUTE"
-        } else {
-            DEFAULT_WORDING
+
+        return when {
+            data.day in 1..90 -> "${data.day} $DAY"
+            data.day > 90 -> data.yearMonth
+            data.hour in 1..24 -> "${data.hour} $HOUR"
+            data.minute in 1..60 -> "${data.minute} $MINUTE"
+            else -> DEFAULT_WORDING
         }
     }
 }
