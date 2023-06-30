@@ -455,7 +455,7 @@ class VideoDetailFragment :
             shareIcon.show()
             shareText.show()
             val desc = requireContext().getString(
-                com.tokopedia.feedcomponent.R.string.feed_share_default_text,
+                com.tokopedia.content.common.R.string.feed_share_default_text,
                 feedXCard.author.name
             )
 
@@ -532,7 +532,7 @@ class VideoDetailFragment :
                         )
                     )
                 )
-                likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
+                likeText.setText(com.tokopedia.content.common.R.string.kol_action_like)
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
@@ -545,7 +545,7 @@ class VideoDetailFragment :
 
     private fun bindComment(comments: FeedXComments) {
         commentText.text =
-            if (comments.count == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
+            if (comments.count == 0) getString(com.tokopedia.content.common.R.string.kol_action_comment)
             else comments.countFmt
     }
 

@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -17,6 +16,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -24,13 +24,7 @@ import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -103,9 +97,8 @@ class FeedPostVideoViewHolder(
             )
         }
 
-
-                val postGestureDetector = GestureDetector(
-                    binding.root.context,
+        val postGestureDetector = GestureDetector(
+            binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -145,7 +138,8 @@ class FeedPostVideoViewHolder(
 
                 override fun onLongPress(e: MotionEvent) {
                 }
-            })
+            }
+        )
 
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
@@ -172,12 +166,7 @@ class FeedPostVideoViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
-                        FeedContentData(
-                            data.text, data.id, data.author.id, absoluteAdapterPosition
-                        ),
+                        data.menuItems,
                         trackerData
                     )
                 }
@@ -208,19 +197,20 @@ class FeedPostVideoViewHolder(
                 bindComments(it)
             }
 
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
+                val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(it)
                 listener.onPostImpression(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    ), it.id, absoluteAdapterPosition
+                    trackerModel,
+                    it.id,
+                    absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
-                listener.onWatchPostVideo(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    )
-                )
+                listener.onWatchPostVideo(it, trackerModel)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
@@ -294,7 +284,6 @@ class FeedPostVideoViewHolder(
             postType = data.typename,
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
-            hasVoucher = data.hasVoucher,
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
@@ -324,11 +313,11 @@ class FeedPostVideoViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
-            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                model
-            ),
+            trackerDataModel ?: trackerMapper
+                .transformVideoContentToTrackerModel(model),
             model.id,
             model.author,
             model.typename,

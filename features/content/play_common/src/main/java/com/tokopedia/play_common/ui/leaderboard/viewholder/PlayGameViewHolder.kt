@@ -131,7 +131,7 @@ class PlayGameViewHolder {
         BaseViewHolder(binding.root) {
         fun bind(item: LeaderboardGameUiModel.Footer) {
             val text = if (item.totalParticipant > 0) item.otherParticipantText
-            else item.emptyLeaderBoardCopyText
+            else item.emptyLeaderBoardCopyText.ifEmpty { getString(R.string.play_interactive_empty) }
 
             binding.tvLeaderboardFooter.showWithCondition(text.isNotBlank())
             binding.tvLeaderboardFooter.text = text

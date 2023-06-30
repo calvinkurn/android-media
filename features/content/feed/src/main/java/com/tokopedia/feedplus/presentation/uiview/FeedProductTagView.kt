@@ -34,7 +34,6 @@ class FeedProductTagView(
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,

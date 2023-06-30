@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout3"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="46dp"
     app:layoutDescription="@xml/layout_product_card_compact_quantity_editor_custom_view_scene">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -74,6 +74,7 @@
         android:layout_marginEnd="8dp"
         android:translationZ="4dp"
         android:alpha="0"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -201,6 +201,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -302,6 +303,7 @@ class ChatbotFragment2 :
     private var isGetChatFromOnClick = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
+    private var bigReplyBoxPlaceHolder: String = ""
 
     // Used for resetting the usecase when user replies to message from not page 1
     private var messageSentNotFromFirstPage = false
@@ -675,6 +677,7 @@ class ChatbotFragment2 :
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
         guideline = smallReplyBox?.getGuidelineForReplyBubble()
+        smallReplyBox?.replyBoxClickListener = this
 
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
 
@@ -701,6 +704,8 @@ class ChatbotFragment2 :
         startObservingViewModels()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        var isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+        checkIsChatbotServerActive(isChatbotActive)
         handlingForMessageIdValidity(messageId)
         viewModel.setPageSourceValue(pageSource)
 
@@ -1634,7 +1639,8 @@ class ChatbotFragment2 :
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
         handleReplyBox(false)
-        bigReplyBox?.setText(placeholder)
+        bigReplyBoxPlaceHolder = placeholder
+        bigReplyBox?.setText(bigReplyBoxPlaceHolder)
         bigReplyBox?.shouldShowAddAttachmentButton(showAddAttachmentMenu)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
@@ -2640,6 +2646,9 @@ class ChatbotFragment2 :
 
     override fun getMessageContentFromBottomSheet(msg: String) {
         val startTime = SendableUiModel.generateStartTime()
+        if (msg == bigReplyBoxPlaceHolder) {
+            return
+        }
         enableTyping()
         hideKeyboard()
         viewModel.sendMessage(
@@ -2655,6 +2664,10 @@ class ChatbotFragment2 :
     }
 
     override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
+        if (msg.isEmpty()) {
+            bigReplyBox?.setText(bigReplyBoxPlaceHolder)
+            return
+        }
         bigReplyBox?.setText(msg)
         if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
             bigReplyBox?.enableSendButton()
@@ -2796,4 +2809,10 @@ class ChatbotFragment2 :
         getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
     }
+
+    private fun checkIsChatbotServerActive(isChatbotActive: Boolean) {
+        if (!isChatbotActive)
+            setErrorLayoutForServer()
+    }
+
 }

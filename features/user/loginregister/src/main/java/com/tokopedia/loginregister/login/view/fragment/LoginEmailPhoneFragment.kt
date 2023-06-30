@@ -348,7 +348,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     fun isOclEnabled(): Boolean {
         return oclPreferences.getToken().isNotEmpty() &&
-                arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
+            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
             oclUtils.isOclEnabled()
     }
 
@@ -846,6 +846,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val value = abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
         return value.isNotEmpty()
     }
+
+    /**
+     * function to prevent clash biometrics prompt and seamless routing
+     * @param isEnableSeamless value is get from [LoginOption]
+     * @return true if [isEnableDirectBiometric] true && [isEnableSeamless] false
+     * @return false if [isEnableDirectBiometric] true && [isEnableSeamless] true
+     */
+    private fun isShowDirectBiometricsPrompt(isEnableSeamless: Boolean): Boolean = isEnableDirectBiometric && isEnableSeamless.not()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {

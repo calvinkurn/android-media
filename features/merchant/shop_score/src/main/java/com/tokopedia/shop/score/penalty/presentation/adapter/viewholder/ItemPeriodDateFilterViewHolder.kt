@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemDetailPenaltyPeriodDateFilterBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter.Companion.PAYLOAD_DATE_FILTER
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.old.adapter.PenaltyPageAdapterOld.Companion.PAYLOAD_DATE_FILTER
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemPeriodDateFilterViewHolder(

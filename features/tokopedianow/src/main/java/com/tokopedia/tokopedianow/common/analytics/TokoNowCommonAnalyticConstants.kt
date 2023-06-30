@@ -26,6 +26,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PROMO_CLICK = "promoClick"
         const val EVENT_VIEW_IRIS = "viewIris"
         const val EVENT_CLICK = "click"
+        const val EVENT_CLICK_TOP_NAV = "clickTopNav"
     }
 
     object CATEGORY{
@@ -46,6 +47,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_DIMENSION_117 = "dimension117"
+        const val KEY_DIMENSION_118 = "dimension118"
         const val KEY_DIMENSION_104 = "dimension104"
         const val KEY_DIMENSION_100 = "dimension100"
         const val KEY_DIMENSION_38 = "dimension38"
@@ -58,6 +61,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
         const val KEY_DIMENSION_96 = "dimension96"
+        const val KEY_DIMENSION_98 = "dimension98"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -97,6 +101,9 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
         const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
+        const val ITEM_LIST_SLASH_TOKONOW = "/tokonow"
+        const val ITEM_LIST_PRODUCT_CARD = "product card"
+        const val ITEM_LIST_SIMILAR_PRODUCT_RECOM = "similar product recom"
     }
 
     object ACTION{

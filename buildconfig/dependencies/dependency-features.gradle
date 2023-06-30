@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			sellerShopNib		: ":features:merchant:seller_shop_nib",
 			sellerPersona		: ":features:merchant:seller_persona",
 			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
 			shopDiscount		: ":features:merchant:shop_discount",
@@ -81,10 +82,10 @@ ext {
 
             umrah                           : ":features:salam:umrah",
 
-            categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
+            homeComponentHeader				: ":features:discovery:home_component_header",
             homeRecom                       : ":features:discovery:home_recom",
             homeNav                         : ":features:discovery:home_nav",
             search                          : ":features:discovery:search",
@@ -104,18 +105,16 @@ ext {
             videoWidget                     : ":features:discovery:video_widget",
 
             homecredit                      : ":features:fintech:home_credit",
-            merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
-            ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
             pdpPaylaterWidget               : ":features:fintech:pdp_fintech_widget",
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
 
-            dynamicBanner                   : ":features:home:dynamicbanner",
+			dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
@@ -148,7 +147,6 @@ ext {
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
-            ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
             productServiceWidget            : ":features:merchant:product_service_widget",
             productManageCommon             : ":features:merchant:product_manage_common",
@@ -298,7 +296,6 @@ ext {
             userIdentification              : ":features:user:user_identification",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
-            tkpdcore                        : ":tkpdcore",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             logintestapp                    : ":testapp-features:user:logintestapp",
