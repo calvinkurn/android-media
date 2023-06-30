@@ -56,6 +56,7 @@ abstract class BaseNotificationTest {
         val intent = RouteManager.getIntent(context, ApplinkConst.BUYER_INFO)
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
+        stubAllIntents()
     }
 
     protected fun stubAllIntents() {
