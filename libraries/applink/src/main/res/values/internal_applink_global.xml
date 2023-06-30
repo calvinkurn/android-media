@@ -23,6 +23,7 @@
     <string name="path_image_picker">/image-picker</string>
     <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
+    <string name="path_youtube_player">/youtube-player/.*\\/</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_webview_download" translatable="false">/webviewdownload</string>
     <string name="path_webview_back_home" translatable="false">/webviewbackhome</string>

@@ -186,7 +186,7 @@ class OtherMenuFragment :
         } == true
     }
 
-    private val coachMark2 by lazy {
+    private val coachMarkTopAdsMenu by lazy {
         context?.let {
             CoachMark2(it)
         }
@@ -281,6 +281,13 @@ class OtherMenuFragment :
             sendEventImpressionStatisticMenuItem(userSession.userId)
         } else {
             settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            coachMarkTopAdsMenu?.dismissCoachMark()
         }
     }
 
@@ -1054,7 +1061,7 @@ class OtherMenuFragment :
                     )
                 }
 
-                coachMark2?.showCoachMark(coachMarkList, null, 0)
+                coachMarkTopAdsMenu?.showCoachMark(coachMarkList, null, 0)
                 sharedPref.putBoolean(key, true)
             }
         }
