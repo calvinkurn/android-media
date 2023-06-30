@@ -210,6 +210,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         val preloadedShopID = "654321"
         val preloadedIsProductReview = true
         val preloadedIsFromGallery = true
+        val preloadedIsReviewOwner = true
         val mockCacheManager = mockk<CacheManager> {
             every { get<Any>(any(), any(), any()) } answers {
                 when (firstArg<String>()) {
@@ -218,6 +219,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
                     ReviewMediaGalleryRouter.EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT -> preloadedDetailedReviewMediaResult
                     ReviewMediaGalleryRouter.EXTRAS_IS_PRODUCT_REVIEW -> preloadedIsProductReview
                     ReviewMediaGalleryRouter.EXTRAS_IS_FROM_GALLERY -> preloadedIsFromGallery
+                    ReviewMediaGalleryRouter.EXTRAS_IS_REVIEW_OWNER -> preloadedIsReviewOwner
                     else -> null
                 }
             }
@@ -238,6 +240,9 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         Assert.assertEquals(preloadedShopID, viewModel.getShopId())
         Assert.assertEquals(preloadedIsProductReview, viewModel.isProductReview())
         Assert.assertEquals(preloadedIsFromGallery, viewModel.isFromGallery())
+        Assert.assertEquals(preloadedDetailedReviewMediaResult.detail.reviewDetail[0].feedbackId, viewModel.getFeedbackId())
+        Assert.assertEquals(preloadedDetailedReviewMediaResult.detail.reviewDetail[0].user.userId, viewModel.getReviewUserID())
+        Assert.assertEquals(preloadedIsReviewOwner, viewModel.isReviewOwner)
     }
 
     @Test
