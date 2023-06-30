@@ -18,5 +18,5 @@ object SeamlessSellerConstant {
     const val KEY_ERROR = "error"
 
     const val MAINAPP_PACKAGE = "com.tokopedia.tkpd"
-    const val SERVICE_PACKAGE = "com.tokopedia.loginregister.seamlesslogin.ui.RemoteService"
+    const val SERVICE_PACKAGE = "com.tokopedia.loginregister.seamlesslogin.RemoteService"
 }

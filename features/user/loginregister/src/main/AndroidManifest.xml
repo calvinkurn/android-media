@@ -224,7 +224,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <service
-            android:name=".seamlesslogin.ui.RemoteService"
+            android:name=".seamlesslogin.RemoteService"
             android:permission="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS"
             android:exported="true">
             <intent-filter>
