@@ -1,10 +1,10 @@
 package com.tokopedia.inbox.test
 
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
-import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetDataResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetMetaResponse
-import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetWrapperResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetWrapperResponse
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
