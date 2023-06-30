@@ -12,7 +12,7 @@ object DetailedReviewMediaGalleryStorage {
     @ReviewMediaGalleryRouter.PageSource
     var pageSource: Int
         get() {
-            return (map[ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE] as Int?) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
+            return (map[ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE] as? Int) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
         }
         set(value) {
             map[ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE] = value
