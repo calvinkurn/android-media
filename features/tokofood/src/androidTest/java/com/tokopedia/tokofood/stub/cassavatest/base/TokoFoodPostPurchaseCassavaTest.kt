@@ -1,20 +1,19 @@
 package com.tokopedia.tokofood.stub.cassavatest.base
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.BaseTokoFoodPostPurchaseTest
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.tokofood.stub.common.util.clickStickyButtonButton
 import com.tokopedia.tokofood.stub.common.util.isViewDisplayed
 import com.tokopedia.tokofood.stub.common.util.onClick
 import com.tokopedia.tokofood.stub.common.util.onIdView
 import com.tokopedia.tokofood.stub.common.util.scrollTo
 import org.hamcrest.MatcherAssert
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 open class TokoFoodPostPurchaseCassavaTest : BaseTokoFoodPostPurchaseTest() {
 
     companion object {
@@ -40,47 +39,46 @@ open class TokoFoodPostPurchaseCassavaTest : BaseTokoFoodPostPurchaseTest() {
     }
 
     protected fun clickHelpCta() {
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.startActivity(getTokoFoodOrderTrackingActivityIntent())
-        }
-        onIdView(R.id.btnOrderTrackingSecondaryHelp).isViewDisplayed().onClick()
+        intendingIntent()
+        clickStickyButtonButton(R.id.btnOrderTrackingSecondaryHelp)
         validate(CLICK_HELP_PATH)
     }
 
     protected fun clickAddToCartCta() {
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.startActivity(getTokoFoodOrderTrackingActivityIntent())
-        }
-        onIdView(R.id.btnOrderDetailSecondaryActions).isViewDisplayed().onClick()
+        intendingIntent()
+        clickStickyButtonButton(R.id.beliLagiButton)
         validate(CLICK_ADD_TO_CART_PATH)
     }
 
     protected fun clickCallIcon() {
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.startActivity(getTokoFoodOrderTrackingActivityIntent())
-            activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
-        }
+        activityRule.activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
         onIdView(R.id.icDriverCall).isViewDisplayed().onClick()
         validate(CLICK_CALL_ICON_PATH)
     }
 
     protected fun clickChatIcon() {
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
-        }
+        intendingIntent()
+        activityRule.activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
         onIdView(R.id.icDriverChat).isViewDisplayed().onClick()
         validate(CLICK_CHAT_ICON_PATH)
     }
 
     protected fun clickCallDriverBottomSheet() {
-        activityScenarioRule.scenario.onActivity { activity ->
-            activity.startActivity(getTokoFoodOrderTrackingActivityIntent())
-            activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
-        }
-        onIdView(R.id.icDriverChat).isViewDisplayed().onClick()
+        intendingIntent()
+        activityRule.activity.scrollTo<DriverSectionUiModel>(recyclerViewId = R.id.rvOrderTracking)
+        onIdView(R.id.icDriverCall).isViewDisplayed().onClick()
 
         onIdView(R.id.tokofood_btn_masking_phone_number).isViewDisplayed().onClick()
 
+        closeBottomSheet()
+
         validate(CLICK_CALL_DRIVER_BOTTOMSHEET_PATH)
+    }
+
+    protected fun enableChatIcon() {
+        TokoChatConnection.tokoChatConfigComponent!!.getRemoteConfig().setString(
+            TokoChatConnection.TOKOCHAT_REMOTE_CONFIG,
+            "true"
+        )
     }
 }

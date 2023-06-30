@@ -14,7 +14,7 @@ class GetDriverPhoneNumberUseCaseStub(
 
     var responseStub: DriverPhoneNumberResponse = DriverPhoneNumberResponse()
         set(value) {
-            useCase.createMapResult(DriverPhoneNumberMapperStub::class.java, value)
+            useCase.createMapResult(DriverPhoneNumberResponse::class.java, value)
             field = value
         }
 

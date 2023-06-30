@@ -9,6 +9,7 @@ class OrderCompletedCassavaTest: TokoFoodPostPurchaseCassavaTest() {
         super.setup()
         getDriverPhoneNumberUseCaseStub.responseStub = driverPhoneNumberResponse
         getTokoFoodOrderDetailUseCaseStub.responseStub = orderCompletedResponse
+        launchActivity()
     }
 
     @Test

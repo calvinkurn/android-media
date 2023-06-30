@@ -8,6 +8,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.presentation.activity.TokoFoodOrderTrackingActivity
+import com.tokopedia.tokofood.stub.common.util.TokoFoodOrderTrackingComponentStubInstance
 import com.tokopedia.tokofood.stub.postpurchase.presentation.fragment.BaseTokoFoodOrderTrackingFragmentStub
 
 class TokoFoodOrderTrackingActivityStub : TokoFoodOrderTrackingActivity() {
@@ -22,6 +23,12 @@ class TokoFoodOrderTrackingActivityStub : TokoFoodOrderTrackingActivity() {
             )
         }
         return BaseTokoFoodOrderTrackingFragmentStub.newInstance(bundle)
+    }
+
+    override fun initInjector() {
+        TokoFoodOrderTrackingComponentStubInstance.getTokoFoodOrderTrackingComponentStub(
+            this
+        ).inject(this)
     }
 
     companion object {

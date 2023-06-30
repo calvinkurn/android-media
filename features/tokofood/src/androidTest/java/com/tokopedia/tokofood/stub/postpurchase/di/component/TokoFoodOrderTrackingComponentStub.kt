@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.stub.postpurchase.di.component
 
+import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -15,19 +16,21 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChat
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.stub.common.di.component.BaseAppComponentStub
 import com.tokopedia.tokofood.stub.postpurchase.di.module.TokoFoodOrderTrackingModuleStub
+import com.tokopedia.tokofood.stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
 @TokoFoodOrderTrackingScope
 @Component(
     modules = [TokoFoodOrderTrackingModuleStub::class],
-    dependencies = [BaseAppComponentStub::class]
+    dependencies = [BaseAppComponentStub::class, TokoChatConfigComponent::class]
 )
 interface TokoFoodOrderTrackingComponentStub : TokoFoodOrderTrackingComponent {
 
+    fun inject(activity: TokoFoodOrderTrackingActivityStub)
     fun coroutineDispatcher(): CoroutineDispatchers
 
-    fun graphQlRepository(): GraphqlRepository
+    fun graphqlRepository(): GraphqlRepository
 
     fun userSessionInterface(): UserSessionInterface
 

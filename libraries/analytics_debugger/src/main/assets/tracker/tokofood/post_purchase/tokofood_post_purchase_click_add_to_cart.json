@@ -4,9 +4,16 @@
   "query": [
     {
       "event": "openScreen",
+      "eventAction": "view tokofood order detail page",
+      "eventCategory": "tokofood order detail page",
       "businessUnit": ".*",
       "currentSite": "tokopediamarketplace",
       "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "clientId": ".*",
+      "theme": ".*",
+      "networkSpeed": ".*",
+      "sessionIris": ".*",
       "screenName": ".*",
       "shopId": ".*",
       "userId": ".*"
@@ -14,8 +21,10 @@
     {
       "event": "add_to_cart",
       "eventAction": "click buy again",
+      "clientId": ".*",
       "eventCategory": ".*",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
       "businessUnit": ".*",
       "currentSite": "tokopediamarketplace",
       "items": [
@@ -26,7 +35,7 @@
           "item_category": ".*",
           "item_id": ".*",
           "item_name": ".*",
-          "item_variant": ".+",
+          "item_variant": ".*",
           "price": ".+",
           "quantity": ".+",
           "shop_id": ".*",

@@ -17,11 +17,16 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderDetailStickyActionButton
 import com.tokopedia.tokofood.stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub
 import com.tokopedia.tokofood.stub.postpurchase.presentation.fragment.BaseTokoFoodOrderTrackingFragmentStub
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
 fun onIdView(id: Int): ViewInteraction =
     Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(id)))
@@ -69,6 +74,30 @@ fun smoothScrollTo(positionItem: Int, recyclerViewId: Int) {
             )
         )
     }
+}
+
+fun withButtonInsideStickyButtonView(idView: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description) {
+            description.appendText("with button inside sticky button view")
+        }
+
+        override fun matchesSafely(view: View): Boolean {
+            if (view is OrderDetailStickyActionButton) {
+                val button = view.findViewById<UnifyButton>(idView)
+                return button != null
+            }
+            return false
+        }
+    }
+}
+
+fun clickStickyButtonButton(idView: Int) {
+    clickView(CommonMatcher.firstView(ViewMatchers.withId(idView)))
+}
+
+private fun clickView(matcher: Matcher<View>) {
+    Espresso.onView(matcher).perform(ViewActions.click())
 }
 
 fun clickClickableSpan(textToClick: CharSequence): ViewAction {

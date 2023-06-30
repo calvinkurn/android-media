@@ -1,12 +1,15 @@
 package com.tokopedia.tokofood.common
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ActivityScenario
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.DriverPhoneNumberResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
@@ -33,13 +36,11 @@ import org.junit.Rule
 abstract class BaseTokoFoodPostPurchaseTest {
 
     @get:Rule
-    var activityScenarioRule = ActivityScenarioRule(TokoFoodOrderTrackingActivityStub::class.java)
-
+    var activityRule = IntentsTestRule(TokoFoodOrderTrackingActivityStub::class.java, true, false)
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected lateinit var applicationContext: Context
     protected lateinit var userSessionStub: UserSessionStub
     protected lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
     protected lateinit var getDriverPhoneNumberUseCaseStub: GetDriverPhoneNumberUseCaseStub
@@ -52,13 +53,15 @@ abstract class BaseTokoFoodPostPurchaseTest {
     protected lateinit var tokofoodOrderStatusMapperStub: TokoFoodOrderStatusMapperStub
     protected lateinit var remoteConfig: RemoteConfig
 
+    protected val applicationContext: Context = ApplicationProvider.getApplicationContext()
+    protected val targetContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
+
     protected val getTokoFoodOrderTrackingComponentStub by lazy {
         TokoFoodOrderTrackingComponentStubInstance.getTokoFoodOrderTrackingComponentStub(
             applicationContext
         )
     }
-
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     protected val driverPhoneNumberResponse: DriverPhoneNumberResponse
         get() = AndroidTestUtil.parse(
@@ -74,17 +77,17 @@ abstract class BaseTokoFoodPostPurchaseTest {
 
     protected val liveTrackingResponse: TokoFoodOrderDetailResponse
         get() = AndroidTestUtil.parse(
-            "raw/postpurchase/tokofood_post_purchase_otw_pickup.json",
+            "raw/postpurchase/tokofood_post_purchase_order_otw_pickup.json",
             TokoFoodOrderDetailResponse::class.java
         )!!
 
 
     @Before
     open fun setup() {
-        applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
         graphqlRepositoryStub =
-            getTokoFoodOrderTrackingComponentStub.graphQlRepository() as GraphqlRepositoryStub
-        userSessionStub = getTokoFoodOrderTrackingComponentStub.userSessionInterface() as UserSessionStub
+            getTokoFoodOrderTrackingComponentStub.graphqlRepository() as GraphqlRepositoryStub
+        userSessionStub =
+            getTokoFoodOrderTrackingComponentStub.userSessionInterface() as UserSessionStub
         getDriverPhoneNumberUseCaseStub =
             getTokoFoodOrderTrackingComponentStub.getDriverPhoneNumberUseCaseStub() as GetDriverPhoneNumberUseCaseStub
         getTokoFoodOrderDetailUseCaseStub =
@@ -95,9 +98,12 @@ abstract class BaseTokoFoodPostPurchaseTest {
             getTokoFoodOrderTrackingComponentStub.getUnreadChatCountUseCaseStub() as GetUnreadChatCountUseCaseStub
         tokoChatConfigGroupBookingUseCaseStub =
             getTokoFoodOrderTrackingComponentStub.getTokoChatConfigGroupBookingUseCaseStub() as TokoChatConfigGroupBookingUseCaseStub
-        driverPhoneNumberMapperStub = getTokoFoodOrderTrackingComponentStub.driverPhoneNumberMapperStub() as DriverPhoneNumberMapperStub
-        tokoFoodOrderDetailMapperStub = getTokoFoodOrderTrackingComponentStub.tokoFoodOrderDetailMapperStub() as TokoFoodOrderDetailMapperStub
-        tokofoodOrderStatusMapperStub = getTokoFoodOrderTrackingComponentStub.tokoFoodOrderStatusMapperStub() as TokoFoodOrderStatusMapperStub
+        driverPhoneNumberMapperStub =
+            getTokoFoodOrderTrackingComponentStub.driverPhoneNumberMapperStub() as DriverPhoneNumberMapperStub
+        tokoFoodOrderDetailMapperStub =
+            getTokoFoodOrderTrackingComponentStub.tokoFoodOrderDetailMapperStub() as TokoFoodOrderDetailMapperStub
+        tokofoodOrderStatusMapperStub =
+            getTokoFoodOrderTrackingComponentStub.tokoFoodOrderStatusMapperStub() as TokoFoodOrderStatusMapperStub
         remoteConfig = getTokoFoodOrderTrackingComponentStub.getRemoteConfig()
     }
 
@@ -107,10 +113,23 @@ abstract class BaseTokoFoodPostPurchaseTest {
     }
 
     protected fun getTokoFoodOrderTrackingActivityIntent(): Intent {
-        return TokoFoodOrderTrackingActivityStub.createIntent(context)
+        return TokoFoodOrderTrackingActivityStub.createIntent(targetContext)
+    }
+
+    protected fun launchActivity() {
+        activityRule.launchActivity(getTokoFoodOrderTrackingActivityIntent())
+    }
+
+    protected fun closeBottomSheet() {
+        onIdView(R.id.bottom_sheet_close).onClick()
+    }
+
+    protected fun intendingIntent() {
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     protected fun dismissPage() {
-        activityScenarioRule.scenario.close()
+        activityRule.activity.finish()
     }
 }

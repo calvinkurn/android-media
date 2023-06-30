@@ -37,9 +37,9 @@
     "additionalTickerInfo": null,
     "actionButtons": [
       {
-        "label": "Beli Lagi",
+        "label": "Bantuan",
         "actionType": "link",
-        "appUrl": "tokopedia://food/merchant/fe0c2ab2-b7ad-4b36-8d14-4ef093da608e"
+        "appUrl": "https://www.tokopedia.com/help/reference-article?uoh=true&refnum=IVG/20230417/GFD/857377027920207020&refnum_id=507bd71e-d10a-4f01-a106-6ee63464161a&transaction_type_id=2&invoice_type_id=12"
       }
     ],
     "dotMenus": [
