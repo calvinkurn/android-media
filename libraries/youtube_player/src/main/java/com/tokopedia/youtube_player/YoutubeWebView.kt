@@ -17,15 +17,15 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 
 private const val MIME_TYPE = "text/html"
-private const val ENCODING= "UTF-8"
+private const val ENCODING = "UTF-8"
 private const val BASE_URL_YOUTUBE = "https://www.youtube.com"
 
-class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : WebView(context, attrs, defStyleAttr) {
+class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    WebView(context, attrs, defStyleAttr) {
     var videoId: String? = null
     var youtubeJSInterface: YoutubeWebViewInterface? = null
     private var jsInterface: String = "jsInterface"
-    var isPlayerReady:Boolean = false
+    var isPlayerReady: Boolean = false
     var customViewInterface: YoutubeCustomViewListener? = null
     private val mainThread: Handler = Handler(Looper.getMainLooper())
 
@@ -36,8 +36,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
         youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
         youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
+        youtubeEventError: YoutubeWebViewEventListener.EventError? = null,
         playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null,
-        options: PlayerOptions = PlayerOptions(),
+        options: PlayerOptions = PlayerOptions()
     ) {
         settings.apply {
             javaScriptEnabled = true
@@ -45,8 +46,13 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             cacheMode = WebSettings.LOAD_DEFAULT
         }
         val youtubeJSInterface = YoutubeWebViewInterface(
-            youtubeEventVideoEnded, youtubeEventVideoPlaying,
-            youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued, playerReady
+            youtubeEventVideoEnded,
+            youtubeEventVideoPlaying,
+            youtubeEventVideoPaused,
+            youtubeEventVideoBuffering,
+            youtubeEventVideoCued,
+            youtubeEventError,
+            playerReady
         )
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
@@ -67,7 +73,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             }
         }
 
-        webViewClient = object: WebViewClient(){
+        webViewClient = object : WebViewClient() {
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest,
@@ -93,11 +99,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         invokeFunction("loadVideo", "'$videoId'", "$startSeconds")
     }
 
-    fun mute(){
+    fun mute() {
         invokeFunction("mute")
     }
 
-    fun unMute(){
+    fun unMute() {
         invokeFunction("unMute")
     }
 
@@ -110,8 +116,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun invokeFunction(function: String, vararg stringArgs: String) {
-        if (isPlayerReady)
+        if (isPlayerReady) {
             mainThread.post { loadUrl("javascript:$function(${stringArgs.joinToString(",")})") }
+        }
     }
 
     private fun getYoutubePlayerHtml(options: PlayerOptions): String {
@@ -157,7 +164,10 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                     events: {
                         onReady: function(event) { jsInterface.onReady() },
                         onStateChange: function(event) { jsInterface.onStateChanged(event.data, player.getCurrentTime()) },
-                        onError: function(error) { console.log(error) }
+                        onError: function(error) { 
+                            jsInterface.onError(error.data)
+                            console.log(error)
+                        }
                     },
                   });
                 }
@@ -217,6 +227,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     data class PlayerOptions(
-        val enableFullScreen: Boolean = true,
+        val enableFullScreen: Boolean = true
     )
 }

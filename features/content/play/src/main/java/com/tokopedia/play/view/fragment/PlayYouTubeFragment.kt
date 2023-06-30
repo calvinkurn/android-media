@@ -41,12 +41,14 @@ import javax.inject.Inject
  * Created by jegul on 28/04/20
  */
 class PlayYouTubeFragment @Inject constructor(
-        private val analytic: PlayAnalytic,
-        private val playLog: PlayLog
-): TkpdBaseV4Fragment(), PlayFragmentContract {
+    private val analytic: PlayAnalytic,
+    private val playLog: PlayLog
+) : TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeWebViewViewComponent.Listener {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-    private val youtubeView by viewComponent { YouTubeWebViewViewComponent(it, viewLifecycleOwner) }
+    private val youtubeView by viewComponent {
+        YouTubeWebViewViewComponent(it, viewLifecycleOwner, this)
+    }
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -78,7 +80,8 @@ class PlayYouTubeFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(
-            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+            requireParentFragment(),
+            (requireParentFragment() as PlayFragment).viewModelProviderFactory
         ).get(PlayViewModel::class.java)
     }
 
@@ -130,9 +133,13 @@ class PlayYouTubeFragment @Inject constructor(
         binding.root.changeConstraint {
             setDimensionRatio(
                 binding.scrollableHostYoutube.id,
-                if (orientation.isLandscape) "W, 16:9" else "H, 16:9",
+                if (orientation.isLandscape) "W, 16:9" else "H, 16:9"
             )
         }
+    }
+
+    override fun onStateChanged(view: YouTubeWebViewViewComponent, state: PlayViewerVideoState) {
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(state)
     }
 
     /**
@@ -143,13 +150,9 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun initView(view: View) {
-        with (view) {
+        with(view) {
             containerYouTube = findViewById(R.id.container_youtube)
         }
-    }
-
-    private fun handleYouTubeVideoState(state: PlayViewerVideoState) {
-        if (isYouTube) videoAnalyticHelper.onNewVideoState(state)
     }
 
     private fun setupObserve() {
@@ -173,18 +176,24 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
-            if (::containerYouTube.isInitialized) {
-                if (it.isAnyShown) containerYouTube.setCornerRadius(cornerRadius)
-                else containerYouTube.setCornerRadius(0f)
+        playViewModel.observableBottomInsetsState.observe(
+            viewLifecycleOwner,
+            DistinctObserver {
+                if (::containerYouTube.isInitialized) {
+                    if (it.isAnyShown) {
+                        containerYouTube.setCornerRadius(cornerRadius)
+                    } else {
+                        containerYouTube.setCornerRadius(0f)
+                    }
+                }
             }
-        })
+        )
     }
 
     private fun handleStatus(status: PlayStatusUiModel) {
         youtubeViewOnStateChanged(
             isFreezeOrBanned = status.channelStatus.statusType.isFreeze ||
-                    status.channelStatus.statusType.isBanned
+                status.channelStatus.statusType.isBanned
         )
     }
 
