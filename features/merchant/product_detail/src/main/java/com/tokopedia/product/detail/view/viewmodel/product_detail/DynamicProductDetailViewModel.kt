@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -48,6 +49,7 @@ import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
@@ -259,6 +261,17 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
+
+    val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
+        val edu = it.bottomSheetEdu
+        val showEdu = edu.isShow && edu.appLink.isNotBlank()
+
+        if (showEdu) {
+            edu
+        } else {
+            null
+        }
+    }
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -480,14 +493,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: ProductVariant,
         mapOfSelectedVariant: MutableMap<String, String>?
     ) {
-        launchCatchError(dispatcher.io, block = {
-            _singleVariantData.postValue(
+        launch(dispatcher.io) {
+            runCatching {
                 ProductDetailVariantLogic.determineVariant(
                     mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
                     productVariant = data
                 )
-            )
-        }) {}
+            }.onSuccess {
+                launch(dispatcher.main) {
+                    _singleVariantData.postValue(it)
+                }
+            }
+        }
     }
 
     fun getProductP1(
@@ -858,42 +875,47 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
-        launchCatchError(block = {
-            val action = if (isNotifyMeActive) {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-            } else {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+        launch(context = coroutineContext) {
+            runCatching {
+                val action = if (isNotifyMeActive) {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
+                } else {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                }
+
+                action to toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                        campaignId,
+                        productId,
+                        action,
+                        ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+                ).result
+            }.onSuccess { pair ->
+                updateNotifyMeData(productId.toString())
+                _toggleTeaserNotifyMe.value = NotifyMeUiData(
+                    pair.first,
+                    pair.second.isSuccess,
+                    pair.second.message
+                ).asSuccess()
+            }.onFailure {
+                _toggleTeaserNotifyMe.value = it.asFail()
             }
-
-            val result = toggleNotifyMeUseCase.get().executeOnBackground(
-                ToggleNotifyMeUseCase.createParams(
-                    campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE
-                )
-            ).result
-
-            updateNotifyMeData(productId.toString())
-            _toggleTeaserNotifyMe.value = NotifyMeUiData(
-                action,
-                result.isSuccess,
-                result.message
-            ).asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
         }
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
-                discussionMostHelpfulUseCase.get().executeOnBackground()
+        launch(context = coroutineContext) {
+            runCatching {
+                withContext(dispatcher.io) {
+                    discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
+                    discussionMostHelpfulUseCase.get().executeOnBackground()
+                }
+            }.onSuccess {
+                _discussionMostHelpful.postValue(it.asSuccess())
+            }.onFailure {
+                _discussionMostHelpful.postValue(it.asFail())
             }
-            _discussionMostHelpful.postValue(response.asSuccess())
-        }) {
-            _discussionMostHelpful.postValue(it.asFail())
         }
     }
 
@@ -1248,6 +1270,12 @@ class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+            is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                if (_oneTimeMethod.value.impressGeneralEduBS) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressGeneralEduBS = true)
+                }
+            }
             else -> {
                 // noop
             }
@@ -1260,21 +1288,23 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         isTokoNow: Boolean
     ) {
-        launchCatchError(dispatcher.main, block = {
-            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                if (
-                    productMediaRecomBottomSheetData?.pageName == pageName &&
-                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                ) {
-                    productMediaRecomBottomSheetData
-                } else {
-                    setProductMediaRecomBottomSheetLoading(title)
-                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+        launch(context = dispatcher.main) {
+            runCatching {
+                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                    if (
+                        productMediaRecomBottomSheetData?.pageName == pageName &&
+                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                    ) {
+                        productMediaRecomBottomSheetData
+                    } else {
+                        setProductMediaRecomBottomSheetLoading(title)
+                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                    }
                 }
+                setProductMediaRecomBottomSheetData(title, data)
+            }.onFailure {
+                setProductMediaRecomBottomSheetError(title = title, error = it)
             }
-            setProductMediaRecomBottomSheetData(title, data)
-        }) {
-            setProductMediaRecomBottomSheetError(title = title, error = it)
         }
     }
 

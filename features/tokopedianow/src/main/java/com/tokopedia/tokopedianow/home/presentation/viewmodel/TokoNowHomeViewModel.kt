@@ -281,7 +281,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val tickerData = getTickerDataAsync(localCacheModel.warehouse_id).await()
+            val tickerData = getTickerDataAsync(localCacheModel.warehouse_id, GetTargetedTickerUseCase.HOME_PAGE).await()
 
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
@@ -1135,7 +1135,7 @@ class TokoNowHomeViewModel @Inject constructor(
             GetRecommendationRequestParam(
                 pageName = pageName,
                 xSource = X_SOURCE_RECOMMENDATION_PARAM,
-                xDevice = X_DEVICE_RECOMMENDATION_PARAM
+                xDevice = X_DEVICE_RECOMMENDATION_PARAM,
             )
         )
         val recommendationWidget = recommendationWidgets.first()

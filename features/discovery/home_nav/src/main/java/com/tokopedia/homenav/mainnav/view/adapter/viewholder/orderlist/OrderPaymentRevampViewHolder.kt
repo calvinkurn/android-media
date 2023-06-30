@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionPaymentRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.TRANSACTION)
 class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderPaymentRevampModel>(itemView) {
     private var binding: HolderTransactionPaymentRevampBinding? by viewBinding()
     companion object {

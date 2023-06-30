@@ -7,6 +7,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.GeneralSwipeAction
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.Swipe
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -30,6 +33,12 @@ fun click(text: String) {
     select(text).clickView()
 }
 
+fun click(@IdRes id: Int, middlewareAction: ViewInteraction.() -> Unit) {
+    select(id).apply {
+        middlewareAction()
+    }.clickView()
+}
+
 fun clickWithMatcher(
     vararg matchers: Matcher<View>
 ) {
@@ -51,6 +60,27 @@ fun clickTabLayout(@IdRes id: Int, position: Int) {
                 (view as TabsUnify).tabLayout.getTabAt(position)?.select()
             }
         }
+    )
+}
+
+fun horizontalSlide(@IdRes id: Int, distance: Float) {
+    select(id).perform(
+        GeneralSwipeAction(
+            Swipe.FAST,
+            {
+                val arr = IntArray(2)
+                it.getLocationOnScreen(arr)
+
+                floatArrayOf(arr[0].toFloat(), arr[1].toFloat())
+            },
+            {
+                val arr = IntArray(2)
+                it.getLocationOnScreen(arr)
+
+                floatArrayOf(arr[0].toFloat() + distance, arr[1].toFloat())
+            },
+            Press.FINGER
+        )
     )
 }
 

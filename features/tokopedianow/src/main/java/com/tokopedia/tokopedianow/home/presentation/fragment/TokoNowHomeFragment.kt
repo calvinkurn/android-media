@@ -423,7 +423,7 @@ class TokoNowHomeFragment :
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = true,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title_ss).orEmpty(),
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty(),
             linkerType = NOW_TYPE
         )
 
@@ -509,7 +509,7 @@ class TokoNowHomeFragment :
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty(),
             linkerType = NOW_TYPE
         )
 
@@ -840,7 +840,7 @@ class TokoNowHomeFragment :
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty(),
             linkerType = NOW_TYPE
         )
 
@@ -959,8 +959,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.addItemToCart) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         actionText = getString(R.string.tokopedianow_toaster_see),
@@ -997,8 +996,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.removeCartItem) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.second,
                         actionText = getString(R.string.tokopedianow_toaster_ok),
@@ -1290,7 +1288,7 @@ class TokoNowHomeFragment :
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
-            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
+            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty(),
             linkerType = NOW_HOME,
             id = referral.sharingUrlParam.removePrefix("${referral.slug}/")
         )

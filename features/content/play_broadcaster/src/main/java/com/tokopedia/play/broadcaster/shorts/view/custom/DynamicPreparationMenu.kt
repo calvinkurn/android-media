@@ -59,6 +59,15 @@ data class DynamicPreparationMenu(
             isChecked = false,
             isEnabled = isMandatory,
         )
+
+        fun createFaceFilter(isMandatory: Boolean) = DynamicPreparationMenu(
+            menu = Menu.FaceFilter,
+            iconId = IconUnify.SMILE,
+            textResId = R.string.play_bro_face_filter_label,
+            isMandatory = isMandatory,
+            isChecked = false,
+            isEnabled = isMandatory,
+        )
     }
 }
 
