@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.shopcreation.data.param.ValidateUserProfileParam
 import com.tokopedia.loginregister.shopcreation.data.entity.UserProfileValidatePojo
+import com.tokopedia.loginregister.shopcreation.data.param.ValidateUserProfileParam
 import javax.inject.Inject
 
 class ValidateUserProfileUseCase @Inject constructor(
@@ -13,15 +13,11 @@ class ValidateUserProfileUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ValidateUserProfileParam, UserProfileValidatePojo>(dispatcher.io) {
 
-    override fun graphqlQuery(): String {
-        return getQuery()
-    }
-
     override suspend fun execute(params: ValidateUserProfileParam): UserProfileValidatePojo {
         return graphqlRepository.request(graphqlQuery(), params.toMap())
     }
 
-    private fun getQuery(): String = """
+    override fun graphqlQuery(): String = """
         mutation userProfileValidate($phone: String, $email: String, $validateToken: String) {
             userProfileValidate(phone: $phone, email: $email, validateToken: $validateToken) {
                 isValid,

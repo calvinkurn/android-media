@@ -12,20 +12,13 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class GetUserProfileCompletionUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
-    dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
-
-    override fun graphqlQuery(): String {
-        return getQuery()
-    }
+class GetUserProfileCompletionUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, dispatcher: CoroutineDispatchers) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
 
     override suspend fun execute(params: Unit): GetUserProfileCompletionPojo {
         return graphqlRepository.request(graphqlQuery(), params)
     }
 
-    private fun getQuery(): String = """
+    override fun graphqlQuery(): String = """
         query userProfileCompletion(){
             userProfileCompletion {
                 isActive,
