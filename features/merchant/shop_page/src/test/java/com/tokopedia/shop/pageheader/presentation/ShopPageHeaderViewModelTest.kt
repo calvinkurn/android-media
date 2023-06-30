@@ -40,6 +40,7 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,6 +106,9 @@ class ShopPageHeaderViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
+    lateinit var eligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>
+
+    @RelaxedMockK
     lateinit var sharedPreferences: SharedPreferences
 
     @RelaxedMockK
@@ -144,6 +148,7 @@ class ShopPageHeaderViewModelTest {
             getFollowStatusUseCase,
             updateFollowStatusUseCase,
             gqlGetShopOperationalHourStatusUseCase,
+            eligibilityCheckUseCase,
             sharedPreferences,
             testCoroutineDispatcherProvider,
             playShortsEntryPointRemoteConfig
