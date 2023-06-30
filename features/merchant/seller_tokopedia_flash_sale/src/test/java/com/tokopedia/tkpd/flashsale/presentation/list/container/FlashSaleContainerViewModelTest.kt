@@ -9,9 +9,6 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
-import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
-import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
-import com.tokopedia.tkpd.flashsale.util.TickerUtil
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -22,7 +19,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -69,6 +65,48 @@ class FlashSaleContainerViewModelTest {
                 )
             )
         )
+        val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+
+        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        //When
+        viewModel.processEvent(
+            event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
+            rollenceValueList = rollenceValueList
+        )
+
+        //Then
+        val actual = emittedValues.last()
+
+        assertEquals(false, actual.isLoading)
+        assertEquals(null, actual.error)
+        assertEquals(tabsMetadata.tabs, actual.tabs)
+        assertEquals(false, actual.showTicker)
+        assertEquals(true, actual.isEligibleUsingFeature)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When fetch prerequisite data success, rbac rule is active and user is allowed, should successfully receive the data include ticker list data`() = runBlockingTest {
+        // Given
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            )
+        )
         val tickerData = listOf(
             RemoteTicker(
                 title = "some ticker title",
@@ -90,13 +128,13 @@ class FlashSaleContainerViewModelTest {
             viewModel.uiState.toList(emittedValues)
         }
 
-        //When
+        // When
         viewModel.processEvent(
             event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
             rollenceValueList = rollenceValueList
         )
 
-        //Then
+        // Then
         val actual = emittedValues.last()
 
         assertEquals(false, actual.isLoading)
@@ -223,79 +261,6 @@ class FlashSaleContainerViewModelTest {
         job.cancel()
     }
 
-//    @Test
-//    fun `When fetch tabs metadata from remote success and has showed multi location ticker previously , showTicker should be false`() = runBlockingTest {
-//        //Given
-//        val tabsMetadata = TabMetadata(
-//            listOf(
-//                TabMetadata.Tab(
-//                    TabConstant.TAB_ID_UPCOMING,
-//                    "upcoming",
-//                    100,
-//                    "Akan Datang"
-//                )
-//            )
-//        )
-//        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
-//
-//        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
-//        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
-//
-//        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
-//        val job = launch {
-//            viewModel.uiState.toList(emittedValues)
-//        }
-//
-////        coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns true
-//
-//        //When
-//        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
-//
-//        //Then
-//        val actual = emittedValues.last()
-//
-//        assertEquals(false, actual.showTicker)
-//
-//        job.cancel()
-//    }
-
-//    @Test
-//    fun `When fetch tabs metadata from remote success and has not showed multi location ticker previously , showTicker should be true`() = runBlockingTest {
-//        //Given
-//        val tabsMetadata = TabMetadata(
-//            listOf(
-//                TabMetadata.Tab(
-//                    TabConstant.TAB_ID_UPCOMING,
-//                    "upcoming",
-//                    100,
-//                    "Akan Datang"
-//                )
-//            )
-//        )
-//
-//        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
-//
-//        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
-//        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
-//
-//        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
-//        val job = launch {
-//            viewModel.uiState.toList(emittedValues)
-//        }
-//
-////        coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
-//
-//        //When
-//        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
-//
-//        //Then
-//        val actual = emittedValues.last()
-//
-//        assertEquals(true, actual.showTicker)
-//
-//        job.cancel()
-//    }
-
     @Test
     fun `When fetch tabs metadata from remote error, should emit correct error event`() = runBlockingTest {
         //Given
@@ -355,13 +320,4 @@ class FlashSaleContainerViewModelTest {
 
         job.cancel()
     }
-
-//    @Test
-//    fun `When dismiss multi location ticker, should update the multi location ticker state as dismissed`() = runBlockingTest {
-//        //When
-//        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
-//
-//        //Then
-////        coVerify { preferenceDataStore.markMultiLocationTickerAsDismissed() }
-//    }
 }

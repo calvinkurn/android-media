@@ -2,6 +2,10 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproductlist
 
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
+import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
@@ -55,6 +59,9 @@ class FlashSaleManageProductListViewModelTest {
     @RelaxedMockK
     lateinit var doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
 
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -77,6 +84,7 @@ class FlashSaleManageProductListViewModelTest {
             doFlashSaleProductSubmissionUseCase,
             flashSaleTkpdProductSubmissionMonitoringSse,
             sharedPreferences,
+            getTargetedTickerUseCase,
             getFlashSaleProductSubmissionProgressUseCase,
             flashSaleMonitorSubmitProductSseMapper,
             doFlashSaleProductSubmitAcknowledgeUseCase
@@ -446,6 +454,44 @@ class FlashSaleManageProductListViewModelTest {
             val emittedValue = viewModel.uiState.first()
             val updatedCurrentProduct = (emittedValue.listDelegateItem.first() as FlashSaleManageProductListItem).product
             assert(updatedCurrentProduct.name == mockUpdatedProductData.name)
+        }
+    }
+
+    @Test
+    fun `When rollence value list data is provided, then should get success ticker list result `() {
+        runBlockingTest {
+            val tickerListData = listOf(
+                RemoteTicker(
+                    title = "some ticker title",
+                    description = "some ticker description",
+                    type = TickerType.INFO,
+                    actionLabel = "some ticker action label",
+                    actionType = "link",
+                    actionAppUrl = "https://tokopedia.com"
+                )
+            )
+
+            val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
+            val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                GetTargetedTickerUseCase.Param.Target(
+                    type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                    values = rollenceValueList
+                )
+            )
+            val tickerParams = GetTargetedTickerUseCase.Param(
+                page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_MANAGE_PRODUCT,
+                targets = targetParams
+            )
+
+            coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerListData
+
+            viewModel.processEvent(
+                FlashSaleManageProductListUiEvent.GetTickerData(
+                    rollenceValueList = rollenceValueList
+                )
+            )
+
+
         }
     }
 
