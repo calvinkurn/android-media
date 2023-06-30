@@ -45,7 +45,7 @@ object CustomViewAction {
 
             override fun perform(uiController: UiController, view: View) {
                 try {
-                    val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView?
+                    val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as? NestedScrollView
                     if (nestedScrollView != null) {
                         nestedScrollView.scrollTo(0, view.top + view.measuredHeight + 250)
                     } else {
