@@ -309,6 +309,9 @@ object DeeplinkMainApp {
         "gold-merchant-statistic-dashboard" to mutableListOf(
             DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
         ),
+        "goto-kyc" to mutableListOf(
+            DLP.goTo(DeeplinkMapperUser::getRegisteredNavigationUser)
+        ),
         "home" to mutableListOf(
             DLP.goTo(DeeplinkMapperHome::getRegisteredNavigationHome)
         ),
@@ -934,7 +937,9 @@ object DeeplinkMainApp {
             )
         ),
         "shop-penalty" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMarketplace.SHOP_PENALTY)
+            DLP.matchPattern("") { ctx, _, _, _ ->
+                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx)
+            }
         ),
         "shop-penalty-detail" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
@@ -1004,7 +1009,12 @@ object DeeplinkMainApp {
         ),
         "www.tokopedia.com" to mutableListOf(
             DLP.goTo(DeeplinkMapperContent::getWebHostWebViewLink)
-        )
+        ),
+        "youtube-player" to mutableListOf(
+            DLP.matchPattern("{video_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalGlobal.YOUTUBE_PLAYER, idList?.getOrNull(0))
+            }
+        ),
 
     )
 }

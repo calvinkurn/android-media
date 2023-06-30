@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.global
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -35,13 +37,15 @@ class RecommendationWidgetView : LinearLayout {
 
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
     private val typeFactory = RecommendationTypeFactoryImpl()
+    private var job: Job? = null
 
     private fun init() { }
 
     fun bind(model: RecommendationWidgetModel) {
         val lifecycleOwner = context as? LifecycleOwner ?: return
 
-        lifecycleOwner.lifecycleScope.launch {
+        job?.cancel()
+        job = lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.lifecycle.repeatOnLifecycle(STARTED) {
                 recommendationWidgetViewModel
                     ?.stateFlow
@@ -73,5 +77,15 @@ class RecommendationWidgetView : LinearLayout {
 
         if (visitableList.isNullOrEmpty()) hide()
         else show()
+    }
+
+    fun recycle() {
+        job?.cancel()
+        job = null
+
+        forEach { view ->
+            if (view is IRecommendationWidgetView<*>)
+                view.recycle()
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
+import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -97,12 +98,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     override suspend fun setProductTags(channelId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
-            addProductTagUseCase.apply {
-                params = AddProductTagUseCase.createParams(
-                    channelId = channelId,
-                    productIds = productIds
-                )
-            }.executeOnBackground()
+            addProductTagUseCase(AddProductTagChannelRequest(channelId, productIds))
         }
     }
 

@@ -1,9 +1,9 @@
 package com.tokopedia.shop.score.stub.penalty.presentation.fragment
 
-import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
+import com.tokopedia.shop.score.penalty.presentation.old.fragment.ShopPenaltyPageOldFragment
 import com.tokopedia.shop.score.stub.common.util.ShopPenaltyComponentStubInstance
 
-class ShopPenaltyPageFragmentStub: ShopPenaltyPageFragment() {
+class ShopPenaltyPageFragmentStub: ShopPenaltyPageOldFragment() {
 
     override fun initInjector() {
         ShopPenaltyComponentStubInstance.getShopPenaltyComponentStub(

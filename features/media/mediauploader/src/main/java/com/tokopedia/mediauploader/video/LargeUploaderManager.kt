@@ -4,11 +4,13 @@ import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.internal.LargeUploadStateManager
-import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.logger.trackToTimber
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
@@ -29,8 +31,8 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 class LargeUploaderManager @Inject constructor(
-    private val uploadStateManager: LargeUploadStateManager,
-    private val policyManager: SourcePolicyManager,
+    @UploaderQualifier private val policyManager: SourcePolicyManager,
+    private val uploadStateManager: LargeUploadStateCacheManager,
     private val initUseCase: InitVideoUploaderUseCase,
     private val checkerUseCase: GetChunkCheckerUseCase,
     private val uploaderUseCase: GetChunkUploaderUseCase,
@@ -49,13 +51,14 @@ class LargeUploaderManager @Inject constructor(
     suspend operator fun invoke(
         file: File,
         sourceId: String,
-        withTranscode: Boolean
+        withTranscode: Boolean,
+        isRetry: Boolean
     ): UploadResult {
         val policy = policyManager.get()
         val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader
-        getLastState(sourceId, file.name) {
+        getLastState(sourceId, file.name, isRetry) {
             initUpload(sourceId, file)
         }
 
@@ -173,8 +176,18 @@ class LargeUploaderManager @Inject constructor(
         this.progressUploader = progressUploader
     }
 
-    private suspend fun getLastState(sourceId: String, fileName: String, init: suspend () -> Unit) {
+    private suspend fun getLastState(
+        sourceId: String,
+        fileName: String,
+        isRetry: Boolean,
+        init: suspend () -> Unit
+    ) {
         val data = uploadStateManager.get(sourceId, fileName)
+
+        if (isRetry.not()) {
+            init()
+            return
+        }
 
         if (data == null) {
             init()
@@ -191,7 +204,10 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private fun updateProgressValue() {
-        progressUploader?.onProgress(MAX_PROGRESS_LOADER * partUploaded.size / chunkTotal)
+        progressUploader?.onProgress(
+            percentage = MAX_PROGRESS_LOADER * partUploaded.size / chunkTotal,
+            type = ProgressType.Upload
+        )
     }
 
     private suspend fun initUpload(sourceId: String, file: File) {

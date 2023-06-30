@@ -493,14 +493,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: ProductVariant,
         mapOfSelectedVariant: MutableMap<String, String>?
     ) {
-        launchCatchError(dispatcher.io, block = {
-            _singleVariantData.postValue(
+        launch(dispatcher.io) {
+            runCatching {
                 ProductDetailVariantLogic.determineVariant(
                     mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
                     productVariant = data
                 )
-            )
-        }) {}
+            }.onSuccess {
+                launch(dispatcher.main) {
+                    _singleVariantData.postValue(it)
+                }
+            }
+        }
     }
 
     fun getProductP1(
@@ -871,42 +875,47 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
-        launchCatchError(block = {
-            val action = if (isNotifyMeActive) {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-            } else {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+        launch(context = coroutineContext) {
+            runCatching {
+                val action = if (isNotifyMeActive) {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
+                } else {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                }
+
+                action to toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                        campaignId,
+                        productId,
+                        action,
+                        ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+                ).result
+            }.onSuccess { pair ->
+                updateNotifyMeData(productId.toString())
+                _toggleTeaserNotifyMe.value = NotifyMeUiData(
+                    pair.first,
+                    pair.second.isSuccess,
+                    pair.second.message
+                ).asSuccess()
+            }.onFailure {
+                _toggleTeaserNotifyMe.value = it.asFail()
             }
-
-            val result = toggleNotifyMeUseCase.get().executeOnBackground(
-                ToggleNotifyMeUseCase.createParams(
-                    campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE
-                )
-            ).result
-
-            updateNotifyMeData(productId.toString())
-            _toggleTeaserNotifyMe.value = NotifyMeUiData(
-                action,
-                result.isSuccess,
-                result.message
-            ).asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
         }
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
-                discussionMostHelpfulUseCase.get().executeOnBackground()
+        launch(context = coroutineContext) {
+            runCatching {
+                withContext(dispatcher.io) {
+                    discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
+                    discussionMostHelpfulUseCase.get().executeOnBackground()
+                }
+            }.onSuccess {
+                _discussionMostHelpful.postValue(it.asSuccess())
+            }.onFailure {
+                _discussionMostHelpful.postValue(it.asFail())
             }
-            _discussionMostHelpful.postValue(response.asSuccess())
-        }) {
-            _discussionMostHelpful.postValue(it.asFail())
         }
     }
 
