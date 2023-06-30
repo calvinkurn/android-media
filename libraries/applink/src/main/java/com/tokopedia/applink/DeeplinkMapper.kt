@@ -68,6 +68,7 @@ import com.tokopedia.applink.promo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.getDynamicDeeplinkForTokomember
 import com.tokopedia.applink.promo.getRegisteredNavigationPromoFromHttp
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
+import com.tokopedia.applink.promo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
@@ -661,7 +662,8 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.TOKO_CHAT) { ctx, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(ctx, deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) {_,uri,_,_ -> getCelebrationBottomsheetDeeplink(uri) }
+        DLP.startWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) {_,uri,_,_ -> getCelebrationBottomsheetDeeplink(uri) },
+        DLP.startWith(ApplinkConst.ScpRewards.SCP_TOASTER) {ctx,uri,_,_ -> invokeScpToasterUniversalAppLink(ctx, uri) }
     ).apply {
         addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
     }

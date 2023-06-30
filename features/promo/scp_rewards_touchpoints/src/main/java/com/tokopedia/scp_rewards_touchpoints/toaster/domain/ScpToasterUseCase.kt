@@ -5,11 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.scp_rewards_touchpoints.toaster.model.ScpRewardsToasterModel
 import javax.inject.Inject
 
-@GqlQuery("ScpRewardsMedaliToasterTouchpointOrder", SCP_TOASTER_QUERY)
+@GqlQuery("scpRewardsMedaliTouchpointOrder", SCP_TOASTER_QUERY)
 class ScpToasterUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsToasterModel>() {
     suspend fun getToaster(orderID:Int, pageName:String, sourceName:String) : ScpRewardsToasterModel {
         setTypeClass(ScpRewardsToasterModel::class.java)
-        setGraphqlQuery(ScpRewardsMedaliToasterTouchpointOrder())
+        setGraphqlQuery(ScpRewardsMedaliTouchpointOrder())
         setRequestParams(getRequestParams(orderID,pageName, sourceName))
         return executeOnBackground()
     }
@@ -29,15 +29,15 @@ class ScpToasterUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsToaster
     }
 }
 private const val SCP_TOASTER_QUERY = """
-query scpRewardsMedaliToasterTouchpointOrder(${'$'}apiVersion: String, ${'$'}pageName: String, ${'$'}sourceName: String, ${'$'}orderID: Int) {
-  scpRewardsMedaliToasterTouchpointOrder(input: {apiVersion: ${'$'}apiVersion, pageName: ${'$'}pageName, sourceName: ${'$'}sourceName, orderID: ${'$'}orderID}) {
+query scpRewardsMedaliTouchpointOrder(${'$'}apiVersion: String, ${'$'}pageName: String, ${'$'}sourceName: String, ${'$'}orderID: Int64) {
+ scpRewardsMedaliTouchpointOrder(input: {apiVersion: ${'$'}apiVersion, pageName: ${'$'}pageName, sourceName: ${'$'}sourceName, orderID: ${'$'}orderID}) {
     resultStatus {
       code
       message
       status
     }
     isShown
-    medaliToasterTouchpointOrder {
+    medaliTouchpointOrder {
       medaliID
       medaliSlug
       medaliIconImageURL
@@ -57,5 +57,4 @@ query scpRewardsMedaliToasterTouchpointOrder(${'$'}apiVersion: String, ${'$'}pag
     }
   }
 }
-
 """

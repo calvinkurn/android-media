@@ -3,15 +3,15 @@ package com.tokopedia.scp_rewards_touchpoints.toaster.model
 import com.google.gson.annotations.SerializedName
 
 data class ScpRewardsToasterModel(
-     @SerializedName("scpRewardsMedaliToasterTouchpointOrder")
-     val scpRewardsToasterTouchpointOrder: ScpRewardsToasterTouchpointOrder? = null
+     @SerializedName("scpRewardsMedaliTouchpointOrder")
+     val scpRewardsMedaliTouchpointOrder: ScpRewardsMedaliTouchpointOrder? = null
 ){
-    data class ScpRewardsToasterTouchpointOrder(
+    data class ScpRewardsMedaliTouchpointOrder(
         @SerializedName("resultStatus")
         val resultStatus: ResultStatus? = null,
 
-        @SerializedName("medaliToasterTouchpointOrder")
-        val medaliToasterTouchpointOrder: MedaliToasterTouchpointOrder? = null,
+        @SerializedName("medaliTouchpointOrder")
+        val medaliTouchpointOrder: MedaliTouchpointOrder? = null,
 
         @SerializedName("isShown")
         val isShown: Boolean? = null
@@ -28,7 +28,7 @@ data class ScpRewardsToasterModel(
         )
     }
 
-    data class MedaliToasterTouchpointOrder(
+    data class MedaliTouchpointOrder(
         @SerializedName("cta")
         val cta: CtaItem? = null,
 

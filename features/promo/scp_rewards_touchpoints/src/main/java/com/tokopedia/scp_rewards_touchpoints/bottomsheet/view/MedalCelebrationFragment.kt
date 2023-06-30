@@ -40,9 +40,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.intent?.let {
-            medaliSlug = it.data?.pathSegments?.last() ?: "UNILEVER_CLUB"
-        }
+//        activity?.intent?.let {
+//            medaliSlug = it.data?.pathSegments?.last() ?: "UNILEVER_CLUB"
+//        }
     }
 
     override fun onCreateView(
@@ -57,13 +57,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding?.btnBs?.setOnClickListener {
-            MedalCelebrationBottomSheet.show(childFragmentManager, "UNILEVER_CLUB")
-        }
+        observeData()
+//        binding?.btnBs?.setOnClickListener {
+//            MedalCelebrationBottomSheet.show(childFragmentManager, "UNILEVER_CLUB")
+//        }
 
         binding?.btnToaster?.setOnClickListener {
-            scpToasterViewModel.getToaster(914957011, "UNILEVER_CLUB", "order_history_list_page")
+            scpToasterViewModel.getToaster(914957011, "", "order_history_list_page")
         }
 
     }
@@ -71,12 +71,12 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         scpToasterViewModel.toasterLiveData.observe(this) {
             when (it) {
                 is Success<*> -> {
-                    val data = (it.data as ScpRewardsToasterModel).scpRewardsToasterTouchpointOrder
+                    val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
                     if (data?.isShown == true) {
-                        val title = data.medaliToasterTouchpointOrder?.infoMessage?.title?: ""
-                        val subtitle = data.medaliToasterTouchpointOrder?.infoMessage?.subtitle?: ""
-                        val ctaTitle = data.medaliToasterTouchpointOrder?.cta?.text ?: ""
-                        val appLink = data.medaliToasterTouchpointOrder?.cta?.appLink
+                        val title = data.medaliTouchpointOrder?.infoMessage?.title?: ""
+                        val subtitle = data.medaliTouchpointOrder?.infoMessage?.subtitle?: ""
+                        val ctaTitle = data.medaliTouchpointOrder?.cta?.text ?: ""
+                        val appLink = data.medaliTouchpointOrder?.cta?.appLink
 
                         view?.let { it1 ->
                             ScpRewardsToaster.build(it1, title, subtitle, 4000, actionText = ctaTitle, clickListener = {

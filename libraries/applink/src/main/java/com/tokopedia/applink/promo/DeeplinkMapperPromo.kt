@@ -1,5 +1,6 @@
 package com.tokopedia.applink.promo
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -133,6 +134,15 @@ fun getCelebrationBottomsheetDeeplink(deeplink: Uri): String {
         ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET,
         deeplink.pathSegments.last()
     )
+}
+
+fun invokeScpToasterUniversalAppLink(context: Context, deeplink: Uri): String{
+    //PArse deeplink to get order id
+    return UriUtil.appendDeeplinkWithQuery(
+        ApplinkConstInternalPromo.CELEBRATION_TOASTER,
+        deeplink.query ?: ""
+    )
+
 }
 
 fun getPromoRegexMap() : MutableMap<String,Regex> {

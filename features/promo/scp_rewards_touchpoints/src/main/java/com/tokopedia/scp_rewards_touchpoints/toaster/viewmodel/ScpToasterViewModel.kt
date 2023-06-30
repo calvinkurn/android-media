@@ -25,7 +25,7 @@ class ScpToasterViewModel @Inject constructor(
                 val response = scpToasterUseCase.getToaster(
                     orderID, pageName, sourceName
                 )
-                if (response?.scpRewardsToasterTouchpointOrder?.resultStatus?.code == "200") {
+                if (response.scpRewardsMedaliTouchpointOrder?.resultStatus?.code == "200") {
                     _toasterLiveData.postValue(Success(response))
                 } else {
                     throw Throwable()

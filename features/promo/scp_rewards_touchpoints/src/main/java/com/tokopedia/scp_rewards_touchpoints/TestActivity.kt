@@ -14,18 +14,19 @@ class TestActivity : BaseActivity(), HasComponent<CelebrationComponent>{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.test_act)
-        MedalCelebrationBottomSheet.show(supportFragmentManager, "UNILEVER_CLUB")
+        setContentView(R.layout.test_act)
+        intent.data?.apply {
+            if(toString().startsWith(ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET_BASE)){
+                openCelebrationBottomSheet(pathSegments.last())
+            }
+            else{
+                getNewFragment()
+            }
+        }
+//        MedalCelebrationBottomSheet.show(supportFragmentManager, "UNILEVER_CLUB")
 //        getNewFragment()
     }
 
-    private fun handleDeeplink(){
-        intent.data?.let {
-            if(it.toString().startsWith(ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET)){
-                openCelebrationBottomSheet(it.pathSegments.last())
-            }
-        }
-    }
 
     private fun openCelebrationBottomSheet(slug:String){
         MedalCelebrationBottomSheet.show(supportFragmentManager,slug)
