@@ -12,8 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
@@ -49,13 +51,15 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         bankName.text = bankAccount.bankName
-        bankAccountNumber.text = if (bankAccount.walletAppData.ctaLink.isNotEmpty()) {
+        bankAccountNumber.text = if (bankAccount.walletAppData.message.isNotEmpty()) {
             bankAccount.walletAppData.message
         }
         else if (bankAccount.accountName?.isNotEmpty() == true) {
             context.getString(R.string.swd_account_number_name, bankAccount.accountNo,
                 bankAccount.accountName)
         } else bankAccount.accountNo
+
+        if (bankAccountNumber.text.isEmpty()) bankAccountNumber.hide() else bankAccountNumber.show()
 
         if (bankAccount.isGopay()) {
             bankAdminFee.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -95,7 +99,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             tvSpecialOffer.gone()
         }
 
-        if (bankAccount.status == INACTIVE_BANK_STATUS) {
+        if (bankAccount.status == INACTIVE_BANK_STATUS || (bankAccount.isGopay() && !bankAccount.isGopayEligible())) {
             val disabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)

@@ -117,6 +117,7 @@ data class BankAccount(
     fun isGopayEligible(): Boolean {
         return bankID == GOPAY_ID && walletAppData.message.isEmpty()
     }
+
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString(),

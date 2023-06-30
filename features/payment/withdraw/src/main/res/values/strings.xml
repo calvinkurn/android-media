@@ -5,7 +5,7 @@
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>
-    <string name="swd_choose_bank_account">Rekening Tujuan</string>
+    <string name="swd_choose_bank_account">Mau tarik saldo ke mana?</string>
     <string name="swd_has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
     <string name="swd_title_add_account_bank">Tambah Rekening</string>
     <string name="swd_title_set_account_bank">Atur Rekening</string>
@@ -28,9 +28,11 @@
 
     <string name="swd_tnc_full_text">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
 
-    <string name="swd_tnc_clickable_text">ketentuan penarikan saldo.</string>
+    <string name="swd_tnc_clickable_text">Syarat &amp; Ketentuan</string>
+    <string name="swd_tnc_end">penarikan Saldo Tokopedia.</string>
     <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
     <string name="swd_saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_saldo_exceeding_withdraw_balance_gopay">Oops, ini lebih dari maksimal tarik ke GoPay kamu.</string>
     <string name="swd_continue_pull">Lanjut Tarik</string>
     <string name="swd_back">Kembali</string>
     <string name="swd_max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>

@@ -156,9 +156,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                         val gopayBank = it.data.bankAccountList.find { bank -> bank.isGopay() }
                         gopayBank?.let { bank ->
                             bank.gopayData = it.data.gopayData
-
-                            it.data.bankAccountList.remove(bank)
-                            it.data.bankAccountList.add(0, bank)
                         }
 
                         updateBankAccountAdapter(it.data.bankAccountList)
@@ -208,6 +205,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         editable_group.gone()
         bottom_content_group.gone()
         ivLockButton.gone()
+        tvBankSetting.gone()
         emptyGroup.visibility = View.VISIBLE
         val message = when (accountBalanceType) {
             is BuyerSaldoWithdrawal -> getString(R.string.swd_refund_empty_msg)
@@ -299,6 +297,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     private fun createTermsAndConditionSpannable(context: Context): SpannableStringBuilder? {
         val originalText = getString(R.string.swd_tnc_full_text)
         val readMoreText = getString(R.string.swd_tnc_clickable_text)
+        val endText = getString(R.string.swd_tnc_end)
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
@@ -320,6 +319,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
+            .append(" ").append(endText)
     }
 
     private fun openTermsAndConditionBottomSheet() {
@@ -418,6 +418,28 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
+    override fun showCoachMarkOnGopayBank(view: View) {
+        if (!isGopayWithdrawCoachMarkShown() && context != null) {
+            updateGopayWithdrawCoachmarkShown()
+            val coachMarks = ArrayList<CoachMarkItem>()
+            coachMarks.add(
+                CoachMarkItem(
+                    view,
+                    getString(R.string.swd_join_premium_account_icon_title),
+                    getString(R.string.swd_join_premium_account_icon_description),
+                    CoachMarkContentPosition.TOP,
+                    ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+                )
+            )
+            val coachMark = CoachMarkBuilder()
+                .build()
+            coachMark.show(activity, KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK, coachMarks, 0)
+        }
+    }
+
     override fun onDisabledBankClick(bankAccount: BankAccount) {
         if (checkEligible.data.isIsPowerWD) {
             activity?.let {
@@ -475,13 +497,37 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
+    private fun isGopayWithdrawCoachMarkShown(): Boolean {
+        context?.let {
+            return CoachMarkPreference.hasShown(it, KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK)
+        } ?: run {
+            return true
+        }
+    }
+
     private fun updateRekeningPremiumCoachMarkShown() {
         context?.let {
             CoachMarkPreference.setShown(it, KEY_CAN_SHOW_RP_COACH_MARK, true)
         }
     }
 
+    private fun updateGopayWithdrawCoachmarkShown() {
+        context?.let {
+            CoachMarkPreference.setShown(it, KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK, true)
+        }
+    }
+
+    protected fun getExceedingWording(bankAccount: BankAccount?): String {
+        return context?.let {
+            if (bankAccount?.isGopay() == true)
+                it.getString(R.string.swd_saldo_exceeding_withdraw_balance_gopay)
+            else
+                it.getString(R.string.swd_saldo_exceeding_withdraw_balance)
+        } ?: ""
+    }
+
     companion object {
         const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.rekprem_logo_coach_mark"
+        const val KEY_CAN_SHOW_GOPAY_WITHDRAW_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.gopay_withdraw_coach_mark"
     }
 }

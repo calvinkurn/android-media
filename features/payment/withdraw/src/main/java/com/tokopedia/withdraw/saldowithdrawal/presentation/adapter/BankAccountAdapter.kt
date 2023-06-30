@@ -55,6 +55,12 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
             val coachMarchView = holder.getPowerMerchantImageView()
             listener.showCoachMarkOnRPIcon(coachMarchView)
         }
+
+        val position = holder.absoluteAdapterPosition
+        val isGopay = bankAccountList[position].isGopay()
+        if (holder is BankAccountViewHolder && isGopay) {
+            listener.showCoachMarkOnGopayBank(holder.itemView)
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -127,6 +133,8 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         fun openBankAccountSetting()
 
         fun showCoachMarkOnRPIcon(iconView: View)
+
+        fun showCoachMarkOnGopayBank(view: View)
 
         fun showPremiumAccountDialog(bankAccount: BankAccount)
 
