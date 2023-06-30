@@ -53,8 +53,6 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(
     private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
 
     init {
-        View.inflate(context, getLayout(), this)
-
         if (attrs != null) {
             val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
             try {
