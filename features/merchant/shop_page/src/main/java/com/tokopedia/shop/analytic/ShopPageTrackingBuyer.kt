@@ -5,10 +5,11 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_AFFILIATE_ICON
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_REGULER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_SLOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
@@ -1243,7 +1244,7 @@ class ShopPageTrackingBuyer(
         userId: String,
         isAffiliateShareIcon: Boolean
     ) {
-        val shareType = if (isAffiliateShareIcon) ProductTrackingConstant.Action.CLICK_SHARE_AFFILIATE_ICON else ProductTrackingConstant.Action.CLICK_SHARE_REGULER
+        val shareType = if (isAffiliateShareIcon) CLICK_SHARE_AFFILIATE_ICON else CLICK_SHARE_REGULER
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BUTTON,
