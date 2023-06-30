@@ -1002,7 +1002,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check profile settings appLink then should return tokopedia internal profile settings in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people-settings/123456"
-        val appLink = UriUtil.buildUri(ApplinkConst.PROFILE, "123456")
+        val appLink = UriUtil.buildUri(ApplinkConst.PROFILE_SETTINGS, "123456")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
