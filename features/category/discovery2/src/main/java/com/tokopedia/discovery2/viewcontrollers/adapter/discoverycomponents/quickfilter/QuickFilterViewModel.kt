@@ -27,15 +27,21 @@ const val DEFAULT_SORT_ID = "23"
 const val SORT_KEY = "ob"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
+    @JvmField
     @Inject
-    lateinit var filterRepository: FilterRepository
+    var filterRepository: FilterRepository? = null
 
+    @JvmField
     @Inject
-    lateinit var quickFilterRepository: QuickFilterRepository
+    var quickFilterRepository: QuickFilterRepository? = null
+
+    @JvmField
     @Inject
-    lateinit var quickFilterGQLRepository: IQuickFilterGqlRepository
+    var quickFilterGQLRepository: IQuickFilterGqlRepository? = null
+
+    @JvmField
     @Inject
-    lateinit var quickFilterUseCase: QuickFilterUseCase
+    var quickFilterUseCase: QuickFilterUseCase? = null
     private var selectedSort: HashMap<String, String> = HashMap()
     private val quickFilterList: ArrayList<Filter> = ArrayList()
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
@@ -62,11 +68,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun fetchQuickFilters() {
         launchCatchError(block = {
-            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
+            val filters = quickFilterRepository?.getQuickFilterData(components.id, components.pageEndPoint)
             addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
 
     private fun addFilterOptions(filters: ArrayList<Filter>) {
@@ -93,27 +99,28 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             component.selectedFilters = selectedFilter
             component.selectedSort = selectedSort
             launchCatchError(block = {
-                if (quickFilterUseCase.onFilterApplied(component, selectedFilter, selectedSort)) {
+                if (quickFilterUseCase?.onFilterApplied(component, selectedFilter, selectedSort) == true) {
                     syncData.value = true
                 }
             }, onError = {
-                Timber.e(it)
-            })
+                    Timber.e(it)
+                })
         }
     }
 
     fun fetchDynamicFilterModel() {
         launchCatchError(block = {
             var componentID = components.id
-            if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
+            if (components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty()) {
                 componentID = components.dynamicOriginalId!!
+            }
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(components.userAddressData))
-            dynamicFilterModel.value = filterRepository.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
+            dynamicFilterModel.value = filterRepository?.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
 
     private fun renderDynamicFilter(data: DataValue?) {
@@ -138,8 +145,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private fun setFilterData(filters: List<Filter>?) {
         if (filters?.isNotEmpty() == true) {
             components.filters.addAll(filters)
-            if (quickFilterList.isNotEmpty())
+            if (quickFilterList.isNotEmpty()) {
                 components.filters.addAll(quickFilterList)
+            }
         }
     }
 
@@ -158,7 +166,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return false
     }
 
-    fun clearQuickFilters(){
+    fun clearQuickFilters() {
         for (filter in quickFilterList)
             for (option in filter.options)
                 components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
@@ -168,9 +176,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            if(option.inputType == Option.INPUT_TYPE_RADIO) {
+            if (option.inputType == Option.INPUT_TYPE_RADIO) {
                 components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = true)
-            }else{
+            } else {
                 components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
             }
         } else {
@@ -181,8 +189,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         reloadData()
     }
 
-    fun onDropDownFilterSelected(options : List<Option>) {
-        for(option in options) {
+    fun onDropDownFilterSelected(options: List<Option>) {
+        for (option in options) {
             if (option.inputState.toBoolean()) {
                 components.filterController.setFilter(
                     option,
@@ -209,8 +217,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun setSelectedSort(mapParameter: Map<String, String>) {
         sortKeySet.forEach {
-            if (mapParameter.containsKey(it))
+            if (mapParameter.containsKey(it)) {
                 selectedSort[it] = mapParameter[it] ?: error("")
+            }
         }
     }
 
@@ -231,8 +240,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     private fun addDefaultToSearchParameter() {
-        if(components.isFromCategory && !components.searchParameter.contains(SORT_KEY))
+        if (components.isFromCategory && !components.searchParameter.contains(SORT_KEY)) {
             components.searchParameter.set(SORT_KEY, DEFAULT_SORT_ID)
+        }
     }
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -268,13 +278,16 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             if (targetList.isNotEmpty()) {
                 launchCatchError(block = {
                     productCountMutableLiveData.value = quickFilterGQLRepository
-                            .getQuickFilterProductCountData(targetList.first(),
-                                    components.pageEndPoint, appendRPCInKey(selectedFilterMapParameter),
-                                    getUserId()).component?.compAdditionalInfo?.totalProductData
-                            ?.productCountWording ?: ""
+                        ?.getQuickFilterProductCountData(
+                            targetList.first(),
+                            components.pageEndPoint,
+                            appendRPCInKey(selectedFilterMapParameter),
+                            getUserId()
+                        )?.component?.compAdditionalInfo?.totalProductData
+                        ?.productCountWording ?: ""
                 }, onError = {
-                    it.printStackTrace()
-                })
+                        it.printStackTrace()
+                    })
             }
         }
     }

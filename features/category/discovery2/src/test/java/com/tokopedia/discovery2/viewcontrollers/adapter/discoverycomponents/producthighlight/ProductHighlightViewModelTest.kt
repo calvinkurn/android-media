@@ -216,7 +216,7 @@ class ProductHighlightViewModelTest {
 
         assert(viewModel.layoutSelector() == R.layout.disco_item_shimmer_triple_pl_layout)
 
-        every { componentsItem.properties?.type } returns ComponentNames.BottomNavigation.componentName
+        every { componentsItem.properties?.type } returns ComponentNames.AnchorTabs.componentName
 
         assert(viewModel.layoutSelector() == R.layout.multi_banner_layout)
     }

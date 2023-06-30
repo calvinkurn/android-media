@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
+import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -97,24 +98,18 @@ class PlayBroProductRepositoryImpl @Inject constructor(
 
     override suspend fun setProductTags(channelId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
-            addProductTagUseCase.apply {
-                params = AddProductTagUseCase.createParams(
-                    channelId = channelId,
-                    productIds = productIds
-                )
-            }.executeOnBackground()
+            addProductTagUseCase(AddProductTagChannelRequest(channelId, productIds))
         }
     }
 
-    override suspend fun getProductTagSummarySection(channelID: String) =
+    override suspend fun getProductTagSummarySection(channelID: String, fetchCommission: Boolean) =
         withContext(dispatchers.io) {
             val response = getProductTagSummarySectionUseCase.apply {
-                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
+                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID, fetchCommission))
             }.executeOnBackground()
 
             return@withContext productMapper.mapProductTagSection(response)
         }
-
 
     private var lastRequestTime: Long = 0L
     private val isEligibleForPin: Boolean

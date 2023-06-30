@@ -39,11 +39,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
-
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }

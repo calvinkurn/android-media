@@ -2,26 +2,18 @@ package com.tokopedia.kyc_centralized.ui
 
 import android.content.Intent
 import android.net.Uri
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
-import com.tokopedia.abstraction.common.di.module.AppModule
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kyc_centralized.R
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
+import com.tokopedia.kyc_centralized.*
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
-import com.tokopedia.kyc_centralized.fakes.FakeAppGraphqlRepository
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
-import com.tokopedia.kyc_centralized.kycRobot
-import com.tokopedia.kyc_centralized.stubKtpCamera
-import com.tokopedia.kyc_centralized.stubLiveness
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
-import com.tokopedia.kyc_centralized.validate
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
@@ -38,6 +30,13 @@ class KycFlowUiTest {
         false,
         false
     )
+
+    @get:Rule
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
     private val testComponent = FakeKycActivityComponentFactory()
     private val kycApi = testComponent.kycApi
     private val projectId = "22"
@@ -46,13 +45,7 @@ class KycFlowUiTest {
 
     @Before
     fun setup() {
-        val baseAppComponent = DaggerBaseAppComponent.builder()
-            .appModule(object : AppModule(ApplicationProvider.getApplicationContext()) {
-                override fun provideGraphqlRepository(): GraphqlRepository {
-                    return FakeAppGraphqlRepository()
-                }
-            }).build()
-        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(baseAppComponent)
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -60,7 +53,7 @@ class KycFlowUiTest {
     fun happyFlowTest() {
         kycApi.case = FakeKycUploadApi.Case.Success
         val i = Intent().apply {
-            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+            data = Uri.parse(UriUtil.buildUri(KYC_INFO, projectId))
         }
         activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
@@ -83,7 +76,7 @@ class KycFlowUiTest {
     fun retakeFaceOnlyTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.FACE_RETAKE))
         val i = Intent().apply {
-            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+            data = Uri.parse(UriUtil.buildUri(KYC_INFO, projectId))
         }
         activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
@@ -107,7 +100,7 @@ class KycFlowUiTest {
     fun retakeKtpOnlyTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.KTP_RETAKE))
         val i = Intent().apply {
-            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+            data = Uri.parse(UriUtil.buildUri(KYC_INFO, projectId))
         }
         activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
@@ -132,7 +125,7 @@ class KycFlowUiTest {
     fun retakeKtpAndFaceTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(KYCConstant.KTP_RETAKE, KYCConstant.FACE_RETAKE))
         val i = Intent().apply {
-            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+            data = Uri.parse(UriUtil.buildUri(KYC_INFO, projectId))
         }
         activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
@@ -157,7 +150,7 @@ class KycFlowUiTest {
     fun retryCausedByNetworkTest() {
         kycApi.case = FakeKycUploadApi.Case.NetworkFailed
         val i = Intent().apply {
-            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+            data = Uri.parse(UriUtil.buildUri(KYC_INFO, projectId))
         }
         activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()

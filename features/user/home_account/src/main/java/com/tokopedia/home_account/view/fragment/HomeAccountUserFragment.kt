@@ -113,7 +113,7 @@ import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -189,10 +189,12 @@ open class HomeAccountUserFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    @Inject
     lateinit var oclUtils: OclUtils
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private var biometricOfferingDialog: BottomSheetUnify? = null
 
@@ -229,7 +231,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun isEnablePrivacyAccount(): Boolean {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
+        return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -243,13 +245,6 @@ open class HomeAccountUserFragment :
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun getRemoteConfig(): FirebaseRemoteConfigImpl {
-        if (!::firebaseRemoteConfig.isInitialized) {
-            firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        }
-        return firebaseRemoteConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -646,8 +641,8 @@ open class HomeAccountUserFragment :
 
     private fun fetchRemoteConfig() {
         context?.let {
-            isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowDarkModeToggle = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = remoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -656,19 +651,16 @@ open class HomeAccountUserFragment :
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        onSuccessGetBuyerAccount(it.data)
-                    }
-                    is Fail -> {
-                        onFailedGetBuyerAccount()
-                    }
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBuyerAccount(it.data)
+                }
+                is Fail -> {
+                    onFailedGetBuyerAccount()
                 }
             }
-        )
+        }
 
         viewModel.firstRecommendationData.observe(
             viewLifecycleOwner,
@@ -938,14 +930,14 @@ open class HomeAccountUserFragment :
     private fun isFirstItemIsProfile(): Boolean =
         adapter?.getItem(POSITION_0) is ProfileDataView
 
-    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+    private fun onSuccessGetBuyerAccount(buyerAccount: ProfileDataView) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
                 removeItemAt(POSITION_0)
             }
-            addItem(POSITION_0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(POSITION_0, buyerAccount)
             notifyItemChanged(POSITION_0)
         }
         hideLoading()
@@ -1850,7 +1842,7 @@ open class HomeAccountUserFragment :
         private const val FPM_BUYER = "mp_account_buyer"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
+        const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
