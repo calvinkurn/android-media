@@ -53,6 +53,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -81,7 +82,6 @@ import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivi
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
-import com.tokopedia.rechargegeneral.presentation.bottomsheet.RechargeDppoConsentBottomSheet
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
@@ -1549,7 +1549,7 @@ class RechargeGeneralFragment :
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
-                        val bottomSheet = RechargeDppoConsentBottomSheet(description)
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
                         bottomSheet.show(childFragmentManager)
                         true
                     }

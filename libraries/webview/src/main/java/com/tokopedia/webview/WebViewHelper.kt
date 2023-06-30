@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.util.Base64
+import android.webkit.WebView
+import android.text.TextUtils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
@@ -18,6 +21,11 @@ import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import com.tokopedia.webview.ext.encodeQueryNested
+import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import org.json.JSONArray
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -34,6 +42,7 @@ object WebViewHelper {
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
     private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+    private const val APP_SCP_WHITELISTED_ROUTES = "android_scp_whitelisted_routes"
     var whiteListedDomains = WhiteListedDomains()
     var whiteListedFintechPath = WhiteListedFintechPath()
 
@@ -80,7 +89,7 @@ object WebViewHelper {
         return isDomainWhitelisted(context, getDomainName(url))
     }
 
-    fun getWhiteListedDomains(context: Context):WhiteListedDomains {
+    fun getWhiteListedDomains(context: Context): WhiteListedDomains {
         return try {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
             val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
@@ -460,4 +469,68 @@ object WebViewHelper {
         return false
     }
 
+    @JvmStatic
+    fun isScpUrl(context: Context?, url: String): Boolean{
+        try {
+            context?.let {
+                val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it.applicationContext)
+                val whiteListedScpDomains = firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
+                if(!TextUtils.isEmpty(whiteListedScpDomains)){
+                    val domainArray = JSONArray(whiteListedScpDomains)
+                    if(domainArray.length() > 0 && !TextUtils.isEmpty(url)){
+                        for(i in 0 until domainArray.length()){
+                            val domainObj = domainArray.get(i)
+                            val domainStr = domainObj?.toString()
+                            if(!TextUtils.isEmpty(domainStr) && url.contains(domainStr.toString())){
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+            return false
+        }catch (ex:Exception){
+            FirebaseCrashlytics.getInstance().recordException(ex)
+            return false
+        }
+    }
+
+    // Handler to inject image back to webview
+    fun finishTakePicture(docType: String?, imageBase64: String?, webView: WebView) {
+        if (imageBase64 != null && docType != null) {
+            val script = String.format(
+                "var event = new CustomEvent('cameraTriggered'," +
+                    "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
+                    "window.dispatchEvent(event);",
+                docType,
+                imageBase64
+            )
+            executeJs(script, webView)
+        }
+    }
+
+    private fun executeJs(script: String, webView: WebView) {
+        webView.evaluateJavascript(
+            script
+        ) { value: String -> Timber.d("executeJS result: $value") }
+    }
+
+    fun getBase64FromImagePath(imagePath: String): String? {
+        try {
+            val file = File(imagePath)
+            val inputStream = FileInputStream(file)
+            val buffer = ByteArray(1024)
+            val outputStream = ByteArrayOutputStream()
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } != -1) {
+                outputStream.write(buffer, 0, length)
+            }
+            inputStream.close()
+            val imageBytes = outputStream.toByteArray()
+            return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+        return null
+    }
 }
