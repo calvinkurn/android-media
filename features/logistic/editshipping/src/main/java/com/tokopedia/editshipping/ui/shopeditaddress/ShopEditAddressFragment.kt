@@ -74,7 +74,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
-    private var validate: Boolean = true
     private var uncoveredCourierFlag: Boolean = false
 
     private val pinpointPageResult = registerForActivityResult(
@@ -314,7 +313,11 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun checkValidateAddressDetail(addressHelper: String, userAddress: String) {
+    private fun checkValidateAddressDetail(addressHelper: String, userAddress: String): Boolean {
+        if (userAddress.length < MIN_CHAR_ADDRESS_DETAIL) {
+            binding?.tvDetailAlamatHelper?.text = getString(R.string.helper_shop_detail)
+            return false
+        }
         val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
         val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
         if (ShopEditAddressUtils.validateAddressSimilarity(
@@ -322,12 +325,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 normalizeUserAddress
             )
         ) {
-            validate = true
             binding?.tvDetailAlamatHelper?.text = ""
+            return true
         } else {
-            validate = false
             binding?.tvDetailAlamatHelper?.text =
                 getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+            return false
         }
     }
 
@@ -416,8 +419,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         binding?.btnSaveWarehouse?.setOnClickListener {
             warehouseModel?.let { it ->
                 val addressDetailUser = binding?.etDetailAlamatShop?.text.toString()
-                checkValidateAddressDetail(detailAddressHelper, addressDetailUser)
-                if (validate) {
+                if (checkValidateAddressDetail(detailAddressHelper, addressDetailUser)) {
                     viewModel.checkCouriersAvailability(userSession.shopId.toLong(), it.districtId)
                 }
             }
@@ -458,10 +460,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             )
         }
-
-        binding?.etDetailAlamatShop?.apply {
-            addTextChangedListener(setAlamatWatcher())
-        }
     }
 
     private fun setShopLocationWatcher(): TextWatcher {
@@ -474,33 +472,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 val strLength = s.toString().length
                 val info = "$strLength/25"
                 binding?.tvNamaLokasiWatcher?.text = info
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // no-op
-            }
-        }
-    }
-
-    private fun setAlamatWatcher(): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // no-op
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    val strLength = s.toString().length
-                    when {
-                        strLength < 20 -> {
-                            validate = false
-                            binding?.tvDetailAlamatHelper?.text = getString(R.string.helper_shop_detail)
-                        }
-                        else -> {
-                            binding?.tvDetailAlamatHelper?.text = ""
-                        }
-                    }
-                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -570,6 +541,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
         private const val MONAS_LAT = -6.175794
         private const val MONAS_LONG = 106.826457
+        private const val MIN_CHAR_ADDRESS_DETAIL = 20
 
         fun newInstance(extra: Bundle): ShopEditAddressFragment {
             return ShopEditAddressFragment().apply {
