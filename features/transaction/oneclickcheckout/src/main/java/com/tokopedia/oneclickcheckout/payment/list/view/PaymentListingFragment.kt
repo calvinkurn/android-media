@@ -217,6 +217,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
+        // todo: change callback url
         return PaymentListingParamRequest(
             merchantCode,
             profileCode,
