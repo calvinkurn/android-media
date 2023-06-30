@@ -329,9 +329,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun sendPendingTracker() {
-        userReviewImpressCoordinator.sendTracker {
-            userProfileTracker.sendAll()
-        }
+        userReviewImpressCoordinator.sendTracker()
     }
 
     private fun setupClickableText(
