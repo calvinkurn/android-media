@@ -139,6 +139,9 @@ class ContentCommentBottomSheet @Inject constructor(
                     if (isBtnDisabled) disabledColor else enabledColor
                 )
                 binding.ivCommentSend.isClickable = !isBtnDisabled
+                binding.ivCommentSend.setOnClickListener(
+                    if (isBtnDisabled) null else handleSendComment()
+                )
 
                 if (txt == null) return
                 binding.newComment.removeTextChangedListener(this)
@@ -243,9 +246,6 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
 
-        binding.ivCommentSend.setOnClickListener {
-            handleSendComment()
-        }
         Toaster.toasterCustomBottomHeight =
             context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
@@ -551,7 +551,7 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    private fun handleSendComment() {
+    private fun handleSendComment() = View.OnClickListener {
         showKeyboard(false)
         val newLength = binding.newComment.text.toString().getGraphemeLength()
         if (newLength > MAX_CHAR) {
