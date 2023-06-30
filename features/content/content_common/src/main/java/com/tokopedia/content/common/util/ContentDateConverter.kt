@@ -28,7 +28,7 @@ object ContentDateConverter {
             val now = ZonedDateTime.now()
             val convert = ZonedDateTime.parse(date)
             val diff = Duration.between(convert, now)
-            Converted(minute = diff.toMinutes(), hour = diff.toHours(), day = diff.toDays(), yearMonth = "${convert.month.name.take(3).capitalize()} ${convert.year}")
+            Converted(minute = diff.toMinutes(), hour = diff.toHours(), day = diff.toDays(), yearMonth = "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}")
         } else {
             val convert = date.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
             val diff = DateUtil.getCurrentCalendar().time.time - convert.time
