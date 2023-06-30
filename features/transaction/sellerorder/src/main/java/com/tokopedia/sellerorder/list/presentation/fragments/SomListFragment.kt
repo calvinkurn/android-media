@@ -31,12 +31,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -187,6 +191,7 @@ open class SomListFragment :
         private const val SEARCH_BAR_MARGIN_END = 12
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
+        private const val SHARED_PREF_SOM_LIST_TAB_COACH_MARK = "somListTabCoachMark"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -266,6 +271,11 @@ open class SomListFragment :
         orderRequestCancelBottomSheet?.clearViewBinding()
         somOrderEditAwbBottomSheet?.clearViewBinding()
     }
+
+    private val autoTabbingCoachMark: CoachMark2? = somListBinding?.root?.context?.let {
+        CoachMark2(it)
+    }
+
     protected var somListHeaderBinding by autoClearedNullable<SomListHeaderBinding>()
 
     override val coroutineContext: CoroutineContext
@@ -2868,16 +2878,69 @@ open class SomListFragment :
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
-        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
-        val shouldRefreshOrder = viewModel.getIsFirstPageOpened() &&
-            result.data.highLightedStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
+        val highLightStatusKey = result.data.highLightedStatusKey
 
-        if (shouldRefreshOrder) {
-            viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(result.data.highLightedStatusKey))
+        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        val shouldRefreshOrderAutoTabbing = viewModel.getIsFirstPageOpened() &&
+            highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
+
+        if (shouldRefreshOrderAutoTabbing) {
+            viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(highLightStatusKey))
+            showCoachMarkAutoTabbing(highLightStatusKey)
             viewModel.setFirstPageOpened(false)
             refreshOrders(shouldScrollToTop, false)
         } else if (result.data.refreshOrder) {
             refreshOrders(shouldScrollToTop, false)
+        }
+    }
+
+    private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {
+        if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
+            context?.let {
+                if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
+                    val coachMarkMessage = when (highLightStatusKey) {
+                        STATUS_NEW_ORDER -> {
+                            it.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
+                                .orEmpty()
+                        }
+                        KEY_CONFIRM_SHIPPING -> {
+                            it.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
+                                .orEmpty()
+                        }
+                        else -> String.EMPTY
+                    }
+                    if (coachMarkMessage.isNotBlank()) {
+                        val tabPosition =
+                            somListOrderStatusFilterTab?.somListFilterUiModel?.statusList?.indexOfFirst { status -> status.key == highLightStatusKey }
+                        if (tabPosition == -Int.ONE || tabPosition == null) return
+                        val tabLayoutViewPosition = somListBinding?.somListTabFilter?.tabLayout?.getChildAt(
+                            tabPosition
+                            ) ?: return
+
+                        val coachMarkItem = CoachMark2Item(
+                            anchorView = tabLayoutViewPosition,
+                            title = String.EMPTY,
+                            description = coachMarkMessage,
+                            position = CoachMark2.POSITION_BOTTOM
+                        )
+
+                        autoTabbingCoachMark?.run {
+                            onFinishListener = {
+                                CoachMarkPreference.setShown(
+                                    it,
+                                    SHARED_PREF_SOM_LIST_TAB_COACH_MARK,
+                                    true
+                                )
+                            }
+                            isDismissed = false
+                            showCoachMark(
+                                step = arrayListOf(coachMarkItem),
+                                index = Int.ZERO
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

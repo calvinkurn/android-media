@@ -17,9 +17,9 @@ class SomListOrderStatusFilterTab(
 ) {
 
     private val tabSelectedListener: TabSelectedListener = TabSelectedListener()
-    private var somListFilterUiModel: SomListFilterUiModel? = null
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterTabs: ArrayList<TabLayout.Tab> = arrayListOf()
+    var somListFilterUiModel: SomListFilterUiModel? = null
 
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         tabs.getUnifyTabLayout().removeOnTabSelectedListener(tabSelectedListener)
