@@ -30,16 +30,6 @@ class YouTubeWebViewViewComponent(
         }
     }
 
-    private val onFullScreenListener = object : YoutubeCustomViewListener {
-        override fun onEnterFullScreen(view: View) {
-
-        }
-
-        override fun onExitFullScreen() {
-
-        }
-    }
-
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

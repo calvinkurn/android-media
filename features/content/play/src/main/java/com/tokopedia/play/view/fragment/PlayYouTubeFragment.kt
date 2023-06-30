@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -30,7 +28,6 @@ import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
-import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewcomponent.YouTubeWebViewViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -46,10 +43,9 @@ import javax.inject.Inject
 class PlayYouTubeFragment @Inject constructor(
         private val analytic: PlayAnalytic,
         private val playLog: PlayLog
-): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
+): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-//    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
     private val youtubeView by viewComponent { YouTubeWebViewViewComponent(it, viewLifecycleOwner) }
 
     private lateinit var playViewModel: PlayViewModel
@@ -126,7 +122,10 @@ class PlayYouTubeFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation2.get(requireActivity())
-//        youtubeView.setIsFullScreen(orientation.isLandscape)
+
+        if (orientation.isLandscape) {
+            analytic.clickCtaFullScreenFromPortraitToLandscape()
+        }
 
         binding.root.changeConstraint {
             setDimensionRatio(
@@ -134,31 +133,6 @@ class PlayYouTubeFragment @Inject constructor(
                 if (orientation.isLandscape) "W, 16:9" else "H, 16:9",
             )
         }
-    }
-
-    /**
-     * YouTube View Component Data Source
-     */
-    override fun isEligibleToPlay(view: YouTubeViewComponent): Boolean {
-        return lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-    }
-
-    /**
-     * YouTube View Component Listener
-     */
-    override fun onInitFailure(view: YouTubeViewComponent, result: YouTubeInitializationResult) { }
-
-    override fun onEnterFullscreen(view: YouTubeViewComponent) {
-        analytic.clickCtaFullScreenFromPortraitToLandscape()
-        enterFullscreen()
-    }
-
-    override fun onExitFullscreen(view: YouTubeViewComponent) {
-        exitFullscreen()
-    }
-
-    override fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayViewerVideoState) {
-        handleYouTubeVideoState(state)
     }
 
     /**
@@ -172,16 +146,6 @@ class PlayYouTubeFragment @Inject constructor(
         with (view) {
             containerYouTube = findViewById(R.id.container_youtube)
         }
-    }
-
-    private fun enterFullscreen() {
-        if (isAdded && !orientation.isLandscape)
-            orientationListener.changeOrientation(ScreenOrientation.Landscape, isTilting = false)
-    }
-
-    private fun exitFullscreen() {
-        if (isAdded && !orientation.isPortrait)
-            orientationListener.changeOrientation(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun handleYouTubeVideoState(state: PlayViewerVideoState) {

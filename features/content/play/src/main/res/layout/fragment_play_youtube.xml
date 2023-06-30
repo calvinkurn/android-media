@@ -8,17 +8,6 @@
     android:background="@color/Unify_Static_Black"
     >
 
-    <FrameLayout
-        android:id="@+id/fl_youtube_player"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:id="@+id/scrollable_host_youtube"
         android:layout_width="0dp"
