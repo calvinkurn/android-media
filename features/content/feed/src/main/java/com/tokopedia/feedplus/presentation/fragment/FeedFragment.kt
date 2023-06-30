@@ -1241,14 +1241,24 @@ class FeedFragment :
                 )
             }
 
-            if (product.hasVariant) openVariantBottomSheet(product)
-            else {
-                if (userSession.isLoggedIn) feedPostViewModel.addProductToCart(product)
+            checkAddToCartAction(product)
+        }
+    }
+
+    private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
+        when {
+            userSession.isLoggedIn -> {
+                if (product.hasVariant) openVariantBottomSheet(product)
+                else feedPostViewModel.addProductToCart(product)
+            }
+            !userSession.isLoggedIn -> {
+                if (product.hasVariant) RouteManager.route(context, ApplinkConst.LOGIN)
                 else {
                     feedPostViewModel.suspendAddProductToCart(product)
                     addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
                 }
             }
+            else -> return
         }
     }
 
