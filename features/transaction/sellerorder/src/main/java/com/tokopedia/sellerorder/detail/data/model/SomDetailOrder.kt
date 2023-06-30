@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
