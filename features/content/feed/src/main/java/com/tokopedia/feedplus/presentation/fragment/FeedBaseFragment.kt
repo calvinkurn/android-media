@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -34,11 +33,7 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.MetaModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -62,7 +57,7 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -222,6 +217,10 @@ class FeedBaseFragment :
         return true
     }
 
+    override fun isForceDarkModeNavigationBar(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -253,7 +252,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(feedComponentR.string.feed_post_sebagai)
+                        getString(contentCommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -291,43 +290,43 @@ class FeedBaseFragment :
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
-                }
-
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
                     }
-                    shouldSendSwipeTracker = false
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
+                    }
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-                feedMainViewModel.changeCurrentTabByIndex(position)
-                appLinkTabPosition = position
-            }
+                override fun onPageSelected(position: Int) {
+                    feedMainViewModel.changeCurrentTabByIndex(position)
+                    appLinkTabPosition = position
+                }
 
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -540,7 +539,7 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive) {
+        if (meta.isCreationActive && userSession.isLoggedIn) {
             binding.btnFeedCreatePost.show()
         } else {
             binding.btnFeedCreatePost.hide()
@@ -640,34 +639,11 @@ class FeedBaseFragment :
     }
 
     private fun onChangeTab(position: Int) {
-        val newTabView = if (position == TAB_FIRST_INDEX) {
-            binding.tyFeedFirstTab
+        if (position == TAB_FIRST_INDEX) {
+            binding.root.transitionToStart()
         } else {
-            binding.tyFeedSecondTab
+            binding.root.transitionToEnd()
         }
-
-        val newConstraintSet = ConstraintSet()
-        newConstraintSet.clone(binding.root)
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.TOP,
-            newTabView.id,
-            ConstraintSet.BOTTOM
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.START,
-            newTabView.id,
-            ConstraintSet.START
-        )
-        newConstraintSet.connect(
-            binding.viewFeedTabIndicator.id,
-            ConstraintSet.END,
-            newTabView.id,
-            ConstraintSet.END
-        )
-
-        newConstraintSet.applyTo(binding.root)
     }
 
     private fun onCreatePostClicked() {

@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.tokopedia.common_compose.principles.NestTypography
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.report.data.model.ProductReportReason
 
 /**
@@ -90,14 +90,14 @@ fun ProductReportReasonItem(
 
         Icon(
             modifier = Modifier
-                .width(16.dp)
+                .width(24.dp)
                 .wrapContentHeight()
                 .constrainAs(iconRight) {
                     top.linkTo(contentGuideLineTop)
                     end.linkTo(contentGuideLineEnd)
                     bottom.linkTo(contentGuideLineBottom)
                 },
-            painter = painterResource(id = com.tokopedia.design.R.drawable.ic_arrow_right_grey),
+            painter = painterResource(id = com.tokopedia.unifycomponents.R.drawable.iconunify_chevron_right),
             tint = NestTheme.colors.NN._300,
             contentDescription = "ic_button_${reason.strLabel}"
         )

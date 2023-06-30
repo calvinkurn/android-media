@@ -78,6 +78,29 @@ class RecommendationWidgetViewModelTest {
         assertEquals(requestParam.isTokonow, model.metadata.isTokonow)
     }
 
+    @Test
+    fun `bind model with use case throws exception will hide the view`() {
+        val viewModel = ViewModel()
+
+        coEvery { getRecommendationWidgetUseCase.getData(any()) } throws Exception()
+
+        val metadata = RecommendationWidgetMetadata(
+            pageNumber = 1,
+            productIds = listOf("123456"),
+            queryParam = "test=test&test2=test2",
+            pageName = "pageName",
+            categoryIds = listOf("1", "2", "3"),
+            keyword = listOf("samsung", "iphone", "xiaomi"),
+            isTokonow = true,
+        )
+        val model = RecommendationWidgetModel(metadata = metadata)
+
+        viewModel.bind(model)
+
+        assertEquals(1, viewModel.stateFlow.value.widgetMap.size)
+        assertEquals(0, viewModel.stateValue.widgetMap[model.id]!!.size)
+    }
+
     // Test case for our temporary solution
     // RecommendationWidgetModel should not contain RecommendationWidget
     // RecommendationWidget should only exists by calling getRecommendationWidgetUseCase
@@ -142,5 +165,25 @@ class RecommendationWidgetViewModelTest {
         viewModel.refresh()
 
         assertEquals(0, viewModel.stateValue.widgetMap.size)
+    }
+
+    @Test
+    fun `bind model will not call use case if state has data for that model`() {
+        val metadata = RecommendationWidgetMetadata(
+            pageNumber = 1,
+            productIds = listOf("123456"),
+            queryParam = "test=test&test2=test2",
+            pageName = "pageName",
+            categoryIds = listOf("1", "2", "3"),
+            keyword = listOf("samsung", "iphone", "xiaomi"),
+            isTokonow = true,
+        )
+        val model = RecommendationWidgetModel(metadata = metadata)
+        val state = RecommendationWidgetState().loading(model)
+        val viewModel = ViewModel(state)
+
+        viewModel.bind(model)
+
+        coVerify (exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
     }
 }

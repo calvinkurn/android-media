@@ -1,11 +1,12 @@
 package com.tokopedia.content.common.report_content.model
 
-import android.graphics.drawable.Drawable
+import androidx.annotation.StringRes
 
 data class FeedMenuItem(
-    val name: String,
-    var drawable: Drawable?,
+    @StringRes val name: Int,
+    val iconUnify: Int,
     val type: FeedMenuIdentifier,
+    val appLink: String = "",
     val contentData: FeedContentData? = null
 )
 
@@ -13,12 +14,14 @@ data class FeedContentData(
     val caption: String,
     val postId: String,
     val authorId: String,
-    val rowNumber: Int
+    val rowNumber: Int = 0 // absolutePosition
 )
 
-enum class FeedMenuIdentifier(val value: String) {
-    EDIT("Ubah"),
-    LAPORKAN("Report"),
-    MODE_NONTON("Watch Mode"),
-    DELETE("Hapus")
+enum class FeedMenuIdentifier {
+    Edit,
+    Report,
+    WatchMode,
+    SeePerformance,
+    LearnVideoInsight,
+    Delete;
 }

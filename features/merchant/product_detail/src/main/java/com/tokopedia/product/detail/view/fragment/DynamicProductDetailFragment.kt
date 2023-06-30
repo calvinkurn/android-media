@@ -68,9 +68,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
@@ -136,7 +136,6 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -204,7 +203,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -331,7 +329,6 @@ open class DynamicProductDetailFragment :
     BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
     DynamicProductDetailListener,
     AtcVariantListener,
-    ProductAccessRequestDialogFragment.Listener,
     PartialButtonActionListener,
     ProductDetailBottomSheetListener,
     PartialButtonShopFollowersListener,
@@ -498,7 +495,6 @@ open class DynamicProductDetailFragment :
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
-    private var alreadyShowMultilocBottomSheet: Boolean = false
     private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
     private var campaignId: String = ""
     private var variantId: String = ""
@@ -535,8 +531,20 @@ open class DynamicProductDetailFragment :
     private var buttonActionType: Int = 0
     private var isTopadsDynamicsSlottingAlreadyCharged = false
 
-    private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
-        setupTradeinDialog()
+    private val tradeInDialog: DialogUnify by lazy {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.pdp_tradein_text_request_access))
+            setDescription(getString(R.string.pdp_tradein_text_permission_description))
+            setPrimaryCTAText(getString(R.string.pdp_tradein_allow))
+            setSecondaryCTAText(getString(R.string.pdp_tradein_back))
+            setPrimaryCTAClickListener {
+                viewModel.clearCacheP2Data()
+                goToTradeInHome()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
     }
 
     private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
@@ -689,7 +697,17 @@ open class DynamicProductDetailFragment :
         observeVerticalRecommendation()
         observeOneTimeMethod()
         observeProductMediaRecomData()
+        observeBottomSheetEdu()
         observeAffiliateEligibility()
+    }
+
+    private fun observeBottomSheetEdu() {
+        viewLifecycleOwner.observe(viewModel.showBottomSheetEdu) {
+            val url = it?.appLink ?: return@observe
+            viewModel.changeOneTimeMethod(
+                event = OneTimeMethodEvent.ImpressGeneralEduBs(appLink = url)
+            )
+        }
     }
 
     private fun observeOneTimeMethod() {
@@ -703,6 +721,9 @@ open class DynamicProductDetailFragment :
                             userId = viewModel.userId,
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
                         )
+                    }
+                    is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                        goToEducational(url = it.event.appLink)
                     }
                     else -> {
                         // noop
@@ -955,16 +976,6 @@ open class DynamicProductDetailFragment :
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.showToasterSuccess(getString(R.string.success_to_report))
-                }
-            }
-            ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW -> {
-                if (data != null) {
-                    val isWishlisted = data.getBooleanExtra(
-                        ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW,
-                        false
-                    )
-                    pdpUiUpdater?.updateWishlistData(isWishlisted)
-                    updateUi()
                 }
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
@@ -1563,7 +1574,7 @@ open class DynamicProductDetailFragment :
             componentTrackDataModel
         )
 
-        goToTradein()
+        tradeInDialog.show()
     }
 
     private fun generateCommonTracker(): CommonTracker? {
@@ -2220,28 +2231,22 @@ open class DynamicProductDetailFragment :
         scrollToPosition(getComponentPosition(pdpUiUpdater?.productTradeinMap))
     }
 
-    override fun onAccept() {
-        viewModel.clearCacheP2Data()
-        goToTradeInHome()
-    }
-
-    override fun onDecline() {}
-
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
     }
 
     override fun showAlertCampaignEnded() {
-        activity?.let {
-            Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
-                setTitle(getString(R.string.campaign_expired_title))
-                setDesc(getString(R.string.campaign_expired_descr))
-                setBtnCancel(getString(com.tokopedia.abstraction.R.string.close))
-                setOnCancelClickListener {
-                    onSwipeRefresh()
-                    dismiss()
-                }
-            }.show()
+        val mActivity = activity ?: return
+
+        DialogUnify(mActivity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.campaign_expired_title))
+            setDescription(getString(R.string.campaign_expired_descr))
+            setPrimaryCTAText(getString(com.tokopedia.abstraction.R.string.close))
+            setPrimaryCTAClickListener {
+                onSwipeRefresh()
+                dismiss()
+            }
+            show()
         }
     }
 
@@ -2427,7 +2432,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(com.tokopedia.design.R.string.oke)
+                    ctaText = getString(R.string.oke)
                 )
                 logException(throwable)
             }
@@ -2441,7 +2446,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(com.tokopedia.design.R.string.oke)
+                    ctaText = getString(R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -3309,14 +3314,6 @@ open class DynamicProductDetailFragment :
 
         setupProductVideoCoordinator()
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
-        showWarehouseChangeBs(productInfo.basic.productMultilocation)
-    }
-
-    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
-        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
-            goToApplink(productMultiloc.eduLink.applink)
-        }
-        alreadyShowMultilocBottomSheet = true
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3496,14 +3493,6 @@ open class DynamicProductDetailFragment :
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
         } else {
             t.printStackTrace()
-        }
-    }
-
-    private fun goToTradein() {
-        tradeinDialog?.let { dialog ->
-            showImmediately(getProductFragmentManager(), "ACCESS REQUEST") {
-                dialog
-            }
         }
     }
 
@@ -4010,12 +3999,8 @@ open class DynamicProductDetailFragment :
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                 ?.map { it.urlOriginal } ?: emptyList()
-            val startTime = viewModel.p2Data.value?.upcomingCampaigns?.get(
-                viewModel.getDynamicProductInfoP1?.basic?.productID
-                    ?: ""
-            )?.startDate.toLongOrZero()
             val personalizedCampaignModel = viewModel.getDynamicProductInfoP1?.let { product ->
-                generatePersonalizedData(product, startTime)
+                generatePersonalizedData(product, viewModel.p2Data.value)
             } ?: PersonalizedCampaignModel()
 
             shareProductInstance?.showUniversalShareBottomSheet(
@@ -4265,7 +4250,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
     }
 
@@ -4281,7 +4266,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
     }
 
@@ -5088,15 +5073,6 @@ open class DynamicProductDetailFragment :
     private fun hasTopAds() =
         topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
 
-    private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
-        val accessDialog = ProductAccessRequestDialogFragment()
-        accessDialog.setBodyText(getString(R.string.pdp_tradein_text_permission_description))
-        accessDialog.setTitle(getString(R.string.pdp_tradein_text_request_access))
-        accessDialog.setNegativeButton("")
-        accessDialog.setListener(this)
-        return accessDialog
-    }
-
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
             ?: viewModel.userSessionInterface.deviceId ?: ""
@@ -5173,7 +5149,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)

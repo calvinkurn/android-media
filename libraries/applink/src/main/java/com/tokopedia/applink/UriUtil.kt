@@ -161,14 +161,24 @@ object UriUtil {
 
     fun matchPathsWithPattern(patternPaths: List<String>, inputPaths: List<String>): List<String>? {
         try {
+            val patternPathsTrim = if (patternPaths.size == 1 && patternPaths.first() == "") {
+                emptyList()
+            } else {
+                patternPaths
+            }
+            val inputPathsTrim = if (inputPaths.size == 1 && inputPaths.first() == "") {
+                emptyList()
+            } else {
+                inputPaths
+            }
             val resultList: MutableList<String> = ArrayList()
-            val uriPatternSize = patternPaths.size
-            if (uriPatternSize != inputPaths.size) {
+            val uriPatternSize = patternPathsTrim.size
+            if (uriPatternSize != inputPathsTrim.size) {
                 return null
             }
             var i = 0
             while (i < uriPatternSize) {
-                val pathpattern = patternPaths[i]
+                val pathpattern = patternPathsTrim[i]
                 if (pathpattern.startsWith("{") && pathpattern.endsWith("}")) {
                     resultList.add(inputPaths[i])
                     i++
