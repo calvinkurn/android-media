@@ -421,8 +421,31 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(com.tokopedia.content.common.R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }
 
-            add(ShareType.ActionShare(KEY_COPY, getString(com.tokopedia.content.common.R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
-            add(ShareType.ActionShare(KEY_OTHER, getString(com.tokopedia.content.common.R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
+            add(
+                ShareType.ActionShare(
+                    KEY_COPY,
+                    getString(com.tokopedia.content.common.R.string.copy),
+                    MimeType.TEXT,
+                    MethodChecker.getDrawable(context, R.drawable.ic_copy_clipboard),
+                    ::actionCopy
+                )
+            )
+            add(
+                ShareType.ActionShare(
+                    KEY_OTHER,
+                    getString(com.tokopedia.content.common.R.string.other),
+                    MimeType.TEXT,
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.MENU_KEBAB_HORIZONTAL,
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                        )
+                    ),
+                    ::actionMore
+                )
+            )
         }
                 .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
                 .distinctBy(ShareType::key)
