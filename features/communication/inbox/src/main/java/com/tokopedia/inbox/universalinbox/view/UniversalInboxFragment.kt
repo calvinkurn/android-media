@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -558,6 +559,7 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
         if (categoriesList.isEmpty()) return
         // If response size is 2, then there are 2 types of banner (carousel & single)
@@ -571,10 +573,12 @@ class UniversalInboxFragment @Inject constructor(
             setTopAdsBannerExperimentPosition()
         }
         // Notify the first banner below static menu
-        adapter.getFirstTopAdsBannerPositionPair()?.let { (index, item) ->
+        adapter.getFirstTopAdsBannerPositionPair()?.let { (_, item) ->
             item.ads = categoriesList[Int.ZERO]
             binding?.inboxRv?.post {
-                adapter.notifyItemChanged(index)
+                // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
+                // onAttachedToWindow is needed to be recalled after we get TDN response
+                adapter.notifyDataSetChanged()
             }
         }
     }
