@@ -29,6 +29,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
+import com.tokopedia.play.view.viewcomponent.YouTubeWebViewViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -46,7 +47,8 @@ class PlayYouTubeFragment @Inject constructor(
 ): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
+//    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
+    private val youtubeView by viewComponent { YouTubeWebViewViewComponent(it, viewLifecycleOwner) }
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -113,7 +115,7 @@ class PlayYouTubeFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation2.get(requireActivity())
-        youtubeView.setIsFullScreen(orientation.isLandscape)
+//        youtubeView.setIsFullScreen(orientation.isLandscape)
     }
 
     /**
@@ -225,16 +227,16 @@ class PlayYouTubeFragment @Inject constructor(
 
     //region OnStateChanged
     private fun youtubeViewOnStateChanged(
-            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+        videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         when {
             isFreezeOrBanned -> {
-                youtubeView.safeRelease()
+                youtubeView.release()
                 youtubeView.hide()
             }
             videoPlayer is PlayVideoPlayerUiModel.YouTube -> {
-                youtubeView.setYouTubeId(videoPlayer.youtubeId)
+                youtubeView.loadVideo(videoPlayer.youtubeId)
                 youtubeView.show()
             }
             else -> {
