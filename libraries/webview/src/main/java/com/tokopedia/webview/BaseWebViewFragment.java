@@ -617,7 +617,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     String decodedUrl = Uri.decode(url).toLowerCase();
                     if (!TextUtils.isEmpty(title)
                             && Uri.parse(title).getScheme() == null
-                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
+                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl) ||
+                            WebViewHelper.isScpUrl(getContext(), decodedUrl))) {
                         actionBar.setTitle(title);
                     } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
                             && !isHelpUrl(decodedUrl)) {

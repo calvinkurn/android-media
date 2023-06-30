@@ -46,8 +46,6 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(
         }
 
     init {
-        View.inflate(context, R.layout.view_widget_enquiry_data, this)
-
         enquiryData.attributes?.run {
             val enquiryDataItems = mainInfoList
             binding.rvEnquiryData.adapter = TopupBillsEnquiryDataAdapter(enquiryDataItems)
