@@ -56,7 +56,6 @@
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
 
-/features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
@@ -381,6 +380,7 @@
 /libraries/weaver/									    @tokopedia/android-core-dev
 /libraries/websocket/									@tokopedia/android-core-dev
 /libraries/webview/										@tokopedia/android-core-dev
+/libraries/youtube_player/								@tokopedia/android-core-dev
 /libraries/williamchart/								@tokopedia/android-core-dev
 /libraries/youtubeutil/									@tokopedia/android-core-dev
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev

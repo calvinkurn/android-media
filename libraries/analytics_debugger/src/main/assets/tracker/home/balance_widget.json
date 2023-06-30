@@ -27,7 +27,7 @@
     },
     {
       "event": "clickHomepage",
-      "eventAction": "click on gopay section - gopaypoints",
+      "eventAction": "click on gopay section - .*",
       "eventCategory": "homepage-tokopoints",
       "eventLabel": "",
       "balancePoints": ".*",

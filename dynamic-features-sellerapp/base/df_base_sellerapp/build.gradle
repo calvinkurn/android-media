@@ -72,12 +72,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
-    //Media
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-
-    //Content
-    implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -99,13 +93,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
 //    implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
 //    implementation projectOrAar(rootProject.ext.features.topchat)
-    implementation projectOrAar(rootProject.ext.features.liveness)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.telephony_masking)
 
@@ -132,7 +124,6 @@ dependencies {
 
     //Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
