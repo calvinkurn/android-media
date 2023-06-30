@@ -9,9 +9,6 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.common.UniversalShareTestActivity"
-            android:exported="false" />
-        <activity
             android:name=".view.activity.GlobalSharingActivity"
             android:exported="false"
             android:label=""
