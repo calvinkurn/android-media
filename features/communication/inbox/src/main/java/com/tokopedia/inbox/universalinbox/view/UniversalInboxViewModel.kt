@@ -80,6 +80,7 @@ class UniversalInboxViewModel @Inject constructor(
                 )
                 _widget.value = Pair(result, allCounterResponse)
             } catch (throwable: Throwable) {
+                Timber.d(throwable)
                 _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }

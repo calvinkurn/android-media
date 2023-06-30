@@ -129,6 +129,7 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
 
     private fun getWishListEventAction(isAdd: Boolean) =
         String.format(
+            Locale.getDefault(),
             "click %s wishlist on product recommendation",
             if (isAdd) "add" else "remove"
         )

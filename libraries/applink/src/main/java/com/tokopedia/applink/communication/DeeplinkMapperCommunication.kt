@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 
 object DeeplinkMapperCommunication {
 
@@ -31,6 +32,7 @@ object DeeplinkMapperCommunication {
         return try {
             FirebaseRemoteConfigInstance.get(context).getBoolean(key, default)
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             true
         }
     }
@@ -47,6 +49,7 @@ object DeeplinkMapperCommunication {
                     ""
                 )
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             ""
         }
     }

@@ -17,6 +17,7 @@ import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 object UniversalInboxValueUtil {
 
@@ -39,6 +40,7 @@ object UniversalInboxValueUtil {
                 UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
             }
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
         }
     }

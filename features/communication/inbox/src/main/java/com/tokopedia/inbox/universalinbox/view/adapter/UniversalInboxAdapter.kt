@@ -26,6 +26,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 class UniversalInboxAdapter(
     userSession: UserSessionInterface,
@@ -140,6 +141,7 @@ class UniversalInboxAdapter(
                 false
             }
         } catch (throwable: Throwable) {
+            Timber.d(throwable)
             false
         }
     }
