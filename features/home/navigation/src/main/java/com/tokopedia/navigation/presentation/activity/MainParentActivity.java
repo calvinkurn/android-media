@@ -59,9 +59,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
+import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -186,7 +188,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
-    private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
 
     public static final String UOH_PAGE = "UohListFragment";
 
@@ -286,12 +287,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void sendNotificationUserSetting() {
-        boolean isSettingsSent = cacheManager.getBoolean(NOTIFICATION_USER_SETTING_KEY, false);
-        if (userSession.get().isLoggedIn() && !isSettingsSent) {
+        if (userSession.get().isLoggedIn()) {
             new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
-            cacheManager.edit()
-                    .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
-                    .apply();
         }
     }
 
@@ -341,9 +338,11 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
-        if (isFirstTimeUser()) {
-            setDefaultShakeEnable();
-            routeOnboarding();
+        if (!GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
+            if (isFirstTimeUser()) {
+                setDefaultShakeEnable();
+                routeOnboarding();
+            }
         }
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);

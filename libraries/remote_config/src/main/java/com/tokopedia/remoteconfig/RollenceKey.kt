@@ -54,6 +54,10 @@ object RollenceKey {
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
+    // SRP Similar Search Coachmark
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK = "coachmark_similar"
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT = "experiment_variant"
+
     // Product Card Experiment
     const val PRODUCT_CARD_EXPERIMENT = "newcard1"
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"

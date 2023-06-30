@@ -959,8 +959,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.addItemToCart) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         actionText = getString(R.string.tokopedianow_toaster_see),
@@ -997,8 +996,7 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.removeCartItem) {
             when (it) {
                 is Success -> {
-                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-                    miniCartWidget?.updateData(shopIds)
+                    getMiniCart()
                     showToaster(
                         message = it.data.second,
                         actionText = getString(R.string.tokopedianow_toaster_ok),
