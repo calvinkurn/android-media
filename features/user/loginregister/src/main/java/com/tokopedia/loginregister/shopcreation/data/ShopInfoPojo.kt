@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.shopcreation.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,25 +8,21 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ShopInfoPojo(
-        @SerializedName("shopInfoByID")
-        @Expose
-        var data: ShopInfoByID = ShopInfoByID()
+    @SerializedName("shopInfoByID")
+    var data: ShopInfoByID = ShopInfoByID()
 )
 
 data class ShopInfoByID(
-        @SerializedName("result")
-        @Expose
-        var result: List<TokoShopData> = listOf()
+    @SerializedName("result")
+    var result: List<TokoShopData> = listOf()
 )
 
 data class TokoShopData(
-        @SerializedName("shippingLoc")
-        @Expose
-        var shippingLoc: ShippingLocData = ShippingLocData()
+    @SerializedName("shippingLoc")
+    var shippingLoc: ShippingLocData = ShippingLocData()
 )
 
 data class ShippingLocData(
-        @SerializedName("provinceID")
-        @Expose
-        var provinceID: Int = 0
+    @SerializedName("provinceID")
+    var provinceID: Int = 0
 )

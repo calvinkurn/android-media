@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.shopcreation.data
 
 import android.annotation.SuppressLint
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -10,14 +9,14 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserProfileValidatePojo(
-        @SerializedName("userProfileValidate") @Expose
-        var data: UserProfileValidate = UserProfileValidate()
+    @SerializedName("userProfileValidate")
+    var data: UserProfileValidate = UserProfileValidate()
 )
 
 data class UserProfileValidate(
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("isValid") @Expose
-        var isValid: Boolean = false,
-        @SerializedName("message") @Expose
-        var message: String = ""
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("isValid")
+    var isValid: Boolean = false,
+    @SerializedName("message")
+    var message: String = ""
 )
