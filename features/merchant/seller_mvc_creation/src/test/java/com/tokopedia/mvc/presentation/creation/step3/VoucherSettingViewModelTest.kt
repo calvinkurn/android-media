@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.creation.step3
 import android.content.SharedPreferences
 import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.mapper.VoucherValidationPartialMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
@@ -548,7 +549,16 @@ class VoucherSettingViewModelTest {
     }
 
     private fun mockGetTickerGQLCall() {
-        val remoteTickerResult = listOf(RemoteTicker("Title", "Description"))
+        val remoteTickerResult = listOf(
+            RemoteTicker(
+                title = "some ticker title",
+                description = "some ticker description",
+                type = TickerType.INFO,
+                actionLabel = "some ticker action label",
+                actionType = "link",
+                actionAppUrl = "https://tokopedia.com"
+            )
+        )
         coEvery { getTargetedTickerUseCase.execute(any()) } returns remoteTickerResult
     }
 }
