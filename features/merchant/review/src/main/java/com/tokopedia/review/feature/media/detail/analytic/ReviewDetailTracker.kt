@@ -6,10 +6,13 @@ package com.tokopedia.review.feature.media.detail.analytic
 interface ReviewDetailTracker {
 
     fun trackOnLikeReviewClicked(
+        loggedInUserId: String,
         feedbackId: String,
-        isLiked: Boolean,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+        isLiked: Boolean,
     )
 
     fun trackOnShopReviewLikeReviewClicked(
@@ -19,9 +22,12 @@ interface ReviewDetailTracker {
     )
 
     fun trackOnSeeAllClicked(
+        loggedInUserId: String,
         feedbackId: String,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     )
 
     fun trackOnShopReviewSeeAllClicked(
@@ -38,5 +44,13 @@ interface ReviewDetailTracker {
         currentUserId: String,
         label: String,
         trackerId: String
+    )
+
+    fun trackImpressOnSeeMoreBottomSheet(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     )
 }

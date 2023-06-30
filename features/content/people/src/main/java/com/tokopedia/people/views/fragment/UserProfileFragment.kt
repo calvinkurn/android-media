@@ -151,10 +151,10 @@ class UserProfileFragment @Inject constructor(
             mainBinding.profileTabs.tabLayout,
             mainBinding.profileTabs.viewPager
         ) {
-            if (it == ProfileTabUiModel.Key.Feeds.value) {
-                userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
-            } else if (it == ProfileTabUiModel.Key.Video.value) {
-                userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            when (it) {
+                ProfileTabUiModel.Key.Feeds.value -> userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
+                ProfileTabUiModel.Key.Video.value -> userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+                ProfileTabUiModel.Key.Review.value -> userProfileTracker.clickReviewTab(viewModel.profileUserID, viewModel.isSelfProfile)
             }
         }
     }
@@ -656,6 +656,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
+                userProfileTracker.clickUserProfileSettings(viewModel.profileUserID)
                 userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSettingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(

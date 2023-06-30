@@ -19,7 +19,7 @@ class UserReviewMediaAdapterDelegate private constructor() {
             item: UserReviewMediaAdapter.Model.Image,
             holder: UserReviewMediaViewHolder.Image,
         ) {
-            holder.bind(item.feedbackID, item.attachment)
+            holder.bind(item.feedbackId, item.productId, item.attachment)
         }
 
         override fun onCreateViewHolder(
@@ -41,7 +41,7 @@ class UserReviewMediaAdapterDelegate private constructor() {
             item: UserReviewMediaAdapter.Model.Video,
             holder: UserReviewMediaViewHolder.Video,
         ) {
-            holder.bind(item.feedbackID, item.attachment)
+            holder.bind(item.feedbackId, item.productId, item.attachment)
         }
 
         override fun onCreateViewHolder(

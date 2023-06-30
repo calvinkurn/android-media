@@ -16,10 +16,13 @@ import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 class ReviewDetailTrackerImpl : ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
+        loggedInUserId: String,
         feedbackId: String,
-        isLiked: Boolean,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+        isLiked: Boolean
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PDP,
@@ -52,7 +55,14 @@ class ReviewDetailTrackerImpl : ReviewDetailTracker {
             .sendGeneralEvent()
     }
 
-    override fun trackOnSeeAllClicked(feedbackId: String, productId: String, isFromGallery: Boolean) {
+    override fun trackOnSeeAllClicked(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PDP,
             if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else AnalyticConstant.EVENT_CATEGORY,
@@ -107,5 +117,15 @@ class ReviewDetailTrackerImpl : ReviewDetailTracker {
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendTrackerIdIfNotBlank(trackerId)
             .sendGeneralEvent()
+    }
+
+    override fun trackImpressOnSeeMoreBottomSheet(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
+        /** No need to track */
     }
 }

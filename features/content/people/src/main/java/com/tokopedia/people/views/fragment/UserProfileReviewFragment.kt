@@ -30,6 +30,8 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
+import com.tokopedia.people.analytic.UserReviewImpressCoordinator
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
@@ -52,6 +54,8 @@ import java.net.UnknownHostException
 class UserProfileReviewFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileUiBridge: UserProfileUiBridge,
+    private val userProfileTracker: UserProfileTracker,
+    private val userReviewImpressCoordinator: UserReviewImpressCoordinator
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
@@ -72,23 +76,60 @@ class UserProfileReviewFragment @Inject constructor(
     private val adapter: UserReviewAdapter by lazyThreadSafetyNone {
         UserReviewAdapter(
             listener = object : UserReviewViewHolder.Review.Listener {
+                override fun onImpressCard(review: UserReviewUiModel.Review, position: Int) {
+                    userReviewImpressCoordinator.impress(review) {
+                        userProfileTracker.impressReviewCard(
+                            userId = viewModel.profileUserID,
+                            feedbackId = review.feedbackID,
+                            isSelf = viewModel.isSelfProfile,
+                            productId = review.product.productID,
+                            position = position,
+                        )
+                    }
+                }
+
                 override fun onClickLike(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickLikeReview(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = review.product.productID,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickLikeReview(review))
                 }
 
                 override fun onClickSeeMore(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickReviewSeeMoreDescription(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = review.product.productID,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
                 }
 
                 override fun onClickProductInfo(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickReviewProductInfo(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productReview = review.product,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
                 }
 
                 override fun onMediaClick(
-                    feedbackID: String,
+                    feedbackId: String,
+                    productId: String,
                     attachment: UserReviewUiModel.Attachment
                 ) {
-                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackID, attachment))
+                    userProfileTracker.clickReviewMedia(
+                        userId = viewModel.profileUserID,
+                        feedbackId = feedbackId,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = productId,
+                    )
+                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackId, attachment))
                 }
             },
             onLoading = {
@@ -129,6 +170,11 @@ class UserProfileReviewFragment @Inject constructor(
         viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
+    override fun onPause() {
+        super.onPause()
+        sendPendingTracker()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -150,6 +196,9 @@ class UserProfileReviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is UserProfileUiEvent.SendPendingTracker -> {
+                        sendPendingTracker()
+                    }
                     is UserProfileUiEvent.ErrorLoadReview -> {
                         showError(event.throwable)
                     }
@@ -169,7 +218,8 @@ class UserProfileReviewFragment @Inject constructor(
                             isFromGallery = false,
                             mediaPosition = event.mediaPosition,
                             showSeeMore = false,
-                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel()
+                            isReviewOwner = viewModel.isSelfProfile,
+                            preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel(viewModel.profileUserID)
                         )
 
                         reviewMediaGalleryForActivityResult.launch(intent)
@@ -234,6 +284,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun showNoReviewLayout() {
+        userProfileTracker.openScreenEmptyOrHiddenReviewTab()
         if (viewModel.isSelfProfile) {
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_empty_title)
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
@@ -254,6 +305,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun showHiddenReviewLayout() {
+        userProfileTracker.openScreenEmptyOrHiddenReviewTab()
         if (viewModel.isSelfProfile) {
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_hidden_title)
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
@@ -272,6 +324,10 @@ class UserProfileReviewFragment @Inject constructor(
         binding.layoutNoUserReview.tvReviewHiddenDesc.show()
         binding.layoutNoUserReview.root.show()
         binding.rvReview.hide()
+    }
+
+    private fun sendPendingTracker() {
+        userReviewImpressCoordinator.sendTracker()
     }
 
     private fun setupClickableText(

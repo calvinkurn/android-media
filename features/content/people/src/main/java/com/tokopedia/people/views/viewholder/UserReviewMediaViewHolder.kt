@@ -24,11 +24,11 @@ class UserReviewMediaViewHolder private constructor() {
         private val listener: UserReviewMediaAdapter.Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(feedbackID: String, attachment: UserReviewUiModel.Attachment.Image) {
+        fun bind(feedbackId: String, productId: String, attachment: UserReviewUiModel.Attachment.Image) {
             binding.imgMedia.setImageUrl(attachment.thumbnailUrl)
 
             binding.root.setOnClickListener {
-                listener.onMediaClick(feedbackID, attachment)
+                listener.onMediaClick(feedbackId, productId,  attachment)
             }
         }
 
@@ -56,7 +56,7 @@ class UserReviewMediaViewHolder private constructor() {
             SimpleExoPlayer.Builder(itemView.context).build()
         }
 
-        fun bind(feedbackID: String, attachment: UserReviewUiModel.Attachment.Video) {
+        fun bind(feedbackId: String, productId: String, attachment: UserReviewUiModel.Attachment.Video) {
 
             binding.playerView.player = player
             val mediaSource = HlsMediaSource.Factory(
@@ -68,7 +68,7 @@ class UserReviewMediaViewHolder private constructor() {
             player.prepare(mediaSource)
 
             binding.root.setOnClickListener {
-                listener.onMediaClick(feedbackID, attachment)
+                listener.onMediaClick(feedbackId, productId, attachment)
             }
         }
 

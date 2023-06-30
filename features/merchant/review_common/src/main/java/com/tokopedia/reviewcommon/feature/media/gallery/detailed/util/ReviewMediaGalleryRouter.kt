@@ -18,6 +18,7 @@ object ReviewMediaGalleryRouter {
     const val EXTRAS_IS_FROM_GALLERY = "extrasIsFromGallery"
     const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
     const val EXTRAS_SHOW_SEE_MORE = "extrasShowSeeMore"
+    const val EXTRAS_IS_REVIEW_OWNER = "extrasIsReviewOwner"
     const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
 
     private const val EXTRAS_FEEDBACK_ID_RESULT = "extrasFeedbackIdResult"
@@ -32,6 +33,7 @@ object ReviewMediaGalleryRouter {
         isFromGallery: Boolean,
         mediaPosition: Int = 1,
         showSeeMore: Boolean = false,
+        isReviewOwner: Boolean = false,
         preloadedDetailedReviewMediaResult: ProductrevGetReviewMedia? = null
     ): Intent {
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -43,6 +45,7 @@ object ReviewMediaGalleryRouter {
         cacheManager.put(EXTRAS_PRODUCT_ID, productID)
         cacheManager.put(EXTRAS_TARGET_MEDIA_NUMBER, mediaPosition)
         cacheManager.put(EXTRAS_SHOW_SEE_MORE, showSeeMore)
+        cacheManager.put(EXTRAS_IS_REVIEW_OWNER, isReviewOwner)
         cacheManager.put(EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT, preloadedDetailedReviewMediaResult)
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_MEDIA_GALLERY).apply {
             putExtra(EXTRAS_CACHE_MANAGER_ID, cacheManager.id.orEmpty())

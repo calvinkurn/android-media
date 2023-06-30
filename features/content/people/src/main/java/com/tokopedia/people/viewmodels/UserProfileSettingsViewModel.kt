@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
  * Created By : Jonathan Darwin on May 11, 2023
  */
 class UserProfileSettingsViewModel @AssistedInject constructor(
-    @Assisted private val userID: String,
+    @Assisted val userID: String,
     private val repo: UserProfileRepository,
 ) : ViewModel() {
 

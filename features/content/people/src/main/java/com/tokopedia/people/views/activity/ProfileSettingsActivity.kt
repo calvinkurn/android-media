@@ -15,6 +15,7 @@ import com.tokopedia.people.viewmodels.factory.UserProfileSettingsViewModelFacto
 import com.tokopedia.people.views.uimodel.action.UserProfileSettingsAction
 import javax.inject.Inject
 import com.tokopedia.people.R
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.ActivityUserProfileSettingsBinding
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
@@ -27,6 +28,9 @@ class ProfileSettingsActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactoryCreator: UserProfileSettingsViewModelFactory.Creator
+
+    @Inject
+    lateinit var userProfileTracker: UserProfileTracker
 
     private lateinit var binding: ActivityUserProfileSettingsBinding
 
@@ -68,6 +72,7 @@ class ProfileSettingsActivity : AppCompatActivity() {
         }
 
         binding.switchReview.setOnCheckedChangeListener { compoundButton, isChecked ->
+            userProfileTracker.clickReviewSettingsToggle(viewModel.userID, isChecked)
             viewModel.submitAction(UserProfileSettingsAction.SetShowReview(isChecked))
         }
 
