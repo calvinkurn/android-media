@@ -40,13 +40,18 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
         if (position != INVALID_POSITION) {
             val removedUnitValue = items[position]
             removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition, removedUnitValue)
-            items.removeAt(position)
-            notifyItemRemoved(position)
         }
     }
 
     fun setData(items: List<UnitValue>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun getData() = items
+
+    fun removeData(position: Int){
+        items.removeAt(position)
+        notifyItemRemoved(position)
     }
 }
