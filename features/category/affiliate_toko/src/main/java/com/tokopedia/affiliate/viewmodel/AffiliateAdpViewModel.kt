@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMO_PERFORMA
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
@@ -44,15 +45,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class AffiliateHomeViewModel @Inject constructor(
+class AffiliateAdpViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
@@ -114,13 +115,16 @@ class AffiliateHomeViewModel @Inject constructor(
         )
     }
 
-    fun getAnnouncementInformation() {
+    fun getAnnouncementInformation(isHome: Boolean) {
+        val page = if (isHome) {
+            PAGE_ANNOUNCEMENT_HOME
+        } else {
+            PAGE_ANNOUNCEMENT_PROMO_PERFORMA
+        }
         launchCatchError(
             block = {
                 affiliateAnnouncement.value =
-                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
-                        PAGE_ANNOUNCEMENT_HOME
-                    )
+                    affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(page)
             },
             onError = {
                 it.printStackTrace()
@@ -248,7 +252,7 @@ class AffiliateHomeViewModel @Inject constructor(
                         )
                     }
                 }
-            } else if (page == PAGE_ZERO && items.isEmpty()) {
+            } else if (page == PAGE_ZERO) {
                 tempList.add(AffiliateNoPromoItemFoundModel(lastSelectedChip?.name))
             } else {
                 noMoreDataAvailable.value = true
@@ -267,6 +271,7 @@ class AffiliateHomeViewModel @Inject constructor(
                 0 ->
                     item.isSelected =
                         lastSelectedChip == null || lastSelectedChip?.name == item.name
+
                 else -> item.isSelected = lastSelectedChip?.name == item.name
             }
         }
@@ -357,13 +362,10 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun fetchUnreadNotificationCount() {
-        viewModelScope.launch {
-            try {
-                _unreadNotificationCount.value =
-                    affiliateUnreadNotificationUseCase.getUnreadNotifications()
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e -> Timber.e(e) }
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+            _unreadNotificationCount.value =
+                affiliateUnreadNotificationUseCase.getUnreadNotifications()
         }
     }
 

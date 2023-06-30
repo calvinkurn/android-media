@@ -10,7 +10,6 @@
         android:id="@+id/home_navToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="1dp"
         android:minHeight="?actionBarSize"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
@@ -19,7 +18,7 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeCustom"
         app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialFillColor="@color/Unify_NN0"
         app:toolbarInitialTheme="light" />
 
     <FrameLayout
@@ -82,10 +81,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginStart="16dp"
+                                android:textColor="@color/Unify_NN600"
                                 app:layout_constraintBottom_toTopOf="@id/user_name"
                                 app:layout_constraintLeft_toRightOf="@id/user_image"
                                 app:layout_constraintTop_toTopOf="@id/user_image"
-                                app:typographyType="body_2"
+                                app:typographyType="display_3"
                                 app:typographyWeight="reguler"
                                 tools:text="@string/affiliate_morning" />
 
@@ -104,7 +104,11 @@
                                 app:typographyWeight="bold"
                                 tools:text="Ana Putri" />
 
-
+                            <androidx.constraintlayout.widget.Group
+                                android:id="@+id/nav_header_group"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:constraint_referenced_ids="affiliate_greeting, user_name, user_image" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.affiliate.ui.custom.DisallowInterceptView>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -115,7 +119,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/appbar"
-                android:layout_marginTop="16dp"
                 android:visibility="visible"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
@@ -128,7 +131,6 @@
                         android:id="@+id/products_rv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         tools:itemCount="4"
                         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/affiliate_vertical_product_card_item_layout"
@@ -139,19 +141,6 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </FrameLayout>
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/affiliate_no_product_iv"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:gravity="center"
-        android:paddingTop="32dp"
-        android:visibility="gone"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
-        app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toBottomOf="@id/scroll_cordinator"
-        tools:visibility="gone" />
-
-
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/home_global_error"
         android:layout_width="match_parent"
@@ -160,7 +149,7 @@
         android:gravity="center"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_iv"
+        app:layout_constraintTop_toBottomOf="@id/scroll_cordinator"
         tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.LoaderUnify

@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.concurrent.TimeUnit
 
-class AffiliateHomeUserListDataVH(
+class AffiliateAdpUserListDataVH(
     itemView: View,
     private val onPerformaGridClick: AffiliatePerformaClickInterfaces?
 ) : AbstractViewHolder<AffiliateUserPerformanceListModel>(itemView) {
