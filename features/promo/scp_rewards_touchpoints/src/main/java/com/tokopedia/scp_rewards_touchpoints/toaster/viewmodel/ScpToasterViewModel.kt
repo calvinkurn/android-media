@@ -16,12 +16,13 @@ class ScpToasterViewModel @Inject constructor(
     private val scpToasterUseCase: ScpToasterUseCase
 ) : ViewModel() {
 
-    private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
+    private val _toasterLiveData: MutableLiveData<ScpResult> = MutableLiveData()
     val toasterLiveData: LiveData<ScpResult> = _toasterLiveData
 
     fun getToaster(orderID:Int, pageName:String, sourceName:String) {
         viewModelScope.launchCatchError(
             block = {
+                _toasterLiveData.postValue(Loading)
                 val response = scpToasterUseCase.getToaster(
                     orderID, pageName, sourceName
                 )

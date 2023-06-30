@@ -13,6 +13,9 @@ import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponen
 class TestActivity : BaseActivity(), HasComponent<CelebrationComponent>{
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        if(!intent.data.toString().startsWith(ApplinkConstInternalPromo.CELEBRATION_BOTTOMSHEET_BASE)){
+//            setTheme(null)
+//        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.test_act)
         intent.data?.apply {

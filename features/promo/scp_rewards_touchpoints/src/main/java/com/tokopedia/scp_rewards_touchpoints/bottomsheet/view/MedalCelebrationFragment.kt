@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -62,8 +63,14 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 //            MedalCelebrationBottomSheet.show(childFragmentManager, "UNILEVER_CLUB")
 //        }
 
+
         binding?.btnToaster?.setOnClickListener {
-            scpToasterViewModel.getToaster(914957011, "", "order_history_list_page")
+            if(binding?.input?.editText?.text?.isEmpty() == true){
+                Toast.makeText(context,"Please enter order id",Toast.LENGTH_LONG).show()
+            }
+            else{
+                scpToasterViewModel.getToaster(binding?.input?.editText?.text?.toString()?.toInt() ?: 0, "", "order_history_list_page")
+            }
         }
 
     }
@@ -71,6 +78,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         scpToasterViewModel.toasterLiveData.observe(this) {
             when (it) {
                 is Success<*> -> {
+                    binding?.btnToaster?.isLoading = false
                     val data = (it.data as ScpRewardsToasterModel).scpRewardsMedaliTouchpointOrder
                     if (data?.isShown == true) {
                         val title = data.medaliTouchpointOrder?.infoMessage?.title?: ""
@@ -87,10 +95,11 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 }
 
                 is Error -> {
-
+                    binding?.btnToaster?.isLoading = false
+                    Toast.makeText(context,"User doesnt have medalis",Toast.LENGTH_LONG).show()
                 }
                 Loading -> {
-
+                   binding?.btnToaster?.isLoading = true
                 }
             }
         }
