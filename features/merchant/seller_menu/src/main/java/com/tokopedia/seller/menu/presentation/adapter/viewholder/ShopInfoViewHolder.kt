@@ -69,6 +69,8 @@ class ShopInfoViewHolder(
         private const val TICKER_TYPE_WARNING = "warning"
         private const val TICKER_TYPE_DANGER = "danger"
         private const val STATUS_INCUBATE_OS = 6
+
+        private const val ALLOW_OVERRIDE_URL_FORMAT = "%s?allow_override=%b&url=%s"
     }
 
     private val context by lazy { itemView.context }
@@ -151,21 +153,7 @@ class ShopInfoViewHolder(
                     tickerShopInfo.tickerType = tickerType
                     tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            val link = linkUrl.toString()
-                            if (WebViewHelper.isUrlValid(linkUrl.toString())) {
-                                RouteManager.route(
-                                    context,
-                                    String.format(
-                                        Locale.getDefault(),
-                                        "%s?allow_override=%b&url=%s",
-                                        ApplinkConst.WEBVIEW,
-                                        false,
-                                        link
-                                    )
-                                )
-                            } else {
-                                RouteManager.route(context, link)
-                            }
+                            goToSlaWebView(linkUrl)
                         }
 
                         override fun onDismiss() {
@@ -711,6 +699,24 @@ class ShopInfoViewHolder(
             ApplinkConstInternalMarketplace.SHOP_PAGE,
             userSession?.shopId
         )
+    }
+
+    private fun goToSlaWebView(linkUrl: CharSequence) {
+        val link = linkUrl.toString()
+        if (WebViewHelper.isUrlValid(linkUrl.toString())) {
+            RouteManager.route(
+                context,
+                String.format(
+                    Locale.getDefault(),
+                    ALLOW_OVERRIDE_URL_FORMAT,
+                    ApplinkConst.WEBVIEW,
+                    false,
+                    link
+                )
+            )
+        } else {
+            RouteManager.route(context, link)
+        }
     }
 
     interface ShopInfoListener {
