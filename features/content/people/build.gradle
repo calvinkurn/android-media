@@ -40,6 +40,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -65,6 +69,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.features.feedComponent)
@@ -90,6 +95,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayer
+
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeActivity
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 

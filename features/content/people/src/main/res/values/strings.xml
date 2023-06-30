@@ -25,7 +25,7 @@
     <string name="up_lb_no_following">No following</string>
     <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
     <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
-    <string name="up_error_local_error">Koneshi internetmu targanggu. Coba lagi ya."</string>
+    <string name="up_error_local_error">Koneksi internetmu terganggu. Coba lagi ya."</string>
     <string name="up_error_page_sec_btn_txt">Ke Homepage</string>
     <string name="up_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="up_username_template">\@%s</string>
