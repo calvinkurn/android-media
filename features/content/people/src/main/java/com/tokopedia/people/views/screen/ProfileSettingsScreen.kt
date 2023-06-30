@@ -11,6 +11,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -44,7 +45,7 @@ fun ProfileSettingsScreen(
                 variant = NestHeaderVariant.Default,
                 type = NestHeaderType.SingleLine(
                     onBackClicked = onBackPressed,
-                    title = LocalContext.current.getString(R.string.up_profile_settings_title)
+                    title = stringResource(id = R.string.up_profile_settings_title),
                 )
             )
 
@@ -96,7 +97,7 @@ fun ProfileSettingsScreen(
 }
 
 @Composable
-fun ReviewSettingsIcon(
+private fun ReviewSettingsIcon(
     modifier: Modifier = Modifier
 ) {
     AndroidView(
@@ -111,7 +112,7 @@ fun ReviewSettingsIcon(
 }
 
 @Composable
-fun ReviewSettingsText(
+private fun ReviewSettingsText(
     text: String,
     modifier: Modifier = Modifier
 ) {
@@ -123,7 +124,7 @@ fun ReviewSettingsText(
 }
 
 @Composable
-fun ReviewSettingsToggle(
+private fun ReviewSettingsToggle(
     isChecked: Boolean,
     onCheckedChanged: (isChecked: Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -146,7 +147,7 @@ fun ReviewSettingsToggle(
 
 @Composable
 @Preview
-fun ProfileSettingsScreenPreview() {
+private fun ProfileSettingsScreenPreview() {
     NestTheme {
         ProfileSettingsScreen(
             reviewSettings = ProfileSettingsUiModel(
