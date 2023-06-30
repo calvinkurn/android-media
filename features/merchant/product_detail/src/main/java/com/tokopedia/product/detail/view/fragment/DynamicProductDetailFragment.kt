@@ -3319,11 +3319,11 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showOrHideButton() {
-        if (viewModel.shouldHideFloatingButton() && !viewModel.isShopOwner()) {
-            actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
-            return
-        }
-        if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
+        actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
+        val shouldBeProcess = actionButtonView.visibility &&
+            viewModel.getShopInfo().isShopInfoNotEmpty()
+
+        if (shouldBeProcess) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
             val shouldShowSellerButtonByShopType =
                 shopStatus != ShopStatusDef.DELETED && shopStatus != ShopStatusDef.MODERATED_PERMANENTLY
@@ -3333,9 +3333,7 @@ open class DynamicProductDetailFragment :
                 actionButtonView.visibility =
                     viewModel.getShopInfo().statusInfo.shopStatus == ShopStatusDef.OPEN
             }
-            return
         }
-        actionButtonView.visibility = true
     }
 
     private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {

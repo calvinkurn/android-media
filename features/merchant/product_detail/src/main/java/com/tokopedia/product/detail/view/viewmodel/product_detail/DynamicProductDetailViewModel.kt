@@ -920,8 +920,10 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)
-            ?.hideFloatingButton.orFalse()
+        val cardRedirection = p2Data.value?.cartRedirection ?: return false
+        val pid = getDynamicProductInfoP1?.basic?.productID ?: return false
+        val hideFloatingButton = cardRedirection[pid]?.shouldHideFloatingButtonInPdp.orFalse()
+        return hideFloatingButton && !isShopOwner()
     }
 
     fun onAtcRecomNonVariantQuantityChanged(

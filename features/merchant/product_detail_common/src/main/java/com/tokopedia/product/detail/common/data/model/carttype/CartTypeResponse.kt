@@ -54,6 +54,9 @@ data class CartTypeData(
     // especially PDP, VBS as is
     val availableButtonsPriority: List<AvailableButton>
         get() = overrideButtons.ifNullOrEmpty { availableButtons }
+
+    val shouldHideFloatingButtonInPdp
+        get() = hideFloatingButton && overrideButtons.isEmpty()
 }
 
 data class AvailableButton(
