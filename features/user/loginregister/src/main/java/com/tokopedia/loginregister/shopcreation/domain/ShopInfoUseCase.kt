@@ -1,11 +1,12 @@
 package com.tokopedia.loginregister.shopcreation.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.shopcreation.data.entity.ShopInfoPojo
-import com.tokopedia.loginregister.shopcreation.data.param.ShopInfoParam
+import com.tokopedia.loginregister.shopcreation.data.ShopInfoPojo
 import javax.inject.Inject
 
 class ShopInfoUseCase @Inject constructor(
@@ -14,7 +15,7 @@ class ShopInfoUseCase @Inject constructor(
 ) : CoroutineUseCase<ShopInfoParam, ShopInfoPojo>(dispatcher.io) {
 
     override suspend fun execute(params: ShopInfoParam): ShopInfoPojo {
-        return graphqlRepository.request(graphqlQuery(), params.toMap())
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
@@ -33,3 +34,8 @@ class ShopInfoUseCase @Inject constructor(
         private const val shopID = "\$shopID"
     }
 }
+
+data class ShopInfoParam(
+    @SerializedName("shopID")
+    val shopID: Int = 0
+) : GqlParam

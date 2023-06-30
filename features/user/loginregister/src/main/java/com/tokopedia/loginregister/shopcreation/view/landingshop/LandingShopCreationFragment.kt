@@ -30,8 +30,8 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
-import com.tokopedia.loginregister.shopcreation.data.entity.ShopInfoByID
-import com.tokopedia.loginregister.shopcreation.data.entity.UserProfileCompletionData
+import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import com.tokopedia.media.loader.loadImage

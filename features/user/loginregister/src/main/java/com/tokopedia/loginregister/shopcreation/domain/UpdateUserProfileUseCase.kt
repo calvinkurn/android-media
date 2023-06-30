@@ -1,11 +1,12 @@
 package com.tokopedia.loginregister.shopcreation.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.shopcreation.data.entity.UserProfileUpdatePojo
-import com.tokopedia.loginregister.shopcreation.data.param.UpdateUserProfileParam
+import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdatePojo
 import javax.inject.Inject
 
 class UpdateUserProfileUseCase @Inject constructor(
@@ -14,7 +15,7 @@ class UpdateUserProfileUseCase @Inject constructor(
 ) : CoroutineUseCase<UpdateUserProfileParam, UserProfileUpdatePojo>(dispatcher.io) {
 
     override suspend fun execute(params: UpdateUserProfileParam): UserProfileUpdatePojo {
-        return graphqlRepository.request(graphqlQuery(), params.toMap())
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
@@ -50,3 +51,18 @@ class UpdateUserProfileUseCase @Inject constructor(
         private const val currValidateToken = "\$currValidateToken"
     }
 }
+
+data class UpdateUserProfileParam(
+    @SerializedName("fullname")
+    val fullname: String = "",
+    @SerializedName("gender")
+    val gender: String = "",
+    @SerializedName("birthdate")
+    val birthdate: String = "",
+    @SerializedName("phone")
+    val phone: String = "",
+    @SerializedName("email")
+    val email: String = "",
+    @SerializedName("validateToken")
+    val validateToken: String = ""
+) : GqlParam
