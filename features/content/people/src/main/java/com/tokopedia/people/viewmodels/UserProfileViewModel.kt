@@ -581,16 +581,14 @@ class UserProfileViewModel @AssistedInject constructor(
                 return@launchCatchError
             }
 
-            toggleLikeDislikeStatus(review.feedbackID)
+            val likeDislikeAfterUpdate = toggleLikeDislikeStatus(review.feedbackID)
 
             val response = repo.setLikeStatus(
                 feedbackID = review.feedbackID,
                 likeStatus = review.likeDislike.switchLikeStatus()
             )
 
-            val selectedReview = _reviewContent.value.reviewList.first { it.feedbackID == review.feedbackID }
-
-            if (response.isLike != selectedReview.likeDislike.isLike) {
+            if (response.isLike != likeDislikeAfterUpdate?.isLike) {
                 throw Exception("like response is not expected.")
             }
         }) { throwable ->
@@ -774,7 +772,9 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun toggleLikeDislikeStatus(feedbackID: String) {
+    private fun toggleLikeDislikeStatus(feedbackID: String): UserReviewUiModel.LikeDislike? {
+        var selectedLikeDislike: UserReviewUiModel.LikeDislike? = null
+
         _reviewContent.update {
             it.copy(
                 reviewList = it.reviewList.map { item ->
@@ -787,7 +787,9 @@ class UserProfileViewModel @AssistedInject constructor(
                                     item.likeDislike.totalLike + 1
                                 },
                                 likeStatus = item.likeDislike.switchLikeStatus()
-                            )
+                            ).also { likeDislike ->
+                                selectedLikeDislike = likeDislike
+                            }
                         )
                     } else {
                         item
@@ -795,6 +797,8 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
             )
         }
+
+        return selectedLikeDislike
     }
 
     companion object {
