@@ -36,7 +36,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
         youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
         youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
-        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null
+        playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null,
+        options: PlayerOptions = PlayerOptions(),
     ) {
         settings.apply {
             javaScriptEnabled = true
@@ -49,7 +50,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         )
         this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
-        loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(), MIME_TYPE, ENCODING, null)
+        loadDataWithBaseURL(BASE_URL_YOUTUBE, getYoutubePlayerHtml(options), MIME_TYPE, ENCODING, null)
         setUpWebViewClient()
     }
 
@@ -113,7 +114,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             mainThread.post { loadUrl("javascript:$function(${stringArgs.joinToString(",")})") }
     }
 
-    private fun getYoutubePlayerHtml(): String {
+    private fun getYoutubePlayerHtml(options: PlayerOptions): String {
         return """
             <!DOCTYPE html>
             <html>
@@ -150,13 +151,14 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 			
                     height: '100%',
                 	width: '100%',
-
+                    playerVars: {
+                        'fs': ${if (options.enableFullScreen) 1 else 0}
+                    },
                     events: {
-                	    onReady: function(event) { jsInterface.onReady() },
-                		  onStateChange: function(event) { jsInterface.onStateChanged(event.data, player.getCurrentTime()) },
-                		  onError: function(error) { console.log(error) }
-                	  },
-
+                        onReady: function(event) { jsInterface.onReady() },
+                        onStateChange: function(event) { jsInterface.onStateChanged(event.data, player.getCurrentTime()) },
+                        onError: function(error) { console.log(error) }
+                    },
                   });
                 }
 
@@ -214,4 +216,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         webChromeClient = null
     }
 
+    data class PlayerOptions(
+        val enableFullScreen: Boolean = true,
+    )
 }

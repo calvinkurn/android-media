@@ -15,7 +15,9 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
+import com.tokopedia.play.databinding.FragmentPlayYoutubeBinding
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
@@ -69,8 +71,11 @@ class PlayYouTubeFragment @Inject constructor(
         get() = playViewModel.videoPlayer.isYouTube
 
     private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
-            creator = { FloatingWindowAdapter(this@PlayYouTubeFragment) }
+        creator = { FloatingWindowAdapter(this@PlayYouTubeFragment) }
     )
+
+    private var _binding: FragmentPlayYoutubeBinding? = null
+    private val binding get() = _binding!!
 
     override fun getScreenName(): String = "Play YouTube"
 
@@ -82,7 +87,8 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_youtube, container, false)
+        _binding = FragmentPlayYoutubeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,6 +114,11 @@ class PlayYouTubeFragment @Inject constructor(
         if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return false
     }
@@ -116,6 +127,13 @@ class PlayYouTubeFragment @Inject constructor(
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation2.get(requireActivity())
 //        youtubeView.setIsFullScreen(orientation.isLandscape)
+
+        binding.root.changeConstraint {
+            setDimensionRatio(
+                binding.scrollableHostYoutube.id,
+                if (orientation.isLandscape) "W, 16:9" else "H, 16:9",
+            )
+        }
     }
 
     /**

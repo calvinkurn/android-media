@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -7,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.youtube_player.YoutubeWebViewEventListener
 import com.tokopedia.play.R
+import com.tokopedia.youtube_player.YoutubeCustomViewListener
 import com.tokopedia.youtube_player.YoutubeWebView
 
 /**
@@ -28,6 +30,16 @@ class YouTubeWebViewViewComponent(
         }
     }
 
+    private val onFullScreenListener = object : YoutubeCustomViewListener {
+        override fun onEnterFullScreen(view: View) {
+
+        }
+
+        override fun onExitFullScreen() {
+
+        }
+    }
+
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -41,7 +53,8 @@ class YouTubeWebViewViewComponent(
         })
 
         youtubeView.initialize(
-            playerReady = onPlayerReadyListener
+            playerReady = onPlayerReadyListener,
+            options = YoutubeWebView.PlayerOptions(enableFullScreen = false),
         )
     }
 
