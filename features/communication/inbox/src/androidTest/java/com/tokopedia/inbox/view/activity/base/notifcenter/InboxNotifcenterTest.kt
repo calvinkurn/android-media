@@ -63,11 +63,6 @@ abstract class InboxNotifcenterTest : InboxTest() {
  */
 object NotifcenterAction {
 
-    fun scrollNotificationToPosition(position: Int) {
-        onView(withId(R.id.recycler_view)).perform(
-            actionOnItemAtPosition<RecyclerView.ViewHolder>(position, scrollTo())
-        )
-    }
 
     fun smoothScrollNotificationTo(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
@@ -86,23 +81,11 @@ object NotifcenterAction {
  * All assertion goes here
  */
 object NotifcenterAssertion {
-    fun assertNotifWidgetMsg(position: Int, msg: String) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tp_message)
-        ).check(matches(withText(msg)))
-    }
 
-    fun assertNotifWidgetVisibility(position: Int, visibilityMatcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tp_message)
-        ).check(matches(visibilityMatcher))
-    }
 
-    fun assertItemListSize(size: Int) {
-        assertRecyclerviewItem(hasTotalItemOf(size))
-    }
+
+
+
 
     fun assertNotifOrderCardTextAtPosition(
         position: Int,

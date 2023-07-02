@@ -64,6 +64,15 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                     GqlResponseStub.notificationCounterResponse.responseObject
                 )
             }
+            (
+                GqlQueryParser.parse(query).first() ==
+                    GqlResponseStub.notificationRecommendation.query
+                ) -> {
+                shouldThrow(GqlResponseStub.notificationRecommendation)
+                GqlMockUtil.createSuccessResponse(
+                    GqlResponseStub.notificationRecommendation.responseObject
+                )
+            }
             else -> GqlMockUtil.createSuccessResponse(Unit)
         }
     }

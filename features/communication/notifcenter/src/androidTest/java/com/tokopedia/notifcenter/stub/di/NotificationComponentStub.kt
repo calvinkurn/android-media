@@ -3,7 +3,6 @@ package com.tokopedia.notifcenter.stub.di
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.NotificationFragmentModule
-import com.tokopedia.notifcenter.di.module.NotificationUseCaseModule
 import com.tokopedia.notifcenter.di.module.NotificationViewModelModule
 import com.tokopedia.notifcenter.stub.di.base.NotificationFakeBaseAppComponent
 import com.tokopedia.notifcenter.test.base.BaseNotificationAffiliateTest
@@ -16,11 +15,11 @@ import dagger.Component
     modules = [
         // Stub modules
         NotificationModuleStub::class,
+        NotificationUseCaseModuleStub::class,
 
         // Real modules
         NotificationViewModelModule::class,
-        NotificationFragmentModule::class,
-        NotificationUseCaseModule::class
+        NotificationFragmentModule::class
     ],
     dependencies = [NotificationFakeBaseAppComponent::class]
 )

@@ -3,7 +3,6 @@ package com.tokopedia.notifcenter.view
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -53,14 +52,16 @@ class RecommendationLifeCycleAware constructor(
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         handleProductCardOptionsActivityResult(
-                requestCode, resultCode, data,
-                object : ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(
-                            productCardOptionsModel: ProductCardOptionsModel
-                    ) {
-                        handleWishListAction(productCardOptionsModel)
-                    }
+            requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(
+                    productCardOptionsModel: ProductCardOptionsModel
+                ) {
+                    handleWishListAction(productCardOptionsModel)
                 }
+            }
         )
     }
 
@@ -69,7 +70,7 @@ class RecommendationLifeCycleAware constructor(
     }
 
     private fun handleWishListActionForLoggedInUser(
-            productCardOptionsModel: ProductCardOptionsModel
+        productCardOptionsModel: ProductCardOptionsModel
     ) {
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             handleWishListV2ActionSuccess(productCardOptionsModel)
@@ -94,10 +95,6 @@ class RecommendationLifeCycleAware constructor(
         context?.let { context ->
             AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, view)
         }
-    }
-
-    private fun getString(@StringRes stringRes: Int): String {
-        return context?.getString(stringRes) ?: ""
     }
 
     private fun showSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
@@ -131,16 +128,19 @@ class RecommendationLifeCycleAware constructor(
     }
 
     override fun onProductClick(
-            item: RecommendationItem, layoutType: String?,
-            vararg position: Int
+        item: RecommendationItem,
+        layoutType: String?,
+        vararg position: Int
     ) {
         if (item.isTopAds) {
             onClickTopAds(item)
         } else {
             onClickOrganic(item)
         }
-        val intent = RouteManager.getIntent(context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.productId.toString()
         )
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0])
@@ -158,8 +158,12 @@ class RecommendationLifeCycleAware constructor(
 
     private fun onImpressionTopAds(item: RecommendationItem) {
         TopAdsUrlHitter(context).hitImpressionUrl(
-                fragment?.activity?.javaClass?.name, item.trackerImageUrl,
-                item.productId.toString(), item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
+            fragment?.activity?.javaClass?.name,
+            item.trackerImageUrl,
+            item.productId.toString(),
+            item.name,
+            item.imageUrl,
+            COMPONENT_NAME_TOP_ADS
         )
         topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
@@ -170,76 +174,93 @@ class RecommendationLifeCycleAware constructor(
 
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isAddWishlist) {
-            viewModel?.addWishlistV2(item, object: WishlistV2ActionListener{
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
-                }
-
-                override fun onSuccessAddWishlist(
-                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                    productId: String
-                ) {
-                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-                    context?.let {
-                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, view)
+            viewModel?.addWishlistV2(
+                item,
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
                     }
-                    if (item.isTopAds) onClickTopAdsWishlistItem(item)
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                        context?.let {
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, view)
+                        }
+                        if (item.isTopAds) onClickTopAdsWishlistItem(item)
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
                 }
-
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
-
-            })
+            )
         } else {
-            viewModel?.removeWishlistV2(item, object: WishlistV2ActionListener{
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+            viewModel?.removeWishlistV2(
+                item,
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
 
-                override fun onSuccessAddWishlist(
-                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                    productId: String) {}
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {}
 
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
-                }
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
+                    }
 
-                override fun onSuccessRemoveWishlist(
-                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                    productId: String
-                ) {
-                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-                    context?.let { context ->
-                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, view)
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                        context?.let { context ->
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, view)
+                        }
                     }
                 }
-
-            })
+            )
         }
     }
 
     private fun onClickTopAdsWishlistItem(item: RecommendationItem) {
         TopAdsUrlHitter(context).hitClickUrl(
-            fragment?.activity?.javaClass?.name, item.clickUrl+ CLICK_TYPE_WISHLIST, item.productId.toString(),
-            item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
+            fragment?.activity?.javaClass?.name,
+            item.clickUrl + CLICK_TYPE_WISHLIST,
+            item.productId.toString(),
+            item.name,
+            item.imageUrl,
+            COMPONENT_NAME_TOP_ADS
         )
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
         TopAdsUrlHitter(context).hitClickUrl(
-                fragment?.activity?.javaClass?.name, item.clickUrl, item.productId.toString(),
-                item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
+            fragment?.activity?.javaClass?.name,
+            item.clickUrl,
+            item.productId.toString(),
+            item.name,
+            item.imageUrl,
+            COMPONENT_NAME_TOP_ADS
         )
         topAdsAnalytic.eventInboxTopAdsProductClick(
-                item, item.position, item.isTopAds
+            item,
+            item.position,
+            item.isTopAds
         )
     }
 
     private fun onClickOrganic(item: RecommendationItem) {
         topAdsAnalytic.eventInboxTopAdsProductClick(
-                item, item.position, item.isTopAds
+            item,
+            item.position,
+            item.isTopAds
         )
     }
 
@@ -251,8 +272,8 @@ class RecommendationLifeCycleAware constructor(
     }
 
     private fun createProductCardOptionsModel(
-            recommendationItem: RecommendationItem,
-            productPosition: Int
+        recommendationItem: RecommendationItem,
+        productPosition: Int
     ): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()
         productCardOptionsModel.hasWishlist = true

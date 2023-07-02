@@ -143,4 +143,18 @@ object DetailResult {
         )
             .check(matches(not(isDisplayed())))
     }
+
+    fun assertNotifWidgetVisibility(position: Int, visibilityMatcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_message)
+        ).check(matches(visibilityMatcher))
+    }
+
+    fun assertNotifWidgetMsg(position: Int, msg: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_message)
+        ).check(matches(withText(msg)))
+    }
 }

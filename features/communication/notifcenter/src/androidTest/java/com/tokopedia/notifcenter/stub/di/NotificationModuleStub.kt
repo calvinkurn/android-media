@@ -14,6 +14,11 @@ import dagger.Provides
 object NotificationModuleStub {
 
     @Provides
+    fun context(@ApplicationContext context: Context): Context {
+        return context
+    }
+
+    @Provides
     @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSessionStub(context)

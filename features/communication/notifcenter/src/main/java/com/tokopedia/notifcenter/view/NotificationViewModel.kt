@@ -36,7 +36,8 @@ import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 import com.tokopedia.notifcenter.view.listener.WishlistListener
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -322,23 +323,16 @@ class NotificationViewModel @Inject constructor(
     fun loadRecommendations(page: Int) {
         viewModelScope.launch {
             try {
-                val params = getRecommendationUseCase.getRecomParams(
-                    page,
-                    RECOM_WIDGET,
-                    RECOM_SOURCE_INBOX_PAGE,
-                    emptyList()
+                val params = GetRecommendationRequestParam(
+                    pageNumber = page,
+                    xSource = RECOM_WIDGET,
+                    pageName = RECOM_SOURCE_INBOX_PAGE,
+                    productIds = emptyList()
                 )
-                val recommendationWidget = withContext(dispatcher.io) {
-                    return@withContext getRecommendationUseCase
-                        .createObservable(params)
-                        .toBlocking()
-                        .single()
-                        .getOrNull(0) ?: RecommendationWidget()
+                val recommendationWidget = getRecommendationUseCase.getData(params).firstOrNull()
+                recommendationWidget?.let {
+                    _recommendations.value = getRecommendationVisitables(page, it)
                 }
-                _recommendations.value = getRecommendationVisitables(
-                    page,
-                    recommendationWidget
-                )
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }

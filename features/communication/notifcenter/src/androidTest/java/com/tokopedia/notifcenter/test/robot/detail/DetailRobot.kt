@@ -6,7 +6,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.stub.common.smoothScrollTo
 import com.tokopedia.notifcenter.stub.common.withRecyclerView
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 
@@ -51,11 +50,5 @@ object DetailRobot {
             RecyclerViewMatcher(R.id.rv_carousel_product)
                 .atPositionOnView(position, R.id.cl_product)
         ).perform(click())
-    }
-
-    fun smoothScrollNotificationTo(position: Int) {
-        onView(withId(R.id.recycler_view)).perform(
-            smoothScrollTo(position)
-        )
     }
 }

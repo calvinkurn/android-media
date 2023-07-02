@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents.times
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.notifcenter.R
+import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
 object GeneralResult {
@@ -19,5 +20,9 @@ object GeneralResult {
 
     fun assertIntentData(data: Uri?, intentCount: Int = 1) {
         Intents.intended(IntentMatchers.hasData(data), times(intentCount))
+    }
+
+    fun assertItemListSize(size: Int) {
+        assertRecyclerviewItem(hasTotalItemOf(size))
     }
 }

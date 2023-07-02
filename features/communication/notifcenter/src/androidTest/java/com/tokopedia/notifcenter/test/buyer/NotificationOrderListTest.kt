@@ -7,9 +7,9 @@ import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.stub.common.NotificationCacheManagerStub
 import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
-import com.tokopedia.notifcenter.test.robot.detailRobot
 import com.tokopedia.notifcenter.test.robot.filterResult
 import com.tokopedia.notifcenter.test.robot.filterRobot
+import com.tokopedia.notifcenter.test.robot.generalRobot
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -118,7 +118,7 @@ class NotificationOrderListTest : BaseNotificationTest() {
         filterRobot {
             smoothScrollOrderWidgetTo(14)
         }
-        detailRobot {
+        generalRobot {
             smoothScrollNotificationTo(14)
             smoothScrollNotificationTo(0)
         }

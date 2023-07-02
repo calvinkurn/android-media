@@ -4,6 +4,7 @@ import com.tokopedia.notifcenter.data.entity.NotificationResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 
 object GqlResponseStub {
 
@@ -11,6 +12,7 @@ object GqlResponseStub {
     lateinit var notificationFilterResponse: ResponseStub<NotifcenterFilterResponse>
     lateinit var notificationOrderListResponse: ResponseStub<NotifOrderListResponse>
     lateinit var notificationCounterResponse: ResponseStub<NotificationResponse>
+    lateinit var notificationRecommendation: ResponseStub<RecommendationEntity>
 
     init {
         reset()
@@ -39,6 +41,12 @@ object GqlResponseStub {
             filePath = "counter/notifcenter_counter.json",
             type = NotificationResponse::class.java,
             query = "notifications",
+            isError = false
+        )
+        notificationRecommendation = ResponseStub(
+            filePath = "recommendation/notifcenter_recom.json",
+            type = RecommendationEntity::class.java,
+            query = "productRecommendation",
             isError = false
         )
     }

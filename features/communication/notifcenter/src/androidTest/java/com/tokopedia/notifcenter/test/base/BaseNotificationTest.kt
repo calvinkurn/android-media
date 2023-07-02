@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifcenter.di.NotificationActivityComponentFactory
 import com.tokopedia.notifcenter.stub.common.ActivityScenarioTestRule
+import com.tokopedia.notifcenter.stub.data.repository.FakeTopAdsRepository
 import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.stub.di.NotificationFakeActivityComponentFactory
 import com.tokopedia.notifcenter.view.buyer.NotificationActivity
@@ -30,11 +31,14 @@ abstract class BaseNotificationTest {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var topAdsRepository: FakeTopAdsRepository
+
     @Before
     open fun beforeTest() {
         Intents.init()
         setupDaggerComponent()
-        GqlResponseStub.reset()
+        reset()
     }
 
     private fun setupDaggerComponent() {
@@ -64,8 +68,14 @@ abstract class BaseNotificationTest {
         stubAllIntents()
     }
 
-    protected fun stubAllIntents() {
+    private fun stubAllIntents() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun reset() {
+        GqlResponseStub.reset()
+        topAdsRepository.isError = false
+        topAdsRepository.response = topAdsRepository.defaultResponse
     }
 }
