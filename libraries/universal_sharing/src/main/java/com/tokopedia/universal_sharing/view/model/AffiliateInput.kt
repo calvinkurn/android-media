@@ -59,7 +59,7 @@ data class PageDetail(
 
 )
 
-data class AffiliatePDPInput(
+data class AffiliateInput(
     @SerializedName("PageType")
     var pageType: String? = "",
 
