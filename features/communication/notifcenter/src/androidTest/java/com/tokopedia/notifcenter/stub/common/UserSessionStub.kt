@@ -39,4 +39,8 @@ class UserSessionStub @Inject constructor(context: Context?) : UserSession(conte
     override fun getProfilePicture(): String {
         return userData.second
     }
+
+    override fun getUserId(): String {
+        return "1"
+    }
 }

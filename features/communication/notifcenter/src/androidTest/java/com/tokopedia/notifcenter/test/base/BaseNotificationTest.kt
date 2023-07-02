@@ -15,15 +15,20 @@ import com.tokopedia.notifcenter.stub.common.ActivityScenarioTestRule
 import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.stub.di.NotificationFakeActivityComponentFactory
 import com.tokopedia.notifcenter.view.buyer.NotificationActivity
+import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 abstract class BaseNotificationTest {
     @get:Rule
     var activityScenarioRule = ActivityScenarioTestRule<NotificationActivity>()
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Before
     open fun beforeTest() {

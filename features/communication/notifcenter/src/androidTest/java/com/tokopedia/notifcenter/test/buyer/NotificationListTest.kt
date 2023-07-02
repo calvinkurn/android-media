@@ -6,6 +6,7 @@ import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
 import com.tokopedia.notifcenter.test.robot.detailRobot
+import com.tokopedia.notifcenter.test.robot.filterRobot
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -178,7 +179,7 @@ class NotificationListTest : BaseNotificationTest() {
         }
 
         // When
-        detailRobot {
+        filterRobot {
             clickFilterAt(0)
         }
 
