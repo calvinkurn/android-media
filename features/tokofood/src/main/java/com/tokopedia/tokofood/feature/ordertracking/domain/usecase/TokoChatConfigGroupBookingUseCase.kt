@@ -4,7 +4,7 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
-class TokoChatConfigGroupBookingUseCase @Inject constructor(
+open class TokoChatConfigGroupBookingUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
 

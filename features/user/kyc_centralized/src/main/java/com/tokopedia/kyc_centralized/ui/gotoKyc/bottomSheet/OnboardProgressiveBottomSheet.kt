@@ -267,7 +267,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
+        private const val PATH_TOKOPEDIA_CARE = "help/article/nama-yang-muncul-bukan-nama-saya?lang=id?isBack=true"
 
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"

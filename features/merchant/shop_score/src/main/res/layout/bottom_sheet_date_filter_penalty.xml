@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            app:text_field_label="@string/start_date"
+            app:text_field_label="@string/shop_penalty_start_date"
             app:text_field_placeholder="@string/select_date" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            app:text_field_label="@string/end_date"
+            app:text_field_label="@string/shop_penalty_end_date"
             app:text_field_placeholder="@string/select_date" />
     </LinearLayout>
 

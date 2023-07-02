@@ -5,13 +5,17 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.*
+import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getLocale
+import com.tokopedia.shop.score.common.getNPastDaysTimeStamp
+import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetDateFilterPenaltyBinding
-import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +33,9 @@ class PenaltyDateFilterBottomSheet :
 
     private var minDate: Date? = null
     private var maxDate: Date? = null
+
+    private var maxStartDate: Date? = null
+    private var maxEndDate: Date? = null
 
     override fun bind(view: View) = BottomSheetDateFilterPenaltyBinding.bind(view)
 
@@ -52,20 +59,24 @@ class PenaltyDateFilterBottomSheet :
     private fun getDataFromArguments() {
         val startDateParam = arguments?.getString(KEY_START_DATE_PENALTY) ?: ""
         val endDateParam = arguments?.getString(KEY_END_DATE_PENALTY) ?: ""
-        minDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(startDateParam)
-        maxDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(endDateParam)
+        val maxStartDateParam = arguments?.getString(KEY_MAX_START_DATE_PENALTY)
+        val maxEndDateParam = arguments?.getString(KEY_MAX_END_DATE_PENALTY)
+
+        minDate = SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(startDateParam)
+        maxDate = SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(endDateParam)
+        maxStartDateParam?.let {
+            maxStartDate = SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(it)
+        }
+        maxEndDateParam?.let {
+            maxEndDate = SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         clearContentPadding = true
         isFullpage = true
-        bottomSheetClose.setImageDrawable(context?.let {
-            getIconUnifyDrawable(
-                it,
-                IconUnify.ARROW_BACK
-            )
-        })
+        showCloseIcon = true
         setStyle(DialogFragment.STYLE_NORMAL, R.style.PenaltyFilterDialogStyle)
         initView(binding)
         setupCalendarView()
@@ -101,8 +112,8 @@ class PenaltyDateFilterBottomSheet :
     }
 
     private fun setupCalendarView() {
-        val initMinDate = getNPastDaysTimeStamp(NINETY_DAYS)
-        val initMaxDate = Date(getNowTimeStamp())
+        val initMinDate = maxStartDate ?: getNPastDaysTimeStamp(NINETY_DAYS)
+        val initMaxDate = maxEndDate ?: Date(getNowTimeStamp())
         binding?.penaltyFilterCalendar?.calendarPickerView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(initMinDate)
@@ -111,17 +122,17 @@ class PenaltyDateFilterBottomSheet :
     }
 
     private fun selectEndDate(date: Date) = binding?.run {
-        endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
-        endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfEndDate.textFieldInput.setText(getSelectedDate(date, PATTER_DATE_EDT))
+        endDateParam = getSelectedDate(date, ShopScoreConstant.PATTERN_DATE_PARAM)
+        endDateEditText = getSelectedDate(date, ShopScoreConstant.PATTER_DATE_EDT)
+        tfEndDate.textFieldInput.setText(getSelectedDate(date, ShopScoreConstant.PATTER_DATE_EDT))
         tfEndDate.textFieldInput.setSelection(tfEndDate.textFieldInput.text?.length ?: 0)
         tfEndDate.textFieldInput.requestFocus()
     }
 
     private fun selectStartDate(date: Date) = binding?.run {
-        startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
-        startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfStartDate.textFieldInput.setText(getSelectedDate(date, PATTER_DATE_EDT))
+        startDateParam = getSelectedDate(date, ShopScoreConstant.PATTERN_DATE_PARAM)
+        startDateEditText = getSelectedDate(date, ShopScoreConstant.PATTER_DATE_EDT)
+        tfStartDate.textFieldInput.setText(getSelectedDate(date, ShopScoreConstant.PATTER_DATE_EDT))
         tfStartDate.textFieldInput.setSelection(tfStartDate.textFieldInput.text?.length ?: 0)
         tfStartDate.textFieldInput.requestFocus()
     }
@@ -130,43 +141,58 @@ class PenaltyDateFilterBottomSheet :
         return format(date.time, patternDate)
     }
 
+    private fun setActionButton(isActive: Boolean) {
+        if (isActive) {
+            bottomSheetAction.run {
+                show()
+                text = getString(R.string.btn_save)
+                setOnClickListener {
+                    saveSelectedDate()
+                }
+            }
+        } else {
+            bottomSheetAction.run {
+                gone()
+                text = String.EMPTY
+            }
+        }
+    }
+
     private fun CalendarPickerView.selectDateClickListener() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                when (mode) {
-                    CalendarPickerView.SelectionMode.RANGE -> {
-                        if ((minDate == null || maxDate != null) || (maxDate == null && date.before(
-                                minDate
-                            ))
-                        ) {
-                            minDate = date
-                            maxDate = null
-                            selectStartDate(date)
-                        } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(
-                                minDate
-                            ))
-                        ) {
-                            maxDate = date
-                            selectEndDate(date)
-                            GlobalScope.launch(Dispatchers.Main) {
-                                delay(DELAY_SELECTED_FILTER_DATE_PENALTY)
-                                calenderFilterListener?.onSaveCalendarClicked(
-                                    Pair(
-                                        startDateParam,
-                                        startDateEditText
-                                    ), Pair(endDateParam, endDateEditText)
-                                )
-                                dismissAllowingStateLoss()
-                            }
-                        }
-                    }
-                    else -> {
+                if (mode == CalendarPickerView.SelectionMode.RANGE) {
+                    if ((minDate == null || maxDate != null) || (maxDate == null && date.before(
+                            minDate
+                        ))
+                    ) {
+                        minDate = date
+                        maxDate = null
+                        selectStartDate(date)
+                        setActionButton(false)
+                    } else if ((minDate != null || maxDate == null) && (date.after(minDate) || !date.before(
+                            minDate
+                        ))
+                    ) {
+                        maxDate = date
+                        selectEndDate(date)
+                        setActionButton(true)
                     }
                 }
             }
 
             override fun onDateUnselected(date: Date) {}
         })
+    }
+
+    private fun saveSelectedDate() {
+        calenderFilterListener?.onSaveCalendarClicked(
+            Pair(
+                startDateParam,
+                startDateEditText
+            ), Pair(endDateParam, endDateEditText)
+        )
+        dismissAllowingStateLoss()
     }
 
     fun setCalendarListener(calenderFilterListener: CalenderListener) {
@@ -179,18 +205,29 @@ class PenaltyDateFilterBottomSheet :
 
     companion object {
         const val PenaltyDateFilterBottomSheetTag = "PenaltyDateFilterBottomSheetTag"
-        const val PATTER_DATE_EDT = "dd MMM yyyy"
-        const val PATTERN_DATE_PARAM = "yyyy-MM-dd"
         const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
+        const val KEY_MAX_START_DATE_PENALTY = "key_max_start_date_penalty"
+        const val KEY_MAX_END_DATE_PENALTY = "key_max_end_date_penalty"
         const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
         const val NINETY_DAYS = 90
 
-        fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
+        fun newInstance(
+            startDate: String,
+            endDate: String,
+            maxStartDate: String? = null,
+            maxEndDate: String? = null
+        ): PenaltyDateFilterBottomSheet {
             return PenaltyDateFilterBottomSheet().apply {
                 val args = Bundle()
                 args.putString(KEY_START_DATE_PENALTY, startDate)
                 args.putString(KEY_END_DATE_PENALTY, endDate)
+                maxStartDate?.let {
+                    args.putString(KEY_MAX_START_DATE_PENALTY, it)
+                }
+                maxEndDate?.let {
+                    args.putString(KEY_MAX_END_DATE_PENALTY, it)
+                }
                 arguments = args
             }
         }
