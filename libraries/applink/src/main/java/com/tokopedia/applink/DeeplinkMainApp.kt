@@ -20,7 +20,6 @@ import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
@@ -329,7 +328,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("v2", DeeplinkMapperImagePicker::getImagePickerV2Deeplink)
         ),
         "inbox" to mutableListOf(
-            DLP.goTo(ApplinkConsInternalHome.HOME_INBOX)
+            DLP.goTo(DeeplinkMapperCommunication::getRegisteredNavigationInbox)
         ),
         "inputinactivenumber" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)

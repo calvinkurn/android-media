@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
+import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.model.Always
@@ -58,7 +59,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
             var alwaysLogicFound = false
             for (value in entry.value) {
-                if (value.logic !is Always && alwaysLogicFound){
+                if (value.logic !is Always && alwaysLogicFound) {
                     throw RuntimeException("Logic goTo should always in bottom. Key: " + entry.key)
                 }
                 if (value.logic is Always) {
@@ -2314,7 +2315,39 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check inbox host customerapp`() {
+        every {
+            DeeplinkMapperCommunication.isUserLoggedIn(any())
+        } returns true
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
+            )
+        } returns ""
+
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
+    }
+
+    @Test
+    fun `check inbox host customerapp universal inbox`() {
+        every {
+            DeeplinkMapperCommunication.isUserLoggedIn(any())
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
+            )
+        } returns DeeplinkMapperCommunication.ROLLENCE_TYPE_A
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
+            )
+        } returns DeeplinkMapperCommunication.ROLLENCE_TYPE_B
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
 
