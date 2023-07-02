@@ -6,10 +6,13 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.domain.request.JakCardAction
 import com.tokopedia.emoney.domain.request.JakCardStatus
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 object JakCardResponseMapper {
-    fun jakCardResponseMapper(jakCardResponse: JakCardResponse): EmoneyInquiry {
-        val attributes = jakCardResponse.data.attributes
+
+    private const val ISSUER_ID_JAKCARD = 4
+    fun jakCardResponseMapper(jakCardResponse: JakCardData): EmoneyInquiry {
+        val attributes = jakCardResponse.attributes
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = attributes.buttonText,
@@ -17,25 +20,25 @@ object JakCardResponseMapper {
                 imageIssuer = attributes.imageIssuer,
                 lastBalance = attributes.lastBalance,
                 payload = "",
-                status = jakCardResponse.data.status,
+                status = jakCardResponse.status,
                 formattedCardNumber = NFCUtils.formatCardUID(attributes.cardNumber),
-                issuer_id = 4,
-                pendingBalance = 0
+                issuer_id = ISSUER_ID_JAKCARD,
+                pendingBalance = Int.ZERO
 
             ),
             error = EmoneyInquiryError(
                 "",
                 attributes.message,
-                jakCardResponse.data.status
+                jakCardResponse.status
             )
         )
     }
 
-    fun jakCardResponseConfirmationFailed(jakCardResponse: JakCardResponse, lastBalanceAfterUpdate: Int): JakCardResponse {
+    fun jakCardResponseConfirmationFailed(jakCardResponse: JakCardData, lastBalanceAfterUpdate: Int): JakCardData {
         return jakCardResponse.apply {
-            data.action = JakCardAction.TOP_UP_CONFIRMATION.action
-            data.status = JakCardStatus.DONE.status
-            data.attributes.lastBalance = lastBalanceAfterUpdate
+            action = JakCardAction.TOP_UP_CONFIRMATION.action
+            status = JakCardStatus.DONE.status
+            attributes.lastBalance = lastBalanceAfterUpdate
         }
     }
 }

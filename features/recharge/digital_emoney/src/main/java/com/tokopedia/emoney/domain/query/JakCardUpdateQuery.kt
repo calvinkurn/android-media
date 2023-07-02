@@ -8,18 +8,8 @@ object JakCardUpdateQuery {
     const val QUERY_VALUE = """
          mutation $QUERY_NAME(${"$"}body: RechargeEmoneyDkiJakcardRequest!) {
                 rechargeUpdateBalanceEmoneyDkiJakcard(body: ${"$"}body) {
-                    action
-                    status
-                    attributes {
-                        card_number
-                        cryptogram
-                        last_balance
-                        button_text
-                        image_issuer
-                        message
-                        stan
-                        ref_no
-                    }
+                    encKey
+                    encPayload
                 }
          }     
     """

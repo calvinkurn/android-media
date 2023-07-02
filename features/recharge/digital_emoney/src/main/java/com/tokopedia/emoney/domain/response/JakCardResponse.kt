@@ -4,7 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class JakCardResponse (
     @SerializedName("rechargeUpdateBalanceEmoneyDkiJakcard")
-    val data: JakCardData = JakCardData(),
+    val data: JakCardDataEnc = JakCardDataEnc(),
+)
+
+data class JakCardDataEnc(
+    @SerializedName("encKey")
+    var encKey: String = "",
+    @SerializedName("encPayload")
+    var encPayload: String = "",
 )
 
 data class JakCardData(

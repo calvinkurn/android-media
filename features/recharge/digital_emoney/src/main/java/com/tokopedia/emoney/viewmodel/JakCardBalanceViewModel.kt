@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
@@ -11,7 +12,8 @@ import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.domain.request.JakCardRequestMapper
 import com.tokopedia.emoney.domain.request.JakCardStatus
-import com.tokopedia.emoney.domain.response.JakCardResponse
+import com.tokopedia.emoney.domain.response.JakCardData
+import com.tokopedia.emoney.domain.response.JakCardDataEnc
 import com.tokopedia.emoney.domain.response.JakCardResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetJakCardUseCase
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -25,7 +27,8 @@ import javax.inject.Inject
 class JakCardBalanceViewModel @Inject constructor(
     dispatcher: CoroutineDispatcher,
     private val jakCardUseCase: GetJakCardUseCase,
-    private val electronicMoneyEncryption: ElectronicMoneyEncryption
+    private val electronicMoneyEncryption: ElectronicMoneyEncryption,
+    private val gson: Gson
 ) : BaseViewModel(dispatcher) {
 
     private var errorCardMessageMutable = SingleLiveEvent<Throwable>()
@@ -39,7 +42,10 @@ class JakCardBalanceViewModel @Inject constructor(
     @Suppress("LateinitUsage")
     lateinit var isoDep: IsoDep
 
-    fun processJakCardTagIntent(isoDep: IsoDep, isDev: Boolean) {
+    fun processJakCardTagIntent(isoDep: IsoDep, isDev: Boolean,
+                                rawPublicKeyString: String,
+                                rawPrivateKeyString: String
+    ) {
         if (isoDep != null) {
             run {
                 try {
@@ -68,7 +74,7 @@ class JakCardBalanceViewModel @Inject constructor(
                                 separateWithSuccessCode(NFCUtils.toHex(checkBalanceResponse))
                             val lastBalance =
                                 convertHexBalanceToIntBalance(separatedCheckBalanceString)
-                            getPendingBalanceProcess(selectResponseString, cardNumber, lastBalance)
+                            getPendingBalanceProcess(selectResponseString, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString)
                         }
                     }
 
@@ -86,21 +92,33 @@ class JakCardBalanceViewModel @Inject constructor(
     private fun getPendingBalanceProcess(
         selectResponseString: String,
         cardNumber: String,
-        lastBalance: Int
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String
     ) {
         launchCatchError(block = {
-            val paramGetPendingBalanceQuery = JakCardRequestMapper.createGetPendingBalanceParam(
+
+            val payloadGetPendingBalanceQuery = JakCardRequestMapper.createGetPendingBalanceParam(
                 selectResponseString,
                 cardNumber,
-                lastBalance
+                lastBalance,
+                gson
             )
 
-            val result = jakCardUseCase.execute(paramGetPendingBalanceQuery)
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetPendingBalanceQuery)
+            val paramGetPendingBalanceQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
 
-            if (result.data.status == JakCardStatus.WRITE.status) {
+            val encResult = jakCardUseCase.execute(paramGetPendingBalanceQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == JakCardStatus.WRITE.status) {
                 processInitLoad(
-                    selectResponseString, cardNumber,
-                    lastBalance, result.data.attributes.cryptogram
+                    selectResponseString,
+                    cardNumber,
+                    lastBalance,
+                    result.attributes.cryptogram,
+                    rawPublicKeyString,
+                    rawPrivateKeyString
                 )
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
@@ -114,7 +132,9 @@ class JakCardBalanceViewModel @Inject constructor(
         selectResponseString: String,
         cardNumber: String,
         lastBalance: Int,
-        cryptogram: String
+        cryptogram: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String
     ) {
         if (isIsoDepInitialized() && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
@@ -133,7 +153,7 @@ class JakCardBalanceViewModel @Inject constructor(
 
                     val amount = convertHexBalanceToIntBalance(getAmountFromCryptogram(cryptogram))
 
-                    getTopUpProcess(topUpCardData, cardNumber, lastBalance, amount)
+                    getTopUpProcess(topUpCardData, cardNumber, lastBalance, amount, rawPublicKeyString, rawPrivateKeyString)
                 }
             } catch (e: IOException) {
                 errorCardMessageMutable.postValue(e)
@@ -147,24 +167,33 @@ class JakCardBalanceViewModel @Inject constructor(
         topUpCardData: String,
         cardNumber: String,
         lastBalance: Int,
-        amount: Int
+        amount: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String
     ) {
         launchCatchError(block = {
-            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(
+            val payloadGetTopUpQuery = JakCardRequestMapper.createGetTopUpParam(
                 topUpCardData, cardNumber,
-                lastBalance, amount
+                lastBalance, amount, gson
             )
 
-            val result = jakCardUseCase.execute(paramGetTopUpQuery)
-            if (result.data.status == JakCardStatus.WRITE.status) {
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetTopUpQuery)
+            val paramGetTopUpQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = jakCardUseCase.execute(paramGetTopUpQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == JakCardStatus.WRITE.status) {
                 processLoad(
                     result,
                     topUpCardData,
-                    result.data.attributes.cryptogram,
-                    result.data.attributes.stan,
-                    result.data.attributes.refNo,
+                    result.attributes.cryptogram,
+                    result.attributes.stan,
+                    result.attributes.refNo,
                     amount,
-                    cardNumber
+                    cardNumber,
+                    rawPublicKeyString,
+                    rawPrivateKeyString
                 )
             } else {
                 jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
@@ -175,13 +204,15 @@ class JakCardBalanceViewModel @Inject constructor(
     }
 
     fun processLoad(
-        topUpJakCardResponse: JakCardResponse,
+        topUpJakCardResponse: JakCardData,
         topUpCardData: String,
         cryptogram: String,
         stan: String,
         refNo: String,
         amount: Int,
-        cardNumber: String
+        cardNumber: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String
     ) {
         if (isIsoDepInitialized() && isoDep.isConnected && cryptogram.isNotEmpty()) {
             try {
@@ -215,7 +246,9 @@ class JakCardBalanceViewModel @Inject constructor(
                             lastBalanceAfterUpdate,
                             amount,
                             stan,
-                            refNo
+                            refNo,
+                            rawPublicKeyString,
+                            rawPrivateKeyString
                         )
                     }
                 }
@@ -230,25 +263,32 @@ class JakCardBalanceViewModel @Inject constructor(
     fun isIsoDepInitialized(): Boolean = ::isoDep.isInitialized
 
     private fun getTopUpConfirmationProcess(
-        topUpJakCardResponse: JakCardResponse,
+        topUpJakCardResponse: JakCardData,
         topUpConfirmationCardData: String,
         cardNumber: String,
         lastBalanceAfterUpdate: Int,
         amount: Int,
         stan: String,
-        refNo: String
+        refNo: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String
     ) {
         launchCatchError(block = {
-            val paramGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
+            val payloadGetTopUpQuery = JakCardRequestMapper.createGetTopUpConfirmationParam(
                 topUpConfirmationCardData,
-                cardNumber, lastBalanceAfterUpdate, amount, stan, refNo
+                cardNumber, lastBalanceAfterUpdate, amount, stan, refNo, gson
             )
 
-            val result = jakCardUseCase.execute(paramGetTopUpQuery)
-            if (result.data.status == JakCardStatus.ERROR.status ||
-                result.data.status == JakCardStatus.WRITE.status
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetTopUpQuery)
+            val paramGetTopUpQuery = JakCardRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = jakCardUseCase.execute(paramGetTopUpQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == JakCardStatus.ERROR.status ||
+                result.status == JakCardStatus.WRITE.status
             ) {
-                result.data.status = JakCardStatus.DONE.status
+                result.status = JakCardStatus.DONE.status
             }
             jakCardInquiryMutable.postValue(JakCardResponseMapper.jakCardResponseMapper(result))
         }) {
@@ -312,6 +352,20 @@ class JakCardBalanceViewModel @Inject constructor(
 
     private fun getAmountFromCryptogram(cryptogram: String): String {
         return cryptogram.substring(CARD_AMOUNT_START, CARD_AMOUNT_END)
+    }
+
+    private fun decryptPayload(jakCardDataEnc: JakCardDataEnc, rawPrivateKeyString: String): JakCardData {
+        val decryptedPayload = electronicMoneyEncryption.createDecryptedPayload(
+            rawPrivateKeyString,
+            jakCardDataEnc.encKey,
+            jakCardDataEnc.encPayload
+        )
+
+        return getJakcardData(decryptedPayload)
+    }
+
+    private fun getJakcardData(payload: String): JakCardData {
+        return gson.fromJson(payload, JakCardData::class.java)
     }
 
     companion object {

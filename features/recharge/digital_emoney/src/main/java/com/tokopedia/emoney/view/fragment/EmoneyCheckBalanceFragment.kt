@@ -109,6 +109,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        val rawPublicKey = getString(R.string.emoney_public)
+        val rawPrivateKey = getString(R.string.emoney_private)
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
@@ -117,11 +119,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(CardUtils.isJakCard(intent) ) {
             issuerActive = ISSUER_ID_JAKCARD
             showLoading(getOperatorName(issuerActive))
-            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), false)
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), false, rawPublicKey, rawPrivateKey)
         } else if(CardUtils.isJakCardDev(intent)) {
             issuerActive = ISSUER_ID_JAKCARD
             showLoading(getOperatorName(issuerActive))
-            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), true)
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), true,  rawPublicKey, rawPrivateKey)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
