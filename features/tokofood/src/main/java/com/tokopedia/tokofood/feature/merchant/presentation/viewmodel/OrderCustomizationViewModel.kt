@@ -37,7 +37,10 @@ class OrderCustomizationViewModel @Inject constructor(
 
     fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {
         return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) { resetMasterData(productUiModel.customListItems) }
-        else productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }?.customListItems ?: listOf()
+        else productUiModel.customOrderDetails
+            .firstOrNull { it.cartId == cartId }
+            ?.customListItems
+            .orEmpty()
     }
 
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
