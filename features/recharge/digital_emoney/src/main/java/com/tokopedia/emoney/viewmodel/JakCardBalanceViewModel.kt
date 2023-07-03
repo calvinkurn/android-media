@@ -364,7 +364,7 @@ class JakCardBalanceViewModel @Inject constructor(
         return getJakcardData(decryptedPayload)
     }
 
-    private fun getJakcardData(payload: String): JakCardData {
+    fun getJakcardData(payload: String): JakCardData {
         return gson.fromJson(payload, JakCardData::class.java)
     }
 
