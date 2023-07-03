@@ -87,8 +87,8 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentLoginWithPhoneBinding
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.discover.DiscoverData
+import com.tokopedia.loginregister.discover.ProviderData
 import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment

@@ -99,7 +99,7 @@ import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
@@ -183,7 +183,7 @@ object DynamicProductDetailMapper {
                         name = component.componentName,
                         data = component.componentData.firstOrNull()
                     )
-                    if(dataModel != null){
+                    if (dataModel != null) {
                         listOfComponent.add(dataModel)
                     }
                 }
@@ -429,7 +429,8 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout
+            postAtcLayout = networkData.postAtcLayout,
+            landingSubText = networkData.landingSubText
         )
     }
 
@@ -697,8 +698,8 @@ object DynamicProductDetailMapper {
         productInfo: DynamicProductInfoP1,
         shopInfo: ShopInfo?,
         variantData: ProductVariant?
-    ): AffiliatePDPInput {
-        return AffiliatePDPInput(
+    ): AffiliateInput {
+        return AffiliateInput(
             pageType = PageType.PDP.value,
             product = Product(
                 productID = productInfo.basic.productID,
@@ -869,7 +870,6 @@ object DynamicProductDetailMapper {
         name: String,
         data: ComponentData?
     ): OngoingCampaignDataModel? {
-
         if (data == null) return null
 
         val mainData = ProductContentMainData(
