@@ -256,7 +256,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/occ_divider_order_price_summary_bottomsheet_dms_color"
+            android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_installment_fee_price_value" />
@@ -288,7 +288,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/occ_divider_order_price_summary_bottomsheet_dms_color"
+            android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_payment_fee" />
@@ -324,7 +324,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/occ_divider_order_price_summary_bottomsheet_dms_color"
+            android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_payment_price_value" />
@@ -344,7 +344,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/occ_divider_order_price_summary_bottomsheet_dms_color"
+            android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_cashback" />
