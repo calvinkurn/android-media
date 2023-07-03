@@ -89,9 +89,7 @@ internal object MediaListenerBuilder {
 
         if (properties.shouldTrackNetwork) {
             val result = NetworkResponseManager.getInstance(context)
-
             properties.setNetworkResponse?.header(result.header())
-            properties.setNetworkResponse?.response(result.response())
         }
         return false
     }

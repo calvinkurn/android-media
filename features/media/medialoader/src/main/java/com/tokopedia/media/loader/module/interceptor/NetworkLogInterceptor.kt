@@ -13,15 +13,11 @@ class NetworkLogInterceptor constructor(
         val response = chain.proceed(chain.request())
         val headers = response.headers
 
-        println("RESPONSE-component: $response")
-        println("HEADERS-component: ${headers.toMultimap()}")
-
-        NetworkResponseManager
-            .getInstance(context)
-            .set(
-                header = headers,
-                response = response
-            )
+        try {
+            NetworkResponseManager
+                .getInstance(context)
+                .set(headers)
+        } catch (ignored: Throwable) {}
 
         return response
     }

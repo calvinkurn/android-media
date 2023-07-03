@@ -35,9 +35,17 @@ class LoaderGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         super.registerComponents(context, glide, registry)
 
+        // custom network interceptor
+        val client = OkHttpClient.Builder()
+            .addInterceptor(NetworkLogInterceptor(context))
+            .build()
+
+        val okHttpLoaderFactory = OkHttpUrlLoader.Factory(client)
+        registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+
         // dynamic image loader (based on network connection)
         if (isImageLoaderV2()) {
-            registry.append(
+            registry.prepend(
                 String::class.java,
                 InputStream::class.java,
                 AdaptiveImageSizeLoader.Factory(context)
@@ -48,12 +56,6 @@ class LoaderGlideModule : AppGlideModule() {
         if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
             registry.prepend(String::class.java, Bitmap::class.java, M3U8ModelLoaderFactory())
         }
-
-        // custom network interceptor
-        val okHttpClient = OkHttpClient.Builder()
-        okHttpClient.addInterceptor(NetworkLogInterceptor(context))
-        val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
-        registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
     }
 
     override fun isManifestParsingEnabled(): Boolean {

@@ -169,10 +169,6 @@ data class Properties(
             override fun header(data: String) {
                 header(data)
             }
-
-            override fun response(data: String) {
-                response(data)
-            }
         }
     }
 
