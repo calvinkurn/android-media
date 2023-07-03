@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product_bundle.common.util.Utility.animateExpand
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -48,7 +47,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
 
     private var binding by autoClearedNullable<FragmentBottomsheetAddonBinding>()
     private var onSaveAddonListener: (aggregatedData: AddOnPageResult) -> Unit = {}
-    private var tempSelectedAddons: List<AddOnUIModel> = emptyList()
+    private var tempChangedAddons: List<AddOnUIModel> = emptyList()
     private val productId by lazy { arguments?.getLong(AddOnExtraConstant.PRODUCT_ID) }
     private val pageSource by lazy { arguments?.getString(AddOnExtraConstant.PAGE_SOURCE) }
     private val cartId by lazy { arguments?.getLong(AddOnExtraConstant.CART_ID) }
@@ -98,7 +97,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAggregatedDataObtained(aggregatedData: AddOnPageResult.AggregatedData) {
-        onSaveAddonListener(AddOnPageResult(tempSelectedAddons, aggregatedData))
+        onSaveAddonListener(AddOnPageResult(tempChangedAddons, aggregatedData))
     }
 
     override fun onSaveAddonSuccess(
@@ -108,7 +107,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     ) {
         binding?.btnSave?.isLoading = false
         binding?.addonWidget?.getAddOnAggregatedData(selectedAddonIds)
-        tempSelectedAddons = changedAddonSelections
+        tempChangedAddons = changedAddonSelections
     }
 
     override fun onSaveAddonLoading() {

@@ -34,7 +34,7 @@ data class AddOnGroupUIModel(
 )
 
 class AddOnPageResult(
-    val selectedAddons: List<AddOnUIModel> = emptyList(),
+    val changedAddons: List<AddOnUIModel> = emptyList(),
     val aggregatedData: AggregatedData = AggregatedData()
 ): Serializable {
     data class AggregatedData(
