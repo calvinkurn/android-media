@@ -319,6 +319,8 @@ class ShopPageHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_3 = 3
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
         private const val PARTIAL_SHOP_HEADER_MARGIN_BOTTOM_FOLDABLE = 8
+        private const val AFFILIATE_SITE_ID = "1"
+        private const val AFFILIATE_VERTICAL_ID = "1"
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragment()
@@ -3439,7 +3441,7 @@ class ShopPageHeaderFragment :
     private fun checkAffiliate() {
         if (!isEnableAffiliateShareIcon() || isMyShop) return
         val inputAffiliate = AffiliatePDPInput().apply {
-            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
+            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = AFFILIATE_SITE_ID, verticalId = AFFILIATE_VERTICAL_ID)
             pageType = PageType.SHOP.value
             product = Product()
             shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
