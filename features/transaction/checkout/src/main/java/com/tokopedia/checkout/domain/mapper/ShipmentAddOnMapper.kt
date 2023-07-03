@@ -56,14 +56,14 @@ object ShipmentAddOnMapper {
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
-        if (addOnsDataModel?.addOnsDataItemModelList?.isNotEmpty() == true) {
-            for ((addOnPrice, addOnId, addOnMetadata1, addOnQty) in addOnsDataModel.addOnsDataItemModelList) {
+        if (addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
+            for (addOnItemModel in addOnsDataModel.addOnsDataItemModelList) {
                 val addOnData = AddOnData()
-                addOnData.addOnId = addOnId
-                addOnData.addOnPrice = addOnPrice
-                addOnData.addOnQty = addOnQty.toInt()
+                addOnData.addOnId = addOnItemModel.addOnId
+                addOnData.addOnPrice = addOnItemModel.addOnPrice
+                addOnData.addOnQty = addOnItemModel.addOnQty.toInt()
                 val addOnNote = AddOnNote()
-                val addOnNoteItemModel = addOnMetadata1.addOnNoteItemModel
+                val addOnNoteItemModel = addOnItemModel.addOnMetadata.addOnNoteItemModel
                 addOnNote.isCustomNote = addOnNoteItemModel.isCustomNote
                 addOnNote.notes = addOnNoteItemModel.notes
                 addOnNote.from = addOnNoteItemModel.from
@@ -144,13 +144,14 @@ object ShipmentAddOnMapper {
         val addOnDataList = arrayListOf<AddOnData>()
         val (_, addOnsDataItemModelList) = cartItemModel.addOnGiftingProductLevelModel
         if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-            for ((addOnPrice, addOnId, addOnMetadata1, addOnQty) in addOnsDataItemModelList) {
+            for (addOnDataItemModel in addOnsDataItemModelList) {
                 val addOnData = AddOnData()
-                addOnData.addOnId = addOnId
-                addOnData.addOnPrice = addOnPrice
-                addOnData.addOnQty = addOnQty.toInt()
+                addOnData.addOnId = addOnDataItemModel.addOnId
+                addOnData.addOnUniqueId = addOnDataItemModel.addOnUniqueId
+                addOnData.addOnPrice = addOnDataItemModel.addOnPrice
+                addOnData.addOnQty = addOnDataItemModel.addOnQty.toInt()
                 val addOnNote = AddOnNote()
-                val addOnNoteItemModel = addOnMetadata1.addOnNoteItemModel
+                val addOnNoteItemModel = addOnDataItemModel.addOnMetadata.addOnNoteItemModel
                 addOnNote.isCustomNote = addOnNoteItemModel.isCustomNote
                 addOnNote.notes = addOnNoteItemModel.notes
                 addOnNote.from = addOnNoteItemModel.from

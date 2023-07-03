@@ -82,6 +82,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   }
                 }
                 group_shop {
+                  subtotal_add_ons {
+                      wording
+                      type
+                  }
                   group_type
                   ui_group_type
                   group_information {
@@ -94,6 +98,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     status
                     add_on_data {
                       add_on_id
+                      add_on_unique_id
                       add_on_qty
                       add_on_price
                       add_on_metadata {
@@ -225,10 +230,29 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       }
                       products {
                         origin_warehouse_ids
+                        add_ons_product {
+                            icon_url
+                            title
+                            bottomsheet {
+                                title
+                                applink
+                                is_shown
+                            }
+                            data {
+                                id
+                                unique_id
+                                price
+                                info_link
+                                name
+                                status
+                                type
+                            }
+                        }
                         add_ons {
                           status
                           add_on_data {
                             add_on_id
+                            add_on_unique_id
                             add_on_qty
                             add_on_price
                             add_on_metadata {
@@ -569,6 +593,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 image
               }
               cart_data
+              add_ons_summary {
+                wording
+                type
+              }
               upsell_v2 {
                 is_show
                 is_selected

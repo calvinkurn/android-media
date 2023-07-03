@@ -174,6 +174,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             for (addOnItem in addOnsData.addOnsDataItemModelList) {
                 val addOnGiftingRequest = CheckoutGiftingAddOn()
                 addOnGiftingRequest.itemId = addOnItem.addOnId
+                addOnGiftingRequest.itemUniqueId = addOnItem.addOnUniqueId
                 addOnGiftingRequest.itemType = "add_ons"
                 addOnGiftingRequest.itemQty = addOnItem.addOnQty.toInt()
                 addOnGiftingRequest.itemMetadata = _gson.toJson(addOnItem.addOnMetadata)

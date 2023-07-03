@@ -595,8 +595,8 @@ class ShipmentMapper @Inject constructor() {
 
         subtotalAddOns.forEach {
             val shipmentSubtotalAddOnData = ShipmentSubtotalAddOnData(
-                    wording = it.wording,
-                    type = it.type
+                wording = it.wording,
+                type = it.type
             )
             listSubtotal.add(shipmentSubtotalAddOnData)
         }
@@ -619,6 +619,7 @@ class ShipmentMapper @Inject constructor() {
                 AddOnGiftingDataItemModel().apply {
                     addOnPrice = item.addOnPrice
                     addOnId = item.addOnId
+                    addOnUniqueId = item.addOnUniqueId
                     addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
                     addOnQty = item.addOnQty
                 }
@@ -1214,8 +1215,8 @@ class ShipmentMapper @Inject constructor() {
         val listShipmentSummaryAddOn: ArrayList<ShipmentSummaryAddOnData> = arrayListOf()
         listSummaryAddOns.forEach { item ->
             val shipmentSummaryAddOnData = ShipmentSummaryAddOnData(
-                    wording = item.wording,
-                    type = item.type
+                wording = item.wording,
+                type = item.type
             )
             listShipmentSummaryAddOn.add(shipmentSummaryAddOnData)
         }

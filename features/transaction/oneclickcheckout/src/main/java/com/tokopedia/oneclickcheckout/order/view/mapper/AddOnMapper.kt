@@ -92,6 +92,7 @@ object AddOnMapper {
                 addOnSavedStates = addOn.addOnsDataItemModelList.map {
                     AddOnData(
                         addOnId = it.addOnId,
+                        addOnUniqueId = it.addOnUniqueId,
                         addOnPrice = it.addOnPrice,
                         addOnQty = it.addOnQty.toInt(),
                         addOnMetadata = AddOnMetadata(
@@ -129,6 +130,7 @@ object AddOnMapper {
         return AddOnGiftingDataItemModel(
             addOnPrice = addOnData.addOnPrice,
             addOnId = addOnData.addOnId,
+            addOnUniqueId = addOnData.addOnUniqueId,
             addOnQty = addOnData.addOnQty.toLong(),
             addOnMetadata = mapAddOnMetadata(addOnData.addOnMetadata)
         )

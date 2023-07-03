@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class AddOnData(
     var addOnId: String = "",
+    var addOnUniqueId: String = "",
     var addOnMetadata: AddOnMetadata = AddOnMetadata(),
     var addOnPrice: Double = 0.0,
     var addOnQty: Int = 0

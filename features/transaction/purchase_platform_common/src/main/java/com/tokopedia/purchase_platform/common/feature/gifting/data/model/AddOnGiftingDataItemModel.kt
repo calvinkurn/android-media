@@ -8,5 +8,6 @@ data class AddOnGiftingDataItemModel(
     var addOnPrice: Double = 0.0,
     var addOnId: String = "",
     var addOnMetadata: AddOnGiftingMetadataItemModel = AddOnGiftingMetadataItemModel(),
+    var addOnUniqueId: String = "",
     var addOnQty: Long = 0L
 ) : Parcelable

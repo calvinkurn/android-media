@@ -5011,6 +5011,7 @@ class ShipmentViewModel @Inject constructor(
             val addOnDataItemModel = AddOnGiftingDataItemModel()
             val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
+            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
             addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(

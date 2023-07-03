@@ -109,7 +109,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                                 itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                                 itemId = addOnItemModel.addOnId,
                                 itemQty = addOnItemModel.addOnQty,
-                                itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
+                                itemMetadata = gson.toJson(addOnItemModel.addOnMetadata),
+                                itemUniqueId = addOnItemModel.addOnUniqueId
                             )
                         )
                     }
@@ -133,7 +134,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                         itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
                         itemId = addOnItemModel.addOnId,
                         itemQty = addOnItemModel.addOnQty,
-                        itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
+                        itemMetadata = gson.toJson(addOnItemModel.addOnMetadata),
+                        itemUniqueId = addOnItemModel.addOnUniqueId
                     )
                 )
             }

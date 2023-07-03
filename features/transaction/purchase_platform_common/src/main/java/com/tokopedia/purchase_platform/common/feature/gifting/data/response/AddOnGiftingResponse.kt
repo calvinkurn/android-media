@@ -78,6 +78,9 @@ data class AddOnGiftingResponse(
         @SerializedName("add_on_id")
         val addOnId: String = "",
 
+        @SerializedName("add_on_unique_id")
+        val addOnUniqueId: String = "",
+
         @SerializedName("add_on_metadata")
         val addOnMetadata: AddOnMetadata = AddOnMetadata(),
 

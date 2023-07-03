@@ -13,13 +13,13 @@ data class ShoppingSummary(
     val promoWording: String = "",
     @SerializedName("seller_cashback_wording")
     val sellerCashbackWording: String = "",
-    @SerializedName("summary_add_ons")
+    @SerializedName("add_ons")
     val summaryAddOnList: List<SummaryAddOn> = emptyList()
 ) {
     data class SummaryAddOn(
-            @SerializedName("wording")
-            val wording: String = "",
-            @SerializedName("type")
-            val type: Int = -1
+        @SerializedName("wording")
+        val wording: String = "",
+        @SerializedName("type")
+        val type: Int = -1
     )
 }

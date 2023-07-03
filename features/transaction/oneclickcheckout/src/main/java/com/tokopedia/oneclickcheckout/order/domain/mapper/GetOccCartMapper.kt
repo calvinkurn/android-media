@@ -567,6 +567,7 @@ class GetOccCartMapper @Inject constructor() {
         return AddOnGiftingDataItemModel(
             addOnPrice = addOnDataItem.addOnPrice,
             addOnId = addOnDataItem.addOnId,
+            addOnUniqueId = addOnDataItem.addOnUniqueId,
             addOnQty = addOnDataItem.addOnQty,
             addOnMetadata = mapAddOnMetadata(addOnDataItem.addOnMetadata)
         )
