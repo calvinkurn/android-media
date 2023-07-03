@@ -2,6 +2,7 @@ package com.tokopedia.addon.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.LifecycleOwner
@@ -30,10 +31,6 @@ import javax.inject.Inject
 
 class AddOnWidgetView : BaseCustomView {
 
-    companion object {
-        private const val DEFAULT_INVALID_INDEX = -1
-    }
-
     @Inject
     lateinit var viewModel: AddOnViewModel
     private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
@@ -55,14 +52,15 @@ class AddOnWidgetView : BaseCustomView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        val lifecycleOwner = context as? LifecycleOwner
+        val lifecycleOwner = context as? LifecycleOwner ?:
+            (context as? ContextThemeWrapper)?.baseContext as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.errorThrowable.observe(this) {
                 listener?.onAddonComponentError(ErrorHandler.getErrorMessage(context, it))
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
-                viewModel.setSelectedAddons(it, DEFAULT_INVALID_INDEX)
+                viewModel.setSelectedAddons(it)
             }
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
@@ -83,11 +81,14 @@ class AddOnWidgetView : BaseCustomView {
                     }
                     is Success -> {
                         if (it.data.isNotEmpty()) {
-                            val selectedAddon = viewModel.selectedAddon.value ?: return@observe
-                            val selectedAddonGroup = AddOnMapper.deepCopyAddonGroup(it.data)
-                            listener?.onSaveAddonSuccess(viewModel.selectedAddonIds,
-                                selectedAddon, selectedAddonGroup)
-                            viewModel.lastSelectedAddOn = selectedAddonGroup
+                            val addonGroups = AddOnMapper.deepCopyAddonGroup(it.data)
+                            viewModel.preselectedAddonIds = AddOnMapper.getSelectedAddonsIds(addonGroups)
+                            listener?.onSaveAddonSuccess(
+                                viewModel.preselectedAddonIds,
+                                AddOnMapper.flatmapToChangedAddonSelection(addonGroups),
+                                addonGroups
+                            )
+                            viewModel.lastSelectedAddOn = addonGroups
                         } else {
                             listener?.onSaveAddonLoading()
                         }
@@ -95,7 +96,7 @@ class AddOnWidgetView : BaseCustomView {
                 }
             }
             viewModel.autoSave.observe(this) {
-                if (it.addOnGroupUIModels.isNotEmpty())
+                if (it.isActive)
                     viewModel.saveAddOnState(it.cartId, it.atcSource)
             }
         }
@@ -152,7 +153,7 @@ class AddOnWidgetView : BaseCustomView {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
-        viewModel.setSelectedAddons(addOnGroupUIModels, index)
+        viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
@@ -179,7 +180,7 @@ class AddOnWidgetView : BaseCustomView {
     }
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {
-        viewModel.setSelectedAddOn(selectedAddonIds)
+        viewModel.setPreselectedAddOn(selectedAddonIds)
     }
 
     fun saveAddOnState(cartId: Long, source: String) {

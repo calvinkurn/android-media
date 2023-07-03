@@ -26,8 +26,8 @@ interface AddOnComponentListener {
 
     fun onSaveAddonSuccess(
         selectedAddonIds: List<String>,
-        selectedAddons: List<AddOnUIModel>,
-        selectedAddonGroup: List<AddOnGroupUIModel>) {}
+        changedAddonSelections: List<AddOnUIModel>,
+        addonGroups: List<AddOnGroupUIModel>) {}
 
     fun onSaveAddonLoading() {}
 }

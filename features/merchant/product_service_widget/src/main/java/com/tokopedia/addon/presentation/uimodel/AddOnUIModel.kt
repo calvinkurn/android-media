@@ -9,10 +9,19 @@ data class AddOnUIModel(
     var priceFormatted: String = "",
     var price: Long = 0L,
     var isSelected: Boolean = false,
+    var isPreselected: Boolean = false,
     var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
     var eduLink: String = "",
     var uniqueId: String = ""
-): Serializable
+): Serializable {
+    fun getSelectedStatus(): AddOnSelectedStatus {
+        return when {
+            isPreselected && !isSelected -> AddOnSelectedStatus.UNCHECKED
+            !isPreselected && isSelected -> AddOnSelectedStatus.CHECKED
+            else -> AddOnSelectedStatus.DEFAULT
+        }
+    }
+}
 
 data class AddOnGroupUIModel(
     val title: String = "",
@@ -25,7 +34,7 @@ data class AddOnGroupUIModel(
 )
 
 class AddOnPageResult(
-    val selectedAddons: List<AddOnUIModel> = emptyList(),
+    val changedAddons: List<AddOnUIModel> = emptyList(),
     val aggregatedData: AggregatedData = AggregatedData()
 ): Serializable {
     data class AggregatedData(
