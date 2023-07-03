@@ -27,12 +27,6 @@ class ShopCampaignVoucherSliderViewHolder(
     private val voucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
 ) : AbstractViewHolder<ShopWidgetVoucherSliderUiModel>(itemView) {
 
-    interface Listener {
-        fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int)
-        fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int)
-        fun onVoucherReloaded()
-    }
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.shop_campaign_voucher_slider_widget

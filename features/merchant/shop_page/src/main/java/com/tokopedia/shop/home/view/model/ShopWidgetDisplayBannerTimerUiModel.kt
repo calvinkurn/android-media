@@ -16,13 +16,16 @@ data class ShopWidgetDisplayBannerTimerUiModel(
     override val isFestivity: Boolean = false,
     val data: Data? = null
 ) : BaseShopHomeWidgetUiModel() {
+
+    companion object{
+        private const val LINK_TYPE_CAMPAIGN_ID = "promo-team_cron_active-ready"
+    }
     val impressHolder = ImpressHolder()
 
     data class Data(
         val appLink: String = "",
         val imageUrl: String = "",
         val linkType: String = "",
-        val campaignId: String = "",
         val timeDescription: String = "",
         val timeCounter: Long = 0L,
         val startDate: String = "",
@@ -53,5 +56,9 @@ data class ShopWidgetDisplayBannerTimerUiModel(
                 Int.ZERO
             }
         }
+    }
+
+    fun getCampaignId(): String {
+        return header.data.firstOrNull { it.linkType == LINK_TYPE_CAMPAIGN_ID }?.linkId?.toString().orEmpty()
     }
 }

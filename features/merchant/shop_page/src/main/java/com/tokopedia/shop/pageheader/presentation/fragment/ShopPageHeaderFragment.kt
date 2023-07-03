@@ -1848,11 +1848,22 @@ class ShopPageHeaderFragment :
                         }
                     }
                 }
+                checkShouldSendCampaignTabOpenScreenTracker()
                 hideScrollToTopButton()
                 hideShopPageFab()
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun checkShouldSendCampaignTabOpenScreenTracker() {
+        if (getSelectedTabName() == ShopPageHeaderTabName.CAMPAIGN) {
+            sendShopCampaignTabOpenScreenTracker()
+        }
+    }
+
+    private fun sendShopCampaignTabOpenScreenTracker() {
+        shopPageTracking?.sendOpenScreenShopCampaignTab(shopId, userId, isLogin)
     }
 
     private fun setShopLayoutDataToSelectedTab() {

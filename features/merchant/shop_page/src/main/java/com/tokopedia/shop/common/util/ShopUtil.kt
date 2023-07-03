@@ -160,4 +160,9 @@ object ShopUtil {
             Int.ZERO
         }
     }
+
+    fun joinDash(vararg s: String?): String {
+        return TextUtils.join(" - ", s)
+    }
+
 }

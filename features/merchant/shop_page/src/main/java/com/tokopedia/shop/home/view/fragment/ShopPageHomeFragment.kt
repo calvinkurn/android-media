@@ -858,7 +858,7 @@ open class ShopPageHomeFragment :
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
                     if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
-                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.data.campaignId)
+                        viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
         }
@@ -3909,7 +3909,7 @@ open class ShopPageHomeFragment :
         } else {
             REGISTER_VALUE
         }
-        val campaignId = model.data?.campaignId.orEmpty()
+        val campaignId = model.getCampaignId()
         viewModel?.clickBannerTimerReminder(campaignId, action)
     }
 
@@ -4648,6 +4648,7 @@ open class ShopPageHomeFragment :
             model.isFestivity
         )
     }
+    //endregion
 
     override fun onCardDonationClick(model: ShopHomeCardDonationUiModel) {
         context?.let {
@@ -4752,31 +4753,58 @@ open class ShopPageHomeFragment :
 
     override fun onClickTncDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         showTncBottomSheet(
-            uiModel.data?.campaignId.orEmpty(),
+            uiModel.getCampaignId(),
             uiModel.data?.status?.statusCampaign.orEmpty(),
             uiModel.data?.dynamicRule?.listDynamicRoleData?.map { it.ruleID }.orEmpty()
         )
     }
 
-    override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+    override fun onClickRemindMe(position: Int, uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         viewModel?.let {
             if (it.isLogin) {
                 shopHomeAdapter?.showBannerTimerRemindMeLoading()
                 handleBannerTimerClickRemindMe(uiModel)
+                sendClickRemindMeShopHomeBannerTimerTracker(uiModel, position)
             } else {
                 redirectToLoginPage()
             }
         }
     }
 
-    override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+    private fun sendClickRemindMeShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickRemindMeBannerTimerWidget(uiModel, position, shopId, userId)
+    }
+
+    override fun onClickCtaDisplayBannerTimerWidget(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {
+        sendClickCtaShopHomeBannerTimerTracker(uiModel, position)
         checkShouldSelectCampaignTab(uiModel.header.ctaLink)
+    }
+
+    private fun sendClickCtaShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickCtaShopHomeBannerTimerWidget(uiModel, position, shopId, userId)
     }
 
     override fun onImpressionDisplayBannerTimerWidget(
         position: Int,
         uiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
+        sendImpressionShopHomeBannerTimerTracker(uiModel, position)
+    }
+
+    private fun sendImpressionShopHomeBannerTimerTracker(
+        uiModel: ShopWidgetDisplayBannerTimerUiModel,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionDisplayBannerTimerWidget(uiModel, position, shopId, userId)
     }
 
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
@@ -4784,6 +4812,4 @@ open class ShopPageHomeFragment :
         endlessRecyclerViewScrollListener.resetState()
         getLatestShopHomeWidgetLayoutData()
     }
-
-    //endregion
 }

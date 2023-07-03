@@ -61,6 +61,7 @@ class ShopCampaignVideoViewHolder(
         this.youTubeVideoModel = uiModel
         setHeader(uiModel)
         setVideo(uiModel)
+        setWidgetImpressionListener(uiModel)
     }
 
     private fun setVideo(uiModel: ShopHomeDisplayWidgetUiModel) {
@@ -174,5 +175,11 @@ class ShopCampaignVideoViewHolder(
                 return it.url.orEmpty()
             }
         } ?: ""
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeDisplayWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            listener.onDisplayWidgetImpression(model, adapterPosition)
+        }
     }
 }

@@ -381,6 +381,7 @@ object ShopPageTrackingConstant {
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
         const val VIEW_PG_IRIS = "viewPGIris"
+        const val OPEN_SCREEN = "openScreen"
     }
 
     object EventAction {
@@ -404,6 +405,13 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_TAB_COUPON_LIST_IMPRESSION = "campaign tab - impression kupon list"
         const val CAMPAIGN_TAB_COUPON_IMPRESSION = "campaign tab - impression kupon"
         const val CAMPAIGN_TAB_COUPON_CLICK = "campaign tab - click kupon"
+        const val IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET = "impression exclusive launch widget"
+        const val CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET = "click remind me exclusive launch widget"
+        const val CLICK_EXCLUSIVE_LAUNCH_WIDGET = "click exclusive launch widget"
+        const val IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - impression main banner"
+        const val CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - click remind me main banner"
+        const val IMPRESSION_TITLE_WIDGET = "campaign tab - impression title widget"
+        const val CLICK_TITLE_WIDGET = "campaign tab - click title widget"
     }
 
     object EventCategory {
@@ -452,6 +460,14 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_LIST_IMPRESSION = "44408"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION = "44348"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB = "44349"
+        const val TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB = "44337"
+        const val TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB = "44338"
+        const val TRACKER_ID_CLICK_CTA_BANNER_TIMER_HOME_TAB = "44339"
+        const val TRACKER_ID_OPEN_SCREEN_CAMPAIGN_TAB = "44340"
+        const val TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "44341"
+        const val TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "44342"
+        const val TRACKER_ID_IMPRESSION_TITLE_WIDGET = "44343"
+        const val TRACKER_ID_CLICK_TITLE_WIDGET = "44344"
     }
 
     object Key {

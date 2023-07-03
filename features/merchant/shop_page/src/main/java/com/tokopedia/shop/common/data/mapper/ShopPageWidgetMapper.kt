@@ -44,7 +44,6 @@ object ShopPageWidgetMapper {
             appLink =  data?.appLink.orEmpty(),
             imageUrl =  data?.imageUrl.orEmpty(),
             linkType =  data?.linkType.orEmpty(),
-            campaignId = data?.campaignId.orEmpty(),
             timeDescription = data?.timeInfo?.timeDescription.orEmpty(),
             timeCounter = data?.timeInfo?.timeCounter.orZero(),
             startDate = data?.timeInfo?.startDate.orEmpty(),
