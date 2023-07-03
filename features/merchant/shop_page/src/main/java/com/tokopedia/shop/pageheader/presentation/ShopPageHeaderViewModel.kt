@@ -70,7 +70,7 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -599,7 +599,7 @@ class ShopPageHeaderViewModel @Inject constructor(
         }) {}
     }
 
-    fun checkAffiliate(affiliateInput: AffiliatePDPInput) {
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
         launch {
             try {
                 val result = affiliateEligibilityCheckUseCase.get().apply {

@@ -102,7 +102,7 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
@@ -1324,7 +1324,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
     }
 
-    fun checkAffiliateEligibility(affiliatePDPInput: AffiliatePDPInput) {
+    fun checkAffiliateEligibility(affiliatePDPInput: AffiliateInput) {
         launch {
             try {
                 val result = affiliateEligibilityUseCase.get().apply {
