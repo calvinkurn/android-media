@@ -2871,11 +2871,13 @@ open class SomListFragment :
     }
 
     protected open fun onSuccessGetFilter(result: Success<SomListFilterUiModel>) {
-        somListOrderStatusFilterTab?.show(result.data)
-        somListSortFilterTab?.show(result.data)
+        val somFilterUiModel = result.data
+
+        somListOrderStatusFilterTab?.show(somFilterUiModel)
+        somListSortFilterTab?.show(somFilterUiModel)
         somListSortFilterTab?.updateCounterSortFilter(
             somFilterUiModelList = viewModel.getSomFilterUi(),
-            somListFilterUiModel = result.data,
+            somListFilterUiModel = somFilterUiModel,
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
@@ -2886,6 +2888,10 @@ open class SomListFragment :
             highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
 
         if (shouldRefreshOrderAutoTabbing) {
+            val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
+            if (statusIds.isNotEmpty()) {
+                viewModel.setStatusOrderFilter(statusIds, highLightStatusKey)
+            }
             viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(highLightStatusKey))
             showCoachMarkAutoTabbing(highLightStatusKey)
             viewModel.setFirstPageOpened(false)
