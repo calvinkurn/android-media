@@ -18,7 +18,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 
 class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected, CategoryNavBottomSheet.GtmProviderListener {
@@ -26,7 +25,7 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
     private val chipsParentView: ConstraintLayout = itemView.findViewById(R.id.chips_parent_view)
     private val dropdownArrow: ImageView = itemView.findViewById(R.id.dropdown_arrow)
     private var categoriesRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
-    private lateinit var navigationChipsViewModel: NavigationChipsViewModel
+    private var navigationChipsViewModel: NavigationChipsViewModel? = null
 
     init {
         attachRecyclerView()
@@ -34,30 +33,37 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         navigationChipsViewModel = discoveryBaseViewModel as NavigationChipsViewModel
-        getSubComponent().inject(navigationChipsViewModel)
+        navigationChipsViewModel?.let {
+            getSubComponent().inject(it)
+        }
         dropdownArrow.setOnClickListener {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickNavigationDropDown()
-            CategoryNavBottomSheet.getInstance(navigationChipsViewModel.components.pageEndPoint,this,  this, true).show(fragment.childFragmentManager, "")
+            navigationChipsViewModel?.components?.pageEndPoint?.let { it1 -> CategoryNavBottomSheet.getInstance(it1, this, this, true).show(fragment.childFragmentManager, "") }
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        navigationChipsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackImpressionNavigationChips(item)
-            categoriesRecycleAdapter.setDataList(item)
-            categoriesRecycleAdapter.notifyDataSetChanged()
-            if(item.size <= 0) {
-                chipsParentView.gone()
-                categoriesRecyclerView.gone()
-                dropdownArrow.gone()
+        navigationChipsViewModel?.getListDataLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackImpressionNavigationChips(item)
+                categoriesRecycleAdapter.setDataList(item)
+                if (item.size <= 0) {
+                    chipsParentView.gone()
+                    categoriesRecyclerView.gone()
+                    dropdownArrow.gone()
+                }
             }
-        })
-        navigationChipsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            if (item) {
-                (fragment as DiscoveryFragment).reSync()
+        )
+        navigationChipsViewModel?.getSyncPageLiveData()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                if (item) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
             }
-        })
+        )
     }
 
     private fun attachRecyclerView() {
@@ -65,10 +71,12 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
             adapter = categoriesRecycleAdapter
             val chipsLayoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = chipsLayoutManager
-            setMargin(0,
-                    resources.getDimensionPixelSize(R.dimen.dp_4),
-                    resources.getDimensionPixelSize(R.dimen.dp_40),
-                    resources.getDimensionPixelSize(R.dimen.dp_8))
+            setMargin(
+                0,
+                resources.getDimensionPixelSize(R.dimen.dp_4),
+                resources.getDimensionPixelSize(R.dimen.dp_40),
+                resources.getDimensionPixelSize(R.dimen.dp_8)
+            )
             addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
         }
     }

@@ -30,12 +30,13 @@ class CalendarWidgetItemViewModel(
     fun getPushBannerSubscriptionData(): LiveData<Boolean> = pushBannerSubscription
     fun getPushBannerStatusData(): LiveData<Pair<Boolean, String>> = pushBannerStatus
 
+    @JvmField
     @Inject
-    lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
+    var checkPushStatusUseCase: CheckPushStatusUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var subScribeToUseCase: SubScribeToUseCase
-
+    var subScribeToUseCase: SubScribeToUseCase? = null
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
@@ -47,39 +48,38 @@ class CalendarWidgetItemViewModel(
 
     fun subscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(campaignId.toLongOrZero())
-            if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
+            val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(campaignId.toLongOrZero())
+            if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(true, application.getString(R.string.discovery_calendar_push_subscribe))
             }
         }, onError = {
-            it.printStackTrace()
-            showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
-        })
+                it.printStackTrace()
+                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
+            })
     }
 
     fun unSubscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase.unSubscribeToPush(campaignId.toLongOrZero())
-            if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
+            val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(campaignId.toLongOrZero())
+            if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(false, application.getString(R.string.discovery_calendar_push_unsubscribe))
             }
         }, onError = {
-            it.printStackTrace()
-            showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
-        })
+                it.printStackTrace()
+                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
+            })
     }
-
 
     fun checkUserPushStatus(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(campaignId.toLongOrZero())
+            val pushSubscriptionResponse = checkPushStatusUseCase?.checkPushStatus(campaignId.toLongOrZero())
             pushBannerSubscription.value =
-                pushSubscriptionResponse.notifierCheckReminder?.status == 1
+                pushSubscriptionResponse?.notifierCheckReminder?.status == 1
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     override fun loggedInCallback() {
