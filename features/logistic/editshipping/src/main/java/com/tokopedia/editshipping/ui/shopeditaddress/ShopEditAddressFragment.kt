@@ -313,25 +313,35 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun checkValidateAddressDetail(addressHelper: String, userAddress: String): Boolean {
+    private fun showAddressDetailError(addressHelper: String, userAddress: String): Boolean {
         if (userAddress.length < MIN_CHAR_ADDRESS_DETAIL) {
             binding?.tvDetailAlamatHelper?.text = getString(R.string.helper_shop_detail)
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    getString(R.string.helper_shop_detail),
+                    Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            }
             return false
+        } else {
+            val isAddressSimilar = checkAddressSimilarity(addressHelper, userAddress)
+            if (!isAddressSimilar) {
+                binding?.tvDetailAlamatHelper?.text =
+                    getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+            }
+            return isAddressSimilar
         }
+    }
+
+    private fun checkAddressSimilarity(addressHelper: String, userAddress: String): Boolean {
         val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
         val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
-        if (ShopEditAddressUtils.validateAddressSimilarity(
-                normalizeAddressHelper,
-                normalizeUserAddress
-            )
-        ) {
-            binding?.tvDetailAlamatHelper?.text = ""
-            return true
-        } else {
-            binding?.tvDetailAlamatHelper?.text =
-                getString(R.string.detail_alamat_error_helper, detailAddressHelper)
-            return false
-        }
+        return ShopEditAddressUtils.validateAddressSimilarity(
+            normalizeAddressHelper,
+            normalizeUserAddress
+        )
     }
 
     private fun checkCouriersCoverage(isCoverage: Boolean) {
@@ -419,8 +429,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         binding?.btnSaveWarehouse?.setOnClickListener {
             warehouseModel?.let { it ->
                 val addressDetailUser = binding?.etDetailAlamatShop?.text.toString()
-                if (checkValidateAddressDetail(detailAddressHelper, addressDetailUser)) {
+                if (showAddressDetailError(detailAddressHelper, addressDetailUser)) {
                     viewModel.checkCouriersAvailability(userSession.shopId.toLong(), it.districtId)
+                } else {
+                    binding?.etDetailAlamatShop?.addTextChangedListener(setAlamatWatcher())
                 }
             }
         }
@@ -472,6 +484,34 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 val strLength = s.toString().length
                 val info = "$strLength/25"
                 binding?.tvNamaLokasiWatcher?.text = info
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // no-op
+            }
+        }
+    }
+
+    private fun setAlamatWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // no-op
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val errorHelper = binding?.tvDetailAlamatHelper?.text?.toString()
+                if (s.toString().length >= MIN_CHAR_ADDRESS_DETAIL && errorHelper == getString(R.string.helper_shop_detail)) {
+                    binding?.tvDetailAlamatHelper?.text = ""
+                } else if (checkAddressSimilarity(
+                        detailAddressHelper,
+                        s.toString()
+                    ) && errorHelper == getString(
+                            R.string.detail_alamat_error_helper,
+                            detailAddressHelper
+                        )
+                ) {
+                    binding?.tvDetailAlamatHelper?.text = ""
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
