@@ -3445,7 +3445,7 @@ class ShopPageHeaderFragment :
      */
     private fun checkAffiliate() {
         if (!isEnableAffiliateShareIcon() || isMyShop) return
-        val inputAffiliate = AffiliatePDPInput().apply {
+        val inputAffiliate = AffiliateInput().apply {
             pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = AFFILIATE_SITE_ID, verticalId = AFFILIATE_VERTICAL_ID)
             pageType = PageType.SHOP.value
             product = Product()
