@@ -695,7 +695,7 @@ class ShopPageCampaignFragment :
                 super.onScrollStateChanged(recyclerView, state)
                 if (state == SCROLL_STATE_IDLE) {
                     val firstCompletelyVisibleItemPosition =
-                        (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(
+                        (getRecyclerView(view)?.layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(
                             null
                         )?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
