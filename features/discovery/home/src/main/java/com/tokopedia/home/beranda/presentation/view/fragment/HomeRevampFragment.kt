@@ -1391,11 +1391,6 @@ open class HomeRevampFragment :
                 1,
                 data.filterIsInstance<LoadableComponent>().toMutableList()
             )
-//            val combinedPerfBlocks = mutableListOf<LoadableComponent>()
-//            combinedPerfBlocks.addAll(homePerformanceBlocks)
-//            combinedPerfBlocks.addAll(homeDynamicChannelPerformanceBlocks)
-//
-//            performanceTrace.updateBlocks(combinedPerfBlocks, view)
             adapter?.submitList(data)
         }
     }
