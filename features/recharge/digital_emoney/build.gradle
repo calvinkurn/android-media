@@ -37,6 +37,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation projectOrAar(rootProject.ext.libraries.network)

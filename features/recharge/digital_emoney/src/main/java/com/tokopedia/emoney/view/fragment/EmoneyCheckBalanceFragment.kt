@@ -38,6 +38,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -109,8 +111,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        val rawPublicKey = getString(R.string.emoney_public)
-        val rawPrivateKey = getString(R.string.emoney_private)
+        val rawPublicKey = getPublicKey()
+        val rawPrivateKey = getPrivateKey()
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
@@ -412,6 +414,22 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         map.put(RC_KEY, param.log.rc)
         map.put(LOG_TYPE, TAPCASH_ERROR_LOGGER)
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
+    }
+
+    private fun getPublicKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+           getString(com.tokopedia.keys.R.string.emoney_public_stag)
+        } else {
+           getString(com.tokopedia.keys.R.string.emoney_public_prod)
+        }
+    }
+
+    private fun getPrivateKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.emoney_private_stag)
+        } else {
+            getString(com.tokopedia.keys.R.string.emoney_private_prod)
+        }
     }
 
     companion object {
