@@ -64,7 +64,6 @@ object WebViewHelper {
     }
 
     private fun isDomainWhitelisted(context: Context, domain: String): Boolean {
-        return true
         if (domain.isEmpty()) {
             return false
         }
