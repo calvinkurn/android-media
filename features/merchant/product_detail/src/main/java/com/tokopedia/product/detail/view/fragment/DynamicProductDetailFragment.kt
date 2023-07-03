@@ -2011,7 +2011,7 @@ open class DynamicProductDetailFragment :
             shopId = uiModel.shopId,
             source = source,
             productId = uiModel.productIdMVC,
-            additionalData = uiModel.additionalData
+            additionalParamJson = uiModel.additionalData
         )
         mvcLauncher.launch(intent)
     }
