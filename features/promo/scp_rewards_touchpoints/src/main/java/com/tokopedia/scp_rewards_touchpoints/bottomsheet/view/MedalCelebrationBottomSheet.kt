@@ -427,22 +427,15 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
             (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
                 celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
                 badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
-//                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
-//                badgeDescription.text = scpRewardsCelebrationPage?.celebrationPage?.medaliDescription
-                val primaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst { it.unifiedStyle == "primary" }
-                val secondaryIndex = scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.indexOfFirst { it.unifiedStyle == "secondary" }
-                couponUi.btnPrimary.setText(
-                    primaryIndex?.let {
-                        scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.get(
-                            it
-                        )
-                    }?.text
-                )
-                couponUi.btnSecondary.text = secondaryIndex?.let {
-                    scpRewardsCelebrationPage?.celebrationPage?.benefitButton?.get(
-                        it
-                    )
-                }?.text
+                val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
+                benefitList.forEach { benefitBtn ->
+                    if(benefitBtn.isAutoApply){
+                        couponUi.btnPrimary.text = benefitBtn.text
+                    }
+                    else{
+                        couponUi.btnSecondary.text = benefitBtn.text
+                    }
+                }
             }
         }
     }
