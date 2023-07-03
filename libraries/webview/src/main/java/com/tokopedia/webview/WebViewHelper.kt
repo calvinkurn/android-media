@@ -526,7 +526,6 @@ object WebViewHelper {
 
     @JvmStatic
     fun isWhitelistDisableGalleryPicker(context: Context, url: String): Boolean {
-        return true
         if (whiteListedDisableGalleryPickerUrl.urls.isEmpty()) {
             getWhitelistDisableGalleryPicker(context)
         }
