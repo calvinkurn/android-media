@@ -117,7 +117,7 @@ class OrderSummaryPageAdapter(
                 return OrderShopCard(CardOrderShopBinding.inflate(inflater, parent, false), shopListener, analytics)
             }
             OrderProductCard.VIEW_TYPE -> {
-                return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics)
+                return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics, inflater)
             }
             OrderPreferenceCard.VIEW_TYPE -> {
                 return OrderPreferenceCard(CardOrderPreferenceBinding.inflate(inflater, parent, false), preferenceListener, analytics)

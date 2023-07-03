@@ -130,6 +130,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
@@ -801,7 +802,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 ErrorHandler.getErrorMessage(context, it.throwable)
                             }
                         }
-                        Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(v, message, type = Toaster.TYPE_ERROR, actionText = it.ctaText).show()
                     }
                 }
                 is OccGlobalEvent.PriceChangeError -> {
@@ -1506,6 +1507,26 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
                 startActivityForResult(intent, REQUEST_CODE_ADD_ON)
             }
+        }
+
+        override fun onCheckAddOnProduct(
+            newAddOnProductData: AddOnsProductDataModel.Data,
+            product: OrderProduct
+        ) {
+            viewModel.updateAddOnProduct(
+                newAddOnProductData = newAddOnProductData,
+                product = product
+            )
+        }
+
+        override fun onClickAddOnProductInfoIcon(
+            url: String
+        ) {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                url
+            )
         }
     }
 
