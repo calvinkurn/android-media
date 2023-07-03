@@ -756,9 +756,7 @@ class CartFragment :
     }
 
     override fun onBackPressed() {
-        if (isNavToolbar) {
-            cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
-        } else {
+        if (!isNavToolbar) {
             cartPageAnalytics.eventClickAtcCartClickArrowBack()
         }
 

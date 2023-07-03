@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.databinding.WidgetCreateReviewTopicsBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.unifycomponents.toPx
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewTopics @JvmOverloads constructor(
     context: Context,
@@ -52,32 +50,28 @@ class CreateReviewTopics @JvmOverloads constructor(
         tvReviewFormTopics.text = topics.joinToString(TOPIC_SEPARATOR)
     }
 
-    fun updateUI(uiState: CreateReviewTopicsUiState, continuation: Continuation<Unit>) {
+    fun updateUI(uiState: CreateReviewTopicsUiState) {
         when (uiState) {
             is CreateReviewTopicsUiState.Showing -> {
                 binding.showTopics(uiState.topics)
                 animateShow(onAnimationEnd = {
-                    shouldAnimatePeek(uiState.animatePeek, continuation)
+                    shouldAnimatePeek(uiState.animatePeek)
                 })
             }
             is CreateReviewTopicsUiState.Hidden -> {
-                animateHide(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateHide()
             }
         }
     }
 
-    private fun shouldAnimatePeek(animatePeek: Boolean, continuation: Continuation<Unit>) {
+    private fun shouldAnimatePeek(animatePeek: Boolean) {
         if (animatePeek && isFirstShow) {
             isFirstShow = false
-            animateScrollToEnd(continuation)
-        } else {
-            continuation.resume(Unit)
+            animateScrollToEnd()
         }
     }
 
-    private fun animateScrollToEnd(continuation: Continuation<Unit>) {
+    private fun animateScrollToEnd() {
         val topicsEndXPos = binding.tvReviewFormTopics.right + TOPIC_INSPIRATION_END_PADDING.toPx()
         val scrollViewWidth = binding.root.width - TOPIC_INSPIRATION_END_PADDING.toPx()
         val topicsFullScrollDistance = topicsEndXPos - scrollViewWidth
@@ -98,12 +92,10 @@ class CreateReviewTopics @JvmOverloads constructor(
                 override fun onAnimationStart(animation: Animator) {}
 
                 override fun onAnimationEnd(animation: Animator) {
-                    animateScrollToStart(continuation)
+                    animateScrollToStart()
                 }
 
-                override fun onAnimationCancel(animation: Animator) {
-                    continuation.resume(Unit)
-                }
+                override fun onAnimationCancel(animation: Animator) {}
 
                 override fun onAnimationRepeat(animation: Animator) {}
             })
@@ -111,7 +103,7 @@ class CreateReviewTopics @JvmOverloads constructor(
         }
     }
 
-    private fun animateScrollToStart(continuation: Continuation<Unit>) {
+    private fun animateScrollToStart() {
         ValueAnimator.ofInt(binding.root.scrollX, Int.ZERO).apply {
             duration = AUTO_SCROLL_TO_START_ANIMATION_DURATION
             startDelay = AUTO_SCROLL_TO_START_ANIMATION_DELAY
@@ -124,19 +116,6 @@ class CreateReviewTopics @JvmOverloads constructor(
             addUpdateListener { value ->
                 binding.root.scrollTo(value.animatedValue as Int, Int.ZERO)
             }
-            addListener(object: Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
-
-                override fun onAnimationEnd(animation: Animator) {
-                    continuation.resume(Unit)
-                }
-
-                override fun onAnimationCancel(animation: Animator) {
-                    continuation.resume(Unit)
-                }
-
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
             start()
         }
     }

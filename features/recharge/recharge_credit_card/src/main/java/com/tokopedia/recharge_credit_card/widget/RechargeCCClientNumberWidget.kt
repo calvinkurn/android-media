@@ -6,7 +6,6 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -18,7 +17,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl.CC_IMG_VERIFIED
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -132,7 +130,8 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
                                 if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
                                     removeTextChangedListener(this)
                                     it.replace(
-                                        0, it.length,
+                                        0,
+                                        it.length,
                                         RechargeCCUtil.concatStringWith16D(
                                             RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS),
                                             DIVIDER
@@ -229,7 +228,8 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                )
                 setOnClickListener {
                     mFilterChipListener?.onClickIcon(true)
                 }
